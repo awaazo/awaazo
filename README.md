@@ -52,5 +52,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 |   Name   | ID      | GitHub   | Email  
 | ------------- | ------------- | --------    | -------- |
 | `Jonathan Haddad`         | `40111053`         | ([GitHub/jonathan-githubofficial](https://github.com/jonathan-githubofficial))   | jonathan200023@gmail.com
+| `Usama Saleem`         | `40110036`         | ([GitHub/usamasaleem1](https://github.com/usamasaleem1))   | usama.saleem [at] hotmail.com
+
 
 
