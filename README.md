@@ -54,3 +54,8 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 | `Jonathan Haddad`         | `40111053`         | ([GitHub/jonathan-githubofficial](https://github.com/jonathan-githubofficial))   | jonathan200023 [at] gmail.com
 | `Usama Saleem`         | `40110036`         | ([GitHub/usamasaleem1](https://github.com/usamasaleem1))   | usama.saleem [at] hotmail.com
 | `Steven Franchetto`         | `40112243`         | ([GitHub.com/sfranchetto](https://github.com/sfranchetto))   | 
+| `Jonathan Pauze`         | `40177730`         | ([GitHub.com/BigSaladMan](https://github.com/BigSaladMan))   | 
+| `Ahed Memas`         | `40112710`         | ([GitHub.com/Ahed752](https://github.com/Ahed752))   | 
+| `Shadi Jiha`         | `40131284`         | ([GitHub.com/shadijiha](https://github.com/shadijiha))   | 
+| `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | 
+| `Mathieu Trudeau`         | `40177075`         | ([GitHub.com/mathieutrudeau](https://github.com/mathieutrudeau))   | 
