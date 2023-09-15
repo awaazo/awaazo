@@ -1,6 +1,4 @@
-Alright! Here's a draft of the README for the Awaazo project:
 
----
 
 # Awaazo 🎙️
 
