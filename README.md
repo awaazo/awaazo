@@ -60,3 +60,4 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 | `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | 
 | `Mathieu Trudeau`         | `40177075`         | ([GitHub.com/mathieutrudeau](https://github.com/mathieutrudeau))   | 
 | `Muhammad Mubashir`         | `40152977`         | ([GitHub.com/mubashir494](https://github.com/mubashir494))   |  mubashirqbl@gmail.com
+| `Radwan Baba`         | `40167316`         | ([Github.com/Radwanbaba13](https://github.com/Radwanbaba13))   |  
