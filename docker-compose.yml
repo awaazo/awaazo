@@ -1,4 +1,7 @@
+version: '3.8'
 services:
+
+# BACKEND ASP.net
   backend:
     build: backend/.
     container_name: web_api
@@ -6,6 +9,8 @@ services:
       - "32773:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+
+      # DATABASE
   sql:
     image: "mcr.microsoft.com/mssql/server:latest"
     container_name: sql_server
@@ -17,3 +22,16 @@ services:
       SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
     volumes:
       - "//c/mount/sql:/var/opt/mssql/data"
+
+  # FRONTEND SERVER
+  web:
+    build:
+      context: frontend/.
+      target: runner
+    volumes:
+      - .:/app
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
