@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: backend/.
+    container_name: web_api
+    ports:
+      - "32773:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+  sql:
+    image: "mcr.microsoft.com/mssql/server:latest"
+    container_name: sql_server
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "y"
+      SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
+    volumes:
+      - "//c/mount/sql:/var/opt/mssql/data"
