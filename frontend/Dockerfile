@@ -1,24 +1,27 @@
 FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
+RUN mkdir -p /app
 WORKDIR /app
 
-COPY ./package.json ./package-lock.json ./
+COPY package.json .
+COPY package-lock.json .
 RUN npm install --production
 
-FROM node:18-alpine AS builder
+FROM deps AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
-COPY ./package.json ./package-lock.json ./
 COPY ./src ./src
 COPY ./public ./public
-COPY ./next.config.js .
-COPY ./tsconfig.json .
+COPY next.config.js .
+COPY tsconfig.json .
+COPY package.json . 
+COPY package-lock.json .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM deps AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -29,6 +32,7 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
+
 
 USER nextjs
 

@@ -4,13 +4,13 @@ services:
 # BACKEND ASP.net
   backend:
     build: backend/.
-    container_name: web_api
+    container_name: backend_server
     ports:
       - "32773:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
 
-      # DATABASE
+  # DATABASE (MSSQL)
   sql:
     image: "mcr.microsoft.com/mssql/server:latest"
     container_name: sql_server
@@ -24,14 +24,15 @@ services:
       - "//c/mount/sql:/var/opt/mssql/data"
 
   # FRONTEND SERVER
-  web:
-    build:
+  frontend:
+    build: 
       context: frontend/.
       target: runner
+    container_name: frontend_server
     volumes:
-      - .:/app
+      - ./frontend:/app
     command: npm run dev
-    ports:
-      - "3000:3000"
     environment:
       NODE_ENV: development
+    ports:
+      - "3000:3000"
