@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+
+# BACKEND ASP.net
+  backend:
+    build: backend/.
+    container_name: backend_server
+    ports:
+      - "32773:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  # DATABASE (MSSQL)
+  sql:
+    image: "mcr.microsoft.com/mssql/server:latest"
+    container_name: sql_server
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "y"
+      SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
+    volumes:
+      - "//c/mount/sql:/var/opt/mssql/data"
+
+  # FRONTEND SERVER
+  frontend:
+    build: 
+      context: frontend/.
+      target: runner
+    container_name: frontend_server
+    volumes:
+      - ./frontend:/app
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
