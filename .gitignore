@@ -275,8 +275,5 @@ __pycache__/
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore
 docker-compose.yml
-docker-compose.yml
 frontend/.env
-frontend/Dockerfile
-docker-compose.yml
 frontend/Dockerfile

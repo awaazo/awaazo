@@ -6,11 +6,21 @@
     "start": "next start"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "framer-motion": "^10.16.4",
     "next": "^13.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "20.6.5",
+    "@types/react": "18.2.22",
+    "typescript": "5.2.2"
   }
 }
