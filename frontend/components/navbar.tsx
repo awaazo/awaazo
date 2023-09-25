@@ -30,29 +30,40 @@ import {
   InfoIcon,
 } from "@chakra-ui/icons";
 import logo from "../styles/images/logo.png";
+import Link from "next/link";
 
 interface Props {
   children: React.ReactNode;
+  href: string; // Add href prop
 }
 
-const Links = ["Home", "Explore", "My Podcasts"];
+const Links = [
+  { label: "Home", url: "/" }, // Specify the actual routes
+  { label: "Explore", url: "/Explore" },
+  { label: "My Podcasts", url: "/MyPodcasts" },
+];
 
 const NavLink = (props: Props) => {
-  const { children } = props;
+  const { children, href } = props; // Use href instead of href
+
   return (
-    <Box
-      as="a"
-      px={3}
-      py={1}
-      rounded={"250px"}
-      _hover={{
-        textDecoration: "none",
-        bg: useColorModeValue("gray.200", "gray.700"),
-      }}
-      href={"#"}
-    >
-      {children}
-    </Box>
+    <Link href={href}>
+      {" "}
+      {/* Use Next.js Link */}
+      <a>
+        <Box
+          px={3}
+          py={1}
+          rounded={"250px"}
+          _hover={{
+            textDecoration: "none",
+            bg: useColorModeValue("gray.200", "gray.700"),
+          }}
+        >
+          {children}
+        </Box>
+      </a>
+    </Link>
   );
 };
 
@@ -96,7 +107,11 @@ export default function Navbar() {
               display={{ base: "none", md: "flex" }}
             >
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link.label} href={link.url}>
+                  {" "}
+                  {/* Use href prop */}
+                  {link.label}
+                </NavLink>
               ))}
             </HStack>
           </HStack>
@@ -162,7 +177,9 @@ export default function Navbar() {
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link.label} href={link.url}>
+                  {link.label}
+                </NavLink>
               ))}
             </Stack>
           </Box>
