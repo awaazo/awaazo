@@ -8,9 +8,7 @@ export default function Home() {
       <Navbar />
       <Center h="100vh">
         <Box>
-          <Text fontSize="3xl" fontWeight="bold">
-            Hello, World!
-          </Text>
+          <Box p={4}>Main Content Here</Box>
         </Box>
       </Center>
     </>

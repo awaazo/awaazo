@@ -23,7 +23,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const Links = ["Dashboard", "Projects", "Team"];
+const Links = ["Home", "Explore", "My Podcasts"];
 
 const NavLink = (props: Props) => {
   const { children } = props;
@@ -59,7 +59,7 @@ export default function navbar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>Logo</Box>
+            <Box>AwaazoLogo</Box>
             <HStack
               as={"nav"}
               spacing={4}
@@ -115,8 +115,6 @@ export default function navbar() {
           </Box>
         ) : null}
       </Box>
-
-      <Box p={4}>Main Content Here</Box>
     </>
   );
 }
