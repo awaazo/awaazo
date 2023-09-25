@@ -14,7 +14,6 @@ namespace backend.Controllers;
 public class AuthController : ControllerBase
 {
     private static readonly TimeSpan TokenLifeTime = TimeSpan.FromDays(30);
-
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _db;
 
@@ -56,6 +55,7 @@ public class AuthController : ControllerBase
             DateOfBirth = request.DateOfBirth
         };
         _db.Users.Add(newUser);
+        _db.SaveChanges();
 
         var token = GenerateJwtToken(id);
         
@@ -64,6 +64,7 @@ public class AuthController : ControllerBase
     
     
     [HttpGet("me")]
+    [Authorize]
     public IActionResult Me()
     {
         // Retrieve the user's identity
@@ -85,7 +86,8 @@ public class AuthController : ControllerBase
     
     private string GenerateJwtToken(Guid userid)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+        if (_configuration["Jwt:Key"] is null) throw new Exception("Key is null");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]

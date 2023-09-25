@@ -3,6 +3,7 @@ using backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace backend;
 
@@ -12,17 +13,42 @@ public class Program
         
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;
-        // Add services to the container.
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    },
+                    new List<string>()
+                }
+            });
+        });
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x => {
             x.TokenValidationParameters = new TokenValidationParameters() {
-                ValidIssuer = config["JwtSettings:Issuer"],
-                ValidAudience = config["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"])),
+                ValidIssuer = config["Jwt:Issuer"],
+                ValidAudience = config["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"])),
                 ValidateIssuer = false, // TODO: Change this once backend port is stabalized
                 ValidateAudience = true,
                 ValidateLifetime = true,
@@ -30,9 +56,18 @@ public class Program
             };
         });
         builder.Services.AddAuthorization();
-        builder.Services.AddDbContext<AppDbContext>(options => 
-            options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
-
+        builder.Services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+        });
+        builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }));
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -49,6 +84,11 @@ public class Program
 
         app.MapControllers();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            dbContext.Database.Migrate();
+        }
 
         app.Run();
     }
