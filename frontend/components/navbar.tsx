@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Flex,
@@ -15,13 +17,16 @@ import {
   useColorModeValue,
   Stack,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+
+interface Props {
+  children: React.ReactNode;
+}
 
 const Links = ["Dashboard", "Projects", "Team"];
 
-const NavLink = (props) => {
+const NavLink = (props: Props) => {
   const { children } = props;
-
   return (
     <Box
       as="a"
@@ -66,6 +71,15 @@ export default function navbar() {
             </HStack>
           </HStack>
           <Flex alignItems={"center"}>
+            <Button
+              variant={"solid"}
+              colorScheme={"teal"}
+              size={"sm"}
+              mr={4}
+              leftIcon={<AddIcon />}
+            >
+              Action
+            </Button>
             <Menu>
               <MenuButton
                 as={Button}
@@ -101,6 +115,8 @@ export default function navbar() {
           </Box>
         ) : null}
       </Box>
+
+      <Box p={4}>Main Content Here</Box>
     </>
   );
 }

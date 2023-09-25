@@ -1,10 +1,10 @@
-// pages/index.js
-import { Box, Center, ChakraProvider, Text } from "@chakra-ui/react";
+// pages/index.tsx
+import { Box, Center, Text } from "@chakra-ui/react";
 import Navbar from "../components/navbar"; // Import the Navbar component
 
 export default function Home() {
   return (
-    <ChakraProvider>
+    <>
       <Navbar />
       <Center h="100vh">
         <Box>
@@ -13,6 +13,6 @@ export default function Home() {
           </Text>
         </Box>
       </Center>
-    </ChakraProvider>
+    </>
   );
 }

@@ -20,8 +20,8 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@types/node": "20.6.5",
-    "@types/react": "18.2.22",
-    "typescript": "5.2.2"
+    "@types/node": "^20.6.5",
+    "@types/react": "^18.2.22",
+    "typescript": "^5.2.2"
   }
 }

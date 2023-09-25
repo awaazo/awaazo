@@ -1,7 +1,8 @@
-// pages/_app.js
+// pages/_app.tsx
 import { ChakraProvider } from "@chakra-ui/react";
-// do not touch this file
-function MyApp({ Component, pageProps }) {
+import { AppProps } from "next/app";
+
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
       <Component {...pageProps} />
