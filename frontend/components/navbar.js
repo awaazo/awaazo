@@ -5,8 +5,8 @@ import NextLink from "next/link"; // Import Next.js Link component
 export default function Navbar() {
   return (
     <Box
-      bg="rgba(255, 255, 255, 0.5)" // Semi-transparent white background for frosted effect
-      backdropFilter="blur(10px)" // Apply blur effect
+      bg="rgba(255, 255, 255, 0.5)"
+      backdropFilter="blur(10px)"
       py={4}
       px={6}
       pos="fixed"
@@ -16,7 +16,7 @@ export default function Navbar() {
       <Flex maxW="container.xl" mx="auto" alignItems="center">
         <Heading size="lg">My Website</Heading>
         <Spacer />
-        <VStack spacing={2} alignItems="flex-end">
+        <VStack spacing={2}>
           <NextLink href="/" passHref>
             <Link>Home</Link>
           </NextLink>

@@ -5,7 +5,7 @@ import Navbar from "../components/navbar"; // Import the Navbar component
 export default function Home() {
   return (
     <ChakraProvider>
-      <Navbar /> {/* Include the Navbar */}
+      <Navbar />
       <Center h="100vh">
         <Box>
           <Text fontSize="3xl" fontWeight="bold">
