@@ -1,5 +1,4 @@
-"use client";
-
+import React from "react";
 import {
   Box,
   Flex,
@@ -15,9 +14,18 @@ import {
   MenuDivider,
   useDisclosure,
   useColorModeValue,
+  useColorMode,
   Stack,
+  Image,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import {
+  HamburgerIcon,
+  CloseIcon,
+  AddIcon,
+  MoonIcon,
+  SunIcon,
+} from "@chakra-ui/icons";
+import logo from "../styles/images/logo.png";
 
 interface Props {
   children: React.ReactNode;
@@ -44,8 +52,13 @@ const NavLink = (props: Props) => {
   );
 };
 
-export default function navbar() {
+export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  const handleColorModeToggle = () => {
+    toggleColorMode();
+  };
 
   return (
     <>
@@ -59,7 +72,10 @@ export default function navbar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>AwaazoLogo</Box>
+            <Box maxWidth={"8em"}>
+              <Image src={logo.src} alt="logo" />
+            </Box>
+
             <HStack
               as={"nav"}
               spacing={4}
@@ -70,7 +86,15 @@ export default function navbar() {
               ))}
             </HStack>
           </HStack>
+
           <Flex alignItems={"center"}>
+            <IconButton
+              aria-label="Toggle theme"
+              icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+              onClick={handleColorModeToggle}
+              variant="ghost"
+              size="md"
+            />
             <Button
               variant={"solid"}
               colorScheme={"teal"}

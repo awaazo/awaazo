@@ -29,7 +29,7 @@ services:
       target: runner
     container_name: frontend_server
     volumes:
-      - ./frontend:/app
+      - ./frontend:/
     command: npm run dev
     environment:
       NODE_ENV: development
