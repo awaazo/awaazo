@@ -62,8 +62,13 @@ export default function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
-        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={7}>
+        <Flex
+          h={20}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          position="relative" // Set the parent container to relative positioning
+        >
           <IconButton
             size={"md"}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -72,10 +77,7 @@ export default function Navbar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box maxWidth={"8em"}>
-              <Image src={logo.src} alt="logo" />
-            </Box>
-
+            <Box display={{ base: "none", md: "flex" }}>🎙️ Awaazo</Box>
             <HStack
               as={"nav"}
               spacing={4}
@@ -86,7 +88,18 @@ export default function Navbar() {
               ))}
             </HStack>
           </HStack>
-
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            position="absolute" // Set the logo container to absolute positioning
+            top="50%" // Center vertically
+            left="50%" // Center horizontally
+            transform="translate(-50%, -50%)" // Center exactly in the middle
+          >
+            <Box maxWidth={"8em"}>
+              <Image src={logo.src} alt="logo" />
+            </Box>
+          </Flex>
           <Flex alignItems={"center"}>
             <IconButton
               aria-label="Toggle theme"
@@ -94,16 +107,15 @@ export default function Navbar() {
               onClick={handleColorModeToggle}
               variant="ghost"
               size="md"
-            />
-            <Button
-              variant={"solid"}
-              colorScheme={"teal"}
-              size={"sm"}
               mr={4}
-              leftIcon={<AddIcon />}
+            />
+            <Text
+              mr={4}
+              display={{ base: "none", md: "block" }} // Hide on screens smaller than md (mobile)
             >
-              Action
-            </Button>
+              User Name
+            </Text>
+
             <Menu>
               <MenuButton
                 as={Button}
@@ -113,7 +125,7 @@ export default function Navbar() {
                 minW={0}
               >
                 <Avatar
-                  size={"sm"}
+                  size={"md"}
                   src={
                     "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                   }
