@@ -12,8 +12,15 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY ./package.json ./package-lock.json ./
 COPY ./src ./src
 COPY ./public ./public
+<<<<<<< Updated upstream
 COPY ./next.config.js .
 COPY ./tsconfig.json .
+=======
+COPY next.config.js .
+COPY tsconfig.json .
+COPY package.json .
+COPY package-lock.json .
+>>>>>>> Stashed changes
 
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
