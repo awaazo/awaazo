@@ -17,6 +17,8 @@ import {
   useColorMode,
   Stack,
   Image,
+  VStack,
+  MenuGroup,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -24,6 +26,8 @@ import {
   AddIcon,
   MoonIcon,
   SunIcon,
+  ViewIcon,
+  InfoIcon,
 } from "@chakra-ui/icons";
 import logo from "../styles/images/logo.png";
 
@@ -38,9 +42,9 @@ const NavLink = (props: Props) => {
   return (
     <Box
       as="a"
-      px={2}
+      px={3}
       py={1}
-      rounded={"md"}
+      rounded={"250px"}
       _hover={{
         textDecoration: "none",
         bg: useColorModeValue("gray.200", "gray.700"),
@@ -65,14 +69,14 @@ export default function Navbar() {
       <Box
         bg={useColorModeValue("#FFFFFF40", "#0000003D")}
         backdropFilter="blur(100px)" // Add a backdrop filter to the background
-        px={8}
+        px={12}
         position="fixed" // Set the navbar to fixed positioning
         top={0} // Position it at the top of the viewport
         width="100%" // Make it span the entire width
         zIndex={999} // Set a high z-index to ensure it's above other elements
       >
         <Flex
-          h={20}
+          h={"7em"}
           alignItems={"center"}
           justifyContent={"space-between"}
           position="relative" // Set the parent container to relative positioning
@@ -115,14 +119,9 @@ export default function Navbar() {
               onClick={handleColorModeToggle}
               variant="ghost"
               size="md"
+              rounded={"full"}
               mr={4}
             />
-            <Text
-              mr={4}
-              display={{ base: "none", md: "block" }} // Hide on screens smaller than md (mobile)
-            >
-              User Name
-            </Text>
 
             <Menu>
               <MenuButton
@@ -137,13 +136,23 @@ export default function Navbar() {
                   src={
                     "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                   }
+                  style={{
+                    boxShadow: "0 0 0 2px #fff",
+                  }}
                 />
               </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+              <MenuList className="translucent-menu">
+                <MenuGroup>
+                  <MenuItem>UserName</MenuItem>
+                  <MenuDivider />
+                  <MenuItem>My Account</MenuItem>
+                  <MenuItem>Payments</MenuItem>
+                </MenuGroup>
                 <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuGroup title="Help">
+                  <MenuItem>Docs</MenuItem>
+                  <MenuItem>FAQ</MenuItem>
+                </MenuGroup>
               </MenuList>
             </Menu>
           </Flex>

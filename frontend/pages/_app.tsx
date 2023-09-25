@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         height="100vh"
         backgroundImage={bg.src}
         backgroundSize="cover"
-        zIndex="-99"
+        zIndex="-1"
       />
       <ColorModeScript initialColorMode="dark" />
       <Component {...pageProps} />
