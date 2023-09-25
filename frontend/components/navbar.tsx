@@ -62,7 +62,15 @@ export default function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={7}>
+      <Box
+        bg={useColorModeValue("#FFFFFF40", "#0000003D")}
+        backdropFilter="blur(100px)" // Add a backdrop filter to the background
+        px={8}
+        position="fixed" // Set the navbar to fixed positioning
+        top={0} // Position it at the top of the viewport
+        width="100%" // Make it span the entire width
+        zIndex={999} // Set a high z-index to ensure it's above other elements
+      >
         <Flex
           h={20}
           alignItems={"center"}
@@ -96,8 +104,8 @@ export default function Navbar() {
             left="50%" // Center horizontally
             transform="translate(-50%, -50%)" // Center exactly in the middle
           >
-            <Box maxWidth={"8em"}>
-              <Image src={logo.src} alt="logo" />
+            <Box maxWidth={"10em"}>
+              <Image src={logo.src} alt="logo" boxShadow={"20px"} />
             </Box>
           </Flex>
           <Flex alignItems={"center"}>
