@@ -277,3 +277,5 @@ __pycache__/
 docker-compose.yml
 frontend/.env
 frontend/Dockerfile
+backend/Dockerfile
+backend/.env
