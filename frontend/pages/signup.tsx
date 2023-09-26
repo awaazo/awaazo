@@ -54,6 +54,7 @@ const SignUp: React.FC = () => {
       >
         Sign up with Google
       </Button>
+      
       <Text style={{
         fontSize: '1.3rem',
         textAlign: 'center',
