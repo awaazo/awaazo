@@ -1,14 +1,22 @@
 version: '3.8'
+
 services:
 
-# BACKEND ASP.net
+  # BACKEND ASP.NET Server
   backend:
-    build: backend/.
+    build:
+      context: backend/.
+      target: final
     container_name: backend_server
     ports:
       - "32773:80"
+    links:
+      - sql:database
+      - sql:sql_server
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - sql 
 
   # DATABASE (MSSQL)
   sql:
@@ -36,3 +44,17 @@ services:
       NODE_ENV: development
     ports:
       - "3000:3000"
+    links:
+      - backend:backend_server
+    depends_on:
+      - backend
+
+  # BACKEND ASP.NET TESTS
+  backend-test:
+    build: backendTest/.
+    container_name: backend_test
+    depends_on:
+      - sql
+    links:
+      - sql:database
+      - sql:sql_server

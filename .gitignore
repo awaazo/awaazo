@@ -11,6 +11,10 @@
 *.userosscache
 *.sln.docstates
 DBCredentials.txt
+**/.vscode/**
+DbConnectionString.txt
+DockerDbConnectionString.txt
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
