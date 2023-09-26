@@ -49,8 +49,6 @@ const NavLink = (props: Props) => {
   return (
     <Link href={href}>
       {" "}
-      {/* Use Next.js Link */}
-      <a>
         <Box
           px={3}
           py={1}
@@ -62,7 +60,6 @@ const NavLink = (props: Props) => {
         >
           {children}
         </Box>
-      </a>
     </Link>
   );
 };
