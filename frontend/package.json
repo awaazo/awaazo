@@ -1,28 +1,35 @@
 {
-  "private": true,
-  "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "start": "next start"
-  },
-  "dependencies": {
-    "@chakra-ui/icons": "^2.1.1",
-    "@chakra-ui/next-js": "^2.1.5",
-    "@chakra-ui/react": "^2.8.1",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
-    "framer-motion": "^10.16.4",
-    "next": "^13.5.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "devDependencies": {
-    "@types/node": "^20.6.5",
-    "@types/react": "^18.2.22",
-    "typescript": "^5.2.2"
-  }
+    "private": true,
+    "scripts": {
+        "build": "next build",
+        "dev": "next dev",
+        "start": "next start"
+    },
+    "dependencies": {
+        "@chakra-ui/icons": "^2.1.1",
+        "@chakra-ui/next-js": "^2.1.5",
+        "@chakra-ui/react": "^2.8.1",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@fortawesome/free-solid-svg-icons": "^6.4.2",
+        "framer-motion": "^10.16.4",
+        "next": "^13.5.3",
+        "@types/node": "20.6.2",
+        "@types/react": "18.2.21",
+        "@types/react-dom": "18.2.7",
+        "autoprefixer": "10.4.15",
+        "eslint": "8.49.0",
+        "eslint-config-next": "13.4.19",
+        "postcss": "8.4.29",
+        "react": "18.2.0",
+        "react-dom": "18.2.0"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "devDependencies": {
+        "@types/node": "^20.6.5",
+        "@types/react": "^18.2.22",
+        "typescript": "^5.2.2"
+    }
 }

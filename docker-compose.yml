@@ -12,7 +12,7 @@ services:
 
   # DATABASE (MSSQL)
   sql:
-    image: "mcr.microsoft.com/mssql/server:latest"
+    image: "mcr.microsoft.com/azure-sql-edge"
     container_name: sql_server
     user: root
     ports:
@@ -34,4 +34,4 @@ services:
     environment:
       NODE_ENV: development
     ports:
-      - "3001:3000"
+      - "3000:3000"
