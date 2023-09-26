@@ -21,15 +21,16 @@ services:
       ACCEPT_EULA: "y"
       SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
     volumes:
-      - "/Users/usamasaleem/mount/sql:/var/opt/mssql/data"
+      - "//c/mount/sql:/var/opt/mssql/data"
+
   # FRONTEND SERVER
   frontend:
-    build:
+    build: 
       context: frontend/.
       target: runner
     container_name: frontend_server
     volumes:
-      - ./frontend:/
+      - ./frontend:/app
     command: npm run dev
     environment:
       NODE_ENV: development
