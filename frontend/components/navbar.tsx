@@ -97,7 +97,12 @@ export default function Navbar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box display={{ base: "none", md: "flex" }}>🎙️ Awaazo</Box>
+            <Box display={{ base: "none", md: "flex" }} style={{
+              color: "white",
+              fontSize: "1.2em",
+              fontWeight: "bold",
+              textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)"
+            }}>🎙️ Awaazo</Box>
             <HStack
               as={"nav"}
               spacing={4}
@@ -149,7 +154,7 @@ export default function Navbar() {
                     "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                   }
                   style={{
-                    boxShadow: "0 0 0 2px #fff",
+                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)"
                   }}
                 />
               </MenuButton>
