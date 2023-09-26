@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
             return NotFound("Invalid email " + request.Email);
         
         // Verify password
-        if (user.Password != request.Password) {
+        if (!BCrypt.Net.BCrypt.Verify( request.Password, user.Password)) {
             return Unauthorized("Invalid password");
         }
         
@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
         var newUser = new User() {
             Email = request.Email,
             Id = id,
-            Password = request.Password,
+            Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
             DateOfBirth = request.DateOfBirth
         };
         _db.Users.Add(newUser);
