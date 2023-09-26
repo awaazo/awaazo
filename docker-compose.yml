@@ -12,7 +12,7 @@ services:
 
   # DATABASE (MSSQL)
   sql:
-    image: "mcr.microsoft.com/azure-sql-edge"
+    image: "mcr.microsoft.com/mssql/server:latest"
     container_name: sql_server
     user: root
     ports:
@@ -21,11 +21,10 @@ services:
       ACCEPT_EULA: "y"
       SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
     volumes:
-      - "//c/mount/sql:/var/opt/mssql/data"
-
+      - "/Users/usamasaleem/mount/sql:/var/opt/mssql/data"
   # FRONTEND SERVER
   frontend:
-    build: 
+    build:
       context: frontend/.
       target: runner
     container_name: frontend_server

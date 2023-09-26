@@ -10,11 +10,17 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
 COPY ./package.json ./package-lock.json ./
+COPY ./src ./src
 COPY ./public ./public
+
+COPY ./next.config.js .
 COPY ./tsconfig.json .
+
+COPY next.config.js .
 COPY tsconfig.json .
 COPY package.json .
 COPY package-lock.json .
+
 
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
