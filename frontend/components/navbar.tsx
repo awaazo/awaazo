@@ -98,11 +98,14 @@ export default function Navbar() {
           />
           <HStack spacing={8} alignItems={"center"}>
             <Box display={{ base: "none", md: "flex" }} style={{
-              color: "white",
               fontSize: "1.2em",
               fontWeight: "bold",
-              textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)"
-            }}>🎙️ Awaazo</Box>
+              textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+              cursor: "pointer",
+            }}
+
+              onClick={() => window.location.href = '/'}
+            >🎙Awaazo</Box>
             <HStack
               as={"nav"}
               spacing={4}
@@ -115,6 +118,7 @@ export default function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
+             
             </HStack>
           </HStack>
           <Flex
