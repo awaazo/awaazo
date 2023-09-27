@@ -121,14 +121,7 @@ export default function Navbar() {
              
             </HStack>
           </HStack>
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            position="absolute" // Set the logo container to absolute positioning
-            top="50%" // Center vertically
-            left="50%" // Center horizontally
-            transform="translate(-50%, -50%)" // Center exactly in the middle
-          >
+          <Flex alignItems="center">
             <Box maxWidth={"10em"}>
               <Image src={logo.src} alt="logo" boxShadow={"20px"} />
             </Box>
