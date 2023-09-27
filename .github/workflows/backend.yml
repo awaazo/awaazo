@@ -1,0 +1,87 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+# Action Triggers
+on:
+  push:
+    branches: 
+      - "main"
+    paths:
+      - "backend/**"
+      - "backendTest/**"
+      - ".github/workflows/backend.yml"
+  pull_request:
+    branches: 
+      - "main"
+    paths:
+      - "backend/**"
+      - "backendTest/**"
+      - ".github/workflows/backend.yml"
+ 
+
+jobs:
+  build:
+    name: Backend Test
+    runs-on: ubuntu-latest
+
+    services:
+      mssql:
+        image: "mcr.microsoft.com/mssql/server:latest"
+        ports:
+          - "1433:1433"
+        env:
+          ACCEPT_EULA: "y"
+          SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
+
+    # Setup the .NET environment
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    # Install the Test Report Tool
+    - name: Install Report Generator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    # Restore Dependencies for Test Project
+    - name: Restore dependencies
+      working-directory: backendTest
+      run: dotnet restore backendTest.csproj
+    
+    # Build the Test Project
+    - name: Build
+      working-directory: backendTest
+      run: dotnet build --no-restore
+
+    # Transfer the Database Connection String to be used
+    - name: Generate Connection String
+      working-directory: backendTest
+      env:
+        CONNECTION_STRING: ${{ secrets.TEST_DATABASE_CONNECTION_STRING }}
+      run: |
+        touch DbConnectionString.txt
+        echo $CONNECTION_STRING > DbConnectionString.txt
+ 
+    # Run the Tests
+    - name: Test
+      working-directory: backendTest
+      run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
+    
+    # Generate the Test Report
+    - name: Generate Report
+      working-directory: backendTest
+      run: |
+        cd TestResults
+        cd [a-zA-Z0-9]*
+        reportgenerator -reports:"coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+    
+    # Upload the Test Results Report
+    - name: Uploading Arficact
+      uses: actions/upload-artifact@v2
+      with:
+        name: testrun-result
+        path: backendTest/TestResults
