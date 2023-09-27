@@ -1,6 +1,6 @@
 
 
-# Awaazo 🎙️
+# Awaazo 🎙️ [![.NET](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml/badge.svg?branch=main)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml)
 
 Awaazo, derived from the Urdu word for "sound" (آواز) and reminiscent of the French word for bird ("oiseau"), is a harmonious blend that evokes the essence of waves and pleasing phonetics. Dive into a world of podcasts, where you can not only stream but also create using the power of AI.
 
@@ -54,7 +54,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 - Additional APIs will be integrated as required.
 
 ### Database:
-- **MySQL**: Chosen for its reliability, performance, and widespread adoption.
+- **MSSQL**: Chosen for its reliability, performance, and widespread adoption.
 
 ### Hosting and Deployment:
 - Platforms under consideration include **Vercel**, **Netlify**, and **AWS**. However, given our choice of Next.js, Vercel would provide a seamless deployment experience.
