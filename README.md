@@ -54,7 +54,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 - Additional APIs will be integrated as required.
 
 ### Database:
-- **MySQL**: Chosen for its reliability, performance, and widespread adoption.
+- **MSSQL**: Chosen for its reliability, performance, and widespread adoption.
 
 ### Hosting and Deployment:
 - Platforms under consideration include **Vercel**, **Netlify**, and **AWS**. However, given our choice of Next.js, Vercel would provide a seamless deployment experience.
