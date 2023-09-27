@@ -1,6 +1,6 @@
 
 
-# Awaazo 🎙️
+# Awaazo 🎙️ [![.NET](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml/badge.svg?branch=main)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml)
 
 Awaazo, derived from the Urdu word for "sound" (آواز) and reminiscent of the French word for bird ("oiseau"), is a harmonious blend that evokes the essence of waves and pleasing phonetics. Dive into a world of podcasts, where you can not only stream but also create using the power of AI.
 
