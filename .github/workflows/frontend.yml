@@ -40,9 +40,11 @@ jobs:
         node-version: 18.x
   
     - name: Install dependencies
+      working-directory: frontend
       run: npm install
   
     - name: Run tests
+      working-directory: frontend
       run: npm run test
   
     - name: Stop containers
