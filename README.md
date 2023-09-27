@@ -10,6 +10,7 @@ Awaazo, derived from the Urdu word for "sound" (آواز) and reminiscent of the
 
 Awaazo is a pioneering podcasting platform that offers a unique blend of traditional podcast streaming with the advanced capabilities of AI-driven content creation. Whether you're here to find new content or create your own masterpiece, Awaazo has got you covered.
 
+---
 ## Description
 
 At its core, Awaazo aims to provide an immersive podcasting experience. Users can explore an extensive library of podcasts, discover AI-generated content, and even craft their own episodes with the assistance of advanced AI tools.
@@ -19,7 +20,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 - **Name Essence**: A fusion of linguistic beauty, "Awaazo" embodies the essence of sound, birds, and waves.
 - **AI-Powered Content Creation**: Beyond conventional podcast streaming, Awaazo empowers users to generate content using AI, turning mere ideas into full-blown podcast episodes.
 - **Personalized Exploration**: With tailored suggestions based on interests, users are always one click away from their next favorite episode.
-
+---
 ## Core Features
 
 ### Podcast Exploration
@@ -36,14 +37,35 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 - **Your Uploads**: View and manage the podcasts you've uploaded.
 - **Engage with Your Audience**: Get feedback, see comments, and gauge the popularity of your content.
 
+
+---
+
 ## Tech Stack
 
-- React (TBD)
-- C# (TBD)
-- OpenAI APIs (TBD)
-- Eleven Labs APIs (TBD)
-- Pinecone (TBD)
-- Langchain (TBD)
+### Frontend:
+- **Next.js**: Leveraging its server-side rendering (SSR), SEO optimization, and file-system routing capabilities. Additionally, we'll be utilizing TypeScript for type safety and enhanced developer experience.
+
+### Backend:
+- **C# with ASP.NET Core**: Our primary backend framework.
+
+### APIs:
+- **OpenAI APIs**
+- **Eleven Labs APIs**
+- Additional APIs will be integrated as required.
+
+### Database:
+- **MySQL**: Chosen for its reliability, performance, and widespread adoption.
+
+### Hosting and Deployment:
+- Platforms under consideration include **Vercel**, **Netlify**, and **AWS**. However, given our choice of Next.js, Vercel would provide a seamless deployment experience.
+
+### Authentication:
+- **JWT (JSON Web Tokens)**: For secure, stateless authentication across services.
+
+### Additional Tools:
+- **Docker**: Ensuring consistent environments and streamlined deployments.
+
+---
 
 ## Members
 
@@ -57,7 +79,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 | `Jonathan Pauze`         | `40177730`         | ([GitHub.com/BigSaladMan](https://github.com/BigSaladMan))   | 
 | `Ahed Memas`         | `40112710`         | ([GitHub.com/Ahed752](https://github.com/Ahed752))   | 
 | `Shadi Jiha`         | `40131284`         | ([GitHub.com/shadijiha](https://github.com/shadijiha))   | 
-| `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | 
+| `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | soniarahal20@gmail.com
 | `Mathieu Trudeau`         | `40177075`         | ([GitHub.com/mathieutrudeau](https://github.com/mathieutrudeau))   | mathieutrudeau11@gmail.com
 | `Muhammad Mubashir`         | `40152977`         | ([GitHub.com/mubashir494](https://github.com/mubashir494))   |  mubashirqbl@gmail.com
 | `Radwan Baba`         | `40167316`         | ([Github.com/Radwanbaba13](https://github.com/Radwanbaba13))   |  
