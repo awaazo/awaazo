@@ -14,6 +14,7 @@ DBCredentials.txt
 **/.vscode/**
 DbConnectionString.txt
 DockerDbConnectionString.txt
+.DS_Store
 
 
 # User-specific files (MonoDevelop/Xamarin Studio)
