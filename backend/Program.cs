@@ -13,8 +13,8 @@ public class Program
         
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;
-
         builder.Services.AddControllers();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
@@ -56,10 +56,20 @@ public class Program
             };
         });
         builder.Services.AddAuthorization();
+        
+        // Check if we are running in a docker container.
+        bool inDockerEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
         builder.Services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            // Set the connection string to the docker container if we are running in a docker container.
+            if (inDockerEnv)
+                options.UseSqlServer(config.GetConnectionString("DockerConnection"));
+            else 
+                options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         });
+
+
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.AllowAnyOrigin()

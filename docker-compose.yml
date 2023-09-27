@@ -35,15 +35,11 @@ services:
   frontend:
     build: 
       context: frontend/.
-      target: runner
     container_name: frontend_server
-    volumes:
-      - ./frontend:/app
-    command: npm run dev
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
     ports:
-      - "3000:3000"
+      - "3500:3500"
     links:
       - backend:backend_server
     depends_on:

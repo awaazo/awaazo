@@ -1,0 +1,52 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Next.js Frontend CI
+
+# Action Triggers
+on:
+  push:
+    branches: 
+      - "main"
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+  pull_request:
+    branches: 
+      - "main"
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+ 
+
+jobs:
+  build:
+    name: Frontend Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+  
+    - name: Start Database Container
+      run: docker-compose -f "docker-compose.yml" up -d --build sql
+  
+    - name: Start Backend Container
+      run: docker-compose -f "docker-compose.yml" up -d --build backend
+
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+  
+    - name: Install dependencies
+      working-directory: frontend
+      run: npm install
+  
+    - name: Run tests
+      working-directory: frontend
+      run: npm run test
+  
+    - name: Stop containers
+      run: docker-compose -f "docker-compose.yml" down
+    
