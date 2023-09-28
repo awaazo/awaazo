@@ -1,6 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from 'axios'
-const URL = process.env.BASE_URL ?? 'https://localhost:7126/swagger/index.html'
+// api.ts
+const URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://localhost:7126';
+
 
 export const register = async (RegisterUser: any) => {
    return axios.post(`${URL}/auth/register`, RegisterUser)

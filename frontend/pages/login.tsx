@@ -10,34 +10,25 @@ import {
   Text,
 } from '@chakra-ui/react';
 import logo from "../styles/images/logo.png";
-   import Image from 'next/image';
+import { login } from './api/api';
+import Image from 'next/image';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        console.log(data); // Handle the response accordingly
-        // For example, redirect to the home page or dashboard
-        window.location.href = '/dashboard';
+      const response = await login({ email, password });
+      if (response.status === 200) {
+        console.log(response.data);
+        window.location.href = '/dashboard';  // Redirect to dashboard
       } else {
-        console.error('Failed to login');
-        alert(data.message || 'Failed to login'); // Display error message to the user
+        alert(response.data.message || 'Failed to log in');
       }
     } catch (error) {
       console.error('An error occurred', error);
-      alert('An error occurred while trying to log in.'); // Inform the user about the error
+      alert('An error occurred while trying to log in.');
     }
   };
   
