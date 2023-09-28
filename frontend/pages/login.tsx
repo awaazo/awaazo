@@ -15,9 +15,33 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Implement your login logic here
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log(data); // Handle the response accordingly
+        // For example, redirect to the home page or dashboard
+        window.location.href = '/dashboard';
+      } else {
+        console.error('Failed to login');
+        alert(data.message || 'Failed to login'); // Display error message to the user
+      }
+    } catch (error) {
+      console.error('An error occurred', error);
+      alert('An error occurred while trying to log in.'); // Inform the user about the error
+    }
   };
+  
+  
 
   return (
     <>
