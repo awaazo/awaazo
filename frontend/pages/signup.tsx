@@ -34,6 +34,9 @@ const SignUp: React.FC = () => {
         alert(response.data.message || 'Failed to sign up');
       }
     } catch (error) {
+      if (error.response) {
+        console.error('Server Response:', error.response.data);
+      }
       console.error('An error occurred:', error);
       alert('An error occurred while trying to sign up.');
     }
