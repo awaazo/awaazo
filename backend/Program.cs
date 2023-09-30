@@ -68,15 +68,6 @@ public class Program
             else 
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         });
-
-
-        builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
-        {
-            builder.AllowAnyOrigin()
-                .AllowCredentials()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        }));
         
         var app = builder.Build();
 
@@ -93,6 +84,9 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        // Allows all origins to access the API.
+        app.UseCors(builder=>builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         using (var scope = app.Services.CreateScope())
         {
