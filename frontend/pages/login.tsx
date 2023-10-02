@@ -1,5 +1,5 @@
 // src/Login.tsx
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import {
   Box,
   Button,
@@ -10,17 +10,35 @@ import {
   Text,
 } from '@chakra-ui/react';
 import logo from "../styles/images/logo.png";
-   import Image from 'next/image';
+import { login } from './api/api';
+import Image from 'next/image';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState<string | null>(null); // To store login error
 
-  const handleLogin = () => {
-    // Implement your login logic here
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();  // Prevent default form submission
+    try {
+      const response = await login({ email, password });
+      if (response.status === 200) {
+        console.log(response.data);
+        window.location.href = '/';  // Redirect to index.tsx
+      } else {
+        setLoginError(response.data.message || 'Failed to log in'); // Display login error
+      }      
+    } catch (error) {
+      console.error('An error occurred', error);
+      setLoginError('An error occurred while trying to log in.'); // Display login error
+    }
   };
+  
+  
 
   return (
     <>
+    <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="80vh">
     <Box
       p={6}
       display="flex" // Use flexbox to center vertically
@@ -60,7 +78,7 @@ const Login: React.FC = () => {
         textAlign: 'center',
         marginBottom: '1rem',
       }}>or</Text>
-      
+       {loginError && <Text color="red.500">{loginError}</Text>}
       <form onSubmit={handleLogin}>
         <Stack spacing={4}>
           <FormControl>
@@ -101,6 +119,7 @@ const Login: React.FC = () => {
       </Text>
         </Stack>
       </form>
+    </Box>
     </Box>
     </>
   );

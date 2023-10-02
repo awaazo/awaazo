@@ -68,7 +68,16 @@ public class Program
             else 
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         });
-        
+
+
+        builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
+        {
+            builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }));
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -79,7 +88,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
+        app.UseCors("Dev-policy");
         app.UseAuthentication();
         app.UseAuthorization();
 
