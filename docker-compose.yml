@@ -2,6 +2,20 @@ version: '3.8'
 
 services:
 
+  # DATABASE (MSSQL)
+  sql:
+    image: "mcr.microsoft.com/mssql/server:latest"
+    container_name: sql_server
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "y"
+      SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
+    volumes:
+      - "//c/mount/sql:/var/opt/mssql/data"
+    restart: on-failure:5
+
   # BACKEND ASP.NET Server
   backend:
     build:
@@ -17,19 +31,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     depends_on:
       - sql 
-
-  # DATABASE (MSSQL)
-  sql:
-    image: "mcr.microsoft.com/mssql/server:latest"
-    container_name: sql_server
-    user: root
-    ports:
-      - "1433:1433"
-    environment:
-      ACCEPT_EULA: "y"
-      SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
-    volumes:
-      - "//c/mount/sql:/var/opt/mssql/data"
+    restart: on-failure:5
 
   # FRONTEND SERVER
   frontend:
@@ -44,6 +46,7 @@ services:
       - backend:backend_server
     depends_on:
       - backend
+    restart: on-failure:5
 
   # BACKEND ASP.NET TESTS
   backend-test:

@@ -77,7 +77,7 @@ public class Program
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         }));
-  
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -93,6 +93,9 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        // Allows all origins to access the API.
+        app.UseCors(builder=>builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         using (var scope = app.Services.CreateScope())
         {
