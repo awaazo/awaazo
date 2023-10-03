@@ -1,44 +1,66 @@
 
 
+
+
 # Awaazo 🎙️ [![.NET](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml/badge.svg?branch=main)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml) [![Next.js Frontend CI](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/frontend.yml/badge.svg)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/frontend.yml)
 
-Awaazo, derived from the Urdu word for "sound" (آواز) and reminiscent of the French word for bird ("oiseau"), is a harmonious blend that evokes the essence of waves and pleasing phonetics. Dive into a world of podcasts, where you can not only stream but also create using the power of AI.
 
 
+A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
+
+<p align="center">
+  <img src="frontend/public/logo_white.svg" alt="Awaazo Logo" width="50px" />
+</p>
 
 ## Overview
 
-Awaazo is a pioneering podcasting platform that offers a unique blend of traditional podcast streaming with the advanced capabilities of AI-driven content creation. Whether you're here to find new content or create your own masterpiece, Awaazo has got you covered.
+Redefining podcasting. Combining traditional streaming with AI-powered content creation, Awaazo is your one-stop destination. Discover fresh content, craft your own episodes, and benefit from live transcripts. Plus, engage with an AI assistant that's versed in the content of every episode, further enhancing your listening journey. Dive into an elevated podcasting realm.
 
----
+<br>
+
 ## Description
 
-At its core, Awaazo aims to provide an immersive podcasting experience. Users can explore an extensive library of podcasts, discover AI-generated content, and even craft their own episodes with the assistance of advanced AI tools.
+Discover, create, and engage. Awaazo offers an extensive library of diverse podcasts, tools for AI-enhanced content creation, and a community platform to share, comment, and connect with creators.
 
-### What Makes Us Unique
 
-- **Name Essence**: A fusion of linguistic beauty, "Awaazo" embodies the essence of sound, birds, and waves.
-- **AI-Powered Content Creation**: Beyond conventional podcast streaming, Awaazo empowers users to generate content using AI, turning mere ideas into full-blown podcast episodes.
-- **Personalized Exploration**: With tailored suggestions based on interests, users are always one click away from their next favorite episode.
----
+### What Sets Awaazo Apart
+
+- **AI-Enhanced Podcast Creation**: Don't just listen—create. With our cutting-edge AI, turn scripts into captivating podcast episodes, complete with voice cloning for an authentic feel.
+  
+- **Interactive AI Assistant**: Dive deeper into episodes with an AI assistant that knows every episode inside out, ready to guide, inform, and enhance your experience.
+  
+- **Tailored Discoveries**: Our algorithms fine-tune recommendations based on your tastes, ensuring you're always connected with content you'll cherish.
+
+- **A Community Platform**: Engage, comment, and connect. Awaazo isn't just a platform; it's a community of podcast enthusiasts ready to share and discuss.
+
+- **Rich Content Annotations**: As a creator, add layers to your episodes with timestamps, external links, and insights, offering listeners a comprehensive experience.
+
+<br>
+
+
 ## Core Features
 
-### Podcast Exploration
-- **Explore Feed**: Discover new podcasts every day tailored to your interests.
-- **Followed Feed**: Stay updated with the latest episodes from your favorite podcasters.
+###### **For Listeners**:
+- **Explore Feed**: Receive personalized daily podcast recommendations tailored to your interests.
+- **Followed Feed**: Keep up with the latest releases from your subscribed creators.
+- **AI Assistant**: An intelligent companion familiar with every episode's content, ready to enhance your listening experience.
+- **Live Transcripts**: Access real-time transcriptions of episodes for a synchronized reading experience.
+- **Personalized Bookmarks**: Highlight and annotate specific moments, allowing you to easily revisit and reflect.
 
-### AI-Powered Creation
-- **Script Creation & Editing**: Whether you've got a script or need one crafted, our AI is here to assist. Modify, adapt, or generate from scratch.
-- **Voice Selection**: Choose your favorite podcaster's voice, and let the AI do the rest.
-- **Text-to-Conversation**: Transform scripts into engaging conversations between selected personas.
-- **Text-to-Audio Conversion**: Convert your script into a high-quality audio podcast episode.
+###### **For Creators**:
+- **Script-to-Podcast**:
+  - **Text-to-Voice**: Transform scripts into captivating audio with advanced text-to-speech AI.
+  - **Voice Cloning**: Opt from a range of voices or replicate specific tones for authenticity.
+  - **Character Voices**: Assign varied voices to characters, creating a dynamic listening experience.
+  
+- **Content Annotations**: Provide listeners with added context, external links, and insights at specific timestamps, enriching their experience.
 
-### Personal Space
-- **Your Uploads**: View and manage the podcasts you've uploaded.
-- **Engage with Your Audience**: Get feedback, see comments, and gauge the popularity of your content.
+###### **Community Engagement**:
+- **Interactive Comments**: Engage in meaningful discussions with fellow listeners and creators.
+- **Community Feeds**: Explore shared bookmarks, trending discussions, and collective insights from the Awaazo community.
 
 
----
+<br>
 
 ## Tech Stack
 
@@ -47,7 +69,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 
 ### Backend:
 - **C# with ASP.NET Core**: Our primary backend framework.
-
+- **Python with LangChain**: Used specifically for AI-related tasks. LangChain is a framework designed to simplify the creation of applications using large language models.
 ### APIs:
 - **OpenAI APIs**
 - **Eleven Labs APIs**
@@ -55,6 +77,7 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 
 ### Database:
 - **MSSQL**: Chosen for its reliability, performance, and widespread adoption.
+- **Pinecone**: A vector database that equips AI with long-term memory, offering optimized storage and querying capabilities specifically for embeddings.
 
 ### Hosting and Deployment:
 - Platforms under consideration include **Vercel**, **Netlify**, and **AWS**. However, given our choice of Next.js, Vercel would provide a seamless deployment experience.
@@ -64,6 +87,20 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 
 ### Additional Tools:
 - **Docker**: Ensuring consistent environments and streamlined deployments.
+
+
+
+## Naming Conventions:
+
+| **Area**                | **Type**                  | **Syntax/Pattern**                          | **Examples**                             |
+|-------------------------|---------------------------|--------------------------------------------|------------------------------------------|
+| **Frontend & Backend**  | **Variables**             | Use `camelCase`                            | `userName`, `userEmail`, `taskName`      |
+| **Frontend**            | **Pages, Components, Modules** | Use `PascalCase`                       | `HeaderComponent.tsx`, `FooterComponent.tsx` |
+| **Backend**             | **Controllers, Models, Migrations, Services, Properties** | Use `PascalCase` followed by the file type. | `AuthController.cs`, `UserModel.cs`, `InitialMigration.cs` |
+| **Git and Version Control** | **Pull Requests**      | `[Solves #issue_number] Pull-Request Topic` | `[Solves #40] Add README.md`             |
+|                         | **Feature Branches**     | `feature/feature_name`                     | `feature/job_listing`                    |
+|                         | **Issue-Specific Branches** | `issue-#issue_number/issue_topic`      | `issue-#40/add_readme`                   |
+
 
 ---
 
@@ -76,10 +113,10 @@ At its core, Awaazo aims to provide an immersive podcasting experience. Users ca
 | `Jonathan Haddad`         | `40111053`         | ([GitHub/jonathan-githubofficial](https://github.com/jonathan-githubofficial))   | jonathan200023@gmail.com
 | `Usama Saleem`         | `40110036`         | ([GitHub/usamasaleem1](https://github.com/usamasaleem1))   | usama.saleem [at] hotmail.com
 | `Steven Franchetto`         | `40112243`         | ([GitHub.com/sfranchetto](https://github.com/sfranchetto))   | steven.franchetto@gmail.com
-| `Jonathan Pauze`         | `40177730`         | ([GitHub.com/BigSaladMan](https://github.com/BigSaladMan))   | 
+| `Jonathan Pauze`         | `40177730`         | ([GitHub.com/BigSaladMan](https://github.com/BigSaladMan))   | jonathanpauze25@gmail.com
 | `Ahed Memas`         | `40112710`         | ([GitHub.com/Ahed752](https://github.com/Ahed752))   | ahed.mimas@gmail.com 
-| `Shadi Jiha`         | `40131284`         | ([GitHub.com/shadijiha](https://github.com/shadijiha))   | 
+| `Shadi Jiha`         | `40131284`         | ([GitHub.com/shadijiha](https://github.com/shadijiha))   | shadijiha@gmail.com
 | `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | soniarahal20@gmail.com
 | `Mathieu Trudeau`         | `40177075`         | ([GitHub.com/mathieutrudeau](https://github.com/mathieutrudeau))   | mathieutrudeau11@gmail.com
 | `Muhammad Mubashir`         | `40152977`         | ([GitHub.com/mubashir494](https://github.com/mubashir494))   |  mubashirqbl@gmail.com
-| `Radwan Baba`         | `40167316`         | ([Github.com/Radwanbaba13](https://github.com/Radwanbaba13))   |  
+| `Radwan Baba`         | `40167316`         | ([Github.com/Radwanbaba13](https://github.com/Radwanbaba13))   |  radwangbaba@gmail.com
