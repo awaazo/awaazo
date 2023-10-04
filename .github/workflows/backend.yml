@@ -49,17 +49,17 @@ jobs:
 
     # Restore Dependencies for Test Project
     - name: Restore dependencies
-      working-directory: serverTest
+      working-directory: backend/serverTest
       run: dotnet restore backendTest.csproj
     
     # Build the Test Project
     - name: Build
-      working-directory: serverTest
+      working-directory: backend/serverTest
       run: dotnet build --no-restore
 
     # Transfer the Database Connection String to be used
     - name: Generate Connection String
-      working-directory: serverTest
+      working-directory: backend/serverTest
       env:
         CONNECTION_STRING: ${{ secrets.TEST_DATABASE_CONNECTION_STRING }}
       run: |
@@ -68,12 +68,12 @@ jobs:
  
     # Run the Tests
     - name: Test
-      working-directory: serverTest
+      working-directory: backend/serverTest
       run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
     
     # Generate the Test Report
     - name: Generate Report
-      working-directory: serverTest
+      working-directory: backend/serverTest
       run: |
         cd TestResults
         cd [a-zA-Z0-9]*
@@ -84,4 +84,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: testrun-result
-        path: serverTest/TestResults
+        path: backend/serverTest/TestResults
