@@ -9,15 +9,15 @@ on:
     branches: 
       - "main"
     paths:
-      - "backend/**"
-      - "backendTest/**"
+      - "backend/Server/**"
+      - "backend/serverTest/**"
       - ".github/workflows/backend.yml"
   pull_request:
     branches: 
       - "main"
     paths:
-      - "backend/**"
-      - "backendTest/**"
+      - "backend/Server/**"
+      - "backend/serverTest/**"
       - ".github/workflows/backend.yml"
  
 
@@ -49,17 +49,17 @@ jobs:
 
     # Restore Dependencies for Test Project
     - name: Restore dependencies
-      working-directory: backendTest
+      working-directory: serverTest
       run: dotnet restore backendTest.csproj
     
     # Build the Test Project
     - name: Build
-      working-directory: backendTest
+      working-directory: serverTest
       run: dotnet build --no-restore
 
     # Transfer the Database Connection String to be used
     - name: Generate Connection String
-      working-directory: backendTest
+      working-directory: serverTest
       env:
         CONNECTION_STRING: ${{ secrets.TEST_DATABASE_CONNECTION_STRING }}
       run: |
@@ -68,12 +68,12 @@ jobs:
  
     # Run the Tests
     - name: Test
-      working-directory: backendTest
+      working-directory: serverTest
       run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
     
     # Generate the Test Report
     - name: Generate Report
-      working-directory: backendTest
+      working-directory: serverTest
       run: |
         cd TestResults
         cd [a-zA-Z0-9]*
@@ -84,4 +84,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: testrun-result
-        path: backendTest/TestResults
+        path: serverTest/TestResults
