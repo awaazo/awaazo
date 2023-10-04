@@ -9,15 +9,13 @@ on:
     branches: 
       - "main"
     paths:
-      - "backend/**"
-      - "backendTest/**"
+      - "Backend/**"
       - ".github/workflows/backend.yml"
   pull_request:
     branches: 
       - "main"
     paths:
-      - "backend/**"
-      - "backendTest/**"
+      - "Backend/**"
       - ".github/workflows/backend.yml"
  
 
@@ -26,18 +24,18 @@ jobs:
     name: Backend Test
     runs-on: ubuntu-latest
 
-    services:
-      mssql:
-        image: "mcr.microsoft.com/mssql/server:latest"
-        ports:
-          - "1433:1433"
-        env:
-          ACCEPT_EULA: "y"
-          SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
-
     # Setup the .NET environment
     steps:
-    - uses: actions/checkout@v3
+
+    # Checkout Changes
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Start/Run the Database
+    - name: Start Database Container
+      uses: docker-compose -f "docker-compose.yml" up -d --build sql
+
+    # Install .NET 6
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -49,31 +47,22 @@ jobs:
 
     # Restore Dependencies for Test Project
     - name: Restore dependencies
-      working-directory: backendTest
-      run: dotnet restore backendTest.csproj
+      working-directory: Backend/Backend.Tests
+      run: dotnet restore Backend/Backend.Tests
     
     # Build the Test Project
     - name: Build
-      working-directory: backendTest
+      working-directory: Backend/Backend.Tests
       run: dotnet build --no-restore
 
-    # Transfer the Database Connection String to be used
-    - name: Generate Connection String
-      working-directory: backendTest
-      env:
-        CONNECTION_STRING: ${{ secrets.TEST_DATABASE_CONNECTION_STRING }}
-      run: |
-        touch DbConnectionString.txt
-        echo $CONNECTION_STRING > DbConnectionString.txt
- 
     # Run the Tests
     - name: Test
-      working-directory: backendTest
+      working-directory: Backend/Backend.Tests
       run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
     
     # Generate the Test Report
     - name: Generate Report
-      working-directory: backendTest
+      working-directory: Backend/Backend.Tests
       run: |
         cd TestResults
         cd [a-zA-Z0-9]*
@@ -84,4 +73,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: testrun-result
-        path: backendTest/TestResults
+        path: Backend/Backend.Tests/TestResults

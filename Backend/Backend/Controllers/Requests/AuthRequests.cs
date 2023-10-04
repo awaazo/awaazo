@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers.Requests
+namespace Backend.Controllers.Requests
 {
     [BindProperties]
     public class LoginRequest
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 
     [BindProperties]

@@ -1,14 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Backend.Models;
 
-namespace backend.Models;
+namespace Backend.Infrastructure;
 
+/// <summary>
+/// Handles the Database Context.
+/// </summary>
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
+    
+    public AppDbContext(string connectionString) : base(new DbContextOptionsBuilder<AppDbContext>()
+        .UseSqlServer(connectionString)
+        .Options)
+    {
+    }
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<User>? Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
