@@ -79,8 +79,8 @@ const myProfile = () => {
           >
             The Really Good Podcast
             <br /> 
-            <Text fontSize="1.5rem" color="gray.500">
-              @username
+            <Text fontSize="1.5rem" >
+              <span style={{color: useColorModeValue('pink', 'pink')}}>@username</span>
             </Text>
           </Heading>
           <Text textAlign="center">Passionate about Tech. Lover of web and opensource.</Text>
@@ -101,15 +101,17 @@ const myProfile = () => {
                 />
               ))}
             </Box>
-            <Button>
+            <Button rounded={'full'}>
                 {/* <Icon as={Follow} w={6} h={6} /> */}
-                <Text>Follow</Text>
+                <Text>Follow</Text>   
+                {/*// this will be hidden if the current user is the one viewing his own profile*/}
             </Button>
-            <Button style={{
+            <Button rounded={'full'} style={{
                 marginLeft: "1em",
             }}>
                 {/* <Icon as={Follow} w={6} h={6} /> */}
-                <Text>Edit Profile</Text>
+                <Text>Edit Profile</Text>   
+                {/* this will also be hidden for viewing other users' profiles*/}
             </Button>
           </Flex>
         </VStack>
