@@ -21,7 +21,7 @@ import {
 // Here we have used react-icons package for the icons
 import { FaGithub, FaDev, FaLinkedin, FaQuora, FaTwitter, FaPlay } from 'react-icons/fa';
 import { GoChevronRight } from 'react-icons/go';
-import Navbar from "../components/navbar"; // Import the Navbar component
+import Navbar from "../../components/navbar"; // Import the Navbar component
 
 
 
