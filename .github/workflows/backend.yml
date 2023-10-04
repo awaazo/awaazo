@@ -52,13 +52,13 @@ jobs:
     
     # Build the Test Project
     - name: Build
-      working-directory: Backend
-      run: dotnet build --no-restore
+      working-directory: Backend/Backend.Tests
+      run: dotnet build --no-restore Backend.Tests.csproj
 
     # Run the Tests
     - name: Test
-      working-directory: Backend
-      run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
+      working-directory: Backend/Backend.Tests
+      run: dotnet test Backend.Tests.csproj --no-build --collect:"XPlat Code Coverage" --verbosity normal
     
     # Generate the Test Report
     - name: Generate Report
