@@ -47,17 +47,17 @@ jobs:
 
     # Restore Dependencies for Test Project
     - name: Restore dependencies
-      working-directory: Backend/Backend.Tests
-      run: dotnet restore Backend/Backend.Tests
+      working-directory: Backend
+      run: dotnet restore
     
     # Build the Test Project
     - name: Build
-      working-directory: Backend/Backend.Tests
+      working-directory: Backend
       run: dotnet build --no-restore
 
     # Run the Tests
     - name: Test
-      working-directory: Backend/Backend.Tests
+      working-directory: Backend
       run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
     
     # Generate the Test Report
