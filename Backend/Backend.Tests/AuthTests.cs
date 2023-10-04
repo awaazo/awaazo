@@ -6,14 +6,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace Backend.Tests;
 
-
+/// <summary>
+/// Tests the AuthService class.
+/// </summary>
 [Collection("Sequential")]
 public class AuthTests : IAsyncLifetime
 {
     private readonly AuthService _authService;
     private readonly User _user;
+    private readonly string _userPassword;
     private readonly AppDbContext _dbContext;
 
+    /// <summary>
+    /// Initializes a new instance of the AuthTests class.
+    /// </summary>
     public AuthTests()
     {
         // Connection Type depends on whether we are running in a container or not
@@ -30,61 +36,80 @@ public class AuthTests : IAsyncLifetime
         // Auth Service used for testing
         _authService = new AuthService(_dbContext);
 
+        // Password used for Testing
+        _userPassword = "XXXXXXXXXXX123";
+
         // User used for Testing
         _user = new()
         {
             Id = Guid.NewGuid(),
-            Password = "XXXXXXXX123",
+            Password = BCrypt.Net.BCrypt.HashPassword(_userPassword),
             Email = "XXXXXXXX123@email.com",
             DateOfBirth = DateTime.Now
         };
     }
 
+    public async Task InitializeAsync()
+    {
+        await RemoveUserAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await RemoveUserAsync();
+    }
+
+
     // TEST Service
 
+    /// <summary>
+    /// Tests the RegisterAsync method. Given a RegisterRequest object, it should create a new user in the database.
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async void RegisterAsync_NewUser_Test()
     {
-        await Task.Delay(TimeSpan.FromSeconds(5));
         // ARRANGE
-        string email = _user.Email!;
-        string password = _user.Password!;
-        DateTime dateOfBirth = _user.DateOfBirth!;
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+        await RemoveUserAsync();
         RegisterRequest registerRequest = new()
         {
-            Email = email,
-            Password = password,
-            DateOfBirth = dateOfBirth
+            Email = _user.Email,
+            Password = _userPassword,
+            DateOfBirth = _user.DateOfBirth
         };
 
         // ACT
         User? createdUser = _authService.RegisterAsync(registerRequest).Result;
+        bool passwordMatch = BCrypt.Net.BCrypt.Verify(_userPassword, createdUser!.Password);
 
         // ASSERT
         Assert.NotNull(createdUser);
         Assert.IsType<User>(createdUser);
-        Assert.Equal(email, createdUser!.Email);
-        Assert.Equal(passwordHash, createdUser.Password);
-        Assert.Equal(dateOfBirth, createdUser.DateOfBirth);
+        Assert.Equal(_user.Email, createdUser!.Email);
+        Assert.True(passwordMatch);
+        Assert.Equal(_user.DateOfBirth, createdUser.DateOfBirth);
         Assert.IsType<Guid>(createdUser.Id);
         Assert.IsType<DateTime>(createdUser.CreatedAt);
         Assert.IsType<DateTime>(createdUser.UpdatedAt);
+
+        // CLEANUP
+        await RemoveUserAsync();
     }
 
+    /// <summary>
+    /// Tests the RegisterAsync method. Given that the user already exists, the registration should fail.
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async void RegisterAsync_ExistingUser_Test()
     {
-        await Task.Delay(TimeSpan.FromSeconds(5));
         // ARRANGE
-        string email = _user.Email!;
-        string password = _user.Password!;
-        DateTime dateOfBirth = _user.DateOfBirth!;
+        await CreateUserAsync();
         RegisterRequest registerRequest = new()
         {
-            Email = email,
-            Password = password,
-            DateOfBirth = dateOfBirth
+            Email = _user.Email,
+            Password = _userPassword,
+            DateOfBirth = _user.DateOfBirth
         };
 
         // ACT
@@ -92,30 +117,111 @@ public class AuthTests : IAsyncLifetime
 
         // ASSERT
         Assert.Null(createdUser);
+
+        // CLEANUP
+        await RemoveUserAsync();
     }
 
+    /// <summary>
+    /// Tests the LoginAsync method. Given a LoginRequest object, it should return a User object with the correct information.
+    /// </summary>
+    /// <returns></returns>
     [Fact]
-    public void Test3()
+    public async void LoginAsync_ValidCredentials_Test()
     {
         // ARRANGE
+        await CreateUserAsync();
+        LoginRequest loginRequest = new()
+        {
+            Email = _user.Email,
+            Password = _userPassword
+        };
 
         // ACT
+        User? loggedInUser = await _authService.LoginAsync(loginRequest);
+        bool passwordMatch = BCrypt.Net.BCrypt.Verify(_userPassword, loggedInUser!.Password);
 
         // ASSERT
-        Assert.True(true);
+        Assert.NotNull(loggedInUser);
+        Assert.IsType<User>(loggedInUser);
+        Assert.Equal(_user.Email, loggedInUser!.Email);
+        Assert.True(passwordMatch);
+        Assert.Equal(_user.DateOfBirth, loggedInUser.DateOfBirth);
+        Assert.IsType<Guid>(loggedInUser.Id);
+        Assert.IsType<DateTime>(loggedInUser.CreatedAt);
+        Assert.IsType<DateTime>(loggedInUser.UpdatedAt);
+
+        // CLEANUP
+        await RemoveUserAsync();
     }
 
-    public async Task InitializeAsync()
+    /// <summary>
+    /// Tests the LoginAsync method. Given a LoginRequest object, it should return null if the email or password is invalid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void LoginAsync_InvalidEmail_Test()
     {
-        User? user = await _dbContext.Users!.FirstOrDefaultAsync(u => u.Email == _user.Email);
-        if(user is not null)
+        // ARRANGE
+        await CreateUserAsync();
+        LoginRequest loginRequest = new()
         {
-            _dbContext.Users!.Remove(user);
-            await _dbContext.SaveChangesAsync();
-        }
+            Email = _user.Email+"123",
+            Password = _userPassword
+        };
+
+        // ACT
+        User? loggedInUser = await _authService.LoginAsync(loginRequest);
+
+        // ASSERT
+        Assert.Null(loggedInUser);
+
+        // CLEANUP
+        await RemoveUserAsync();
+    } 
+
+    /// <summary>
+    /// Tests the LoginAsync method. Given a LoginRequest object, it should return null if the email or password is invalid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void LoginAsync_InvalidPassword_Test()
+    {
+        // ARRANGE
+        await CreateUserAsync();
+        LoginRequest loginRequest = new()
+        {
+            Email = _user.Email,
+            Password = _userPassword+"123"
+        };
+
+        // ACT
+        User? loggedInUser = await _authService.LoginAsync(loginRequest);
+
+        // ASSERT
+        Assert.Null(loggedInUser);
+
+        // CLEANUP
+        await RemoveUserAsync();
+    } 
+
+    // Test Helpers
+    
+    /// <summary>
+    /// Creates a new test user in the database.
+    /// </summary>
+    /// <returns></returns>
+    private async Task CreateUserAsync()
+    {
+        await _dbContext.Users!.AddAsync(_user);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DisposeAsync()
+    /// <summary>
+    /// Removes the test user from the database.
+    /// </summary>
+    /// <returns></returns>
+    private async Task RemoveUserAsync()
     {
         User? user = await _dbContext.Users!.FirstOrDefaultAsync(u => u.Email == _user.Email);
         if (user is not null)
@@ -124,8 +230,5 @@ public class AuthTests : IAsyncLifetime
             await _dbContext.SaveChangesAsync();
         }
     }
-
-
-    // Test Helpers
 
 }
