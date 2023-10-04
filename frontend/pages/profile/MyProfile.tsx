@@ -94,7 +94,22 @@ const myProfile = () => {
               <span style={{color: useColorModeValue('pink', 'pink')}}>@username</span>
             </Text>
           </Heading>
+      
           <Text textAlign="center">Passionate about Tech. Lover of web and opensource.</Text>
+          <HStack>
+          <Button rounded="7px" style={{
+            // styling for number of followers, and when clicked, goes to the followers page
+            border: "solid 1px #CC748C",
+          }}>
+            420 Followers
+          </Button>
+          <Button rounded="7px" style={{
+            // styling for number of followers, and when clicked, goes to the followers page
+            border: "solid 1px #CC748C",
+          }}>
+            Following 69 Hosts
+          </Button>
+          </HStack>
           <Divider />
           <Flex alignItems="center" justify="center" w="100%">
             <Box textAlign="center">
@@ -127,10 +142,9 @@ const myProfile = () => {
           </Flex>
         </VStack>
       </Center>
-
-      
     </Container>
-        <Container p={{ base: 5, md: 10 }}>
+    
+    <Container p={{ base: 5, md: 10 }}>
           <h1 style={{
             marginBottom: "0.5em",
             fontSize: "1.5em",
