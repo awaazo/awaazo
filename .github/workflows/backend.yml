@@ -33,7 +33,7 @@ jobs:
 
     # Start/Run the Database
     - name: Start Database Container
-      uses: docker-compose -f "docker-compose.yml" up -d --build sql
+      run: docker-compose -f "docker-compose.yml" up -d --build sql
 
     # Install .NET 6
     - name: Setup .NET
