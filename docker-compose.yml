@@ -19,7 +19,7 @@ services:
   # BACKEND ASP.NET Server
   backend:
     build:
-      context: backend/.
+      context: backend/server/.
       target: final
     container_name: backend_server
     ports:
@@ -50,7 +50,7 @@ services:
 
   # BACKEND ASP.NET TESTS
   backend-test:
-    build: backendTest/.
+    build: backend/serverTest/.
     container_name: backend_test
     depends_on:
       - sql
