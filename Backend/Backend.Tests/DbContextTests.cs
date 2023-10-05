@@ -13,7 +13,7 @@ public class DbContextTests
     {
         // ARRANGE
         // Connection Type depends on whether we are running in a container or not
-        string connectionType = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ? "DockerConnection" : "DefaultConnection";
+        string connectionType = GetConnectionType();
 
         // ACT
         // Get the connection string from appsettings.json
@@ -35,7 +35,7 @@ public class DbContextTests
     {
         // ARRANGE
         // Connection Type depends on whether we are running in a container or not
-        string connectionType = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ? "DockerConnection" : "DefaultConnection";
+        string connectionType = GetConnectionType();
         // Get the connection string from appsettings.json
         string? connectionString = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -51,5 +51,14 @@ public class DbContextTests
         // ASSERT
         // Check if the Database is Created
         Assert.True(isDbConnected);
+    }
+
+
+    /// <summary>
+    /// Returns the Connection Type based on whether we are running in a container or not. 
+    /// </summary>
+    /// <returns></returns>
+    private static string GetConnectionType(){
+        return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ? "DockerConnection" : "DefaultConnection";
     }
 }

@@ -9,6 +9,18 @@ namespace Backend.Models;
 public class User : BaseEntity
 {
     /// <summary>
+    /// Default Constructor.
+    /// </summary>
+    public User()
+    {
+        // Make sure that the strings are not null.
+        Id = Guid.Empty;
+        Email = string.Empty;
+        Password = string.Empty;
+        DateOfBirth = DateTime.Now;
+    }
+
+    /// <summary>
     /// User Unique Identifier.
     /// </summary>
     [Key]
@@ -19,12 +31,13 @@ public class User : BaseEntity
     /// </summary>
     [Required]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string Email { get; set; }
 
     /// <summary>
     /// User password.
     /// </summary>
-    public string? Password { get; set; }
+    [Required]
+    public string Password { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 }
