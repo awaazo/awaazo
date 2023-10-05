@@ -14,14 +14,12 @@ const myProfile = () => {
     <>
     <Navbar />
     <Container paddingTop={"10em"}>
-      <Center>
+
         <Header/>
-      </Center>
+
     </Container>
-    
     <Container p={{ base: 5, md: 10 }}>
-        
-        <MyEpisodes/>
+      <MyEpisodes/>
     </Container>
     </>
   );

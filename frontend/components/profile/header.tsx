@@ -56,7 +56,7 @@ export default function Header() {
     return (
         <>
         <VStack spacing={4} px={2} alignItems={{ base: 'center', sm: 'flex-start' }}>
-          <Stack justifyContent="center" alignItems="center">
+          <Stack>
             <Avatar
               boxShadow="xl"
               size="xl"
