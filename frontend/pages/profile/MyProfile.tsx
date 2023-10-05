@@ -15,7 +15,7 @@ const myProfile = () => {
     <Navbar />
     <Container paddingTop={"10em"}>
 
-        <Header/>
+        <Header/> 
 
     </Container>
     <Container p={{ base: 5, md: 10 }}>

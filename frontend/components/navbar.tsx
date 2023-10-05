@@ -166,7 +166,9 @@ export default function Navbar() {
                 <MenuGroup>
                   <MenuItem>UserName</MenuItem>
                   <MenuDivider />
-                  <MenuItem>My Account</MenuItem>
+                  <MenuItem
+                    onClick={() => window.location.href = '/profile/MyProfile'}
+                  >My Account</MenuItem>
                   <MenuItem>Payments</MenuItem>
                 </MenuGroup>
                 <MenuDivider />
