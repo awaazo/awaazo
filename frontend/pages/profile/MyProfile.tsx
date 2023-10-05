@@ -20,11 +20,7 @@ const myProfile = () => {
     </Container>
     
     <Container p={{ base: 5, md: 10 }}>
-        <h1 style={{
-          marginBottom: "0.5em",
-          fontSize: "1.5em",
-          fontWeight: "bold",
-          }}>My Episodes</h1>
+        
         <MyEpisodes/>
     </Container>
     </>

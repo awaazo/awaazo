@@ -53,6 +53,12 @@ const episodes = [
 
 export default function MyEpisodes() {
     return(
+      <>
+      <h1 style={{
+          marginBottom: "0.5em",
+          fontSize: "1.5em",
+          fontWeight: "bold",
+          }}>My Episodes</h1>
         <VStack spacing={8} w={{ base: 'auto', md: '2xl' }}>
             {episodes.map((episode, index) => (
             <Stack
@@ -129,5 +135,6 @@ export default function MyEpisodes() {
             </Stack>
           ))}
         </VStack>
+      </>
     )
 }
