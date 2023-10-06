@@ -1,35 +1,7 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  Avatar,
-  HStack,
-  Text,
-  IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  useDisclosure,
-  useColorModeValue,
-  useColorMode,
-  Stack,
-  Image,
-  VStack,
-  MenuGroup,
-} from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  CloseIcon,
-  AddIcon,
-  MoonIcon,
-  SunIcon,
-  ViewIcon,
-  InfoIcon,
-} from "@chakra-ui/icons";
-import logo from "../styles/images/logo.png";
+import { Box, Flex, Avatar, HStack, Text, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useDisclosure, useColorModeValue, useColorMode, Stack, Image, VStack, MenuGroup } from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon, AddIcon, MoonIcon, SunIcon, ViewIcon, InfoIcon } from "@chakra-ui/icons";
+import logo from "../../styles/images/logo.png";
 import Link from "next/link";
 
 interface Props {
@@ -49,17 +21,17 @@ const NavLink = (props: Props) => {
   return (
     <Link href={href}>
       {" "}
-        <Box
-          px={3}
-          py={1}
-          rounded={"250px"}
-          _hover={{
-            textDecoration: "none",
-            bg: useColorModeValue("gray.200", "gray.700"),
-          }}
-        >
-          {children}
-        </Box>
+      <Box
+        px={3}
+        py={1}
+        rounded={"250px"}
+        _hover={{
+          textDecoration: "none",
+          bg: useColorModeValue("gray.200", "gray.700"),
+        }}
+      >
+        {children}
+      </Box>
     </Link>
   );
 };
@@ -89,28 +61,21 @@ export default function Navbar() {
           justifyContent={"space-between"}
           position="relative" // Set the parent container to relative positioning
         >
-          <IconButton
-            size={"md"}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label={"Open Menu"}
-            display={{ md: "none" }}
-            onClick={isOpen ? onClose : onOpen}
-          />
+          <IconButton size={"md"} icon={isOpen ? <CloseIcon /> : <HamburgerIcon />} aria-label={"Open Menu"} display={{ md: "none" }} onClick={isOpen ? onClose : onOpen} />
           <HStack spacing={8} alignItems={"center"}>
-            <Box display={{ base: "none", md: "flex" }} style={{
-              fontSize: "1.2em",
-              fontWeight: "bold",
-              textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
-              cursor: "pointer",
-            }}
-
-              onClick={() => window.location.href = '/'}
-            >🎙Awaazo</Box>
-            <HStack
-              as={"nav"}
-              spacing={4}
+            <Box
               display={{ base: "none", md: "flex" }}
+              style={{
+                fontSize: "1.2em",
+                fontWeight: "bold",
+                textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+                cursor: "pointer",
+              }}
+              onClick={() => (window.location.href = "/")}
             >
+              🎙Awaazo
+            </Box>
+            <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
               {Links.map((link) => (
                 <NavLink key={link.label} href={link.url}>
                   {" "}
@@ -118,7 +83,6 @@ export default function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
-             
             </HStack>
           </HStack>
           <Flex
@@ -134,31 +98,15 @@ export default function Navbar() {
             </Box>
           </Flex>
           <Flex alignItems={"center"}>
-            <IconButton
-              aria-label="Toggle theme"
-              icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-              onClick={handleColorModeToggle}
-              variant="ghost"
-              size="md"
-              rounded={"full"}
-              mr={4}
-            />
+            <IconButton aria-label="Toggle theme" icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />} onClick={handleColorModeToggle} variant="ghost" size="md" rounded={"full"} mr={4} />
 
             <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-                minW={0}
-              >
+              <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
                 <Avatar
                   size={"md"}
-                  src={
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
+                  src={"https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"}
                   style={{
-                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)"
+                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
                   }}
                 />
               </MenuButton>
@@ -166,9 +114,7 @@ export default function Navbar() {
                 <MenuGroup>
                   <MenuItem>UserName</MenuItem>
                   <MenuDivider />
-                  <MenuItem
-                    onClick={() => window.location.href = '/profile/MyProfile'}
-                  >My Account</MenuItem>
+                  <MenuItem onClick={() => (window.location.href = "/profile/MyProfile")}>My Account</MenuItem>
                   <MenuItem>Payments</MenuItem>
                 </MenuGroup>
                 <MenuDivider />

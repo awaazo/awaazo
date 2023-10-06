@@ -7,9 +7,9 @@ import {
   HStack,
 } from '@chakra-ui/react';
 
-import Navbar from "../../components/navbar"; // Import the Navbar component
-import Header from "../../components/profile/header"; //Import the Header component
-import MyEpisodes from "../../components/profile/myEpisodes"; //Import the MyEpisodes component
+import Navbar from "../../components/shared/Navbar"; // Import the Navbar component
+import Header from "../../components/profile/Header"; //Import the Header component
+import MyEpisodes from "../../components/profile/MyEpisodes"; //Import the MyEpisodes component
 
 
 const myProfile = () => {

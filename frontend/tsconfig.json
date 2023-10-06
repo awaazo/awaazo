@@ -21,7 +21,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/navbar.jsx", "components/navbar.tsx", "components/navbar.tsx", "components/navbar.tsx"  ],
+, "components/navbar.jsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx"  ],
   "exclude": [
     "node_modules"
   ]
