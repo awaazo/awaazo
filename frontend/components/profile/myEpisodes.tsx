@@ -108,7 +108,8 @@ export default function MyEpisodes() {
                 <Avatar size="sm" title="Author" mb={2} src={episode.userAvatar} />
   
                 <Stack justify="space-between" direction={{ base: 'column', sm: 'row' }}>
-                  <Box> //Credentials section
+                  {/* author credentials section */}
+                  <Box> 
                     <Text fontSize="sm" fontWeight="bold">
                       {episode.username}
                     </Text>
