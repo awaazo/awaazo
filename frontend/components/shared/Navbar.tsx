@@ -1,43 +1,19 @@
 import React from "react";
-import { Box, Flex, Avatar, HStack, Text, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useDisclosure, useColorModeValue, useColorMode, Stack, Image, VStack, MenuGroup } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon, MoonIcon, SunIcon, ViewIcon, InfoIcon } from "@chakra-ui/icons";
-import logo from "../../styles/images/logo.png";
+import {
+  Box, Flex, Avatar, HStack, IconButton, Button, Menu, 
+  MenuButton, MenuList, MenuItem, MenuDivider, useColorModeValue, 
+  useColorMode, Image, MenuGroup, Input
+} from "@chakra-ui/react";
+import { MoonIcon, SunIcon, SearchIcon } from "@chakra-ui/icons";
+import logo from "../../public/logo_white.svg";
 import Link from "next/link";
 
 interface Props {
   children: React.ReactNode;
-  href: string; // Add href prop
+  href: string;
 }
 
-const Links = [
-  { label: "Home", url: "/" }, // Specify the actual routes
-  { label: "Explore", url: "/Explore" },
-  { label: "My Podcasts", url: "/MyPodcasts" },
-];
-
-const NavLink = (props: Props) => {
-  const { children, href } = props; // Use href instead of href
-
-  return (
-    <Link href={href}>
-      {" "}
-      <Box
-        px={3}
-        py={1}
-        rounded={"250px"}
-        _hover={{
-          textDecoration: "none",
-          bg: useColorModeValue("gray.200", "gray.700"),
-        }}
-      >
-        {children}
-      </Box>
-    </Link>
-  );
-};
-
 export default function Navbar() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
 
   const handleColorModeToggle = () => {
@@ -45,100 +21,65 @@ export default function Navbar() {
   };
 
   return (
-    <>
-      <Box
-        bg={useColorModeValue("#FFFFFF40", "#0000003D")}
-        backdropFilter="blur(100px)" // Add a backdrop filter to the background
-        px={12}
-        position="fixed" // Set the navbar to fixed positioning
-        top={0} // Position it at the top of the viewport
-        width="100%" // Make it span the entire width
-        zIndex={999} // Set a high z-index to ensure it's above other elements
+    <Box
+      bg={useColorModeValue("rgba(255, 255, 255, 0.4)", "rgba(0, 0, 0, 0.3)")}
+      backdropFilter="blur(10px)"
+      p={4}
+      mt={4} // Margin to the top
+      position={{ base: "fixed", md: "relative" }}
+      bottom={0}
+      left={"50%"}
+      transform={"translateX(-50%)"}
+      width={{ base: "97%", md: "80%", lg: "95%"}}
+      zIndex={999}
+      borderRadius={"25px"}
+      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
+    >
+      <Flex
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        px={4} // Padding to the sides
       >
-        <Flex
-          h={"7em"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-          position="relative" // Set the parent container to relative positioning
-        >
-          <IconButton size={"md"} icon={isOpen ? <CloseIcon /> : <HamburgerIcon />} aria-label={"Open Menu"} display={{ md: "none" }} onClick={isOpen ? onClose : onOpen} />
-          <HStack spacing={8} alignItems={"center"}>
-            <Box
-              display={{ base: "none", md: "flex" }}
-              style={{
-                fontSize: "1.2em",
-                fontWeight: "bold",
-                textShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
-                cursor: "pointer",
-              }}
-              onClick={() => (window.location.href = "/")}
-            >
-              🎙Awaazo
-            </Box>
-            <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-              {Links.map((link) => (
-                <NavLink key={link.label} href={link.url}>
-                  {" "}
-                  {/* Use href prop */}
-                  {link.label}
-                </NavLink>
-              ))}
-            </HStack>
-          </HStack>
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            position="absolute" // Set the logo container to absolute positioning
-            top="50%" // Center vertically
-            left="50%" // Center horizontally
-            transform="translate(-50%, -50%)" // Center exactly in the middle
-          >
-            <Box maxWidth={"10em"}>
-              <Image src={logo.src} alt="logo" boxShadow={"20px"} />
-            </Box>
-          </Flex>
-          <Flex alignItems={"center"}>
-            <IconButton aria-label="Toggle theme" icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />} onClick={handleColorModeToggle} variant="ghost" size="md" rounded={"full"} mr={4} />
-
-            <Menu>
-              <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
-                <Avatar
-                  size={"md"}
-                  src={"https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"}
-                  style={{
-                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
-                  }}
-                />
-              </MenuButton>
-              <MenuList className="translucent-menu">
-                <MenuGroup>
-                  <MenuItem>UserName</MenuItem>
-                  <MenuDivider />
-                  <MenuItem onClick={() => (window.location.href = "/profile/MyProfile")}>My Account</MenuItem>
-                  <MenuItem>Payments</MenuItem>
-                </MenuGroup>
-                <MenuDivider />
-                <MenuGroup title="Help">
-                  <MenuItem>Docs</MenuItem>
-                  <MenuItem>FAQ</MenuItem>
-                </MenuGroup>
-              </MenuList>
-            </Menu>
-          </Flex>
-        </Flex>
-
-        {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
-            <Stack as={"nav"} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link.label} href={link.url}>
-                  {link.label}
-                </NavLink>
-              ))}
-            </Stack>
+        <Link href="/Main">
+          <Box maxWidth={"1.5em"} ml={-2}> {/* Negative margin to counter the padding for the logo */}
+            <Image src={logo.src} alt="logo" />
           </Box>
-        ) : null}
-      </Box>
-    </>
+        </Link>
+        <Flex alignItems={"center"}>
+          <Input placeholder="Search" size="sm" borderRadius="full" mr={4} />
+          <IconButton 
+            aria-label="Toggle theme" 
+            icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+            onClick={handleColorModeToggle}
+            variant="ghost"
+            size="md"
+            rounded={"full"}
+            mr={4}
+          />
+          <Menu>
+            <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+              <Avatar
+                size={"sm"}
+                src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"}
+                boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
+              />
+            </MenuButton>
+            <MenuList>
+              <MenuGroup>
+                <MenuItem>UserName</MenuItem>
+                <MenuDivider />
+                <MenuItem onClick={() => (window.location.href = "/profile/MyProfile")}>My Account</MenuItem>
+                <MenuItem>Payments</MenuItem>
+              </MenuGroup>
+              <MenuDivider />
+              <MenuGroup title="Help">
+                <MenuItem>Docs</MenuItem>
+                <MenuItem>FAQ</MenuItem>
+              </MenuGroup>
+            </MenuList>
+          </Menu>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
