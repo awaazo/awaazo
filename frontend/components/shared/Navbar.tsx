@@ -45,20 +45,20 @@ export default function Navbar() {
             </MenuButton>
             <MenuList>
               <MenuGroup>
-                <MenuItem color={colorMode === "dark" ? "white" : "black"}>UserName</MenuItem>
+                <MenuItem >UserName</MenuItem>
                 <MenuDivider />
-                <MenuItem color={colorMode === "dark" ? "white" : "black"} onClick={() => (window.location.href = "/profile/MyProfile")}>
+                <MenuItem onClick={() => (window.location.href = "/profile/MyProfile")}>
                   My Account
                 </MenuItem>
-                <MenuItem color={colorMode === "dark" ? "white" : "black"} onClick={() => (window.location.href = "/profile/MyPodcast")}>
+                <MenuItem onClick={() => (window.location.href = "/profile/MyPodcast")}>
                   My Podcast
                 </MenuItem>
-                <MenuItem color={colorMode === "dark" ? "white" : "black"}>Payments</MenuItem>
+                <MenuItem>Payments</MenuItem>
               </MenuGroup>
               <MenuDivider />
               <MenuGroup title="Help">
-                <MenuItem color={colorMode === "dark" ? "white" : "black"}>Docs</MenuItem>
-                <MenuItem color={colorMode === "dark" ? "white" : "black"}>FAQ</MenuItem>
+                <MenuItem>Docs</MenuItem>
+                <MenuItem>FAQ</MenuItem>
               </MenuGroup>
             </MenuList>
           </Menu>
