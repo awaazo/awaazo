@@ -19,7 +19,7 @@ export default function Navbar() {
   };
 
   return (
-    <Box bg={useColorModeValue("rgba(255, 255, 255, 0.4)", "rgba(0, 0, 0, 0.3)")} backdropFilter="blur(35px)" p={4} mt={3} ml={2} mr={2} position="sticky" top={0} zIndex={999} borderRadius={"25px"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)">
+    <Box bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")} backdropFilter="blur(35px)" p={4} m={3} position="sticky" top={0} zIndex={999} borderRadius={"25px"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)">
       <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
         <HStack spacing={8}>
           <Link href="/Main">
