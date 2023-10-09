@@ -39,5 +39,29 @@ public class User : BaseEntity
     [Required]
     public string Password { get; set; }
 
+    public string Username { get; set; }
+
+    /// <summary>
+    /// URL for user's PFP
+    /// </summary>
+    public string Avatar { get; set; }
+
+    public string[] Interests { get; set; }
     public DateTime DateOfBirth { get; set; }
+    
+    public GenderEnum Gender { get; set; }
+
+    /// <summary>
+    /// Flag indicating if the user is a podcaster
+    /// </summary>
+    public bool IsPodcaster { get; set; }
+
+    public ICollection<Podcast> Podcasts { get; } = new List<Podcast>();
+
+    public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
+
+    public enum GenderEnum
+    {
+        Male, Female, Other, None
+    }
 }

@@ -24,6 +24,47 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+        // User 1-to-many Podcast
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Podcasts)
+            .WithOne(e => e.Podcaster)
+            .HasForeignKey(e => e.PodcasterId)
+            .IsRequired();
+
+        // Podcast 1-to-many Episode
+        modelBuilder.Entity<Podcast>()
+            .HasMany(e => e.Episodes)
+            .WithOne(e => e.Podcast)
+            .HasForeignKey(e => e.PodcastId)
+            .IsRequired();
+        
+        // User 1-to-many Bookmark
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Bookmarks)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.User)
+            .IsRequired();
+        
+        // Episode 1-to-many Bookmark
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.Bookmarks)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
+            .IsRequired();
+        
+        // Episode 1-to-many Annotation
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.Annotations)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
+            .IsRequired();
+        
+        // Annotation 1-to-1 Medialink
+        modelBuilder.Entity<Annotation>()
+            .HasOne(e => e.MediaLink)
+            .WithOne(e => e.Annotation)
+            .HasForeignKey<MediaLink>(e => e.AnnotationId);
     }
     
     public override int SaveChanges()
