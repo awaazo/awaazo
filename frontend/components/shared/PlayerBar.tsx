@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Badge, useColorModeValue } from "@chakra-ui/react";
 import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, FaVolumeUp, FaVolumeDown, FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
-import { Podcast } from "../../utilities/Types";
+import { Episode } from "../../utilities/Interfaces";
 
-const PlayerBar: React.FC<Podcast> = (props) => {
-  const { coverArt, episodeName = "Unknown episodeName", podcaster = "Unknown Podcaster", duration, likes, comments, isBookmarked = false, sections = [] } = props;
+const PlayerBar: React.FC<Episode> = (props) => {
+  const { thumbnail, episodeName = "Unknown episodeName", podcaster= "Unknown Podcaster", duration, likes, comments, sections = [] } = props;
 
   const [position, setPosition] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(props.isPlaying);
+  const [isPlaying, setIsPlaying] = useState(false);
   const togglePlayPause = () => {
     setIsPlaying((prevIsPlaying) => !prevIsPlaying);
   };
@@ -23,7 +23,6 @@ const PlayerBar: React.FC<Podcast> = (props) => {
   const timeLeft = `${Math.floor((duration - position) / 60)}:${String((duration - position) % 60).padStart(2, "0")}`;
   const likedColor = likes.isLiked ? "red.500" : useColorModeValue("gray.900", "gray.100");
   const commentedColor = comments.isCommented ? "blue.500" : useColorModeValue("gray.900", "gray.100");
-  const bookmarkedColor = isBookmarked ? "yellow.500" : useColorModeValue("gray.900", "gray.100");
   const handleScrubberChange = (position: number) => {
     setPosition(position);
   };
@@ -34,18 +33,18 @@ const PlayerBar: React.FC<Podcast> = (props) => {
 
     for (let i = sections.length - 1; i >= 0; i--) {
       if (totalSeconds >= sections[i].startTime) {
-        return sections[i].episodeName;
+        return sections[i].sectionName;
       }
     }
     return "";
   };
 
   return (
-    <Box position="fixed" bottom={0} left={0} right={0} p={4} m={3} borderRadius={"25px"} bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")} shadow="md">
+    <Box boxSizing="border-box" position="sticky" bottom={0} left={0} right={0} p={4} m={3} borderRadius={"25px"} bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")} shadow="md">
       <Flex direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="center">
         {/* Left Side - Cover Art, episodeName, Podcaster */}
         <Flex direction={{ base: "column", md: "row" }} alignItems="center" mb={{ base: 2, md: 0 }} mr={4}>
-          <Image boxSize={{ base: "30px", md: "40px" }} src={coverArt} borderRadius="full" mb={{ base: 2, md: 0 }} mr={4} />
+          <Image boxSize={{ base: "30px", md: "40px" }} src={thumbnail} borderRadius="full" mb={{ base: 2, md: 0 }} mr={4} />
           <Box mb={{ base: 2, md: 0 }}>
             <Text fontWeight="bold" color={useColorModeValue("gray.900", "gray.100")} fontSize={{ base: "sm", md: "md" }}>
               {episodeName}
@@ -69,7 +68,6 @@ const PlayerBar: React.FC<Podcast> = (props) => {
               </Badge>
             </Box>
 
-            <IconButton aria-label="Bookmark" icon={<FaBookmark />} variant="ghost" color={bookmarkedColor} size="sm" ml={2} />
           </Flex>
         </Flex>
 

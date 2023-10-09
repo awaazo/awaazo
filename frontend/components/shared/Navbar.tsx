@@ -6,11 +6,6 @@ import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import Link from "next/link";
 
-interface Props {
-  children: React.ReactNode;
-  href: string;
-}
-
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
 

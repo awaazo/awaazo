@@ -2,6 +2,8 @@ export interface Podcast {
     id: string;
     coverArt: string;
     podcasterId: string;
+    podcaster: string; // redundant, remove later 
+    description: string;
     tags: string[];
     isExplicit?: boolean;
     type: "real" | "ai-generated";
@@ -14,7 +16,9 @@ export interface Podcast {
   export interface Episode {
     id: string;
     podcastId: string;
+    podcaster: string; // redundant, remove later  
     episodeName: string;
+    description: string;
     thumbnail: string;
     duration: number;
     releaseDate: Date;
@@ -65,6 +69,7 @@ export interface Podcast {
   export interface User {
     id: string;
     username: string;
+    displayName: string;
     email: string;
     passwordHash: string;
     salt: string;
