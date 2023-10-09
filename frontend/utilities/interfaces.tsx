@@ -48,6 +48,19 @@ export interface Annotation {
   mediaLink?: MediaLink; // Optional media lin details, present if type is 'media-link'
 }
 
+// Sponsor Interface
+export interface Sponsor {
+    id: string; // Unique identifier for the sponsor
+    name: string; // Name of the sponsor
+    website: string; // URL to the sponsor's website
+  }
+  
+  // Media Link Interface
+  export interface MediaLink {
+    platform: "YouTube" | "Spotify" | "Apple Music"; // Platform where the media is hosted
+    url: string; // URL to the media
+  }
+
 // Bookmark Interface
 export interface Bookmark {
   title: string; // Title of the bookmark
@@ -99,15 +112,4 @@ export interface PodcastRating {
   timestamp: Date; // When the rating was provided
 }
 
-// Sponsor Interface
-export interface Sponsor {
-  id: string; // Unique identifier for the sponsor
-  name: string; // Name of the sponsor
-  website: string; // URL to the sponsor's website
-}
 
-// Media Link Interface
-export interface MediaLink {
-  platform: "YouTube" | "Spotify" | "Apple Music"; // Platform where the media is hosted
-  url: string; // URL to the media
-}
