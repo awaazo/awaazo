@@ -1,77 +1,79 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Button } from "@chakra-ui/react";
+import { useState } from "react";
 import Navbar from "../components/shared/Navbar";
 import PlayerBar from "../components/shared/PlayerBar";
 import ForYouSection from "../components/home/ForYouSection";
 import ContinueListeningSection from "../components/home/ContinueListening";
 import ExploreGenresSection from "../components/home/ExploreGenres";
-import { Podcast } from "../utilities/Types";
+import { samplePodcast } from "../utilities/SampleData";
+
+const ITEMS_PER_PAGE = 10;
 
 const Main = () => {
-  {/* delete when the api is working  */}
-  const samplePodcasts: Podcast[] = [
-    {
-      coverArt: "https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-      episodeName: "Episode One",
-      podcaster: "Joe Rogan",
-      duration: 6322,
-      likes: {
-        count: 120,
-        isLiked: true,
-      },
-      comments: {
-        count: 45,
-        isCommented: false,
-      },
-      isPlaying: true,
-      isBookmarked: false,
-      sections: [
-        { startTime: 0, episodeName: "Introduction" },
-        { startTime: 30, episodeName: "Chapter 1" },
-        { startTime: 70, episodeName: "Chapter 2" },
-      ],
-    },
-    {
-      coverArt: "https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-      episodeName: "Episode Two",
-      podcaster: "Jane Smith",
-      duration: 7510,
-      likes: {
-        count: 200,
-        isLiked: false,
-      },
-      comments: {
-        count: 80,
-        isCommented: true,
-      },
-      isPlaying: false,
-      isBookmarked: true,
-      sections: [],
-    },
-  ];
- {/* delete up until here  */}
- 
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = Math.ceil(samplePodcast.length / ITEMS_PER_PAGE);
+
+  const currentItems = samplePodcast.slice(
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
+  );
+
+  // Replace these constants with actual values or compute them dynamically
+  const heightOfNavbar = "60px"; // Example value
+  const heightOfPlayerBar = "80px"; // Example value
+
   return (
-    <Box>
+    <Box height="100vh" display="flex" flexDirection="column">
+      {/* Navbar */}
       <Navbar />
 
-      <Flex flex="1" flexDirection={{ base: "column", md: "row" }}>
-        {/* 50% left - For You Section */}
-        <Box flex={{ base: "1", md: "0.5" }}>
-          <ForYouSection podcasts={samplePodcasts} />
+      {/* Main Content */}
+      <Flex 
+        flex="1" 
+        direction={{ base: "column", md: "row" }}
+        overflow="hidden"
+      >
+        {/* For You Section */}
+        <Box flex="1" overflow="hidden">
+          <ForYouSection podcasts={currentItems} />
+
+          <Flex justify="center" mt={4}>
+            <Button 
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))} 
+              disabled={currentPage === 0}
+            >
+              Previous
+            </Button>
+            <Button 
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))} 
+              ml={2}
+              disabled={currentPage === totalPages - 1}
+            >
+              Next
+            </Button>
+          </Flex>
         </Box>
 
-        {/* 50% right split into two 25% sections */}
-        <Flex flex={{ base: "1", md: "0.5" }} flexDirection="column">
-          <Box flex="0.5">
+        {/* Right Section */}
+        <Flex flex="1" direction="column" overflow="hidden">
+          {/* Continue Listening Section */}
+          <Box flex="1" overflowY="auto">
             <ContinueListeningSection />
           </Box>
 
-          <Box flex="0.5">
+          {/* Explore Genres Section */}
+          <Box 
+            flex="1" 
+            overflowY="auto" 
+            maxHeight={`calc(50% - ${heightOfNavbar}/2 - ${heightOfPlayerBar}/2)`}
+          >
             <ExploreGenresSection />
           </Box>
         </Flex>
       </Flex>
-      <PlayerBar {...samplePodcasts[0]} />
+
+      {/* Player Bar */}
+      <PlayerBar {...samplePodcast[0]}/>
     </Box>
   );
 };
