@@ -1,5 +1,3 @@
-// placeholder. will be replaced with interfaces.tsx
-
 export interface Podcast {
     coverArt: string;
     episodeName?: string;
