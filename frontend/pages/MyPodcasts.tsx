@@ -1,6 +1,6 @@
 // pages/index.tsx
 import { Box, Center, Text } from "@chakra-ui/react";
-import Navbar from "../components/navbar"; // Import the Navbar component
+import Navbar from "../components/shared/Navbar"; 
 
 export default function MyPodcasts() {
   return (

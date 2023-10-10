@@ -29,3 +29,20 @@ img {
     padding: 16px;
     /* Optional: Add padding to the menu */
 }
+
+::-webkit-scrollbar {
+    width: 10px; /* Adjust width of the vertical scrollbar */
+    height: 10px; /* Adjust height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scroll handle */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scroll handle on hover */
+}

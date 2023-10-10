@@ -1,15 +1,7 @@
-import React, { FormEvent, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-import logo from "../styles/images/logo.png";
-import { register } from './api/api';
+import React, { FormEvent, useState } from "react";
+import { Box, Button, FormControl, FormLabel, Input, Stack, Text } from "@chakra-ui/react";
+import { register } from "../api/api";
+import LogoWhite from "../../public/logo_white.svg";
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -24,34 +16,39 @@ const SignUp: React.FC = () => {
         password: password || undefined,
         dateOfBirth: dateOfBirth || undefined,
       };
-      console.log("Payload:", payload);  // Debugging line
+      console.log("Payload:", payload); // Debugging line
       const response = await register(payload);
-      console.log("Response:", response);  // Debugging line
+      console.log("Response:", response); // Debugging line
       if (response.status === 200) {
         console.log(response.data);
-        window.location.href = '/login';
+        window.location.href = "/login";
       } else {
-        alert(response.data.message || 'Failed to sign up');
+        alert(response.data.message || "Failed to sign up");
       }
     } catch (error) {
       if (error.response) {
-        console.error('Server Response:', error.response.data);
+        console.error("Server Response:", error.response.data);
       }
-      console.error('An error occurred:', error);
-      alert('An error occurred while trying to sign up.');
+      console.error("An error occurred:", error);
+      alert("An error occurred while trying to sign up.");
     }
   };
-  
 
   return (
     <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="80vh">
-      <img src={logo.src} alt="logo" style={{ maxWidth: '20em' }} />
-      <Text fontSize="2.5rem" fontWeight="bold" textAlign="center" marginBottom="1rem">Create an Account</Text>
-      <Text fontSize="1.3rem" textAlign="center" marginBottom="3rem">Sign up to get started</Text>
-      <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => window.location.href = '/api/auth/google'} marginBottom={5}>
+      <img src={LogoWhite.src} alt="logo" style={{ maxWidth: "20em" }} />
+      <Text fontSize="2.5rem" fontWeight="bold" textAlign="center" marginBottom="1rem">
+        Create an Account
+      </Text>
+      <Text fontSize="1.3rem" textAlign="center" marginBottom="3rem">
+        Sign up to get started
+      </Text>
+      <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => (window.location.href = "/api/auth/google")} marginBottom={5}>
         Sign up with Google
       </Button>
-      <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">or</Text>
+      <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">
+        or
+      </Text>
       <form onSubmit={handleSignUp}>
         <Stack spacing={4}>
           <FormControl>
