@@ -1,11 +1,13 @@
 using System.Text;
-using backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Backend.Infrastructure;
+using Backend.Services.Interfaces;
+using Backend.Services;
 
-namespace backend;
+namespace Backend;
 
 public class Program
 {
@@ -14,6 +16,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;
         builder.Services.AddControllers();
+
+        builder.Services.AddScoped<IAuthService, AuthService>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -72,7 +76,8 @@ public class Program
 
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
+            builder.WithOrigins("http://localhost:3000", "https://localhost:3000",
+            "http://localhost:3500", "https://localhost:3500","http://fronted:3500", "https://fronted:3500")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -93,9 +98,6 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
-        // Allows all origins to access the API.
-        app.UseCors(builder=>builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         using (var scope = app.Services.CreateScope())
         {

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import '@testing-library/jest-dom';
 import RequestHelper, { EndpointHelper } from '../helpers/RestHelper';
 
@@ -16,7 +20,7 @@ test('Test EndpointHelper.getBackendAddress() method', () => {
     const currentEnv = process.env.NODE_ENV;
 
     // Test that the correct address is returned, depending on the environment.
-    if (currentEnv === 'development'|| process.env.NODE_ENV==='test') {
+    if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getBackendAddress();
         expect(result).toBe('http://localhost:32773');
     }
@@ -34,7 +38,7 @@ test('Test EndpointHelper.getAuthLoginEndpoint() method', () => {
     const currentEnv = process.env.NODE_ENV;
 
     // Test that the correct endpoint is returned, depending on the environment.
-    if (currentEnv === 'development'|| process.env.NODE_ENV==='test') {
+    if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getAuthLoginEndpoint();
         expect(result).toBe('http://localhost:32773/auth/login');
     }
@@ -52,7 +56,7 @@ test('Test EndpointHelper.getAuthRegisterEndpoint() method', () => {
     const currentEnv = process.env.NODE_ENV;
 
     // Test that the correct endpoint is returned, depending on the environment.
-    if (currentEnv === 'development'|| process.env.NODE_ENV==='test') {
+    if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getAuthRegisterEndpoint();
         expect(result).toBe('http://localhost:32773/auth/register');
     }
@@ -94,8 +98,8 @@ test('Test RestHelper.authLoginRequest() method', async () => {
 
     // Test that the user can't login with a wrong password.
     const result2 = await RequestHelper.authLoginRequest(mockEmail, mockPassword+"wrong");
-    expect(result2.status).toBe(401);
-    expect(result2.data).toBe('Invalid password');
+    expect(result2.status).toBe(400);
+    expect(result2.data).toBe('Invalid Credentials');
 });
 
 

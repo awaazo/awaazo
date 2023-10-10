@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Backend.Models;
 
-namespace backend.Models
+namespace Backend.Infrastructure
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

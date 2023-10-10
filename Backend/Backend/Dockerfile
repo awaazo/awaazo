@@ -6,19 +6,19 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["backend.csproj", "."]
-RUN dotnet restore "./backend.csproj"
+COPY ["Backend.csproj", "."]
+RUN dotnet restore "./Backend.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "backend.csproj" -c Release -o /app/build
+RUN dotnet build "Backend.csproj" -c Release -o /app/build
 
 #RUN dotnet ef migrations add InitialMigration -c AppDbContext
 #RUN dotnet ef database update -c AppDbContext
 
 FROM build AS publish
-RUN dotnet publish "backend.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Backend.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "backend.dll"]
+ENTRYPOINT ["dotnet", "Backend.dll"]

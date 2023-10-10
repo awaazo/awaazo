@@ -25,28 +25,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    # Checkout Changes
     - name: Checkout
       uses: actions/checkout@v3
   
+    # Start/Run the Database 
     - name: Start Database Container
       run: docker-compose -f "docker-compose.yml" up -d --build sql
   
+    # Start/Run the Backend
     - name: Start Backend Container
       run: docker-compose -f "docker-compose.yml" up -d --build backend
 
+    # Install Node
     - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: 18.x
   
+    # Install Frontend Deps
     - name: Install dependencies
       working-directory: frontend
       run: npm install
   
+    # Run Frontend Tests
     - name: Run tests
       working-directory: frontend
       run: npm run test
   
+    # Stop the Database & Backend Containers
     - name: Stop containers
       run: docker-compose -f "docker-compose.yml" down
     
