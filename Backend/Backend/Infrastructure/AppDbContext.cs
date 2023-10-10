@@ -25,6 +25,18 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
 
+
+        modelBuilder.Entity<User>().Property(e => e.Interests).HasConversion(
+            v => string.Join(",", v),
+            v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+            );
+
+        modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
+
+            v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
+        
+
+
         // User 1-to-many Podcast
         modelBuilder.Entity<User>()
             .HasMany(e => e.Podcasts)
@@ -43,15 +55,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(e => e.Bookmarks)
             .WithOne(e => e.User)
-            .HasForeignKey(e => e.User)
-            .IsRequired();
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         // Episode 1-to-many Bookmark
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.Bookmarks)
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Restrict); 
         
         // Episode 1-to-many Annotation
         modelBuilder.Entity<Episode>()

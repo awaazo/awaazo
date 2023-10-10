@@ -39,5 +39,5 @@ public class Episode : BaseEntity
 
     public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
 
-    public ICollection<Sponsor> Sponsors { get; } = new List<Sponsor>()
+    public ICollection<Sponsor> Sponsors { get; } = new List<Sponsor>();
 }
