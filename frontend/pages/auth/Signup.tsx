@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text } from "@chakra-ui/react";
-import logo from "../styles/images/logo.png";
 import { register } from "../api/api";
+import LogoWhite from "../../public/logo_white.svg";
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -36,7 +36,7 @@ const SignUp: React.FC = () => {
 
   return (
     <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="80vh">
-      <img src={logo.src} alt="logo" style={{ maxWidth: "20em" }} />
+      <img src={LogoWhite.src} alt="logo" style={{ maxWidth: "20em" }} />
       <Text fontSize="2.5rem" fontWeight="bold" textAlign="center" marginBottom="1rem">
         Create an Account
       </Text>

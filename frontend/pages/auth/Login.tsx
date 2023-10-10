@@ -2,6 +2,8 @@
 import React, { useState, FormEvent } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text } from "@chakra-ui/react";
 import logo from "../styles/images/logo.png";
+import LogoWhite from "../../public/logo_white.svg";
+
 import { login } from "../api/api";
 import Image from "next/image";
 
@@ -38,7 +40,7 @@ const Login: React.FC = () => {
           height="80vh"
         >
           <img
-            src={logo.src}
+            src={LogoWhite.src}
             alt="logo"
             style={{
               maxWidth: "20em",
