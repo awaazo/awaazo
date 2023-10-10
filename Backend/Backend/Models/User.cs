@@ -61,6 +61,14 @@ public class User : BaseEntity
 
     public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 
+    public ICollection<PodcastFollow> PodcastFollows { get; } = new List<PodcastFollow>();
+
+    public ICollection<UserFollow> UserFollows { get; } = new List<UserFollow>();
+
+    public ICollection<Subscription> Subscriptions { get; } = new List<Subscription>();
+
+    public ICollection<PodcastRating> Ratings { get; } = new List<PodcastRating>();
+
     public enum GenderEnum
     {
         Male, Female, Other, None

@@ -35,8 +35,6 @@ public class AppDbContext : DbContext
 
             v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
         
-
-
         // User 1-to-many Podcast
         modelBuilder.Entity<User>()
             .HasMany(e => e.Podcasts)
@@ -77,6 +75,34 @@ public class AppDbContext : DbContext
             .HasOne(e => e.MediaLink)
             .WithOne(e => e.Annotation)
             .HasForeignKey<MediaLink>(e => e.AnnotationId);
+        
+        // Podcast follow many-to-1 User (podcast relation is not needed)
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.PodcastFollows)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired();
+        
+        // User follow follow many-to-1 User (podcast relation is not needed)
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.UserFollows)
+            .WithOne(e => e.Follower)
+            .HasForeignKey(e => e.FollowerId)
+            .IsRequired();
+        
+        // Subscription many-to-1 user
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Subscriptions)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired();
+        
+        // Podcast rating many-to-1 user
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Ratings)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired();      
     }
     
     public override int SaveChanges()
