@@ -10,7 +10,7 @@ export interface Podcast {
     creationDate: Date;
     episodes: Episode[];
     averageRating?: number;
-    totalRatings?: number;
+    monthlyListeners: number;
   }
   
   export interface Episode {
@@ -32,6 +32,12 @@ export interface Podcast {
       count: number;
       isCommented: boolean;
     };
+
+    listeners: {
+        count: number;
+        hasListened: boolean;
+        lastListenedPosition?: number;
+      };
     bookmarks?: Bookmark[];
     sections?: {
       startTime: number;
@@ -39,7 +45,8 @@ export interface Podcast {
     }[];
     annotations: Annotation[];
     sponsors: Sponsor[];
-  }
+  };
+  
   
   export interface Annotation {
     timestamp: number;

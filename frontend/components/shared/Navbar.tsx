@@ -24,9 +24,6 @@ export default function Navbar() {
               <Image src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src} alt="logo" />
             </Box>
           </Link>
-          <Link href="/MyFeed">
-            <IconButton aria-label="My Feed" icon={<RiHomeSmile2Line />} variant="ghost" size="md" rounded={"full"} opacity={0.7} color={colorMode === "dark" ? "white" : "black"} />
-          </Link>
         </HStack>
         <Flex alignItems={"center"}>
           <Input placeholder="Search" size="sm" borderRadius="full" mr={4} />
@@ -62,3 +59,4 @@ export default function Navbar() {
     </Box>
   );
 }
+

@@ -31,7 +31,7 @@ const ContinueListening = () => {
       </Text>
       {episodes.map((episode, index) => (
         <Flex key={index} mb={5} direction={{ base: "column", md: "row" }} alignItems="center">
-          <Image boxSize={{ base: "100px", md: "100px" }} src={episode.thumbnail} alt={episode.title} mr={4} borderRadius="md" />
+          <Image boxSize={{ base: "100px", md: "100px" }} src={episode.thumbnail} alt={episode.title} mr={4} borderRadius="25px" />
           <Box flex="1">
             <Text fontWeight="bold" mb={2}>
               {episode.title}
