@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,18 +10,6 @@ namespace Backend.Models;
 /// </summary>
 public class User : BaseEntity
 {
-    /// <summary>
-    /// Default Constructor.
-    /// </summary>
-    public User()
-    {
-        // Make sure that the strings are not null.
-        Id = Guid.Empty;
-        Email = string.Empty;
-        Password = string.Empty;
-        DateOfBirth = DateTime.Now;
-    }
-
     /// <summary>
     /// User Unique Identifier.
     /// </summary>
@@ -50,6 +39,7 @@ public class User : BaseEntity
     public string[] Interests { get; set; }
     public DateTime DateOfBirth { get; set; }
     
+    [DefaultValue(GenderEnum.Other)]
     public GenderEnum Gender { get; set; }
 
     /// <summary>
