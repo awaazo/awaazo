@@ -4,7 +4,7 @@ import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, 
 import { Episode } from "../../utilities/Interfaces";
 
 const PlayerBar: React.FC<Episode> = (props) => {
-  const { thumbnail, episodeName = "Unknown episodeName", podcaster= "Unknown Podcaster", duration, likes, comments, sections = [] } = props;
+  const { thumbnail, episodeName = "Unknown episodeName", podcaster = "Unknown Podcaster", duration, likes, comments, sections = [] } = props;
 
   const [position, setPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -67,7 +67,6 @@ const PlayerBar: React.FC<Episode> = (props) => {
                 {comments.count}
               </Badge>
             </Box>
-
           </Flex>
         </Flex>
 
@@ -83,10 +82,12 @@ const PlayerBar: React.FC<Episode> = (props) => {
 
           {/* Timeline Scrubber */}
           <Flex alignItems="center" justifyContent="space-between" width="100%">
-            <Text color="gray.500" fontSize="sm">
-              {currentTime} . {getSectionEpisodeName(currentTime)}
-            </Text>
-            <Box flex={1} mx={4} position="relative">
+            <Box width="80px" textAlign="right" mr={2}>
+              <Text color="gray.500" fontSize="sm">
+                {currentTime} . {getSectionEpisodeName(currentTime)}
+              </Text>
+            </Box>
+            <Box flex={1} position="relative" mx={4}>
               <Slider aria-label="Track Timeline" value={position} max={duration} min={0} width="full" onChange={handleScrubberChange}>
                 <SliderTrack bg="gray.500">
                   <SliderFilledTrack bg="tomato" />
@@ -99,9 +100,11 @@ const PlayerBar: React.FC<Episode> = (props) => {
                 <Box key={index} position="absolute" height="2px" bg="gray.300" left={`${(section.startTime / duration) * 100}%`} width="1px" top="50%" transform="translateY(-50%)" />
               ))}
             </Box>
-            <Text color="gray.500" fontSize="sm">
-              {timeLeft}
-            </Text>
+            <Box width="80px" textAlign="left" ml={2}>
+              <Text color="gray.500" fontSize="sm">
+                {timeLeft}
+              </Text>
+            </Box>
           </Flex>
         </Flex>
 
@@ -116,7 +119,6 @@ const PlayerBar: React.FC<Episode> = (props) => {
               <Box color="tomato" />
             </SliderThumb>
           </Slider>
-          <IconButton aria-label="Volume Up" icon={<FaVolumeUp />} variant="ghost" size="sm" ml={2} />
         </Flex>
       </Flex>
     </Box>
