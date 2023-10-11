@@ -4,6 +4,13 @@ namespace Backend.Models;
 
 public class Episode : BaseEntity
 {
+
+    public Episode() 
+    {
+        EpisodeName = string.Empty;
+        Thumbnail = string.Empty;
+    }
+
     [Key]
     public Guid Id { get; set; }
 

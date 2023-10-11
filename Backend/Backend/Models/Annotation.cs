@@ -4,6 +4,11 @@ namespace Backend.Models;
 
 public class Annotation : BaseEntity
 {
+    public Annotation() 
+    {
+        Content = string.Empty;
+    }
+
     [Key]
     public Guid Id { get; set; }
     

@@ -4,6 +4,13 @@ namespace Backend.Models;
 
 public class Sponsor : BaseEntity
 {
+
+    public Sponsor() 
+    {
+        Name = string.Empty;
+        Website = string.Empty;
+    }
+
     [Key]
     public Guid Id { get; set; }
     

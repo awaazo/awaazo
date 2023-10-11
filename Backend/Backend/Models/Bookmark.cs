@@ -4,6 +4,13 @@ namespace Backend.Models;
 
 public class Bookmark : BaseEntity
 {
+
+    public Bookmark() 
+    {
+        Title = string.Empty;
+        Note = string.Empty;
+    }
+
     [Key]
     public Guid Id { get; set; }
 

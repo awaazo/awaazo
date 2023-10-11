@@ -4,6 +4,11 @@ namespace Backend.Models;
 
 public class MediaLink : BaseEntity
 {
+    public MediaLink() 
+    { 
+        Url = string.Empty;
+    }
+
     [Key]
     public Guid Id { get; set; }
 

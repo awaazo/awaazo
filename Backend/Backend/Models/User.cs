@@ -10,6 +10,16 @@ namespace Backend.Models;
 /// </summary>
 public class User : BaseEntity
 {
+
+    public User()
+    {
+        Email = string.Empty;
+        Password = string.Empty;
+        Username = string.Empty;
+        Avatar = string.Empty;
+        Interests = Array.Empty<string>();
+    }
+
     /// <summary>
     /// User Unique Identifier.
     /// </summary>
@@ -63,4 +73,5 @@ public class User : BaseEntity
     {
         Male, Female, Other, None
     }
+
 }

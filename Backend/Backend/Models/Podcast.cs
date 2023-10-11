@@ -5,6 +5,12 @@ namespace Backend.Models;
 
 public class Podcast : BaseEntity
 {
+
+    public Podcast() 
+    {
+        Tags = Array.Empty<string>();
+    }
+
     public User Podcaster { get; set; } = null!;
 
     // Required reference navigation to principal
