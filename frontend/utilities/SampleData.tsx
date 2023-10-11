@@ -5,13 +5,13 @@ export const podcasts: Podcast[] = [
     id: "podcast1",
     coverArt: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
     podcasterId: "user123",
-    podcaster: "Joe Mama", 
+    podcaster: "Joe Mama",
     description: "A deep dive into the world of artificial intelligence and its implications for the future.",
     tags: ["technology", "AI"],
     isExplicit: false,
     type: "real",
     creationDate: new Date("2023-01-01"),
-    episodes: [], 
+    episodes: [],
     averageRating: 4.5,
     monthlyListeners: 5000,
   },
@@ -31,573 +31,56 @@ export const podcasts: Podcast[] = [
   },
 ];
 
+const episodeTemplate: Episode = {
+  id: "",
+  podcastId: "podcast2",
+  podcaster: "Joe Mama",
+  episodeName: "World War II: A Deep Dive",
+  thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
+  duration: 5400, 
+  releaseDate: new Date("2023-02-20"),
+  description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
+  isExplicit: false,
+  playCount: 8000,
+  likes: {
+    count: 6500,
+    isLiked: false,
+  },
+  comments: {
+    count: 200,
+    isCommented: true,
+  },
+  listeners: {
+    count: 7500,
+    hasListened: true,
+  },
+  bookmarks: [],
+  sections: [
+    {
+      startTime: 60,
+      sectionName: "Introduction",
+    },
+    {
+      startTime: 600,
+      sectionName: "The Beginning",
+    },
+    {
+      startTime: 3600,
+      sectionName: "The End",
+    },
+  ],
+  annotations: [],
+  sponsors: [],
+  transcript:[],
+};
+
 export const episodes: Episode[] = [
-  {
-    id: "episode1",
-    podcastId: "podcast1",
-    podcaster: "Joe Mama",
-    episodeName: "The Future of AI",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 3600,
-    releaseDate: new Date("2023-01-10"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 5000,
-    likes: {
-      count: 4000,
-      isLiked: true,
-    },
-    comments: {
-      count: 100,
-      isCommented: false,
-    },
-    listeners: {
-      count: 4500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "Main Topic",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },
-  {
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },
-
-
-
-
-
-  {
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },
-  {
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },{
-    id: "episode2",
-    podcastId: "podcast2",
-    podcaster: "Joe Mama",
-    episodeName: "World War II: A Deep Dive",
-    thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
-    duration: 5400, 
-    releaseDate: new Date("2023-02-20"),
-    description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
-    isExplicit: false,
-    playCount: 8000,
-    likes: {
-      count: 6500,
-      isLiked: false,
-    },
-    comments: {
-      count: 200,
-      isCommented: true,
-    },
-    listeners: {
-      count: 7500,
-      hasListened: true,
-    },
-    bookmarks: [],
-    sections: [
-      {
-        startTime: 60,
-        sectionName: "Introduction",
-      },
-      {
-        startTime: 600,
-        sectionName: "The Beginning",
-      },
-      {
-        startTime: 3600,
-        sectionName: "The End",
-      },
-    ],
-    annotations: [],
-    sponsors: [],
-  },
+  ...Array(10).fill(episodeTemplate).map((ep, idx) => ({ ...ep, id: `episode${idx + 3}` }))
 ];
 
-podcasts[0].episodes.push(episodes[0]);
-podcasts[1].episodes.push(episodes[1]);
+episodes.forEach(episode => {
+  const podcast = podcasts.find(p => p.id === episode.podcastId);
+  if (podcast) {
+    podcast.episodes.push(episode);
+  }
+});
