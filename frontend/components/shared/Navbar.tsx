@@ -5,7 +5,6 @@ import {
   Image, MenuGroup, Input, useBreakpointValue, Icon
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon, SearchIcon, AddIcon } from "@chakra-ui/icons";
-import { RiHomeSmile2Line } from "react-icons/ri";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import Link from "next/link";
