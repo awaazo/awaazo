@@ -6,6 +6,8 @@ import LogoWhite from "../../public/logo_white.svg";
 
 import { login } from "../api/api";
 import Image from "next/image";
+import AuthHelper from "../../helpers/AuthHelper";
+import { RedirectType, redirect } from "next/navigation";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -14,18 +16,9 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault(); // Prevent default form submission
-    try {
-      const response = await login({ email, password });
-      if (response.status === 200) {
-        console.log(response.data);
-        window.location.href = "/"; // Redirect to index.tsx
-      } else {
-        setLoginError(response.data.message || "Failed to log in"); // Display login error
-      }
-    } catch (error) {
-      console.error("An error occurred", error);
-      setLoginError("An error occurred while trying to log in."); // Display login error
-    }
+
+    if(AuthHelper.login(email,password))
+      window.location.href = "/index";
   };
 
   return (
@@ -95,7 +88,7 @@ const Login: React.FC = () => {
               </Button>
               <Text>
                 Don&apos;t have an account?{" "}
-                <a href="/signup" style={{ color: "#3182CE" }}>
+                <a href="./Signup" style={{ color: "#3182CE" }}>
                   Sign up
                 </a>
               </Text>

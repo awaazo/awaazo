@@ -1,6 +1,7 @@
 // pages/index.tsx
-import { Box, Center, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Text } from "@chakra-ui/react";
 import Navbar from "../components/shared/Navbar"; 
+import AuthHelper from "../helpers/AuthHelper";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Center h="100vh">
         <Box>
           <Box p={4}>Main Content Here</Box>
+          <> { AuthHelper.getUser() as string } </>
         </Box>
       </Center>
     </>

@@ -1,5 +1,16 @@
 import axios from 'axios'
 
+export interface authLoginResponse{
+    token: string;
+    user:{
+        id: string;
+        email: string;
+        password: string;
+        dateOfBirth: string;
+        createdAt: string;
+        updatedAt: string;
+    }
+}
 
 /**
  * Default API Response Object.
@@ -8,6 +19,21 @@ export interface ResponseInfo {
     status: number;
     data: JSON;
 } 
+
+export interface AuthMeInfo{
+    status: number;
+    is_error: boolean;
+    error_message: string;
+    userId: string;
+}
+
+
+export interface AuthLoginInfo{
+    status: number;
+    is_error: boolean;
+    error_message: string;
+    data: authLoginResponse;
+}
 
 /**
  * Handles API calls to the backend.
@@ -196,7 +222,7 @@ export default class RequestHelper {
     static authLoginRequest = async (
         email: string,
         password: string
-    ): Promise<ResponseInfo> => {
+    ): Promise<AuthLoginInfo> => {
 
         // Build the request's options.
         const options = {
@@ -217,12 +243,44 @@ export default class RequestHelper {
             console.debug(requestResponse)
 
             // Return the response's status and data.
-            return { status: requestResponse.status, data: requestResponse.data }
+            return { status: requestResponse.status, is_error: false, error_message: "", data: requestResponse.data  }
         }
         catch (error) {
-            return { status: error.response.status, data: error.response.data }
+            return { status: error.response.status, is_error: true, error_message: error.response.data, data: null   }
         }
     };
+
+    static authMeRequest = async (
+        token: string
+    ): Promise<AuthMeInfo> => {
+        
+        // Build the request's options.
+        const options = {
+            method: 'GET',
+            url: EndpointHelper.getAuthMeEndpoint(),
+            authorization: "Bearer " + token,
+            headers: { 'accept': '*/*', 'Content-Type': 'application/json' }
+        }
+
+        console.debug("Sending the following authMeRequest...")
+        console.debug(options)
+
+        try {
+            // Send the request and wait for the response.
+            const requestResponse = await axios.request(options);
+        
+            console.debug("Received the following response...")
+            console.debug(requestResponse)
+
+            // Return the response's status and data.
+            return { status: requestResponse.status, is_error: false, error_message: "", userId: requestResponse.data.userId  }
+        }
+        catch (error) {
+            return { status: error.response.status, is_error: true, error_message: error, userId: null}
+        }
+            
+    };
+
 }
 
 /**
@@ -257,6 +315,14 @@ export class EndpointHelper{
      */
     static getAuthRegisterEndpoint = () => {
         return this.getBackendAddress() + "/auth/register";
+    }
+
+    /**
+     * Returns the backend Me endpoint.
+     * @returns The Me API Endpoint
+     */
+    static getAuthMeEndpoint = () => {
+        return this.getBackendAddress() + "/auth/me";
     }
     
 }
