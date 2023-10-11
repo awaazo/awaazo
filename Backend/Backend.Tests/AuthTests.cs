@@ -1,8 +1,17 @@
+using AutoMapper;
+using Backend.Controllers;
 using Backend.Controllers.Requests;
+using Backend.Helper;
 using Backend.Models;
 using Backend.Services;
+using Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Moq;
+using System.Runtime.CompilerServices;
 
 namespace Backend.Tests;
 
@@ -16,6 +25,7 @@ public class AuthTests : IAsyncLifetime
     private readonly User _user;
     private readonly string _userPassword;
     private readonly AppDbContext _dbContext;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
@@ -33,8 +43,16 @@ public class AuthTests : IAsyncLifetime
         // Create a new instance of the AppDbContext class
         _dbContext = new(connectionString!);
 
+        // Create a new Mapper instance with the required Configuration
+        MapperConfiguration mapperConfiguration = new(
+            config =>
+            {
+                config.AddProfile(new AutoMapperProfile());
+            });
+        _mapper = new Mapper(mapperConfiguration);
+
         // Auth Service used for testing
-        _authService = new AuthService(_dbContext);
+        _authService = new AuthService(_dbContext,_mapper);
 
         // Password used for Testing
         _userPassword = "XXXXXXXXXXX123";
@@ -45,7 +63,9 @@ public class AuthTests : IAsyncLifetime
             Id = Guid.NewGuid(),
             Password = BCrypt.Net.BCrypt.HashPassword(_userPassword),
             Email = "XXXXXXXX123@email.com",
-            DateOfBirth = DateTime.Now
+            DateOfBirth = DateTime.Now,
+            Gender = User.GenderEnum.Other,
+            Username = "XXXXXXXX"
         };
     }
 
@@ -75,7 +95,9 @@ public class AuthTests : IAsyncLifetime
         {
             Email = _user.Email,
             Password = _userPassword,
-            DateOfBirth = _user.DateOfBirth
+            DateOfBirth = _user.DateOfBirth,
+            Gender = _user.Gender.ToString(),
+            Username = _user.Username,
         };
 
         // ACT
@@ -109,7 +131,9 @@ public class AuthTests : IAsyncLifetime
         {
             Email = _user.Email,
             Password = _userPassword,
-            DateOfBirth = _user.DateOfBirth
+            DateOfBirth = _user.DateOfBirth,
+            Gender = _user.Gender.ToString(),
+            Username = _user.Username,
         };
 
         // ACT
@@ -204,6 +228,205 @@ public class AuthTests : IAsyncLifetime
         // CLEANUP
         await RemoveUserAsync();
     } 
+
+    // TEST Controller
+
+    /// <summary>
+    /// Tests the Login method. Given a LoginRequest object, it should return a OkObjectResult if the user is valid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Login_ValidUser_ReturnsOkObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(_user);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // Create the Request
+        LoginRequest loginRequest = new()
+        {
+            Email= _user.Email,
+            Password= _userPassword
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.Login(loginRequest);
+
+        // ASSERT
+        Assert.IsType<OkObjectResult>(actionResult);
+    }
+
+    /// <summary>
+    /// Tests the Login method. Given a LoginRequest object, it should return a BadRequestObjectResult if the user is invalid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Login_InvalidUser_ReturnsBadRequestObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // Create the Request
+        LoginRequest loginRequest = new()
+        {
+            Email= _user.Email,
+            Password= _userPassword
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.Login(loginRequest);
+
+        // ASSERT
+        Assert.IsType<BadRequestObjectResult>(actionResult);
+    }
+
+    /// <summary>
+    /// Tests the Register method. Given a RegisterRequest object, it should return a OkObjectResult if the user is valid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Register_NewUser_ReturnsOkObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(_user);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // Create the Request
+        RegisterRequest registerRequest = new()
+        {
+            Email = _user.Email,
+            Password = _userPassword,
+            DateOfBirth = _user.DateOfBirth,
+            Gender = _user.Gender.ToString(),
+            Username = _user.Username
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.Register(registerRequest);
+
+        // ASSERT
+        Assert.IsType<OkObjectResult>(actionResult);
+    }
+
+    /// <summary>
+    /// Tests the Register method. Given a RegisterRequest object, it should return a BadRequestObjectResult if the user is invalid.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Register_InvalidUser_ReturnsBadRequestObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // Create the Request
+        RegisterRequest registerRequest = new()
+        {
+            Email = _user.Email,
+            Password = _userPassword,
+            DateOfBirth = _user.DateOfBirth,
+            Gender = _user.Gender.ToString(),
+            Username = _user.Username
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.Register(registerRequest);
+
+        // ASSERT
+        Assert.IsType<BadRequestObjectResult>(actionResult);
+    }
+
+    /// <summary>
+    /// Tests the Me method. Given a valid user, it should return a OkObjectResult.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Me_ValidUser_ReturnsOkObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(_user);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // ACT
+        IActionResult actionResult = await authController.Me();
+
+        // ASSERT
+        Assert.IsType<OkObjectResult>(actionResult);
+    }
+
+    /// <summary>
+    /// Tests the Me method. Given an invalid user, it should return a BadRequestObjectResult.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async void Me_InvalidUser_ReturnsBadRequestObjectResult()
+    {
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // ACT
+        IActionResult actionResult = await authController.Me();
+
+        // ASSERT
+        Assert.IsType<BadRequestObjectResult>(actionResult);
+    }
+
 
     // Test Helpers
     

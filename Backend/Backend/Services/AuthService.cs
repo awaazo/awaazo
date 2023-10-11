@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using static Backend.Models.User;
 
 namespace Backend.Services;
 
@@ -78,9 +79,13 @@ public class AuthService : IAuthService
         if (existingUser is not null)
             return null;
 
+        // Make sure the Request sent a Valid Gender
+        bool isValidGender = Enum.TryParse(request.Gender, out GenderEnum gender);
+        if (!isValidGender)
+            request.Gender = "None";
+        
+
         // Create the new User
-
-
         User newUser = _mapper.Map<User>(request);
         newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
 
@@ -88,7 +93,7 @@ public class AuthService : IAuthService
         //Default Avatar
         //TODO set Interest default value as null
         newUser.Avatar = "DefaultAvatar";
-        newUser.Interests = new string[] {};
+        newUser.Interests = Array.Empty<string>();
 
 
         // Add the User to the Database
