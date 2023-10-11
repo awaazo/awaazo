@@ -45,6 +45,7 @@ export interface Podcast {
     }[];
     annotations: Annotation[];
     sponsors: Sponsor[];
+    transcript?: TranscriptLine[];
   };
   
   
@@ -71,6 +72,11 @@ export interface Podcast {
     title: string;
     note?: string;
     time: number;
+  }
+
+  export interface TranscriptLine {
+    timestamp: number; // Timestamp in seconds
+    text: string;
   }
   
   export interface User {
