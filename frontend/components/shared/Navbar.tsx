@@ -64,6 +64,10 @@ export default function Navbar() {
                   <MenuItem>Docs</MenuItem>
                   <MenuItem>FAQ</MenuItem>
                 </MenuGroup>
+                <MenuDivider />
+                <MenuGroup>
+                  <MenuItem>Logout</MenuItem>
+                </MenuGroup>
               </MenuList>
             </Menu>
           </Flex>
@@ -101,6 +105,10 @@ export default function Navbar() {
                 <MenuGroup title="Help">
                   <MenuItem>Docs</MenuItem>
                   <MenuItem>FAQ</MenuItem>
+                </MenuGroup>
+                <MenuDivider />
+                <MenuGroup>
+                  <MenuItem>Logout</MenuItem>
                 </MenuGroup>
               </MenuList>
             </Menu>
