@@ -12,6 +12,9 @@ import { register } from "../api/api";
 import LogoWhite from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from 'next/router';
 
 const SignUp: React.FC = () => {
 
@@ -23,6 +26,21 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string | null>("");
   const [dateOfBirth, setDateOfBirth] = useState<string | null>("");
   const [signUpError, setSignUpError] = useState<string | null>(""); // To store login error
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
+
+
+  useEffect(() => {
+    if (session && googleSignUpClicked) {
+      router.push('/profile/MyProfile');
+    }
+  }, [session, googleSignUpClicked]);
+
+  const handleGoogleSignUp = () => {
+    setGoogleSignUpClicked(true);
+    signIn('google');
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +80,7 @@ const SignUp: React.FC = () => {
       <Text fontSize="1.3rem" textAlign="center" marginBottom="3rem">
         Sign up to get started
       </Text>
-      <Button type="button" colorScheme="green" size="lg" fontSize="md" onClick={() => signIn("google")} marginBottom={5} p={6}>
+      <Button type="button" colorScheme="green" size="lg" fontSize="md" onClick={handleGoogleSignUp} marginBottom={5} p={6}>
         Sign up with Google
       </Button>
       <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">
