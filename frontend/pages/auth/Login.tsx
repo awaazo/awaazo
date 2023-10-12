@@ -1,36 +1,56 @@
 // src/Login.tsx
-import React, { useState, FormEvent } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text } from "@chakra-ui/react";
+import React, { useState, FormEvent, useEffect } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+
 import logo from "../styles/images/logo.png";
 import LogoWhite from "../../public/logo_white.svg";
-
-import { login } from "../api/api";
 import Image from "next/image";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const Login: React.FC = () => {
+  // CONSTANTS
+  const mainPage = "/Main";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null); // To store login error
 
+  useEffect(() => {
+    // Check if user is already logged in
+    if (AuthHelper.isLoggedIn()) {
+      window.location.href = mainPage;
+    }
+  }, []);
+
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault(); // Prevent default form submission
-    try {
-      const response = await login({ email, password });
-      if (response.status === 200) {
-        console.log(response.data);
-        window.location.href = "/"; // Redirect to index.tsx
-      } else {
-        setLoginError(response.data.message || "Failed to log in"); // Display login error
-      }
-    } catch (error) {
-      console.error("An error occurred", error);
-      setLoginError("An error occurred while trying to log in."); // Display login error
+    const response = await AuthHelper.login(email, password);
+    console.log(response);
+    if (response == "Login Successful") {
+      window.location.href = mainPage;
+    } else {
+      setLoginError(response);
     }
   };
 
   return (
     <>
-      <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="80vh">
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
         <Box
           p={6}
           display="flex" // Use flexbox to center vertically
@@ -65,29 +85,34 @@ const Login: React.FC = () => {
           >
             Sign in to continue
           </Text>
-          <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => (window.location.href = "/api/auth/google")} marginBottom={5}>
-            Sign in with Google
-          </Button>
-          <Text
-            style={{
-              fontSize: "1.3rem",
-              textAlign: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            or
-          </Text>
-          {loginError && <Text color="red.500">{loginError}</Text>}
+
+          {loginError && (
+            <Text fontWeight="bold" color="red.500">
+              {loginError}
+            </Text>
+          )}
           <form onSubmit={handleLogin}>
             <Stack spacing={4}>
               <FormControl>
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </FormControl>
 
               <FormControl>
                 <FormLabel>Password</FormLabel>
-                <Input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </FormControl>
 
               <Button type="submit" colorScheme="gray" size="lg" fontSize="md">
@@ -95,10 +120,26 @@ const Login: React.FC = () => {
               </Button>
               <Text>
                 Don&apos;t have an account?{" "}
-                <a href="/signup" style={{ color: "#3182CE" }}>
+                <a href="/auth/Signup" style={{ color: "#3182CE" }}>
                   Sign up
                 </a>
               </Text>
+              <Text
+                style={{
+                  fontSize: "1.2rem",
+                  textAlign: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                or
+              </Text>
+              <div className="sso-group">
+                <Stack
+                  direction="column"
+                  style={{ alignSelf: "center" }}
+                  gap={4}
+                ></Stack>
+              </div>
             </Stack>
           </form>
         </Box>
