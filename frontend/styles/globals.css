@@ -21,28 +21,15 @@ img {
 
 .translucent-menu {
     background-color: rgba(255, 0, 0, 0.8);
-    /* Adjust the color and opacity as needed */
     backdrop-filter: blur(5px);
-    /* Add a blur effect to the background */
     border-radius: 8px;
-    /* Optional: Add rounded corners */
     padding: 16px;
-    /* Optional: Add padding to the menu */
 }
-
-::-webkit-scrollbar {
-    width: 10px; /* Adjust width of the vertical scrollbar */
-    height: 10px; /* Adjust height for horizontal scrollbar */
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Color of the track */
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888; /* Color of the scroll handle */
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Color of the scroll handle on hover */
+ 
+.no-scrollbar {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }

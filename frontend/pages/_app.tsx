@@ -2,7 +2,8 @@
 import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import bg from "../styles/images/bg.png";
-
+import '../styles/globals.css';
+ 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
