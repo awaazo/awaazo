@@ -7,9 +7,11 @@ using Backend.Infrastructure;
 using Backend.Services.Interfaces;
 using Backend.Services;
 using Backend.Helper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Backend;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args) {

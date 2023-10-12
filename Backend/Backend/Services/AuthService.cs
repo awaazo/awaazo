@@ -9,6 +9,7 @@ using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using static Backend.Models.User;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Backend.Services;
 
@@ -35,6 +36,14 @@ public class AuthService : IAuthService
         // Check if key is null
         if (configuration["Jwt:Key"] is null) 
             throw new Exception("Key is null");
+        
+        // Check if Issuer is null
+        if(configuration["Jwt:Issuer"] is null)
+            throw new Exception("Issuer is null");
+        
+        // Check if Audience is null
+        if(configuration["Jwt:Audience"] is null)
+            throw new Exception("Audience is null");
         
         // Create Credentials
         SymmetricSecurityKey key = new (Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
