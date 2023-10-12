@@ -17,8 +17,17 @@ const Login: React.FC = () => {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault(); // Prevent default form submission
 
-    if(AuthHelper.login(email,password))
-      window.location.href = "/";
+    try{
+      const success = await AuthHelper.login(email, password);
+      if(success){
+        window.location.href = "/";
+      }else{
+        setLoginError("Login failed. Please check your credentials");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setLoginError("An error occurred during login.");
+    }
   };
 
   return (

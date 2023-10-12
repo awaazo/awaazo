@@ -64,12 +64,9 @@ export default class AuthHelper{
         //return user;
     };
 
-    public static isLoggedIn(): boolean{
-        if(this.getToken){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    public static isLoggedIn(): boolean {
+        const token = this.getToken();
+        return !!token; // Double negation to convert to boolean
+      }
 
 }
