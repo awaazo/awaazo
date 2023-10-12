@@ -27,7 +27,7 @@ const Login: React.FC = () => {
       if(success){
         window.location.href = "/";
       }else{
-        setLoginError("Login failed. Please check your credentials");
+        setLoginError("Login failed. Invalid Email and/or Password.");
       }
     } catch (error) {
       console.error("Error during login:", error);
