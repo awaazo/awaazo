@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models;
@@ -44,7 +45,7 @@ public class User : BaseEntity
     /// <summary>
     /// URL for user's PFP
     /// </summary>
-    public string Avatar { get; set; }
+    public string? Avatar { get; set; }
 
     public string[] Interests { get; set; }
     public DateTime DateOfBirth { get; set; }
