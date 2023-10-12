@@ -6,13 +6,16 @@ import {
   Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup,
   useColorModeValue, useColorMode, Image, Input, useBreakpointValue, Icon
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, SearchIcon, AddIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
+  const indexPage = "/";
+  const registerPage = "/auth/Signup";
+  const isLoggedIn = AuthHelper.isLoggedIn();
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -25,7 +28,7 @@ export default function Navbar() {
 
   const handleLogOut = () => {
     AuthHelper.logout();
-    window.location.href = loginPage;
+    window.location.href = indexPage;
   };
 
   const UserProfileMenu = () => (
@@ -56,6 +59,7 @@ export default function Navbar() {
           <MenuItem>Docs</MenuItem>
           <MenuItem>FAQ</MenuItem>
           <MenuDivider />
+          
           <MenuItem onClick={handleLogOut} style={{ color: "red", fontWeight: "bold" }}>
             Logout
           </MenuItem>
@@ -63,6 +67,21 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
+
+  const LoggedOutMenu = () => (
+    <Menu>
+    <MenuButton as={Button} variant={"link"} cursor={"pointer"}>
+      <HamburgerIcon/>
+    </MenuButton>
+    <MenuList>
+      <MenuItem onClick={() => (window.location.href = loginPage)}>Login</MenuItem>
+      <MenuDivider/>
+      <MenuItem onClick={() => (window.location.href = registerPage)}>Register</MenuItem>
+    </MenuList>
+
+  </Menu>
+  
+    );
 
   return (
     <Box 
@@ -108,7 +127,13 @@ export default function Navbar() {
                 color={colorMode === "dark" ? "white" : "black"} 
               />
             </Link>
-            <UserProfileMenu />
+            {
+              isLoggedIn ? (
+                <UserProfileMenu />
+                ) : (
+                  <LoggedOutMenu />
+                )
+            }
           </Flex>
         )}
       </Flex>

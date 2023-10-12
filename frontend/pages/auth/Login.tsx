@@ -37,13 +37,14 @@ const Login: React.FC = () => {
   }, []);
 
   const handleLogin = async (e: FormEvent) => {
+
     e.preventDefault(); // Prevent default form submission
     const response = await AuthHelper.login(email, password);
     console.log(response);
-    if (response === true) {
+    if (response) {
       window.location.href = mainPage;
     } else {
-      setLoginError(response as unknown as string);
+      setLoginError("Login failed. Invalid Email and/or Password.");
     }
   };
 

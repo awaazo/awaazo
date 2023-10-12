@@ -1,8 +1,8 @@
 describe('Login', () => {
   
   // Test Setup
-  const loginPageLink = 'http://localhost:3500/auth/Login';
-  const homePageLink = 'http://localhost:3500/';
+  const loginPageLink = 'http://localhost:3000/auth/Login';
+  const homePageLink = 'http://localhost:3000/';
 
   it('Should show login from homepage', () => {
     cy.visit(homePageLink)
