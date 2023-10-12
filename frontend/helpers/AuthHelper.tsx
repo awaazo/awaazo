@@ -1,4 +1,4 @@
-import RestHelper from "./RestHelper";
+import RestHelper, { UserInfo } from "./RestHelper";
 import jwt_decode from 'jwt-decode';
 
 
@@ -86,9 +86,33 @@ export default class AuthHelper{
         }
     };
 
-    public static register = async (email: string, password: string): Promise<boolean> =>
+    /**
+     * Handles the User Registration Process with the Backend.
+     * @param email User's email address. 
+     * @param password User's password. 
+     * @param username User's username. 
+     * @param dateOfBirth User's date of birth. 
+     * @returns True if the user successfuly registered, otherwise false.
+     */
+    public static register = async (email: string, password: string, username: string, dateOfBirth: string): Promise<boolean> =>
     {
-        return false;
+        // Set default gender
+        const default_gender = "None";
+
+        // Make Date of Birth into a Date object Format
+        dateOfBirth = new Date(dateOfBirth).toISOString();
+
+        const res = await RestHelper.authRegisterRequest(email,password,dateOfBirth,default_gender,username);
+
+        if(res.status === 200){
+            console.debug("Registration Successful")
+            this.setToken(res.data.token);
+            return true;
+        }
+        else{
+            console.error("Registration Failed")
+            return false;
+        }
     };
 
     /**
@@ -99,16 +123,17 @@ export default class AuthHelper{
         console.log("logged out");
     };
 
+    
     /**
-     * Returns the user's ID.
-     * @returns The user's ID. Null if the user is not Authenticated.
+     * Returns the user info of the currently logged in user.
+     * @returns User Info,  or null if the user is not logged in.
      */
-    public static getUserId = async (): Promise<string> =>
+    public static getUser = async (): Promise<UserInfo> =>
     {
         const res = await RestHelper.authMeRequest(this.getToken());
 
         if(res.status === 200){
-            return res.userId;
+            return res.user;
         }
         else{
             return null; // Should never happen.

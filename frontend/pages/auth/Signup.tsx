@@ -11,41 +11,33 @@ import {
 import { register } from "../api/api";
 import LogoWhite from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const SignUp: React.FC = () => {
-  const [email, setEmail] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
-  const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
-  const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
-  const [signUpError, setSignUpError] = useState<string | null>(null); // To store login error
+
+  const profilePage = "/profile/MyProfile";
+
+  const [email, setEmail] = useState<string | null>("");
+  const [username, setUsername] = useState<string | null>("");
+  const [password, setPassword] = useState<string | null>("");
+  const [confirmPassword, setConfirmPassword] = useState<string | null>("");
+  const [dateOfBirth, setDateOfBirth] = useState<string | null>("");
+  const [signUpError, setSignUpError] = useState<string | null>(""); // To store login error
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!(password === confirmPassword)) {
-      setSignUpError("The passwords you have entered do not match");
-    } else {
-      try {
-        const payload = {
-          email: email || undefined,
-          password: password || undefined,
-          dateOfBirth: dateOfBirth || undefined,
-        };
-        console.log("Payload:", payload); // Debugging line
-        const response = await register(payload);
-        console.log("Response:", response); // Debugging line
-        if (response.status === 200) {
-          console.log(response.data);
-          window.location.href = "/auth/Login";
-        } else {
-          alert(response.data.message || "Failed to sign up");
-        }
-      } catch (error) {
-        if (error.response) {
-          console.error("Server Response:", error.response.data);
-        }
-        console.error("An error occurred:", error);
-        setSignUpError(error.response.data);
+      setSignUpError("Passwords do not match.");
+    } 
+    else {
+      const response = await AuthHelper.register(email, password, username, dateOfBirth);
+      console.log(response);
+      if (response) {
+        window.location.href = profilePage;
+      }
+      else{
+        setSignUpError("Registration failed.");
       }
     }
   };
@@ -57,7 +49,6 @@ const SignUp: React.FC = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      height="80vh"
     >
       <img src={LogoWhite.src} alt="logo" style={{ maxWidth: "20em" }} />
       <Text
@@ -77,6 +68,7 @@ const SignUp: React.FC = () => {
       <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">
         or
       </Text>
+      {signUpError && <Text color="red.500">{signUpError}</Text>}
       <form onSubmit={handleSignUp}>
         <Stack spacing={4}>
           <FormControl>
@@ -86,6 +78,16 @@ const SignUp: React.FC = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </FormControl>
@@ -113,7 +115,6 @@ const SignUp: React.FC = () => {
             <FormLabel>Date of Birth</FormLabel>
             <Input
               type="date"
-              placeholder="Enter your date of birth"
               value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
               required

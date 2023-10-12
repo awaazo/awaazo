@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export interface authLoginResponse {
+export interface AuthLoginResponse {
   token: string;
   user: {
     id: string;
@@ -24,14 +24,40 @@ export interface AuthMeInfo {
   status: number;
   is_error: boolean;
   error_message: string;
-  userId: string;
+  user: UserInfo;
+}
+
+export interface UserInfo{
+  id: string;
+  email: string;
+  username: string;
+  avatar: string;
 }
 
 export interface AuthLoginInfo {
   status: number;
   is_error: boolean;
   error_message: string;
-  data: authLoginResponse;
+  data: AuthLoginResponse;
+}
+
+export interface AuthRegisterInfo{
+  status: number;
+  is_error: boolean;
+  error_message: string;
+  data: AuthRegisterResponse;
+}
+
+export interface AuthRegisterResponse{
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    password: string;
+    dateOfBirth: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 /**
@@ -168,23 +194,27 @@ export default class RequestHelper {
     return { status: requestResponse.status, data: requestResponse.data };
   };
 
-  /**
-   * Sends a POST Request to the /auth/register endpoint with given parameters.
-   * @param email User email
-   * @param password User password
-   * @param dateOfBirth User date of birth
-   * @returns ResponseInfo Object containing the response's status and data.
-   */
+/**
+ * Sends a POST Request to the /auth/register endpoint with given parameters.
+ * @param email User email
+ * @param password User password
+ * @param dateOfBirth User Date of Birth
+ * @param gender User gender
+ * @param username User Username
+ * @returns AuthRegisterInfo with response data or error info
+ */
   static authRegisterRequest = async (
     email: string,
     password: string,
-    dateOfBirth: string
-  ): Promise<ResponseInfo> => {
+    dateOfBirth: string,
+    gender: string,
+    username: string
+  ): Promise<AuthRegisterInfo> => {
     // Build the request's options.
     const options = {
       method: "POST",
       url: EndpointHelper.getAuthRegisterEndpoint(),
-      data: { email: email, password: password, dateOfBirth: dateOfBirth },
+      data: { email: email, password: password, dateOfBirth: dateOfBirth, username: username, gender: gender },
       headers: { accept: "*/*", "Content-Type": "application/json" },
     };
 
@@ -199,9 +229,19 @@ export default class RequestHelper {
       console.debug(requestResponse);
 
       // Return the response's status and data.
-      return { status: requestResponse.status, data: requestResponse.data };
+      return {
+        status: requestResponse.status,
+        is_error: false,
+        error_message: "",
+        data: requestResponse.data,
+      };
     } catch (error) {
-      return { status: error.response.status, data: error.response.data };
+      return {
+        status: error.response.status,
+        is_error: true,
+        error_message: error.response.data,
+        data: null,
+      };
     }
   };
 
@@ -242,7 +282,7 @@ export default class RequestHelper {
       };
     } catch (error) {
       return {
-        status: null,
+        status: error.response.status,
         is_error: true,
         error_message: error.response.data,
         data: null,
@@ -255,8 +295,10 @@ export default class RequestHelper {
     const options = {
       method: "GET",
       url: EndpointHelper.getAuthMeEndpoint(),
-      authorization: "Bearer " + token,
-      headers: { accept: "*/*", "Content-Type": "application/json" },
+      headers: { 
+        accept: "*/*", 
+        "Content-Type": "application/json", 
+        authorization: "Bearer " + token  },
     };
 
     console.debug("Sending the following authMeRequest...");
@@ -274,14 +316,14 @@ export default class RequestHelper {
         status: requestResponse.status,
         is_error: false,
         error_message: "",
-        userId: requestResponse.data.userId,
+        user: requestResponse.data,
       };
     } catch (error) {
       return {
         status: error.response.status,
         is_error: true,
         error_message: error,
-        userId: null,
+        user: null,
       };
     }
   };

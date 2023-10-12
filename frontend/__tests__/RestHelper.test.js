@@ -9,6 +9,7 @@ import RequestHelper, { EndpointHelper } from '../helpers/RestHelper';
 const mockEmail = (Math.random() + 1).toString(36).substring(2, 5) + (Math.random() + 1).toString(36).substring(2, 5) + "@email.com"
 const mockPassword = (Math.random()+1).toString(36).substring(2, 5)
 const mockDateOfBirth = new Date(1995, 1, 1).toISOString()
+const mockUsername = (Math.random() + 1).toString(36).substring(2, 5)
 
 //#region EndpointHelper Tests
 
@@ -76,7 +77,7 @@ test('Test EndpointHelper.getAuthRegisterEndpoint() method', () => {
 test('Test RestHelper.authRegisterRequest() method', async () => {
 
     // Test that the correct request is made.
-    const result = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth);
+    const result = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth,"None",mockUsername);
     expect(result.status).toBe(200);
 
     // Test that the correct data is returned.
@@ -85,9 +86,9 @@ test('Test RestHelper.authRegisterRequest() method', async () => {
     expect(new Date(result.data.user.dateOfBirth).toISOString()).toBe(mockDateOfBirth);
 
     // Test that the user can't be duplicated.
-    const result2 = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth);
+    const result2 = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth,"None",mockUsername);
     expect(result2.status).toBe(400);
-    expect(result2.data).toBe('User already exists');
+    expect(result2.error_message).toBe('User already exists');
 });
 
 test('Test RestHelper.authLoginRequest() method', async () => { 
@@ -99,7 +100,7 @@ test('Test RestHelper.authLoginRequest() method', async () => {
     // Test that the user can't login with a wrong password.
     const result2 = await RequestHelper.authLoginRequest(mockEmail, mockPassword+"wrong");
     expect(result2.status).toBe(400);
-    expect(result2.data).toBe('Invalid Credentials');
+    expect(result2.error_message).toBe('Invalid Credentials');
 });
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -10,6 +10,7 @@ import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon } from "@chakra-u
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import { UserInfo } from "../../helpers/RestHelper";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -19,12 +20,24 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
-  
   const [searchValue, setSearchValue] = useState("");
-
   const handleSearchChange = (event) => setSearchValue(event.target.value);
-
   const handleSearchSubmit = () => console.log("Search Value:", searchValue);
+
+
+  const [user,setUser] = useState({id: "",email: "",username: "", avatar: ""});
+
+  useEffect(() => {
+    if(isLoggedIn){
+      AuthHelper.getUser().then(
+        (response) => {
+          setUser(response);
+          console.log(response);
+        }
+      )
+    }
+  }, []);
+  
 
   const handleLogOut = () => {
     AuthHelper.logout();
@@ -48,7 +61,7 @@ export default function Navbar() {
         </MenuItem>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem>UserName</MenuItem>
+          <MenuItem>{user.username}</MenuItem>
           <MenuDivider />
           <MenuItem onClick={() => (window.location.href = "/profile/MyProfile")}>My Account</MenuItem>
           <MenuItem onClick={() => (window.location.href = "/profile/MyPodcast")}>My Podcast</MenuItem>
