@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
       console.log("Response:", response); // Debugging line
       if (response.status === 200) {
         console.log(response.data);
-        window.location.href = "/login";
+        window.location.href = "/";
       } else {
         alert(response.data.message || "Failed to sign up");
       }
@@ -68,7 +68,7 @@ const SignUp: React.FC = () => {
           </Button>
           <Text>
             Already have an account?{" "}
-            <a href="/login" style={{ color: "#3182CE" }}>
+            <a href="/auth/Login" style={{ color: "#3182CE" }}>
               Log in
             </a>
           </Text>

@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     e.preventDefault(); // Prevent default form submission
 
     if(AuthHelper.login(email,password))
-      window.location.href = "/index";
+      window.location.href = "/";
   };
 
   return (

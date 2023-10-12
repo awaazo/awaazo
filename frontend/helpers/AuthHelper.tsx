@@ -8,7 +8,7 @@ export default class AuthHelper{
             localStorage.setItem('token', token);
     };
 
-    private static getToken(){
+    public static getToken(){
         if(typeof window !== 'undefined')
         {
             if(!localStorage.getItem('token'))
