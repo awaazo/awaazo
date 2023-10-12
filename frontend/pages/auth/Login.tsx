@@ -40,10 +40,10 @@ const Login: React.FC = () => {
     e.preventDefault(); // Prevent default form submission
     const response = await AuthHelper.login(email, password);
     console.log(response);
-    if (response == "Login Successful") {
+    if (response === true) {
       window.location.href = mainPage;
     } else {
-      setLoginError(response);
+      setLoginError(response as unknown as string);
     }
   };
 
