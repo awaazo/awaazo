@@ -10,7 +10,6 @@ export default function Home() {
       <Center h="100vh">
         <Box>
           <Box p={4}>Main Content Here</Box>
-          <> { AuthHelper.getUser() as string } </>
         </Box>
       </Center>
     </>

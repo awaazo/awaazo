@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Flex, Avatar, HStack, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useColorModeValue, useColorMode, Image, MenuGroup, Input } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, SearchIcon, AddIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { RiHomeSmile2Line } from "react-icons/ri";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
@@ -96,8 +96,22 @@ export default function Navbar() {
             </Menu>
           ) : (
             <>
-              <Button onClick={() => (window.location.href = "/auth/Login")}>Log in</Button>
-              <Button onClick={() => (window.location.href = "/auth/Signup")}>Sign Up</Button>
+            <Menu>
+              <MenuButton>
+                <IconButton aria-label="Toggle theme" icon={<HamburgerIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"}></IconButton>
+              </MenuButton>
+              <MenuList>
+                <MenuGroup>
+                  <MenuItem onClick={() => (window.location.href = "/auth/Login")}>
+                      Login
+                  </MenuItem>
+                  <MenuDivider/>
+                  <MenuItem onClick={() => (window.location.href = "/auth/Signup")}>
+                      Register
+                  </MenuItem>
+                </MenuGroup>
+              </MenuList>
+            </Menu>
             </>
           )}
         </Flex>
