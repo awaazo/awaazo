@@ -17,12 +17,8 @@ const ExploreGenres = () => {
   ];
 
   return (
-    <VStack align="start" spacing={5} p={5} m={3} width="100%" flex="1" borderRadius="25px" backdropFilter="blur(35px)" boxShadow="xl">
-      <Text fontSize="xl" fontWeight="bold" ml={3} position="sticky">
-        Explore Genres
-      </Text>
-
-      <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4} width="80%" alignSelf="center">
+    <VStack align="start" spacing={5} p={5} flex="1">
+      <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4} alignSelf="center">
         {genres.map((genre, index) => (
           <Box key={index} h="100px" w="100%" borderRadius="lg" overflow="hidden" position="relative" _hover={{ transform: "scale(1.03)", boxShadow: "xl" }} transition="all 0.3s ease-in-out">
             <Image src={genre.backgroundImage.src} alt={`${genre.name} background`} width="100%" height="100%" objectFit="cover" opacity="0.8" />
