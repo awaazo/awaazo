@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models;
@@ -10,14 +8,16 @@ namespace Backend.Models;
 /// </summary>
 public class User : BaseEntity
 {
-
+    /// <summary>
+    /// Default Constructor.
+    /// </summary>
     public User()
     {
+        // Make sure that the strings are not null.
+        Id = Guid.Empty;
         Email = string.Empty;
         Password = string.Empty;
-        Username = string.Empty;
-        Avatar = string.Empty;
-        Interests = Array.Empty<string>();
+        DateOfBirth = DateTime.Now;
     }
 
     /// <summary>
@@ -39,39 +39,5 @@ public class User : BaseEntity
     [Required]
     public string Password { get; set; }
 
-    public string Username { get; set; }
-
-    /// <summary>
-    /// URL for user's PFP
-    /// </summary>
-    public string Avatar { get; set; }
-
-    public string[] Interests { get; set; }
     public DateTime DateOfBirth { get; set; }
-    
-    [DefaultValue(GenderEnum.Other)]
-    public GenderEnum Gender { get; set; }
-
-    /// <summary>
-    /// Flag indicating if the user is a podcaster
-    /// </summary>
-    public bool IsPodcaster { get; set; }
-
-    public ICollection<Podcast> Podcasts { get; } = new List<Podcast>();
-
-    public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
-
-    public ICollection<PodcastFollow> PodcastFollows { get; } = new List<PodcastFollow>();
-
-    public ICollection<UserFollow> UserFollows { get; } = new List<UserFollow>();
-
-    public ICollection<Subscription> Subscriptions { get; } = new List<Subscription>();
-
-    public ICollection<PodcastRating> Ratings { get; } = new List<PodcastRating>();
-
-    public enum GenderEnum
-    {
-        Male, Female, Other, None
-    }
-
 }
