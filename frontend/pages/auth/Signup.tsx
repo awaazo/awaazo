@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text } from "@chakra-ui/react";
 import { register } from "../api/api";
 import LogoWhite from "../../public/logo_white.svg";
+import { signIn } from "next-auth/react";
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -43,7 +44,7 @@ const SignUp: React.FC = () => {
       <Text fontSize="1.3rem" textAlign="center" marginBottom="3rem">
         Sign up to get started
       </Text>
-      <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => (window.location.href = "/api/auth/google")} marginBottom={5}>
+      <Button type="button" colorScheme="green" size="lg" fontSize="md" onClick={() => signIn("google")} marginBottom={5} p={6}>
         Sign up with Google
       </Button>
       <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">

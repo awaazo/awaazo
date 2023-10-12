@@ -8,11 +8,16 @@ import { login } from "../api/api";
 import Image from "next/image";
 import AuthHelper from "../../helpers/AuthHelper";
 import { RedirectType, redirect } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from 'next/router';
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState<string | null>(null); // To store login error
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const { data: session } = useSession()
+  const router = useRouter(); // To store login error
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault(); // Prevent default form submission
@@ -67,7 +72,7 @@ const Login: React.FC = () => {
           >
             Sign in to continue
           </Text>
-          <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => (window.location.href = "/api/auth/google")} marginBottom={5}>
+          <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => signIn()} marginBottom={5}>
             Sign in with Google
           </Button>
           <Text

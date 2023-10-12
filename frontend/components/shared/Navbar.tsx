@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { Box, Flex, Avatar, HStack, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useColorModeValue, useColorMode, Image, MenuGroup, Input } from "@chakra-ui/react";
 import { MoonIcon, SunIcon, SearchIcon, AddIcon } from "@chakra-ui/icons";
 import { RiHomeSmile2Line } from "react-icons/ri";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import AuthHelper from "../../helpers/AuthHelper";
 
 export default function Navbar() {
+  const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -23,12 +25,12 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    AuthHelper.logout();
-    setIsLoggedIn(false); // Update the authentication status
-    window.location.href = "/";
+    signOut({
+      callbackUrl: "/",  // Redirect to homepage after logout
+    });
   };
 
-  
+  const isLoading = status === "loading";
   return (
     <Box bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")} backdropFilter="blur(35px)" p={4} m={3} position="sticky" top={0} zIndex={999} borderRadius={"25px"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)">
       <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
@@ -63,7 +65,9 @@ export default function Navbar() {
               color={colorMode === "dark" ? "white" : "black"}
             />
           </Link>
-          {isLoggedIn ? (
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : session ? (
             <Menu>
               <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
                 <Avatar size={"sm"} src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
@@ -96,8 +100,8 @@ export default function Navbar() {
             </Menu>
           ) : (
             <>
-              <Button onClick={() => (window.location.href = "/auth/Login")}>Log in</Button>
-              <Button onClick={() => (window.location.href = "/auth/Signup")}>Sign Up</Button>
+              <Button onClick={() => (window.location.href = "/auth/Login")} mr={4}>Log in</Button>
+              <Button onClick={() => (window.location.href = "/auth/Signup")} mr={4}>Sign Up</Button>
             </>
           )}
         </Flex>
