@@ -8,7 +8,7 @@ export default class AuthHelper{
             localStorage.setItem('token', token);
     };
 
-    public static getToken(){
+    private static getToken(){
         if(typeof window !== 'undefined')
         {
             if(!localStorage.getItem('token'))
@@ -43,6 +43,7 @@ export default class AuthHelper{
 
     public static logout = (): void => {
         this.removeToken();
+        console.log("logged out");
     }
 
     public static getUserId = async (): Promise<string> =>
@@ -62,5 +63,13 @@ export default class AuthHelper{
         //const user = jwt(this.getToken());
         //return user;
     };
+
+    public static isLoggedIn(): boolean{
+        if(this.getToken){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 }

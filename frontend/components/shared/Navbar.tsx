@@ -14,7 +14,13 @@ export default function Navbar() {
     toggleColorMode();
   };
 
-  const isLoggedIn = AuthHelper.getToken();
+  const handleLogout = () => {
+    // Call the AuthHelper.logout method to log the user out.
+    AuthHelper.logout();
+    window.location.href = "/";
+  };
+
+  const isLoggedIn = AuthHelper.isLoggedIn();
   console.log(isLoggedIn);
 
   if(isLoggedIn){
@@ -57,7 +63,7 @@ export default function Navbar() {
                     <MenuItem>Docs</MenuItem>
                     <MenuItem>FAQ</MenuItem>
                     <MenuDivider />
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </MenuGroup>
                 </MenuList>
             </Menu>
