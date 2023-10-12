@@ -9,16 +9,30 @@ export default NextAuth({
         }),
     ],
     callbacks: {
-        async signIn({ user, account, profile, email, credentials }) {
-          if (account.provider === 'google') {
-            return true; // Returning true will continue the sign-in process
-          }
-          return false; // Returning false will reject the sign-in
-        },
+      async signIn({ user, account, profile, email, credentials }) {
+        console.log("Profile Object:", profile); // Add this line
+        if (account.provider === 'google') {
+          const uniqueID = profile.sub;
+          await saveToDatabase(email, uniqueID);
+          return true;
+        }
+        return false;
+      },
         async redirect({ url, baseUrl }) {
           return baseUrl; // Always redirect to the homepage
         },
+        async session({ session, token, user }) {
+          console.log("Token Object:", token); // Add this line
+          return {
+            ...session,
+            id: token.sub || user.id,
+          };
+        },
       },
     secret: "123456789",
-
 });
+
+async function saveToDatabase(email, uniqueID) {
+    // Connect to a database, insert/update a user record, etc.
+    console.log(email, uniqueID);
+  }

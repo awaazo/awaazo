@@ -32,13 +32,13 @@ export default function Navbar() {
     if (session) {
       // User logged in via Google
       const googleUser = {
-        id: session.user.id || "",
+        id: session.id || "",
         email: session.user.email || "",
         username: session.user.name || "",
         avatar: session.user.image || "",
       };
       setUser(googleUser);
-      setIsUserLoggedIn(true); // Set login status to true
+      setIsUserLoggedIn(true); 
       console.log("Logged in via Google:", googleUser);
     } else if (isLoggedIn) {
       // User logged in via custom method
