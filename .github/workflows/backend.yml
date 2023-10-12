@@ -31,6 +31,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Start/Run the Database
+    - name: Start Database Container
+      run: docker-compose -f "docker-compose.yml" up -d --build sql
+
+    # Start/Run the Backend API
+    - name: Start Backend Container
+      run: docker-compose -f "docker-compose.yml" up -d --build backend
+
     # Install .NET 6
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
