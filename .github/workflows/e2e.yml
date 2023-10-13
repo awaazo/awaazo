@@ -1,0 +1,63 @@
+name: E2E Cypress CI
+
+# Action Triggers
+on:
+    push:
+      branches: 
+        - "main"
+      paths:
+        - "Backend/**"
+        - "frontend/**"
+        - ".github/workflows/e2e.yml"
+    pull_request:
+      branches: 
+        - "main"
+      paths:
+        - "Backend/**"
+        - "frontend/**"
+        - ".github/workflows/e2e.yml"
+
+jobs:
+  cypress-run:
+    name: End-to-End Testing
+    runs-on: ubuntu-latest
+
+    steps:
+
+      #Checkout Changes
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      # Start/Run the Database
+      - name: Start Database Container
+        run: docker-compose -f "docker-compose.yml" up -d --build sql
+
+      # Start/Run the Backend API
+      - name: Start Backend Container
+        run: docker-compose -f "docker-compose.yml" up -d --build backend
+
+      # Start/Run the Frontend Website
+      - name: Start Frontend Container
+        run: docker-compose -f "docker-compose.yml" up -d --build frontend
+      
+      # Run the E2E Testing
+      - name: Cypress Run
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: frontend
+
+      # Upload the Test Results
+      - name: Uploading Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-screenshots
+          path: frontend/cypress/screenshots
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cypress-videos
+          path: frontend/cypress/videos
+          if-no-files-found: ignore
+
+        
+      
