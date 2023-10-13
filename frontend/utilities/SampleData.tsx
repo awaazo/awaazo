@@ -50,10 +50,6 @@ const episodeTemplate: Episode = {
     count: 200,
     isCommented: true,
   },
-  listeners: {
-    count: 7500,
-    hasListened: true,
-  },
   bookmarks: [],
   sections: [
     {

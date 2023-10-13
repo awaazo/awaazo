@@ -33,12 +33,7 @@ export interface Podcast {
       count: number;
       isCommented: boolean;
     };
-
-    listeners: {
-        count: number;
-        hasListened: boolean;
-        lastListenedPosition?: number;
-      };
+//play count is enough , should be deleted later 
     bookmarks?: Bookmark[];
     sections?: {
       startTime: number;
@@ -93,6 +88,7 @@ export interface Podcast {
     gender: "male" | "female" | "other" | "prefer not to say";
     isPodcaster: boolean;
     podcasts?: Podcast[];
+    
   }
   
   export interface PodcastFollow {
@@ -120,3 +116,11 @@ export interface Podcast {
     timestamp: Date;
   }
   
+  export interface UserEpisodeInteraction {
+    id: string; 
+    userId: string;
+    episodeId: string;
+    hasListened: boolean;
+    lastListenedPosition?: number;
+    dateListened?: Date; 
+  }

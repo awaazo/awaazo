@@ -1,4 +1,3 @@
-// pages/index.tsx
 import { Box, Center, Text } from "@chakra-ui/react";
 import Navbar from "../components/shared/Navbar"; 
 
