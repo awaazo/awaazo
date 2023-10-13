@@ -13,6 +13,20 @@ namespace Backend.Controllers.Requests
     }
 
     [BindProperties]
+    public class GoogleRequest
+    {
+        [Required]
+        public string Token { get; set; }
+       
+    }
+
+    public class GoogleResponse
+    {
+        public string email { get; set; }
+        public string name { get; set; }
+    }
+
+    [BindProperties]
     public class RegisterRequest : LoginRequest
     {
         [Required]
@@ -27,5 +41,7 @@ namespace Backend.Controllers.Requests
        
 
     }
+
+  
 }
 

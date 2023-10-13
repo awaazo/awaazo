@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using static Backend.Models.User;
 using System.Security.Cryptography.X509Certificates;
+using Google.Apis.Auth;
 
 namespace Backend.Services;
 
@@ -130,6 +131,33 @@ public class AuthService : IAuthService
 
         // Return the User object from the Database
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
+
+    public async Task<User?> UserExist(string email)
+    {
+      return await _db.Users!.FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+
+    //Decodes the Passed Token
+    public GoogleResponse? DecodeGoogleToken(IConfiguration configuration, string token)
+    {
+        if (token == null) {
+            return null;
+        }
+        else 
+        {
+            GoogleJsonWebSignature.ValidationSettings settings = new GoogleJsonWebSignature.ValidationSettings();
+            settings.Audience = new List<string> { configuration["jwt:Google_ClientId"] };
+            GoogleJsonWebSignature.Payload payload = GoogleJsonWebSignature.ValidateAsync(token, settings).Result;
+            //Returns email and Password of the user    
+            return new GoogleResponse()
+            {
+                email = payload.Email,
+                name = payload.Name,
+            };
+        }
     }
 }
 

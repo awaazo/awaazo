@@ -13,4 +13,7 @@ public interface IAuthService
 
     public Task<User?> IdentifyUserAsync(HttpContext httpContext);
 
+    public GoogleResponse? DecodeGoogleToken(IConfiguration configuration, string token);
+
+    public Task<User?> UserExist(string email);
 }
