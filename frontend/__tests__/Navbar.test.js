@@ -9,7 +9,7 @@ import fetchMock from "jest-fetch-mock";
 
 // Mock the Chakra UI useBreakpointValue hook
 jest.mock("@chakra-ui/media-query", () => ({
-  useBreakpointValue: jest.fn(() => false), // Change this value to match your needs
+  useBreakpointValue: jest.fn(() => false), 
 }));
 
 // Mock Next.js' router to prevent issues
