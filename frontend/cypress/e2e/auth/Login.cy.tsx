@@ -1,7 +1,7 @@
 describe('Login', () => {
 
   it('Should Successfully Login', function () {
-    cy.visit('http://localhost:3000/');
+    cy.visit('http://localhost:3500/');
     cy.url().should('include', '/');
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button[aria-label="Menu"]').click();
@@ -13,7 +13,7 @@ describe('Login', () => {
   });
 
   it('Should Fail to Login', function () {
-    cy.visit('http://localhost:3000/');
+    cy.visit('http://localhost:3500/');
     cy.url().should('include', '/');
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button[aria-label="Menu"]').click();

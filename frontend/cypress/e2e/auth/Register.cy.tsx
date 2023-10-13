@@ -2,7 +2,7 @@ describe('Register', () => {
 
     // Test successful registration from the main page
     it('Should Successfully Register new User', function() {
-        cy.visit('http://localhost:3000/');
+        cy.visit('http://localhost:3500/');
         cy.url().should('include', '/');
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button[aria-label="Menu"]').click();
@@ -18,7 +18,7 @@ describe('Register', () => {
 
     // Test unsuccessful registration from the main page
     it('Should not Register new User with existing email', function() {
-        cy.visit('http://localhost:3000/');
+        cy.visit('http://localhost:3500/');
         cy.url().should('include', '/');
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button[aria-label="Menu"]').click();
@@ -35,7 +35,7 @@ describe('Register', () => {
 
     // Test unsuccessful registration from the main page. Passwords do not match.
     it('Should not Register new User Passwords that do not match', function() {
-        cy.visit('http://localhost:3000/');
+        cy.visit('http://localhost:3500/');
         cy.url().should('include', '/');
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button[aria-label="Menu"]').click();

@@ -3,7 +3,7 @@ describe('Logout', () => {
     
     it('Logout when user is logged in', () => {
     
-        cy.visit('http://localhost:3000/');
+        cy.visit('http://localhost:3500/');
         cy.url().should('include', '/');
         cy.get('button[aria-label="Menu"]').click();
         cy.get('button[aria-label="Menu"]').click();
