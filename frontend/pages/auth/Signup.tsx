@@ -14,10 +14,9 @@ import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const SignUp: React.FC = () => {
-
   const profilePage = "/profile/MyProfile";
 
   const [email, setEmail] = useState<string | null>("");
@@ -30,16 +29,15 @@ const SignUp: React.FC = () => {
   const { data: session } = useSession();
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
-
   useEffect(() => {
     if (session && googleSignUpClicked) {
-      router.push('/profile/MyProfile');
+      router.push("/profile/MyProfile");
     }
   }, [session, googleSignUpClicked]);
 
   const handleGoogleSignUp = () => {
     setGoogleSignUpClicked(true);
-    signIn('google');
+    signIn("google");
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -47,14 +45,18 @@ const SignUp: React.FC = () => {
 
     if (!(password === confirmPassword)) {
       setSignUpError("Passwords do not match.");
-    } 
-    else {
-      const response = await AuthHelper.register(email, password, username, dateOfBirth);
+      console.debug(signUpError);
+    } else {
+      const response = await AuthHelper.register(
+        email,
+        password,
+        username,
+        dateOfBirth
+      );
       console.log(response);
       if (response) {
         window.location.href = profilePage;
-      }
-      else{
+      } else {
         setSignUpError("Registration failed.");
       }
     }
@@ -80,7 +82,15 @@ const SignUp: React.FC = () => {
       <Text fontSize="1.3rem" textAlign="center" marginBottom="3rem">
         Sign up to get started
       </Text>
-      <Button type="button" colorScheme="green" size="lg" fontSize="md" onClick={handleGoogleSignUp} marginBottom={5} p={6}>
+      <Button
+        type="button"
+        colorScheme="green"
+        size="lg"
+        fontSize="md"
+        onClick={handleGoogleSignUp}
+        marginBottom={5}
+        p={6}
+      >
         Sign up with Google
       </Button>
       <Text fontSize="1.3rem" textAlign="center" marginBottom="1rem">
@@ -93,6 +103,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Email address</FormLabel>
             <Input
               type="email"
+              id="email"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -103,6 +114,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Username</FormLabel>
             <Input
               type="text"
+              id="username"
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -113,6 +125,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
+              id="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -123,6 +136,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Confirm Password</FormLabel>
             <Input
               type="password"
+              id="confirmPassword"
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -130,9 +144,10 @@ const SignUp: React.FC = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Date of Birth</FormLabel>
+            <FormLabel htmlFor="date">Date of Birth</FormLabel>
             <Input
               type="date"
+              id="date"
               value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
               required

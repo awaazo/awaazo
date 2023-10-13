@@ -111,6 +111,7 @@ const Login: React.FC = () => {
                 <FormLabel>Email address</FormLabel>
                 <Input
                   type="email"
+                  id="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -121,6 +122,7 @@ const Login: React.FC = () => {
               <FormControl>
                 <FormLabel>Password</FormLabel>
                 <Input
+                  id="password"
                   type="password"
                   placeholder="Enter your password"
                   value={password}
@@ -129,7 +131,7 @@ const Login: React.FC = () => {
                 />
               </FormControl>
 
-              <Button type="submit" colorScheme="gray" size="lg" fontSize="md">
+              <Button id="loginBtn" type="submit" colorScheme="gray" size="lg" fontSize="md">
                 Login
               </Button>
               <Text>

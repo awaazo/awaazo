@@ -68,7 +68,7 @@ export default function Navbar() {
 
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+      <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
         <Avatar 
           size={"sm"} 
           src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"} 
@@ -105,11 +105,11 @@ export default function Navbar() {
 
   const LoggedOutMenu = () => (
     <Menu>
-    <MenuButton as={Button} variant={"link"} cursor={"pointer"}>
+    <MenuButton menu-id="menuBtn" aria-label="Menu" as={Button} variant={"link"} cursor={"pointer"}>
       <HamburgerIcon/>
     </MenuButton>
     <MenuList>
-      <MenuItem onClick={() => (window.location.href = loginPage)}>Login</MenuItem>
+      <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>Login</MenuItem>
       <MenuDivider/>
       <MenuItem onClick={() => (window.location.href = registerPage)}>Register</MenuItem>
     </MenuList>
@@ -166,7 +166,7 @@ export default function Navbar() {
               isUserLoggedIn ? (
                 <UserProfileMenu />
                 ) : (
-                  <LoggedOutMenu />
+                  <LoggedOutMenu/>
                 )
             }
           </Flex>
