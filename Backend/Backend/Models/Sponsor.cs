@@ -16,5 +16,5 @@ public class Sponsor : BaseEntity
     
     public string Name { get; set; }
     
-    public string Website { get; set; }
+    public string? Website { get; set; }
 }
