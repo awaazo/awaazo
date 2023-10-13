@@ -1,6 +1,6 @@
 import { Box, Text, VStack, useColorModeValue } from "@chakra-ui/react";
 import PodcastTicket from "./PodcastTicket";
-import { Episode } from "../../utilities/interfaces";
+import { Episode } from "../../utilities/Interfaces";
 
 const ForYouSection: React.FC<{ episodes: Episode[] }> = ({ episodes }) => {
   return (
