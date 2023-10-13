@@ -5,13 +5,13 @@ import PlayerBar from "../components/shared/PlayerBar";
 import ChatBot from "../components/player/ChatBot";
 import Bookmarks from "../components/player/Bookmarks";
 import Transcripts from "../components/player/Transcripts";
+import CoverArt from "../components/player/CoverArt";
 import { episodes } from "../utilities/SampleData";
-import { AnyNaptrRecord } from "dns";
 
 const Player: React.FC = () => {
   const direction = useBreakpointValue({ base: "column", md: "row" });
   const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
-  // Flags to show/hide components. Adjust these as needed.
+// Flags to show/hide components. Adjust these as needed.
   const showChatBot = true;
   const showBookmarks = true;
   const showTranscripts = true;
@@ -41,14 +41,16 @@ const Player: React.FC = () => {
       isVisible: showTranscripts,
     },
     {
-      component: <Box bg="red" w="full" h="full" />,  // Placeholder for the cover/description component
+      component: <CoverArt 
+                   imageUrl="https://images.unsplash.com/photo-1519916340768-6710a9735b10?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                   description="Brief episode description..."
+                 />,
       isVisible: true,
     },
     // Add more components as needed
   ];
 
   const visibleComponents = components.filter(comp => comp.isVisible);
-  
   const handleClick = (index: number) => {
     setSelectedComponent(index);
   };
