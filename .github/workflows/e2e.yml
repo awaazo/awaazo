@@ -29,14 +29,30 @@ jobs:
         uses: actions/checkout@v3
         
       # Start/Run the Database, Backend API & Frontend Website
-      - name: Start Database Container
+      - name: Start Containers
         run: docker-compose -f "docker-compose.yml" up -d --build
       
-      # Run the E2E Testing
-      - name: Cypress Run
-        uses: cypress-io/github-action@v6
+      # Install Node
+      - name: Install node
+        uses: actions/setup-node@v1
         with:
-          working-directory: frontend
+          node-version: 18.x
+      
+      # Install Frontend Deps
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Run Cypress
+        working-directory: frontend
+        run: npx cypress run
+
+        
+      # # Run the E2E Testing
+      # - name: Cypress Run
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     working-directory: frontend
 
       # Upload the Test Results
       - name: Uploading Artifact
