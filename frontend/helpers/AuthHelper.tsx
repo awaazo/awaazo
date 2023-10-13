@@ -62,6 +62,27 @@ export default class AuthHelper{
             localStorage.removeItem('token');
     };
 
+    public static loginGoogleSSO = async (email:string,username:string,sub:string,avatar:string): Promise<boolean> =>
+    {
+        // Send the request.
+        const res = await RestHelper.authGoogleSSORequest(email,username,sub,avatar);
+
+        console.debug(res);
+        
+        // Successful login.
+        if(res.status === 200){
+            console.debug("Login Successful")
+            this.setToken(res.data.token);
+            return true;
+        }
+        // Unsuccessful login.
+        else{
+            console.error("Login Failed")
+            return false;
+        }
+        
+    }
+
     /**
      * Handles the User Login Process with the Backend.
      * @param email The user's email address. 

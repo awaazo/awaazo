@@ -133,31 +133,38 @@ public class AuthService : IAuthService
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-
-    public async Task<User?> UserExist(string email)
+    /// <summary>
+    /// Retrieves or Creates the Google SSO user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public async Task<User?> GoogleSSOAsync(GoogleRequest request)
     {
-      return await _db.Users!.FirstOrDefaultAsync(u => u.Email == email);
-    }
+        // Check if the User exists
+        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => 
+            u.Email == request.Email);
+        
+        // Return the user if he exists already
+        if(existingUser is not null)
+            return existingUser;
 
-
-    //Decodes the Passed Token
-    public GoogleResponse? DecodeGoogleToken(IConfiguration configuration, string token)
-    {
-        if (token == null) {
-            return null;
-        }
-        else 
+        // Otherwise create the user
+        User newUser = new()
         {
-            GoogleJsonWebSignature.ValidationSettings settings = new GoogleJsonWebSignature.ValidationSettings();
-            settings.Audience = new List<string> { configuration["jwt:Google_ClientId"] };
-            GoogleJsonWebSignature.Payload payload = GoogleJsonWebSignature.ValidateAsync(token, settings).Result;
-            //Returns email and Password of the user    
-            return new GoogleResponse()
-            {
-                email = payload.Email,
-                name = payload.Name,
-            };
-        }
+            Id = Guid.NewGuid(),
+            Email = request.Email!,
+            Avatar = request.Avatar!,
+            Username = request.Username!,
+            Password = BCrypt.Net.BCrypt.HashPassword(request.Sub),
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        // Add the User to the Database
+        await _db.Users!.AddAsync(newUser);
+        await _db.SaveChangesAsync();
+        
+        return newUser;
     }
 }
 

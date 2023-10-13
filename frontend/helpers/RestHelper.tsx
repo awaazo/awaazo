@@ -290,6 +290,53 @@ export default class RequestHelper {
     }
   };
 
+  static authGoogleSSORequest = async (
+    email:string,
+    username:string,
+    sub:string,
+    avatar:string
+  ): Promise<AuthLoginInfo> =>{
+
+    // Build the request's options.
+    const options = {
+      method: "POST",
+      url: EndpointHelper.getGoogleSSOEndpoint(),
+      data: { email: email, username: username, sub: sub, avatar: avatar },
+      headers: { accept: "*/*", "Content-Type": "application/json" },
+    };
+
+    console.debug("Sending the following authGoogleSSORequest...");
+    console.debug(options);
+
+    try {
+      // Send the request and wait for the response.
+      const requestResponse = await axios.request(options);
+
+      console.debug("Received the following response...");
+      console.debug(requestResponse);
+
+      // Return the response's status and data.
+      return {
+        status: requestResponse.status,
+        is_error: false,
+        error_message: "",
+        data: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response.status,
+        is_error: true,
+        error_message: error.response.data,
+        data: null,
+      };
+    }
+  }
+
+  /**
+   * Sends a GET Request to the /auth/me endpoint with given JWT Token.
+   * @param token JWT Token
+   * @returns AuthMeInfo with response data or error info
+   */
   static authMeRequest = async (token: string): Promise<AuthMeInfo> => {
     // Build the request's options.
     const options = {
@@ -344,7 +391,7 @@ export class EndpointHelper {
       process.env.NODE_ENV === "test"
     )
       return "http://localhost:32773";
-    else return "http://backend:32773";
+    else return "http://localhost:32773";
   };
 
   /**
@@ -369,5 +416,13 @@ export class EndpointHelper {
    */
   static getAuthMeEndpoint = () => {
     return this.getBackendAddress() + "/auth/me";
+  };
+
+  /**
+   * Returns the Google SSO endpoint.
+   * @returns The Google SSO Endpoint
+   */
+  static getGoogleSSOEndpoint = () => {
+    return this.getBackendAddress() + "/auth/googleSSO";
   };
 }

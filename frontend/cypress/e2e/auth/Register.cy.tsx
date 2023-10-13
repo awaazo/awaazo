@@ -1,12 +1,12 @@
 describe('Register', () => {
 
     // Test successful registration from the main page
-    it('Should Successfully Register new User', function() {
-        cy.visit('http://localhost:3500/');
+    it('Should Successfully Register new User', function () {
+        cy.visit('/');
         cy.url().should('include', '/');
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button').contains('Register').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testRegister@email.com');
         cy.get('input[id="username"]').type('TestUsername');
         cy.get('input[id="password"]').type('password123');
@@ -17,12 +17,12 @@ describe('Register', () => {
     });
 
     // Test unsuccessful registration from the main page
-    it('Should not Register new User with existing email', function() {
-        cy.visit('http://localhost:3500/');
+    it('Should not Register new User with existing email', function () {
+        cy.visit('/');
         cy.url().should('include', '/');
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button').contains('Register').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testRegister@email.com');
         cy.get('input[id="username"]').type('TestUsername');
         cy.get('input[id="password"]').type('password123');
@@ -34,12 +34,12 @@ describe('Register', () => {
     });
 
     // Test unsuccessful registration from the main page. Passwords do not match.
-    it('Should not Register new User Passwords that do not match', function() {
-        cy.visit('http://localhost:3500/');
+    it('Should not Register new User Passwords that do not match', function () {
+        cy.visit('/');
         cy.url().should('include', '/');
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get('button').contains('Register').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testNewRegister@email.com');
         cy.get('input[id="username"]').type('TestUsername');
         cy.get('input[id="password"]').type('password123');

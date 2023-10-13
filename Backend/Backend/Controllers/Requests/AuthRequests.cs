@@ -16,14 +16,16 @@ namespace Backend.Controllers.Requests
     public class GoogleRequest
     {
         [Required]
-        public string Token { get; set; }
-       
-    }
+        public string? Email { get; set; }
+        
+        [Required]
+        public string? Username { get; set; }
+        
+        [Required]
+        public string? Sub { get; set; }
 
-    public class GoogleResponse
-    {
-        public string email { get; set; }
-        public string name { get; set; }
+        [Required]
+        public string? Avatar { get; set; }
     }
 
     [BindProperties]

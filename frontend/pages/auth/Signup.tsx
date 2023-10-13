@@ -30,23 +30,27 @@ const SignUp: React.FC = () => {
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
   useEffect(() => {
-    if (session && googleSignUpClicked) {
-      router.push("/profile/MyProfile");
-    }
   }, [session, googleSignUpClicked]);
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
   };
 
+  /**
+   * Handles the SignUp Event.
+   * @param e Event from SignUp Form
+   */
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check if passwords match
     if (!(password === confirmPassword)) {
       setSignUpError("Passwords do not match.");
       console.debug(signUpError);
-    } else {
+    }
+    // Register with Backend
+    else {
       const response = await AuthHelper.register(
         email,
         password,
@@ -54,9 +58,11 @@ const SignUp: React.FC = () => {
         dateOfBirth
       );
       console.log(response);
+      // If registration was successful, redirect to profile page. Otherwise, display error.
       if (response) {
         window.location.href = profilePage;
-      } else {
+      } 
+      else {
         setSignUpError("Registration failed.");
       }
     }
@@ -161,15 +167,6 @@ const SignUp: React.FC = () => {
             <a href="/auth/Login" style={{ color: "#3182CE" }}>
               Log in
             </a>
-          </Text>
-          <Text
-            style={{
-              fontSize: "1.2rem",
-              textAlign: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            or
           </Text>
           <div className="sso-group">
             <Stack

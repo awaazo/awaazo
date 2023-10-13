@@ -74,49 +74,20 @@ public class AuthController : ControllerBase
         });
     }
 
-    [HttpPost("google")]
-    public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest googleRequest)
+    [HttpPost("googleSSO")]
+    public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
     {
-        GoogleResponse response = _authService.DecodeGoogleToken(_configuration,googleRequest.Token);
-        if (response is null) return BadRequest();
-        else
-        {
-            //If user Does not Exist it will return user and token
-            User user = await _authService.UserExist(response.email);
-            if (user is null) 
-            {
-                RegisterRequest register = new RegisterRequest()
-                {
-                    //TODO:Allow Date of birth to be null 
-                    DateOfBirth = DateTime.UtcNow,
-                    Username = response.name,
-                    Email = response.email,
-                    Gender = "None",
-                    //TODO : Add One more field in User scheme for google request
-                    Password = "12345",
+        // Get the SSO User
+        User? user = await _authService.GoogleSSOAsync(request);
+        if(user is null)
+            return BadRequest("Email already in Use.");
 
-                };
-                User? registerUser= await _authService.RegisterAsync(register);
-                string token = _authService.GenerateToken(registerUser.Id, _configuration, TokenLifeTime);
-                return Ok(new { Token = token, User = registerUser });
-
-            }
-            else
-            //If user Exist then it will login and Return the user and token
-            {
-                LoginRequest login = new LoginRequest()
-                {
-                    Email = response.email,
-                    Password = "12345"
-                };
-
-                User? loginUser = await _authService.LoginAsync(login);
-                string token = _authService.GenerateToken(loginUser.Id, _configuration, TokenLifeTime);
-                return Ok(new { Token = token, User = loginUser });
-
-            }
-
-        }
+        // Generate JWT Token for user
+        string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
+        
+        // Return JWT Token with the User
+        return Ok(new {Token = token, User = user});
     }
+
 
 }

@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <ChakraProvider>
+      <meta name="referrer" content="no-referrer" />
       <Box
         position="fixed"
         top="0"

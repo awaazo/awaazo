@@ -50,21 +50,12 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <Box
-        p={6}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-      >
         <Box
           p={6}
           display="flex" // Use flexbox to center vertically
           flexDirection="column" // Stack children vertically
           justifyContent="center" // Center vertically
           alignItems="center" // Center horizontally
-          height="80vh"
         >
           <img
             src={LogoWhite.src}
@@ -140,15 +131,6 @@ const Login: React.FC = () => {
                   Sign up
                 </a>
               </Text>
-              <Text
-                style={{
-                  fontSize: "1.2rem",
-                  textAlign: "center",
-                  marginBottom: "1rem",
-                }}
-              >
-                or
-              </Text>
               <div className="sso-group">
                 <Stack
                   direction="column"
@@ -159,7 +141,6 @@ const Login: React.FC = () => {
             </Stack>
           </form>
         </Box>
-      </Box>
     </>
   );
 };
