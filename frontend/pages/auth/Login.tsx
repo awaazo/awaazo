@@ -83,7 +83,7 @@ const Login: React.FC = () => {
           >
             Sign in to continue
           </Text>
-          <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => signIn()} marginBottom={5} p={6}>
+          <Button type="submit" colorScheme="green" size="lg" fontSize="md" onClick={() => signIn('google')} marginBottom={5} p={6}>
             Sign in with Google
           </Button>
           <Text
