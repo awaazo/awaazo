@@ -26,21 +26,43 @@ export default function Navbar() {
 
 
   const [user,setUser] = useState({id: "",email: "",username: "", avatar: ""});
-
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+  
   useEffect(() => {
-    if(isLoggedIn){
-      AuthHelper.getUser().then(
-        (response) => {
-          setUser(response);
-          console.log(response);
-        }
-      )
+    if (session) {
+      // User logged in via Google
+      const googleUser = {
+        id: session.id || "",
+        email: session.user.email || "",
+        username: session.user.name || "",
+        avatar: session.user.image || "",
+      };
+      setUser(googleUser);
+      setIsUserLoggedIn(true); 
+      console.log("Logged in via Google:", googleUser);
+    } else if (isLoggedIn) {
+      // User logged in via custom method
+      AuthHelper.getUser().then((response) => {
+        setUser(response);
+        setIsUserLoggedIn(true); // Set login status to true
+        console.log("Logged in via custom method:", response);
+      });
+    } else {
+      setIsUserLoggedIn(false); // Set login status to false
     }
-  }, []);
+  }, [session, isLoggedIn]);
+
   
 
   const handleLogOut = () => {
-    AuthHelper.logout();
+    if (session) {
+      // User logged in via Google, so use next-auth's signOut
+      signOut();
+    } else {
+      // User logged in via custom method
+      AuthHelper.logout();
+    }
+    setIsUserLoggedIn(false); // Set login status to false
     window.location.href = indexPage;
   };
 
@@ -141,7 +163,7 @@ export default function Navbar() {
               />
             </Link>
             {
-              isLoggedIn ? (
+              isUserLoggedIn ? (
                 <UserProfileMenu />
                 ) : (
                   <LoggedOutMenu/>
