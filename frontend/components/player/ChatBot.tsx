@@ -1,6 +1,22 @@
-import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex } from "@chakra-ui/react";
-import { FaPaperPlane } from "react-icons/fa";
+import {
+  Box,
+  Input,
+  VStack,
+  Text,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  Image,
+  Flex,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { BsArrowUpCircle } from "react-icons/bs";
 import { useState } from "react";
+
+const awaazoBird = "/awaazo_bird_aihelper_logo.svg";
+const awaazoBirdRe = "/awaazo_bird_aihelper_reply_icon.svg";
+const userAvatar =
+  "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80";
 
 type MessageType = {
   sender: "user" | "bot";
@@ -10,7 +26,6 @@ type MessageType = {
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-
   const handleSendMessage = () => {
     if (inputValue.trim()) {
       setMessages([...messages, { sender: "user", content: inputValue }]);
@@ -19,33 +34,89 @@ const Chatbot: React.FC = () => {
     }
   };
 
+  const boxSize = useBreakpointValue({ base: "20px", md: "30px" });
+  const inputPadding = useBreakpointValue({ base: "1", md: "4" });
+
   return (
-    <Box p={4} boxShadow="xl" rounded="md" width="100%" maxW="400px">
-      <Image src="/path-to-logo.png" alt="Chatbot Logo" marginBottom={4} alignSelf="center" />
+    <Box
+      p={4}
+      boxShadow="xl"
+      rounded="2xl"
+      width="100%"
+      minH="100%"
+      display="flex"
+      flexDirection="column"
+    >
+      <Flex marginBottom={4} justifyContent="center">
+        <Image
+          src={awaazoBird}
+          alt="Awaazo Bird AI Helper Logo"
+          boxSize={boxSize}
+        />
+      </Flex>
 
-      <VStack spacing={4} align="start" overflowY="auto" height="300px">
-        {messages.map((message, idx) => (
-          <Flex key={idx} align="center">
-            <Image src={message.sender === "user" ? "/path-to-user-avatar.png" : "/path-to-bot-avatar.png"} alt={`${message.sender} avatar`} boxSize="24px" mr={2} />
-            <Box bg={message.sender === "user" ? "blue.500" : "gray.500"} color="white" p={2} borderRadius="max">
-              {message.content}
-            </Box>
-          </Flex>
-        ))}
-      </VStack>
-      <Text fontSize="sm" color="gray.500" mb={2}>
-        Things you could ask me:
-      </Text>
-      <Text fontSize="sm" color="gray.500" mb={4} fontStyle="italic">
-        What is the timestamp they talked about?
-      </Text>
+      <Flex
+        flexDirection="column"
+        flexGrow={1}
+        className="no-scrollbar"
+        overflowY="auto"
+        mb={4}
+        maxH="60vh"
+      >
+        <VStack spacing={4} align="start" flex="1">
+          {messages.map((message, idx) => (
+            <Flex key={idx} align="center">
+              <Box boxSize="24px" mr={2}>
+                <Image
+                  src={message.sender === "user" ? userAvatar : awaazoBirdRe}
+                  alt={`${message.sender} avatar`}
+                  boxSize="24px"
+                  objectFit="cover"
+                  borderRadius="full"
+                />
+              </Box>
+              <Box
+                p={2}
+                borderRadius="full"
+                boxShadow="md"
+                backdropBlur="4px"
+                bg="rgba(255, 255, 255, 0.1)"
+                borderColor="rgba(255, 255, 255, 0.1)"
+              >
+                {message.content}
+              </Box>
+            </Flex>
+          ))}
+        </VStack>
+      </Flex>
+      <Box mt="auto">
+        <Text fontSize="sm" color="gray.500" mb={2}>
+          Things you could ask me:
+        </Text>
+        <Text fontSize="sm" color="gray.500" mb={4} fontStyle="italic">
+          What is the timestamp they talked about?
+        </Text>
 
-      <InputGroup>
-        <Input placeholder="Ask me anything about this podcast..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} />
-        <InputRightElement>
-          <IconButton aria-label="Send" icon={<FaPaperPlane />} onClick={handleSendMessage} variant="outline" colorScheme="blue" />
-        </InputRightElement>
-      </InputGroup>
+        <InputGroup>
+          <Input
+            placeholder="Ask me anything about this podcast..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            rounded="3xl"
+            p={inputPadding}
+          />
+          <InputRightElement>
+            <IconButton
+              aria-label="Send"
+              icon={<BsArrowUpCircle />}
+              onClick={handleSendMessage}
+              variant="ghost"
+              rounded="full"
+            />
+          </InputRightElement>
+        </InputGroup>
+      </Box>
     </Box>
   );
 };
