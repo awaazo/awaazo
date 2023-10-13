@@ -75,6 +75,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Email address</FormLabel>
             <Input
               type="email"
+              id="email"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -85,6 +86,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Username</FormLabel>
             <Input
               type="text"
+              id="username"
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -95,6 +97,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
+              id="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -105,6 +108,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Confirm Password</FormLabel>
             <Input
               type="password"
+              id="confirmPassword"
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -115,6 +119,7 @@ const SignUp: React.FC = () => {
             <FormLabel>Date of Birth</FormLabel>
             <Input
               type="date"
+              id="date"
               value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
               required
