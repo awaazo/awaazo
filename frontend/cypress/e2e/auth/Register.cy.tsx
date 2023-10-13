@@ -20,7 +20,7 @@ describe('Register', () => {
     it('Should not Register new User with existing email', function () {
         cy.visit('/');
         cy.url().should('include', '/');
-        cy.get('button[aria-label="Menu"]').click();
+        cy.wait(500);
         cy.get('button[aria-label="Menu"]').click();
         cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testRegister@email.com');
@@ -37,7 +37,7 @@ describe('Register', () => {
     it('Should not Register new User Passwords that do not match', function () {
         cy.visit('/');
         cy.url().should('include', '/');
-        cy.get('button[aria-label="Menu"]').click();
+        cy.wait(500);
         cy.get('button[aria-label="Menu"]').click();
         cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testNewRegister@email.com');

@@ -3,7 +3,7 @@ describe('Login', () => {
   it('Should Successfully Login', function () {
     cy.visit('/');
     cy.url().should('include', '/');
-    cy.get('button[aria-label="Menu"]').click();
+    cy.wait(500);
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button').contains('Login').click();
     cy.get('input[id="email"]').type("testRegister@email.com");
@@ -15,7 +15,7 @@ describe('Login', () => {
   it('Should Fail to Login', function () {
     cy.visit('/');
     cy.url().should('include', '/');
-    cy.get('button[aria-label="Menu"]').click();
+    cy.wait(500);
     cy.get('button[aria-label="Menu"]').click();
     cy.get('button').contains('Login').click();
     cy.get('input[id="email"]').type("testRegisterWRONG@email.com");
