@@ -64,12 +64,15 @@ namespace Backend.Models
 
         [DefaultValue(false)]
         public bool HasListened { get; set; }
+
+        [DefaultValue(false)]
+        public bool HasLiked {get; set;}
         
         public double LastListenPosition { get; set; }
         
         public DateTime DateListened { get; set; }
 
-        private AppDbContext _db;
+        private readonly AppDbContext _db;
         public UserEpisodeInteraction(AppDbContext db)
         {
             _db = db;
