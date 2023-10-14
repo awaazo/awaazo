@@ -13,4 +13,5 @@ public interface IAuthService
 
     public Task<User?> IdentifyUserAsync(HttpContext httpContext);
 
+    public Task<User?> GoogleSSOAsync(GoogleRequest google);
 }

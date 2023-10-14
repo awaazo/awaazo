@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Backend.Infrastructure;
 using Backend.Services;
+using Google.Apis.Auth;
 using Backend.Services.Interfaces;
 
 namespace Backend.Controllers;
@@ -72,5 +73,22 @@ public class AuthController : ControllerBase
             Avatar = user.Avatar  
         });
     }
+
+
+    [HttpPost("googleSSO")]
+    public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
+    {
+        // Get the SSO User
+        User? user = await _authService.GoogleSSOAsync(request);
+        if(user is null)
+            return BadRequest("Email already in Use.");
+
+        // Generate JWT Token for user
+        string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
+        
+        // Return JWT Token with the User
+        return Ok(new {Token = token, User = user});
+    }
+
 
 }

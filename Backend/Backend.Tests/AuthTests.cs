@@ -6,6 +6,9 @@ using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
@@ -27,6 +30,7 @@ public class AuthTests : IAsyncLifetime
     public AuthTests(){ }
 
     public Task InitializeAsync()
+
     {
         return Task.CompletedTask;
     }
@@ -73,6 +77,7 @@ public class AuthTests : IAsyncLifetime
         // ASSERT
         Assert.IsType<Exception>(exception);
         Assert.Equal("Key is null", (exception as Exception)!.Message);
+
     }
 
     [Fact]
@@ -114,6 +119,7 @@ public class AuthTests : IAsyncLifetime
 
     [Fact]
     public void GenerateToken_NullAudience_ReturnsException()
+
     {
         // ARRANGE
 
@@ -126,8 +132,10 @@ public class AuthTests : IAsyncLifetime
         .AddJsonFile("appsettings.json")
         .Build();
 
+
         // Set the Audience to null
         config["Jwt:Audience"] = null;
+
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
@@ -146,11 +154,13 @@ public class AuthTests : IAsyncLifetime
 
         // ASSERT
         Assert.IsType<Exception>(exception);
+
         Assert.Equal("Audience is null", (exception as Exception)!.Message);
     }
 
     [Fact]
     public void GenerateToken_ValidConfig_ReturnsTokenString()
+
     {
         // ARRANGE
 
@@ -162,6 +172,7 @@ public class AuthTests : IAsyncLifetime
         IConfiguration config = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json")
         .Build();
+
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
@@ -244,10 +255,12 @@ public class AuthTests : IAsyncLifetime
             Password = "XXXXXXXXXXXXXXXXX1"
         };
 
+
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
 
         // ACT
+
         var user = await authService.LoginAsync(loginRequest);
 
         // ASSERT
@@ -256,6 +269,7 @@ public class AuthTests : IAsyncLifetime
 
     [Fact]
     public async void LoginAsync_ValidCredentials_ReturnsUser()
+
     {
         // ARRANGE
 
@@ -279,6 +293,7 @@ public class AuthTests : IAsyncLifetime
 
         // Request
         LoginRequest loginRequest = new()
+
         {
             Email = "XXXXXXXXXXXXXXXXX",
             Password = "XXXXXXXXXXXXXXXXX"
@@ -328,20 +343,25 @@ public class AuthTests : IAsyncLifetime
             Username = "XXXXXXXXXXXXXXXXX",
             DateOfBirth = DateTime.Now,
             Gender = "Male"
+
         };
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
 
         // ACT
+
         var user = await authService.RegisterAsync(registerRequest);
+
 
         // ASSERT
         Assert.Null(user);
     }
 
     [Fact]
+
     public async void RegisterAsync_InvalidGender_ReturnsUserWithNoneGender()
+
     {
         // ARRANGE
 
@@ -365,6 +385,7 @@ public class AuthTests : IAsyncLifetime
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
         // Request
+
         RegisterRequest registerRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX1",
@@ -401,6 +422,7 @@ public class AuthTests : IAsyncLifetime
 
     [Fact]
     public async void RegisterAsync_ValidUser_ReturnsUser()
+
     {
         // ARRANGE
 
@@ -423,6 +445,7 @@ public class AuthTests : IAsyncLifetime
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
         // Request
+
         RegisterRequest registerRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX1",
@@ -431,6 +454,7 @@ public class AuthTests : IAsyncLifetime
             DateOfBirth = DateTime.Now,
             Gender = "Male"
         };
+
 
         mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
         {
@@ -451,6 +475,7 @@ public class AuthTests : IAsyncLifetime
         var user = await authService.RegisterAsync(registerRequest);
 
         // ASSERT
+
         Assert.IsType<User>(user);
         Assert.NotNull(user);
         Assert.Equal("XXXXXXXXXXXXXXXXX1", user!.Email);
@@ -493,6 +518,7 @@ public class AuthTests : IAsyncLifetime
         // ACT
         var user = await authService.IdentifyUserAsync(httpContextMock.Object);
 
+
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
@@ -508,6 +534,7 @@ public class AuthTests : IAsyncLifetime
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
 
+
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
         Mock<IMapper> mapperMock = new();
@@ -520,13 +547,16 @@ public class AuthTests : IAsyncLifetime
                 Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
                 Username = "XXXXXXXXXXXXXXXXX",
                 DateOfBirth = DateTime.Now,
+
                 Gender = User.GenderEnum.Male
+
             }
         }.AsQueryable().BuildMockDbSet();
 
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
         // Request
+
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.SetupGet(hc=>hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
@@ -580,6 +610,107 @@ public class AuthTests : IAsyncLifetime
         Assert.Null(user);
     }
 
+    [Fact]
+    public async void GoogleSSOAsync_ExistingUser_ReturnsUser(){
+        // ARRANGE
+
+        // Mock
+        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
+        Mock<IMapper> mapperMock = new();
+        Mock<DbSet<User>> users = new[]
+        {
+            new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "XXXXXXXXXXXXXXXXX",
+                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
+                Username = "XXXXXXXXXXXXXXXXX",
+                DateOfBirth = DateTime.Now,
+                Gender = User.GenderEnum.Other
+            }
+        }.AsQueryable().BuildMockDbSet();
+
+        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+
+        // Request
+        GoogleRequest googleRequest = new()
+        {
+            Email = "XXXXXXXXXXXXXXXXX",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXX",
+            Avatar= "XXXXXXXXXXXXXXXXX"
+        };
+
+        // Service
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+
+        // ACT
+
+        var user = await authService.GoogleSSOAsync(googleRequest);
+
+
+        // ASSERT
+        Assert.IsType<User>(user);
+        Assert.NotNull(user);
+
+        Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
+        Assert.Equal("XXXXXXXXXXXXXXXXX", user.Username);
+    }
+
+    [Fact]
+    public async void GoogleSSOAsync_NewUser_ReturnsUser(){
+        // ARRANGE
+
+
+        // Mock
+        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
+        Mock<IMapper> mapperMock = new();
+        Mock<DbSet<User>> users = new[]
+        {
+            new User()
+            {
+
+                Id = Guid.NewGuid(),
+
+                Email = "XXXXXXXXXXXXXXXXX",
+                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
+                Username = "XXXXXXXXXXXXXXXXX",
+                DateOfBirth = DateTime.Now,
+
+                Gender = User.GenderEnum.Other
+
+            }
+        }.AsQueryable().BuildMockDbSet();
+
+        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+
+        // Request
+
+        GoogleRequest googleRequest = new()
+        {
+            Email = "XXXXXXXXXXXXXXXXXNewUser",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXNew",
+            Avatar= "XXXXXXXXXXXXXXXXX"
+        };
+
+
+        // Service
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+
+        // ACT
+
+        var user = await authService.GoogleSSOAsync(googleRequest);
+
+
+        // ASSERT
+        Assert.IsType<User>(user);
+        Assert.NotNull(user);
+
+        Assert.Equal("XXXXXXXXXXXXXXXXXNewUser", user!.Email);
+        Assert.Equal("XXXXXXNew", user.Username);
+    }
+
     #endregion
 
     #region Test Controller
@@ -616,6 +747,7 @@ public class AuthTests : IAsyncLifetime
 
     [Fact]
     public async void Login_InvalidUser_ReturnsBadRequestObjectResult()
+
     {
         // ARRANGE
 
@@ -624,7 +756,9 @@ public class AuthTests : IAsyncLifetime
         Mock<IConfiguration> configurationMock = new();
 
         // Setup Mocks
+
         authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
+
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
@@ -641,6 +775,7 @@ public class AuthTests : IAsyncLifetime
         IActionResult actionResult = await authController.Login(loginRequest);
 
         // ASSERT
+
         Assert.IsType<BadRequestObjectResult>(actionResult);
     }
 
@@ -682,18 +817,22 @@ public class AuthTests : IAsyncLifetime
     {
         // ARRANGE
 
+
         // Mocks
         Mock<IAuthService> authServiceMock = new();
         Mock<IConfiguration> configurationMock = new();
 
         // Setup Mocks
+
         authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
+
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
         AuthController authController = new(configurationMock.Object, authServiceMock.Object);
 
         // Create the Request
+
         RegisterRequest registerRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX",
@@ -706,12 +845,15 @@ public class AuthTests : IAsyncLifetime
         // ACT
         IActionResult actionResult = await authController.Register(registerRequest);
 
+
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
     }
 
     [Fact]
+
     public async void Me_ValidUser_ReturnsOkObjectResult()
+
     {
         // ARRANGE
 
@@ -720,11 +862,14 @@ public class AuthTests : IAsyncLifetime
         Mock<IConfiguration> configurationMock = new();
 
         // Setup Mocks
+
         authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
+
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
         AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
 
         // ACT
         IActionResult actionResult = await authController.Me();
@@ -734,7 +879,9 @@ public class AuthTests : IAsyncLifetime
     }
 
     [Fact]
+
     public async void Me_InvalidUser_ReturnsBadRequestObjectResult()
+
     {
         // ARRANGE
 
@@ -743,6 +890,7 @@ public class AuthTests : IAsyncLifetime
         Mock<IConfiguration> configurationMock = new();
 
         // Setup Mocks
+
         authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
@@ -751,6 +899,75 @@ public class AuthTests : IAsyncLifetime
 
         // ACT
         IActionResult actionResult = await authController.Me();
+
+        // ASSERT
+        Assert.IsType<BadRequestObjectResult>(actionResult);
+    }
+
+    [Fact]
+    public async void GoogleSSO_ValidUser_ReturnsOkObjectResult(){
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
+
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+        // Create the Request
+
+        GoogleRequest googleRequest = new()
+        {
+            Email = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXX",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Avatar = "XXXXXXXXXXXXXXXXX"
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
+
+        // ASSERT
+        Assert.IsType<OkObjectResult>(actionResult);
+    }
+
+    [Fact]
+    public async void GoogleSSO_InvalidUser_ReturnsBadRequestObjectResult(){
+
+        // ARRANGE
+
+        // Mocks
+        Mock<IAuthService> authServiceMock = new();
+        Mock<IConfiguration> configurationMock = new();
+
+        // Setup Mocks
+
+        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
+
+        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        // Create Controller
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+
+
+        // Create the Request
+        GoogleRequest googleRequest = new()
+        {
+            Email = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXX",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Avatar = "XXXXXXXXXXXXXXXXX"
+        };
+
+        // ACT
+        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
+
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);

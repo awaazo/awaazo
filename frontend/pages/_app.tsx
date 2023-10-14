@@ -2,10 +2,12 @@
 import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import bg from "../styles/images/bg.png";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <ChakraProvider>
+      <meta name="referrer" content="no-referrer" />
       <Box
         position="fixed"
         top="0"
@@ -17,7 +19,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         zIndex="-1"
       />
       <ColorModeScript initialColorMode="dark" />
-      <Component {...pageProps} />
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
     </ChakraProvider>
   );
 }

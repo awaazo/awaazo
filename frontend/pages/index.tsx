@@ -1,6 +1,8 @@
+
 // pages/index.tsx
-import { Box, Center, Text } from "@chakra-ui/react";
-import Navbar from "../components/navbar"; // Import the Navbar component
+import { Box, Button, Center, Text } from "@chakra-ui/react";
+import Navbar from "../components/shared/Navbar"; 
+import AuthHelper from "../helpers/AuthHelper";
 
 export default function Home() {
   return (

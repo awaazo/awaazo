@@ -1,3 +1,4 @@
+
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
@@ -80,4 +81,5 @@ namespace Backend.Models
 
         public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
     }
+
 }

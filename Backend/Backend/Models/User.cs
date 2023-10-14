@@ -70,6 +70,7 @@ public class User : BaseEntity
 
     public ICollection<PodcastRating> Ratings { get; } = new List<PodcastRating>();
 
+
     public ICollection<UserEpisodeInteraction> EpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
     public enum GenderEnum

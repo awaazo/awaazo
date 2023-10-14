@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using static Backend.Models.User;
 using System.Security.Cryptography.X509Certificates;
+using Google.Apis.Auth;
+
 
 namespace Backend.Services;
 
@@ -130,6 +132,40 @@ public class AuthService : IAuthService
 
         // Return the User object from the Database
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
+    /// <summary>
+    /// Retrieves or Creates the Google SSO user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public async Task<User?> GoogleSSOAsync(GoogleRequest request)
+    {
+        // Check if the User exists
+        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => 
+            u.Email == request.Email);
+        
+        // Return the user if he exists already
+        if(existingUser is not null)
+            return existingUser;
+
+        // Otherwise create the user
+        User newUser = new()
+        {
+            Id = Guid.NewGuid(),
+            Email = request.Email!,
+            Avatar = request.Avatar!,
+            Username = request.Username!,
+            Password = BCrypt.Net.BCrypt.HashPassword(request.Sub),
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        // Add the User to the Database
+        await _db.Users!.AddAsync(newUser);
+        await _db.SaveChangesAsync();
+        
+        return newUser;
     }
 }
 
