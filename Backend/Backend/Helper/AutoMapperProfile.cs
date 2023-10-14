@@ -8,7 +8,7 @@ namespace Backend.Helper
     {
         public AutoMapperProfile() {
             CreateMap<RegisterRequest, User>();
-            
+
         }
 
     }
