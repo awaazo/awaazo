@@ -64,6 +64,13 @@ public class AuthController : ControllerBase
 
         // Return UserId
         if (user is null) return BadRequest("User not found.");
-        else return Ok(new { UserId = user.Id });
+        else return Ok(new 
+        { 
+            Email=user.Email, 
+            Id = user.Id,
+            Username=user.Username,
+            Avatar = user.Avatar  
+        });
     }
+
 }

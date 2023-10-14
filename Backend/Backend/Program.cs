@@ -6,9 +6,12 @@ using Microsoft.OpenApi.Models;
 using Backend.Infrastructure;
 using Backend.Services.Interfaces;
 using Backend.Services;
+using Backend.Helper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Backend;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args) {
@@ -21,6 +24,7 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
@@ -63,7 +67,7 @@ public class Program
         
         // Check if we are running in a docker container.
         bool inDockerEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-
+       
         builder.Services.AddDbContext<AppDbContext>(options =>
         {
             // Set the connection string to the docker container if we are running in a docker container.

@@ -7,16 +7,21 @@ using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
 using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using static Backend.Models.User;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Backend.Services;
 
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
+    private readonly IMapper _mapper;
 
-    public AuthService(AppDbContext db)
+    public AuthService(AppDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -31,6 +36,14 @@ public class AuthService : IAuthService
         // Check if key is null
         if (configuration["Jwt:Key"] is null) 
             throw new Exception("Key is null");
+        
+        // Check if Issuer is null
+        if(configuration["Jwt:Issuer"] is null)
+            throw new Exception("Issuer is null");
+        
+        // Check if Audience is null
+        if(configuration["Jwt:Audience"] is null)
+            throw new Exception("Audience is null");
         
         // Create Credentials
         SymmetricSecurityKey key = new (Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
@@ -75,14 +88,22 @@ public class AuthService : IAuthService
         if (existingUser is not null)
             return null;
 
+        // Make sure the Request sent a Valid Gender
+        bool isValidGender = Enum.TryParse(request.Gender, out GenderEnum gender);
+        if (!isValidGender)
+            request.Gender = "None";
+        
+
         // Create the new User
-        User newUser = new()
-        {
-            Id = Guid.NewGuid(),
-            Email = request.Email,
-            Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            DateOfBirth = request.DateOfBirth
-        };
+        User newUser = _mapper.Map<User>(request);
+        newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
+
+
+        //Default Avatar
+        //TODO set Interest default value as null
+        newUser.Avatar = "DefaultAvatar";
+        newUser.Interests = Array.Empty<string>();
+
 
         // Add the User to the Database
         await _db.Users!.AddAsync(newUser);
