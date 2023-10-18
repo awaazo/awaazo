@@ -16,7 +16,13 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-// Test case 1: It should render the signup page and its content
+//----------------------------------------
+// END OF MOCK METHODS & CONFIGURATION
+//----------------------------------------
+
+/*
+ * Test case 1: It should render the signup page and its content
+ */
 test("Renders the sign-up page header and description", () => {
   render(
     <SessionProvider session={null}>
@@ -31,7 +37,9 @@ test("Renders the sign-up page header and description", () => {
   expect(SignUpMsg).toBeInTheDocument();
 });
 
-// Test case 2: It should render the signup form
+/*
+ * Test case 2: It should render the signup form
+ */
 test("Renders the sign-up form elements", () => {
   render(
     <SessionProvider session={null}>
@@ -56,7 +64,9 @@ test("Renders the sign-up form elements", () => {
   expect(signUpButton).toBeInTheDocument();
 });
 
-// Test case 3: It should call the handleSignup function when submitted with valid fields
+/*
+ * Test case 3: It should call the handleSignup function when submitted with valid fields
+ */
 test("Submits the sign-up form with valid fields", async () => {
   const consoleSpy = jest.spyOn(console, "debug");
 
@@ -108,8 +118,76 @@ test("Submits the sign-up form with valid fields", async () => {
   consoleSpy.mockRestore();
 });
 
-// Test case 4: It should show an error when the password and confrim password is not the same
+/*
+ * Test case 4: It should show an error when the register process fails
+ */
+test("Shows an error when the register process fails", async () => {
+  // Mock AuthHelper methods for Token Management and Google SSO
+  jest.mock("../helpers/AuthHelper", () => ({
+    // Mock login method
+    register: jest.fn((email, password) => {
+      if (email === "existing@email.com" && password === "anyPassword") {
+        return false;
+      }
+    }),
+  }));
+  render(
+    <SessionProvider session={null}>
+      <Signup />
+    </SessionProvider>
+  );
+  const emailInput = screen.getByPlaceholderText("Enter your email");
+  const usernameInput = screen.getByPlaceholderText("Enter your username");
+  const passwordInput = screen.getByPlaceholderText("Enter your password");
+  const confirmPasswordInput = screen.getByPlaceholderText(
+    "Confirm your password"
+  );
+  const dateOfBirthInput = screen.getByLabelText("Date of Birth");
+  const signUpButton = screen.getByText("Sign Up");
+
+  expect(signUpButton).toBeEnabled();
+
+  await fireEvent.change(emailInput, {
+    target: { value: "existing@email.com" },
+  });
+  await fireEvent.change(usernameInput, { target: { value: "anyUser" } });
+  await fireEvent.change(passwordInput, { target: { value: "anyPassword" } });
+  await fireEvent.change(confirmPasswordInput, {
+    target: { value: "anyPassword" },
+  });
+  await fireEvent.input(dateOfBirthInput, {
+    target: { value: "2023-10-13" },
+  });
+
+  await fireEvent.click(signUpButton);
+
+  waitFor(
+    () => {
+      const errorMsg = screen.getByText("Registration failed.");
+      expect(errorMsg).toBeInTheDocument();
+    },
+    {
+      timeout: 3000,
+    }
+  );
+});
+
+/*
+ * Test case 5: It should show an error when the password and confrim password is not the same
+ */
 test("Shows an error when passwords don't match", async () => {
+  // Mock AuthHelper methods for Token Management and Google SSO
+  jest.mock("../helpers/AuthHelper", () => ({
+    // Mock login method
+    login: jest.fn((email, password) => {
+      if (email === "wrong@invalid.com" && password === "invalidPassword") {
+        return false;
+      }
+    }),
+
+    // Mock isLoggedIn method
+    isLoggedIn: jest.fn().mockReturnValue(false),
+  }));
   render(
     <SessionProvider session={null}>
       <Signup />
@@ -142,7 +220,9 @@ test("Shows an error when passwords don't match", async () => {
   expect(errorMsg).toBeInTheDocument();
 });
 
-// Test case 5: It should display the option to sign up with Google
+/*
+ * Test case 6: It should display the option to sign up with Google
+ */
 test("Displays the 'Sign up with Google' option", async () => {
   render(
     <SessionProvider session={null}>
@@ -153,22 +233,22 @@ test("Displays the 'Sign up with Google' option", async () => {
   expect(signInWithGoogleButton).toBeEnabled();
   expect(signInWithGoogleButton).toBeInTheDocument();
 });
-
-// Test case 6: It should navigate to the login page
-test("Navigates to the login page when the 'Log in' link is clicked", async () => {
+/*
+ * Test case 7: It should display 'Log in' link to navigate to the login page
+ */
+test("Displays 'Log in' link to navigate to the login page", async () => {
   render(
     <MemoryRouter initialEntries={["/auth/Login"]}>
       <SessionProvider session={null}>
-        <Login />
         <Signup />
       </SessionProvider>
     </MemoryRouter>
   );
 
   const LogInLink = screen.getByText("Log in");
-  jest.useFakeTimers();
   await fireEvent.click(LogInLink);
-  jest.runAllTimers();
 
-  //expect(window.location.pathname).toContain('/auth/Login');
+  // Assure link is there and active
+  expect(LogInLink).toBeEnabled();
+  expect(LogInLink).toBeInTheDocument();
 });

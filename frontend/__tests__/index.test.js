@@ -4,6 +4,7 @@ import { useSession, createSession, signOut } from "next-auth/react";
 import "@testing-library/jest-dom";
 import { SessionProvider } from "next-auth/react";
 import Home from "../pages/index";
+import { describe } from "node:test";
 
 // Mock the Chakra UI useBreakpointValue hook
 jest.mock("@chakra-ui/media-query", () => ({
@@ -20,23 +21,7 @@ jest.mock("next/router", () => ({
 
 // Mock User
 const mockUser = {
-  id: "9b61a730-0c33-48ec-b247-dcf889583978",
-  email: "string",
-  password: "$2a$11$nJCWjLfZZVY6MvmTU/Ccw.xGIc6tmeEHoXEZe/FhCb1kslzY4.3em",
-  username: "anyUser",
-  avatar: "",
-  interests: [],
-  dateOfBirth: "2023-10-12T05:29:31.44",
-  gender: 0,
-  isPodcaster: false,
-  podcasts: [],
-  bookmarks: [],
-  podcastFollows: [],
-  userFollows: [],
-  subscriptions: [],
-  ratings: [],
-  createdAt: "0001-01-01T00:00:00",
-  updatedAt: "0001-01-01T00:00:00",
+  id: "a5lum3d465zqgdr468mzdf184m2df64a4119mkzdrg",
 };
 
 //Generated Token
@@ -49,25 +34,57 @@ function setLocalStorageData(token, user) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
-// Test case 1: It should render the signup page and its content when a user is not signed In
-test("Renders the index page (Not Signed In)  navbar and content ", () => {
-  render(
-    <SessionProvider session={null}>
-      <Home />
-    </SessionProvider>
-  );
-  const MainMsg = screen.getByText("Main Content Here");
-  expect(MainMsg).toBeInTheDocument();
+//----------------------------------------
+// END OF MOCK METHODS & CONFIGURATION
+//----------------------------------------
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Test group for individual components
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+describe("Renders Navbar with page", () => {
+  /*
+   * Test case 1: It should render the navbar in the index page
+   */
+  test("Renders the Navbar in the Index Page ", () => {
+    render(
+      <SessionProvider session={null}>
+        <Home />
+      </SessionProvider>
+    );
+    const navbarElement = screen.getByTestId("navbar-component");
+
+    expect(navbarElement).toBeInTheDocument();
+  });
 });
 
-// Test case 2: It should render the signup page and its content when a user is signed In
-test("Renders the index page (Signed In) navbar and content ", () => {
-  setLocalStorageData(token, mockUser);
-  render(
-    <SessionProvider session={{ user: mockUser }}>
-      <Home />
-    </SessionProvider>
-  );
-  const MainMsg = screen.getByText("Main Content Here");
-  expect(MainMsg).toBeInTheDocument();
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Test group for page content
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+describe("Renders Navbar with page", () => {
+  /*
+   * Test case 2: It should render the index page and its content when a user is not signed In
+   */
+  test("Renders the index page (Not Signed In)  content ", () => {
+    render(
+      <SessionProvider session={null}>
+        <Home />
+      </SessionProvider>
+    );
+    const MainMsg = screen.getByText("Main Content Here");
+    expect(MainMsg).toBeInTheDocument();
+  });
+
+  /*
+   * Test case 3: It should render the index page and its content when a user is signed In
+   */
+  test("Renders the index page (Signed In) content ", () => {
+    setLocalStorageData(token, mockUser);
+    render(
+      <SessionProvider session={{ user: mockUser }}>
+        <Home />
+      </SessionProvider>
+    );
+    const MainMsg = screen.getByText("Main Content Here");
+    expect(MainMsg).toBeInTheDocument();
+  });
 });
