@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 const SignUp: React.FC = () => {
-  const profilePage = "/profile/MyProfile";
+  const setupPage = "/Setup";
 
   const [email, setEmail] = useState<string | null>("");
   const [username, setUsername] = useState<string | null>("");
@@ -29,8 +29,7 @@ const SignUp: React.FC = () => {
   const { data: session } = useSession();
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
-  useEffect(() => {
-  }, [session, googleSignUpClicked]);
+  useEffect(() => {}, [session, googleSignUpClicked]);
 
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
@@ -55,14 +54,13 @@ const SignUp: React.FC = () => {
         email,
         password,
         username,
-        dateOfBirth
+        dateOfBirth,
       );
       console.log(response);
       // If registration was successful, redirect to profile page. Otherwise, display error.
       if (response) {
-        window.location.href = profilePage;
-      } 
-      else {
+        window.location.href = setupPage;
+      } else {
         setSignUpError("Registration failed.");
       }
     }
