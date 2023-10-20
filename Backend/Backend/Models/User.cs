@@ -18,6 +18,7 @@ public class User : BaseEntity
         Password = string.Empty;
         Username = string.Empty;
         Avatar = string.Empty;
+        Bio = string.Empty;
         Interests = Array.Empty<string>();
     }
 
@@ -46,6 +47,8 @@ public class User : BaseEntity
     /// URL for user's PFP
     /// </summary>
     public string? Avatar { get; set; }
+
+    public string Bio {get;set;}
 
     public string[] Interests { get; set; }
     public DateTime DateOfBirth { get; set; }

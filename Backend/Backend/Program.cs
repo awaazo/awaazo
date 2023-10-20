@@ -21,6 +21,7 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IProfileService, ProfileService>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
