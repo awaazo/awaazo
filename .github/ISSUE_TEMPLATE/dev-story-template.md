@@ -8,25 +8,25 @@ assignees: ''
 
 ---
 
-**Acceptance Criteria:**  
-1. [Replace with criteria 1]
-2. [Replace with criteria 2]
-... (add more main criteria and their sub-criteria as needed)
+## Acceptance Criteria:  
+- [ ] [Replace with criteria 1]
+- [ ] [Replace with criteria 2]
+- [ ] ... (add more main criteria and their sub-criteria as needed)
 
-**Demo Steps:**  
+## Demo Steps:  
 1. [Replace with demo step 1]
 2. [Replace with demo step 2]
 3. [Replace with demo step 3]
-... (add more as needed)
+4. ... (add more as needed)
 
-**Potential Risks:**  
+## Potential Risks:  
 - [Replace with risk 1]
 - [Replace with risk 2]
 - [Replace with risk 3]
-... (add more as needed)
+- ... (add more as needed)
 
-**Technical Notes:**  
+## Technical Notes:  
 - [Replace with note 1]
 - [Replace with note 2]
 - [Replace with note 3]
-... (add more as needed)
+- ... (add more as needed)

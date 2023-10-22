@@ -9,7 +9,7 @@ assignees: sFranchetto
 
 ## Description
 <!-- Briefly describe what new documentation needs to be created. -->
-
+-----
 ## Tasks
 - [ ] Identify necessary information for [Feature/Module].
 - [ ] Write clear and concise documentation.
