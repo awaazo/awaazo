@@ -1,5 +1,5 @@
 ---
-name: Story template
+name: User Story Template
 about: Use this template for creating new user stories.
 title: As a [persona], I [want to], [so that]
 labels: "\U0001F522 points: 1, \U0001F7E9 priority: low, \U0001F464user story"
