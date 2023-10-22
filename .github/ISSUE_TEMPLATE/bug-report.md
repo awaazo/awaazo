@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug Report
 about: Create a report to help us improve
 title: ''
 labels: "\U0001F6E0️ goal: fix, \U0001F522 points: 1, \U0001F7E9 priority: low"

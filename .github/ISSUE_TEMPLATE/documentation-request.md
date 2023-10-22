@@ -1,5 +1,5 @@
 ---
-name: Documentation request
+name: Documentation Request
 about: Use this template for creating new documentation.
 title: Create Documentation for [Feature/Module]
 labels: "\U0001F4D6 goal: docs, \U0001F522 points: 1, \U0001F7E9 priority: low"

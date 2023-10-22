@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest an idea for this project
 title: ''
 labels: "⭐ goal: addition, \U0001F522 points: 1, \U0001F7E9 priority: low"
