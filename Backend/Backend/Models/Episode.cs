@@ -33,6 +33,8 @@ namespace Backend.Models
         /// URL to the thumbnail image of the episode
         /// </summary>
         public string Thumbnail { get; set; }
+
+
     
         /// <summary>
         /// Duration of the episode in seconds
@@ -42,6 +44,7 @@ namespace Backend.Models
         public DateTime ReleaseDate { get; set; }
 
         public bool IsExplicit { get; set; } = false;
+
 
         public ulong PlayCount { get; set; }
 

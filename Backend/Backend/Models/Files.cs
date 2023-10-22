@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Models
 {
-    public class File : BaseEntity
+    public class Files : BaseEntity
     {
 
-        public File() {
+        public Files() {
 
             Name = string.Empty;
             MimeType = string.Empty;
         
 
         }
-
+        [Key]
         public Guid FileId { get; set; }
 
         [Required]
@@ -21,9 +21,6 @@ namespace Backend.Models
 
         [Required]
         public string MimeType { get; set; }
-
-        [Required]
-        public float Size { get; set; } = 0;
 
         [Required]
         public Byte[] Data { get; set; } = Array.Empty<Byte>();

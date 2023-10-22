@@ -9,6 +9,9 @@ public class Podcast : BaseEntity
     public Podcast() 
     {
         Tags = Array.Empty<string>();
+        Name  = string.Empty;
+        Description = string.Empty;
+
     }
 
     public User Podcaster { get; set; } = null!;
@@ -18,6 +21,13 @@ public class Podcast : BaseEntity
 
     [Key]
     public Guid Id { get; set; }
+
+
+    [Required]
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public Guid CoverId {  get; set; }
+    public Files Cover { get; set; } = null!;
 
     /// <summary>
     /// Array of tags/categories associated with the podcast

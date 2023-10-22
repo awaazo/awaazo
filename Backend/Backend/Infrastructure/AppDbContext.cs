@@ -30,6 +30,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
+    public virtual DbSet<Files>? File { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -123,6 +124,9 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
+ 
+
     }
     
     public override int SaveChanges()
