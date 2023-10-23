@@ -42,7 +42,7 @@ const socials = [
 export default function Header() {
   return (
     <>
-      <VStack spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }}>
+      <VStack spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }} marginBottom={"2em"}>
         <Stack>
           <Avatar boxShadow="xl" size="xl" src="https://avatars2.githubusercontent.com/u/37842853?v=4" />
         </Stack>

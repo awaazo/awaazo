@@ -9,7 +9,7 @@ import {
 import Navbar from "../../components/shared/Navbar";
 import Header from "../../components/profile/Header";
 import MyEpisodes from "../../components/profile/MyEpisodes";
-
+import Podcasts from "../../components/profile/Podcasts";
 const myProfile = () => {
   const isInline = useBreakpointValue({ base: false, md: true });
 
@@ -20,6 +20,7 @@ const myProfile = () => {
         <Stack isInline={isInline} spacing="4" alignItems="flex-start">
           <Container>
             <Header/> 
+             <Podcasts/>
           </Container>
           <Container>
             <MyEpisodes/>
