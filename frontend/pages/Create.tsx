@@ -41,6 +41,7 @@ const PodcastGenres = [
 const CreatePodcast = () => {
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedPodcast, setSelectedPodcast] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
   const [file, setFile] = useState(null);
 
@@ -84,7 +85,7 @@ const CreatePodcast = () => {
           <Text>{session?.user?.name}</Text>
         </Box>
       <FormControl>
-        <FormLabel>Episode Name (AI)</FormLabel>
+        <FormLabel>Episode Name</FormLabel>
         <Input
           value={episodeName}
           onChange={(e) => setEpisodeName(e.target.value)}
@@ -100,6 +101,19 @@ const CreatePodcast = () => {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter podcast description..."
         />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel>Select Podcast</FormLabel>
+        <Select 
+          placeholder="Select Podcast" 
+          value={selectedPodcast} 
+          onChange={(e) => setSelectedPodcast(e.target.value)}
+        >
+          {/* {Podcast.map((podcast) => (
+            <option key={podcast} value={podcast}>{podcast}</option>
+          ))} */}
+        </Select>
       </FormControl>
 
       <FormControl>
