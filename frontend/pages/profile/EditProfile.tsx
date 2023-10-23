@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, FormEvent } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-
+import Navbar from "../../components/shared/Navbar";
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
@@ -81,6 +81,9 @@ const EditProfile: React.FC = () => {
     };
 
   return (
+    <>
+   <Navbar />
+   
     <Box
       p={6}
       display="flex"
@@ -296,6 +299,7 @@ const EditProfile: React.FC = () => {
         </Stack>
       </form>
     </Box>
+     </>
   );
 };
 
