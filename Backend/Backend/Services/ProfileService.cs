@@ -1,7 +1,9 @@
+using System.Security.Cryptography;
 using Backend.Controllers.Requests;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Services;
 
@@ -37,8 +39,17 @@ public class ProfileService : IProfileService
         if(user is null)
             return null;
 
+        // Set Avatar Name for Server file and db
+        string avatarFileName = string.Format("{0}.{1}",user.Id, request.Avatar!.ContentType.Split('/')[1]);
+        string userAvatarName = string.Format("{0}||{1}", avatarFileName, request.Avatar!.ContentType); 
+
+        // Save Avatar to Server
+        bool isSaved = SaveAvatar(avatarFileName, request.Avatar);
+
+        // ADD ACTION IF NOT SAVED
+
         // Update the user's profile
-        user.Avatar = request.Avatar;
+        user.Avatar = userAvatarName;
         user.Bio = request.Bio;
         user.Interests = request.Interests;
 
@@ -52,4 +63,32 @@ public class ProfileService : IProfileService
         // Return the updated user
         return user;
     }
+
+    public static bool SaveAvatar(string fileName, IFormFile file)
+    {
+        string dirName = "Avatars";
+
+        string dirPath =Path.Combine(AppContext.BaseDirectory,dirName);
+
+        if(!Directory.Exists(dirPath))
+            Directory.CreateDirectory(dirPath);
+
+        string filePath = Path.Combine(dirPath, fileName);
+        
+        using FileStream fs = new(filePath, FileMode.Create);
+        file.CopyTo(fs);
+
+        return File.Exists(filePath);
+    }
+
+    public static string GetAvatarType(string fileInfo)
+    {
+        return fileInfo.Split("||")[1];
+    }
+
+    public static string GetAvatarPath(string fileInfo)
+    {
+        return Path.Combine(AppContext.BaseDirectory, "Avatars", fileInfo.Split("||")[0]);
+    }
+
 }

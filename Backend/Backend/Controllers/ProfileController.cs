@@ -1,5 +1,6 @@
 using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("profile")]
+[Authorize]
 public class ProfileController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -20,7 +22,6 @@ public class ProfileController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    [Authorize]
     public async Task<ActionResult> Delete()
     {
         // Identify User from JWT Token
@@ -41,7 +42,6 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("get")]
-    [Authorize]
     public async Task<ActionResult> Get()
     {
         // Identify User from JWT Token
@@ -69,17 +69,9 @@ public class ProfileController : ControllerBase
             });
     }
 
-    [HttpPut("edit")]
-    [Authorize]
-    public async Task<ActionResult> Edit([FromBody] ProfileEditRequest editRequest)
-    {
-        return Ok();
-    }
-
-
+    
     [HttpPut("setup")]
-    [Authorize]
-    public async Task<ActionResult> Setup([FromBody] ProfileSetupRequest setupRequest)
+    public async Task<ActionResult> Setup([FromForm] ProfileSetupRequest setupRequest)
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -91,11 +83,15 @@ public class ProfileController : ControllerBase
         if (user == null)
             return NotFound("User does not exist.");
         else
-            return Ok(new{
-                Email = user.Email,
-                Id = user.Id,
-                Username = user.Username,
-                Avatar = user.Avatar
-            });
+            return Ok();
+    }
+
+    [HttpGet("avatar")]
+    public async Task<ActionResult> Avatar()
+    {
+        // Identify User from JWT Token
+        User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+        return PhysicalFile(ProfileService.GetAvatarPath(user!.Avatar!),ProfileService.GetAvatarType(user!.Avatar!));
     }
 }

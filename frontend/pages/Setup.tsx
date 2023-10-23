@@ -73,16 +73,16 @@ const Setup: React.FC = () => {
     const letters = "0123456789ABCDEF";
     let color = "#";
     for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 8)]; // Restrict to the first 8 characters for darker colors
+      color += letters[Math.floor(Math.random() * 8)]; // Restrict to the first 8 characters for darker colors
     }
     return color;
-}
+  }
 
-function getRandomGradient() {
+  function getRandomGradient() {
     const color1 = getRandomDarkColor();
     const color2 = getRandomDarkColor();
     return `linear-gradient(45deg, ${color1}, ${color2})`;
-}
+  }
 
   const handleInterestClick = (genre) => {
     if (selectedInterests.includes(genre)) {
@@ -123,57 +123,57 @@ function getRandomGradient() {
           Hey, {session?.user?.name}! Let's get you set up.
         </Text>
 
-         <form onSubmit={handleSetup}>
+        <form onSubmit={handleSetup}>
           <Stack spacing={6} align={"center"}>
             <div
-  style={{
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  }}
->
-  <img
-    src={
-      avatar ||
-      "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
-    }
-    alt="Avatar"
-    style={{
-      width: "150px",
-      height: "150px",
-      borderRadius: "50%",
-      padding: "15px",
-      position: "relative",
-    }}
-  />
-  <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right:"5px" }}>
-    <IconButton
-      aria-label="Upload avatar"
-      icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
-      size="sm"
-      variant="outline"
-      borderRadius="full"
-      border="1px solid grey"
-      padding={3}
-      style={{
-        backdropFilter: "blur(5px)", // This line adds the blur effect
-        backgroundColor: "rgba(0, 0, 0, 0.4)" // Semi-transparent white background to enhance the blur effect
-      }}
-    />
-    <input
-      type="file"
-      id="avatar"
-      accept="image/*"
-      onChange={(e) =>
-        setAvatar(URL.createObjectURL(e.target.files[0]))
-      }
-      style={{
-        display: "none",
-      }}
-    />
-  </label>
-</div>
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={
+                  avatar ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
+                alt="Avatar"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  borderRadius: "50%",
+                  padding: "15px",
+                  position: "relative",
+                }}
+              />
+              <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right: "5px" }}>
+                <IconButton
+                  aria-label="Upload avatar"
+                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  size="sm"
+                  variant="outline"
+                  borderRadius="full"
+                  border="1px solid grey"
+                  padding={3}
+                  style={{
+                    backdropFilter: "blur(5px)", // This line adds the blur effect
+                    backgroundColor: "rgba(0, 0, 0, 0.4)" // Semi-transparent white background to enhance the blur effect
+                  }}
+                />
+                <input
+                  type="file"
+                  id="avatar"
+                  accept="image/*"
+                  onChange={(e) =>
+                    setAvatar(URL.createObjectURL(e.target.files[0]))
+                  }
+                  style={{
+                    display: "none",
+                  }}
+                />
+              </label>
+            </div>
 
 
             <FormControl>
@@ -193,13 +193,13 @@ function getRandomGradient() {
               />
             </FormControl>
 
-             <FormControl>
+            <FormControl>
               <FormLabel style={
                 {
-                   textAlign: "center",
-                   padding: "10px",
-                  }
-                   }>
+                  textAlign: "center",
+                  padding: "10px",
+                }
+              }>
                 What kind of topics do you like?
               </FormLabel>
               <Wrap spacing={4} justify="center" maxWidth={"600px"}>
@@ -231,25 +231,25 @@ function getRandomGradient() {
               </Wrap>
             </FormControl>
             <Button
-                id="setupBtn"
-                type="submit"
-                fontSize="md"
-                borderRadius={"full"}
-                minWidth={"200px"}
-                color={"white"}
-                marginTop={"15px"}
-                marginBottom={"10px"}
-                padding={"20px"}
-                // semi transparent white outline
-                outline={"2px solid rgba(255, 255, 255, 0.6)"}
-                style={{
-                    background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
-                    backgroundSize: '300% 300%',
-                    animation: 'Gradient 10s infinite linear'
-                }}
+              id="setupBtn"
+              type="submit"
+              fontSize="md"
+              borderRadius={"full"}
+              minWidth={"200px"}
+              color={"white"}
+              marginTop={"15px"}
+              marginBottom={"10px"}
+              padding={"20px"}
+              // semi transparent white outline
+              outline={"2px solid rgba(255, 255, 255, 0.6)"}
+              style={{
+                background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
+                backgroundSize: '300% 300%',
+                animation: 'Gradient 10s infinite linear'
+              }}
             >
-                Start Listening
-                <style jsx>{`
+              Start Listening
+              <style jsx>{`
                     @keyframes Gradient {
                         0% {
                             background-position: 100% 0%;
