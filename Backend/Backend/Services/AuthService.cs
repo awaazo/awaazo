@@ -134,6 +134,18 @@ public class AuthService : IAuthService
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
+    public void AuthGoogle(IConfiguration configuration ,GoogleRequest request){
+
+
+
+        GoogleJsonWebSignature.ValidationSettings settings = new()
+        {
+            Audience = new List<string> { configuration["jwt:Google_ClientId"]! }
+        };
+        GoogleJsonWebSignature.Payload payload = GoogleJsonWebSignature.ValidateAsync(request.Token, settings).Result;
+         
+    }
+
     /// <summary>
     /// Retrieves or Creates the Google SSO user.
     /// </summary>

@@ -25,7 +25,10 @@ namespace Backend.Controllers.Requests
         public string? Sub { get; set; }
 
         [Required]
-        public string? Avatar { get; set; }
+        public string?  Avatar { get; set; }
+
+        [Required]
+        public string? Token{get;set;}
     }
 
     [BindProperties]
