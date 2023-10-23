@@ -62,7 +62,6 @@ const CreatePodcast = () => {
     <Box style={{
         display: "flex",
         justifyContent: "center",
-        minWidth: "100vw",
     }}>
     <VStack spacing={5} align="center" p={5}>
         <Box
@@ -73,6 +72,7 @@ const CreatePodcast = () => {
           p={6}
           bg="gray.100"
           borderRadius="md"
+          
         >
           <Image
             src={session?.user?.profilePic}
