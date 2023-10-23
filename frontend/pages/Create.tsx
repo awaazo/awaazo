@@ -6,10 +6,16 @@ import {
   Textarea,
   Select,
   Box,
-  VStack
+  VStack,
+  Image,
+    Text,
+
 } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
+import { useSession } from "next-auth/react";
+
 import Navbar from '../components/shared/Navbar';
+import { useRouter } from 'next/router';
 
 const PodcastGenres = [
     "Technology",
@@ -46,11 +52,35 @@ const CreatePodcast = () => {
         console.log(files);
     },
   });
+  const { data: session } = useSession();
+  const router = useRouter();
 
   return (
     <>
     <Navbar />
+    <Box style={{
+        display: "flex",
+        justifyContent: "center",
+        minWidth: "100vw",
+    }}>
     <VStack spacing={5} align="center" p={5}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          p={6}
+          bg="gray.100"
+          borderRadius="md"
+        >
+          <Image
+            src={session?.user?.profilePic}
+            alt="User Profile Picture"
+            boxSize="100px"
+            borderRadius="full"
+          />
+          <Text>{session?.user?.name}</Text>
+        </Box>
       <FormControl>
         <FormLabel>Episode Name</FormLabel>
         <Textarea
@@ -93,6 +123,7 @@ const CreatePodcast = () => {
 
       <Button colorScheme="blue" onClick={() => {/* handle upload and save */}}>Upload</Button>
     </VStack>
+    </Box>
     </>
   );
 };
