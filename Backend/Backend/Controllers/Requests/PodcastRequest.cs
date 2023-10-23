@@ -14,7 +14,8 @@ namespace Backend.Controllers.Requests
 
         public string? Description { get; set; }
 
-        public IFormFile coverImage { get; set; } = null!;
+      
+        public IFormFile? coverImage { get; set; } = null!;
 
     }
 

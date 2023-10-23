@@ -29,6 +29,7 @@ namespace Backend.Services
             podcast.PodcasterId = user.Id;
             if(createPodcastRequest.coverImage != null)
             {
+                
                 Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
                 if(coverImage == null) return null;
                 else { podcast.CoverId = coverImage.FileId; }
@@ -43,6 +44,8 @@ namespace Backend.Services
                 podcast.Description = createPodcastRequest.Description;
             }
             podcast.Name = createPodcastRequest.Name!;
+
+            
 
 
             await _db.Podcasts!.AddAsync(podcast);
@@ -71,11 +74,9 @@ namespace Backend.Services
             }
             else
             {
-                Console.WriteLine(id);
-                Guid podcastId = Guid.Parse(id);
-               
-                return await _db.Podcasts!.Include(u => u.Cover).FirstAsync(x => x.PodcasterId == podcastId);
-
+                var podcastId = Guid.Parse(id);
+                return await _db.Podcasts!.FirstOrDefaultAsync(u => u.PodcasterId == podcastId);
+        
             }
         }
     }

@@ -26,8 +26,8 @@ public class Podcast : BaseEntity
     [Required]
     public string Name { get; set; }
     public string Description { get; set; }
-    public Guid CoverId {  get; set; }
-    public Files Cover { get; set; } = null!;
+    public Guid? CoverId {  get; set; }
+    public Files? Cover { get; set; }
 
     /// <summary>
     /// Array of tags/categories associated with the podcast
