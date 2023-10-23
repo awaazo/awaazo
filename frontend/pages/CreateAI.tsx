@@ -66,6 +66,7 @@ const CreatePodcast = () => {
         justifyContent: "center",
     }}>
     <VStack spacing={5} align="center" p={5}>
+    <Text fontSize='3xl'>AI Generated Episode</Text>
         <Box
           display="flex"
           flexDirection="column"
@@ -134,26 +135,12 @@ const CreatePodcast = () => {
         {file ? (
           <p>{file.name}</p>
         ) : (
-          <p>Drag & drop a podcast file here, or click to select one</p>
+          <p>Drag & drop a document file here, or click to select one</p>
         )}
       </Box>
 
-      <Button colorScheme="blue" onClick={() => {/* handle upload and save */}}>Upload</Button>
-      <Link href="/CreateAI">
-        <Box position='fixed'
-            bottom='40px'
-            right={['16px', '84px', '84px', '84px', '54px']}
-            zIndex={2}
-        >
-            <Button
-              colorScheme="cyan"
-              color="#236D73"
-              p='6'
-            onClick={() => {/* handle AI podcast creation */}}>
-            Generate with AI
-            </Button>
-      </Box>
-      </Link>
+      <Button colorScheme="blue" onClick={() => {/* handle generating AI */}}>Generate</Button>
+      
     </VStack>
     </Box>
     </>
