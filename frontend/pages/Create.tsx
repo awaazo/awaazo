@@ -9,6 +9,7 @@ import {
   VStack,
   Image,
     Text,
+    Input,
 
 } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
@@ -83,10 +84,11 @@ const CreatePodcast = () => {
         </Box>
       <FormControl>
         <FormLabel>Episode Name</FormLabel>
-        <Textarea
+        <Input
           value={episodeName}
           onChange={(e) => setEpisodeName(e.target.value)}
           placeholder="Enter episode name..."
+          rounded={"full"}
         />
       </FormControl>
 
