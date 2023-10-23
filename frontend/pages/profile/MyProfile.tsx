@@ -1,35 +1,31 @@
 import * as React from 'react';
 import {
   Container,
-  Center,
-  VStack,
   Box,
-  HStack,
+  Stack,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
-import Navbar from "../../components/shared/Navbar"; // Import the Navbar component
-import Header from "../../components/profile/Header"; //Import the Header component
-import MyEpisodes from "../../components/profile/MyEpisodes"; //Import the MyEpisodes component
-
+import Navbar from "../../components/shared/Navbar";
+import Header from "../../components/profile/Header";
+import MyEpisodes from "../../components/profile/MyEpisodes";
 
 const myProfile = () => {
+  const isInline = useBreakpointValue({ base: false, md: true });
+
   return (
     <>
-    <Navbar />
-    <HStack>
-    <VStack>
-
-    <Container paddingTop={"10em"}>
-        <Header/> 
-    </Container>
-    <Container p={{ base: 5, md: 10 }}>
-      <MyEpisodes/>
-    </Container>
-    </VStack>
-    <Box>
-    </Box>
-
-    </HStack>
+      <Navbar />
+      <Box display="flex" justifyContent="center" paddingTop="5em">
+        <Stack isInline={isInline} spacing="4" alignItems="flex-start">
+          <Container>
+            <Header/> 
+          </Container>
+          <Container>
+            <MyEpisodes/>
+          </Container>
+        </Stack>
+      </Box>
     </>
   );
 };
