@@ -2,6 +2,7 @@
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
@@ -18,7 +19,7 @@ namespace Backend.Services
 
 
 
-        public async Task<Podcast?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext)
+        public async Task<GetPodcastRequest?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext)
         {
             User? user = await _authService.IdentifyUserAsync(httpContext);
             if (user == null)
@@ -29,7 +30,6 @@ namespace Backend.Services
             if(createPodcastRequest.coverImage != null)
             {
                 Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
-                Console.WriteLine(coverImage?.FileId);
                 if(coverImage == null) return null;
                 else { podcast.CoverId = coverImage.FileId; }
             }
@@ -44,13 +44,39 @@ namespace Backend.Services
             }
             podcast.Name = createPodcastRequest.Name!;
 
-           
 
             await _db.Podcasts!.AddAsync(podcast);
             await _db.SaveChangesAsync();
 
-            return podcast;
+            GetPodcastRequest getPodcastRequest = new GetPodcastRequest()
+            {
+                Id = podcast.Id.ToString(),
+                Name = podcast.Name,
+                Description = podcast.Description,
+                Tags = podcast.Tags,
+                coverImage = podcast.Cover
+
+            };
+
+
+            return getPodcastRequest;
          
+        }
+
+        public async Task<Podcast?> GetPodcast(string id)
+        {
+            if(id == null)
+            {
+                return null;
+            }
+            else
+            {
+                Console.WriteLine(id);
+                Guid podcastId = Guid.Parse(id);
+               
+                return await _db.Podcasts!.Include(u => u.Cover).FirstAsync(x => x.PodcasterId == podcastId);
+
+            }
         }
     }
 }

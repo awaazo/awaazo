@@ -9,7 +9,7 @@ namespace Backend.Controllers
 {
     [ApiController]
     [Route("podcast")]
-    public class PodcastController : Controller
+    public class PodcastController : ControllerBase
     {
         private readonly IPodcastService _podcastService;
         public PodcastController(IPodcastService podcastService)
@@ -17,12 +17,13 @@ namespace Backend.Controllers
             _podcastService = podcastService;
 
         }
+
+        [HttpPost("create")]
         [Authorize]
-        [HttpPost("/create")]
         public async Task<IActionResult> CreatePodcast([FromForm]CreatePodcastRequest createPodcastRequest)
         {
             
-            Podcast? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
+            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
             
 
             if (podcast != null)
@@ -33,7 +34,28 @@ namespace Backend.Controllers
             }
             else { return BadRequest("Bad Request"); }
 
-        } 
+        }
+        [HttpGet("getById")]
+        [Authorize]
+        public async Task<IActionResult> GetPodcastById(string id)
+        {
+            Podcast? podcast =  await _podcastService.GetPodcast(id);
+            if(podcast != null)
+            {
+                return Ok(podcast);
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+        
+        }
+
+
+
+
+
+
         
     }
 }
