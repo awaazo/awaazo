@@ -3,6 +3,7 @@ import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, 
 
 // Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaQuora, FaTwitter } from "react-icons/fa";
+import router from "next/router";
 
 const iconProps = {
   variant: "ghost",
@@ -90,6 +91,9 @@ export default function Header() {
             rounded={"full"}
             style={{
               marginLeft: "1em",
+            }}
+            onClick={() => {
+              router.push('/profile/EditProfile');
             }}
           >
             {/* <Icon as={Follow} w={6} h={6} /> */}
