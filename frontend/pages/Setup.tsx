@@ -10,6 +10,7 @@ import {
   Text,
   Wrap,
   WrapItem,
+  IconButton,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -53,7 +54,7 @@ const Setup: React.FC = () => {
 
   useEffect(() => {
     // Check to make sure the user has logged in
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
       window.location.href = loginPage;
     }
   }, [session, router]);
@@ -114,71 +115,66 @@ function getRandomGradient() {
         <Text
           style={{
             fontSize: "1.5rem",
-            fontWeight: "bold",
             textAlign: "center",
-            marginBottom: "1rem",
+            marginTop: "1rem",
+            fontFamily: "Avenir Next",
           }}
         >
-          Finish Setting up Your Account
+          Hey, {session?.user?.name}! Let's get you set up.
         </Text>
 
          <form onSubmit={handleSetup}>
           <Stack spacing={6} align={"center"}>
             <div
-              style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={
-                  avatar ||
-                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
-                }
-                alt="Avatar"
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "50%",
-                  padding: "15px",
-                  position: "relative",
-                }}
-              />
-              <Button
-                colorScheme="gray"
-                style={{
-                  position: "absolute",
-                  bottom: "5px",
-                  right: "5px",
-                  padding: "5px",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                  fontSize: "0.8rem", // Smaller font size
-                }}
-              >
-                <label
-                  htmlFor="avatar"
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  Upload
-                </label>
-                <input
-                  type="file"
-                  id="avatar"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setAvatar(URL.createObjectURL(e.target.files[0]))
-                  }
-                  style={{
-                    display: "none",
-                  }}
-                />
-              </Button>
-            </div>
+  style={{
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  }}
+>
+  <img
+    src={
+      avatar ||
+      "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+    }
+    alt="Avatar"
+    style={{
+      width: "150px",
+      height: "150px",
+      borderRadius: "50%",
+      padding: "15px",
+      position: "relative",
+    }}
+  />
+  <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right:"5px" }}>
+    <IconButton
+      aria-label="Upload avatar"
+      icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+      size="sm"
+      variant="outline"
+      borderRadius="full"
+      border="1px solid grey"
+      padding={3}
+      style={{
+        backdropFilter: "blur(5px)", // This line adds the blur effect
+        backgroundColor: "rgba(0, 0, 0, 0.4)" // Semi-transparent white background to enhance the blur effect
+      }}
+    />
+    <input
+      type="file"
+      id="avatar"
+      accept="image/*"
+      onChange={(e) =>
+        setAvatar(URL.createObjectURL(e.target.files[0]))
+      }
+      style={{
+        display: "none",
+      }}
+    />
+  </label>
+</div>
+
 
             <FormControl>
               <Textarea
@@ -191,6 +187,7 @@ function getRandomGradient() {
                   height: "100px",
                   padding: "12px",
                   fontSize: "16px",
+                  borderRadius: "18px",
                 }}
                 resize="vertical" // Made the bio textarea resizable
               />
@@ -206,49 +203,70 @@ function getRandomGradient() {
                 What kind of topics do you like?
               </FormLabel>
               <Wrap spacing={4} justify="center" maxWidth={"600px"}>
-    {PodcastGenres.map((genre) => (
-      <WrapItem key={genre}>
-        <Button
-          size="sm"
-          variant={selectedInterests.includes(genre) ? "solid" : "outline"}
-          colorScheme="white"
-          backgroundColor={
-            selectedInterests.includes(genre)
-              ? genreColors[genre] || getRandomGradient()
-              : "transparent"
-          }
-          color="white"
-          borderColor="white"
-          borderRadius="full"
-          _hover={{
-            backgroundColor: selectedInterests.includes(genre)
-              ? genreColors[genre] || getRandomGradient()
-              : "gray",
-          }}
-          onClick={() => handleInterestClick(genre)}
-        >
-          {genre}
-        </Button>
-      </WrapItem>
-    ))}
-  </Wrap>
-</FormControl>
-
-
-
-              <Button
-              id="setupBtn"
-              type="submit"
-              fontSize="md"
-              borderRadius={"full"}
-              backgroundColor="white"
-              maxWidth={"200px"}
-              color={"black"}
-              marginTop={"15px"}
-              marginBottom={"10px"}
+                {PodcastGenres.map((genre) => (
+                  <WrapItem key={genre}>
+                    <Button
+                      size="sm"
+                      variant={selectedInterests.includes(genre) ? "solid" : "outline"}
+                      colorScheme="white"
+                      backgroundColor={
+                        selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "transparent"
+                      }
+                      color="white"
+                      borderColor="white"
+                      borderRadius="full"
+                      _hover={{
+                        backgroundColor: selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "gray",
+                      }}
+                      onClick={() => handleInterestClick(genre)}
+                    >
+                      {genre}
+                    </Button>
+                  </WrapItem>
+                ))}
+              </Wrap>
+            </FormControl>
+            <Button
+                id="setupBtn"
+                type="submit"
+                fontSize="md"
+                borderRadius={"full"}
+                minWidth={"200px"}
+                color={"white"}
+                marginTop={"15px"}
+                marginBottom={"10px"}
+                padding={"20px"}
+                // semi transparent white outline
+                outline={"2px solid rgba(255, 255, 255, 0.6)"}
+                style={{
+                    background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
+                    backgroundSize: '300% 300%',
+                    animation: 'Gradient 10s infinite linear'
+                }}
             >
-              Finish Account Setup
+                Start Listening
+                <style jsx>{`
+                    @keyframes Gradient {
+                        0% {
+                            background-position: 100% 0%;
+                        }
+                        50% {
+                            background-position: 0% 100%;
+                        }
+                        100% {
+                            background-position: 100% 0%;
+                        }
+                    }
+                `}</style>
             </Button>
+
+
+
+
           </Stack>
         </form>
       </Box>
