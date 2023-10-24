@@ -8,9 +8,14 @@ import { podcasts, episodes } from "../utilities/SampleData";
 
 const Main = () => {
   return (
-    <Box height="100vh" display="flex" flexDirection="column">
+    <>
       {/* Navbar */}
       <Navbar />
+    <Box display="flex" flexDirection="column" paddingLeft={"4em"} paddingRight={"4em"}>
+        {/* Explore Genres Section */}
+            <Box overflowX="hidden" className="no-scrollbar" flex="1">
+              <ExploreGenresSection />
+            </Box>
 
       {/* Main Content */}
       <Flex flex="1" overflow="hidden">
@@ -36,21 +41,14 @@ const Main = () => {
             </Box>
           </VStack>
 
-          {/* Explore Genres Section */}
-          <VStack spacing={4} h="50%" borderRadius="35px" backdropFilter="blur(35px)">
-            <Text fontSize="xl" fontWeight="bold" ml={3} mt={3}>
-              Explore Genres
-            </Text>
-            <Box overflowY="auto" overflowX="hidden" className="no-scrollbar" flex="1">
-              <ExploreGenresSection />
-            </Box>
-          </VStack>
+        
         </Flex>
       </Flex>
 
       {/* Player Bar */}
       <PlayerBar {...episodes[0]} />
     </Box>
+    </>
   );
 };
 
