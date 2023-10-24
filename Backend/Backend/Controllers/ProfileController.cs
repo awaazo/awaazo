@@ -70,7 +70,7 @@ public class ProfileController : ControllerBase
     }
 
     
-    [HttpPut("setup")]
+    [HttpPost("setup")]
     public async Task<ActionResult> Setup([FromForm] ProfileSetupRequest setupRequest)
     {
         // Identify User from JWT Token
@@ -79,7 +79,23 @@ public class ProfileController : ControllerBase
         // Update User Profile
         user = await _profileService.SetupProfileAsync(setupRequest,user);
 
-        // If User is not found, return 404, else return 200 with the updated user
+        // If User is not found, return 404, else return 200
+        if (user == null)
+            return NotFound("User does not exist.");
+        else
+            return Ok();
+    }
+
+    [HttpPost("edit")]
+    public async Task<ActionResult> Edit([FromForm] ProfileEditRequest editRequest)
+    {
+        // Identify User from JWT Token
+        User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+        // Update User Profile
+        user = await _profileService.EditProfileAsync(editRequest,user);
+
+        // If User is not found, return 404, else return 200
         if (user == null)
             return NotFound("User does not exist.");
         else
@@ -87,7 +103,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("avatar")]
-    public async Task<ActionResult> Avatar()
+    public async Task<PhysicalFileResult> Avatar()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);

@@ -65,6 +65,14 @@ public class Program
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
             };
+            x.Events = new JwtBearerEvents()
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["jwt-token"];
+                    return Task.CompletedTask;
+                }
+            };
         });
         builder.Services.AddAuthorization();
         

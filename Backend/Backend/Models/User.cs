@@ -20,6 +20,9 @@ public class User : BaseEntity
         Avatar = string.Empty;
         Bio = string.Empty;
         Interests = Array.Empty<string>();
+        TwitterUrl = string.Empty;
+        LinkedInUrl = string.Empty;
+        GitHubUrl = string.Empty;
     }
 
     /// <summary>
@@ -27,7 +30,7 @@ public class User : BaseEntity
     /// </summary>
     [Key]
     public Guid Id { get; set; }
-    
+
     /// <summary>
     /// User email.
     /// </summary>
@@ -48,11 +51,18 @@ public class User : BaseEntity
     /// </summary>
     public string? Avatar { get; set; }
 
-    public string Bio {get;set;}
+    public string Bio { get; set; }
 
     public string[] Interests { get; set; }
+
+    public string TwitterUrl { get; set; }
+
+    public string LinkedInUrl { get; set; }
+
+    public string GitHubUrl { get; set; }
+
     public DateTime DateOfBirth { get; set; }
-    
+
     [DefaultValue(GenderEnum.Other)]
     public GenderEnum Gender { get; set; }
 

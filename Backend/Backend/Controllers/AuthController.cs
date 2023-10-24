@@ -15,6 +15,7 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("auth")]
+[Authorize]
 public class AuthController : ControllerBase
 {
     private static readonly TimeSpan TokenLifeTime = TimeSpan.FromDays(30);
@@ -28,6 +29,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request) {
         // Login 
         User? user = await _authService.LoginAsync(request);
@@ -37,11 +39,14 @@ public class AuthController : ControllerBase
         // Generate JWT Token for user
         string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
 
+        Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax  });
+
         // Return JWT Token with the User
         return Ok(new { Token = token, User = user });
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
         
         // Register User if he does not already exist
@@ -52,14 +57,19 @@ public class AuthController : ControllerBase
         // Generate JWT Token for user
         string token = _authService.GenerateToken(newUser.Id,_configuration,TokenLifeTime);
         
+        Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax });
+
         // Return JWT Token with the User
         return Ok(new {Token = token, User = newUser});
     }
     
     [HttpGet("me")]
-    [Authorize]
     public async Task<IActionResult> Me()
     {
+
+
+
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -76,6 +86,7 @@ public class AuthController : ControllerBase
 
 
     [HttpPost("googleSSO")]
+    [AllowAnonymous]
     public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
     {
         // Get the SSO User
