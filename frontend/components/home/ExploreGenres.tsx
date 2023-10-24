@@ -23,12 +23,16 @@ const ExploreGenres = () => {
 
 
   return (
-    <VStack align="center" spacing={5} p={[2, 4, 5]} flex="1" overflow="hidden"> {/* Added overflow="hidden" */}
+    <>
+    <VStack align="center" spacing={5} p={[2, 4, 5]} flex="1" overflow="hidden" > 
       <Grid 
         templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]}
         gap={4}
-        overflowX={["visible", "auto"]}
+
         className="no-scrollbar"
+        overflowX="hidden"
+overflowY="hidden"
+
       >
         {allGenres.map((genre, index) => (
           <Box 
@@ -37,8 +41,7 @@ const ExploreGenres = () => {
             borderRadius="lg" 
             overflow="hidden" 
             position="relative" 
-            _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
-            transition="all 0.3s ease-in-out" 
+            _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.05)", transition: "all 0.2s ease-in-out", }}
             boxSizing="border-box" 
             border="1px solid"
             
@@ -60,6 +63,7 @@ const ExploreGenres = () => {
         ))}
       </Grid>
     </VStack>
+    </>
   );
 };
 

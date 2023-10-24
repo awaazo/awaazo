@@ -13,9 +13,10 @@ const Main = () => {
       <Navbar />
       <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]} > {/* Adjusted padding */}
         {/* Explore Genres Section */}
-        <Box className="no-scrollbar" flex="1" >
+        <Box>
             <ExploreGenresSection />
         </Box>
+
 
 
       {/* Main Content */}
