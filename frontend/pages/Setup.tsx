@@ -63,10 +63,7 @@ const Setup: React.FC = () => {
   }, [session, router]);
 
   const handleAvatarUpload = (e: FormEvent) => {
-    console.log("Avatar Upload Clicked")
-    console.log((e.target as any).files[0])
     setAvatarFile((e.target as any).files[0])
-
     setAvatar(URL.createObjectURL((e.target as any).files[0]))  
     e.preventDefault();
   };

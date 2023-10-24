@@ -46,12 +46,43 @@ public class ProfileService : IProfileService
         // Save Avatar to Server
         bool isSaved = SaveAvatar(avatarFileName, request.Avatar);
 
-        // ADD ACTION IF NOT SAVED
+        // Update the user's profile
+        user.Avatar = userAvatarName;
+        user.Bio = request.Bio;
+        user.Interests = request.Interests;
+
+        // Update the UpdatedAt attribute
+        user.UpdatedAt = DateTime.Now;
+
+        // Save the changes to the database
+        _db.Users!.Update(user);
+        await _db.SaveChangesAsync();
+
+        // Return the updated user
+        return user;
+    }
+
+    public async Task<User?> EditProfileAsync(ProfileEditRequest request, User? user)
+    {
+        // Make sure the user exists
+        if(user is null)
+            return null;
+
+        // Set Avatar Name for Server file and db
+        string avatarFileName = string.Format("{0}.{1}",user.Id, request.Avatar!.ContentType.Split('/')[1]);
+        string userAvatarName = string.Format("{0}||{1}", avatarFileName, request.Avatar!.ContentType); 
+
+        // Save Avatar to Server
+        bool isSaved = SaveAvatar(avatarFileName, request.Avatar);
 
         // Update the user's profile
         user.Avatar = userAvatarName;
         user.Bio = request.Bio;
         user.Interests = request.Interests;
+        user.Username = request.Username;
+        user.TwitterUrl = request.TwitterUrl;
+        user.GitHubUrl = request.GitHubUrl;
+        user.LinkedInUrl = request.LinkedInUrl;
 
         // Update the UpdatedAt attribute
         user.UpdatedAt = DateTime.Now;
@@ -90,5 +121,4 @@ public class ProfileService : IProfileService
     {
         return Path.Combine(AppContext.BaseDirectory, "Avatars", fileInfo.Split("||")[0]);
     }
-
 }

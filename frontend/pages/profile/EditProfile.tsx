@@ -17,6 +17,8 @@ import {
 import { useState, FormEvent } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Navbar from "../../components/shared/Navbar";
+import { UserProfileEditRequest } from "../../utilities/Requests";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
@@ -27,7 +29,7 @@ const EditProfile: React.FC = () => {
   const [linkedinLink, setLinkedinLink] = useState("");
   const [githubLink, setGithubLink] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
-
+  const [avatarFile, setAvatarFile] = useState<File>(null);
 
   const PodcastGenres = [
     "Technology",
@@ -48,9 +50,38 @@ const EditProfile: React.FC = () => {
     "Food",
   ];
 
-  const handleProfileUpdate = (e: FormEvent) => {
+  const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
-    // Here you can handle the form submission to update the user's profile.
+
+    console.log("Update Clicked")
+
+    // Create the request
+    const request : UserProfileEditRequest = {
+      avatar : avatarFile,
+      bio : bio,
+      interests : selectedInterests,
+      username : username,
+      twitterUrl : twitterLink,
+      linkedInUrl : linkedinLink,
+      githubUrl : githubLink
+    }
+
+    // Get the Response
+    const response = await UserProfileHelper.profileEditRequest(request);
+
+    if(response.status === 200){
+      window.alert("Profile Updated");
+    }
+    else{
+      window.alert(response.status+": "+response.message);
+    }
+
+  }
+
+  const handleAvatarUpload = (e: FormEvent) => {
+    setAvatarFile((e.target as any).files[0])
+    setAvatar(URL.createObjectURL((e.target as any).files[0]))  
+    e.preventDefault();
   };
 
     // Add the given functions
@@ -147,7 +178,7 @@ const EditProfile: React.FC = () => {
                 type="file"
                 id="avatar"
                 accept="image/*"
-                onChange={(e) => setAvatar(URL.createObjectURL(e.target.files[0]))}
+                onChange={(e) => handleAvatarUpload(e)}
                 style={{display: "none"}}
               />
             </label>

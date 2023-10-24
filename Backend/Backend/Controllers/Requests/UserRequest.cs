@@ -27,6 +27,30 @@ namespace Backend.Controllers.Requests
         public string[] Interests {get;set;}
     }
 
+    [BindProperties]
+    public class ProfileEditRequest : ProfileSetupRequest
+    {
+        public ProfileEditRequest()
+        {
+            Username = string.Empty;
+            TwitterUrl = string.Empty;
+            LinkedInUrl = string.Empty;
+            GitHubUrl = string.Empty;
+        }
+
+        [Required]
+        public string Username {get;set;}
+        
+        [Required]
+        public string TwitterUrl {get;set;}
+
+        [Required]
+        public string LinkedInUrl {get;set;}
+
+        [Required]
+        public string GitHubUrl {get;set;}
+    }
+
 }
 
 
