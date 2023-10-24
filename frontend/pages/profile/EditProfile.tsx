@@ -142,13 +142,14 @@ const EditProfile: React.FC = () => {
                   backdropFilter: "blur(5px)", 
                   backgroundColor: "rgba(0, 0, 0, 0.4)" 
                 }}
+                zIndex={-999}
               />
               <input
                 type="file"
                 id="avatar"
                 accept="image/*"
-                onChange={(e) => setAvatar(URL.createObjectURL(e.target.files[0]))}
                 style={{display: "none"}}
+                onChange={(e) => setAvatar(URL.createObjectURL(e.target.files[0]))}
               />
             </label>
           </div>
@@ -160,7 +161,7 @@ const EditProfile: React.FC = () => {
               id="username"
               placeholder="Name"
               value={username}
-              onChange={(              e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               style={{
                 width: "100%",
                 padding: "12px",
