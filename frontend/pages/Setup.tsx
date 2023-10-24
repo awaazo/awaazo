@@ -17,6 +17,9 @@ import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
 
 import LogoWhite from "../public/logo_white.svg";
+import { UserProfileSetupRequest } from "../utilities/Requests";
+import { conforms, set } from "lodash";
+import UserProfileHelper from "../helpers/UserProfileHelper";
 
 const Setup: React.FC = () => {
   // CONSTANTS
@@ -48,7 +51,7 @@ const Setup: React.FC = () => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [genreColors, setGenreColors] = useState({});
   const [avatar, setAvatar] = useState<string | null>(null);
-
+  const [avatarFile, setAvatarFile] = useState<File>(null);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -60,13 +63,36 @@ const Setup: React.FC = () => {
   }, [session, router]);
 
   const handleAvatarUpload = (e: FormEvent) => {
+    console.log("Avatar Upload Clicked")
+    console.log((e.target as any).files[0])
+    setAvatarFile((e.target as any).files[0])
+
+    setAvatar(URL.createObjectURL((e.target as any).files[0]))  
     e.preventDefault();
   };
 
   const handleSetup = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Create request object
+    const request: UserProfileSetupRequest = {
+      avatar : avatarFile,
+      bio : bio,
+      interests : selectedInterests
+    };
 
-    //window.location.href = mainPage;
+    // Send the request
+    const response = await UserProfileHelper.profileSetupRequest(request);
+    console.log(response)
+
+    if (response.status === 200) {
+      // Success, go to main page
+      window.location.href = mainPage;
+    }
+    else {
+      // Handle error here
+      window.alert(response.status+": "+response.message);
+    }
   };
 
   function getRandomDarkColor() {
@@ -94,6 +120,7 @@ const Setup: React.FC = () => {
       }
     }
   };
+  
 
   return (
     <>
@@ -165,9 +192,7 @@ const Setup: React.FC = () => {
                   type="file"
                   id="avatar"
                   accept="image/*"
-                  onChange={(e) =>
-                    setAvatar(URL.createObjectURL(e.target.files[0]))
-                  }
+                  onChange={(e) => handleAvatarUpload(e)}
                   style={{
                     display: "none",
                   }}

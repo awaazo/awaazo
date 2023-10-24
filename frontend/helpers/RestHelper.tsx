@@ -216,6 +216,7 @@ export default class RequestHelper {
       url: EndpointHelper.getAuthRegisterEndpoint(),
       data: { email: email, password: password, dateOfBirth: dateOfBirth, username: username, gender: gender },
       headers: { accept: "*/*", "Content-Type": "application/json" },
+      withCredentials: true
     };
 
     console.debug("Sending the following authRegisterRequest...");
@@ -261,6 +262,7 @@ export default class RequestHelper {
       url: EndpointHelper.getAuthLoginEndpoint(),
       data: { email: email, password: password },
       headers: { accept: "*/*", "Content-Type": "application/json" },
+      withCredentials: true
     };
 
     console.debug("Sending the following authLoginRequest...");
@@ -344,8 +346,8 @@ export default class RequestHelper {
       url: EndpointHelper.getAuthMeEndpoint(),
       headers: { 
         accept: "*/*", 
-        "Content-Type": "application/json", 
-        authorization: "Bearer " + token  },
+        "Content-Type": "application/json"},
+      withCredentials: true
     };
 
     console.debug("Sending the following authMeRequest...");
