@@ -24,7 +24,11 @@ const ExploreGenres = () => {
 
   return (
     <>
-    <Box margin={["1em", "2em"]}>
+    <Box 
+    marginLeft={"5em"}
+    marginRight={"5em"}
+    marginBottom={"3em"}
+    >
       <Text fontSize="2xl" fontWeight="bold" mb={3}>
         Explore Genres
       </Text>
@@ -42,6 +46,7 @@ const ExploreGenres = () => {
             _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.1)", transition: "all 0.3s ease-in-out" }}
             boxSizing="border-box" 
             border="1px solid"
+
             
           >
             <Image src={genre.backgroundImage.src} alt={`${genre.name} background`} width="100%" height="100%" objectFit="cover" opacity="0.8" />

@@ -194,14 +194,15 @@ export default function Navbar() {
       p={6}
       mr={"2em"}
       ml={"2em"}
+      mb={"3em"}
       position="sticky"
-      top={4}
+      top={5}
       zIndex={999}
       borderRadius={"95px"}
       boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
       data-testid="navbar-component"
       // semi transparent white outline
-      border="2px solid rgba(255, 255, 255, 0.1)"
+      border="3px solid rgba(255, 255, 255, 0.05)"
     >
       <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
         <Link href="/Main">
