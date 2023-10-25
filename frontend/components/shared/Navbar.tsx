@@ -188,6 +188,7 @@ export default function Navbar() {
   );
 
   return (
+    <>
     <Box
       bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
       backdropFilter="blur(35px)"
@@ -207,6 +208,7 @@ export default function Navbar() {
       <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
         <Link href="/Main">
           <Box maxWidth={"1.5em"} ml={-2}>
+    
             <Image
               src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src}
               alt="logo"
@@ -261,5 +263,6 @@ export default function Navbar() {
         )}
       </Flex>
     </Box>
+    </>
   );
 }
