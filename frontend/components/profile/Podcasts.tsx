@@ -39,9 +39,10 @@ const podcasts = [
     podcastImage: "https://www.amacad.org/sites/default/files/person/headshots/oprah.jpg",
   },
 ];
-export default function Podcasts() {
+
+export default function Podcasts({childToParent}) {
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 }); // Adjust the number of columns based on the screen size
-  const [id, setPodcastId] = useState(1);
+
   return (
     <>
       <h1
@@ -56,7 +57,7 @@ export default function Podcasts() {
       <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
         {podcasts.map((podcast, index) => (
           <Link key={index} href="#" _hover={{ textDecoration: "none" }}>
-            <Box position="relative" display="inline-block" onClick={() => setPodcastId(podcast.id)}>
+            <Box position="relative" display="inline-block" onClick={() => childToParent(podcast.id)}>
               {/* Main Avatar */}
               <Avatar size="2xl" title={podcast.title} src={podcast.podcastImage} _hover={{ opacity: 0.8 }} />
               

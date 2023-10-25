@@ -40,8 +40,8 @@ const episodes = [
   },
 ];
 
-export default function MyEpisodes() {
-  const selectedEpisodes = episodes.filter(episode => episode.podcastId === 2)
+export default function MyEpisodes({parentToChild}) {
+  let selectedEpisodes = episodes.filter(episode => episode.podcastId === parentToChild)
   return (
     <>
       <h1

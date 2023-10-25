@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState, useEffect} from 'react';
 import {
   Container,
   Box,
@@ -10,8 +11,20 @@ import Navbar from "../../components/shared/Navbar";
 import Header from "../../components/profile/Header";
 import MyEpisodes from "../../components/profile/MyEpisodes";
 import Podcasts from "../../components/profile/Podcasts";
+
 const myProfile = () => {
   const isInline = useBreakpointValue({ base: false, md: true });
+
+  const [id, setPodcastId] = useState(1);
+
+  // useEffect(() => console.log(id), [id]);
+
+  const childToParent = (childdata) => {
+    setPodcastId(childdata)
+    
+  }
+
+  const parentToChild = () => {setPodcastId(id);console.log(id);}
 
   return (
     <>
@@ -20,10 +33,10 @@ const myProfile = () => {
         <Stack isInline={isInline} spacing="4" alignItems="flex-start">
           <Container>
             <Header/> 
-             <Podcasts/>
+             <Podcasts childToParent={childToParent}/>
           </Container>
           <Container>
-            <MyEpisodes/>
+            <MyEpisodes parentToChild={parentToChild}/>
           </Container>
         </Stack>
       </Box>
