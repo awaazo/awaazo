@@ -140,3 +140,9 @@ export interface UserProfile {
   dateOfBirth: string;
   gender: string;
 }
+
+export interface UserMenuInfo{
+  id: string;
+  username: string;
+  avatarUrl: string;
+}

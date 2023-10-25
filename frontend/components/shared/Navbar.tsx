@@ -31,12 +31,13 @@ import {
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import { UserMenuInfo } from "../../utilities/Interfaces";
+import { set } from "lodash";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
-  const registerPage = "/auth/Signup";
-  const isLoggedIn = AuthHelper.isLoggedIn();
+  const registerPage = "/auth/Signup";  
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -44,53 +45,54 @@ export default function Navbar() {
   const handleSearchChange = (event) => setSearchValue(event.target.value);
   const handleSearchSubmit = () => console.log("Search Value:", searchValue);
 
-  const [user, setUser] = useState({
-    id: "",
-    email: "",
-    username: "",
-    avatar: "",
-  });
+  // Current User
+  const [user, setUser] = useState<UserMenuInfo>({
+    avatarUrl: null,
+    username: null,
+    id: null});
+
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
 
   useEffect(() => {
-    // Custom User logged in
-    if (isLoggedIn && !isUserSet) {
-      AuthHelper.getUser().then((response) => {
-        setUser(response);
-        setIsUserLoggedIn(true); // Set login status to true
-        setIsUserSet(true);
-      });
+
+    AuthHelper.isLoggedIn().then((response) => {
+      setIsUserLoggedIn(response);
+      console.log(response)
+    })
+
+    if(user.id==null && isUserLoggedIn){
+      AuthHelper.authMeRequest().then((response) => {
+        setUser(response.userMenuInfo);
+      })
     }
-    // Google User logged in
-    else if (session && !isLoggedIn) {
-      AuthHelper.loginGoogleSSO(
-        session.user.email,
-        session.user.name,
-        (session as any).id,
-        session.user.image,
-      ).then(() => {
-        AuthHelper.getUser().then((response) => {
-          setUser(response);
-          setIsUserLoggedIn(true); // Set login status to true
-          setIsUserSet(true);
-        });
-      });
-    }
-  }, [session, isLoggedIn]);
+    console.log(isUserLoggedIn)
+
+  }, [session, isUserLoggedIn]);
 
   /**
    * Logs the user out of the application.
    */
   const handleLogOut = async () => {
-    AuthHelper.logout();
-    // User logged in via Google, so use next-auth's signOut
-    if (session) await signOut();
+    console.log("Logout Clicked")
 
-    // Set Logged In Status to false and redirect to index page
-    setIsUserLoggedIn(false);
-    setIsUserSet(false);
-    window.location.href = indexPage;
+    // Get the response
+    const response = await AuthHelper.authLogoutRequest()
+
+    if (response.status === 200) {
+      // User logged in via Google, so use next-auth's signOut
+      if (session) await signOut();
+
+      // Set Logged In Status to false and redirect to index page
+      setIsUserLoggedIn(false);
+      setIsUserSet(false);
+      window.location.href = indexPage;
+    }
+    else {
+      // Show the error if ever the logout fails
+      console.log("Logout Failed")
+      window.alert(response.status+": "+response.message)
+    }
   };
 
   const UserProfileMenu = () => (
@@ -102,7 +104,7 @@ export default function Navbar() {
         variant={"link"}
         cursor={"pointer"}
       >
-        {user.avatar === "" ? (
+        {user == undefined ? (
           <Avatar
             size={"sm"}
             src={
@@ -115,7 +117,7 @@ export default function Navbar() {
         ) : (
           <Avatar
             size={"sm"}
-            src={user.avatar}
+            src={user.avatarUrl}
             boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
             bg="rgba(255, 255, 255, 0.2)"
             backdropFilter="blur(10px)"
@@ -232,7 +234,7 @@ export default function Navbar() {
               handleSearchSubmit();
             }}
           >
-            
+
             <Input
               placeholder="Search"
               size="sm"
@@ -253,7 +255,7 @@ export default function Navbar() {
                 color={colorMode === "dark" ? "white" : "black"}
               />
             </Link>
-            {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            {isUserLoggedIn? <UserProfileMenu /> : <LoggedOutMenu />}
           </Flex>
         )}
       </Flex>
