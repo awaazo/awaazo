@@ -1,4 +1,4 @@
-import { Box, Text, VStack, useColorModeValue, Flex, Image, keyframes, Grid } from "@chakra-ui/react";
+import { Box, Text, HStack, useColorModeValue, Flex, Image, keyframes, Grid, Container } from "@chakra-ui/react";
 import techImage from "../../styles/images/genres/tech.png";
 import educationImage from "../../styles/images/genres/ed.png";
 import comedyImage from "../../styles/images/genres/comedy.png";
@@ -24,14 +24,14 @@ const ExploreGenres = () => {
 
   return (
     <>
-    <VStack align="center" spacing={5} p={[2, 4, 5]} flex="1" overflow="hidden" > 
+    <Box
+    margin={["1em", "2em", "3em"]}
+    >
+      
       <Grid 
         templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]}
         gap={4}
 
-        className="no-scrollbar"
-        overflowX="hidden"
-overflowY="hidden"
 
       >
         {allGenres.map((genre, index) => (
@@ -62,7 +62,7 @@ overflowY="hidden"
           </Box>
         ))}
       </Grid>
-    </VStack>
+    </Box>
     </>
   );
 };
