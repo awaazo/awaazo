@@ -60,18 +60,18 @@ export default function MyEpisodes({selectedPodcastId}) {
             direction="column"
             spacing={4}
             p={8}
-            bg={useColorModeValue("gray.100", "gray.800")}
+            // bg={useColorModeValue("gray.100", "gray.800")}
             border="1px solid"
             borderColor="blue.100"
             _hover={{
               borderColor: "blue.300",
-              boxShadow: useColorModeValue("0 4px 6px rgba(160, 174, 192, 0.6)", "0 4px 6px rgba(9, 17, 28, 0.9)"),
+              // boxShadow: useColorModeValue("0 4px 6px rgba(160, 174, 192, 0.6)", "0 4px 6px rgba(9, 17, 28, 0.9)"),
             }}
             rounded="2em"
           >
             <HStack spacing={2} mb={1}>
               {episode.tags.map((category, index) => (
-                <Tag key={index} colorScheme={useColorModeValue("blackAlpha", "gray")} borderRadius="full">
+                <Tag key={index}  borderRadius="full">
                   {category}
                 </Tag>
               ))}
@@ -97,7 +97,7 @@ export default function MyEpisodes({selectedPodcastId}) {
                     {episode.created_at}
                   </Text>
                 </Box>
-                <HStack as={Link} spacing={1} p={1} alignItems="center" height="2rem" w="max-content" margin="auto 0" rounded="lg" color="blue.400" _hover={{ bg: useColorModeValue("gray.200", "gray.700") }}>
+                <HStack as={Link} spacing={1} p={1} alignItems="center" height="2rem" w="max-content" margin="auto 0" rounded="lg" color="blue.400">
                   <Icon as={FaPlay} w={6} h={6} />
                 </HStack>
               </Stack>
