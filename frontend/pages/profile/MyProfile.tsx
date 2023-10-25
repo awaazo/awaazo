@@ -17,14 +17,9 @@ const isInline = useBreakpointValue({ base: false, md: true, default: false });
 
   const [id, setPodcastId] = useState(1);
 
-  // useEffect(() => console.log(id), [id]);
-
   const childToParent = (childdata) => {
     setPodcastId(childdata)
-    
   }
-
-  const parentToChild = () => {setPodcastId(id);console.log(id);}
 
   return (
       <>
@@ -33,6 +28,7 @@ const isInline = useBreakpointValue({ base: false, md: true, default: false });
           <Stack isInline={isInline} spacing="4" alignItems="flex-start">
             <Container>
               <Header/> 
+              {/* Fetch the podcast ID from Podcasts */}
               <Podcasts childToParent={childToParent}/>
             </Container>
             <Container>

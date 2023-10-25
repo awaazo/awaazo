@@ -64,7 +64,7 @@ export default function Podcasts({ childToParent }) {
               position="relative" 
               display="inline-block" 
               onClick={() => {
-                childToParent(podcast.id);
+                childToParent(podcast.id); //Pass the podcast ID to MyProfile
                 setSelectedPodcastId(podcast.id); // Set the selected podcast ID
               }}
               // Conditionally put styling if the podcast is selected
