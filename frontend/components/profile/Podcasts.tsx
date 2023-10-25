@@ -40,8 +40,11 @@ const podcasts = [
   },
 ];
 
-export default function Podcasts({childToParent}) {
-  const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 }); // Adjust the number of columns based on the screen size
+export default function Podcasts({ childToParent }) {
+  const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 });
+
+  // State to maintain the selected podcast ID
+  const [selectedPodcastId, setSelectedPodcastId] = useState(null);
 
   return (
     <>
@@ -57,10 +60,27 @@ export default function Podcasts({childToParent}) {
       <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
         {podcasts.map((podcast, index) => (
           <Link key={index} href="#" _hover={{ textDecoration: "none" }}>
-            <Box position="relative" display="inline-block" onClick={() => childToParent(podcast.id)}>
+            <Box 
+              position="relative" 
+              display="inline-block" 
+              onClick={() => {
+                childToParent(podcast.id);
+                setSelectedPodcastId(podcast.id); // Set the selected podcast ID
+              }}
+              // Conditionally put styling if the podcast is selected
+              borderWidth={podcast.id === selectedPodcastId ? "3px" : "0"}
+              borderColor="white"
+              borderRadius="100em"
+              shadow={podcast.id === selectedPodcastId ? "xl" : "none"}
+              cursor="pointer"
+            >
               {/* Main Avatar */}
-              <Avatar size="2xl" title={podcast.title} src={podcast.podcastImage} _hover={{ opacity: 0.8 }} />
-              
+              <Avatar 
+                size="2xl" 
+                title={podcast.title} 
+                src={podcast.podcastImage} 
+                _hover={{ opacity: 0.7, outline: "solid 3px #FFFFFF"}}
+              />
               {/* Shadow Avatar */}
               <Avatar
                 outline={"solid 1px #CC748C"}
@@ -70,8 +90,8 @@ export default function Podcasts({childToParent}) {
                 boxShadow="0 0 20px rgba(0, 0, 0, 0.9)"
                 filter="blur(10px)"
                 position="absolute"
-                top="2%" // Adjust this value to position the shadow avatar
-                left="0%" // Adjust this value to position the shadow avatar
+                top="2%"
+                left="0%"
                 zIndex="-1"
               />
             </Box>
