@@ -1,7 +1,7 @@
 import axios from "axios";
 import { UserProfileSetupRequest } from "../utilities/Requests";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
+import { BaseResponse } from "../utilities/Responses";
 
 export default class UserProfileHelper {
 
@@ -10,138 +10,97 @@ export default class UserProfileHelper {
      * @param requestData Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static profileSetupRequest = async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
+    public static profileSetupRequest =
+        async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
 
-        // Create the request options.
-        const options =
-        {
-            method: 'POST',
-            data: requestData,
-            url: EndpointHelper.getProfileSetupEndpoint(),
-            headers:
+            // Create the request options.
+            const options =
             {
-                accept: '*/*',
-                'Content-Type': 'multipart/form-data'
-            },
-            withCredentials: true,
-            cache: false
-        }
+                method: 'POST',
+                data: requestData,
+                url: EndpointHelper.getProfileSetupEndpoint(),
+                headers:
+                {
+                    accept: '*/*',
+                    'Content-Type': 'multipart/form-data'
+                },
+                withCredentials: true,
+                cache: false
+            }
 
-        try {
-            console.debug("Sending the following profileSetupRequest...");
-            console.debug(options);
+            try {
+                console.debug("Sending the following profileSetupRequest...");
+                console.debug(options);
 
-            // Send the request and wait for the response.
-            const requestResponse = await axios(options);
+                // Send the request and wait for the response.
+                const requestResponse = await axios(options);
 
-            console.debug("Received the following profileSetupResponse...");
-            console.debug(requestResponse);
+                console.debug("Received the following profileSetupResponse...");
+                console.debug(requestResponse);
 
-            // Return the response.
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText
+                // Return the response.
+                return {
+                    status: requestResponse.status,
+                    message: requestResponse.statusText
+                }
+            }
+            catch (error) {
+                // Return the error.
+                return {
+                    status: error.response.status,
+                    message: error.response.statusText
+                };
             }
         }
-        catch (error) {
-            // Return the error.
-            return {
-                status: error.response.status,
-                message: error.response.statusText
-            };
-        }
-    }
 
     /**
      * Saves the user's profile edit request to the server.
      * @param requestData  Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static profileEditRequest = async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
+    public static profileEditRequest =
+        async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
 
-        // Create the request options.
-        const options =
-        {
-            method: 'POST',
-            data: requestData,
-            url: EndpointHelper.getProfileEditEndpoint(),
-            headers:
+            // Create the request options.
+            const options =
             {
-                accept: '*/*',
-                'Content-Type': 'multipart/form-data'
-            },
-            withCredentials: true,
-            cache: false
-        }
-
-        try {
-            console.debug("Sending the following profileEditRequest...");
-            console.debug(options);
-
-            // Send the request and wait for the response.
-            const requestResponse = await axios(options);
-
-            console.debug("Received the following profileEditResponse...");
-            console.debug(requestResponse);
-
-            // Return the response.
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText
+                method: 'POST',
+                data: requestData,
+                url: EndpointHelper.getProfileEditEndpoint(),
+                headers:
+                {
+                    accept: '*/*',
+                    'Content-Type': 'multipart/form-data'
+                },
+                withCredentials: true,
+                cache: false
             }
-        }
-        catch (error) {
-            // Return the error.
-            return {
-                status: error.response.status,
-                message: error.response.statusText
-            };
-        }
 
-    }
+            try {
+                console.debug("Sending the following profileEditRequest...");
+                console.debug(options);
 
-    /**
-     * Gets the user's profile from the server.
-     * @returns A UserProfileResponse object with the server's response.
-     */
-    public static profileGetRequest = async (): Promise<UserProfileResponse> => {
-        // Create the request options.
-        const options =
-        {
-            method: 'GET',
-            url: EndpointHelper.getProfileGetEndpoint(),
-            headers:
-            {
-                accept: '*/*',
-            },
-            withCredentials: true
-        }
+                // Send the request and wait for the response.
+                const requestResponse = await axios(options);
 
-        try{
-            console.debug("Sending the following profileGetRequest...");
-            console.debug(options);
+                console.debug("Received the following profileEditResponse...");
+                console.debug(requestResponse);
 
-            // Send the request and wait for the response.
-            const requestResponse = await axios(options);
-
-            console.debug("Received the following profileGetResponse...");
-            console.debug(requestResponse);
-
-            // Return the response.
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText,
-                userProfile: requestResponse.data
+                // Return the response.
+                return {
+                    status: requestResponse.status,
+                    message: requestResponse.statusText
+                }
             }
-        }
-        catch(error){
-            return {
-                status: error.response.status,
-                message: error.response.statusText,
-                userProfile: null
+            catch (error) {
+                // Return the error.
+                return {
+                    status: error.response.status,
+                    message: error.response.statusText
+                };
             }
+
         }
 
-    }
 
 }

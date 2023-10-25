@@ -1,5 +1,4 @@
 using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
@@ -42,20 +41,49 @@ public class ProfileController : ControllerBase
             return BadRequest("User profile could not be deleted.");
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> Get()
+    {
+        // Identify User from JWT Token
+        User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+        // If User is not found, return 404, else return 200 with the user
+        if(user is null)
+            return NotFound("User does not exist.");
+        else
+            return Ok(new {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Avatar = user.Avatar,
+                Bio = user.Bio,
+                Interests = user.Interests,
+                DateOfBirth = user.DateOfBirth,
+                Gender = user.Gender,
+                IsPodcaster = user.IsPodcaster,
+                Podcasts = user.Podcasts,
+                UserFollows = user.UserFollows,
+                Subscriptions = user.Subscriptions,
+                Ratings = user.Ratings,
+                EpisodeInteractions = user.EpisodeInteractions
+            });
+    }
+
+    
     [HttpPost("setup")]
     public async Task<ActionResult> Setup([FromForm] ProfileSetupRequest setupRequest)
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
+        // Update User Profile
+        user = await _profileService.SetupProfileAsync(setupRequest,user);
+
+        // If User is not found, return 404, else return 200
         if (user == null)
             return NotFound("User does not exist.");
-
-        // Update User Profile
-        bool isChanged = await _profileService.SetupProfileAsync(setupRequest,user);
-
-        return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
+        else
+            return Ok();
     }
 
     [HttpPost("edit")]
@@ -64,28 +92,14 @@ public class ProfileController : ControllerBase
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
-        if (user == null)
-            return NotFound("User does not exist.");
-
         // Update User Profile
-        bool isChanged = await _profileService.EditProfileAsync(editRequest,user);
+        user = await _profileService.EditProfileAsync(editRequest,user);
 
-        return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
-    }
-
-    [HttpGet("get")]
-    public async Task<ActionResult<UserProfileResponse>> Get()
-    {
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-        // If User is not found, return 404
+        // If User is not found, return 404, else return 200
         if (user == null)
             return NotFound("User does not exist.");
-
-
-        return _profileService.GetProfile(user, HttpContext);
+        else
+            return Ok();
     }
 
     [HttpGet("avatar")]

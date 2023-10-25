@@ -38,9 +38,6 @@ namespace Backend.Controllers.Requests
             GitHubUrl = string.Empty;
         }
 
-        
-        public new IFormFile? Avatar {get;set;}
-
         [Required]
         public string Username {get;set;}
         

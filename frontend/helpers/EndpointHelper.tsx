@@ -63,12 +63,4 @@ export default class EndpointHelper {
     static getProfileEditEndpoint = () => {
         return this.getBackendAddress() + "/profile/edit";
     }
-
-    /**
-     * Returns the Profile Get endpoint.
-     * @returns The Profile Get Endpoint
-     */
-    static getProfileGetEndpoint = () => {
-        return this.getBackendAddress() + "/profile/get";
-    }
 }

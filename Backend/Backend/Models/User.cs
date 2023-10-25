@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using AutoMapper.Configuration.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models;
@@ -50,7 +49,7 @@ public class User : BaseEntity
     /// <summary>
     /// URL for user's PFP
     /// </summary>
-    public string Avatar { get; set; }
+    public string? Avatar { get; set; }
 
     public string Bio { get; set; }
 
@@ -92,16 +91,4 @@ public class User : BaseEntity
         Male, Female, Other, None
     }
 
-    public string GetGenderString()
-    {
-        return Gender switch
-        {
-            GenderEnum.Male => "Male",
-            GenderEnum.Female => "Female",
-            GenderEnum.Other => "Other",
-            GenderEnum.None => "None",
-            _ => "None",
-        };
-    }
-    
 }
