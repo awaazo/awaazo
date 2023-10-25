@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Tag, Avatar, HStack, Text, Icon, Link, useColorModeValue, Stack, VStack, Grid, useBreakpointValue } from "@chakra-ui/react";
+import React, {useState} from "react";
+import { Box, Tag, Avatar, HStack, Button, Text, Icon, Link, useColorModeValue, Stack, VStack, Grid, useBreakpointValue } from "@chakra-ui/react";
 import { FaArrowRight } from "react-icons/fa"; // Importing arrow icon
 
 const podcasts = [
@@ -41,7 +41,7 @@ const podcasts = [
 ];
 export default function Podcasts() {
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 }); // Adjust the number of columns based on the screen size
-
+  const [id, setPodcastId] = useState(1);
   return (
     <>
       <h1
@@ -56,7 +56,7 @@ export default function Podcasts() {
       <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
         {podcasts.map((podcast, index) => (
           <Link key={index} href="#" _hover={{ textDecoration: "none" }}>
-            <Box position="relative" display="inline-block">
+            <Box position="relative" display="inline-block" onClick={() => setPodcastId(podcast.id)}>
               {/* Main Avatar */}
               <Avatar size="2xl" title={podcast.title} src={podcast.podcastImage} _hover={{ opacity: 0.8 }} />
               
