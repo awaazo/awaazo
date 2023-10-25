@@ -3,10 +3,25 @@ import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
+import { extendTheme } from "@chakra-ui/react"
+
+const theme = extendTheme({
+  colors: {
+    primary: {
+      1: "#90cdf4",
+      2: "#236D73",
+    },
+    secondary:{
+      1: "#81e6d9",
+    },
+  },
+})
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <ChakraProvider>
+    // 3. Pass the new theme to `ChakraProvider`
+    <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
       <Box
         position="fixed"
