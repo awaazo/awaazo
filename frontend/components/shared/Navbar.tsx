@@ -232,6 +232,7 @@ export default function Navbar() {
               handleSearchSubmit();
             }}
           >
+            {/* test commit */}
             <Input
               placeholder="Search"
               size="sm"
