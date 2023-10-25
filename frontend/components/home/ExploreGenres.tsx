@@ -24,15 +24,13 @@ const ExploreGenres = () => {
 
   return (
     <>
-    <Box
-    margin={["1em", "2em", "3em"]}
-    >
-      
+    <Box margin={["1em", "2em"]}>
+      <Text fontSize="2xl" fontWeight="bold" mb={3}>
+        Explore Genres
+      </Text>
       <Grid 
         templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]}
         gap={4}
-
-
       >
         {allGenres.map((genre, index) => (
           <Box 
@@ -41,7 +39,7 @@ const ExploreGenres = () => {
             borderRadius="lg" 
             overflow="hidden" 
             position="relative" 
-            _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.05)", transition: "all 0.2s ease-in-out", }}
+            _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.1)", transition: "all 0.3s ease-in-out" }}
             boxSizing="border-box" 
             border="1px solid"
             

@@ -189,16 +189,19 @@ export default function Navbar() {
 
   return (
     <Box
-      bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")}
+      bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
       backdropFilter="blur(35px)"
-      p={4}
-      m={3}
+      p={6}
+      mr={"2em"}
+      ml={"2em"}
       position="sticky"
-      top={0}
+      top={4}
       zIndex={999}
-      borderRadius={"25px"}
-      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
+      borderRadius={"95px"}
+      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
       data-testid="navbar-component"
+      // semi transparent white outline
+      border="2px solid rgba(255, 255, 255, 0.1)"
     >
       <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
         <Link href="/Main">
