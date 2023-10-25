@@ -13,8 +13,8 @@ import MyEpisodes from "../../components/profile/MyEpisodes";
 import Podcasts from "../../components/profile/Podcasts";
 
 const myProfile = () => {
-const isInline = useBreakpointValue({ base: false, md: true, default: false });
-
+  
+  const isInline = useBreakpointValue({ base: false, md: false, lg: false, xl: true });
   const [id, setPodcastId] = useState(1);
 
   const childToParent = (childdata) => {
