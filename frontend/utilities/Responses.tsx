@@ -1,3 +1,5 @@
+import { UserProfile } from "./Interfaces";
+
 export interface BaseResponse{
     status: number;
     message: string;
@@ -6,6 +8,9 @@ export interface BaseResponse{
 
 
 //#region User Profile Responses
- 
+
+export interface UserProfileResponse extends BaseResponse{
+    userProfile: UserProfile;
+}
 
 //#endregion
