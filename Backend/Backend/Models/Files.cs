@@ -10,6 +10,7 @@ namespace Backend.Models
 
             Name = string.Empty;
             MimeType = string.Empty;
+            Path = string.Empty;
         
 
         }
@@ -22,8 +23,7 @@ namespace Backend.Models
         [Required]
         public string MimeType { get; set; }
 
-        [Required]
-        public Byte[] Data { get; set; } = Array.Empty<Byte>();
+        public string? Path { get; set; } 
 
 
     }

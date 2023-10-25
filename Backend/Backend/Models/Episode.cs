@@ -29,13 +29,16 @@ namespace Backend.Models
 
         public string EpisodeName { get; set; }
 
+        [Required]
+        public Files? AudioFile { get; set; }
+
+        [Required]
+        public Guid? FileId { get; set; }
         /// <summary>
         /// URL to the thumbnail image of the episode
         /// </summary>
         public string Thumbnail { get; set; }
 
-
-    
         /// <summary>
         /// Duration of the episode in seconds
         /// </summary>

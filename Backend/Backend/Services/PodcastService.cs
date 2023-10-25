@@ -30,7 +30,7 @@ namespace Backend.Services
             if(createPodcastRequest.coverImage != null)
             {
                 
-                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
+                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage,"COVERIMAGE");
                 if(coverImage == null) return null;
                 else { podcast.CoverId = coverImage.FileId; }
             }
@@ -75,9 +75,11 @@ namespace Backend.Services
             else
             {
                 var podcastId = Guid.Parse(id);
-                return await _db.Podcasts!.FirstOrDefaultAsync(u => u.PodcasterId == podcastId);
+                return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
         
             }
         }
+
+
     }
 }
