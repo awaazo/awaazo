@@ -5,6 +5,7 @@ import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
 import otherImage from "../../styles/images/genres/crime.png";
+import { useState } from "react";
 
 
 
@@ -20,6 +21,7 @@ const ExploreGenres = () => {
 
   // Duplicate the genres list for infinite scroll illusion
   const allGenres = [...genres];
+  const [hoveredGenre, setHoveredGenre] = useState<string | null>(null);
 
 
   return (
@@ -40,16 +42,24 @@ const ExploreGenres = () => {
           <Box 
             key={index} 
             h="100%" 
-            borderRadius="lg" 
+            borderRadius="1.2em" 
             overflow="hidden" 
             position="relative" 
             _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.1)", transition: "all 0.3s ease-in-out" }}
             boxSizing="border-box" 
             border="1px solid"
-
-            
+            onMouseEnter={() => setHoveredGenre(genre.name)}
+            onMouseLeave={() => setHoveredGenre(null)}
           >
-            <Image src={genre.backgroundImage.src} alt={`${genre.name} background`} width="100%" height="100%" objectFit="cover" opacity="0.8" />
+            <Image
+              src={genre.backgroundImage.src}
+              alt={`${genre.name} background`}
+              width="100%"
+              height="100%"
+              objectFit="cover"
+              opacity="0.8"
+              style={{ filter: `grayscale(${genre.name !== hoveredGenre ? '40%' : '0%'})` }}
+            />       
             <Text 
               fontWeight="bold" 
               fontSize={["md", "lg", "xl"]} // adjust font size based on screen width
