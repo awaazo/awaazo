@@ -27,21 +27,22 @@ const myProfile = () => {
   const parentToChild = () => {setPodcastId(id);console.log(id);}
 
   return (
-    <>
-      <Navbar />
-      <Box display="flex" justifyContent="center" paddingTop="5em">
-        <Stack isInline={isInline} spacing="4" alignItems="flex-start">
-          <Container>
-            <Header/> 
-             <Podcasts childToParent={childToParent}/>
-          </Container>
-          <Container>
-            <MyEpisodes parentToChild={parentToChild}/>
-          </Container>
-        </Stack>
-      </Box>
-    </>
-  );
-};
+      <>
+        <Navbar />
+        <Box display="flex" justifyContent="center" paddingTop="5em">
+          <Stack isInline={isInline} spacing="4" alignItems="flex-start">
+            <Container>
+              <Header/> 
+              <Podcasts childToParent={childToParent}/>
+            </Container>
+            <Container>
+              {/* Pass the podcast ID to MyEpisodes */}
+              <MyEpisodes selectedPodcastId={id}/>
+            </Container>
+          </Stack>
+        </Box>
+      </>
+    );
+  };
 
 export default myProfile;
