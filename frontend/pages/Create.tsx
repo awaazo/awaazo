@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -15,7 +15,8 @@ import {
 } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
 import { useSession } from "next-auth/react";
-
+import { UserMenuInfo } from "../utilities/Interfaces";
+import AuthHelper from "../helpers/AuthHelper";
 import Navbar from '../components/shared/Navbar';
 import { useRouter } from 'next/router';
 
@@ -58,6 +59,29 @@ const CreatePodcast = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
+  const [user, setUser] = useState<UserMenuInfo>({
+    avatarUrl: null,
+    username: null,
+    id: null});
+
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+    
+    useEffect(() => {
+
+      AuthHelper.isLoggedIn().then((response) => {
+        setIsUserLoggedIn(response);
+        console.log(response)
+      })
+  
+      if(user.id==null && isUserLoggedIn){
+        AuthHelper.authMeRequest().then((response) => {
+          setUser(response.userMenuInfo);
+        })
+      }
+      console.log(isUserLoggedIn)
+  
+    }, [session, isUserLoggedIn]);
+
   return (
     <>
     <Navbar />
@@ -71,18 +95,17 @@ const CreatePodcast = () => {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          p={6}
-          bg="gray.100"
+          p={3}
           borderRadius="md"
           
         >
           <Image
-            src={session?.user?.profilePic}
+            src={user.avatarUrl}
             alt="User Profile Picture"
             boxSize="100px"
             borderRadius="full"
           />
-          <Text>{session?.user?.name}</Text>
+          <Text color={'white'}  p={2}>{user.username}</Text>
         </Box>
       <FormControl>
         <FormLabel>Episode Name</FormLabel>
