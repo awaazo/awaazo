@@ -2,6 +2,7 @@
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -62,6 +63,32 @@ namespace Backend.Services
 
         }
 
+
+        public async Task<bool?> EditFile(Files f1 ,IFormFile file)
+        {
+            
+            if(f1 != null)
+            {
+                bool? delete = await DeleteFile(f1.FileId.ToString()!);
+                if(delete == true)
+                {
+                    string dirName = "DEFAULT";
+                    string dirPath = Path.Combine(AppContext.BaseDirectory, dirName);
+                    string filePath = Path.Combine(dirPath, f1.FileId.ToString()! + "." + file.ContentType.Split("/")[1]);
+                    using FileStream fs = new(filePath, FileMode.Create);
+                    file.CopyTo(fs);
+                    f1.Name = file.FileName;
+                    f1.MimeType = file.ContentType;
+                    return true;
+
+                }
+                return false;
+
+
+            }
+            return false;
+
+        }
        
         public async Task<bool?> DeleteFile(string id)
         {

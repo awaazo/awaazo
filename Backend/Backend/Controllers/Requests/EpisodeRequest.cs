@@ -30,5 +30,23 @@ namespace Backend.Controllers.Requests
 
     }
 
+    public class EditEpisodeRequest
+    {
+
+        [Required]
+        public string? EpisodeId { get; set; }
+
+    
+        public string? EpisodeName { get; set; }
+
+     
+        public bool? IsExplicit { get; set; }
+
+       
+        public IFormFile? AudioFile { get; set; }
+
+
+    }
+
 
 }

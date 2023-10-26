@@ -10,7 +10,6 @@ namespace Backend.Services.Interfaces
         public string GetPath(string id);
         public Task<bool?> DeleteFile(string id);
         public bool Delete(string path);
-
-
+        public Task<bool?> EditFile(Files file1,IFormFile file);
     }
 }

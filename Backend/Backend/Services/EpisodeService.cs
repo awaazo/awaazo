@@ -54,9 +54,55 @@ namespace Backend.Services
         }
 
 
+        public async Task<Episode?> EditEpisode(EditEpisodeRequest editEpisodeRequest, HttpContext httpContext)
+        {
+            if(editEpisodeRequest.EpisodeId != null)
+            {
+                Episode? episode = await _db.Episodes!.Include(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == Guid.Parse(editEpisodeRequest.EpisodeId));
+                if (episode != null)
+                {
+
+                    if(editEpisodeRequest.AudioFile != null)
+                    {
+                       bool? editted = await  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
+                        if(editted == false)
+                        {
+                            throw new Exception("Failed to Edit the file");
+                           
+                        }
+                        
+
+                    }
+                    if(editEpisodeRequest.EpisodeName != null)
+                    {
+                        episode.EpisodeName = editEpisodeRequest.EpisodeName;
+
+                        
+
+
+                    }
+
+                    if(editEpisodeRequest.IsExplicit != null)
+                     {
+                        episode.IsExplicit = (bool)editEpisodeRequest.IsExplicit;
+
+                    }
+
+                    await _db.SaveChangesAsync();
+                    return episode;
+                }
+                throw new BadHttpRequestException("Cannot Find the Episode");
+
+
+            }
+            throw new BadHttpRequestException("Please Pass Episode ID");
+
+        }
 
 
 
-     
+
+
+
     }
 }

@@ -9,5 +9,7 @@ namespace Backend.Services.Interfaces
 
         public Task<bool> DeleteEpisode(Episode episode, DeleteEpisodeRequest deleteEpisodeRequest);
 
+        public Task<Episode?> EditEpisode(EditEpisodeRequest editEpisodeRequest, HttpContext httpContext);
+
     }
 }

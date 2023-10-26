@@ -72,7 +72,7 @@ namespace Backend.Controllers
             if(createEpisodRequest.PodcastId != null)
             {
                  Guid id = Guid.Parse(createEpisodRequest.PodcastId);
-                Console.WriteLine(id);
+             
                  Podcast? podcast = await _db.Podcasts!.FirstOrDefaultAsync(u => u.Id == id);
                
                 if (podcast != null)
@@ -108,6 +108,28 @@ namespace Backend.Controllers
 
             return NotFound("Invalid Request");
 
+        }
+
+        [Authorize]
+        [HttpPut("Edit")]
+        public async Task<IActionResult> EditEpisode([FromForm]EditEpisodeRequest editEpisodeRequest)
+        {
+
+            try
+            {
+            Episode? episode = await  _episodeService.EditEpisode(editEpisodeRequest, HttpContext);
+
+            if(episode != null)
+            {
+                return Ok(episode);
+            }
+                return BadRequest("Bad Request");
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+
+            }
         }
 
 
