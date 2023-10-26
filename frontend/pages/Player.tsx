@@ -37,8 +37,6 @@ const componentsData = [
 const Player = () => {
   const {
     data: palette,
-    loading,
-    error,
   } = usePalette(
     currentEpisode.coverArt, // src
     2, 
