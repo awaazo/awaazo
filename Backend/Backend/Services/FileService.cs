@@ -1,6 +1,7 @@
 ﻿using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -42,13 +43,52 @@ namespace Backend.Services
 
         }
 
-        public string GetPath(string path,string Type)
+        public string GetPath(string path)
         {
-            return Path.Combine(AppContext.BaseDirectory, Type, path);
+            return Path.Combine(AppContext.BaseDirectory, "DEFAULT", path);
         }
 
 
-        public async Task<Files?> UploadFile(IFormFile file, string type)
+        public bool Delete(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+
+
+            }
+            return false;
+
+        }
+
+       
+        public async Task<bool?> DeleteFile(string id)
+        {
+            Guid? guid = Guid.Parse(id);
+
+
+            Files? file = await  _db.File!.FirstOrDefaultAsync(u => u.FileId == guid);
+            if (file != null)
+            {
+                if(Delete(GetPath(file.Path!)))
+                {
+
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("Error Deleteing the file");
+                }
+            }
+            else
+            {
+            throw new Exception($"Could not Find the file {id}");
+
+            }
+
+        }
+        public async Task<Files?> UploadFile(IFormFile file)
         {
             if (file != null && file.Length > 0)
             {
@@ -57,7 +97,7 @@ namespace Backend.Services
 
                 if (guid != null)
                 {
-                    string dirName = type;
+                    string dirName = "DEFAULT";
                     string dirPath = Path.Combine(AppContext.BaseDirectory, dirName);
 
                     // Create the directory if it doesn't exist

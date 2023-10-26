@@ -61,6 +61,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
+
         
         // User 1-to-many Bookmark
         modelBuilder.Entity<User>()
@@ -82,7 +83,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired();
-        
+
         // Annotation 1-to-1 Medialink
         modelBuilder.Entity<Annotation>()
             .HasOne(e => e.MediaLink)

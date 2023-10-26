@@ -57,19 +57,7 @@ namespace Backend.Controllers
         
         }
 
-        [HttpGet("Cover")]
-        [Authorize]
-        public async Task<PhysicalFileResult> GetCoverById(string id)
-        {
-            Guid guid = Guid.Parse(id);
-            Files? file = await _db.File!.FirstOrDefaultAsync(u => u.FileId == guid);
-           
-            
-            return PhysicalFile(_fileService.GetPath(file!.Path!,"COVER"), file!.MimeType);
-
-           
-            
-        }
+        
         }
 
 

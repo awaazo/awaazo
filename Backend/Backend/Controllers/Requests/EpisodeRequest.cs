@@ -20,4 +20,15 @@ namespace Backend.Controllers.Requests
 
 
     }
+
+    [BindProperties]
+    public class DeleteEpisodeRequest
+    {
+        [Required]
+        public string EpisodeId { get; set; }
+
+
+    }
+
+
 }

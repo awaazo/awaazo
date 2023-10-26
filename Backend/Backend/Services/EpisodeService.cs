@@ -24,7 +24,7 @@ namespace Backend.Services
         public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,Podcast podcast,HttpContext httpContext)
         {
             Episode episode = new Episode();
-            Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile!, "AUDIOFILE");
+            Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile!);
             if (audioFile != null)
             {
               
@@ -42,6 +42,20 @@ namespace Backend.Services
             return episode;
 
         }
+
+
+        public async Task<bool> DeleteEpisode(Episode episode, DeleteEpisodeRequest deleteEpisodeRequest)
+        {  
+           await _fileService.DeleteFile(episode.AudioFileId.ToString()!);
+           _db.Remove(episode);
+           await _db.SaveChangesAsync();
+           return true;
+
+        }
+
+
+
+
 
      
     }
