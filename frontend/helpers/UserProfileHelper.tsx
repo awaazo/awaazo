@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserProfileSetupRequest } from "../utilities/Requests";
+import { UserProfileEditRequest, UserProfileSetupRequest } from "../utilities/Requests";
 import EndpointHelper from "./EndpointHelper";
 import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
 
@@ -57,7 +57,7 @@ export default class UserProfileHelper {
      * @param requestData  Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static profileEditRequest = async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
+    public static profileEditRequest = async (requestData: UserProfileEditRequest): Promise<BaseResponse> => {
 
         // Create the request options.
         const options =

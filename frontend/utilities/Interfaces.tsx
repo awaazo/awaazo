@@ -135,7 +135,8 @@ export interface UserProfile {
   bio: string;
   interests: string[];
   twitterUrl: string;
-  githubUrl: string;
+  gitHubUrl: string;
+  linkedInUrl: string;
   websiteUrl: string;
   dateOfBirth: string;
   gender: string;
