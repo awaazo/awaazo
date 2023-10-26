@@ -1,4 +1,4 @@
-import { Podcast, Episode } from "./Interfaces";
+import { Podcast, Episode, Bookmark , TranscriptLine } from "./Interfaces";
 
 export const podcasts: Podcast[] = [
   {
@@ -31,12 +31,45 @@ export const podcasts: Podcast[] = [
   },
 ];
 
+export const bookmarks: Bookmark[] = [
+  {
+    title: "This point was interesting",
+    time: 2323,
+    note: "This was good because...",
+  },
+  {
+    title: "Cool point they mentioned",
+    time: 2332,
+    note: "Lorem ipsum dolor sit amet...",
+  },
+];
+
+
+export const sampleTranscripts: TranscriptLine[] = [
+  {
+    timestamp: 120,
+    text: "This is the first line of the transcript.",
+    speaker: "Speaker 1"
+  },
+  {
+    timestamp: 240,
+    text: "This is the second line of the transcript, which may be less related to the first line.",
+    speaker: "Speaker 2"
+  },
+  {
+    timestamp: 360,
+    text: "This is the third line of the transcript. It might be a response to the second line or something entirely different.",
+    speaker: "Speaker 1"
+  },
+  
+];
+
 const episodeTemplate: Episode = {
   id: "",
   podcastId: "podcast2",
   podcaster: "Joe Mama",
   episodeName: "World War II: A Deep Dive",
-  thumbnail: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
+  coverArt: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
   duration: 5400, 
   releaseDate: new Date("2023-02-20"),
   description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",
@@ -50,24 +83,15 @@ const episodeTemplate: Episode = {
     count: 200,
     isCommented: true,
   },
-  bookmarks: [],
+  bookmarks: bookmarks,
   sections: [
-    {
-      startTime: 60,
-      sectionName: "Introduction",
-    },
-    {
-      startTime: 600,
-      sectionName: "The Beginning",
-    },
-    {
-      startTime: 3600,
-      sectionName: "The End",
-    },
-  ],
+      { startTime: 0, sectionName: "Sponsors" },
+      { startTime: 72, sectionName: "Introduction" },
+      { startTime: 200, sectionName: "Part 1: Why bears are cool?" },
+    ],
   annotations: [],
   sponsors: [],
-  transcript:[],
+  transcript:sampleTranscripts,
 };
 
 export const episodes: Episode[] = [
@@ -80,3 +104,4 @@ episodes.forEach(episode => {
     podcast.episodes.push(episode);
   }
 });
+
