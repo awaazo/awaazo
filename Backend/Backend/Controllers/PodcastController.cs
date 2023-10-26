@@ -28,17 +28,26 @@ namespace Backend.Controllers
         [Authorize]
         public async Task<IActionResult> CreatePodcast([FromForm]CreatePodcastRequest createPodcastRequest)
         {
-            
-            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-            
-
-            if (podcast != null)
+            try
             {
 
-            return Ok(podcast);
-            
+            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
+                if (podcast != null)
+                {
+
+                    return Ok(podcast);
+
+                }
+                else { return BadRequest("Bad Request"); }
+
             }
-            else { return BadRequest("Bad Request"); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+
+           
 
         }
         [HttpGet("getById")]

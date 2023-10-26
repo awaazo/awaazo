@@ -3,6 +3,7 @@ using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
 
 namespace Backend.Services
 {
@@ -11,6 +12,7 @@ namespace Backend.Services
         private readonly IFileService _fileService;
         private readonly AppDbContext _db;
         private readonly IAuthService _authService;
+        private readonly List<string> AllowedTypes = new List<string>{ "audio/mp4", "audio/mpeg" };
         
 
         public EpisodeService(IFileService fileService,IAuthService authService,AppDbContext db) {
@@ -24,9 +26,16 @@ namespace Backend.Services
         public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,Podcast podcast,HttpContext httpContext)
         {
             Episode episode = new Episode();
+
+            if(!AllowedTypes.Contains(createEpisodeRequest.AudioFile!.ContentType))
+            {
+                throw new InvalidDataException("Invalid Data Types");
+ 
+            }
             Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile!);
             if (audioFile != null)
             {
+                
               
                 episode.AudioFileId = audioFile.FileId;
             }
@@ -58,13 +67,21 @@ namespace Backend.Services
         {
             if(editEpisodeRequest.EpisodeId != null)
             {
+
                 Episode? episode = await _db.Episodes!.Include(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == Guid.Parse(editEpisodeRequest.EpisodeId));
                 if (episode != null)
                 {
 
                     if(editEpisodeRequest.AudioFile != null)
                     {
-                       bool? editted = await  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
+
+                        if (!AllowedTypes.Contains(editEpisodeRequest.AudioFile!.ContentType))
+                        {
+                            throw new InvalidDataException("Invalid Data Types");
+
+                        }
+
+                        bool? editted = await  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
                         if(editted == false)
                         {
                             throw new Exception("Failed to Edit the file");

@@ -11,6 +11,7 @@ namespace Backend.Services
         private readonly AppDbContext _db;
         private readonly IFileService _fileService;
         private readonly IAuthService _authService;
+        private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png", "image/gif" };
         public PodcastService(AppDbContext db,IFileService fileService,IAuthService authService) {
             _db = db;
             _fileService = fileService;
@@ -21,6 +22,13 @@ namespace Backend.Services
 
         public async Task<GetPodcastRequest?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext)
         {
+
+
+            if (!AllowedTypes.Contains(createPodcastRequest.coverImage!.ContentType))
+            {
+                throw new InvalidDataException("Invalid Data Types");
+
+            }
             User? user = await _authService.IdentifyUserAsync(httpContext);
             if (user == null)
                 return null;
