@@ -22,7 +22,9 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { profile } from "console";
 import { UserProfile } from "../../utilities/Interfaces";
 import { forEach } from "lodash";
+import { Router, useRouter } from "next/router";
 const EditProfile: React.FC = () => {
+  const router = useRouter()
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -33,6 +35,7 @@ const EditProfile: React.FC = () => {
   const [githubLink, setGithubLink] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const PodcastGenres = [
     "Technology",
@@ -70,6 +73,10 @@ const EditProfile: React.FC = () => {
     })
   }, []);
 
+  /**
+   * Handles updating the profile when form is submitted
+   * @param e FormEvent
+   */
   const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -89,11 +96,12 @@ const EditProfile: React.FC = () => {
     // Get the Response
     const response = await UserProfileHelper.profileEditRequest(request);
 
+    // If Profile is saved, return to profile page
     if(response.status === 200){
-      window.alert("Profile Updated");
+      router.push('/profile/MyProfile');
     }
     else{
-      window.alert(response.status+": "+response.message);
+      setFormError(response.message)
     }
 
   }
@@ -211,6 +219,7 @@ const EditProfile: React.FC = () => {
             
 
           {/* Personal Details Section */}
+          {formError && <Text color="red.500">{formError}</Text>}
           <FormControl>
             <Input
               id="username"
