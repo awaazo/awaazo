@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useCallback, useState, useEffect } from 'react';
 import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, Button } from "@chakra-ui/react";
-
+import { UserMenuInfo } from "../../utilities/Interfaces";
+import AuthHelper from "../../helpers/AuthHelper";
+import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaQuora, FaTwitter } from "react-icons/fa";
 import router from "next/router";
@@ -40,21 +42,46 @@ const socials = [
 ];
 
 export default function Header() {
+  const { data: session } = useSession();
+  const [user, setUser] = useState<UserMenuInfo>({
+    avatarUrl: null,
+    username: null,
+    bio: null,
+    id: null});
+
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+    
+    useEffect(() => {
+
+      AuthHelper.isLoggedIn().then((response) => {
+        setIsUserLoggedIn(response);
+        console.log(response)
+      })
+  
+      if(user.id==null && isUserLoggedIn){
+        AuthHelper.authMeRequest().then((response) => {
+          setUser(response.userMenuInfo);
+        })
+      }
+      console.log(isUserLoggedIn)
+  
+    }, [session, isUserLoggedIn]);
+
   return (
     <>
       <VStack spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }} marginBottom={"2em"}>
         <Stack>
-          <Avatar boxShadow="xl" size="xl" src="https://avatars2.githubusercontent.com/u/37842853?v=4" />
+          <Avatar boxShadow="xl" size="xl" src={user.avatarUrl} />
         </Stack>
         <Heading textAlign={{ base: "center", sm: "left" }} margin="0 auto" width={{ base: "23rem", sm: "auto" }} fontSize={{ base: "2.5rem", sm: "3rem" }}>
           The Really Good Podcast
           <br />
           <Text fontSize="1.5rem">
-            <span style={{ color: useColorModeValue("pink", "pink") }}>@username</span>
+            <span style={{ color: useColorModeValue("pink", "pink") }}>@{user.username}</span>
           </Text>
         </Heading>
 
-        <Text textAlign="center">Passionate about Tech. Lover of web and opensource.</Text>
+        <Text textAlign="center">{user.bio}</Text>
         <HStack>
           <Button
             rounded="7px"
