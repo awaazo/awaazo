@@ -20,6 +20,7 @@ import LogoWhite from "../public/logo_white.svg";
 import { UserProfileSetupRequest } from "../utilities/Requests";
 import { conforms, set } from "lodash";
 import UserProfileHelper from "../helpers/UserProfileHelper";
+import { UserMenuInfo } from "../utilities/Interfaces";
 
 const Setup: React.FC = () => {
   // CONSTANTS
@@ -52,15 +53,23 @@ const Setup: React.FC = () => {
   const [genreColors, setGenreColors] = useState({});
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File>(null);
-  const { data: session } = useSession();
+  const [user, setUser] = useState<UserMenuInfo>({username: "", avatarUrl: "", id: ""});
   const router = useRouter();
+  const [setupError,setSetupError] = useState('')
 
   useEffect(() => {
     // Check to make sure the user has logged in
-    if (!isLoggedIn) {
-      window.location.href = loginPage;
+    AuthHelper.isLoggedIn().then((res) => {
+      if(!res)
+        window.location.href = loginPage;
+    })
+
+    if(window)
+    {
+      setUser(JSON.parse(window.sessionStorage.getItem('userInfo')))
     }
-  }, [session, router]);
+
+  }, [router]);
 
   const handleAvatarUpload = (e: FormEvent) => {
     setAvatarFile((e.target as any).files[0])
@@ -88,7 +97,7 @@ const Setup: React.FC = () => {
     }
     else {
       // Handle error here
-      window.alert(response.status+": "+response.message);
+      setSetupError("Avatar and Bio Required.")
     }
   };
 
@@ -144,7 +153,7 @@ const Setup: React.FC = () => {
             fontFamily: "Avenir Next",
           }}
         >
-          Hey, {session?.user?.name}! Let's get you set up.
+          Hey, {user.username}! Let's get you set up.
         </Text>
 
         <form onSubmit={handleSetup}>
@@ -184,6 +193,7 @@ const Setup: React.FC = () => {
                     backdropFilter: "blur(5px)", // This line adds the blur effect
                     backgroundColor: "rgba(0, 0, 0, 0.4)" // Semi-transparent white background to enhance the blur effect
                   }}
+                  zIndex={-999}
                 />
                 <input
                   type="file"
@@ -196,7 +206,7 @@ const Setup: React.FC = () => {
                 />
               </label>
             </div>
-
+            {setupError && <Text color="red.500">{setupError}</Text>}
 
             <FormControl>
               <Textarea

@@ -10,6 +10,7 @@ using Backend.Infrastructure;
 using Backend.Services;
 using Google.Apis.Auth;
 using Backend.Services.Interfaces;
+using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
@@ -34,7 +35,7 @@ public class AuthController : ControllerBase
         // Login 
         User? user = await _authService.LoginAsync(request);
         if(user is null)
-            return BadRequest("Invalid Credentials");
+            return BadRequest("Login failed. Invalid Email and/or Password.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
@@ -42,7 +43,7 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax  });
 
         // Return JWT Token with the User
-        return Ok(new { Token = token, User = user });
+        return Ok("Logged in.");
     }
 
     [HttpPost("register")]
@@ -52,7 +53,7 @@ public class AuthController : ControllerBase
         // Register User if he does not already exist
         User? newUser = await _authService.RegisterAsync(request);
         if(newUser is null)
-            return BadRequest("User already exists");
+            return BadRequest("An Account with that Email already exists. Please Login or use a different Email address.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(newUser.Id,_configuration,TokenLifeTime);
@@ -60,28 +61,19 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax });
 
         // Return JWT Token with the User
-        return Ok(new {Token = token, User = newUser});
+        return Ok("Registered.");
     }
     
     [HttpGet("me")]
     public async Task<IActionResult> Me()
     {
-
-
-
-
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
         // Return UserId
         if (user is null) return BadRequest("User not found.");
-        else return Ok(new 
-        { 
-            Email=user.Email, 
-            Id = user.Id,
-            Username=user.Username,
-            Avatar = user.Avatar  
-        });
+
+        else return Ok(new UserMenuInfoResponse(user,HttpContext));
     }
 
 
@@ -101,5 +93,10 @@ public class AuthController : ControllerBase
         return Ok(new {Token = token, User = user});
     }
 
-
+    [HttpGet("logout")]
+    public ActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt-token");   
+        return Ok("Logged out.");
+    }
 }

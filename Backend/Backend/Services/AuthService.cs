@@ -102,7 +102,6 @@ public class AuthService : IAuthService
 
 
         //Default Avatar
-        //TODO set Interest default value as null
         newUser.Avatar = "DefaultAvatar";
         newUser.Interests = Array.Empty<string>();
 

@@ -14,11 +14,14 @@ import {
   InputLeftAddon,
   Icon,
 } from "@chakra-ui/react";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Navbar from "../../components/shared/Navbar";
 import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
+import { profile } from "console";
+import { UserProfile } from "../../utilities/Interfaces";
+import { forEach } from "lodash";
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
@@ -50,6 +53,23 @@ const EditProfile: React.FC = () => {
     "Food",
   ];
 
+  useEffect(() => {
+    UserProfileHelper.profileGetRequest().then((response) => {
+      if(response.status == 200){
+        const userProfile: UserProfile = response.userProfile;
+        setBio(userProfile.bio);
+        setInterests(userProfile.interests);
+        setSelectedInterests(userProfile.interests);
+        setUsername(userProfile.username);
+        setTwitterLink(userProfile.twitterUrl);
+        setLinkedinLink(userProfile.linkedInUrl);
+        setGithubLink(userProfile.gitHubUrl);
+        setAvatar(userProfile.avatarUrl);
+      
+      }
+    })
+  }, []);
+
   const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -61,9 +81,9 @@ const EditProfile: React.FC = () => {
       bio : bio,
       interests : selectedInterests,
       username : username,
-      twitterUrl : twitterLink,
-      linkedInUrl : linkedinLink,
-      githubUrl : githubLink
+      twitterUrl : twitterLink != ""? twitterLink : null,
+      linkedInUrl : linkedinLink != ""? linkedinLink : null,
+      githubUrl : githubLink != ""? githubLink : null
     }
 
     // Get the Response
@@ -102,6 +122,9 @@ const EditProfile: React.FC = () => {
   };
 
     const handleInterestClick = (genre) => {
+      console.log(genre)
+      console.log(selectedInterests)
+      console.log(genreColors)
         if (selectedInterests.includes(genre)) {
         setSelectedInterests(selectedInterests.filter((item) => item !== genre));
         } else {

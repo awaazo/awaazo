@@ -45,6 +45,20 @@ export default function Podcasts({ childToParent }) {
 
   // State to maintain the selected podcast ID
   const [selectedPodcastId, setSelectedPodcastId] = useState(null);
+  // const [subscribed, setSubscribe] = useState(false);
+
+  let subscribed = false;
+  let subscribedText = "Subscribe"
+
+  function setSubscribe() {
+    // if (!subscribed){
+    //   subscribed = true;
+    //   subscribedText = "Subscribe";
+    // } else {
+    //   subscribed = false;
+    //   subscribedText = "UnSubscribe";
+    // }
+  }
 
   return (
     <>
@@ -59,6 +73,7 @@ export default function Podcasts({ childToParent }) {
       </h1>
       <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
         {podcasts.map((podcast, index) => (
+          <Stack spacing={4} direction='column' align='center'>
           <Link key={index} href="#" _hover={{ textDecoration: "none" }}>
             <Box 
               position="relative" 
@@ -96,6 +111,10 @@ export default function Podcasts({ childToParent }) {
               />
             </Box>
           </Link>
+          <Button colorScheme="blue" onClick={() => {
+            setSubscribe; // Subscribe/Unsubscribe
+          }}>{subscribedText}</Button>
+          </Stack>
         ))}
       </Grid>
     </>
