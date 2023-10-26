@@ -38,7 +38,7 @@ const Player = () => {
   const {
     data: palette,
   } = usePalette(
-    currentEpisode.coverArt, // src
+    currentEpisode.coverArt, // src img
     2, 
     "hex",
     {
