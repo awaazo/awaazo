@@ -140,7 +140,7 @@ export default function Navbar() {
             My Account
           </MenuItem>
           <MenuItem
-            onClick={() => (window.location.href = "/profile/MyPodcast")}
+            onClick={() => (window.location.href = "/profile/MyPodcasts")}
           >
             My Podcast
           </MenuItem>
