@@ -44,6 +44,7 @@ namespace Backend.Services
                 podcast.Description = createPodcastRequest.Description;
             }
             podcast.Name = createPodcastRequest.Name!;
+            user.IsPodcaster = true;
 
             
 
