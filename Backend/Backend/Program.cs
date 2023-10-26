@@ -26,8 +26,9 @@ public class Program
         });
 
         builder.Services.AddScoped<IAuthService, AuthService>();
-        builder.Services.AddScoped<IFileService,FileService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
+        builder.Services.AddScoped<IEpisodeService, EpisodeService>();
+        builder.Services.AddScoped<IFileService,FileService>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

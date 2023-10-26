@@ -13,7 +13,7 @@ namespace Backend.Controllers.Requests
         public string? EpisodeName { get; set; }
 
         [Required]
-        public string? IsExplicit  { get; set; }
+        public bool IsExplicit  { get; set; }
 
         [Required]
         public IFormFile? AudioFile { get; set; }

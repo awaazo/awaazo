@@ -8,53 +8,40 @@ namespace Backend.Services
 {
     public class EpisodeService : IEpisodeService
     {
-        private readonly FileService _fileService;
+        private readonly IFileService _fileService;
         private readonly AppDbContext _db;
-        private readonly AuthService _authService;
-        private readonly string[] allowedType = new string[] {""};
+        private readonly IAuthService _authService;
+        
 
-        public EpisodeService(FileService fileService,AuthService authService,AppDbContext db) {
+        public EpisodeService(IFileService fileService,IAuthService authService,AppDbContext db) {
             _fileService = fileService;
-            _db = db;
             _authService = authService;
+            _db = db;
 
         }
 
 
-        //public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,HttpContext httpContext)
-        //{
-        //    User? user = await _authService.IdentifyUserAsync(httpContext);
-        //    if(user != null)
-        //    {
-        //        if(createEpisodeRequest.PodcastId != null)
-        //        {
-        //            Guid id = Guid.Parse(createEpisodeRequest.PodcastId);
-        //           Podcast? podcast = await _db.Podcasts!.FirstOrDefaultAsync(u => u.PodcasterId == id);
-                        
+        public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,Podcast podcast,HttpContext httpContext)
+        {
+            Episode episode = new Episode();
+            Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile!, "AUDIOFILE");
+            if (audioFile != null)
+            {
+              
+                episode.AudioFileId = audioFile.FileId;
+            }
+            else
+            {
+                throw new Exception("Uploading file not Successfull"); 
+            }
+            episode.EpisodeName = createEpisodeRequest.EpisodeName!;
+            episode.IsExplicit = createEpisodeRequest.IsExplicit!;
 
-        //        }
-        //        //TODO : File Validation
-        //        if(createEpisodeRequest.AudioFile != null )
-        //        {
-        //            Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile, "AUDIOFILE");
-        //            if(audioFile != null ) {
-        //                throw new Exception("Audio File Doesnt Exist");
+            podcast.Episodes.Add(episode);
+            await _db.SaveChangesAsync();
+            return episode;
 
-                        
-        //            }
-        //            return null;
-                    
-
-        //        }
-
-        //    }
-        //    else {
-
-        //        throw new Exception("Not Authorized");
-            
-        //    }
-            
-        //}
+        }
 
      
     }

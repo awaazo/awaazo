@@ -42,8 +42,10 @@ namespace Backend.Services
 
         }
 
-
-
+        public string GetPath(string path,string Type)
+        {
+            return Path.Combine(AppContext.BaseDirectory, Type, path);
+        }
 
 
         public async Task<Files?> UploadFile(IFormFile file, string type)
@@ -64,7 +66,7 @@ namespace Backend.Services
 
                     // Get the file path
                
-                    string filePath = Path.Combine(dirPath, guid.ToString());
+                    string filePath = Path.Combine(dirPath, guid.ToString() + "." + file.ContentType.Split("/")[1]);
 
                     // Save the file
                     using FileStream fs = new(filePath, FileMode.Create);
@@ -77,7 +79,7 @@ namespace Backend.Services
                         Files? f1 = _db.File!.SingleOrDefault(u => u.FileId == guid);
                         if (f1 != null)
                         {
-                            f1.Path = guid.ToString();
+                            f1.Path = guid.ToString() + "." + file.ContentType.Split("/")[1] ;
                             await _db.SaveChangesAsync();
 
                         }

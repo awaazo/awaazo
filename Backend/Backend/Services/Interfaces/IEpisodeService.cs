@@ -5,7 +5,7 @@ namespace Backend.Services.Interfaces
 {
     public interface IEpisodeService
     {
-        //public Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisode,HttpContext httpContext);
+        public Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest, Podcast podcast, HttpContext httpContext);
 
 
     }

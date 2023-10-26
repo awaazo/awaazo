@@ -1,9 +1,12 @@
 ﻿using Backend.Controllers.Requests;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace Backend.Controllers
 {
@@ -12,10 +15,13 @@ namespace Backend.Controllers
     public class PodcastController : ControllerBase
     {
         private readonly IPodcastService _podcastService;
-        public PodcastController(IPodcastService podcastService)
+        private readonly IFileService _fileService;
+        private readonly AppDbContext _db;
+        public PodcastController(IPodcastService podcastService,AppDbContext db,IFileService fileService)
         {
             _podcastService = podcastService;
-
+            _fileService = fileService;
+            _db = db;
         }
         //TODO : ADD middleware to Validate the File type inputted
         [HttpPost("create")]
@@ -51,6 +57,22 @@ namespace Backend.Controllers
         
         }
 
+        [HttpGet("Cover")]
+        [Authorize]
+        public async Task<PhysicalFileResult> GetCoverById(string id)
+        {
+            Guid guid = Guid.Parse(id);
+            Files? file = await _db.File!.FirstOrDefaultAsync(u => u.FileId == guid);
+           
+            
+            return PhysicalFile(_fileService.GetPath(file!.Path!,"COVER"), file!.MimeType);
+
+           
+            
+        }
+        }
+
+
        
 
 
@@ -60,4 +82,4 @@ namespace Backend.Controllers
 
         
     }
-}
+

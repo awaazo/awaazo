@@ -7,6 +7,7 @@ namespace Backend.Services.Interfaces
         public Task<Files?> UploadFile(IFormFile file, string type);
         public Task<bool> CleanUp(Guid? guid);
         public Task<Guid?> SaveFile(string Name, string MimeType);
+        public string GetPath(string id, string Type);
 
 
     }
