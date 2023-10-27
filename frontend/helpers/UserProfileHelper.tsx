@@ -4,6 +4,9 @@ import EndpointHelper from "./EndpointHelper";
 import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
 
 export default class UserProfileHelper {
+    static getUserProfile() {
+      throw new Error("Method not implemented.");
+    }
 
     /**
      * Saves the user's profile setup request to the server.

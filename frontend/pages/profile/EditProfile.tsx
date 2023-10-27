@@ -165,7 +165,7 @@ const EditProfile: React.FC = () => {
       </Text>
       {/* // username here*/}
       <Text>
-        @username
+        @ {username}
       </Text>
 
       <form onSubmit={handleProfileUpdate}>

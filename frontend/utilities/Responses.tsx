@@ -1,3 +1,4 @@
+import { SetStateAction } from "react";
 import { UserMenuInfo, UserProfile } from "./Interfaces";
 
 export interface BaseResponse{
@@ -25,6 +26,7 @@ export interface LogoutResponse extends BaseResponse{
 }
 
 export interface MeResponse extends BaseResponse{
+    UserProfile: SetStateAction<UserProfile>;
     userMenuInfo: UserMenuInfo;
 }
 
