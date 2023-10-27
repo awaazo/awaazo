@@ -29,7 +29,7 @@ jobs:
 
     # Add appsettings.Development.json + appsettings.json
     - name: Add Config
-      working-directory: Backend/Backend
+      working-directory: Backend
       env:
         settings: ${{ vars.APPSETTINGSBACKEND }}
       run: |
@@ -40,7 +40,7 @@ jobs:
 
     # Add appsettings.Development.json + appsettings.json fpr tests
     - name: Add Config
-      working-directory: Backend
+      working-directory: Backend/Backend.Tests
       env:
         settings: ${{ vars.APPSETTINGSBACKEND }}
       run: |
