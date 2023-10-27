@@ -236,15 +236,15 @@ export default class RequestHelper {
         error_message: "",
         data: requestResponse.data,
       };
-} catch (error) {
-  return {
-    status: error.response ? error.response.status : null,
-    is_error: true,
-    error_message: error.response ? error.response.data : error.toString(),
-    data: null,
-  };
-}
+    } catch (error) {
+      return {
+        status: error.response ? error.response.status : null,
 
+        is_error: true,
+        error_message: error.response.data,
+        data: null,
+      };
+    }
   };
 
   /**
@@ -283,15 +283,15 @@ export default class RequestHelper {
         error_message: "",
         data: requestResponse.data,
       };
-} catch (error) {
-  return {
-    status: error.response ? error.response.status : null,
-    is_error: true,
-    error_message: error.response ? error.response.data : error.toString(),
-    data: null,
-  };
-}
+    } catch (error) {
+      return {
+        status: error.response ? error.response.status : null,
 
+        is_error: true,
+        error_message: error.response.data,
+        data: null,
+      };
+    }
   };
 
   static authGoogleSSORequest = async (
@@ -326,15 +326,15 @@ export default class RequestHelper {
         error_message: "",
         data: requestResponse.data,
       };
-} catch (error) {
-  return {
-    status: error.response ? error.response.status : null,
-    is_error: true,
-    error_message: error.response ? error.response.data : error.toString(),
-    data: null,
-  };
-}
+    } catch (error) {
+      return {
+        status: error.response ? error.response.status : null,
 
+        is_error: true,
+        error_message: error.response.data,
+        data: null,
+      };
+    }
   }
 
   /**
