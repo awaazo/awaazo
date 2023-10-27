@@ -33,10 +33,10 @@ jobs:
       env:
         settings: ${{ vars.APPSETTINGSBACKEND }}
       run: |
-        touch appsettings.Development.json
-        touch appsettings.json
-        echo $settings > appsettings.Development.json
-        echo $settings > appsettings.json
+        touch ../Backend/appsettings.Development.json
+        touch ../Backend/appsettings.json
+        echo $settings > ../Backend/appsettings.Development.json
+        echo $settings > ../Backend/appsettings.json
 
     # Add appsettings.Development.json + appsettings.json fpr tests
     - name: Add Config
