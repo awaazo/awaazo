@@ -43,7 +43,22 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 18.x
-  
+
+    # Add Env Variables
+    - name: Add .env.local
+      working-directory: frontend
+      env:
+        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        GOOGLE_CLIENT_SECRET: $${{ secrets.GOOGLE_CLIENT_SECRET }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+        NEXT_AUTH_URL: ${{ secrets.NEXTAUTH }}
+      run: |
+        touch .env.local
+        echo $GOOGLE_CLIENT_ID > .env.local
+        echo $GOOGLE_CLIENT_SECRET >> .env.local
+        echo $BASE_URL >> .env.local
+        echo $NEXT_AUTH_URL >> .env.local
+
     # Install Frontend Deps
     - name: Install dependencies
       working-directory: frontend
