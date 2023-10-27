@@ -283,13 +283,28 @@ export default class RequestHelper {
         data: requestResponse.data,
       };
     } catch (error) {
-      return {
-        status: error.response.status,
-        is_error: true,
-        error_message: error.response.data,
-        data: null,
-      };
-    }
+  console.error(error);  // Log the full error object, which might be helpful for debugging.
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    return {
+      status: error.response.status,
+      is_error: true,
+      error_message: error.response.data,
+      data: null,
+    };
+  } else {
+    // The request was made but no response was received or
+    // something happened in setting up the request that triggered an Error
+    return {
+      status: 0,  // Set status to 0 as requested
+      is_error: true,
+      error_message: error.message || 'An unknown error occurred',
+      data: null,
+    };
+  }
+}
+
   };
 
   static authGoogleSSORequest = async (
