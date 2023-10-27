@@ -52,12 +52,14 @@ jobs:
         GOOGLE_CLIENT_SECRET: $${{ secrets.GOOGLE_CLIENT_SECRET }}
         BASE_URL: ${{ secrets.BASE_URL }}
         NEXT_AUTH_URL: ${{ secrets.NEXTAUTH }}
+        NEXT_PUBLIC_NEXTAUTH_SECRET: ${{ secrets.NEXT_PUBLIC_NEXTAUTH_SECRET }}
       run: |
         touch .env.local
         echo $GOOGLE_CLIENT_ID > .env.local
         echo $GOOGLE_CLIENT_SECRET >> .env.local
         echo $BASE_URL >> .env.local
         echo $NEXT_AUTH_URL >> .env.local
+        echo $NEXT_PUBLIC_NEXTAUTH_SECRET >> .env.local
   
     # Install Frontend Deps
     - name: Install dependencies
