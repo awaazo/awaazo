@@ -238,7 +238,7 @@ export default class RequestHelper {
       };
     } catch (error) {
       return {
-        status: error.response.status? error.response.status: 500,
+        status: error.response.status,
         is_error: true,
         error_message: error.response.data,
         data: null,
@@ -284,7 +284,7 @@ export default class RequestHelper {
       };
     } catch (error) {
       return {
-        status: error.response.status? error.response.status: 500,
+        status: error.response.status,
         is_error: true,
         error_message: error.response.data,
         data: null,
@@ -326,7 +326,7 @@ export default class RequestHelper {
       };
     } catch (error) {
       return {
-        status: error.response.status? error.response.status: 500,
+        status: error.response.status,
         is_error: true,
         error_message: error.response.data,
         data: null,
@@ -369,7 +369,7 @@ export default class RequestHelper {
       };
     } catch (error) {
       return {
-        status: error.response.status? error.response.status: 500,
+        status: error.response.status,
         is_error: true,
         error_message: error,
         user: null,
