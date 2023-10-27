@@ -34,6 +34,18 @@ jobs:
     - name: Start Database Container
       run: docker-compose -f "docker-compose.yml" up -d --build sql
   
+
+      # Add appsettings.Development.json + appsettings.json for 
+    - name: Add Config
+      working-directory: Backend/Backend
+      env:
+        settings: ${{ vars.APPSETTINGSBACKEND }}
+      run: |
+        touch appsettings.Development.json
+        touch appsettings.json
+        echo $settings > appsettings.Development.json
+        echo $settings > appsettings.json
+
     # Start/Run the Backend
     - name: Start Backend Container
       run: docker-compose -f "docker-compose.yml" up -d --build backend

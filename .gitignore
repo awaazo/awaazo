@@ -287,3 +287,5 @@ frontend/Dockerfile
 backend/Dockerfile
 backend/.env
 *.env.local
+*appsettings.json
+*appsettings.Development.json
