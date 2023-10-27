@@ -286,3 +286,4 @@ frontend/.env
 frontend/Dockerfile
 backend/Dockerfile
 backend/.env
+*.env.local
