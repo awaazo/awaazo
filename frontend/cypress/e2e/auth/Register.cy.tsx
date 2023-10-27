@@ -13,7 +13,7 @@ describe('Register', () => {
         cy.get('input[id="confirmPassword"]').type('password123');
         cy.get('input[id="date"]').click().type('2000-01-01');
         cy.get('button[type="submit"]').click();
-        cy.url().should('include', '/MyProfile');
+        cy.url().should('include', '/Setup');
     });
 
     // Test unsuccessful registration from the main page
