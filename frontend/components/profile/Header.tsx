@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, Button } from "@chakra-ui/react";
-import { UserMenuInfo } from "../../utilities/Interfaces";
-import { UserProfile } from '../../utilities/Interfaces';
+import { UserMenuInfo, UserProfile } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
@@ -11,6 +10,7 @@ import { set } from 'lodash';
 import EndpointHelper from '../../helpers/EndpointHelper';
 import UserProfileHelper from '../../helpers/UserProfileHelper';
 
+import UserProfileHelper from '../../helpers/UserProfileHelper';
 
 const iconProps = {
   variant: "ghost",
@@ -57,10 +57,10 @@ export default function Header() {
       });
 
     if (isUserLoggedIn) {
-      AuthHelper.authMeRequest()
+      UserProfileHelper.profileGetRequest()
         .then((response) => {
           if (response.userMenuInfo) {
-            setUser(response.userMenuInfo);
+            setUser(response.userProfile);
           }
         })
         .catch((error) => {

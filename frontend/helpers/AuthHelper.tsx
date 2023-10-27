@@ -180,10 +180,6 @@ export default class AuthHelper{
         }
         catch(error){
 
-            if(window){
-                window.sessionStorage.removeItem("userInfo")
-            }
-
             return {
                 status: error.response.status,
                 message: error.response.statusText,
@@ -206,7 +202,6 @@ export default class AuthHelper{
         // Successful login.
         if(res.status === 200){
             console.debug("Login Successful")
-            this.setToken(res.data.token);
             return true;
         }
         // Unsuccessful login.
