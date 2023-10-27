@@ -143,7 +143,6 @@ namespace Backend.Migrations
                     b.HasIndex("PodcastId");
 
                     b.ToTable("Episodes");
-
                 });
 
             modelBuilder.Entity("Backend.Models.Files", b =>
@@ -172,7 +171,6 @@ namespace Backend.Migrations
                     b.HasKey("FileId");
 
                     b.ToTable("File");
-
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
@@ -364,7 +362,11 @@ namespace Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Bio")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
