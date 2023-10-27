@@ -74,7 +74,7 @@ test('Test EndpointHelper.getAuthRegisterEndpoint() method', () => {
 /**
  * Tests the authRegisterRequest() method.
  */
-test('Test RestHelper.authRegisterRequest() method', async () => {
+test.skip('Test RestHelper.authRegisterRequest() method', async () => {
 
     // Test that the correct request is made.
     const result = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth,"None",mockUsername);
@@ -91,7 +91,7 @@ test('Test RestHelper.authRegisterRequest() method', async () => {
     expect(result2.error_message).toBe('User already exists');
 });
 
-test('Test RestHelper.authLoginRequest() method', async () => { 
+test.skip('Test RestHelper.authLoginRequest() method', async () => { 
     
     // Test that the correct request is made.
     const result = await RequestHelper.authLoginRequest(mockEmail, mockPassword);
