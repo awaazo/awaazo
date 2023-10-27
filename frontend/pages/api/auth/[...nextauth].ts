@@ -6,8 +6,8 @@ import { Profile } from "next-auth";
 export default NextAuth({
     providers:[
         GoogleProvider({
-            clientId:'512302750725-8ct0ekj20u9gkq8gsmg4d807co2voe71.apps.googleusercontent.com',
-            clientSecret:'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',
+            clientId:process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+            clientSecret:process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
         }),
     ],
     callbacks: {
@@ -34,7 +34,7 @@ export default NextAuth({
           };
         },
       },
-    secret: "123456789",
+    secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
 });
 
 async function saveToDatabase(profile: Profile) {
