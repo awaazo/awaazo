@@ -66,7 +66,7 @@ export interface MediaLink {
 export interface Bookmark {
   title: string;
   note?: string;
-  time: number;
+  timestamp: number;
 }
 
 export interface TranscriptLine {

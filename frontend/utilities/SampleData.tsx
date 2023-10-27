@@ -34,12 +34,12 @@ export const podcasts: Podcast[] = [
 export const bookmarks: Bookmark[] = [
   {
     title: "This point was interesting",
-    time: 2323,
+    timestamp: 2323,
     note: "This was good because...",
   },
   {
     title: "Cool point they mentioned",
-    time: 2332,
+    timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
   },
 ];
