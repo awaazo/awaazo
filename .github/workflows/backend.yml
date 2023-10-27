@@ -27,9 +27,14 @@ jobs:
     # Setup the .NET environment
     steps:
 
-    # Add appsettings.Development.json + appsettings.json
-    - name: Add Config
-      working-directory: backend/backend
+    # Checkout Changes
+    - name: Checkout
+      uses: actions/checkout@v3
+
+
+      # Add appsettings.Development.json + appsettings.json
+    - name: Add Config Backend
+      working-directory: Backend/Backend
       env:
         settings: ${{ vars.APPSETTINGSBACKEND }}
       run: |
@@ -39,8 +44,8 @@ jobs:
         echo $settings > appsettings.json
 
     # Add appsettings.Development.json + appsettings.json fpr tests
-    - name: Add Config
-      working-directory: backend/backend.tests
+    - name: Add Config Backend Tests
+      working-directory: Backend/Backend.Tests
       env:
         settings: ${{ vars.APPSETTINGSBACKEND }}
       run: |
@@ -48,10 +53,6 @@ jobs:
         touch appsettings.json
         echo $settings > appsettings.Development.json
         echo $settings > appsettings.json
-
-    # Checkout Changes
-    - name: Checkout
-      uses: actions/checkout@v3
 
     # Install .NET 6
     - name: Setup .NET
