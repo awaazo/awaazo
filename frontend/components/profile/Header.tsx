@@ -10,7 +10,6 @@ import { set } from 'lodash';
 import EndpointHelper from '../../helpers/EndpointHelper';
 import UserProfileHelper from '../../helpers/UserProfileHelper';
 
-import UserProfileHelper from '../../helpers/UserProfileHelper';
 
 const iconProps = {
   variant: "ghost",
@@ -88,7 +87,7 @@ export default function Header() {
           The Really Good Podcast
           <br />
           <Text fontSize="1.5rem">
-            <span style={{ color: useColorModeValue("pink", "pink") }}>@{user?.username}</span>
+            <span style={{ color: useColorModeValue("pink", "pink") }}>@{profile?.username}</span>
           </Text>
         </Heading>
 

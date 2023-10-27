@@ -38,6 +38,7 @@ export interface MeResponse extends BaseResponse{
 //#region User Profile Responses
 
 export interface UserProfileResponse extends BaseResponse{
+    userMenuInfo: any;
     userProfile: UserProfile;
 }
 
