@@ -27,17 +27,6 @@ jobs:
     # Setup the .NET environment
     steps:
 
-    # Add appsettings.Development.json + appsettings.json
-    - name: Add Config
-      working-directory: Backend
-      env:
-        settings: ${{ vars.APPSETTINGSBACKEND }}
-      run: |
-        touch ../Backend/appsettings.Development.json
-        touch ../Backend/appsettings.json
-        echo $settings > ../Backend/appsettings.Development.json
-        echo $settings > ../Backend/appsettings.json
-
     # Add appsettings.Development.json + appsettings.json fpr tests
     - name: Add Config
       working-directory: Backend/Backend.Tests
