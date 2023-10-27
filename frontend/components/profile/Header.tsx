@@ -1,11 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, Button } from "@chakra-ui/react";
-import { UserMenuInfo } from "../../utilities/Interfaces";
+import { UserMenuInfo, UserProfile } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaQuora, FaTwitter } from "react-icons/fa";
 import router from "next/router";
+import UserProfileHelper from '../../helpers/UserProfileHelper';
 
 const iconProps = {
   variant: "ghost",
@@ -43,11 +44,20 @@ const socials = [
 
 export default function Header() {
   const { data: session } = useSession();
-  const [user, setUser] = useState<UserMenuInfo>({
-    avatarUrl: null,
-    username: null,
-    bio: null,
-    id: null});
+  const [user, setUser] = useState<UserProfile>({
+    id:null,
+  avatarUrl:null,
+  email:null,
+  username:null,
+  bio:null,
+  interests: null,
+  twitterUrl:null,
+  gitHubUrl:null,
+  linkedInUrl:null,
+  websiteUrl:null,
+  dateOfBirth:null,
+  gender:null,
+});
 
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
     
@@ -59,8 +69,8 @@ export default function Header() {
       })
   
       if(user.id==null && isUserLoggedIn){
-        AuthHelper.authMeRequest().then((response) => {
-          setUser(response.userMenuInfo);
+        UserProfileHelper.profileGetRequest().then((response) => {
+          setUser(response.userProfile);
         })
       }
       console.log(isUserLoggedIn)

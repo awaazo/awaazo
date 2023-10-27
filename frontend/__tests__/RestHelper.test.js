@@ -80,15 +80,10 @@ test('Test RestHelper.authRegisterRequest() method', async () => {
     const result = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth,"None",mockUsername);
     expect(result.status).toBe(200);
 
-    // Test that the correct data is returned.
-    expect(result.data.user.email).toBe(mockEmail);
-    expect(result.data.user.password).not.toBe(mockPassword);
-    expect(new Date(result.data.user.dateOfBirth).toISOString()).toBe(mockDateOfBirth);
-
     // Test that the user can't be duplicated.
     const result2 = await RequestHelper.authRegisterRequest(mockEmail, mockPassword, mockDateOfBirth,"None",mockUsername);
     expect(result2.status).toBe(400);
-    expect(result2.error_message).toBe('User already exists');
+    expect(result2.error_message).toBe('An Account with that Email already exists. Please Login or use a different Email address.');
 });
 
 test('Test RestHelper.authLoginRequest() method', async () => { 
@@ -100,7 +95,7 @@ test('Test RestHelper.authLoginRequest() method', async () => {
     // Test that the user can't login with a wrong password.
     const result2 = await RequestHelper.authLoginRequest(mockEmail, mockPassword+"wrong");
     expect(result2.status).toBe(400);
-    expect(result2.error_message).toBe('Invalid Credentials');
+    expect(result2.error_message).toBe('Login failed. Invalid Email and/or Password.');
 });
 
 

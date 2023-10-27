@@ -78,7 +78,7 @@ const CreatePodcast = () => {
           
         >
           <Image
-            src={session?.user?.profilePic}
+
             alt="User Profile Picture"
             boxSize="100px"
             borderRadius="full"
