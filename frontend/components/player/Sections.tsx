@@ -12,7 +12,7 @@ const Sections: React.FC<SectionsProps> = ({ sections }) => {
 
   return (
     <Box p={4} borderRadius="2xl" boxShadow="xl" backdropBlur="4px" bg="rgba(255, 255, 255, 0.01)" width="100%" minH="100%">
-      <Text fontSize={fontSize} fontWeight="bold" mb={4}>  {/* added margin bottom */}
+      <Text fontSize={fontSize} fontWeight="bold" mb={4}>
         Sections
       </Text>
       <VStack spacing={3} align="start">
@@ -27,10 +27,10 @@ const Sections: React.FC<SectionsProps> = ({ sections }) => {
           >
             <Flex justify="space-between" align="center">
               <Text fontSize={fontSize} color="white">
-                {section.sectionName}
+                {section.title}
               </Text>
               <Text color="gray.400">
-                {convertTime(section.startTime)}
+                {convertTime(section.timestamp)}
               </Text>
             </Flex>
           </Box>

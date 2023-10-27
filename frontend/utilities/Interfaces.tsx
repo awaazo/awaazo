@@ -13,12 +13,11 @@ export interface Podcast {
   monthlyListeners: number;
 }
 
-
 export interface Episode {
   id: string;
   podcastId: string;
   podcaster: string;
-  coverArt: string; 
+  coverArt: string;
   episodeName: string;
   description: string;
   duration: number;
@@ -34,17 +33,37 @@ export interface Episode {
     isCommented: boolean;
   };
   bookmarks?: Bookmark[];
-  sections?: {
-    startTime: number;
-    sectionName: string;
-  }[];
+  sections?: Section[];
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
 };
 
+export interface Section {
+  id: string;
+  episodeId: string;
+  title?: string;
+  timestamp?: number;
+  duration?: number;
+}
+
+export interface Comment {
+  id: number;
+  userId: number;
+  episodeId: string;
+  text: string;
+  dateCreated: Date;
+  likes: Like[];
+}
+
+export interface Like {
+  userId: number;
+  commentId?: number;
+  episodeId?: string;
+}
 
 export interface Annotation {
+  id: string;
   timestamp: number;
   content: string;
   type: "link" | "info" | "sponsorship" | "media-link";
@@ -64,6 +83,7 @@ export interface MediaLink {
 }
 
 export interface Bookmark {
+  id: string;
   title: string;
   note?: string;
   timestamp: number;

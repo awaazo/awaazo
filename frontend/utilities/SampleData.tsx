@@ -33,11 +33,13 @@ export const podcasts: Podcast[] = [
 
 export const bookmarks: Bookmark[] = [
   {
+    id: "sfsf",
     title: "This point was interesting",
     timestamp: 2323,
     note: "This was good because...",
   },
   {
+    id: "sfsfd",
     title: "Cool point they mentioned",
     timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
@@ -85,10 +87,10 @@ const episodeTemplate: Episode = {
   },
   bookmarks: bookmarks,
   sections: [
-      { startTime: 0, sectionName: "Sponsors" },
-      { startTime: 72, sectionName: "Introduction" },
-      { startTime: 200, sectionName: "Part 1: Why bears are cool?" },
-    ],
+    { id: "r1", episodeId: 'EP001', timestamp: 0, title: "Sponsors" },
+    { id: "2E", episodeId: 'EP001', timestamp: 72, title: "Introduction" },
+    { id: "3r", episodeId: 'EP001', timestamp: 200, title: "Part 1: Why bears are cool?" },
+  ],  
   annotations: [],
   sponsors: [],
   transcript:sampleTranscripts,
