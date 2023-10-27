@@ -8,6 +8,7 @@ using Backend.Services.Interfaces;
 using Backend.Services;
 using Backend.Helper;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Backend;
 
@@ -18,10 +19,17 @@ public class Program
         
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            options.JsonSerializerOptions.WriteIndented = true;
+        });
 
         builder.Services.AddScoped<IAuthService, AuthService>();
-        builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<IPodcastService, PodcastService>();
+        builder.Services.AddScoped<IEpisodeService, EpisodeService>();
+        builder.Services.AddScoped<IFileService,FileService>();
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
