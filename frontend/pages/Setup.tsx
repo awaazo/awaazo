@@ -60,7 +60,13 @@ const Setup: React.FC = () => {
     // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
       if(res.status == 200)
+      {
+        setUser(res.userMenuInfo)
+      }
+      else{
         window.location.href = loginPage;
+      }
+        
     })
 
     if(window)
