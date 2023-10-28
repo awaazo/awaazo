@@ -46,7 +46,6 @@ const Setup: React.FC = () => {
     "Fiction",
     "Food",
   ];
-  const isLoggedIn = AuthHelper.isLoggedIn();
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -59,8 +58,8 @@ const Setup: React.FC = () => {
 
   useEffect(() => {
     // Check to make sure the user has logged in
-    AuthHelper.isLoggedIn().then((res) => {
-      if(!res)
+    AuthHelper.authMeRequest().then((res) => {
+      if(res.status == 200)
         window.location.href = loginPage;
     })
 

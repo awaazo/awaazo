@@ -66,7 +66,7 @@ const EditProfile: React.FC = () => {
         setUsername(userProfile.username);
         setTwitterLink(userProfile.twitterUrl);
         setLinkedinLink(userProfile.linkedInUrl);
-        setGithubLink(userProfile.gitHubUrl);
+        setGithubLink(userProfile.githubUrl);
         setAvatar(userProfile.avatarUrl);
       
       }

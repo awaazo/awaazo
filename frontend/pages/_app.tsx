@@ -4,7 +4,6 @@ import { AppProps } from "next/app";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react"
-import LoggedInRoute from "../components/shared/LoggedInRoute";
 
 const theme = extendTheme({
   colors: {
@@ -20,9 +19,6 @@ const theme = extendTheme({
 
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-
-  // Routes that require a user to be logged in.
-  const protectedRoutes = ['/profile/MyProfile','/profile/EditProfile','/Setup'];
 
   return (
     // 3. Pass the new theme to `ChakraProvider`
@@ -40,9 +36,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       />
       <ColorModeScript initialColorMode="dark" />
         <SessionProvider session={session}>
-          <LoggedInRoute protectedRoutes={protectedRoutes} >
             <Component {...pageProps} />
-          </LoggedInRoute>
         </SessionProvider>
     </ChakraProvider>
   );

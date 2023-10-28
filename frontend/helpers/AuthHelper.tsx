@@ -175,7 +175,7 @@ export default class AuthHelper{
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
-                userMenuInfo: requestResponse.data
+                userMenuInfo: requestResponse.data,
             }
         }
         catch(error){
@@ -188,9 +188,6 @@ export default class AuthHelper{
         }
     }
 
-    public static isLoggedIn = async (): Promise<boolean> => {
-        return await this.authMeRequest().then(res => res.status === 200)
-    }
 
     public static loginGoogleSSO = async (email:string,username:string,sub:string,avatar:string): Promise<boolean> =>
     {

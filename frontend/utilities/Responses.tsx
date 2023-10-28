@@ -26,7 +26,6 @@ export interface LogoutResponse extends BaseResponse{
 }
 
 export interface MeResponse extends BaseResponse{
-    UserProfile: SetStateAction<UserProfile>;
     userMenuInfo: UserMenuInfo;
 }
 
@@ -38,7 +37,6 @@ export interface MeResponse extends BaseResponse{
 //#region User Profile Responses
 
 export interface UserProfileResponse extends BaseResponse{
-    userMenuInfo: any;
     userProfile: UserProfile;
 }
 

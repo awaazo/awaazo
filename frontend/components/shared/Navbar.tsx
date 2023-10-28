@@ -7,44 +7,50 @@ import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon } from "@chakra-u
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
+import { UserMenuInfo } from "../../utilities/Interfaces";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
   const registerPage = "/auth/Signup";
-  const isLoggedIn = AuthHelper.isLoggedIn();
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
   const handleSearchChange = (event) => setSearchValue(event.target.value);
   const handleSearchSubmit = () => console.log("Search Value:", searchValue);
-
-  const [user, setUser] = useState({
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserMenuInfo>({
     id: "",
-    email: "",
     username: "",
-    avatar: "",
+    avatarUrl: "",
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
 
   useEffect(() => {
     // Custom User logged in
-    if (isLoggedIn && !isUserSet) {
-      AuthHelper.getUser().then((response) => {
-        setUser(response);
+    if (!isUserSet) {
+      AuthHelper.authMeRequest().then((response) => {
+        if(response.status == 200){
+        setUser(response.userMenuInfo);
         setIsUserLoggedIn(true); // Set login status to true
         setIsUserSet(true);
+        setIsLoggedIn(true)
+        }
       });
     }
     // Google User logged in
     else if (session && !isLoggedIn) {
       AuthHelper.loginGoogleSSO(session.user.email, session.user.name, (session as any).id, session.user.image).then(() => {
-        AuthHelper.getUser().then((response) => {
-          setUser(response);
+        AuthHelper.authMeRequest().then((response) => {
+          if(response.status == 200){
+          setUser(response.userMenuInfo);
           setIsUserLoggedIn(true); // Set login status to true
           setIsUserSet(true);
+          setIsLoggedIn(true)
+          }
         });
       });
     }
@@ -54,7 +60,7 @@ export default function Navbar() {
    * Logs the user out of the application.
    */
   const handleLogOut = async () => {
-    AuthHelper.logout();
+    AuthHelper.authLogoutRequest();
     // User logged in via Google, so use next-auth's signOut
     if (session) await signOut();
 
@@ -67,7 +73,9 @@ export default function Navbar() {
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
-        {user.avatar === "" ? <Avatar size={"sm"} src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" /> : <Avatar size={"sm"} src={user.avatar} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />}
+        {user.avatarUrl === "" ? 
+        <Avatar size={"sm"} src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" /> : 
+        <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />}
       </MenuButton>
       <MenuList>
         <MenuItem onClick={toggleColorMode}>{colorMode === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}</MenuItem>

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, Button } from "@chakra-ui/react";
-import { UserMenuInfo, UserProfile } from "../../utilities/Interfaces";
+import { UserProfile } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
@@ -41,40 +41,24 @@ const socials = [
 
 export default function Header() {
   const { data: session } = useSession();
-  const [user, setUser] = useState<UserMenuInfo>(null);
   const [profile, setProfile] = useState<UserProfile>(null);
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
 
   useEffect(() => {
-    AuthHelper.isLoggedIn()
-      .then((response) => {
-        setIsUserLoggedIn(response);
-      })
-      .catch((error) => {
-        console.error("Error checking login status:", error);
-      });
 
-    if (isUserLoggedIn) {
+
+
       UserProfileHelper.profileGetRequest()
         .then((response) => {
-          if (response.userMenuInfo) {
-            setUser(response.userProfile);
+          if (response.status == 200) {
+            setProfile(response.userProfile);
           }
         })
         .catch((error) => {
           console.error("Error fetching user info:", error);
         });
-      // Add get profile request here
-      UserProfileHelper.profileGetRequest().then((response) => {
-        if (response && response.userProfile) {
-          setProfile(response.userProfile);
-        }
-      })
-        .catch((error) => {
-          console.error("Error fetching user profile:", error);
-        });
-    }
+
   }, [session, isUserLoggedIn]);
 
   return (
@@ -119,7 +103,7 @@ export default function Header() {
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-              <IconButton as={Link} isExternal href={profile?.gitHubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
+              <IconButton as={Link} isExternal href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
               <IconButton as={Link} isExternal href={profile?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
               <IconButton as={Link} isExternal href={profile?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
           </Box>
