@@ -95,6 +95,14 @@ export default function Navbar() {
 
   const UserProfileMenu = () => (
     <Menu>
+      <Button
+        mr={5}
+        variant="ghost"
+        onClick={() => (window.location.href = "/MyPodcasts")}
+      >
+        My Podcasts
+      </Button>
+
       <MenuButton
         aria-label="loggedInMenu"
         as={Button}
@@ -189,80 +197,68 @@ export default function Navbar() {
 
   return (
     <>
-    <Box
-      bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
-      backdropFilter="blur(35px)"
-      p={6}
-      mr={"2em"}
-      ml={"2em"}
-      mb={"3em"}
-      position="sticky"
-      top={5}
-      zIndex={999}
-      borderRadius={"95px"}
-      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
-      data-testid="navbar-component"
-      // semi transparent white outline
-      border="3px solid rgba(255, 255, 255, 0.05)"
-    >
-      <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
-        <Link href="/Main">
-          <Box maxWidth={"1.5em"} ml={-2}>
-    
-            <Image
-              src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src}
-              alt="logo"
-            />
-          </Box>
-        </Link>
-        {isMobile ? (
-          <Flex alignItems={"center"}>
-            <IconButton
-              aria-label="Search"
-              icon={<SearchIcon />}
-              onClick={handleSearchSubmit}
-              variant="ghost"
-              size="md"
-              rounded={"full"}
-              opacity={0.7}
-              mr={4}
-            />
-            <UserProfileMenu />
-          </Flex>
-        ) : (
-          <Flex
-            alignItems={"center"}
-            as="form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearchSubmit();
-            }}
-          >
-            <Input
-              placeholder="Search"
-              size="sm"
-              borderRadius="full"
-              mr={4}
-              value={searchValue}
-              onChange={handleSearchChange}
-            />
-            <Link href="/Create">
+      <Box
+        bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
+        backdropFilter="blur(35px)"
+        p={6}
+        mr={"2em"}
+        ml={"2em"}
+        mb={"3em"}
+        position="sticky"
+        top={5}
+        zIndex={999}
+        borderRadius={"95px"}
+        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+        data-testid="navbar-component"
+        // semi transparent white outline
+        border="3px solid rgba(255, 255, 255, 0.05)"
+      >
+        <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
+          <Link href="/Main">
+            <Box maxWidth={"1.5em"} ml={-2}>
+              <Image
+                src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src}
+                alt="logo"
+              />
+            </Box>
+          </Link>
+          {isMobile ? (
+            <Flex alignItems={"center"}>
               <IconButton
-                aria-label="Create"
-                icon={<AddIcon />}
+                aria-label="Search"
+                icon={<SearchIcon />}
+                onClick={handleSearchSubmit}
                 variant="ghost"
                 size="md"
                 rounded={"full"}
                 opacity={0.7}
                 mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
               />
-            </Link>
-            {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-          </Flex>
-        )}
-      </Flex>
-    </Box>
+              <UserProfileMenu />
+            </Flex>
+          ) : (
+            <Flex
+              alignItems={"center"}
+              as="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchSubmit();
+              }}
+            >
+              <Input
+                placeholder="Search"
+                size="sm"
+                borderRadius="full"
+                mr={4}
+                value={searchValue}
+                onChange={handleSearchChange}
+              />
+
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
+          )}
+        </Flex>
+      </Box>
     </>
   );
 }
