@@ -30,6 +30,7 @@ public class Program
         builder.Services.AddScoped<IEpisodeService, EpisodeService>();
         builder.Services.AddScoped<IFileService,FileService>();
 
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -71,6 +72,14 @@ public class Program
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
+            };
+            x.Events = new JwtBearerEvents()
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["jwt-token"];
+                    return Task.CompletedTask;
+                }
             };
         });
         builder.Services.AddAuthorization();
