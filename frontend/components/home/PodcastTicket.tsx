@@ -11,7 +11,7 @@ const formatDuration = (seconds: number): string => {
 };
 
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
-  const { thumbnail, episodeName, podcaster, duration, likes } = episode;
+  const { coverArt, episodeName, podcaster, duration, likes } = episode;
   const likedColor = likes?.isLiked ? "red.500" : useColorModeValue("gray.400", "gray.600");
 
   return (
@@ -27,7 +27,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
     >
       {/* Left: Cover Art with Play Button */}
       <Box position="relative" mr={5}>
-        <Image boxSize="60px" src={thumbnail} borderRadius="10%" />
+        <Image boxSize="60px" src={coverArt} borderRadius="10%" />
         <IconButton aria-label="Play" icon={<FaPlay />} position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" variant="ghost" size="md" />
       </Box>
 

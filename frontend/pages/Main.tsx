@@ -11,14 +11,8 @@ const Main = () => {
     <>
       {/* Navbar */}
       <Navbar />
+      <ExploreGenresSection />
       <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]} > {/* Adjusted padding */}
-        {/* Explore Genres Section */}
-        <Box>
-            <ExploreGenresSection />
-        </Box>
-
-
-
       {/* Main Content */}
       <Flex flex="1" overflow="hidden">
         {/* For You Section */}

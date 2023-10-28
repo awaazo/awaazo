@@ -5,7 +5,7 @@ export interface Podcast {
   podcaster: string; // redundant, remove later 
   description: string;
   tags: string[];
-  isExplicit?: boolean;
+  isExplicit: boolean;
   type: "real" | "ai-generated";
   creationDate: Date;
   episodes: Episode[];
@@ -13,14 +13,13 @@ export interface Podcast {
   monthlyListeners: number;
 }
 
-
 export interface Episode {
   id: string;
   podcastId: string;
-  podcaster: string; // redundant, remove later  
+  podcaster: string;
+  coverArt: string;
   episodeName: string;
   description: string;
-  thumbnail: string;
   duration: number;
   releaseDate: Date;
   isExplicit?: boolean;
@@ -33,19 +32,38 @@ export interface Episode {
     count: number;
     isCommented: boolean;
   };
-  //play count is enough , should be deleted later 
   bookmarks?: Bookmark[];
-  sections?: {
-    startTime: number;
-    sectionName: string;
-  }[];
+  sections?: Section[];
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
 };
 
+export interface Section {
+  id: string;
+  episodeId: string;
+  title?: string;
+  timestamp?: number;
+  duration?: number;
+}
+
+export interface Comment {
+  id: number;
+  userId: number;
+  episodeId: string;
+  text: string;
+  dateCreated: Date;
+  likes: Like[];
+}
+
+export interface Like {
+  userId: number;
+  commentId?: number;
+  episodeId?: string;
+}
 
 export interface Annotation {
+  id: string;
   timestamp: number;
   content: string;
   type: "link" | "info" | "sponsorship" | "media-link";
@@ -65,14 +83,16 @@ export interface MediaLink {
 }
 
 export interface Bookmark {
+  id: string;
   title: string;
   note?: string;
-  time: number;
+  timestamp: number;
 }
 
 export interface TranscriptLine {
-  timestamp: number; // Timestamp in seconds
+  timestamp: number; 
   text: string;
+  speaker: string;
 }
 
 export interface User {
@@ -134,16 +154,9 @@ export interface UserProfile {
   username: string;
   bio: string;
   interests: string[];
-  twitterUrl: string;
-  gitHubUrl: string;
-  linkedInUrl: string;
-  websiteUrl: string;
+  twitterUrl?: string;
+  githubUrl?: string;
+  websiteUrl?: string;
   dateOfBirth: string;
   gender: string;
-}
-
-export interface UserMenuInfo{
-  id: string;
-  username: string;
-  avatarUrl: string;
 }

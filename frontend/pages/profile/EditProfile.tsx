@@ -113,6 +113,7 @@ const EditProfile: React.FC = () => {
   };
 
     // Add the given functions
+    //test
   const getRandomDarkColor = () => {
     const letters = "0123456789ABCDEF";
     let color = "#";
