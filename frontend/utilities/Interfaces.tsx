@@ -156,7 +156,13 @@ export interface UserProfile {
   interests: string[];
   twitterUrl?: string;
   githubUrl?: string;
-  websiteUrl?: string;
+  linkedInUrl?: string;
   dateOfBirth: string;
   gender: string;
+}
+
+export interface UserMenuInfo{
+  id: string;
+  username: string;
+  avatarUrl: string;
 }

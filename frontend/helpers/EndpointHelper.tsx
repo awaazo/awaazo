@@ -23,6 +23,14 @@ export default class EndpointHelper {
     static getAuthLoginEndpoint = () => {
       return this.getBackendAddress() + "/auth/login";
     };
+
+    /**
+     * Returns the backend logout endpoint.
+     * @returns The Logout API Endpoint
+     */
+    static getAuthLogoutEndpoint = () => {
+        return this.getBackendAddress() + "/auth/logout";
+    }
   
     /**
      * Returns the backend register endpoint.
@@ -71,4 +79,5 @@ export default class EndpointHelper {
     static getProfileGetEndpoint = () => {
         return this.getBackendAddress() + "/profile/get";
     }
+  static profileGetRequest: any;
 }

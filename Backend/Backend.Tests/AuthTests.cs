@@ -1,10 +1,13 @@
 using AutoMapper;
+using AutoMapper.Configuration.Annotations;
+using Azure;
 using Backend.Controllers;
 using Backend.Controllers.Requests;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -721,21 +724,22 @@ public class AuthTests : IAsyncLifetime
         // Mocks
         Mock<IAuthService> authServiceMock = new();
         Mock<IConfiguration> configurationMock = new();
-        HttpContext httpContext = new DefaultHttpContext();
-
+        var httpContext = new DefaultHttpContext();
 
         // Setup Mocks
         authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+        
 
         // Create Controller
         AuthController authController = new(configurationMock.Object, authServiceMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
-                HttpContext = httpContext
+                HttpContext=httpContext
             }
         };
+        
 
         // Create the Request
         LoginRequest loginRequest = new()
@@ -760,6 +764,7 @@ public class AuthTests : IAsyncLifetime
         // Mocks
         Mock<IAuthService> authServiceMock = new();
         Mock<IConfiguration> configurationMock = new();
+        var httpContext = new DefaultHttpContext();
 
         // Setup Mocks
 
@@ -768,7 +773,13 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            }
+        };
 
         // Create the Request
         LoginRequest loginRequest = new()
@@ -876,7 +887,6 @@ public class AuthTests : IAsyncLifetime
         HttpContext httpContext = new DefaultHttpContext();
         httpContext.Request.Path = "/auth/me";
         httpContext.Request.Host = new HostString("localhost:5000");
-
         // Setup Mocks
 
         authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
@@ -891,7 +901,7 @@ public class AuthTests : IAsyncLifetime
                 HttpContext = httpContext
             }
         };
-
+    
 
         // ACT
         IActionResult actionResult = await authController.Me();

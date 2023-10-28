@@ -15,6 +15,7 @@ import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { RegisterRequest } from "../../utilities/Requests";
 
 const SignUp: React.FC = () => {
   const setupPage = "/Setup";
@@ -29,7 +30,7 @@ const SignUp: React.FC = () => {
   const { data: session } = useSession();
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
-  useEffect(() => {}, [session, googleSignUpClicked]);
+  useEffect(() => { }, [session, googleSignUpClicked]);
 
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
@@ -47,23 +48,28 @@ const SignUp: React.FC = () => {
     if (!(password === confirmPassword)) {
       setSignUpError("Passwords do not match.");
       console.debug(signUpError);
+
     }
-    // Register with Backend
     else {
-      const response = await AuthHelper.register(
-        email,
-        password,
-        username,
-        dateOfBirth,
-      );
-      console.log(response);
-      // If registration was successful, redirect to profile page. Otherwise, display error.
-      if (response) {
+      // Register with Backend
+      const registerRequest: RegisterRequest = {
+        email: email,
+        password: password,
+        username: username,
+        dateOfBirth: dateOfBirth,
+        gender: "None"
+      }
+
+      const response = await AuthHelper.authRegisterRequest(registerRequest);
+
+      if (response.status === 200) {
         window.location.href = setupPage;
-      } else {
-        setSignUpError("Registration failed.");
+      }
+      else {
+        setSignUpError(response.data);
       }
     }
+
   };
 
   return (

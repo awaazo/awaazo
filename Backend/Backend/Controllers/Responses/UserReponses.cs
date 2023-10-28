@@ -1,9 +1,57 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using Backend.Models;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers.Responses;
+
+[BindProperties]
+public class UserMenuInfoResponse
+{
+    public UserMenuInfoResponse() 
+    {
+        AvatarUrl = string.Empty;
+        Username = string.Empty;
+    }
+
+    public UserMenuInfoResponse(User user, HttpContext httpContext)
+    {
+        Id = user.Id;
+        Username = user.Username;
+
+        if(user.Avatar == "DefaultAvatar")
+            AvatarUrl = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
+        else
+            AvatarUrl = httpContext.Request.GetDisplayUrl()[..^7] + "profile/avatar";
+    }
+    
+
+    [Required]
+    public Guid Id {get;set;}
+
+    [Required]
+    public string AvatarUrl {get;set;}
+
+    [Required]
+    public string Username{get;set;}
+
+    public static explicit operator UserMenuInfoResponse(User v)
+    {
+        UserMenuInfoResponse response = new()
+        {
+            Id = v.Id,
+            Username = v.Username
+        };
+
+        if(v.Avatar == "DefaultAvatar")
+        {
+            response.AvatarUrl = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
+        }
+
+        return response;
+    }
+}
 
 [BindProperties]
 public class UserProfileResponse
@@ -56,6 +104,8 @@ public class UserProfileResponse
 
     public static explicit operator UserProfileResponse(User v)
     {
+
+        
         UserProfileResponse response = new()
         {
             Id = v.Id,
@@ -69,8 +119,6 @@ public class UserProfileResponse
             DateOfBirth = v.DateOfBirth,
             Gender = v.GetGenderString()
         };
-
-
 
         return response;
     }

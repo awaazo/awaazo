@@ -14,12 +14,17 @@ import {
   InputLeftAddon,
   Icon,
 } from "@chakra-ui/react";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Navbar from "../../components/shared/Navbar";
 import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
+import { profile } from "console";
+import { UserProfile } from "../../utilities/Interfaces";
+import { forEach } from "lodash";
+import { Router, useRouter } from "next/router";
 const EditProfile: React.FC = () => {
+  const router = useRouter()
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -30,6 +35,7 @@ const EditProfile: React.FC = () => {
   const [githubLink, setGithubLink] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const PodcastGenres = [
     "Technology",
@@ -50,6 +56,27 @@ const EditProfile: React.FC = () => {
     "Food",
   ];
 
+  useEffect(() => {
+    UserProfileHelper.profileGetRequest().then((response) => {
+      if(response.status == 200){
+        const userProfile: UserProfile = response.userProfile;
+        setBio(userProfile.bio);
+        setInterests(userProfile.interests);
+        setSelectedInterests(userProfile.interests);
+        setUsername(userProfile.username);
+        setTwitterLink(userProfile.twitterUrl);
+        setLinkedinLink(userProfile.linkedInUrl);
+        setGithubLink(userProfile.githubUrl);
+        setAvatar(userProfile.avatarUrl);
+      
+      }
+    })
+  }, []);
+
+  /**
+   * Handles updating the profile when form is submitted
+   * @param e FormEvent
+   */
   const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -61,19 +88,20 @@ const EditProfile: React.FC = () => {
       bio : bio,
       interests : selectedInterests,
       username : username,
-      twitterUrl : twitterLink,
-      linkedInUrl : linkedinLink,
-      githubUrl : githubLink
+      twitterUrl : twitterLink != ""? twitterLink : null,
+      linkedInUrl : linkedinLink != ""? linkedinLink : null,
+      githubUrl : githubLink != ""? githubLink : null
     }
 
     // Get the Response
     const response = await UserProfileHelper.profileEditRequest(request);
 
+    // If Profile is saved, return to profile page
     if(response.status === 200){
-      window.alert("Profile Updated");
+      router.push('/profile/MyProfile');
     }
     else{
-      window.alert(response.status+": "+response.message);
+      setFormError(response.message)
     }
 
   }
@@ -102,6 +130,9 @@ const EditProfile: React.FC = () => {
   };
 
     const handleInterestClick = (genre) => {
+      console.log(genre)
+      console.log(selectedInterests)
+      console.log(genreColors)
         if (selectedInterests.includes(genre)) {
         setSelectedInterests(selectedInterests.filter((item) => item !== genre));
         } else {
@@ -135,7 +166,7 @@ const EditProfile: React.FC = () => {
       </Text>
       {/* // username here*/}
       <Text>
-        @username
+        @ {username}
       </Text>
 
       <form onSubmit={handleProfileUpdate}>
@@ -189,6 +220,7 @@ const EditProfile: React.FC = () => {
             
 
           {/* Personal Details Section */}
+          {formError && <Text color="red.500">{formError}</Text>}
           <FormControl>
             <Input
               id="username"

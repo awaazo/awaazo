@@ -89,11 +89,20 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("avatar")]
-    public async Task<PhysicalFileResult> Avatar()
+    public async Task<ActionResult> Avatar()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
+        // If User is not found, return 404
+        if(user is null)
+            return NotFound("User does not exist.");
+
+        // If user has yet to upload an avatar, return default avatar. 
+        if(user.Avatar == "DefaultAvatar")
+            return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
+
+        // Otherwise, return the avatar
         return PhysicalFile(ProfileService.GetAvatarPath(user!.Avatar!),ProfileService.GetAvatarType(user!.Avatar!));
     }
 }
