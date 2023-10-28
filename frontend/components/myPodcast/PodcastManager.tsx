@@ -149,10 +149,12 @@ const PodcastManager = ({ name }) => {
     setShowEditModal(true);
   };
 
+  // Updates the thumbnail, name, description, and tags of the podcast
   const updatePodcastInfo = () => {
     console.log();
   };
 
+  // Handles thumbnail upload
   const handleAvatarUpload = (e: FormEvent) => {
     setThumbnailFile((e.target as any).files[0]);
     setThumbnail(URL.createObjectURL((e.target as any).files[0]));
