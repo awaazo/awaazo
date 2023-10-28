@@ -19,6 +19,7 @@ const theme = extendTheme({
 
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+
   return (
     // 3. Pass the new theme to `ChakraProvider`
     <ChakraProvider theme={theme}>
@@ -35,7 +36,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       />
       <ColorModeScript initialColorMode="dark" />
         <SessionProvider session={session}>
-          <Component {...pageProps} />
+            <Component {...pageProps} />
         </SessionProvider>
     </ChakraProvider>
   );

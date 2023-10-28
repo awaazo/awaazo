@@ -1,20 +1,17 @@
 import { Box, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/react";
 import { IoMicOutline } from "react-icons/io5";
+import { TranscriptLine } from "../../utilities/Interfaces";
+import { convertTime } from "../../utilities/commonUtils";
 
-type TranscriptProps = {
-  timestamp: number;
-  text: string;
-};
-
-const formatTimestamp = (seconds: number) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+interface TranscriptsProps {
+  transcripts: TranscriptLine[];
 }
 
-const Transcripts: React.FC<TranscriptProps> = ({ timestamp, text }) => {
+const Transcripts: React.FC<TranscriptsProps> = ({ transcripts }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
   const iconSize = useBreakpointValue({ base: "16px", md: "24px" });
+
+  const opacityLevels = [1, 0.4, 0.1];
 
   return (
     <Box
@@ -26,16 +23,24 @@ const Transcripts: React.FC<TranscriptProps> = ({ timestamp, text }) => {
       width="100%"
       minH="100%"
     >
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex justifyContent="space-between" alignItems="center" mb={2}>
         <Flex alignItems="center">
           <Icon as={IoMicOutline} boxSize={iconSize} mr={2} />
-          <Text fontWeight="bold" fontSize={fontSize}>Joe Rogan</Text>
+          <Text fontWeight="bold" fontSize={fontSize}>
+            {transcripts[0]?.speaker}
+          </Text>
         </Flex>
-        <Text color="gray.500">{formatTimestamp(timestamp)}</Text>
+        <Text color="gray.500">
+          {convertTime(transcripts[0]?.timestamp)}
+        </Text>
       </Flex>
 
-      <Text mt={2} opacity="0.9">
-        {text}
+      <Text>
+        {transcripts.map((transcript, index) => (
+          <span key={index} style={{ opacity: opacityLevels[index] || 0.1 }}>
+            {transcript.text}{" "}
+          </span>
+        ))}
       </Text>
     </Box>
   );

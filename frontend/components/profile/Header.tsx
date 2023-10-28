@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useCallback, useState, useEffect } from 'react';
 import { Avatar, Heading, Text, VStack, Stack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, Button } from "@chakra-ui/react";
-
+import { UserProfile } from "../../utilities/Interfaces";
+import AuthHelper from "../../helpers/AuthHelper";
+import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaQuora, FaTwitter } from "react-icons/fa";
 import router from "next/router";
+import { set } from 'lodash';
+import EndpointHelper from '../../helpers/EndpointHelper';
+import UserProfileHelper from '../../helpers/UserProfileHelper';
+
 
 const iconProps = {
   variant: "ghost",
@@ -31,30 +37,49 @@ const socials = [
     type: "linkedin",
     icon: <FaLinkedin />,
   },
-  {
-    url: "https://www.quora.com/",
-    label: "Quora Account",
-    type: "red",
-    icon: <FaQuora />,
-  },
 ];
 
 export default function Header() {
+  const { data: session } = useSession();
+  const [profile, setProfile] = useState<UserProfile>(null);
+
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+
+  useEffect(() => {
+
+
+
+      UserProfileHelper.profileGetRequest()
+        .then((response) => {
+          if (response.status == 200) {
+            setProfile(response.userProfile);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error);
+        });
+
+  }, [session, isUserLoggedIn]);
+
   return (
     <>
       <VStack spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }} marginBottom={"2em"}>
         <Stack>
-          <Avatar boxShadow="xl" size="xl" src="https://avatars2.githubusercontent.com/u/37842853?v=4" />
+          <Avatar boxShadow="xl" size="xl" src={profile?.avatarUrl} />
         </Stack>
         <Heading textAlign={{ base: "center", sm: "left" }} margin="0 auto" width={{ base: "23rem", sm: "auto" }} fontSize={{ base: "2.5rem", sm: "3rem" }}>
           The Really Good Podcast
           <br />
           <Text fontSize="1.5rem">
-            <span style={{ color: useColorModeValue("pink", "pink") }}>@username</span>
+            <span style={{ color: useColorModeValue("pink", "pink") }}>@{profile?.username}</span>
           </Text>
         </Heading>
 
-        <Text textAlign="center">Passionate about Tech. Lover of web and opensource.</Text>
+        <Text textAlign="center" >
+          <span>
+            Bio: {profile?.bio}
+          </span>
+        </Text>
         <HStack>
           <Button
             rounded="7px"
@@ -78,9 +103,9 @@ export default function Header() {
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-            {socials.map((sc, index) => (
-              <IconButton key={index} as={Link} isExternal href={sc.url} aria-label={sc.label} colorScheme={sc.type} rounded="full" icon={sc.icon} {...iconProps} />
-            ))}
+              <IconButton as={Link} isExternal href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
+              <IconButton as={Link} isExternal href={profile?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
+              <IconButton as={Link} isExternal href={profile?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
           </Box>
           <Button rounded={"full"}>
             {/* <Icon as={Follow} w={6} h={6} /> */}

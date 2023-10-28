@@ -30,6 +30,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
+    public virtual DbSet<Files>? File { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,6 +61,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
+
         
         // User 1-to-many Bookmark
         modelBuilder.Entity<User>()
@@ -81,7 +83,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired();
-        
+
         // Annotation 1-to-1 Medialink
         modelBuilder.Entity<Annotation>()
             .HasOne(e => e.MediaLink)
@@ -123,6 +125,9 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
+ 
+
     }
     
     public override int SaveChanges()

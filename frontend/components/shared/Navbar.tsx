@@ -31,35 +31,38 @@ import {
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
+import { UserMenuInfo } from "../../utilities/Interfaces";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
   const registerPage = "/auth/Signup";
-  const isLoggedIn = AuthHelper.isLoggedIn();
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
   const handleSearchChange = (event) => setSearchValue(event.target.value);
   const handleSearchSubmit = () => console.log("Search Value:", searchValue);
-
-  const [user, setUser] = useState({
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserMenuInfo>({
     id: "",
-    email: "",
     username: "",
-    avatar: "",
+    avatarUrl: "",
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
 
   useEffect(() => {
     // Custom User logged in
-    if (isLoggedIn && !isUserSet) {
-      AuthHelper.getUser().then((response) => {
-        setUser(response);
-        setIsUserLoggedIn(true); // Set login status to true
-        setIsUserSet(true);
+    if (!isUserSet) {
+      AuthHelper.authMeRequest().then((response) => {
+        if (response.status == 200) {
+          setUser(response.userMenuInfo);
+          setIsUserLoggedIn(true); // Set login status to true
+          setIsUserSet(true);
+          setIsLoggedIn(true);
+        }
       });
     }
     // Google User logged in
@@ -70,10 +73,13 @@ export default function Navbar() {
         (session as any).id,
         session.user.image,
       ).then(() => {
-        AuthHelper.getUser().then((response) => {
-          setUser(response);
-          setIsUserLoggedIn(true); // Set login status to true
-          setIsUserSet(true);
+        AuthHelper.authMeRequest().then((response) => {
+          if (response.status == 200) {
+            setUser(response.userMenuInfo);
+            setIsUserLoggedIn(true); // Set login status to true
+            setIsUserSet(true);
+            setIsLoggedIn(true);
+          }
         });
       });
     }
@@ -83,7 +89,7 @@ export default function Navbar() {
    * Logs the user out of the application.
    */
   const handleLogOut = async () => {
-    AuthHelper.logout();
+    AuthHelper.authLogoutRequest();
     // User logged in via Google, so use next-auth's signOut
     if (session) await signOut();
 
