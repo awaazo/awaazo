@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Badge, useColorModeValue, useBreakpointValue } from "@chakra-ui/react";
 import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, FaVolumeUp, FaVolumeDown, FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
-import { ChevronRightIcon } from '@chakra-ui/icons'
-const awaazoBird = "/awaazo_bird_aihelper_logo.svg";
 
 const PlayerBar: React.FC<Episode> = (props) => {
   const { coverArt, episodeName = "Unknown episodeName", podcaster = "Unknown Podcaster", duration, likes, comments, sections = [] } = props;
@@ -11,28 +9,27 @@ const PlayerBar: React.FC<Episode> = (props) => {
   const [position, setPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(likes.isLiked);
-  
-  
-  const togglePlayPause = () => setIsPlaying(prevIsPlaying => !prevIsPlaying);
-  const skipForward = () => setPosition(prevPos => Math.min(prevPos + 10, duration));
-  const skipBackward = () => setPosition(prevPos => Math.max(prevPos - 10, 0));
+
+  const togglePlayPause = () => setIsPlaying((prevIsPlaying) => !prevIsPlaying);
+  const skipForward = () => setPosition((prevPos) => Math.min(prevPos + 10, duration));
+  const skipBackward = () => setPosition((prevPos) => Math.max(prevPos - 10, 0));
   const handleCoverClick = () => console.log("Navigating to player page...");
   const handleLikeClick = () => setIsLiked(!isLiked);
-  const handleCommentClick = () => console.log('Open comment box...'); 
+  const handleCommentClick = () => console.log("Open comment box...");
   const isMobile = useBreakpointValue({ base: true, md: false });
-  
+
   const currentTime = `${Math.floor(position / 60)}:${String(position % 60).padStart(2, "0")}`;
   const timeLeft = `${Math.floor((duration - position) / 60)}:${String((duration - position) % 60).padStart(2, "0")}`;
   const likedColor = isLiked ? "red.500" : useColorModeValue("gray.900", "gray.100");
   const commentedColor = comments.isCommented ? "blue.500" : useColorModeValue("gray.900", "gray.100");
-  
+
   const handleScrubberChange = (newPosition: number) => setPosition(newPosition);
-  const getCurrentSectionName  = (currentTime: string): string => {
+  const getCurrentSectionName = (currentTime: string): string => {
     const timeParts = currentTime.split(":");
     const totalSeconds = parseInt(timeParts[0], 10) * 60 + parseInt(timeParts[1], 10);
     for (let i = sections.length - 1; i >= 0; i--) {
-      if (totalSeconds >= sections[i].startTime) {
-        return sections[i].sectionName;
+      if (totalSeconds >= sections[i].timestamp) {
+        return sections[i].title;
       }
     }
     return "";
@@ -69,14 +66,12 @@ const PlayerBar: React.FC<Episode> = (props) => {
               </Text>
             </Box>
             <Flex ml={4} alignItems="center">
-        <Box position="relative">
-          <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" color={isLiked ? "red.500" : likedColor} size="sm" onClick={handleLikeClick} />
-          
+              <Box position="relative">
+                <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" color={isLiked ? "red.500" : likedColor} size="sm" onClick={handleLikeClick} />
               </Box>
 
               <Box position="relative" ml={2}>
-          <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" color={commentedColor} size="sm" onClick={handleCommentClick} />
-          
+                <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" color={commentedColor} size="sm" onClick={handleCommentClick} />
               </Box>
             </Flex>
           </Flex>
@@ -95,7 +90,7 @@ const PlayerBar: React.FC<Episode> = (props) => {
             <Flex alignItems="center" justifyContent="space-between" width="100%">
               <Box width="80px" textAlign="right" mr={2}>
                 <Text color="gray.500" fontSize="sm">
-                  {currentTime} . {getCurrentSectionName (currentTime)}
+                  {currentTime} . {getCurrentSectionName(currentTime)}
                 </Text>
               </Box>
               <Box flex={1} position="relative" mx={4}>
@@ -104,11 +99,11 @@ const PlayerBar: React.FC<Episode> = (props) => {
                     <SliderFilledTrack />
                   </SliderTrack>
                   <SliderThumb boxSize={4}>
-                  <Box color='tomato' />
+                    <Box color="tomato" />
                   </SliderThumb>
                 </Slider>
                 {sections.map((section, index) => (
-                  <Box key={index} position="absolute" height="2px" bg="gray.300" left={`${(section.startTime / duration) * 100}%`} width="1px" top="50%" transform="translateY(-50%)" />
+                  <Box key={index} position="absolute" height="2px" bg="gray.300" left={`${(section.timestamp! / duration) * 100}%`} width="1px" top="50%" transform="translateY(-50%)" />
                 ))}
               </Box>
               <Box width="80px" textAlign="left" ml={2}>

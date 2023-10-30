@@ -175,14 +175,10 @@ export default class AuthHelper{
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
-                userMenuInfo: requestResponse.data
+                userMenuInfo: requestResponse.data,
             }
         }
         catch(error){
-
-            if(window){
-                window.sessionStorage.removeItem("userInfo")
-            }
 
             return {
                 status: error.response.status,
@@ -192,9 +188,6 @@ export default class AuthHelper{
         }
     }
 
-    public static isLoggedIn = async (): Promise<boolean> => {
-        return await this.authMeRequest().then(res => res.status === 200)
-    }
 
     public static loginGoogleSSO = async (email:string,username:string,sub:string,avatar:string): Promise<boolean> =>
     {
@@ -206,7 +199,6 @@ export default class AuthHelper{
         // Successful login.
         if(res.status === 200){
             console.debug("Login Successful")
-            this.setToken(res.data.token);
             return true;
         }
         // Unsuccessful login.

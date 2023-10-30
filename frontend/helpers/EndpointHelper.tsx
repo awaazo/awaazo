@@ -79,4 +79,5 @@ export default class EndpointHelper {
     static getProfileGetEndpoint = () => {
         return this.getBackendAddress() + "/profile/get";
     }
+  static profileGetRequest: any;
 }

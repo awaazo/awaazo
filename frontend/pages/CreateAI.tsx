@@ -14,6 +14,7 @@ const CreatePodcast = () => {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [file, setFile] = useState(null);
 
+
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
   }, []);
@@ -39,8 +40,8 @@ const CreatePodcast = () => {
         <VStack spacing={5} align="center" p={5}>
           <Text fontSize="3xl">AI Generated Episode</Text>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" p={6} bg="gray.100" borderRadius="md">
-            <Image src={session?.user?.profilePic} alt="User Profile Picture" boxSize="100px" borderRadius="full" />
-            <Text>{session?.user?.name}</Text>
+            <Image src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"} alt="User Profile Picture" boxSize="100px" borderRadius="full" />
+            <Text>@username</Text>
           </Box>
           <FormControl>
             <FormLabel>Episode Name</FormLabel>

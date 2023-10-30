@@ -1,3 +1,4 @@
+import { SetStateAction } from "react";
 import { UserMenuInfo, UserProfile } from "./Interfaces";
 
 export interface BaseResponse{

@@ -45,7 +45,7 @@ public class ProfileTests : IAsyncLifetime
         string path = ProfileService.GetAvatarPath(fileInfo);
 
         // ASSERT
-        Assert.Contains("Avatars\\"+filename, path);
+        Assert.Contains(Path.Combine("Avatars",filename), path);
     }
 
     [Fact]

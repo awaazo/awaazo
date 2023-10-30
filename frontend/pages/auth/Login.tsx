@@ -30,8 +30,8 @@ const Login: React.FC = () => {
   // Handle page refresh
   useEffect(() => {
     // Check if user is already logged in
-    AuthHelper.isLoggedIn().then((res) => {
-      if (res) {
+    AuthHelper.authMeRequest().then((res) => {
+      if (res.status == 200) {
         window.location.href = mainPage;
       }
     });

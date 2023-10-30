@@ -71,7 +71,7 @@ public class AuthService : IAuthService
     public async Task<User?> LoginAsync(LoginRequest request)
     {
         // Return NULL if the User does not exists or if the password is incorrect
-        User? user = await _db.Users!.FirstOrDefaultAsync(u => u.Email == request.Email);
+        User? user = await _db.Users!.Include(u => u.Podcasts).ThenInclude(a => a.Cover).FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user!.Password))
             return null;
 

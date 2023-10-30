@@ -24,7 +24,7 @@ const Bookmarks: React.FC<BookmarkProps> = ({ bookmarks }) => {
         <Box key={idx} p={4} rounded="2xl" backdropBlur="2px" bg="rgba(255, 255, 255, 0.1)" borderColor="rgba(255, 255, 255, 0.05)" width="100%">
           <Flex justifyContent="space-between">
             <Text fontWeight="bold">{bookmark.title}</Text>
-            <Text color="gray.400">{convertTime(bookmark.time)}</Text> 
+            <Text color="gray.400">{convertTime(bookmark.timestamp)}</Text> 
           </Flex>
           <Text mt={2}>{bookmark.note}</Text>
         </Box>

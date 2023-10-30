@@ -88,20 +88,6 @@ Discover, create, and engage. Awaazo offers an extensive library of diverse podc
 ### Additional Tools:
 - **Docker**: Ensuring consistent environments and streamlined deployments.
 
-
-
-## Naming Conventions:
-
-| **Area**                | **Type**                  | **Syntax/Pattern**                          | **Examples**                             |
-|-------------------------|---------------------------|--------------------------------------------|------------------------------------------|
-| **Frontend & Backend**  | **Variables**             | Use `camelCase`                            | `userName`, `userEmail`, `taskName`      |
-| **Frontend**            | **Pages, Components, Modules** | Use `PascalCase`                       | `HeaderComponent.tsx`, `FooterComponent.tsx` |
-| **Backend**             | **Controllers, Models, Migrations, Services, Properties** | Use `PascalCase` followed by the file type. | `AuthController.cs`, `UserModel.cs`, `InitialMigration.cs` |
-| **Git and Version Control** | **Pull Requests**      | `[Solves #issue_number] Pull-Request Topic` | `[Solves #40] Add README.md`             |
-|                         | **Feature Branches**     | `feature/feature_name`                     | `feature/job_listing`                    |
-|                         | **Issue-Specific Branches** | `issue-#issue_number/issue_topic`      | `issue-#40/add_readme`                   |
-
-
 ---
 
 ## Members

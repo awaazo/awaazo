@@ -4,6 +4,9 @@ import EndpointHelper from "./EndpointHelper";
 import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
 
 export default class UserProfileHelper {
+    static getUserProfile() {
+      throw new Error("Method not implemented.");
+    }
 
     /**
      * Saves the user's profile setup request to the server.
@@ -91,10 +94,24 @@ export default class UserProfileHelper {
             }
         }
         catch (error) {
+
+            // Get the error message.
+            let errorMsg = error.response.statusText
+            if (error.response.status === 400) {
+                let msg = ""
+                const errors = error.response.data.errors
+                for (const key in errors) {
+                    msg += errors[key] + "\n"
+                } 
+                
+                if(msg!="")
+                    errorMsg = msg
+            }
+
             // Return the error.
             return {
                 status: error.response.status,
-                message: error.response.statusText
+                message: errorMsg
             };
         }
 
