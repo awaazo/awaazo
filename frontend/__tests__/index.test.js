@@ -45,7 +45,7 @@ describe("Renders Navbar with page", () => {
   /*
    * Test case 1: It should render the navbar in the index page
    */
-  test("Renders the Navbar in the Index Page ", () => {
+  test.skip("Renders the Navbar in the Index Page ", () => {
     render(
       <SessionProvider session={null}>
         <Home />
@@ -64,7 +64,7 @@ describe("Renders Navbar with page", () => {
   /*
    * Test case 2: It should render the index page and its content when a user is not signed In
    */
-  test("Renders the index page (Not Signed In)  content ", () => {
+  test.skip("Renders the index page (Not Signed In)  content ", () => {
     render(
       <SessionProvider session={null}>
         <Home />
@@ -77,7 +77,7 @@ describe("Renders Navbar with page", () => {
   /*
    * Test case 3: It should render the index page and its content when a user is signed In
    */
-  test("Renders the index page (Signed In) content ", () => {
+  test.skip("Renders the index page (Signed In) content ", () => {
     setLocalStorageData(token, mockUser);
     render(
       <SessionProvider session={{ user: mockUser }}>

@@ -1,9 +1,12 @@
 import axios from "axios";
-import { UserProfileSetupRequest } from "../utilities/Requests";
+import { UserProfileEditRequest, UserProfileSetupRequest } from "../utilities/Requests";
 import EndpointHelper from "./EndpointHelper";
 import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
 
 export default class UserProfileHelper {
+    static getUserProfile() {
+      throw new Error("Method not implemented.");
+    }
 
     /**
      * Saves the user's profile setup request to the server.
@@ -57,7 +60,7 @@ export default class UserProfileHelper {
      * @param requestData  Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static profileEditRequest = async (requestData: UserProfileSetupRequest): Promise<BaseResponse> => {
+    public static profileEditRequest = async (requestData: UserProfileEditRequest): Promise<BaseResponse> => {
 
         // Create the request options.
         const options =
@@ -91,10 +94,24 @@ export default class UserProfileHelper {
             }
         }
         catch (error) {
+
+            // Get the error message.
+            let errorMsg = error.response.statusText
+            if (error.response.status === 400) {
+                let msg = ""
+                const errors = error.response.data.errors
+                for (const key in errors) {
+                    msg += errors[key] + "\n"
+                } 
+                
+                if(msg!="")
+                    errorMsg = msg
+            }
+
             // Return the error.
             return {
                 status: error.response.status,
-                message: error.response.statusText
+                message: errorMsg
             };
         }
 

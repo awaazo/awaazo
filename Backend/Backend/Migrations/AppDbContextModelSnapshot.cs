@@ -143,6 +143,8 @@ namespace Backend.Migrations
                     b.HasIndex("PodcastId");
 
                     b.ToTable("Episodes");
+
+
                 });
 
             modelBuilder.Entity("Backend.Models.Files", b =>
@@ -171,6 +173,7 @@ namespace Backend.Migrations
                     b.HasKey("FileId");
 
                     b.ToTable("File");
+
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>

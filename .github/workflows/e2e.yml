@@ -2,20 +2,20 @@ name: E2E Cypress CI
 
 # Action Triggers
 on:
-    push:
-      branches: 
-        - "main"
-      paths:
-        - "Backend/**"
-        - "frontend/**"
-        - ".github/workflows/e2e.yml"
-    pull_request:
-      branches: 
-        - "main"
-      paths:
-        - "Backend/**"
-        - "frontend/**"
-        - ".github/workflows/e2e.yml"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "Backend/**"
+      - "frontend/**"
+      - ".github/workflows/e2e.yml"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "Backend/**"
+      - "frontend/**"
+      - ".github/workflows/e2e.yml"
 
 jobs:
   cypress-run:
@@ -23,11 +23,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       #Checkout Changes
       - name: Checkout
         uses: actions/checkout@v3
-
 
         # Add appsettings.Development.json + appsettings.json for backend
       - name: Add Config
@@ -60,13 +58,13 @@ jobs:
       # Start/Run the Database, Backend API & Frontend Website
       - name: Start Containers
         run: docker-compose -f "docker-compose.yml" up -d --build
-      
+
       # Install Node
       - name: Install node
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
-      
+
       # Install Frontend Deps
       - name: Install dependencies
         working-directory: frontend
@@ -74,9 +72,8 @@ jobs:
 
       - name: Run Cypress
         working-directory: frontend
-        run: npx cypress run
+        run: npx cypress run --headed
 
-        
       # # Run the E2E Testing
       # - name: Cypress Run
       #   uses: cypress-io/github-action@v6
@@ -95,6 +92,3 @@ jobs:
           name: cypress-videos
           path: frontend/cypress/videos
           if-no-files-found: ignore
-
-        
-      

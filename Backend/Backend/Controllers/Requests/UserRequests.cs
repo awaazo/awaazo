@@ -44,13 +44,10 @@ namespace Backend.Controllers.Requests
         [Required]
         public string Username {get;set;}
         
-        [Required]
         public string TwitterUrl {get;set;}
 
-        [Required]
         public string LinkedInUrl {get;set;}
 
-        [Required]
         public string GitHubUrl {get;set;}
     }
 
