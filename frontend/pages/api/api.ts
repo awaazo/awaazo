@@ -11,3 +11,8 @@ export const register = async (RegisterUser: any) => {
  export const login = async (LoginUser: any) => {
    return axios.post(`${URL}/auth/login`, LoginUser)
  }
+
+ export const editProfile = async (EditUser: any) => {
+    return axios.put(`${URL}/profile/edit`, EditUser)
+  }
+

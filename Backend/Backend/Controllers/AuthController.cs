@@ -10,11 +10,13 @@ using Backend.Infrastructure;
 using Backend.Services;
 using Google.Apis.Auth;
 using Backend.Services.Interfaces;
+using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("auth")]
+[Authorize]
 public class AuthController : ControllerBase
 {
     private static readonly TimeSpan TokenLifeTime = TimeSpan.FromDays(30);
@@ -28,36 +30,41 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request) {
         // Login 
         User? user = await _authService.LoginAsync(request);
         if(user is null)
-            return BadRequest("Invalid Credentials");
+            return BadRequest("Login failed. Invalid Email and/or Password.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
 
+        Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax  });
+
         // Return JWT Token with the User
-        return Ok(new { Token = token, User = user });
+        return Ok("Logged in.");
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
         
         // Register User if he does not already exist
         User? newUser = await _authService.RegisterAsync(request);
         if(newUser is null)
-            return BadRequest("User already exists");
+            return BadRequest("An Account with that Email already exists. Please Login or use a different Email address.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(newUser.Id,_configuration,TokenLifeTime);
         
+        Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite=SameSiteMode.Lax });
+
         // Return JWT Token with the User
-        return Ok(new {Token = token, User = newUser});
+        return Ok("Registered.");
     }
     
     [HttpGet("me")]
-    [Authorize]
     public async Task<IActionResult> Me()
     {
         // Identify User from JWT Token
@@ -65,17 +72,13 @@ public class AuthController : ControllerBase
 
         // Return UserId
         if (user is null) return BadRequest("User not found.");
-        else return Ok(new 
-        { 
-            Email=user.Email, 
-            Id = user.Id,
-            Username=user.Username,
-            Avatar = user.Avatar  
-        });
+
+        else return Ok(new UserMenuInfoResponse(user,HttpContext));
     }
 
 
     [HttpPost("googleSSO")]
+    [AllowAnonymous]
     public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
     {
         // Get the SSO User
@@ -90,5 +93,10 @@ public class AuthController : ControllerBase
         return Ok(new {Token = token, User = user});
     }
 
-
+    [HttpGet("logout")]
+    public ActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt-token");   
+        return Ok("Logged out.");
+    }
 }

@@ -6,7 +6,8 @@ import { FaPlay } from "react-icons/fa";
 
 const episodes = [
   {
-    id: 1,
+    podcastId: 1,
+    episodeId: 1,
     type: "podcast", // Add a 'type' field to specify that it's a podcast episode
     tags: ["News", "Product", "AI Generated"],
     title: "Episode 1: Build a Modern User Interface with Chakra UI", // Add 'Episode X:' to the title
@@ -16,20 +17,22 @@ const episodes = [
     created_at: "Wed Apr 06 2022",
   },
   {
-    id: 2,
+    podcastId: 2,
+    episodeId: 1,
     type: "podcast", // Add 'type' field for the second episode
     tags: ["Web Development", "Video", "AI Generated"],
-    title: "Episode 2: The Complete Guide to Ruby on Rails Encrypted Credentials", // Add 'Episode X:' to the title
+    title: "Episode 1: The Complete Guide to Ruby on Rails Encrypted Credentials", // Add 'Episode X:' to the title
     content: `In this episode, we dive deep into the complete guide to Ruby on Rails encrypted credentials. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
     userAvatar: "https://www.amacad.org/sites/default/files/person/headshots/oprah.jpg",
     username: "Oprah Winfrey",
     created_at: "Sun Apr 03 2022",
   },
   {
-    id: 3,
+    podcastId: 2,
+    episodeId: 2,
     type: "podcast", // Add 'type' field for the third episode
     tags: ["Web Development", "Audio", "AI Generated"],
-    title: "Episode 3: The Future of Web Development", // Add 'Episode X:' to the title
+    title: "Episode 2: The Future of Web Development", // Add 'Episode X:' to the title
     content: `In this episode, we discuss the future of web development. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
     userAvatar: "https://www.amacad.org/sites/default/files/person/headshots/oprah.jpg",
     username: "Oprah Winfrey",
@@ -37,7 +40,8 @@ const episodes = [
   },
 ];
 
-export default function MyEpisodes() {
+export default function MyEpisodes({selectedPodcastId}) {
+  let selectedEpisodes = episodes.filter(episode => episode.podcastId === selectedPodcastId);
   return (
     <>
       <h1
@@ -50,7 +54,7 @@ export default function MyEpisodes() {
         My Episodes
       </h1>
       <VStack spacing={8} w={{ base: "auto", md: "2xl" }}>
-        {episodes.map((episode, index) => (
+        {selectedEpisodes.map((episode, index) => (
           <Stack
             key={index}
             direction="column"

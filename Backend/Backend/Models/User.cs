@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using AutoMapper.Configuration.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models;
@@ -18,7 +19,11 @@ public class User : BaseEntity
         Password = string.Empty;
         Username = string.Empty;
         Avatar = string.Empty;
+        Bio = string.Empty;
         Interests = Array.Empty<string>();
+        TwitterUrl = string.Empty;
+        LinkedInUrl = string.Empty;
+        GitHubUrl = string.Empty;
     }
 
     /// <summary>
@@ -26,7 +31,7 @@ public class User : BaseEntity
     /// </summary>
     [Key]
     public Guid Id { get; set; }
-    
+
     /// <summary>
     /// User email.
     /// </summary>
@@ -45,11 +50,20 @@ public class User : BaseEntity
     /// <summary>
     /// URL for user's PFP
     /// </summary>
-    public string? Avatar { get; set; }
+    public string Avatar { get; set; }
+
+    public string Bio { get; set; }
 
     public string[] Interests { get; set; }
+
+    public string TwitterUrl { get; set; }
+
+    public string LinkedInUrl { get; set; }
+
+    public string GitHubUrl { get; set; }
+
     public DateTime DateOfBirth { get; set; }
-    
+
     [DefaultValue(GenderEnum.Other)]
     public GenderEnum Gender { get; set; }
 
@@ -78,4 +92,16 @@ public class User : BaseEntity
         Male, Female, Other, None
     }
 
+    public string GetGenderString()
+    {
+        return Gender switch
+        {
+            GenderEnum.Male => "Male",
+            GenderEnum.Female => "Female",
+            GenderEnum.Other => "Other",
+            GenderEnum.None => "None",
+            _ => "None",
+        };
+    }
+    
 }

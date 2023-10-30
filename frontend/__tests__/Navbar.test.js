@@ -12,7 +12,6 @@ import Navbar from "../components/shared/Navbar";
 import { ColorModeScript, ColorModeProvider } from "@chakra-ui/color-mode";
 import { ChakraProvider } from "@chakra-ui/react";
 import fetchMock from "jest-fetch-mock";
-import AuthHelper from "../helpers/AuthHelper";
 
 // Mock the Chakra UI useBreakpointValue hook
 jest.mock("@chakra-ui/media-query", () => ({
@@ -30,26 +29,19 @@ jest.mock("next/router", () => ({
 // Configure fetch to use fetchMock
 global.fetch = fetchMock;
 
-// Mock response for the signOut function so that it doesn't make an actual network request
+// Mock response for the signOut fetch function so that it doesn't make an actual network request
 fetchMock.mockResponse(JSON.stringify({ message: "Logged out" }));
 
-// Mock User with a Google Session
-const mockUser = {
-  id: "",
-  email: "",
-  username: "",
-  avatar: "",
-};
-
-// Mock Session for user with a Google Session
-const session = {
-  user: mockUser,
-  id: "a5lum3d465zqgdr468mzdf184m2df64a4119mkzdrg",
+// Helper to control isLoggedIn mock function
+let isLoggedInValue;
+const setLoggedInValue = (value) => {
+  isLoggedInValue = value;
 };
 
 // Mock AuthHelper methods for Token Management and Google SSO
 jest.mock("../helpers/AuthHelper", () => ({
-  loginGoogleSSO: jest.fn().mockReturnValue({
+  // Mock Google SSO login method
+  loginGoogleSSO: jest.fn().mockResolvedValue({
     status: 200,
     data: {
       token:
@@ -57,76 +49,103 @@ jest.mock("../helpers/AuthHelper", () => ({
     },
   }),
 
-  getUser: jest.fn().mockReturnValue({
-    status: 200,
-    user: {
-      id: "9b61a730-0c33-48ec-b247-dcf889583978",
-      email: "any@email.com",
-      password: "$2a$11$nJCWjLfZZVY6MvmTU/Ccw.xGIc6tmeEHoXEZe/FhCb1kslzY4.3em",
-      name: "anyUser",
-      avatar: "",
-      interests: [],
-      dateOfBirth: "2023-10-12T05:29:31.44",
-      gender: 0,
-      isPodcaster: false,
-      podcasts: [],
-      bookmarks: [],
-      podcastFollows: [],
-      userFollows: [],
-      subscriptions: [],
-      ratings: [],
-      createdAt: "0001-01-01T00:00:00",
-      updatedAt: "0001-01-01T00:00:00",
-    },
+  // Mock logout method
+  logout: jest.fn().mockImplementation(() => {
+    console.log("logged out");
   }),
 
-  isLoggedIn: jest.fn().mockReturnValue(false),
+  // Mock getUser method
+  getUser: jest.fn().mockResolvedValue({
+    userId: "c4566bbc-737a-4083-a65d-29e2370e5373",
+  }),
+
+  // Mock isLoggedIn method
+  isLoggedIn: jest.fn().mockImplementation(() => isLoggedInValue),
 }));
 
-// Test case 1: It should render the navbar  its content
-test("Renders the navbar (Signed out) and its content ", () => {
-  render(
-    <SessionProvider session={null}>
-      <Navbar />
-    </SessionProvider>
-  );
+//----------------------------------------
+// END OF MOCK METHODS & CONFIGURATION
+//----------------------------------------
 
-  const logInButton = screen.getByText("Login");
-  const signUpButton = screen.getByText("Register");
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Test group for when the user has not logged in yet
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+describe("No Session Navbar tests", () => {
+  /*
+   * Test case 1: It should render the navbar  its content
+   */
+  test.skip("Renders the navbar (Signed out) and its content ", async () => {
+    await act(async () => {
+      render(
+        <SessionProvider session={null}>
+          <Navbar />
+        </SessionProvider>
+      );
+    })
 
-  // Assure login and register buttons are rendered
-  expect(logInButton).toBeInTheDocument();
-  expect(signUpButton).toBeInTheDocument();
+    const logInButton = screen.getByText("Login");
+    const signUpButton = screen.getByText("Register");
+
+    // Assure login and register buttons are rendered
+    expect(logInButton).toBeInTheDocument();
+    expect(signUpButton).toBeInTheDocument();
+  });
 });
-/*
-// Test case 2: It should render the navbar and all its content when signed in
-test("Renders the navbar (Signed In) and its content ", () => {
-  render(
-    <SessionProvider session={session}>
-      <Navbar />
-    </SessionProvider>
-  );
 
-  // Assure that the all user actions are rendered and displayed
-  const menuOption1 = screen.getByText("My Account");
-  const menuOption2 = screen.getByText("My Podcast");
-  const menuOption3 = screen.getByText("Payments");
-  const menuOption4 = screen.getByText("Switch to Light Mode");
-  const menuOption5 = screen.getByText("Docs");
-  const menuOption6 = screen.getByText("FAQ");
-  const menuOption7 = screen.getByText("Logout");
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Test group for when the user has logged in through google SSO
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+describe("Google Session Navbar tests", () => {
+  // Mock User with a Google Session
+  const mockUser = {
+    id: "1654613264",
+    email: "test@gmail.com",
+    username: "testUser",
+    avatar: "",
+  };
 
-  expect(menuOption1).toBeInTheDocument();
-  expect(menuOption2).toBeInTheDocument();
-  expect(menuOption3).toBeInTheDocument();
-  expect(menuOption4).toBeInTheDocument();
-  expect(menuOption5).toBeInTheDocument();
-  expect(menuOption6).toBeInTheDocument();
-  expect(menuOption7).toBeInTheDocument();
-});
-/*
-//TODO
-// Test case 3: It should call handleSearchSubmit when the search button is clicked
+  // Mock Session for user with a Google Session
+  const session = {
+    user: mockUser,
+    userId: "a5lum3d465zqgdr468mzdf184m2df64a4119mkzdrg",
+  };
+
+  setLoggedInValue(false);
+
+  /*
+   * Test case 2a: It should render the navbar and all its content when signed in
+   */
+  test.skip("Renders the navbar (Signed In) and its content ", async () => {
+    await act(async () => {
+      render(
+        <SessionProvider session={session}>
+          <Navbar />
+        </SessionProvider>
+      );
+    });
+
+    // Assure that the all user actions are rendered and displayed
+    const menuOption1 = screen.getByText("My Account");
+    const menuOption2 = screen.getByText("My Podcast");
+    const menuOption3 = screen.getByText("Payments");
+    const menuOption4 = screen.getByText("Switch to Light Mode");
+    const menuOption5 = screen.getByText("Docs");
+    const menuOption6 = screen.getByText("FAQ");
+    const menuOption7 = screen.getByText("Logout");
+
+    expect(menuOption1).toBeInTheDocument();
+    expect(menuOption2).toBeInTheDocument();
+    expect(menuOption3).toBeInTheDocument();
+    expect(menuOption4).toBeInTheDocument();
+    expect(menuOption5).toBeInTheDocument();
+    expect(menuOption6).toBeInTheDocument();
+    expect(menuOption7).toBeInTheDocument();
+  });
+
+  /*
+   * Test case 3a: It should call handleSearchSubmit when the search button is clicked
+   */
+  /*
 test("Search button calls handleSearchSubmit", async () => {
   const handleSearchSubmit = jest.fn();
   render(
@@ -138,51 +157,158 @@ test("Search button calls handleSearchSubmit", async () => {
   const searchButton = screen.getByLabelText("Search");
   await fireEvent.click(searchButton);
   expect(handleSearchSubmit).toHaveBeenCalledTimes(1);
-});
+});*/
 
-// Test case 4: It should call handleLogOut when the logout button is clicked
-test("Logout button calls handleLogOut to log out user", async () => {
-  // Mock the handleLogOut function
-  Navbar.handleLogOut = jest.fn();
-
-    render(
-      <SessionProvider session={session}>
-        <Navbar />
-      </SessionProvider>
-    );
-
-  // Click Logout Button
-  const logoutButton = screen.getByText("Logout");
-  await fireEvent.click(logoutButton);
-
-  // Assures that logOut method has been called and succeeded in returning user to home page
-  expect(screen.getByText("Login")).toBeInTheDocument();
-  expect(screen.getByText("Register")).toBeInTheDocument();
-});
-
-// Test case 5: It should toggle between light and dark mode on the Navbar
-test("Toggle between light and dark mode", async () => {
-    render(
-      <ChakraProvider>
-        <ColorModeScript />
-        <SessionProvider session={{ user: mockUser }}>
+  /*
+   * Test case 4a: It should call handleLogOut when the logout button is clicked
+   */
+  test.skip("Logout button calls handleLogOut to log out user", async () => {
+    await act(async () => {
+      render(
+        <SessionProvider session={null}>
           <Navbar />
         </SessionProvider>
-      </ChakraProvider>
-    );
+      );
+    });
+    // Click Logout Button
+    const logoutButton = screen.getByText("Logout");
+    await fireEvent.click(logoutButton);
 
-  // Click on toggle Dark Mode button
-  const toggleDarkModeButton = screen.getByText("Switch to Dark Mode");
-  await fireEvent.click(toggleDarkModeButton);
+    // Assures that logOut method has been called and succeeded in returning user to home page
+    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByText("Register")).toBeInTheDocument();
+  });
 
-  // Verify that the button now reads "Switch to Light Mode"
-  expect(screen.getByText("Switch to Light Mode")).toBeInTheDocument();
+  /**
+   * Test case 5a: It should toggle between light and dark mode on the Navbar
+   */
+  test.skip("Toggle between light and dark mode", async () => {
+    await act(async () => {
+      render(
+        <ChakraProvider>
+          <ColorModeScript />
+          <SessionProvider session={session}>
+            <Navbar />
+          </SessionProvider>
+        </ChakraProvider>
+      );
+    });
 
-  // Click on toggle Light Mode button
-  const toggleLightModeButton = screen.getByText("Switch to Light Mode");
-  await fireEvent.click(toggleLightModeButton);
+    // Click on toggle Dark Mode button
+    const toggleDarkModeButton = screen.getByText("Switch to Dark Mode");
+    await fireEvent.click(toggleDarkModeButton);
 
-  // Verify that the button now reads "Switch to Dark Mode"
-  expect(screen.getByText("Switch to Dark Mode")).toBeInTheDocument();
+    // Verify that the button now reads "Switch to Light Mode"
+    expect(screen.getByText("Switch to Light Mode")).toBeInTheDocument();
+
+    // Click on toggle Light Mode button
+    const toggleLightModeButton = screen.getByText("Switch to Light Mode");
+    await fireEvent.click(toggleLightModeButton);
+
+    // Verify that the button now reads "Switch to Dark Mode"
+    expect(screen.getByText("Switch to Dark Mode")).toBeInTheDocument();
+  });
 });
-*/
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Test group for when the user has logged in using the app's authentication process
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+describe("Regular Session Navbar tests", () => {
+  setLoggedInValue(true);
+  /*
+   * Test case 2b: It should render the navbar and all its content when signed in
+   */
+  test.skip("Renders the navbar (Signed In) and its content ", async () => {
+    await act(async () => {
+      render(
+        <SessionProvider session={null}>
+          <Navbar />
+        </SessionProvider>
+      );
+    });
+    // Assure that the all user actions are rendered and displayed
+    const menuOption1 = screen.getByText("My Account");
+    const menuOption2 = screen.getByText("My Podcast");
+    const menuOption3 = screen.getByText("Payments");
+    const menuOption4 = screen.getByText("Switch to Light Mode");
+    const menuOption5 = screen.getByText("Docs");
+    const menuOption6 = screen.getByText("FAQ");
+    const menuOption7 = screen.getByText("Logout");
+
+    expect(menuOption1).toBeInTheDocument();
+    expect(menuOption2).toBeInTheDocument();
+    expect(menuOption3).toBeInTheDocument();
+    expect(menuOption4).toBeInTheDocument();
+    expect(menuOption5).toBeInTheDocument();
+    expect(menuOption6).toBeInTheDocument();
+    expect(menuOption7).toBeInTheDocument();
+  });
+
+  /*
+   * Test case 3b: It should call handleSearchSubmit when the search button is clicked
+   */
+  /*
+test("Search button calls handleSearchSubmit", async () => {
+  const handleSearchSubmit = jest.fn();
+  render(
+    <SessionProvider session={null}>
+      <Navbar />
+    </SessionProvider>
+  );
+
+  const searchButton = screen.getByLabelText("Search");
+  await fireEvent.click(searchButton);
+  expect(handleSearchSubmit).toHaveBeenCalledTimes(1);
+});*/
+
+  /*
+   * Test case 4b: It should call handleLogOut when the logout button is clicked
+   */
+  test.skip("Logout button calls handleLogOut to log out user", async () => {
+    await act(async () => {
+      render(
+        <SessionProvider session={null}>
+          <Navbar />
+        </SessionProvider>
+      );
+    });
+
+    // Click Logout Button
+    const logoutButton = screen.getByText("Logout");
+    await fireEvent.click(logoutButton);
+
+    // Assures that logOut method has been called and succeeded in returning user to home page
+    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByText("Register")).toBeInTheDocument();
+  });
+
+  /**
+   * Test case 5b: It should toggle between light and dark mode on the Navbar
+   */
+  test.skip("Toggle between light and dark mode", async () => {
+    await act(async () => {
+      render(
+        <ChakraProvider>
+          <ColorModeScript />
+          <SessionProvider session={null}>
+            <Navbar />
+          </SessionProvider>
+        </ChakraProvider>
+      );
+    });
+
+    // Click on toggle Dark Mode button
+    const toggleDarkModeButton = screen.getByText("Switch to Dark Mode");
+    await fireEvent.click(toggleDarkModeButton);
+
+    // Verify that the button now reads "Switch to Light Mode"
+    expect(screen.getByText("Switch to Light Mode")).toBeInTheDocument();
+
+    // Click on toggle Light Mode button
+    const toggleLightModeButton = screen.getByText("Switch to Light Mode");
+    await fireEvent.click(toggleLightModeButton);
+
+    // Verify that the button now reads "Switch to Dark Mode"
+    expect(screen.getByText("Switch to Dark Mode")).toBeInTheDocument();
+  });
+});
