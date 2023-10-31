@@ -2,7 +2,12 @@
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
+using NAudio.Wave;
+using System.ComponentModel;
+using System.Globalization;
 using System.Net.NetworkInformation;
 
 namespace Backend.Services
@@ -21,6 +26,26 @@ namespace Backend.Services
             _db = db;
 
         }
+
+        public double GetEpisodeDuration(string path)
+        {
+            try
+            {
+                Console.WriteLine(path);
+                using (var audioFileReader = new AudioFileReader(path))
+                {
+                    Console.WriteLine(audioFileReader.TotalTime);
+                    return audioFileReader.TotalTime.TotalSeconds;
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine("Error: " + ex.Message);
+                return TimeSpan.Zero.TotalSeconds;
+            }
+
+        } 
 
 
         public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,Podcast podcast,HttpContext httpContext)
@@ -43,8 +68,12 @@ namespace Backend.Services
             {
                 throw new Exception("Uploading file not Successfull"); 
             }
+
             episode.EpisodeName = createEpisodeRequest.EpisodeName!;
             episode.IsExplicit = createEpisodeRequest.IsExplicit!;
+            episode.ReleaseDate = DateTime.Now;
+            episode.Duration = GetEpisodeDuration(_fileService.GetPath(audioFile.Path!));
+            
 
             podcast.Episodes.Add(episode);
             await _db.SaveChangesAsync();
