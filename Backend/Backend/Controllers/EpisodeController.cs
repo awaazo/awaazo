@@ -44,7 +44,7 @@ namespace Backend.Controllers
                         try
                         {
                            await _episodeService.DeleteEpisode(episode, deleteEpisodeRequest);
-                           return Ok( new {message =  "Successfully deleted"});
+                           return Ok( "Successfully deleted");
                         }catch (Exception ex)
                         {
                             return BadRequest(ex.Message);
@@ -84,7 +84,7 @@ namespace Backend.Controllers
                             try
                             {
                                 Episode? episode = await _episodeService!.AddEpisode(createEpisodRequest,podcast,HttpContext);
-                                return Ok(episode);
+                                return Ok("Successfully Added the Episode");
 
                             }catch (Exception ex)
                             {
@@ -121,7 +121,7 @@ namespace Backend.Controllers
 
             if(episode != null)
             {
-                return Ok(episode);
+                return Ok("Sucsessfully Editted the Epsiode");
             }
                 return BadRequest("Bad Request");
             }catch(Exception ex)

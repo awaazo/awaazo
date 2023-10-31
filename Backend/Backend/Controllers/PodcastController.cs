@@ -66,17 +66,26 @@ namespace Backend.Controllers
         
         }
 
-        
+        [HttpGet("getMyPodcast")]
+        [Authorize]
+        public async Task<IActionResult> GetMyPodcast()
+        {
+            try
+            {
+                List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
+                return Ok(collection);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
 
+        
 
-       
-
-
-
-
-
-
+        }
         
     }
 
