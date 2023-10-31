@@ -27,7 +27,7 @@ namespace Backend.Services
         {
             Episode episode = new Episode();
 
-            if(!AllowedTypes.Contains(createEpisodeRequest.AudioFile!.ContentType))
+            if(createEpisodeRequest.AudioFile != null && !AllowedTypes.Contains(createEpisodeRequest.AudioFile!.ContentType))
             {
                 throw new InvalidDataException("Invalid Data Types");
  
