@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("Episode")]
+    [Route("episode")]
     public class EpisodeController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -29,7 +29,7 @@ namespace Backend.Controllers
 
 
         [Authorize]
-        [HttpDelete("Delete")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteEpisodeRequest deleteEpisodeRequest)
         {
             if (deleteEpisodeRequest != null)
@@ -66,7 +66,7 @@ namespace Backend.Controllers
 
 
         [Authorize]
-        [HttpPost("Add")]
+        [HttpPost("add")]
         public async Task<IActionResult> AddEpisode([FromForm] CreateEpisodeRequest createEpisodRequest)
         {
             if(createEpisodRequest.PodcastId != null)
@@ -111,7 +111,7 @@ namespace Backend.Controllers
         }
 
         [Authorize]
-        [HttpPut("Edit")]
+        [HttpPut("edit")]
         public async Task<IActionResult> EditEpisode([FromForm]EditEpisodeRequest editEpisodeRequest)
         {
 
