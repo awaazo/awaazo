@@ -4,22 +4,51 @@ using static System.IO.File;
 
 namespace Backend.Infrastructure;
 
-public static class FileStorageHelper{
+/// <summary>
+/// Handles File interactions to/from the server.
+/// </summary>
+public static class FileStorageHelper
+{
 
+    /// <summary>
+    /// Seperator key for the file name and file type from the filename stored in the db.
+    /// </summary>
     public const string FILE_SPLIT_KEY = "|/|\\|";
-    public const string BASE_DIR = "ServerFiles";
-    public const string AVATARS_DIR_NAME = "Avatars";
-    public const string PODCASTS_DIR_NAME = "Podcasts";
 
-    
+    /// <summary>
+    /// Base dir where all server files are stored.
+    /// </summary>
+    public const string BASE_DIR = "ServerFiles";
+
+    /// <summary>
+    /// Dir where all user avatars are stored.
+    /// </summary>
+    public const string AVATARS_DIR_NAME = "Avatars";
+
+    /// <summary>
+    /// Dir where all podcast covers and episodes are stored. 
+    /// </summary>
+    public const string PODCASTS_DIR_NAME = "Podcasts";
 
     #region User Profile
 
+    /// <summary>
+    /// Saves a user avatar and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="avatarFile"></param>
+    /// <returns></returns>
     public static string SaveUserAvatar(Guid userId, IFormFile avatarFile)
     {
         return SaveUserAvatar(userId.ToString(), avatarFile);
     }
 
+    /// <summary>
+    /// Saves a user avatar and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="avatarFile"></param>
+    /// <returns></returns>
     public static string SaveUserAvatar(string userId, IFormFile avatarFile)
     {
         // Filename stored on the server filesystem
@@ -46,6 +75,10 @@ public static class FileStorageHelper{
         return userAvatarName;
     }
 
+    /// <summary>
+    /// Removes a user avatar.
+    /// </summary>
+    /// <param name="userAvatarName"></param>
     public static void RemoveUserAvatar(string userAvatarName)
     {
         // Get the file path
@@ -59,6 +92,11 @@ public static class FileStorageHelper{
         }
     }
 
+    /// <summary>
+    /// Gets the path to a user avatar.
+    /// </summary>
+    /// <param name="userAvatarName"></param>
+    /// <returns></returns>
     public static string GetUserAvatarPath(string userAvatarName)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, AVATARS_DIR_NAME, userAvatarName.Split(FILE_SPLIT_KEY)[0]);
@@ -68,11 +106,23 @@ public static class FileStorageHelper{
 
     #region Podcast
 
+    /// <summary>
+    /// Saves a podcast cover art and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="coverArtFile"></param>
+    /// <returns></returns>
     public static string SavePodcastCoverArt(Guid podcastId, IFormFile coverArtFile)
     {
         return SavePodcastCoverArt(podcastId.ToString(), coverArtFile);
     }
 
+    /// <summary>
+    /// Saves a podcast cover art and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="coverArtFile"></param>
+    /// <returns></returns>
     public static string SavePodcastCoverArt(string podcastId, IFormFile coverArtFile)
     {
         // Filename stored on the server filesystem
@@ -106,6 +156,10 @@ public static class FileStorageHelper{
         return coverArtName;
     }
 
+    /// <summary>
+    /// Removes a podcast cover art.
+    /// </summary>
+    /// <param name="coverArtName"></param>
     public static void RemovePodcastCoverArt(string coverArtName)
     {
         // Get the file path
@@ -119,16 +173,35 @@ public static class FileStorageHelper{
         }
     }
     
+    /// <summary>
+    /// Gets the path to a podcast cover art.
+    /// </summary>
+    /// <param name="coverArtName"></param>
+    /// <returns></returns>
     public static string GetPodcastCoverArtPath(string coverArtName)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0],coverArtName.Split(FILE_SPLIT_KEY)[0]);
     }
 
+    /// <summary>
+    /// Saves a podcast episode audio and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <param name="audioFile"></param>
+    /// <returns></returns>
     public static string SavePodcastEpisodeAudio(Guid episodeId, Guid podcastId, IFormFile audioFile)
     {
         return SavePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString(), audioFile);
     }
 
+    /// <summary>
+    /// Saves a podcast episode audio and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <param name="audioFile"></param>
+    /// <returns></returns>
     public static string SavePodcastEpisodeAudio(string episodeId, string podcastId, IFormFile audioFile)
     {
         // Filename stored on the server filesystem
@@ -156,11 +229,22 @@ public static class FileStorageHelper{
         return audioName;
     }
 
+
+    /// <summary>
+    /// Removes a podcast episode audio.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
     public static void RemovePodcastEpisodeAudio(Guid episodeId, Guid podcastId)
     {
         RemovePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString());
     }
 
+    /// <summary>
+    /// Removes a podcast episode audio.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
     public static void RemovePodcastEpisodeAudio(string episodeId, string podcastId)
     {
         // Get the file path
@@ -174,11 +258,24 @@ public static class FileStorageHelper{
         }
     }
 
+
+    /// <summary>
+    /// Gets the path to a podcast episode audio.
+    /// </summary>
+    /// <param name="audioName"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
     public static string GetPodcastEpisodeAudioPath(string audioName, Guid podcastId)
     {
         return GetPodcastEpisodeAudioPath(audioName, podcastId.ToString());
     }
 
+    /// <summary>
+    /// Gets the path to a podcast episode audio.
+    /// </summary>
+    /// <param name="audioName"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
     public static string GetPodcastEpisodeAudioPath(string audioName, string podcastId)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, audioName.Split(FILE_SPLIT_KEY)[0]);
@@ -186,6 +283,11 @@ public static class FileStorageHelper{
 
     #endregion
 
+    /// <summary>
+    /// Gets the file type from the filename stored in the database.
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns></returns>
     public static string GetFileType(string filename) 
     {
         return filename.Split(FILE_SPLIT_KEY)[1];
