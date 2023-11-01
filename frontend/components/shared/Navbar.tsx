@@ -135,7 +135,7 @@ export default function Navbar() {
         border="3px solid rgba(255, 255, 255, 0.05)"
       >
         <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
-          <Link href="/Main">
+          <Link href="/">
             <Box maxWidth={"1.5em"} ml={-2}>
               <Image src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src} alt="logo" />
             </Box>
