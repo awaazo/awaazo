@@ -31,25 +31,16 @@ namespace Backend.Controllers
         {
             try
             {
+                GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
+                if (podcast == null) return BadRequest("Bad Request");
 
-            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-                if (podcast != null)
-                {
-
-                    return Ok(podcast);
-
-                }
-                else { return BadRequest("Bad Request"); }
-
+                return Ok(podcast);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(e.Message);
             }
-            
-
            
-
         }
         [HttpGet("getById")]
         [Authorize]

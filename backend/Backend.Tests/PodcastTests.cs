@@ -1,3 +1,4 @@
+using Azure;
 using Backend.Controllers;
 using Backend.Controllers.Requests;
 using Backend.Models;
@@ -14,6 +15,7 @@ using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Security.Claims;
+using Xunit;
 using Assert = Xunit.Assert;
 using InvalidDataException = System.IO.InvalidDataException;
 
@@ -44,11 +46,11 @@ public class PodcastTests
         _authServiceMock = new();
         _podcastService = new(_dbContextMock.Object, _fileServiceMock.Object, _authServiceMock.Object);
         _podcastController = new(_podcastService, _dbContextMock.Object, _fileServiceMock.Object);
+        MockBasicUtilities(out var podcast, out var user);
     }
 
     [TestInitialize]
     public void Initialize()
-
     {
         // Re-initilize every test
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -66,113 +68,126 @@ public class PodcastTests
 
         // Set the Key to null
         config["Jwt:Key"] = null;
-
+        MockBasicUtilities(out var podcast, out var user);
     }
 
 
     #region Test Service
 
     [Fact]
-    public void Podcast_CreatePodcast_NullRequest_ReturnsNull()
+    public void Podcast_CreatePodcast_NullRequest_ThrowsException()
     {
-        // Arrange - No Arrange
+        // Arrange
+        GetPodcastRequest? response = new GetPodcastRequest();
 
         // Act
-        var response = _podcastService.CreatePodcast(null, _httpContextMock.Object);
-
+        try
+        {
+            response = _podcastService.CreatePodcast(null, _httpContextMock.Object).Result;
+        }
         // Assert
-        Assert.Null(response);
+        catch (Exception e)
+        {
+            Assert.Contains("Podcast request was missing", e.InnerException.Message);
+            return;
+        }
+        
+        Assert.Fail("Serive did not throw an error");
     }
 
 
 
     [Fact]
-    public void Podcast_CreatePodcast_NullName_ThrowsException()
+    public void Podcast_CreatePodcast_NullName_PodcastCreated()
     {
         // Arrange
         var request = CreateStandardPodcastRequest();
         request.Name = null;
+        GetPodcastRequest? response = null;
 
         // Act
         try
         {
-            var response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
+            response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Assert.Contains("The following parameter was missing: Name", e.InnerException!.Message);
-            return;
+            Assert.Fail("Service threw an error");
         }
 
         // Assert
-        Assert.Fail("Service did not throw an error");
+        Assert.NotNull(response);
+        Assert.IsType<GetPodcastRequest>(response);
     }
 
 
     [Fact]
-    public void Podcast_CreatePodcast_NullTags_ThrowsException()
+    public void Podcast_CreatePodcast_NullTags_PodcastCreated()
     {
         // Arrange
         var request = CreateStandardPodcastRequest();
         request.Tags = null;
+        GetPodcastRequest? response = null;
 
         // Act
         try
         {
-            var response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
+            response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Assert.Contains("The following parameter was missing: Tags", e.InnerException!.Message);
-            return;
+            Assert.Fail("Service threw an error");
         }
 
         // Assert
-        Assert.Fail("Service did not throw an error");
+        Assert.NotNull(response);
+        Assert.IsType<GetPodcastRequest>(response);
     }
 
     [Fact]
-    public void Podcast_CreatePodcast_NullDescription_ThrowsException()
+    public void Podcast_CreatePodcast_NullDescription_PodcastCreated()
     {
         // Arrange
         var request = CreateStandardPodcastRequest();
         request.Description = null;
+        GetPodcastRequest? response = null;
 
         // Act
         try
         {
-            var response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
+            response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Assert.Contains("The following parameter was missing: Description", e.InnerException!.Message);
-            return;
+            Assert.Fail("Service threw an error");
         }
 
         // Assert
-        Assert.Fail("Service did not throw an error");
+        Assert.NotNull(response);
+        Assert.IsType<GetPodcastRequest>(response);
     }
 
     [Fact]
-    public void Podcast_CreatePodcast_NullCoverImage_ThrowsException()
+    public void Podcast_CreatePodcast_NullCoverImage_PodcastCreated()
     {
         // Arrange
         var request = CreateStandardPodcastRequest();
         request.coverImage = null;
+        GetPodcastRequest? response = null;
 
         // Act
         try
         {
-            var response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
+            response = _podcastService.CreatePodcast(request, _httpContextMock.Object).Result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Assert.Contains("The following parameter was missing: CoverImage", e.InnerException!.Message);
-            return;
+            Assert.Fail("Service threw an error");
         }
 
         // Assert
-        Assert.Fail("Service did not throw an error");
+        Assert.NotNull(response);
+        Assert.IsType<GetPodcastRequest>(response);
     }
 
 
@@ -192,7 +207,7 @@ public class PodcastTests
         }
         catch (Exception e)
         {
-            Assert.Contains("Invalid Data Types", e.InnerException!.Message);
+            Assert.Contains("Invalid Cover Image data Type: ", e.InnerException!.Message);
             return;
         }
 
@@ -204,7 +219,6 @@ public class PodcastTests
     public void Podcast_CreatePodcast_ValidRequest_ReturnsGetPodcastRequest()
     {
         // Arrange
-        MockBasicUtilities(out var podcast, out var user);
         var request = CreateStandardPodcastRequest();
         object response = null;
 
@@ -229,8 +243,7 @@ public class PodcastTests
     [Fact]
     public void Podcast_GetPodcast_NullId_ReturnsNull()
     {
-        // Arrange
-        MockBasicUtilities(out var podcast, out var user);
+        // Arrange - No Arrange
 
         // Act
         var response = _podcastService.GetPodcast(null).Result;
@@ -242,7 +255,7 @@ public class PodcastTests
     [Fact]
     public void Podcast_GetPodcast_CorrectId_ReturnsPodcast()
     {
-        // Arrange
+        // Arrange - No Arrange
         MockBasicUtilities(out var podcast, out var user);
 
         // Act
@@ -274,7 +287,6 @@ public class PodcastTests
     public void Podcast_CreatePodcast_GoodRequest_CreatePodcast()
     {
         // Arrange
-        MockBasicUtilities(out var podcast, out var user);
         var createPodcastRequestMock = CreateStandardPodcastRequest();
 
         // Act
