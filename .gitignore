@@ -290,3 +290,4 @@ backend/.env
 *appsettings.json
 *appsettings.Development.json
 *backend/backend/serverfiles
+desktop.ini
