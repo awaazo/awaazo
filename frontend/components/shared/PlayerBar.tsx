@@ -64,6 +64,8 @@ function PlayerBar(props) {
       bg={useColorModeValue('rgba(255, 255, 255, 0.2)', 'rgba(0, 0, 0, 0.2)')}
       shadow="md"
       style={{ backdropFilter: 'blur(50px)' }}
+      border="3px solid rgba(255, 255, 255, 0.05)"
+      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
     >
       <Flex justifyContent="space-between" alignItems="center">
         {/* Episode Info */}
