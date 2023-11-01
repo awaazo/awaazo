@@ -77,7 +77,7 @@ return (
           <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
             Upload Episode
           </Heading>
-          <Text mb={"1em"} >Select Episode</Text>
+          <Text mb={"1em"} >Choose a Podcast</Text>
         </VStack>
       </Center>
 
@@ -105,6 +105,7 @@ return (
                 borderRadius="2em"
                 objectFit="cover"
                 boxShadow="lg"
+                outline="2px solid #FFFFFF80"
               />
               <Text mt={2}>{podcast.name}</Text>
             </Flex>
@@ -153,10 +154,10 @@ return (
               pr={5} // Padding for better visual spacing
               pt={2} // Padding for better visual spacing
               pb={2} // Padding for better visual spacing
+              mb={5} // Margin for better visual spacing
               borderRadius="5em" // Rounded corners
               outline={colorMode === 'light' ? '1px solid #000000' : '1px solid #FFFFFF'} // Black or white border
               fontFamily={'Avenir Next'} 
-
             >
               {`${selectedPodcast.name}`}
             </Text>
@@ -165,7 +166,6 @@ return (
 
           {/* Episode Name Input */}
           <FormControl>
-            <FormLabel>Episode Name</FormLabel>
             <Input
               value={episodeName}
               onChange={(e) => setEpisodeName(e.target.value)}
@@ -176,7 +176,6 @@ return (
 
           {/* Description Textarea */}
           <FormControl>
-            <FormLabel>Description</FormLabel>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -186,7 +185,6 @@ return (
 
           {/* Genre Selection */}
           <FormControl>
-            <FormLabel>Podcast Genre</FormLabel>
             <Select 
               placeholder="Select genre" 
               value={selectedGenre} 
