@@ -132,14 +132,7 @@ public static class FileStorageHelper
         string coverArtName = string.Format("{0}{1}{2}", coverArtFileName, FILE_SPLIT_KEY, coverArtFile.ContentType);
 
         // Get the dir path
-        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME);
-
-        // Make sure that the dir exists, otherwise create it
-        if(!Directory.Exists(dirPath))
-            CreateDirectory(dirPath);
-
-        // Get the dir path for that specific podcast
-        dirPath = Combine(dirPath, podcastId);
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME,podcastId);
 
         // Make sure that the dir exists, otherwise create it
         if(!Directory.Exists(dirPath))
@@ -211,8 +204,7 @@ public static class FileStorageHelper
         string audioName = string.Format("{0}{1}{2}", audioFileName, FILE_SPLIT_KEY, audioFile.ContentType);
 
         // Get the dir path
-        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME);
-        dirPath = Combine(dirPath, podcastId);
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME,podcastId);
 
         // Make sure that the dir exists, otherwise create it
         if(!Directory.Exists(dirPath))
