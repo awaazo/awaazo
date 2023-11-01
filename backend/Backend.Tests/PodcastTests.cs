@@ -77,13 +77,12 @@ public class PodcastTests
     [Fact]
     public void Podcast_CreatePodcast_NullRequest_ThrowsException()
     {
-        // Arrange
-        GetPodcastRequest? response = new GetPodcastRequest();
+        // Arrange - No arrange
 
         // Act
         try
         {
-            response = _podcastService.CreatePodcast(null, _httpContextMock.Object).Result;
+            var response = _podcastService.CreatePodcast(null, _httpContextMock.Object).Result;
         }
         // Assert
         catch (Exception e)
