@@ -17,6 +17,7 @@ namespace Backend.Controllers
         private readonly IPodcastService _podcastService;
         private readonly IFileService _fileService;
         private readonly AppDbContext _db;
+      
         public PodcastController(IPodcastService podcastService,AppDbContext db,IFileService fileService)
         {
             _podcastService = podcastService;
@@ -66,17 +67,33 @@ namespace Backend.Controllers
         
         }
 
-        
+        [HttpGet("getMyPodcast")]
+        [Authorize]
+        public async Task<IActionResult> GetMyPodcast()
+        {
+            try
+            {
+                List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
+                return Ok(collection);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
 
-
-       
-
-
-
+        //[HttpDelete("delete")]
+        //public async Task<IActionResult> DeletePodcast(string id)
+        //{
 
 
 
-        
+        //}
+    
     }
+        
+    
+}
 
