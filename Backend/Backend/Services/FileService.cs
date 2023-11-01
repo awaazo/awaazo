@@ -88,7 +88,7 @@ namespace Backend.Services
 
 
             }
-            throw new Exception("File Not FOUND");
+            throw new Exception("File not found");
         }
         public async Task<Files?> UploadFile(IFormFile file)
         {

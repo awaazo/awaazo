@@ -97,42 +97,34 @@ namespace Backend.Services
         public async Task<List<GetPodcastResponse>> GetMyPodcast(HttpContext httpContext)
         {
            User? user = await  _authService.IdentifyUserAsync(httpContext);
-            if(user != null)
+            if(user == null)
             {
-                List<Podcast> podcasts = await _db.Podcasts!.Include(u => u.Episodes).Where(u => u.PodcasterId == user.Id).ToListAsync();
- 
-                List<GetPodcastResponse> response = new List<GetPodcastResponse>();
-                foreach(var podcast in podcasts)
+                throw new Exception("User not Found");
+
+            }
+            List<Podcast> podcasts = await _db.Podcasts!.Include(u => u.Episodes).Where(u => u.PodcasterId == user.Id).ToListAsync();
+
+            List<GetPodcastResponse> response = new List<GetPodcastResponse>();
+            foreach (var podcast in podcasts)
+            {
+                response.Add(new GetPodcastResponse()
                 {
-                    response.Add(new GetPodcastResponse()
-                    {
-                        Id = podcast.Id,
-                        Name = podcast.Name,
-                        Description = podcast.Description,
-                        CoverId = podcast.CoverId,
-                        Tags = podcast.Tags,
-                        IsExplicit = podcast.IsExplicit,
-                        Type = podcast.Type,
-                        AverageRating = podcast.AverageRating,
-                        TotalRatings = podcast.TotalRatings,
-                        NoOfEpisode = podcast.Episodes.Count,
+                    Id = podcast.Id,
+                    Name = podcast.Name,
+                    Description = podcast.Description,
+                    CoverId = podcast.CoverId,
+                    Tags = podcast.Tags,
+                    IsExplicit = podcast.IsExplicit,
+                    Type = podcast.Type,
+                    AverageRating = podcast.AverageRating,
+                    TotalRatings = podcast.TotalRatings,
+                    NoOfEpisode = podcast.Episodes.Count,
 
-                    });
-
-                }
-
-                return response;
-                
-      
-
-
-            }
-            else
-            {
-                throw new Exception("Not found");
+                });
 
             }
 
+            return response;
         }
 
 

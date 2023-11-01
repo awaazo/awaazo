@@ -84,7 +84,12 @@ namespace Backend.Controllers
                             try
                             {
                                 Episode? episode = await _episodeService!.AddEpisode(createEpisodRequest,podcast,HttpContext);
+                                if(episode != null)
+                                {
                                 return Ok("Successfully Added the Episode");
+
+                                }
+                                else { return BadRequest("Bad Request"); }
 
                             }catch (Exception ex)
                             {

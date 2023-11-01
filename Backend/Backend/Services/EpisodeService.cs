@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using NAudio.Wave;
 using System;
@@ -32,7 +33,6 @@ namespace Backend.Services
         {
             try
             {
-                Console.WriteLine(path);
                 using (var audioFileReader = new AudioFileReader(path))
                 {
                     Console.WriteLine(audioFileReader.TotalTime);
@@ -72,7 +72,7 @@ namespace Backend.Services
 
             episode.EpisodeName = createEpisodeRequest.EpisodeName!;
             episode.IsExplicit = createEpisodeRequest.IsExplicit!;
-            episode.ReleaseDate = DateTime.Now;
+            episode.ReleaseDate = DateTime.UtcNow;
             episode.Duration = GetEpisodeDuration(_fileService.GetPath(audioFile.Path!));
             
 
@@ -90,16 +90,18 @@ namespace Backend.Services
 
             if (file != null)
             {
-               var deleted = _fileService.DeleteFile(file.Path!);
-               if(deleted == true)
-                {
+
                 _db.Remove(file);
+                _db.Remove(episode);
+
+                if (_fileService.DeleteFile(file.Path!) == true)
+                {
+                    await _db.SaveChangesAsync();
+                    return true;
+
 
                 }
-               else { throw new Exception("Failed to Delete File"); }
-                _db.Remove(episode);
-                await _db.SaveChangesAsync();
-                return true;
+                throw new Exception("Failed to Delete");
             }
             else
             {
@@ -133,6 +135,7 @@ namespace Backend.Services
                         {
                             episode.AudioFile!.Name = editEpisodeRequest.AudioFile.FileName;
                             episode.AudioFile!.MimeType = editEpisodeRequest.AudioFile.ContentType;
+                            episode.Duration = GetEpisodeDuration(episode.AudioFile.Path!);
                             
                            
                         }

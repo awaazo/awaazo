@@ -74,7 +74,12 @@ namespace Backend.Controllers
             try
             {
                 List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
+                if(collection != null)
+                {
                 return Ok(collection);
+
+                }
+                else { return BadRequest("Bad Request"); }
             }
             catch (Exception ex)
             {
@@ -84,14 +89,7 @@ namespace Backend.Controllers
 
         }
 
-        //[HttpDelete("delete")]
-        //public async Task<IActionResult> DeletePodcast(string id)
-        //{
-
-
-
-        //}
-    
+        
     }
         
     
