@@ -93,38 +93,49 @@ function PlayerBar(props) {
           <IconButton aria-label="Fast Forward" icon={<FaForward />} variant="ghost" size="sm" onClick={() => setPosition((prev) => Math.min(prev + 10, duration))} />
         </Flex>
 
-        {/* Slider */}
-        <Flex width="full" mx={4} alignItems="center">
-          <Text mr={2}>{currentTime}</Text>
-          <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => setPosition(val)}>
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
-          <Text ml={2}>{timeLeft}</Text>
-        </Flex>
+ {/* Slider - Hidden in mobile */}
+        {!isMobile && (
+          <Flex width="50%" mx={4} alignItems="center">
+            <Text mr={2}>{currentTime}</Text>
+            <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => setPosition(val)}>
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+            <Text ml={2}>{timeLeft}</Text>
+          </Flex>
+        )}
 
-        {/* Volume Control */}
-        <Flex alignItems="center" ml={4}>
-          <IconButton aria-label="Volume Down" icon={<FaVolumeDown />} variant="ghost" size="sm" onClick={() => setVolume(Math.max(volume - 10, 0))} />
-          <Slider aria-label="Volume" value={volume} onChange={setVolume} mx={2}>
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
-          <IconButton aria-label="Volume Up" icon={<FaVolumeUp />} variant="ghost" size="sm" onClick={() => setVolume(Math.min(volume + 10, 100))} />
-        </Flex>
+        {/* Like and Comment - Hidden in mobile */}
+        {!isMobile && (
+          <Flex alignItems="center">
+            <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" size="sm" color={isLiked ? 'red.500' : likedColor} onClick={toggleLike} />
+            <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.isCommented ? 'blue.500' : commentedColor} onClick={() => console.log('Navigating to comments...')} />
+          </Flex>
+        )}
+        
+        {/* Volume Control - Hidden in mobile */}
+        {!isMobile && (
+          <Flex alignItems="center" ml={4} width={"10%"}>
+            <IconButton aria-label="Volume Down" icon={<FaVolumeDown />} variant="ghost" size="sm" onClick={() => setVolume(Math.max(volume - 10, 0))} />
+            <Slider aria-label="Volume" value={volume} onChange={setVolume} mx={2}>
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+            <IconButton aria-label="Volume Up" icon={<FaVolumeUp />} variant="ghost" size="sm" onClick={() => setVolume(Math.min(volume + 10, 100))} />
+          </Flex>
+        )}
 
-        {/* Like and Comment */}
-        <Flex alignItems="center">
-          <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" size="sm" color={isLiked ? 'red.500' : likedColor} onClick={toggleLike} />
-          <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.isCommented ? 'blue.500' : commentedColor} onClick={() => console.log('Navigating to comments...')} />
-        </Flex>
       </Flex>
     </Box>
   );
 }
 
 export default PlayerBar;
+
+
+
+
