@@ -49,24 +49,6 @@ namespace Backend.Controllers.Requests
     }
 
 
-    [BindProperties]
-    public class GetEpisodeResponse {
-
-        public Guid? Id { get; set; }
-
-        public string? EpisodeName { get; set; }
-        public Guid? AudioFileId { get; set; }
-        public string? Thumbnail { get; set; }
-
-        public double? Duration { get; set; }
-
-        public DateTime? ReleaseDate { get; set; }
-
-        public bool? IsExplicit { get; set; } = false;
-
-        public ulong? PlayCount { get; set; }
-
-    }
-
+   
 
 }
