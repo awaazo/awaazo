@@ -50,26 +50,14 @@ namespace Backend.Services
         }
 
 
-        public bool Delete(string path)
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-                return true;
+        
 
-
-            }
-            return false;
-
-        }
-
-
-        public async Task<bool?> EditFile(Files f1 ,IFormFile file)
+        public bool? EditFile(Files f1 ,IFormFile file)
         {
             
             if(f1 != null)
             {
-                bool? delete = await DeleteFile(f1.FileId.ToString()!);
+                bool? delete =  DeleteFile(f1.Path!);
                 if(delete == true)
                 {
                     string dirName = "DEFAULT";
@@ -77,8 +65,7 @@ namespace Backend.Services
                     string filePath = Path.Combine(dirPath, f1.FileId.ToString()! + "." + file.ContentType.Split("/")[1]);
                     using FileStream fs = new(filePath, FileMode.Create);
                     file.CopyTo(fs);
-                    f1.Name = file.FileName;
-                    f1.MimeType = file.ContentType;
+                    
                     return true;
 
                 }
@@ -90,30 +77,18 @@ namespace Backend.Services
 
         }
        
-        public async Task<bool?> DeleteFile(string id)
+        public bool? DeleteFile(string path)
         {
-            Guid? guid = Guid.Parse(id);
-
-
-            Files? file = await  _db.File!.FirstOrDefaultAsync(u => u.FileId == guid);
-            if (file != null)
+            var fullPath = GetPath(path);
+            if (File.Exists(fullPath))
             {
-                if(Delete(GetPath(file.Path!)))
-                {
 
-                    return true;
-                }
-                else
-                {
-                    throw new Exception("Error Deleteing the file");
-                }
-            }
-            else
-            {
-            throw new Exception($"Could not Find the file {id}");
+                File.Delete(fullPath);
+                return true;
+
 
             }
-
+            throw new Exception("File Not FOUND");
         }
         public async Task<Files?> UploadFile(IFormFile file)
         {

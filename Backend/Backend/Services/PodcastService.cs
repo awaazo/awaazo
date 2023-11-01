@@ -86,6 +86,7 @@ namespace Backend.Services
             }
             else
             {
+
                 var podcastId = Guid.Parse(id);
                 return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
         
