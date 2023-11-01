@@ -29,6 +29,8 @@ services:
       - sql:sql_server
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - "//c/backend_server/ServerFiles:/app/ServerFiles"
     depends_on:
       - sql 
     restart: on-failure:5
