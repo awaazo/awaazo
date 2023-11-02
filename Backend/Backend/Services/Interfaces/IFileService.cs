@@ -10,6 +10,6 @@ namespace Backend.Services.Interfaces
         public string GetPath(string id);
         public bool? DeleteFile(string id);
     
-        public bool? EditFile(Files file1,IFormFile file);
+        public bool EditFile(Files file1,IFormFile file);
     }
 }

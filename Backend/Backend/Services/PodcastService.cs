@@ -34,16 +34,21 @@ namespace Backend.Services
             }
             User? user = await _authService.IdentifyUserAsync(httpContext);
             if (user == null)
-                return null;
+                throw new Exception("User not found");
             
             Podcast? podcast = new Podcast();
             podcast.PodcasterId = user.Id;
-            if(createPodcastRequest.coverImage != null)
+
+            if(createPodcastRequest.Name == null)
             {
-                
+                throw new Exception("Name is a required field");
+            }
+
+            if(createPodcastRequest.coverImage != null)
+            {  
                 Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
                 if(coverImage == null) return null;
-                else { podcast.CoverId = coverImage.FileId; }
+                podcast.CoverId = coverImage.FileId;
             }
             if (createPodcastRequest.Tags != null)
             {
@@ -56,9 +61,6 @@ namespace Backend.Services
             }
             podcast.Name = createPodcastRequest.Name!;
             user.IsPodcaster = true;
-
-            
-
 
             await _db.Podcasts!.AddAsync(podcast);
             await _db.SaveChangesAsync();
@@ -84,13 +86,9 @@ namespace Backend.Services
             {
                 return null;
             }
-            else
-            {
-
-                var podcastId = Guid.Parse(id);
-                return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
+            var podcastId = Guid.Parse(id);
+            return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
         
-            }
         }
 
 

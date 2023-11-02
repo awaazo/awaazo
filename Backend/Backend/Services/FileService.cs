@@ -52,7 +52,7 @@ namespace Backend.Services
 
         
 
-        public bool? EditFile(Files f1 ,IFormFile file)
+        public bool EditFile(Files f1 ,IFormFile file)
         {
             
             if(f1 != null)
@@ -65,9 +65,7 @@ namespace Backend.Services
                     string filePath = Path.Combine(dirPath, f1.FileId.ToString()! + "." + file.ContentType.Split("/")[1]);
                     using FileStream fs = new(filePath, FileMode.Create);
                     file.CopyTo(fs);
-                    
                     return true;
-
                 }
                 return false;
 
@@ -143,5 +141,8 @@ namespace Backend.Services
 
         }
 
+       
+
+       
     }
 }
