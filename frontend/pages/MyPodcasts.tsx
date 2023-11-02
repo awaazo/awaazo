@@ -1,5 +1,4 @@
-// components/PodcastList.js
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   Box,
@@ -13,6 +12,13 @@ import {
   useColorMode,
   useBreakpointValue,
   Text,
+  Collapse,
+  SimpleGrid,
+  VStack,
+  Image,
+  HStack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
@@ -61,65 +67,157 @@ const podcasts = [
   },
 ];
 
-const MyPodcasts = ({}) => {
-  const { colorMode, toggleColorMode } = useColorMode();
-  const isMobile = useBreakpointValue({ base: true, md: false });
+const MyPodcasts = () => {
+  const { colorMode } = useColorMode();
+  const [selectedPodcastId, setSelectedPodcastId] = useState(null);
+
+  const togglePodcastDetail = (id) => {
+    if (selectedPodcastId === id) {
+      setSelectedPodcastId(null);
+    } else {
+      setSelectedPodcastId(id);
+    }
+  };
 
   return (
     <>
-      {/* Navbar */}
       <Navbar />
-      {/* Main Content */}
-      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
-        <Flex
-          align="center"
-          justify="space-between"
-          p={4}
-          borderBottom="1px"
-          borderColor="gray.200"
-        >
-          <Text fontSize="30px" fontWeight="bold">
+      <Box px={["1em", "2em", "4em"]} pt={6}>
+        <Flex align="center" pb={4} flexWrap={"wrap"}>
+          <Text fontSize="30px" pb="1em" fontFamily={"Avenir Next"}>
             My Podcasts
           </Text>
-
-          <Flex align="center" justify="flex-end" flex="1">
-            <Link href="/Main">
-              <Flex align="center">
-                <Tooltip label="Help">
-                  <IconButton
-                    aria-label="Help"
-                    icon={<QuestionOutlineIcon />}
-                    variant="ghost"
-                    size="lg"
-                    mr={1}
-                    rounded={"full"}
-                    opacity={0.7}
-                    color={colorMode === "dark" ? "white" : "black"}
-                  />
-                </Tooltip>
-              </Flex>
-            </Link>
-            <Link href="/Create">
-              <Flex align="center">
-                <Tooltip label="Create">
-                  <IconButton
-                    aria-label="Create"
-                    icon={<AddIcon />}
-                    variant="ghost"
-                    size="lg"
-                    rounded={"full"}
-                    opacity={0.7}
-                    color={colorMode === "dark" ? "white" : "black"}
-                  />
-                </Tooltip>
-              </Flex>
-            </Link>
-          </Flex>
         </Flex>
-      </Box>
-      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
+
+        <Flex justify={{ base: "center", md: "flex-start" }} pb={4}>
+          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={"3em"}>
+            {podcasts.map((podcast) => (
+              <VStack
+                key={podcast.id}
+                spacing={2}
+                onClick={() => togglePodcastDetail(podcast.id)}
+                align="center"
+              >
+                <Box position="relative" boxSize="150px">
+                  <Image
+                    borderRadius="3em"
+                    boxSize="150px"
+                    objectFit="cover"
+                    src={podcast.cover}
+                    alt={podcast.name}
+                    style={{
+                      boxShadow:
+                        selectedPodcastId === podcast.id
+                          ? "0 0 10px #9ecaed"
+                          : "",
+                      outline:
+                        selectedPodcastId === podcast.id
+                          ? "2px solid #9ecaed"
+                          : "2px solid rgba(255, 255, 255, 0.5)",
+                    }}
+                  />
+                </Box>
+                <Text fontSize="lg">{podcast.name}</Text>
+              </VStack>
+            ))}
+          </SimpleGrid>
+        </Flex>
+
         {podcasts.map((podcast) => (
-          <MyPodcast podcast={podcast} key={podcast.id} />
+          <Collapse in={selectedPodcastId === podcast.id} key={podcast.id}>
+            {selectedPodcastId === podcast.id && (
+              <VStack
+                p={4}
+                mt={"2em"}
+                borderWidth="1px"
+                borderRadius="1em"
+                align="start"
+                padding={"2em"}
+              >
+                <Flex justify="space-between" align="center" w="full" >
+                  <Wrap align="center" spacing={4}>
+                    <WrapItem>
+                      <Text fontSize="xl" fontWeight="bold" >
+                        🎙️ {podcast.name}
+                      </Text>
+                    </WrapItem>
+
+                    {/* Display tags */}
+                    {podcast.tags.map((tag, index) => (
+                      <WrapItem key={index}>
+                        <Box
+                          bg={
+                            colorMode === "dark"
+                              ? "rgba(50, 153, 175, 0.4)"
+                              : "rgba(140, 216, 230, 0.5)"
+                          }
+                          px={3}
+                          py={1}
+                          borderRadius="md"
+                        >
+                          <Text fontSize="md">{tag}</Text>
+                        </Box>
+                      </WrapItem>
+                    ))}
+                  </Wrap>
+                  <Button
+                    style={{
+                      borderRadius: "10em",
+                      padding: "1em",
+                      color: colorMode === "dark" ? "white" : "black",
+                      outline:
+                        colorMode === "dark"
+                          ? "solid 1px rgba(158, 202, 237, 0.6)"
+                          : "solid 1px rgba(158, 202, 237, 0.6)",
+                      boxShadow: "0 0 15px rgba(158, 202, 237, 0.6)",
+                    }}
+                  >
+                    Edit Podcast
+                  </Button>{" "}
+                  {/* Edit button */}
+                </Flex>
+                <Text
+                  style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    borderRadius: "1em",
+                    padding: "1em",
+                    outline: "2px solid rgba(255, 255, 255, 0.1)",
+                    marginBottom: "0.5em",
+                    marginTop: "1em",
+                  }}
+                >
+                  {podcast.description}
+                </Text>
+                <Box
+                  style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    borderRadius: "1em",
+                    padding: "1em",
+                    outline: "2px solid rgba(255, 255, 255, 0.1)",
+                    marginBottom: "1em",
+                  }}
+                >
+                  <Text fontSize="md" fontWeight="bold">
+                    👂 Listeners: 5
+                  </Text>
+                  <Text fontSize="md" fontWeight="bold">
+                    📊 Subscribers: 5
+                  </Text>
+                  <Text fontSize="md" fontWeight="bold">
+                    ❤️ Likes: 5
+                  </Text>
+                </Box>
+                <Text mt={2} fontWeight="bold">
+                  Episodes:
+                </Text>
+                {podcast.episodes.map((episode, index) => (
+                  <Text key={index}>{episode}</Text>
+                ))}
+              </VStack>
+            )}
+          </Collapse>
         ))}
       </Box>
     </>
