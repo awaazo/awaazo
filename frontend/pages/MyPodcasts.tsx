@@ -19,6 +19,13 @@ import {
   HStack,
   Wrap,
   WrapItem,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
@@ -122,6 +129,24 @@ const MyPodcasts = () => {
       setSelectedPodcastId(id);
     }
   };
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentEditingEpisode, setCurrentEditingEpisode] = useState(null);
+
+  // State for managing modal visibility and the current episode
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentEpisode, setCurrentEpisode] = useState(null);
+
+  const openEditModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsModalOpen(false);
+    setCurrentEpisode(null);
+  };
+
   return (
     <>
       <Navbar />
@@ -259,10 +284,11 @@ const MyPodcasts = () => {
                       <HStack spacing={2}>
                         <Text fontWeight="bold">{episode.title}</Text>
                         <Button
+                          onClick={() => openEditModal(episode)}
                           style={{
                             borderRadius: "10em",
                             colorScheme: "blue",
-                            padding: "0.5em 1.5em", 
+                            padding: "0.5em 1.5em",
                             fontSize: "0.8em",
                           }}
                         >
@@ -278,6 +304,37 @@ const MyPodcasts = () => {
           </Collapse>
         ))}
       </Box>
+      {/* Modal for editing an episode */}
+      <Modal isOpen={isModalOpen} onClose={closeEditModal}>
+        <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent
+          boxShadow="dark-lg"
+          backdropFilter="blur(40px)"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          marginTop={"10%"}
+          padding={"2em"}
+        >
+          <ModalCloseButton />
+          <ModalBody>
+            {/* Content of your modal goes here, such as forms for editing the episode */}
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {/* Example: Form fields to edit the episode */}
+              <VStack
+                spacing={5}
+                align="center"
+                backgroundColor={"transparent"}
+              >
+                {/* You can add form elements here based on 'currentEpisode' */}
+                <Text>Edit Episode: {currentEpisode?.title}</Text>
+                {/* Add more elements as needed */}
+              </VStack>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
