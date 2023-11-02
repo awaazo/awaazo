@@ -97,10 +97,8 @@ const CommentComponent = () => {
                                borderRadius="md" 
                                boxShadow="sm" 
                                bg={index % 2 === 0 ? "gray.550" : "gray.600"} 
-                               _hover={{ bg: "gray.300", transition: "0.3s" }} 
-                               minHeight="80px" 
+                               _hover={{ bg: "gray.400", transition: "0.3s" }} 
                                width="100%" 
-                               position="relative"
                            >
                                <HStack spacing={5}>
                                    <Avatar src={comment.avatar} />
@@ -129,19 +127,20 @@ const CommentComponent = () => {
                                        />
                                    </Tooltip>
                                </HStack>
-                               <Input 
-                                   mt={2}
-                                   placeholder="Reply to this comment..."
-                                   value={replyText}
-                                   onChange={(e) => setReplyText(e.target.value)}
-                               />
-                               {comment.replies.map(reply => (
-                                   <Box key={reply.timestamp.toString()} mt={2}>
-                                       <Text fontWeight="bold">{reply.user}:</Text>
-                                       <Text>{reply.text}</Text>
-                                       <Text fontSize="xs" color="gray.500">{reply.timestamp.toLocaleString()}</Text>
-                                   </Box>
-                               ))}
+                               <VStack align="start" spacing={2} mt={3} pl={8}>
+                                   {comment.replies.map(reply => (
+                                       <Box key={reply.timestamp.toString()} bg="gray.650" p={2} borderRadius="md">
+                                           <Text fontWeight="bold">{reply.user}:</Text>
+                                           <Text>{reply.text}</Text>
+                                           <Text fontSize="xs" color="gray.500">{reply.timestamp.toLocaleString()}</Text>
+                                       </Box>
+                                   ))}
+                                   <Input 
+                                       placeholder="Reply to this comment..."
+                                       value={replyText}
+                                       onChange={(e) => setReplyText(e.target.value)}
+                                   />
+                               </VStack>
                            </Box>
                        )) : <Text color="gray.500">Be the first to comment!</Text>}
                    </VStack>
@@ -167,6 +166,7 @@ const CommentComponent = () => {
        </Modal>
    </>
 );
+
 
 };
 
