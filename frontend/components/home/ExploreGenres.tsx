@@ -17,6 +17,8 @@ const genres = [
 ];
 
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
+  const scale = isHovered ? "scale(1.1)" : "scale(0.9)"; // for instance, shrink to 90%
+
   return (
     <Box
       key={genre.name}
@@ -24,11 +26,18 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
       borderRadius="1.2em"
       overflow="hidden"
       position="relative"
-      _hover={{ boxShadow: "xl", cursor: "pointer", transform: "scale(1.1)", transition: "all 0.3s ease-in-out" }}
-      boxSizing="border-box" 
+      _hover={{
+        boxShadow: "xl",
+        cursor: "pointer",
+        transition: "all 0.3s ease-in-out",
+      }}
+      transform={scale} // Apply the calculated scale
+      transition="all 0.3s ease-in-out" // Ensure the transition is smooth for both hover and unhover events
+      boxSizing="border-box"
       border="1px solid"
       onMouseEnter={() => onMouseEnter(genre.name)}
       onMouseLeave={onMouseLeave}
+      zIndex={isHovered ? 1 : 0} // Ensure the hovered item stacks on top
     >
       <Image
         src={genre.image.src}
@@ -37,7 +46,7 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
         height="100%"
         objectFit="cover"
         opacity="0.8"
-      />       
+      />
       <Text
         fontWeight="bold"
         fontSize={["md", "lg", "xl"]}
@@ -62,8 +71,11 @@ const ExploreGenres = () => {
       <Text fontSize="2xl" fontWeight="bold" mb={3}>
         Explore Genres
       </Text>
-      <Grid templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]} gap={4}>
-        {genres.map(genre => (
+      <Grid
+        templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]}
+        gap={4}
+      >
+        {genres.map((genre) => (
           <GenreCard
             key={genre.name}
             genre={genre}
