@@ -26,6 +26,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spacer,
 } from "@chakra-ui/react";
 
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
@@ -152,7 +153,7 @@ const MyPodcasts = () => {
       <Navbar />
       <Box px={["1em", "2em", "4em"]} pt={6}>
         <Flex align="center" pb={4} flexWrap={"wrap"}>
-          <Text fontSize="30px" pb="1em" fontFamily={"Avenir Next"}>
+          <Text fontSize="30px" pb="1em">
             My Podcasts
           </Text>
         </Flex>
@@ -280,23 +281,47 @@ const MyPodcasts = () => {
                 </Box>
                 <>
                   {podcast.episodes.map((episode, index) => (
-                    <VStack key={index} align="start" spacing={2}>
-                      <HStack spacing={2}>
-                        <Text fontWeight="bold">{episode.title}</Text>
-                        <Button
-                          onClick={() => openEditModal(episode)}
-                          style={{
-                            borderRadius: "10em",
-                            colorScheme: "blue",
-                            padding: "0.5em 1.5em",
-                            fontSize: "0.8em",
-                          }}
-                        >
-                          Edit Episode
-                        </Button>
-                      </HStack>
-                      <Text marginBottom={"2em"}>{episode.description}</Text>
-                    </VStack>
+                    <Box
+                      style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        paddingLeft: "2em",
+                        paddingRight: "2em",
+                        paddingTop: "1em",
+                        paddingBottom: "1em",
+                        borderRadius: "1em",
+                        marginBottom: "1em",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 0 15px rgba(0, 0, 0, 0.5)",
+                        outline: "2px solid rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      <VStack key={index} align="start" spacing={2}>
+                        <HStack width="full" spacing={2}>
+                          <Text fontWeight="bold">{episode.title}</Text>
+                          <Spacer />
+                          <HStack spacing={2}>
+                            <Text fontSize="md" fontWeight="bold">
+                              🎧 25
+                            </Text>
+                            <Text fontSize="md" fontWeight="bold">
+                              ❤️ 69
+                            </Text>
+                          </HStack>
+                          <Spacer />
+                          <Button
+                            onClick={() => openEditModal(episode)}
+                            style={{
+                              borderRadius: "3em",
+                              colorScheme: "blue",
+                              fontSize: "0.9em",
+                            }}
+                          >
+                            Edit Episode
+                          </Button>
+                        </HStack>
+                        <Text marginBottom={"2em"}>{episode.description}</Text>
+                      </VStack>
+                    </Box>
                   ))}
                 </>
               </VStack>
