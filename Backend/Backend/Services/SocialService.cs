@@ -246,6 +246,13 @@ public class SocialService : ISocialService
         }
     }
 
+    /// <summary>
+    /// Adds a rating to a podcast.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="user"></param>
+    /// <param name="rating"></param>
+    /// <returns></returns>
     public async Task<bool> AddRatingToPodcastAsync(Guid podcastId, User user, uint rating)
     {
         // Check if the podcast exists
@@ -284,6 +291,12 @@ public class SocialService : ISocialService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Removes a rating from a podcast.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public async Task<bool> RemoveRatingFromPodcastAsync(Guid podcastId, User user)
     {
         // Check if the Podcast Rating exists
@@ -304,6 +317,11 @@ public class SocialService : ISocialService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Gets the mean rating for a podcast. 
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
     public async Task<int> GetPodcastMeanRatingAsync(Guid podcastId)
     {
         // Check if the Podcast exists
@@ -316,6 +334,13 @@ public class SocialService : ISocialService
         return ratingCount == 0 ? 0 : (int)Math.Round(_db.PodcastRatings.Where(rating => rating.PodcastId.Equals(podcastId)).Average(rating => rating.Rating));
     }
 
+    /// <summary>
+    /// Adds a review to a podcast. 
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="user"></param>
+    /// <param name="review"></param>
+    /// <returns></returns>
     public async Task<bool> AddReviewToPodcastAsync(Guid podcastId, User user, string review)
     {
         // Check if the podcast exists
@@ -350,6 +375,12 @@ public class SocialService : ISocialService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Removes a review from a podcast.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public async Task<bool> RemoveReviewFromPodcastAsync(Guid podcastId, User user)
     {
         // Check if the Podcast Rating exists
