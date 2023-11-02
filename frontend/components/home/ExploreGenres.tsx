@@ -67,7 +67,7 @@ const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   return (
-    <Box marginLeft="5em" marginRight="5em" marginBottom="3em">
+    <Box  marginBottom="3em">
       <Text fontSize="2xl" fontWeight="bold" mb={3}>
         Explore Genres
       </Text>

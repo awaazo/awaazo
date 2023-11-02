@@ -41,7 +41,13 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       transition="all 0.3s"
     >
       {/* Left: Cover Art with Play Button */}
-      <Box position="relative" mr={5}>
+      <Box
+        position="relative"
+        mr={"1em"}
+        boxSize={{
+          base: "60px",
+        }}
+      >
         <Image boxSize="60px" src={coverArt} borderRadius="10%" />
         <IconButton
           aria-label="Play"
@@ -52,6 +58,8 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           transform="translate(-50%, -50%)"
           variant="ghost"
           size="md"
+          shadow={"md"}
+          _hover={{ boxShadow: "lg" }}
         />
       </Box>
 
