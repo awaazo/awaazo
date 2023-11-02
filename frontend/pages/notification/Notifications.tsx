@@ -185,14 +185,12 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                                   <IconButton 
                                       icon={<FaPlay />} 
                                       aria-label="Play episode" 
-                                      colorScheme="blue" 
                                       _hover={{ bg: "blue.600" }} 
                                       _active={{ bg: "blue.700" }}
                                   />
                                   <IconButton 
                                       icon={<FaList />} 
                                       aria-label="Play List" 
-                                      colorScheme="blue" 
                                       _hover={{ bg: "blue.600" }} 
                                       _active={{ bg: "blue.700" }}
                                   />
