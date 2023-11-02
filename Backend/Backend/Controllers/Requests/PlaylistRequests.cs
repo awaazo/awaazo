@@ -26,4 +26,18 @@ namespace Backend.Controllers.Requests
         [Required]
         public Guid PlayListId { get; set; }
     }
+    
+    [BindProperties]
+    public class PlaylistDeleteRequest
+    {
+        [Required]
+        public Guid PlaylistId { get; set; }
+    }
+    
+    [BindProperties]
+    public class PlaylistElementDeleteRequest
+    {
+        [Required]
+        public Guid PlaylistElementId { get; set; }
+    }
 }

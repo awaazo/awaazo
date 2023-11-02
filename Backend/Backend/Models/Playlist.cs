@@ -32,8 +32,8 @@ namespace Backend.Models
         
         public Guid EpisodeId { get; set; }
 
-        public Episode? Episode => _context?.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
-        
+        public Episode? Episode => _context?.Episodes!.FirstOrDefault(e => e.Id == EpisodeId);
+        public Playlist? Playlist => _context?.Playlists!.FirstOrDefault(e => e.Id == PlayerlistId);
         private AppDbContext _context;
         public PlaylistElement(AppDbContext context)
         {

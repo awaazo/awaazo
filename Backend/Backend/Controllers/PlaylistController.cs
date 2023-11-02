@@ -50,5 +50,23 @@ public class PlaylistController : ControllerBase
             await _service.PlaylistElements(await _authService.IdentifyUserAsync(HttpContext)!, request.PlayListId);
         return elements is null ? BadRequest("Invalid Playlist ID") : Ok();
     }
+
+    [HttpPut("delete")]
+    public async Task<IActionResult> Delete([FromBody] PlaylistDeleteRequest request)
+    {
+        bool result = await _service.Delete(
+            await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistId);
+
+        return result ? Ok() : BadRequest("Invalid Playlist ID");
+    }
+
+    [HttpPut("deleteElement")]
+    public async Task<IActionResult> DeleteElement([FromBody] PlaylistElementDeleteRequest request)
+    {
+        bool result = await _service.DeleteElement(
+            await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistElementId);
+
+        return result ? Ok() : BadRequest("Invalid Playlist Element ID");        
+    }
 }
 

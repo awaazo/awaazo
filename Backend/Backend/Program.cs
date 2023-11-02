@@ -30,7 +30,7 @@ public class Program
         builder.Services.AddScoped<IEpisodeService, EpisodeService>();
         builder.Services.AddScoped<IFileService,FileService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
-
+        builder.Services.AddScoped<PlaylistService>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
