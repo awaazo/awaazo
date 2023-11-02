@@ -47,18 +47,13 @@ export default function Podcasts({ childToParent }) {
   const [selectedPodcastId, setSelectedPodcastId] = useState(null);
   // const [subscribed, setSubscribe] = useState(false);
 
-  let subscribed = false;
-  let subscribedText = "Subscribe"
+  const [subscribed, setSubscribed] = useState(false);
+  const subscribedText = subscribed ? "Unsubscribe" : "Subscribe";
 
   function setSubscribe() {
-    // if (!subscribed){
-    //   subscribed = true;
-    //   subscribedText = "Subscribe";
-    // } else {
-    //   subscribed = false;
-    //   subscribedText = "UnSubscribe";
-    // }
+    setSubscribed(!subscribed);
   }
+  
 
   return (
     <>
@@ -112,7 +107,7 @@ export default function Podcasts({ childToParent }) {
             </Box>
           </Link>
           <Button colorScheme="blue" onClick={() => {
-            setSubscribe; // Subscribe/Unsubscribe
+            setSubscribe(); // Subscribe/Unsubscribe
           }}>{subscribedText}</Button>
           </Stack>
         ))}

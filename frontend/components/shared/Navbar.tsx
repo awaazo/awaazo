@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Profile } from "next-auth";
 import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useColorModeValue, useColorMode, Image, Input, useBreakpointValue, Icon } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, SearchIcon, AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -157,6 +157,9 @@ export default function Navbar() {
               <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} onChange={handleSearchChange} />
               <Link href="/Create">
                 <IconButton aria-label="Create" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
+              </Link>
+              <Link href="/Notifications">
+                <IconButton aria-label="Create" icon={<BellIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
               </Link>
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
