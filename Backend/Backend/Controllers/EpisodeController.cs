@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("Episode")]
+    [Route("episode")]
     public class EpisodeController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -29,7 +29,7 @@ namespace Backend.Controllers
 
 
         [Authorize]
-        [HttpDelete("Delete")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteEpisodeRequest deleteEpisodeRequest)
         {
             if (deleteEpisodeRequest != null)
@@ -44,7 +44,7 @@ namespace Backend.Controllers
                         try
                         {
                            await _episodeService.DeleteEpisode(episode, deleteEpisodeRequest);
-                           return Ok( new {message =  "Successfully deleted"});
+                           return Ok( "Successfully deleted");
                         }catch (Exception ex)
                         {
                             return BadRequest(ex.Message);
@@ -66,7 +66,7 @@ namespace Backend.Controllers
 
 
         [Authorize]
-        [HttpPost("Add")]
+        [HttpPost("add")]
         public async Task<IActionResult> AddEpisode([FromForm] CreateEpisodeRequest createEpisodRequest)
         {
             if(createEpisodRequest.PodcastId != null)
@@ -84,7 +84,7 @@ namespace Backend.Controllers
                             try
                             {
                                 Episode? episode = await _episodeService!.AddEpisode(createEpisodRequest,podcast,HttpContext);
-                                return Ok(episode);
+                                return Ok("Successfully Added the Episode");
 
                             }catch (Exception ex)
                             {
@@ -111,7 +111,7 @@ namespace Backend.Controllers
         }
 
         [Authorize]
-        [HttpPut("Edit")]
+        [HttpPut("edit")]
         public async Task<IActionResult> EditEpisode([FromForm]EditEpisodeRequest editEpisodeRequest)
         {
 
@@ -121,7 +121,7 @@ namespace Backend.Controllers
 
             if(episode != null)
             {
-                return Ok(episode);
+                return Ok("Sucsessfully Editted the Epsiode");
             }
                 return BadRequest("Bad Request");
             }catch(Exception ex)

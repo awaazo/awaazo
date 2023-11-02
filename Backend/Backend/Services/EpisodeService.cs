@@ -2,7 +2,13 @@
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
+using NAudio.Wave;
+using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Net.NetworkInformation;
 
 namespace Backend.Services
@@ -22,12 +28,32 @@ namespace Backend.Services
 
         }
 
+        public double GetEpisodeDuration(string path)
+        {
+            try
+            {
+                Console.WriteLine(path);
+                using (var audioFileReader = new AudioFileReader(path))
+                {
+                    Console.WriteLine(audioFileReader.TotalTime);
+                    return audioFileReader.TotalTime.TotalSeconds;
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine("Error: " + ex.Message);
+                return TimeSpan.Zero.TotalSeconds;
+            }
+
+        } 
+
 
         public async Task<Episode?> AddEpisode(CreateEpisodeRequest createEpisodeRequest,Podcast podcast,HttpContext httpContext)
         {
             Episode episode = new Episode();
 
-            if(!AllowedTypes.Contains(createEpisodeRequest.AudioFile!.ContentType))
+            if(createEpisodeRequest.AudioFile != null && !AllowedTypes.Contains(createEpisodeRequest.AudioFile!.ContentType))
             {
                 throw new InvalidDataException("Invalid Data Types");
  
@@ -43,8 +69,12 @@ namespace Backend.Services
             {
                 throw new Exception("Uploading file not Successfull"); 
             }
+
             episode.EpisodeName = createEpisodeRequest.EpisodeName!;
             episode.IsExplicit = createEpisodeRequest.IsExplicit!;
+            episode.ReleaseDate = DateTime.Now;
+            episode.Duration = GetEpisodeDuration(_fileService.GetPath(audioFile.Path!));
+            
 
             podcast.Episodes.Add(episode);
             await _db.SaveChangesAsync();
@@ -54,11 +84,28 @@ namespace Backend.Services
 
 
         public async Task<bool> DeleteEpisode(Episode episode, DeleteEpisodeRequest deleteEpisodeRequest)
-        {  
-           await _fileService.DeleteFile(episode.AudioFileId.ToString()!);
-           _db.Remove(episode);
-           await _db.SaveChangesAsync();
-           return true;
+        {
+            Guid? guid = Guid.Parse(deleteEpisodeRequest.EpisodeId);
+            Files? file = await _db.File!.FirstOrDefaultAsync(u => u.FileId == episode.AudioFileId);
+
+            if (file != null)
+            {
+               var deleted = _fileService.DeleteFile(file.Path!);
+               if(deleted == true)
+                {
+                _db.Remove(file);
+
+                }
+               else { throw new Exception("Failed to Delete File"); }
+                _db.Remove(episode);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                throw new Exception("File Not Found");
+            }
+
 
         }
 
@@ -81,11 +128,18 @@ namespace Backend.Services
 
                         }
 
-                        bool? editted = await  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
-                        if(editted == false)
+                        bool? editted =  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
+                        if(editted == true)
+                        {
+                            episode.AudioFile!.Name = editEpisodeRequest.AudioFile.FileName;
+                            episode.AudioFile!.MimeType = editEpisodeRequest.AudioFile.ContentType;
+                            
+                           
+                        }
+                        else
                         {
                             throw new Exception("Failed to Edit the file");
-                           
+
                         }
                         
 
