@@ -17,7 +17,6 @@ namespace Backend.Controllers
         private readonly IPodcastService _podcastService;
         private readonly IFileService _fileService;
         private readonly AppDbContext _db;
-      
         public PodcastController(IPodcastService podcastService,AppDbContext db,IFileService fileService)
         {
             _podcastService = podcastService;
@@ -32,22 +31,15 @@ namespace Backend.Controllers
             try
             {
                 GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-                //Return Error if Podcast is null
-                if (podcast == null)
-                {
+                if (podcast == null) return BadRequest("Bad Request");
 
-                    return BadRequest("Bad Request");
-
-                }
                 return Ok(podcast);
-
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(e.Message);
             }
            
-
         }
         [HttpGet("getById")]
         [Authorize]
@@ -79,13 +71,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-
-        }
-
-        
-    }
-        
-    
+        }      
+    }            
 }
 

@@ -25,44 +25,42 @@ namespace Backend.Services
 
         public async Task<GetPodcastRequest?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext)
         {
+            if (createPodcastRequest == null)
+                throw new InvalidDataException("Podcast request was missing");
 
+            Podcast podcast = new Podcast();
 
-            if (createPodcastRequest.coverImage != null && !AllowedTypes.Contains(createPodcastRequest.coverImage!.ContentType))
-            {
-                throw new InvalidDataException("Invalid Data Types");
-
-            }
+            // Check if user exists
             User? user = await _authService.IdentifyUserAsync(httpContext);
             if (user == null)
-                throw new Exception("User not found");
-            
-            Podcast? podcast = new Podcast();
-            podcast.PodcasterId = user.Id;
+                return null;
 
-            if(createPodcastRequest.Name == null)
+            podcast.PodcasterId = user.Id;         
+
+            // image has to exist AND has to contain the wrong type of cover image to throw error here. If it doesnt, just use default
+            if (createPodcastRequest.coverImage != null && !AllowedTypes.Contains(createPodcastRequest.coverImage!.ContentType))
             {
-                throw new Exception("Name is a required field");
+                throw new InvalidDataException("Invalid Cover Image data Type: " + createPodcastRequest.coverImage.ContentType.ToString());
             }
-
-            if(createPodcastRequest.coverImage != null)
-            {  
-                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
-                if(coverImage == null) return null;
-                podcast.CoverId = coverImage.FileId;
-            }
+                
             if (createPodcastRequest.Tags != null)
-            {
                 podcast.Tags = createPodcastRequest.Tags;
 
-            }
-            if(createPodcastRequest.Description != null)
-            {
+            if (createPodcastRequest.Description != null)
                 podcast.Description = createPodcastRequest.Description;
-            }
-            podcast.Name = createPodcastRequest.Name!;
+         
+            if(createPodcastRequest.Name != null)
+                podcast.Name = createPodcastRequest.Name!;
+
+            if(createPodcastRequest.coverImage != null)
+            {                
+                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
+                podcast.CoverId = coverImage.FileId;
+            }                     
+
             user.IsPodcaster = true;
 
-            await _db.Podcasts!.AddAsync(podcast);
+            await _db.Podcasts!.AddAsync(podcast);         
             await _db.SaveChangesAsync();
 
             GetPodcastRequest getPodcastRequest = new GetPodcastRequest()
@@ -72,12 +70,9 @@ namespace Backend.Services
                 Description = podcast.Description,
                 Tags = podcast.Tags,
                 coverImage = podcast.Cover
-
             };
 
-
-            return getPodcastRequest;
-         
+            return getPodcastRequest;       
         }
 
         public async Task<Podcast?> GetPodcast(string id)

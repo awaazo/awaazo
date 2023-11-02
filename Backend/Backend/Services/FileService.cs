@@ -38,10 +38,8 @@ namespace Backend.Services
                 _db.File!.Remove(f1);
                 await _db.SaveChangesAsync();
                 return true;
-
             }
             return false;
-
         }
 
         public string GetPath(string path)
@@ -49,12 +47,8 @@ namespace Backend.Services
             return Path.Combine(AppContext.BaseDirectory, "DEFAULT", path);
         }
 
-
-        
-
         public bool EditFile(Files f1 ,IFormFile file)
-        {
-            
+        {           
             if(f1 != null)
             {
                 bool? delete =  DeleteFile(f1.Path!);
@@ -68,11 +62,8 @@ namespace Backend.Services
                     return true;
                 }
                 return false;
-
-
             }
             return false;
-
         }
        
         public bool? DeleteFile(string path)
@@ -80,69 +71,51 @@ namespace Backend.Services
             var fullPath = GetPath(path);
             if (File.Exists(fullPath))
             {
-
                 File.Delete(fullPath);
                 return true;
-
-
             }
             throw new Exception("File not found");
         }
+
         public async Task<Files?> UploadFile(IFormFile file)
         {
-            if (file != null && file.Length > 0)
+            if (file == null || file.Length <= 0)
+                return null;
+
+            Guid? guid = await SaveFile(file.FileName, file.ContentType);
+
+            if (guid == null)
+                return null;
+
+            string dirName = "DEFAULT";
+            string dirPath = Path.Combine(AppContext.BaseDirectory, dirName);
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            // Get the file path              
+            string filePath = Path.Combine(dirPath, guid.ToString() + "." + file.ContentType.Split("/")[1]);
+
+            // Save the file
+            using FileStream fs = new(filePath, FileMode.Create);
+            file.CopyTo(fs);
+
+            // Cleanup if the file does not get created
+            if (!File.Exists(filePath))
             {
-
-                Guid? guid = await SaveFile(file.FileName, file.ContentType);
-
-                if (guid != null)
-                {
-                    string dirName = "DEFAULT";
-                    string dirPath = Path.Combine(AppContext.BaseDirectory, dirName);
-
-                    // Create the directory if it doesn't exist
-                    if (!Directory.Exists(dirPath))
-                        Directory.CreateDirectory(dirPath);
-
-                    // Get the file path
-               
-                    string filePath = Path.Combine(dirPath, guid.ToString() + "." + file.ContentType.Split("/")[1]);
-
-                    // Save the file
-                    using FileStream fs = new(filePath, FileMode.Create);
-                    file.CopyTo(fs);
-
-                    // Return true if the file was saved successfully
-
-                    if (File.Exists(filePath))
-                    {
-                        Files? f1 = _db.File!.SingleOrDefault(u => u.FileId == guid);
-                        if (f1 != null)
-                        {
-                            f1.Path = guid.ToString() + "." + file.ContentType.Split("/")[1] ;
-                            await _db.SaveChangesAsync();
-
-                        }
-                        return f1;
-
-                    }
-                    else
-                    {
-                        await CleanUp(guid);
-                        return null;
-
-
-                    }
-
-                }
+                await CleanUp(guid);
                 return null;
             }
-            return null;
 
-        }
+            Files? f1 = _db.File!.SingleOrDefault(u => u.FileId == guid);
+            if (f1 == null)
+                return null;
 
-       
+            f1.Path = guid.ToString() + "." + file.ContentType.Split("/")[1];
+            await _db.SaveChangesAsync();
+            return f1;
 
-       
+        }            
     }
 }
