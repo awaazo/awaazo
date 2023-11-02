@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Box, VStack, Text, List, ListItem, Avatar, Button, HStack, IconButton, Select, Badge } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Box, VStack, Text, List, ListItem, Avatar, Button, HStack, IconButton, Select, Badge, useColorModeValue } from '@chakra-ui/react';
 import Navbar from '../../components/shared/Navbar';
 import { UserEpisodeInteraction, User, Episode } from '../../utilities/Interfaces';
 import { FaPlay, FaCheck, FaList, FaPlus } from 'react-icons/fa';
@@ -132,63 +132,77 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
    ]);
  }, []);
  
- 
+   const bgBlur = useColorModeValue('rgba(255, 255, 255, 0.3)', 'rgba(26, 32, 44, 0.3)'); // Adjust the RGBA values as needed
+
 
  return (
-  <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} >
+        <ModalOverlay backdropFilter="blur(0px)"/> {/* Blurred background for the overlay */}
+        <ModalContent 
+        boxShadow="dark-lg"
+        backdropFilter="blur(40px)" 
+        bg={bgBlur}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        marginTop={"10%"}
+        padding={"2em"}
+        >
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <VStack 
+              spacing={5} 
+              align="center" 
+              backgroundColor={"transparent"}
+> 
+              <Select value={filter} onChange={(e) => setFilter(e.target.value as 'all' | 'episode' | 'user')}>
+                <option value="all">All Notifications</option>
+                <option value="episode">Episode Interactions</option>
+                <option value="user">User Notifications</option>
+              </Select>
+              <Button onClick={() => setSortByDate(!sortByDate)}>
+                Sort by {sortByDate ? 'Oldest' : 'Newest'}
+              </Button>
+                      <List spacing={4} width="110%" maxHeight="50vh" overflowY="auto">
+                        {episodes.map((episode, index) => (
+                          <ListItem key={index} bg="whiteAlpha.50" p={"6"}  width={"100%"} boxShadow={"dark-lg"} 
+                          > 
+                          <HStack spacing={4}>
+                              <Avatar src={episode.coverArt} />
+                              <VStack align="start" spacing={1} flex="1"> {/* Added flex="1" here */}
+                                  <Text color="blue.400" fontWeight="bold">{episode.podcaster}</Text>
+                                  <Text fontWeight="bold">{`New episode: ${episode.episodeName}`}</Text>
+                                  <Text fontSize="sm" color="gray.400">{`Released: ${formatDistanceToNow(episode.releaseDate)} ago`}</Text>
+                                  <HStack>
+                                      <Badge colorScheme="green">{`${episode.duration} minutes`}</Badge>
+                                      <Badge colorScheme="red">{`${episode.likes.count} likes`}</Badge>
+                                  </HStack>
+                              </VStack>
+                              <HStack spacing={4}> {/* Enclosed buttons in an HStack */}
+                                  <IconButton 
+                                      icon={<FaPlay />} 
+                                      aria-label="Play episode" 
+                                      colorScheme="blue" 
+                                      _hover={{ bg: "blue.600" }} 
+                                      _active={{ bg: "blue.700" }}
+                                  />
+                                  <IconButton 
+                                      icon={<FaList />} 
+                                      aria-label="Play List" 
+                                      colorScheme="blue" 
+                                      _hover={{ bg: "blue.600" }} 
+                                      _active={{ bg: "blue.700" }}
+                                  />
+                              </HStack>
+                          </HStack>
+                      </ListItem>
+                  ))}
+              </List>
 
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Notifications</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-    <Box display="flex" justifyContent="center" alignItems="center" height="auto" width="auto">
-      <VStack spacing={5} align="center" p={5} bg="gray.700" borderRadius="md">
-        <Select value={filter} onChange={(e) => setFilter(e.target.value as 'all' | 'episode' | 'user')}>
-          <option value="all">All Notifications</option>
-          <option value="episode">Episode Interactions</option>
-          <option value="user">User Notifications</option>
-        </Select>
-        <Button onClick={() => setSortByDate(!sortByDate)}>
-           Sort by {sortByDate ? 'Oldest' : 'Newest'}
-        </Button>
-          <List spacing={4} width="100%" maxHeight="50vh" overflowY="auto">
-            {episodes.map((episode, index) => (
-                <ListItem key={index} bg="gray.600" p={4} borderRadius="md" boxShadow="sm">
-                    <HStack spacing={4} width="100%">
-                        <Avatar src={episode.coverArt} />
-                        <VStack align="start" spacing={1} flex="1"> {/* Added flex="1" here */}
-                            <Text color="blue.400" fontWeight="bold">{episode.podcaster}</Text>
-                            <Text fontWeight="bold">{`New episode: ${episode.episodeName}`}</Text>
-                            <Text fontSize="sm" color="gray.400">{`Released: ${formatDistanceToNow(episode.releaseDate)} ago`}</Text>
-                            <HStack>
-                                <Badge colorScheme="green">{`${episode.duration} minutes`}</Badge>
-                                <Badge colorScheme="red">{`${episode.likes.count} likes`}</Badge>
-                            </HStack>
-                        </VStack>
-                        <HStack spacing={4}> {/* Enclosed buttons in an HStack */}
-                            <IconButton 
-                                icon={<FaPlay />} 
-                                aria-label="Play episode" 
-                                colorScheme="blue" 
-                                _hover={{ bg: "blue.600" }} 
-                                _active={{ bg: "blue.700" }}
-                            />
-                            <IconButton 
-                                icon={<FaList />} 
-                                aria-label="Play List" 
-                                colorScheme="blue" 
-                                _hover={{ bg: "blue.600" }} 
-                                _active={{ bg: "blue.700" }}
-                            />
-                        </HStack>
-                    </HStack>
-                </ListItem>
-            ))}
-        </List>
-
-      </VStack>
+            </VStack>
     </Box>
     </ModalBody>
       </ModalContent>
