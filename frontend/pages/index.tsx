@@ -12,22 +12,28 @@ const Main = () => {
       {/* Navbar */}
       <Navbar />
       <ExploreGenresSection />
-      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]} > {/* Adjusted padding */}
-      {/* Main Content */}
-
-        {/* For You Section */}
-        <Box flex="1" borderRadius="35px" backdropFilter="blur(35px)" boxShadow="xl">
+      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
+        <Box
+          flex="1"
+          borderRadius="35px"
+          backdropFilter="blur(35px)"
+          boxShadow="xl"
+        >
           <Text fontSize="xl" fontWeight="bold" ml={3} mt={3}>
             For You
           </Text>
-          <Box overflowY="auto" overflowX="hidden" className="no-scrollbar" height="calc(100vh - 60px - 80px)">
+          <Box
+            overflowY="auto"
+            overflowX="hidden"
+            className="no-scrollbar"
+            height="calc(100vh - 60px - 80px)"
+          >
             <ForYouSection episodes={episodes} />
           </Box>
         </Box>
-
-      {/* Player Bar */}
-      <PlayerBar {...episodes[0]} />
-    </Box>
+        {/* Player Bar */}
+        <PlayerBar {...episodes[0]} />
+      </Box>
     </>
   );
 };

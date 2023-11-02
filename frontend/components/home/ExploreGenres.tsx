@@ -17,7 +17,7 @@ const genres = [
 ];
 
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
-  const scale = isHovered ? "scale(1.1)" : "scale(0.9)"; // for instance, shrink to 90%
+  const scale = isHovered ? "scale(1.1)" : "scale(0.9)";
 
   return (
     <Box
