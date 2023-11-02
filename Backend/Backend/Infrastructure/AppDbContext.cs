@@ -31,6 +31,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
     public virtual DbSet<Files>? File { get; set; }
+    public virtual DbSet<Like> Likes { get; set; }
+    public virtual DbSet<Comment> Comments { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
