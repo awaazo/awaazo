@@ -1,136 +1,224 @@
-import React, { useState, useEffect } from "react";
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useColorModeValue, useBreakpointValue } from "@chakra-ui/react";
-import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, FaVolumeDown, FaHeart, FaCommentAlt, } from "react-icons/fa";
+import React, { useState } from "react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Image,
+  Text,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  useColorModeValue,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import {
+  FaPlay,
+  FaPause,
+  FaHeart,
+  FaCommentAlt,
+  FaBackward,
+  FaForward,
+  FaVolumeDown,
+  FaVolumeUp,
+  FaStepForward,
+  FaStepBackward,
+} from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
 
-const PlayerBar: React.FC<Episode> = (props) => {
-  const { coverArt, episodeName = "Unknown episodeName", podcaster = "Unknown Podcaster", duration, likes, comments, sections = [] } = props;
+function PlayerBar(props) {
+  const {
+    coverArt,
+    episodeName = "Unknown Episode",
+    podcaster = "Unknown Podcaster",
+    duration,
+    likes,
+    comments,
+    sections = [],
+  } = props;
 
   const [position, setPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(likes.isLiked);
+  const [volume, setVolume] = useState(30); // Assuming a default volume level
+    const skipForward = () =>
+      setPosition((prevPos) => Math.min(prevPos + 10, duration));
+    const skipBackward = () =>
+      setPosition((prevPos) => Math.max(prevPos - 10, 0));
 
+
+  const togglePlayPause = () => setIsPlaying(!isPlaying);
   const toggleLike = () => setIsLiked(!isLiked);
-  const togglePlayPause = () => setIsPlaying((prevIsPlaying) => !prevIsPlaying);
-  const skipForward = () => setPosition((prevPos) => Math.min(prevPos + 10, duration));
-  const skipBackward = () => setPosition((prevPos) => Math.max(prevPos - 10, 0));
-  const handleCoverClick = () => console.log("Navigating to player page...");
-  const handleCommentClick = () => console.log("Open comment box...");
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const currentTime = `${Math.floor(position / 60)}:${String(position % 60).padStart(2, "0")}`;
-  const timeLeft = `${Math.floor((duration - position) / 60)}:${String((duration - position) % 60).padStart(2, "0")}`;
-  const likedColor = isLiked ? "red.500" : useColorModeValue("gray.900", "gray.100");
-  const commentedColor = comments.isCommented ? "blue.500" : useColorModeValue("gray.900", "gray.100");
+  const formatTime = (seconds) =>
+    `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  const currentTime = formatTime(position);
+  const timeLeft = formatTime(duration - position);
 
-  const handleScrubberChange = (newPosition: number) => setPosition(newPosition);
-  const getCurrentSectionName = (currentTime: string): string => {
-    const timeParts = currentTime.split(":");
-    const totalSeconds = parseInt(timeParts[0], 10) * 60 + parseInt(timeParts[1], 10);
-    for (let i = sections.length - 1; i >= 0; i--) {
-      if (totalSeconds >= sections[i].timestamp) {
-        return sections[i].title;
-      }
-    }
-    return "";
-  };
+  const likedColor = useColorModeValue("gray.900", "gray.100");
+  const commentedColor = useColorModeValue("gray.900", "gray.100");
+
   return (
-    <Box bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.2)")} backdropFilter="blur(35px)" pt={2} pb={2} pr={5} pl={5} m={"1em"} position="sticky" bottom={2} left={0} right={0}  borderRadius={"2em"}       border="3px solid rgba(255, 255, 255, 0.05)"
-    boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"data-testid="navbar-component">
-      {" "}
-      {isMobile ? (
-        <Flex justifyContent="space-between" alignItems="center" >
-          <Flex alignItems="center" onClick={handleCoverClick} cursor="pointer">
-            <Image boxSize="30px" src={coverArt} borderRadius="full" mr={4} />
-            <Box>
-              <Text fontWeight="bold" color={useColorModeValue("gray.900", "gray.100")} fontSize="sm">
-                {episodeName}
-              </Text>
-              <Text color="gray.500" fontSize="xs">
-                {podcaster}
-              </Text>
-            </Box>
-          </Flex>
-          <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="ghost" size="sm" onClick={togglePlayPause} />
+    <Box
+      boxSizing="border-box"
+      position="sticky"
+      bottom={4}
+      left={0}
+      right={0}
+      p={4}
+      m={3}
+      borderRadius="2em"
+      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
+      shadow="md"
+      style={{ backdropFilter: "blur(50px)" }}
+      border="3px solid rgba(255, 255, 255, 0.05)"
+      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+    >
+      <Flex justifyContent="space-between" alignItems="center">
+        {/* Episode Info */}
+        <Flex
+          alignItems="center"
+          onClick={() => console.log("Navigating to player page...")}
+          cursor="pointer"
+        >
+          <Image
+            boxSize={isMobile ? "30px" : "40px"}
+            src={coverArt}
+            borderRadius="full"
+            mr={4}
+          />
+          <Box>
+            <Text
+              fontWeight="bold"
+              fontSize={isMobile ? "sm" : "md"}
+              color={useColorModeValue("gray.900", "gray.100")}
+            >
+              {episodeName}
+            </Text>
+            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
+              {podcaster}
+            </Text>
+          </Box>
         </Flex>
-      ) : (
-        <Flex direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="center">
-          
-          {/* Episode info  */}
-          <Flex direction={{ base: "column", md: "row" }} alignItems="center" mb={{ base: 2, md: 0 }} mr={4} onClick={handleCoverClick} cursor="pointer">
-            <Image boxSize={{ base: "30px", md: "40px" }} src={coverArt} borderRadius="full" mb={{ base: 2, md: 0 }} mr={4} />
-            <Box mb={{ base: 2, md: 0 }}>
-              <Text fontWeight="bold" color={useColorModeValue("gray.900", "gray.100")} fontSize={{ base: "sm", md: "md" }}>
-                {episodeName}
-              </Text>
-              <Text color="gray.500" fontSize={{ base: "xs", md: "sm" }}>
-                {podcaster}
-              </Text>
-            </Box>
 
-          </Flex>
+        {/* Player Controls */}
+        <Flex alignItems="center">
+          <IconButton
+            aria-label="Skip 10 seconds Backward"
+            icon={<FaStepBackward />}
+            variant="ghost"
+            size="sm"
+            onClick={() => {}}
+            mr={2}
+          />
+          <IconButton
+            aria-label="Previous Track"
+            icon={<FaBackward />}
+            variant="ghost"
+            size="sm"
+            onClick={skipBackward}
+            mr={2}
+          />
+          <IconButton
+            aria-label={isPlaying ? "Pause" : "Play"}
+            icon={isPlaying ? <FaPause /> : <FaPlay />}
+            variant="ghost"
+            size="sm"
+            onClick={togglePlayPause}
+            mr={2}
+          />
+          <IconButton
+            aria-label="Next Track"
+            icon={<FaForward />}
+            variant="ghost"
+            size="sm"
+            onClick={skipForward}
+            mr={2}
+          />
+          <IconButton
+            aria-label="Skip 10 seconds Forward"
+            icon={<FaStepForward />}
+            variant="ghost"
+            size="sm"
+            onClick={() => {}}
+          />
+        </Flex>
 
-          {/* Middle - Controls */}
-          <Flex flexDirection="column" alignItems="center" flex={1}>
-            <Flex alignItems="center" justifyContent="center" width="100%" mb={2}>
-              <IconButton aria-label="Skip 10 seconds Backward" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={() => {}} mr={2} />
-              <IconButton aria-label="Previous Track" icon={<FaBackward />} variant="ghost" size="sm" onClick={skipBackward} mr={2} />
-              <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="ghost" size="sm" onClick={togglePlayPause} mr={2} />
-              <IconButton aria-label="Next Track" icon={<FaForward />} variant="ghost" size="sm" onClick={skipForward} mr={2} />
-              <IconButton aria-label="Skip 10 seconds Forward" icon={<FaStepForward />} variant="ghost" size="sm" onClick={() => {}} />
-            </Flex>
-
-            {/* Timeline Scrubber shows diffrently for mobile */}
-            <Flex alignItems="center" justifyContent="space-between" width="100%">
-              <Box width="80px" textAlign="right" mr={2}>
-                <Text color="gray.500" fontSize="sm">
-                  {currentTime} . {getCurrentSectionName(currentTime)}
-                </Text>
-              </Box>
-              <Box flex={1} position="relative" mx={4}>
-                <Slider aria-label="Track Timeline" value={position} max={duration} min={0} width="full" onChange={handleScrubberChange}>
-                  <SliderTrack bg="gray.500">
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb boxSize={4}>
-                    <Box />
-                  </SliderThumb>
-                </Slider>
-                {sections.map((section, index) => (
-                  <Box key={index} position="absolute" height="2px" bg="gray.300" left={`${(section.timestamp! / duration) * 100}%`} width="1px" top="50%" transform="translateY(-50%)" />
-                ))}
-              </Box>
-              <Box width="80px" textAlign="left" ml={2}>
-                <Text color="gray.500" fontSize="sm">
-                  {timeLeft}
-                </Text>
-              </Box>
-            </Flex>
-          </Flex>
-
-          {/* Volume Control hidden for mobile*/}
-          <Flex alignItems="center" direction={{ base: "row", md: "row" }} mt={{ base: 2, md: 0 }} ml={4}>
-         
-          <Flex alignItems="center">
-            <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" size="sm" color={isLiked ? 'red.500' : likedColor} onClick={toggleLike} />
-            <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.isCommented ? 'blue.500' : commentedColor} onClick={() => console.log('Navigating to comments...')} />
-          </Flex>
-        
-        
-            <IconButton aria-label="Volume Down" icon={<FaVolumeDown />} variant="ghost" size="sm" />
-            <Slider aria-label="Volume" defaultValue={30} max={100} min={0} width="80px">
+        {/* Slider - Hidden in mobile */}
+        {!isMobile && (
+          <Flex width="50%" mx={4} alignItems="center">
+            <Text mr={2}>{currentTime}</Text>
+            <Slider
+              aria-label="Track Timeline"
+              value={position}
+              max={duration}
+              onChange={(val) => setPosition(val)}
+            >
               <SliderTrack>
                 <SliderFilledTrack />
               </SliderTrack>
-              <SliderThumb boxSize={4}>
-                <Box />
-              </SliderThumb>
+              <SliderThumb />
             </Slider>
+            <Text ml={2}>{timeLeft}</Text>
           </Flex>
-        </Flex>
-      )}
+        )}
+
+        {/* Like and Comment - Hidden in mobile */}
+        {!isMobile && (
+          <Flex alignItems="center">
+            <IconButton
+              aria-label="Like"
+              icon={<FaHeart />}
+              variant="ghost"
+              size="sm"
+              color={isLiked ? "red.500" : likedColor}
+              onClick={toggleLike}
+            />
+            <IconButton
+              aria-label="Comment"
+              icon={<FaCommentAlt />}
+              variant="ghost"
+              size="sm"
+              color={comments.isCommented ? "blue.500" : commentedColor}
+              onClick={() => console.log("Navigating to comments...")}
+            />
+          </Flex>
+        )}
+
+        {/* Volume Control - Hidden in mobile */}
+        {!isMobile && (
+          <Flex alignItems="center" ml={4} width={"10%"}>
+            <IconButton
+              aria-label="Volume Down"
+              icon={<FaVolumeDown />}
+              variant="ghost"
+              size="sm"
+              onClick={() => setVolume(Math.max(volume - 10, 0))}
+            />
+            <Slider
+              aria-label="Volume"
+              value={volume}
+              onChange={setVolume}
+              mx={2}
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+            <IconButton
+              aria-label="Volume Up"
+              icon={<FaVolumeUp />}
+              variant="ghost"
+              size="sm"
+              onClick={() => setVolume(Math.min(volume + 10, 100))}
+            />
+          </Flex>
+        )}
+      </Flex>
     </Box>
   );
-};
+}
 
 export default PlayerBar;
