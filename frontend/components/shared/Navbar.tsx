@@ -9,6 +9,7 @@ import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
+import Notifications from "../../pages/notification/Notifications";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -28,6 +29,11 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  const toggleNotifications = () => {
+  setIsNotificationsOpen(!isNotificationsOpen);
+};
 
   useEffect(() => {
     // Custom User logged in
@@ -115,6 +121,12 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
+const NotificationsModal = () => {
+  return (
+
+         <Notifications isOpen={isNotificationsOpen} onClose={toggleNotifications} />
+  );
+};
 
   return (
     <>
@@ -127,7 +139,7 @@ export default function Navbar() {
         mb={"3em"}
         position="sticky"
         top={5}
-        zIndex={999}
+        zIndex={1001}
         borderRadius={"95px"}
         boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
         data-testid="navbar-component"
@@ -158,13 +170,23 @@ export default function Navbar() {
               <Link href="/Create">
                 <IconButton aria-label="Create" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
               </Link>
-              <Link href="notification/Notifications">
-                <IconButton aria-label="Create" icon={<BellIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
-              </Link>
+              <IconButton
+                aria-label="Notifications"
+                icon={<BellIcon />}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+                onClick={toggleNotifications} // Toggle function
+              />
+
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           )}
         </Flex>
+        {isNotificationsOpen && <NotificationsModal />}
       </Box>
     </>
   );

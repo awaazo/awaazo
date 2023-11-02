@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Box, VStack, Text, List, ListItem, Avatar, Button, HStack, IconButton, Select, Badge } from '@chakra-ui/react';
+import React, { useState, useEffect, FC } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Box, VStack, Text, List, ListItem, Avatar, Button, HStack, IconButton, Select, Badge } from '@chakra-ui/react';
 import Navbar from '../../components/shared/Navbar';
 import { UserEpisodeInteraction, User, Episode } from '../../utilities/Interfaces';
 import { FaPlay, FaCheck, FaList, FaPlus } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 
 
+interface NotificationsProps {
+ isOpen: boolean;
+ onClose: () => void;
+}
 
-const Notifications = () => {
+const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
    
    const [notifications, setNotifications] = useState<(UserEpisodeInteraction | User)[]>([]);
    const [episodes, setEpisodes] = useState<Episode[]>([]);
@@ -132,14 +136,19 @@ const Notifications = () => {
 
  return (
   <>
-    <Navbar />
-    <Box display="flex" justifyContent="center" alignItems="center" height="80vh" width="100%">
+      <Modal isOpen={isOpen} onClose={onClose}>
+
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Notifications</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+    <Box display="flex" justifyContent="center" alignItems="center" height="auto" width="auto">
       <VStack spacing={5} align="center" p={5} bg="gray.700" borderRadius="md">
-        <Text fontSize="xl" fontWeight="bold">Notifications</Text>
-        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
-           <option value="all">All Notifications</option>
-           <option value="episode">Episode Interactions</option>
-           <option value="user">User Notifications</option>
+        <Select value={filter} onChange={(e) => setFilter(e.target.value as 'all' | 'episode' | 'user')}>
+          <option value="all">All Notifications</option>
+          <option value="episode">Episode Interactions</option>
+          <option value="user">User Notifications</option>
         </Select>
         <Button onClick={() => setSortByDate(!sortByDate)}>
            Sort by {sortByDate ? 'Oldest' : 'Newest'}
@@ -181,6 +190,9 @@ const Notifications = () => {
 
       </VStack>
     </Box>
+    </ModalBody>
+      </ModalContent>
+    </Modal>
   </>
 );
 };
