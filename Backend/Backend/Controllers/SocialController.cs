@@ -247,7 +247,7 @@ public class SocialController : ControllerBase
         }
     }
 
-    [HttpGet("getPodcastRating")]
+    [HttpGet("getPodcastMeanRating")]
     public async Task<ActionResult> GetPodcastRating(Guid podcastId)
     {
         try

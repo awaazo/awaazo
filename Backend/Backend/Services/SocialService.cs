@@ -309,11 +309,11 @@ public class SocialService : ISocialService
         // Check if the Podcast exists
         Podcast podcast = await _db.Podcasts!.FirstOrDefaultAsync(podcast => podcast.Id.Equals(podcastId)) ?? throw new Exception("Podcast does not exist with the given ID.");
 
-        // Get the mean rating
-        int meanRating = (int)Math.Round(_db.PodcastRatings.Where(rating => rating.PodcastId.Equals(podcastId)).Average(rating => rating.Rating));
+        // Get the number of ratings for the podcast
+        int ratingCount = await _db.PodcastRatings.CountAsync(rating=>rating.PodcastId.Equals(podcastId));
 
-        // Return the mean rating
-        return meanRating;
+        // If there are no ratings, return 0, otherwise return the average
+        return ratingCount == 0 ? 0 : (int)Math.Round(_db.PodcastRatings.Where(rating => rating.PodcastId.Equals(podcastId)).Average(rating => rating.Rating));
     }
 
     public async Task<bool> AddReviewToPodcastAsync(Guid podcastId, User user, string review)
