@@ -126,7 +126,9 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
- 
+        
+
+
 
     }
     

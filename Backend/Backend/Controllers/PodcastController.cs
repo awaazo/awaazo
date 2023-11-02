@@ -17,6 +17,7 @@ namespace Backend.Controllers
         private readonly IPodcastService _podcastService;
         private readonly IFileService _fileService;
         private readonly AppDbContext _db;
+      
         public PodcastController(IPodcastService podcastService,AppDbContext db,IFileService fileService)
         {
             _podcastService = podcastService;
@@ -30,23 +31,21 @@ namespace Backend.Controllers
         {
             try
             {
-
-            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-                if (podcast != null)
+                GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
+                //Return Error if Podcast is null
+                if (podcast == null)
                 {
 
-                    return Ok(podcast);
+                    return BadRequest("Bad Request");
 
                 }
-                else { return BadRequest("Bad Request"); }
+                return Ok(podcast);
 
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            
-
            
 
         }
@@ -55,28 +54,38 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetPodcastById(string id)
         {
             Podcast? podcast =  await _podcastService.GetPodcast(id);
-            if(podcast != null)
-            {
-                return Ok(podcast);
-            }
-            else
+            if(podcast == null)
             {
                 return BadRequest("Bad Request");
             }
-        
+            return Ok(podcast);
         }
 
-        
+        [HttpGet("getMyPodcast")]
+        [Authorize]
+        public async Task<IActionResult> GetMyPodcast()
+        {
+            try
+            {
+                List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
+                if(collection == null)
+                {
+                    return BadRequest("Bad Request");
+
+                }
+                return Ok(collection);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
-
-
-       
-
-
-
-
-
 
         
     }
+        
+    
+}
 

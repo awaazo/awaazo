@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("File")]
+    [Route("file")]
     public class FileController : Controller
     {
         private readonly AppDbContext _db;
@@ -28,7 +28,7 @@ namespace Backend.Controllers
             Files? file = await _db.File!.FirstOrDefaultAsync(u => u.FileId == guid);
 
 
-            return PhysicalFile(_fileService.GetPath(file!.Path!), file!.MimeType);
+            return PhysicalFile(_fileService.GetPath(file!.Path!), file!.MimeType,true);
 
 
 

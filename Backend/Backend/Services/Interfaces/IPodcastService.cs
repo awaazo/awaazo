@@ -8,6 +8,8 @@ namespace Backend.Services.Interfaces
         public Task<GetPodcastRequest?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext);
         public Task<Podcast?> GetPodcast(string id);
 
+        public Task<List<GetPodcastResponse>> GetMyPodcast(HttpContext httpContext);
+
 
     }
 }
