@@ -36,7 +36,21 @@ const podcasts = [
     cover: "https://i.ibb.co/RhjmQbm/koga-sum-te-pital.gif",
     isExplicit: false,
     tags: ["Science", "Nature", "Exploration"],
-    episodes: ["Episode 1", "Episode 2", "Episode 3"],
+    episodes: [
+      {
+        title: "Episode 1",
+        description: "In this episode, we explore the depths of the ocean.",
+      },
+      {
+        title: "Episode 2",
+        description: "In this episode, we explore the mysteries of the cosmos.",
+      },
+      {
+        title: "Episode 3",
+        description:
+          "In this episode, we delve into the wonders of the natural world.",
+      },
+    ],
     rating: "7.6",
   },
   {
@@ -49,7 +63,21 @@ const podcasts = [
       "https://d.newsweek.com/en/full/1962972/spacex-owner-tesla-ceo-elon-musk.jpg",
     isExplicit: true,
     tags: ["Technology", "Gadgets", "Innovation"],
-    episodes: ["Episode 1", "Episode 2", "Episode 3", "Episode 4"],
+    episodes: [
+      {
+        title: "Episode 1",
+        description: "In this episode, we explore the depths of the ocean.",
+      },
+      {
+        title: "Episode 2",
+        description: "In this episode, we explore the mysteries of the cosmos.",
+      },
+      {
+        title: "Episode 3",
+        description:
+          "In this episode, we delve into the wonders of the natural world.",
+      },
+    ],
     rating: "7.6",
   },
   {
@@ -62,14 +90,30 @@ const podcasts = [
       "https://www.amacad.org/sites/default/files/person/headshots/oprah.jpg",
     isExplicit: false,
     tags: ["Mindfulness", "Self-Care", "Well-being"],
-    episodes: ["Episode 1", "Episode 2"],
+    episodes: [
+      {
+        title: "Episode 1",
+        description: "In this episode, we explore the depths of the ocean.",
+      },
+      {
+        title: "Episode 2",
+        description: "In this episode, we explore the mysteries of the cosmos.",
+      },
+      {
+        title: "Episode 3",
+        description:
+          "In this episode, we delve into the wonders of the natural world.",
+      },
+    ],
     rating: "7.6",
   },
 ];
 
 const MyPodcasts = () => {
   const { colorMode } = useColorMode();
-  const [selectedPodcastId, setSelectedPodcastId] = useState(null);
+
+  // Initialize the state with the ID of the first podcast
+  const [selectedPodcastId, setSelectedPodcastId] = useState(podcasts[0].id);
 
   const togglePodcastDetail = (id) => {
     if (selectedPodcastId === id) {
@@ -78,7 +122,6 @@ const MyPodcasts = () => {
       setSelectedPodcastId(id);
     }
   };
-
   return (
     <>
       <Navbar />
@@ -100,20 +143,21 @@ const MyPodcasts = () => {
               >
                 <Box position="relative" boxSize="150px">
                   <Image
-                    borderRadius="3em"
+                    borderRadius="2.5em"
                     boxSize="150px"
                     objectFit="cover"
                     src={podcast.cover}
                     alt={podcast.name}
+                    boxShadow={
+                      selectedPodcastId === podcast.id
+                        ? "0 0 10px rgba(0, 0, 0, 0.5)"
+                        : ""
+                    }
                     style={{
-                      boxShadow:
-                        selectedPodcastId === podcast.id
-                          ? "0 0 10px #9ecaed"
-                          : "",
                       outline:
                         selectedPodcastId === podcast.id
-                          ? "2px solid #9ecaed"
-                          : "2px solid rgba(255, 255, 255, 0.5)",
+                          ? "3px solid #9ecaed"
+                          : "1px solid rgba(255, 255, 255, 0.5)",
                     }}
                   />
                 </Box>
@@ -130,14 +174,14 @@ const MyPodcasts = () => {
                 p={4}
                 mt={"2em"}
                 borderWidth="1px"
-                borderRadius="1em"
+                borderRadius="2em"
                 align="start"
-                padding={"2em"}
+                padding={"3em"}
               >
-                <Flex justify="space-between" align="center" w="full" >
+                <Flex justify="space-between" align="center" w="full">
                   <Wrap align="center" spacing={4}>
                     <WrapItem>
-                      <Text fontSize="xl" fontWeight="bold" >
+                      <Text fontSize="xl" fontWeight="bold">
                         🎙️ {podcast.name}
                       </Text>
                     </WrapItem>
@@ -196,7 +240,7 @@ const MyPodcasts = () => {
                     borderRadius: "1em",
                     padding: "1em",
                     outline: "2px solid rgba(255, 255, 255, 0.1)",
-                    marginBottom: "1em",
+                    marginBottom: "2em",
                   }}
                 >
                   <Text fontSize="md" fontWeight="bold">
@@ -209,12 +253,26 @@ const MyPodcasts = () => {
                     ❤️ Likes: 5
                   </Text>
                 </Box>
-                <Text mt={2} fontWeight="bold">
-                  Episodes:
-                </Text>
-                {podcast.episodes.map((episode, index) => (
-                  <Text key={index}>{episode}</Text>
-                ))}
+                <>
+                  {podcast.episodes.map((episode, index) => (
+                    <VStack key={index} align="start" spacing={2}>
+                      <HStack spacing={2}>
+                        <Text fontWeight="bold">{episode.title}</Text>
+                        <Button
+                          style={{
+                            borderRadius: "10em",
+                            colorScheme: "blue",
+                            padding: "0.5em 1.5em", 
+                            fontSize: "0.8em",
+                          }}
+                        >
+                          Edit Episode
+                        </Button>
+                      </HStack>
+                      <Text marginBottom={"2em"}>{episode.description}</Text>
+                    </VStack>
+                  ))}
+                </>
               </VStack>
             )}
           </Collapse>
