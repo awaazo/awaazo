@@ -1,4 +1,5 @@
-﻿using Backend.Controllers.Requests;
+﻿using AutoMapper;
+using Backend.Controllers.Requests;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
@@ -11,11 +12,13 @@ namespace Backend.Services
         private readonly AppDbContext _db;
         private readonly IFileService _fileService;
         private readonly IAuthService _authService;
-        private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png", "image/gif" };
-        public PodcastService(AppDbContext db,IFileService fileService,IAuthService authService) {
+        private readonly IMapper _mapper;
+        private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png"};
+        public PodcastService(AppDbContext db,IFileService fileService,IAuthService authService,IMapper mapper) {
             _db = db;
             _fileService = fileService;
             _authService = authService;
+            _mapper = mapper;
         }
 
 
@@ -78,14 +81,44 @@ namespace Backend.Services
             {
                 return null;
             }
-            else
-            {
-                var podcastId = Guid.Parse(id);
-                return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
+            var podcastId = Guid.Parse(id);
+            return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).ThenInclude(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == podcastId);
         
-            }
         }
 
+
+        public async Task<List<GetPodcastResponse>> GetMyPodcast(HttpContext httpContext)
+        {
+           User? user = await  _authService.IdentifyUserAsync(httpContext);
+            if(user == null)
+            {
+                throw new Exception("User not Found");
+
+            }
+            List<Podcast> podcasts = await _db.Podcasts!.Include(u => u.Episodes).Where(u => u.PodcasterId == user.Id).ToListAsync();
+
+            List<GetPodcastResponse> response = new List<GetPodcastResponse>();
+            foreach (var podcast in podcasts)
+            {
+                response.Add(new GetPodcastResponse()
+                {
+                    Id = podcast.Id,
+                    Name = podcast.Name,
+                    Description = podcast.Description,
+                    CoverId = podcast.CoverId,
+                    Tags = podcast.Tags,
+                    IsExplicit = podcast.IsExplicit,
+                    Type = podcast.Type,
+                    AverageRating = podcast.AverageRating,
+                    TotalRatings = podcast.TotalRatings,
+                    NoOfEpisode = podcast.Episodes.Count,
+
+                });
+
+            }
+
+            return response;
+        }
 
 
 
