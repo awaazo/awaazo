@@ -158,7 +158,7 @@ export default function Navbar() {
               <Link href="/Create">
                 <IconButton aria-label="Create" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
               </Link>
-              <Link href="/Notifications">
+              <Link href="notification/Notifications">
                 <IconButton aria-label="Create" icon={<BellIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} color={colorMode === "dark" ? "white" : "black"} />
               </Link>
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
