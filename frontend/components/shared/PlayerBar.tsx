@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Badge, useColorModeValue, useBreakpointValue } from "@chakra-ui/react";
-import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, FaVolumeUp, FaVolumeDown, FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useColorModeValue, useBreakpointValue } from "@chakra-ui/react";
+import { FaStepForward, FaStepBackward, FaBackward, FaPlay, FaPause, FaForward, FaVolumeDown, FaHeart, FaCommentAlt, } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
 
 const PlayerBar: React.FC<Episode> = (props) => {
@@ -10,11 +10,11 @@ const PlayerBar: React.FC<Episode> = (props) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(likes.isLiked);
 
+  const toggleLike = () => setIsLiked(!isLiked);
   const togglePlayPause = () => setIsPlaying((prevIsPlaying) => !prevIsPlaying);
   const skipForward = () => setPosition((prevPos) => Math.min(prevPos + 10, duration));
   const skipBackward = () => setPosition((prevPos) => Math.max(prevPos - 10, 0));
   const handleCoverClick = () => console.log("Navigating to player page...");
-  const handleLikeClick = () => setIsLiked(!isLiked);
   const handleCommentClick = () => console.log("Open comment box...");
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -35,10 +35,11 @@ const PlayerBar: React.FC<Episode> = (props) => {
     return "";
   };
   return (
-    <Box boxSizing="border-box" position="sticky" bottom={0} left={0} right={0} p={4} m={3} borderRadius={"25px"} bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.1)")} shadow="md">
+    <Box bg={useColorModeValue("rgba(255, 255, 255, 0.1)", "rgba(0, 0, 0, 0.2)")} backdropFilter="blur(35px)" pt={2} pb={2} pr={5} pl={5} m={"1em"} position="sticky" bottom={2} left={0} right={0}  borderRadius={"2em"}       border="3px solid rgba(255, 255, 255, 0.05)"
+    boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"data-testid="navbar-component">
       {" "}
       {isMobile ? (
-        <Flex justifyContent="space-between" alignItems="center">
+        <Flex justifyContent="space-between" alignItems="center" >
           <Flex alignItems="center" onClick={handleCoverClick} cursor="pointer">
             <Image boxSize="30px" src={coverArt} borderRadius="full" mr={4} />
             <Box>
@@ -54,7 +55,8 @@ const PlayerBar: React.FC<Episode> = (props) => {
         </Flex>
       ) : (
         <Flex direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="center">
-          {/* Left Side - Cover Art, episodeName, Podcaster */}
+          
+          {/* Episode info  */}
           <Flex direction={{ base: "column", md: "row" }} alignItems="center" mb={{ base: 2, md: 0 }} mr={4} onClick={handleCoverClick} cursor="pointer">
             <Image boxSize={{ base: "30px", md: "40px" }} src={coverArt} borderRadius="full" mb={{ base: 2, md: 0 }} mr={4} />
             <Box mb={{ base: 2, md: 0 }}>
@@ -65,28 +67,20 @@ const PlayerBar: React.FC<Episode> = (props) => {
                 {podcaster}
               </Text>
             </Box>
-            <Flex ml={4} alignItems="center">
-              <Box position="relative">
-                <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" color={isLiked ? "red.500" : likedColor} size="sm" onClick={handleLikeClick} />
-              </Box>
 
-              <Box position="relative" ml={2}>
-                <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" color={commentedColor} size="sm" onClick={handleCommentClick} />
-              </Box>
-            </Flex>
           </Flex>
 
           {/* Middle - Controls */}
           <Flex flexDirection="column" alignItems="center" flex={1}>
             <Flex alignItems="center" justifyContent="center" width="100%" mb={2}>
-              <IconButton aria-label="Skip 10 seconds Backward" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={skipBackward} mr={2} />
-              <IconButton aria-label="Previous Track" icon={<FaBackward />} variant="ghost" size="sm" onClick={() => {}} mr={2} />
+              <IconButton aria-label="Skip 10 seconds Backward" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={() => {}} mr={2} />
+              <IconButton aria-label="Previous Track" icon={<FaBackward />} variant="ghost" size="sm" onClick={skipBackward} mr={2} />
               <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="ghost" size="sm" onClick={togglePlayPause} mr={2} />
-              <IconButton aria-label="Next Track" icon={<FaForward />} variant="ghost" size="sm" onClick={() => {}} mr={2} />
-              <IconButton aria-label="Skip 10 seconds Forward" icon={<FaStepForward />} variant="ghost" size="sm" onClick={skipForward} />
+              <IconButton aria-label="Next Track" icon={<FaForward />} variant="ghost" size="sm" onClick={skipForward} mr={2} />
+              <IconButton aria-label="Skip 10 seconds Forward" icon={<FaStepForward />} variant="ghost" size="sm" onClick={() => {}} />
             </Flex>
 
-            {/* Timeline Scrubber */}
+            {/* Timeline Scrubber shows diffrently for mobile */}
             <Flex alignItems="center" justifyContent="space-between" width="100%">
               <Box width="80px" textAlign="right" mr={2}>
                 <Text color="gray.500" fontSize="sm">
@@ -99,7 +93,7 @@ const PlayerBar: React.FC<Episode> = (props) => {
                     <SliderFilledTrack />
                   </SliderTrack>
                   <SliderThumb boxSize={4}>
-                    <Box color="tomato" />
+                    <Box />
                   </SliderThumb>
                 </Slider>
                 {sections.map((section, index) => (
@@ -114,8 +108,15 @@ const PlayerBar: React.FC<Episode> = (props) => {
             </Flex>
           </Flex>
 
-          {/* Right Side - Volume Control and Icons */}
+          {/* Volume Control hidden for mobile*/}
           <Flex alignItems="center" direction={{ base: "row", md: "row" }} mt={{ base: 2, md: 0 }} ml={4}>
+         
+          <Flex alignItems="center">
+            <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" size="sm" color={isLiked ? 'red.500' : likedColor} onClick={toggleLike} />
+            <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.isCommented ? 'blue.500' : commentedColor} onClick={() => console.log('Navigating to comments...')} />
+          </Flex>
+        
+        
             <IconButton aria-label="Volume Down" icon={<FaVolumeDown />} variant="ghost" size="sm" />
             <Slider aria-label="Volume" defaultValue={30} max={100} min={0} width="80px">
               <SliderTrack>

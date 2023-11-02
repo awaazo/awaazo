@@ -129,9 +129,8 @@ export default function Navbar() {
         top={5}
         zIndex={999}
         borderRadius={"95px"}
-        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.1)"
         data-testid="navbar-component"
-        // semi transparent white outline
         border="3px solid rgba(255, 255, 255, 0.05)"
       >
         <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>

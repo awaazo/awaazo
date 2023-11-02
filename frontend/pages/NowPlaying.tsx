@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { Box, Grid } from "@chakra-ui/react";
+import { Box, Grid, useBreakpointValue } from "@chakra-ui/react";
 import Navbar from "../components/shared/Navbar";
 import PlayerBar from "../components/shared/PlayerBar";
-import ChatBot from "../components/player/ChatBot";
-import Bookmarks from "../components/player/Bookmarks";
-import Transcripts from "../components/player/Transcripts";
-import CoverArt from "../components/player/CoverArt";
-import Sections from "../components/player/Sections";
+import ChatBot from "../components/nowPlaying/ChatBot";
+import Bookmarks from "../components/nowPlaying/Bookmarks";
+import Transcripts from "../components/nowPlaying/Transcripts";
+import CoverArt from "../components/nowPlaying/CoverArt";
+import Sections from "../components/nowPlaying/Sections";
 import { episodes } from "../utilities/SampleData";
 import { usePalette } from "color-thief-react";
+import { Swiper, SwiperSlide } from 'swiper/react'; 
+import 'swiper/swiper-bundle.css';
 
 const currentEpisode = episodes[0];
 
@@ -34,12 +36,10 @@ const componentsData = [
   },
 ];
 
-const Player = () => {
-  const {
-    data: palette,
-  } = usePalette(
-    currentEpisode.coverArt, // src img
-    2, 
+const NowPlaying = () => {
+  const { data: palette } = usePalette(
+    currentEpisode.coverArt,
+    2,
     "hex",
     {
       crossOrigin: "Anonymous",
@@ -86,18 +86,24 @@ const Player = () => {
     });
 
   const visibleComponents = components.filter((comp) => comp.isVisible);
+  const isMobile = useBreakpointValue({ base: true, md: false }); 
+
   return (
     <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || "black"}>
       <Navbar />
-
-      <Grid
-        flexGrow={1}
-        templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }}
-        gap={4}
-        mt="4"
-        mx="4"
-        padding="1.5rem" 
-      >
+      {isMobile ? (
+        <Swiper
+          spaceBetween={50}
+          slidesPerView={1}
+        >
+          {componentsData.map((comp, index) => (
+            <SwiperSlide key={index}>
+              {comp.component}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <Grid flexGrow={1} templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={4} mt="4" mx="4" padding="1.5rem">
         {visibleComponents.map((comp, index) => (
           <Box
             key={index}
@@ -116,10 +122,11 @@ const Player = () => {
             {comp.component}
           </Box>
         ))}
-      </Grid>
+        </Grid>
+      )}
       <PlayerBar {...currentEpisode} />
     </Box>
   );
 };
 
-export default Player;
+export default NowPlaying;
