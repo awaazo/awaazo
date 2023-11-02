@@ -34,9 +34,9 @@ public class SocialController : ControllerBase
                 return NotFound("User does not exist.");
 
             // Return the add comment status
-            return await _socialService.AddCommentAsync(request,user)? Ok("Comment saved."): Ok("Comment failed to save.");
+            return await _socialService.AddCommentAsync(request, user) ? Ok("Comment saved.") : Ok("Comment failed to save.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -52,13 +52,13 @@ public class SocialController : ControllerBase
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
             // If User is not found, return 404
-            if(user is null)
+            if (user is null)
                 return NotFound("User does not exist.");
 
             // Return the comments
             return Ok(await _socialService.GetEpisodeCommentsAsync(episodeId));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -74,13 +74,13 @@ public class SocialController : ControllerBase
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
             // If User is not found, return 404
-            if(user is null)
+            if (user is null)
                 return NotFound("User does not exist.");
 
             // Return the comments
             return Ok(await _socialService.GetUserCommentsAsync(user));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -100,9 +100,9 @@ public class SocialController : ControllerBase
                 return NotFound("User does not exist.");
 
             // Return the add comment status
-            return await _socialService.DeleteCommentAsync(commentId,user)? Ok("Comment deleted."): Ok("Comment failed to be deleted.");
+            return await _socialService.DeleteCommentAsync(commentId, user) ? Ok("Comment deleted.") : Ok("Comment failed to be deleted.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -122,14 +122,14 @@ public class SocialController : ControllerBase
                 return NotFound("User does not exist.");
 
             // Add like to the right entity.
-            if(episodeId!=Guid.Empty)
-                return await _socialService.AddLikeToEpisodeAsync(episodeId,user) ? Ok("Episode liked."): Ok("Episode failed to be liked.");
-            else if (commentId!=Guid.Empty)
-                return await _socialService.AddLikeToCommentAsync(commentId,user) ? Ok("Comment liked."): Ok("Comment failed to be liked.");
+            if (episodeId != Guid.Empty)
+                return await _socialService.AddLikeToEpisodeAsync(episodeId, user) ? Ok("Episode liked.") : Ok("Episode failed to be liked.");
+            else if (commentId != Guid.Empty)
+                return await _socialService.AddLikeToCommentAsync(commentId, user) ? Ok("Comment liked.") : Ok("Comment failed to be liked.");
             else
                 return BadRequest("Episode or Comment ID is required.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -139,7 +139,7 @@ public class SocialController : ControllerBase
     [HttpDelete("unlike")]
     public async Task<ActionResult> RemoveLike(Guid episodeId, Guid commentId)
     {
-         try
+        try
         {
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -149,18 +149,122 @@ public class SocialController : ControllerBase
                 return NotFound("User does not exist.");
 
             // Add like to the right entity.
-            if(episodeId!=Guid.Empty)
-                return await _socialService.RemoveEpisodeLikeAsync(episodeId,user) ? Ok("Episode unliked."): Ok("Episode failed to be unliked.");
-            else if (commentId!=Guid.Empty)
-                return await _socialService.RemoveCommentLikeAsync(commentId,user) ? Ok("Comment unliked."): Ok("Comment failed to be unliked.");
+            if (episodeId != Guid.Empty)
+                return await _socialService.RemoveEpisodeLikeAsync(episodeId, user) ? Ok("Episode unliked.") : Ok("Episode failed to be unliked.");
+            else if (commentId != Guid.Empty)
+                return await _socialService.RemoveCommentLikeAsync(commentId, user) ? Ok("Comment unliked.") : Ok("Comment failed to be unliked.");
             else
                 return BadRequest("Episode or Comment ID is required.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
         }
     }
 
+    [HttpPost("rating")]
+    public async Task<ActionResult> AddRating(RatingRequest request)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.AddRatingToPodcastAsync(request.PodcastId, user, (uint)request.Rating) ? Ok("Rating saved.") : Ok("Rating could not be saved.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("deleteRating")]
+    public async Task<ActionResult> RemoveRating(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.RemoveRatingFromPodcastAsync(podcastId, user) ? Ok("Rating deleted.") : Ok("Rating could not be deleted.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("review")]
+    public async Task<ActionResult> AddReview(ReviewRequest request)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.AddReviewToPodcastAsync(request.PodcastId, user, request.Review) ? Ok("Review saved.") : Ok("Review could not be saved.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("deleteReview")]
+    public async Task<ActionResult> RemoveReview(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.RemoveReviewFromPodcastAsync(podcastId, user) ? Ok("Review deleted.") : Ok("Review could not be deleted.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("getPodcastRating")]
+    public async Task<ActionResult> GetPodcastRating(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _socialService.GetPodcastMeanRatingAsync(podcastId));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
 }

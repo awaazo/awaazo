@@ -165,7 +165,7 @@ public class SocialService : ISocialService
         };
 
         // Make sure its not a duplicate like
-        if(await _db.Likes.CountAsync(l=>l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId))>0)
+        if (await _db.Likes.CountAsync(l => l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId)) > 0)
             throw new Exception("Episode has already been liked.");
 
         // Add the Like to the DB and return the status
@@ -192,7 +192,7 @@ public class SocialService : ISocialService
         };
 
         // Make sure its not a duplicate like
-        if(await _db.Likes.CountAsync(l=>l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId))>0)
+        if (await _db.Likes.CountAsync(l => l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId)) > 0)
             throw new Exception("Comment has already been liked.");
 
         // Add the Like to the DB and return the status
@@ -246,4 +246,127 @@ public class SocialService : ISocialService
         }
     }
 
+    public async Task<bool> AddRatingToPodcastAsync(Guid podcastId, User user, uint rating)
+    {
+        // Check if the podcast exists
+        Podcast podcast = _db.Podcasts!.FirstOrDefault(podcast => podcast.Id.Equals(podcastId)) ?? throw new Exception("Podcast does not exist with the given ID.");
+
+        // Check if the user has already rated the podcast
+        PodcastRating? existingRating = await _db.PodcastRatings.FirstOrDefaultAsync(rating => rating.PodcastId.Equals(podcastId) && rating.UserId.Equals(user.Id));
+
+        // Check if the rating is valid
+        if (rating > PodcastRating.MAX_RATING || rating < PodcastRating.MIN_RATING)
+            throw new Exception(string.Format("Rating must be between {0} and {1}.", PodcastRating.MIN_RATING, PodcastRating.MAX_RATING));
+
+        // If the rating does not exist, create it, otherwise update it
+        if (existingRating is null)
+        {
+            // Create the Rating
+            PodcastRating podcastRating = new()
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                PodcastId = podcastId,
+                Rating = rating
+            };
+            
+            // Add the Rating to the DB
+            await _db.PodcastRatings.AddAsync(podcastRating);
+        }
+        else
+        {
+            // Update the Rating in the DB
+            existingRating.Rating = rating;
+            _db.PodcastRatings.Update(existingRating);
+        }
+
+        // Return the status
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> RemoveRatingFromPodcastAsync(Guid podcastId, User user)
+    {
+        // Check if the Podcast Rating exists
+        PodcastRating podcastRating = await _db.PodcastRatings.FirstOrDefaultAsync(rating => rating.PodcastId.Equals(podcastId) && rating.UserId.Equals(user.Id)) ?? throw new Exception("Rating does not exist for the given User ID and Podcast ID.");
+
+        // If the Podcast Rating has a review, update it, otherwise remove it
+        if (podcastRating.Review != string.Empty)
+        {
+            podcastRating.Rating = 0;
+            _db.PodcastRatings.Update(podcastRating);
+        }
+        else
+        {
+            _db.PodcastRatings.Remove(podcastRating);
+        }
+
+        // Return the status
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<int> GetPodcastMeanRatingAsync(Guid podcastId)
+    {
+        // Check if the Podcast exists
+        Podcast podcast = await _db.Podcasts!.FirstOrDefaultAsync(podcast => podcast.Id.Equals(podcastId)) ?? throw new Exception("Podcast does not exist with the given ID.");
+
+        // Get the mean rating
+        int meanRating = (int)Math.Round(_db.PodcastRatings.Where(rating => rating.PodcastId.Equals(podcastId)).Average(rating => rating.Rating));
+
+        // Return the mean rating
+        return meanRating;
+    }
+
+    public async Task<bool> AddReviewToPodcastAsync(Guid podcastId, User user, string review)
+    {
+        // Check if the podcast exists
+        Podcast podcast = _db.Podcasts!.FirstOrDefault(podcast => podcast.Id.Equals(podcastId)) ?? throw new Exception("Podcast does not exist with the given ID.");
+
+        // Check if the user has already rated the podcast
+        PodcastRating? existingRating = await _db.PodcastRatings.FirstOrDefaultAsync(rating => rating.PodcastId.Equals(podcastId) && rating.UserId.Equals(user.Id));
+
+        // If the rating does not exist, create it, otherwise update it
+        if (existingRating is null)
+        {
+            // Create the Rating
+            PodcastRating podcastRating = new()
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                PodcastId = podcastId,
+                Review = review
+            };
+            
+            // Add the Rating to the DB
+            await _db.PodcastRatings.AddAsync(podcastRating);
+        }
+        else
+        {
+            // Update the Rating in the DB
+            existingRating.Review = review;
+            _db.PodcastRatings.Update(existingRating);
+        }
+
+        // Return the status
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> RemoveReviewFromPodcastAsync(Guid podcastId, User user)
+    {
+        // Check if the Podcast Rating exists
+        PodcastRating podcastRating = await _db.PodcastRatings.FirstOrDefaultAsync(rating => rating.PodcastId.Equals(podcastId) && rating.UserId.Equals(user.Id)) ?? throw new Exception("Rating does not exist for the given User ID and Podcast ID.");
+
+        // If the Podcast Rating has a rating, update it, otherwise remove it
+        if (podcastRating.Rating != 0)
+        {
+            podcastRating.Review = string.Empty;
+            _db.PodcastRatings.Update(podcastRating);
+        }
+        else
+        {
+            _db.PodcastRatings.Remove(podcastRating);
+        }
+
+        // Return the status
+        return await _db.SaveChangesAsync() > 0;
+    }
 }

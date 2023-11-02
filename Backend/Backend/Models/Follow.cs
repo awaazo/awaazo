@@ -63,37 +63,35 @@ namespace Backend.Models
         /// Rating Id.
         /// </summary>
         /// <value></value>
+        [Key]
         public Guid Id {get;set;} = Guid.NewGuid();
         
+        /// <summary>
+        /// User to whom the rating belongs.
+        /// </summary>
+        /// <value></value>
+        public User User {get;set;} = null!;
+
         /// <summary>
         /// Id of the user who rated the podcast.
         /// </summary>
         /// <value></value>
+        [Required]
         public Guid UserId {get;set;} = Guid.Empty;
         
         /// <summary>
         /// Id of the podcast.
         /// </summary>
         /// <value></value>
+        [Required]
         public Guid PodcastId {get;set;} = Guid.Empty;
         
         /// <summary>
         /// Rating for the podcast.
         /// </summary>
         /// <value></value>
-        public uint Rating 
-        {
-            get => rating;
-            set
-            {
-                if(value<MIN_RATING)
-                    rating = MIN_RATING;
-                else if(value>MAX_RATING)
-                    rating = MAX_RATING;
-                else
-                    rating = value;
-            }
-        }
+        [Required]
+        public uint Rating {get;set;} = 0;
         
         /// <summary>
         /// Review for the podcast.

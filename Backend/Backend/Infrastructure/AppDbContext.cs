@@ -27,7 +27,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
     public virtual DbSet<Sponsor>? Sponsors { get; set; }
     public virtual DbSet<MediaLink>? MediaLinks { get; set; }
-    public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
+    public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
     public virtual DbSet<Files>? File { get; set; }
@@ -63,8 +63,8 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
-
         
+
         // User 1-to-many Bookmark
         modelBuilder.Entity<User>()
             .HasMany(e => e.Bookmarks)
@@ -118,7 +118,6 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
-
             .IsRequired();
         
         // User 1-to-many UserEpisodeInteraction 
