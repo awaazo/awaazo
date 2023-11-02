@@ -46,15 +46,15 @@ const podcasts = [
     tags: ["Science", "Nature", "Exploration"],
     episodes: [
       {
-        title: "Episode 1",
+        title: "Episode 1: Ocean Exploration",
         description: "In this episode, we explore the depths of the ocean.",
       },
       {
-        title: "Episode 2",
+        title: "Episode 2: Space Exploration",
         description: "In this episode, we explore the mysteries of the cosmos.",
       },
       {
-        title: "Episode 3",
+        title: "Episode 3: Nature Exploration",
         description:
           "In this episode, we delve into the wonders of the natural world.",
       },
@@ -267,10 +267,11 @@ const MyPodcasts = () => {
                     padding: "1em",
                     outline: "2px solid rgba(255, 255, 255, 0.1)",
                     marginBottom: "2em",
+                    wordSpacing: "0.5em",
                   }}
                 >
                   <Text fontSize="md" fontWeight="bold">
-                    👂 Listeners: 5
+                    🎧 Listeners: 5
                   </Text>
                   <Text fontSize="md" fontWeight="bold">
                     📊 Subscribers: 5
