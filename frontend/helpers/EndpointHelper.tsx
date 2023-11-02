@@ -62,7 +62,7 @@ export default class EndpointHelper {
      */
     static getProfileSetupEndpoint = () => {
         return this.getBackendAddress() + "/profile/setup";
-    }
+    };
 
     /**
      * Returns the Profile Edit endpoint.
@@ -80,4 +80,52 @@ export default class EndpointHelper {
         return this.getBackendAddress() + "/profile/get";
     }
   static profileGetRequest: any;
+
+    /**
+     * Returns the Comment endpoint.
+     * @returns The Comment API Endpoint
+     */
+    static getCommentEndpoint = () => {
+      return this.getBackendAddress() + "/social/comment";
+  };
+
+  /**
+   * Returns the Get Episode Comment endpoint.
+   * @returns The Get Episode Comment API Endpoint
+   */
+  static getEpisodeCommentEndpoint = () => {
+      return this.getBackendAddress() + "/social/getEpisodeComment";
+  };
+
+  /**
+   * Returns the Get User Comments endpoint.
+   * @returns The Get User Comments API Endpoint
+   */
+  static getUserCommentsEndpoint = () => {
+      return this.getBackendAddress() + "/social/getUserComments";
+  };
+
+  /**
+   * Returns the Delete Comment endpoint.
+   * @returns The Delete Comment API Endpoint
+   */
+  static getDeleteCommentEndpoint = () => {
+      return this.getBackendAddress() + "/social/deleteComment";
+  };
+
+  /**
+   * Returns the Like endpoint.
+   * @returns The Like API Endpoint
+   */
+  static getLikeEndpoint = () => {
+      return this.getBackendAddress() + "/social/like";
+  };
+
+  /**
+   * Returns the Unlike endpoint.
+   * @returns The Unlike API Endpoint
+   */
+  static getUnlikeEndpoint = () => {
+      return this.getBackendAddress() + "/social/unlike";
+  };
 }
