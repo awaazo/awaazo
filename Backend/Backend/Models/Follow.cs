@@ -49,19 +49,58 @@ namespace Backend.Models
         }
     }
 
+    /// <summary>
+    /// Represents a rating for a podcast, which can be accompanied by a review.
+    /// </summary>
     public class PodcastRating : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
+        public const uint MAX_RATING = 5;
+        public const uint  MIN_RATING = 1;
 
-        public User User { get; set; } = null!;
+        private uint rating = 0;
+
+        /// <summary>
+        /// Rating Id.
+        /// </summary>
+        /// <value></value>
+        public Guid Id {get;set;} = Guid.NewGuid();
         
-        public Guid UserId { get; set; }
+        /// <summary>
+        /// Id of the user who rated the podcast.
+        /// </summary>
+        /// <value></value>
+        public Guid UserId {get;set;} = Guid.Empty;
         
-        public Guid PodcastId { get; set; }
+        /// <summary>
+        /// Id of the podcast.
+        /// </summary>
+        /// <value></value>
+        public Guid PodcastId {get;set;} = Guid.Empty;
         
-        public uint Rating { get; set; }
+        /// <summary>
+        /// Rating for the podcast.
+        /// </summary>
+        /// <value></value>
+        public uint Rating 
+        {
+            get => rating;
+            set
+            {
+                if(value<MIN_RATING)
+                    rating = MIN_RATING;
+                else if(value>MAX_RATING)
+                    rating = MAX_RATING;
+                else
+                    rating = value;
+            }
+        }
         
+        /// <summary>
+        /// Review for the podcast.
+        /// </summary>
+        /// <value></value>
+        public string Review {get;set;} = "";
     }
+
 }
 
