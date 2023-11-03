@@ -169,7 +169,7 @@ const PodcastCard = ({ podcast }) => (
           backgroundColor: "rgba(30, 215, 96, 0.45)",
           border: "none",
           borderRadius: "1.5rem",
-          boxShadow: "0 1px 10px rgba(0, 0, 0, 0.4)",
+          boxShadow: "0 1px 16px rgba(0, 0, 0, 0.7)",
           cursor: "pointer",
           padding: "0.4em 2em 0.4em 2em",
           backdropFilter: "blur(10px)",
