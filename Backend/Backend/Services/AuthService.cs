@@ -71,7 +71,7 @@ public class AuthService : IAuthService
     public async Task<User?> LoginAsync(LoginRequest request)
     {
         // Return NULL if the User does not exists or if the password is incorrect
-        User? user = await _db.Users!.Include(u => u.Podcasts).ThenInclude(a => a.Cover).FirstOrDefaultAsync(u => u.Email == request.Email);
+        User? user = await _db.Users!.FirstOrDefaultAsync(u => u.Email == request.Email || u.Username == request.Email);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user!.Password))
             return null;
 
@@ -85,8 +85,8 @@ public class AuthService : IAuthService
     /// <returns></returns>
     public async Task<User?> RegisterAsync(RegisterRequest request)
     {
-        // Return NULL if the User exists
-        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => u.Email == request.Email);
+        // Return NULL if the User exists (ie. has same email and/or username)
+        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => u.Email == request.Email || u.Username == request.Username);
         if (existingUser is not null)
             return null;
 
@@ -95,16 +95,13 @@ public class AuthService : IAuthService
         if (!isValidGender)
             request.Gender = "None";
         
-
         // Create the new User
         User newUser = _mapper.Map<User>(request);
         newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
 
-
         //Default Avatar
         newUser.Avatar = "DefaultAvatar";
         newUser.Interests = Array.Empty<string>();
-
 
         // Add the User to the Database
         await _db.Users!.AddAsync(newUser);
@@ -134,9 +131,6 @@ public class AuthService : IAuthService
     }
 
     public void AuthGoogle(IConfiguration configuration ,GoogleRequest request){
-
-
-
         GoogleJsonWebSignature.ValidationSettings settings = new()
         {
             Audience = new List<string> { configuration["jwt:Google_ClientId"]! }

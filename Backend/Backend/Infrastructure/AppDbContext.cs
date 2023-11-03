@@ -18,7 +18,7 @@ public class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<User>? Users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Episode>? Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }

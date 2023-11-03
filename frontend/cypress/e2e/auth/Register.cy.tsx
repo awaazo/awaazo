@@ -30,7 +30,7 @@ describe('Register', () => {
         cy.get('input[id="date"]').click().type('2000-01-01');
         cy.get('button[type="submit"]').click();
         cy.url().should('include', '/auth/Signup');
-        cy.contains('An Account with that Email already exists. Please Login or use a different Email address.').should('be.visible');
+        cy.contains('An Account with that Email and/or Username already exists. Please Login or use a different Email address.').should('be.visible');
     });
 
     // Test unsuccessful registration from the main page. Passwords do not match.

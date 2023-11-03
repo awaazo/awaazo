@@ -6,6 +6,7 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -49,6 +50,7 @@ public class ProfileService : IProfileService
 
         // Update the user's profile
         user.Avatar = userAvatarName;
+        user.DisplayName = request.DisplayName;
         user.Bio = request.Bio;
         user.Interests = request.Interests;
 
@@ -75,16 +77,26 @@ public class ProfileService : IProfileService
             RemoveUserAvatar(user.Avatar);
 
             // Save the new avatar to the server
-            user.Avatar = SaveUserAvatar(user.Id,request.Avatar);
+            user.Avatar = SaveUserAvatar(user.Id, request.Avatar);
+        }
+
+        // If username was changed, check if it is unique
+        if (request.Username != user.Username)
+        {
+            User? existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            if (existingUser is not null)
+                throw new Exception("Username already exists.");
         }
 
         // Update the user's profile
         user.Bio = request.Bio;
-        user.Interests = request.Interests;
         user.Username = request.Username;
+        user.Interests = request.Interests;
+        user.DisplayName = request.DisplayName;
         user.TwitterUrl = request.TwitterUrl;
         user.GitHubUrl = request.GitHubUrl;
         user.LinkedInUrl = request.LinkedInUrl;
+        user.WebsiteUrl = request.WebsiteUrl;
 
         // Update the UpdatedAt attribute
         user.UpdatedAt = DateTime.Now;
