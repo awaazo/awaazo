@@ -46,10 +46,27 @@ const RecentlyUploaded: React.FC<{ episodes: Episode[] }> = ({ episodes }) => {
 
   return (
     <>
-      <Text fontSize="2xl" fontWeight="bold" mb={3}>
-        Recently Uploaded
-      </Text>
-      <VStack align="start" spacing={3} p={1} m={3} flex="1">
+      <Box
+        bgGradient="linear(to-r, #146f99, transparent)"
+        w={{ base: "70%", md: "20%" }}
+        top={0}
+        left={0}
+        zIndex={-99}
+        borderRadius={"0.5em"}
+        boxShadow={"lg"}
+      >
+        <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
+          Recently Uploaded
+        </Text>
+      </Box>
+      <VStack
+        align="start"
+        spacing={3}
+        p={1}
+        m={3}
+        flex="1"
+        marginBottom={"2em"}
+      >
         <Box width="100%" position="relative" px={{ base: "50px", md: "50px" }}>
           <IconButton
             aria-label="Previous"

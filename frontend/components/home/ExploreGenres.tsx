@@ -67,10 +67,20 @@ const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   return (
-    <Box  marginBottom="3em">
-      <Text fontSize="2xl" fontWeight="bold" mb={3}>
-        Explore Genres
-      </Text>
+    <Box marginBottom="3em">
+      <Box
+        bgGradient="linear(to-r, #ad602d, transparent)"
+        w={{ base: "70%", md: "20%" }}
+        top={0}
+        left={0}
+        zIndex={-99}
+        borderRadius={"0.5em"}
+        boxShadow={"lg"}
+      >
+        <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
+          Explore Genres
+        </Text>
+      </Box>
       <Grid
         templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(6, 1fr)"]}
         gap={4}
