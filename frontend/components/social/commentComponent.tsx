@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import {
     Button,
     Modal,
@@ -22,6 +22,9 @@ import {
     Spacer
 } from "@chakra-ui/react";
 import { FaComments, FaClock, FaPaperPlane, FaHeart, FaReply } from 'react-icons/fa';
+import EndpointHelper from '../../helpers/EndpointHelper';
+import axios from 'axios';
+import SocialHelper from '../../helpers/SocialHelper';
 
 const CommentComponent = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,7 +36,7 @@ const CommentComponent = () => {
     const [newComment, setNewComment] = useState('');
     const [replyText, setReplyText] = useState('');
 
-    const handleAddComment = () => {
+    const handleAddComment = async () => {
       if (newComment.trim()) {
           const newCommentData = {
               user: "John Doe",
@@ -46,8 +49,28 @@ const CommentComponent = () => {
           };
           setComments(prevComments => [...prevComments, newCommentData]);
           setNewComment('');
-      }
-  };
+
+          // Send the comment to the server
+          const commentRequest = {
+            episodeId: "tempEpisodeId", // Replace with the actual episode ID
+            text: newComment.trim()
+        };
+        
+            const response = await SocialHelper.postComment(commentRequest);
+                if (response.status !== 200) {
+                   console.error("Error posting comment:", response.message);
+                } else {
+                    // Optionally update the state with the new comment returned from the server
+                }
+      };
+    
+        // Send the comment to the server
+        const commentRequest = {
+            text: newComment.trim()
+        }
+
+    };
+        
 
   const handleReply = (index: number) => {
       if (replyText.trim()) {
@@ -74,6 +97,31 @@ const CommentComponent = () => {
       }
       setComments(updatedComments);
   };
+
+  const handleDeleteComment = (commentId) => {
+    SocialHelper.deleteComment(commentId)
+        .then(response => {
+            if (response.status === 200) {
+                setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+            } else {
+                console.error("Error deleting comment:", response.message);
+            }
+        });
+};
+
+
+  useEffect(() => {
+    if (isOpen) {
+        SocialHelper.getEpisodeComments()
+            .then(response => {
+                if (response.status === 200) {
+                    setComments(response.comments);
+                } else {
+                    console.error("Error fetching episode comments:", response.message);
+                }
+            });
+    }
+}, [isOpen]);
 
   return (
    <>
@@ -107,6 +155,10 @@ const CommentComponent = () => {
                                        <Text isTruncated>{comment.text}</Text>
                                    </VStack>
                                </HStack>
+                               <HStack spacing={1}   p={2} borderRadius="md"> 
+                                    <Icon as={FaClock} color="gray.500" />
+                                    <Text fontSize="xs" color="gray.500">{comment.timestamp.toLocaleString()}</Text>
+                                </HStack>
                                <HStack mt={3} spacing={2}>
                                    <Tooltip label="Like this comment" aria-label="Like tooltip">
                                        <IconButton 
@@ -117,7 +169,6 @@ const CommentComponent = () => {
                                        />
                                    </Tooltip>
                                    <Text fontSize="sm">{comment.likes}</Text>
-                                   <Spacer />
                                    <Tooltip label="Reply to this comment" aria-label="Reply tooltip">
                                        <IconButton 
                                            icon={<Icon as={FaReply} />} 
