@@ -82,7 +82,9 @@ export default class SocialHelper {
                 comments: []
             };
         }
-    }
+    };
+
+
 
     /**
      * Gets user comments from the server.
@@ -115,7 +117,67 @@ export default class SocialHelper {
                 
             };
         }
-    }
+    };
+
+        /**
+         * Likes a comment on the server.
+         * @param commentId The ID of the comment to be liked.
+         * @returns A BaseResponse object with the server's response.
+         */
+        public static likeComment = async (commentId: string): Promise<BaseResponse> => {
+            const options = {
+            method: 'POST', // Assuming liking is a POST request
+            url: `${EndpointHelper.getLikeEndpoint()}?commentId=${commentId}`,
+            headers: {
+                accept: '*/*',
+            },
+            withCredentials: true
+            };
+
+            try {
+            console.debug(`Liking comment with ID: ${commentId}`);
+            const requestResponse = await axios(options);
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+            };
+            } catch (error) {
+            return {
+                status: error.response.status,
+                message: error.response.statusText,
+            };
+            }
+        };
+
+        /**
+        * UnLikes a comment on the server.
+        * @param commentId The ID of the comment to be liked.
+        * @returns A BaseResponse object with the server's response.
+        */
+        public static unlikeComment = async (commentId: string): Promise<BaseResponse> => {
+            const options = {
+            method: 'DELETE', 
+            url: `${EndpointHelper.getUnlikeEndpoint()}?commentId=${commentId}`,
+            headers: {
+                accept: '*/*',
+            },
+            withCredentials: true
+            };
+
+            try {
+            console.debug(`Unliking comment with ID: ${commentId}`);
+            const requestResponse = await axios(options);
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+            };
+            } catch (error) {
+            return {
+                status: error.response.status,
+                message: error.response.statusText,
+            };
+            }
+        };
 
     /**
      * Deletes a comment from the server.
@@ -147,5 +209,9 @@ export default class SocialHelper {
                 
             };
         }
+    };
+
+ 
     }
-}
+
+

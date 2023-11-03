@@ -1,28 +1,50 @@
 import { useState } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, Icon, Tooltip } from "@chakra-ui/react";
+import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from 'react-icons/fa';
+import SocialHelper from '../../helpers/SocialHelper';
 
-const LikeComponent = ({ initialLikes = 0, initialIsLiked = false }: { initialLikes?: number, initialIsLiked?: boolean }) => {
-   const { isOpen, onOpen, onClose } = useDisclosure();
+const LikeComponent = ({ episodeId, initialLikes = 0, initialIsLiked = false }) => {
    const [likes, setLikes] = useState(initialLikes);
    const [isLiked, setIsLiked] = useState(initialIsLiked);
 
    const handleLike = () => {
-       if (isLiked) {
-           setLikes(prevLikes => prevLikes - 1);
-           setIsLiked(false);
-       } else {
-           setLikes(prevLikes => prevLikes + 1);
-           setIsLiked(true);
-           onOpen(); // Open the modal when a new like is added
-       }
-   };
-
-   const modalMessage = likes === 1 ? "1 person has liked this." : `${likes} people have liked this.`;
+    // Toggle the like status based on whether the episode is currently liked
+    if (isLiked) {
+      // Call unlikeEpisode because the episode is currently liked
+      SocialHelper.unlikeComment(episodeId) // This method needs to be implemented in SocialHelper
+        .then(response => {
+          if (response.status === 200) {
+            // Update the UI to reflect the unlike
+            setLikes(likes - 1);
+            setIsLiked(false);
+          } else {
+            console.error("Error unliking episode:", response.message);
+          }
+        })
+        .catch(error => {
+          console.error("Exception when calling unlikeEpisode:", error.message);
+        });
+    } else {
+      // Call likeEpisode because the episode is currently not liked
+      SocialHelper.likeComment(episodeId) // This method needs to be implemented in SocialHelper
+        .then(response => {
+          if (response.status === 200) {
+            // Update the UI to reflect the like
+            setLikes(likes + 1);
+            setIsLiked(true);
+          } else {
+            console.error("Error liking episode:", response.message);
+          }
+        })
+        .catch(error => {
+          console.error("Exception when calling likeEpisode:", error.message);
+        });
+    }
+  };
 
     return (
         <>
-            <Tooltip label="Like this podcast" aria-label="Like tooltip">
+            <Tooltip label={isLiked ? "Unlike this episode" : "Like this episode"} aria-label="Like tooltip">
                 <Button 
                     p={2}  
                     leftIcon={<Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />} 
@@ -31,17 +53,6 @@ const LikeComponent = ({ initialLikes = 0, initialIsLiked = false }: { initialLi
                     {likes}
                 </Button>
             </Tooltip>
-
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Total Likes</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {modalMessage}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
         </>
     );
 };
