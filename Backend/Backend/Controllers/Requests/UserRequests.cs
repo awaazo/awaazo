@@ -11,44 +11,35 @@ namespace Backend.Controllers.Requests
     [BindProperties]
     public class ProfileSetupRequest
     {
-        public ProfileSetupRequest()
-        {
-            Bio = string.Empty;
-            Interests = Array.Empty<string>();
-        }
+        [Required]
+        public IFormFile? Avatar { get; set; }
 
         [Required]
-        public IFormFile? Avatar {get;set;}
+        public string DisplayName { get; set; } = string.Empty;
 
         [Required]
-        public string Bio {get;set;}
+        public string Bio { get; set; } = string.Empty;
 
         [Required]
-        public string[] Interests {get;set;}
+        public string[] Interests { get; set; } = Array.Empty<string>();
     }
 
     [BindProperties]
     public class ProfileEditRequest : ProfileSetupRequest
     {
-        public ProfileEditRequest()
-        {
-            Username = string.Empty;
-            TwitterUrl = string.Empty;
-            LinkedInUrl = string.Empty;
-            GitHubUrl = string.Empty;
-        }
 
-        
-        public new IFormFile? Avatar {get;set;}
+        public new IFormFile? Avatar { get; set; }
 
         [Required]
-        public string Username {get;set;}
-        
-        public string TwitterUrl {get;set;}
+        public string Username { get; set; } = string.Empty;
 
-        public string LinkedInUrl {get;set;}
+        public string TwitterUrl { get; set; } = string.Empty;
 
-        public string GitHubUrl {get;set;}
+        public string LinkedInUrl { get; set; } = string.Empty;
+
+        public string GitHubUrl { get; set; } = string.Empty;
+
+        public string WebsiteUrl { get; set; } = string.Empty;
     }
 
 }

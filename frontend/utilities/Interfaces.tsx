@@ -151,12 +151,14 @@ export interface UserProfile {
   id: string;
   avatarUrl: string;
   email: string;
+  displayName: string;
   username: string;
   bio: string;
   interests: string[];
   twitterUrl?: string;
   githubUrl?: string;
   linkedInUrl?: string;
+  websiteUrl?: string;
   dateOfBirth: string;
   gender: string;
 }

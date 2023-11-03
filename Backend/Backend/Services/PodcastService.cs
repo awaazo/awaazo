@@ -12,13 +12,11 @@ namespace Backend.Services
         private readonly AppDbContext _db;
         private readonly IFileService _fileService;
         private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
         private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png"};
-        public PodcastService(AppDbContext db,IFileService fileService,IAuthService authService,IMapper mapper) {
+        public PodcastService(AppDbContext db,IFileService fileService,IAuthService authService) {
             _db = db;
             _fileService = fileService;
             _authService = authService;
-            _mapper = mapper;
         }
 
 

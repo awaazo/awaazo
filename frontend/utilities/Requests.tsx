@@ -34,6 +34,7 @@ export interface GoogleSSORequest{
 //#region User Profile Requests
 
 export interface UserProfileSetupRequest{
+    displayName: string;
     avatar: File;
     bio: string;
     interests: string[];
@@ -42,11 +43,13 @@ export interface UserProfileSetupRequest{
 export interface UserProfileEditRequest{
     avatar:File;
     username: string;
+    displayName: string;
     bio: string;
     interests: string[];
     twitterUrl: string;
     linkedInUrl: string;
     githubUrl: string;
+    websiteUrl: string;
 }
 
 //#endregion

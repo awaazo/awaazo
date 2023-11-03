@@ -21,21 +21,26 @@ import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { profile } from "console";
 import { UserProfile } from "../../utilities/Interfaces";
-import { forEach } from "lodash";
+import { forEach, set } from "lodash";
 import { Router, useRouter } from "next/router";
+
+
+
 const EditProfile: React.FC = () => {
-  const router = useRouter()
   const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [genreColors, setGenreColors] = useState({});
   const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [twitterLink, setTwitterLink] = useState("");
   const [linkedinLink, setLinkedinLink] = useState("");
   const [githubLink, setGithubLink] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File>(null);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
 
   const PodcastGenres = [
     "Technology",
@@ -56,22 +61,29 @@ const EditProfile: React.FC = () => {
     "Food",
   ];
 
+  // Router 
+  const router = useRouter();
+
   useEffect(() => {
+
+    // Get the user profile
     UserProfileHelper.profileGetRequest().then((response) => {
-      if(response.status == 200){
-        const userProfile: UserProfile = response.userProfile;
-        setBio(userProfile.bio);
-        setInterests(userProfile.interests);
-        setSelectedInterests(userProfile.interests);
-        setUsername(userProfile.username);
-        setTwitterLink(userProfile.twitterUrl);
-        setLinkedinLink(userProfile.linkedInUrl);
-        setGithubLink(userProfile.githubUrl);
-        setAvatar(userProfile.avatarUrl);
-      
+      if (response.status == 200) {
+        setUserProfile(response.userProfile)
+        setUsername(response.userProfile.username)
+        setDisplayName(response.userProfile.displayName)
+        setBio(response.userProfile.bio)
+        setTwitterLink(response.userProfile.twitterUrl)
+        setLinkedinLink(response.userProfile.linkedInUrl)
+        setGithubLink(response.userProfile.githubUrl)
+        setWebsiteUrl(response.userProfile.websiteUrl)
+        setAvatar(response.userProfile.avatarUrl)
+      }
+      else {
+        router.push("/auth/login");
       }
     })
-  }, []);
+  }, [router]);
 
   /**
    * Handles updating the profile when form is submitted
@@ -83,37 +95,43 @@ const EditProfile: React.FC = () => {
     console.log("Update Clicked")
 
     // Create the request
-    const request : UserProfileEditRequest = {
-      avatar : avatarFile,
-      bio : bio,
-      interests : selectedInterests,
-      username : username,
-      twitterUrl : twitterLink != ""? twitterLink : null,
-      linkedInUrl : linkedinLink != ""? linkedinLink : null,
-      githubUrl : githubLink != ""? githubLink : null
+    const request: UserProfileEditRequest = {
+      avatar: avatarFile,
+      bio: bio,
+      interests: selectedInterests,
+      username: username,
+      displayName: displayName,
+      twitterUrl: twitterLink != "" ? twitterLink : null,
+      linkedInUrl: linkedinLink != "" ? linkedinLink : null,
+      githubUrl: githubLink != "" ? githubLink : null,
+      websiteUrl: websiteUrl != "" ? websiteUrl: null
     }
 
     // Get the Response
     const response = await UserProfileHelper.profileEditRequest(request);
 
     // If Profile is saved, return to profile page
-    if(response.status === 200){
+    if (response.status === 200) {
       router.push('/profile/MyProfile');
     }
-    else{
+    else {
       setFormError(response.message)
     }
 
   }
 
+  /**
+   * Handles uploading an avatar
+   * @param e FormEvent
+   */
   const handleAvatarUpload = (e: FormEvent) => {
     setAvatarFile((e.target as any).files[0])
-    setAvatar(URL.createObjectURL((e.target as any).files[0]))  
+    setAvatar(URL.createObjectURL((e.target as any).files[0]))
     e.preventDefault();
   };
 
-    // Add the given functions
-    //test
+  // Add the given functions
+  //test
   const getRandomDarkColor = () => {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -123,231 +141,247 @@ const EditProfile: React.FC = () => {
     return color;
   };
 
-   const getRandomGradient = () => {
+  const getRandomGradient = () => {
     const color1 = getRandomDarkColor();
     const color2 = getRandomDarkColor();
     return `linear-gradient(45deg, ${color1}, ${color2})`;
   };
 
-    const handleInterestClick = (genre) => {
-      console.log(genre)
-      console.log(selectedInterests)
-      console.log(genreColors)
-        if (selectedInterests.includes(genre)) {
-        setSelectedInterests(selectedInterests.filter((item) => item !== genre));
-        } else {
-        setSelectedInterests([...selectedInterests, genre]);
-        if (!genreColors[genre]) {
-            setGenreColors({ ...genreColors, [genre]: getRandomDarkColor() });
-        }
-        }
-    };
+  const handleInterestClick = (genre:string) => {
+    console.log(genre)
+    console.log(selectedInterests)
+    console.log(genreColors)
+    if (selectedInterests.includes(genre)) {
+      setSelectedInterests(selectedInterests.filter((item) => item !== genre));
+    } else {
+      setSelectedInterests([...selectedInterests, genre]);
+      if (!genreColors[genre]) {
+        setGenreColors({ ...genreColors, [genre]: getRandomDarkColor() });
+      }
+    }
+  };
 
-  return (
+
+  const editPage = () => (
     <>
-   <Navbar />
-   
-    <Box
-      p={6}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Text
-        style={{
-          fontSize: "2rem",
-          textAlign: "center",
-          marginTop: "1rem",
-          fontFamily: "Avenir Next",
-        }}
+      <Navbar />
+
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
       >
-        Edit Profile
-      </Text>
-      {/* // username here*/}
-      <Text>
-        @ {username}
-      </Text>
+        <Text
+          style={{
+            fontSize: "2rem",
+            textAlign: "center",
+            marginTop: "1rem",
+            fontFamily: "Avenir Next",
+          }}
+        >
+          Edit Profile
+        </Text>
+        {/* // username here*/}
+        <Text>
+          @{userProfile.username}
+        </Text>
 
-      <form onSubmit={handleProfileUpdate}>
-        <Stack spacing={6} align={"center"}>
+        <form onSubmit={handleProfileUpdate}>
+          <Stack spacing={6} align={"center"}>
 
-          {/* Avatar Section */}
-          <div
-            style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src={avatar || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
-              alt="Avatar"
+            {/* Avatar Section */}
+            <div
               style={{
-                width: "150px",
-                height: "150px",
-                borderRadius: "50%",
-                padding: "15px",
                 position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
-            />
-            <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right: "5px" }}>
-              <IconButton
-                aria-label="Upload avatar"
-                icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
-                size="sm"
-                variant="outline"
-                borderRadius="full"
-                border="1px solid grey"
-                padding={3}
+            >
+              <img
+                src={avatar || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
+                alt="Avatar"
                 style={{
-                  backdropFilter: "blur(5px)", 
-                  backgroundColor: "rgba(0, 0, 0, 0.4)" 
+                  width: "150px",
+                  height: "150px",
+                  borderRadius: "50%",
+                  padding: "15px",
+                  position: "relative",
                 }}
-                zIndex={-999}
               />
-              <input
-                type="file"
-                id="avatar"
-                accept="image/*"
+              <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right: "5px" }}>
+                <IconButton
+                  aria-label="Upload avatar"
+                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  size="sm"
+                  variant="outline"
+                  borderRadius="full"
+                  border="1px solid grey"
+                  padding={3}
+                  style={{
+                    backdropFilter: "blur(5px)",
+                    backgroundColor: "rgba(0, 0, 0, 0.4)"
+                  }}
+                  zIndex={-999}
+                />
+                <input
+                  type="file"
+                  id="avatar"
+                  accept="image/*"
 
-                onChange={(e) => handleAvatarUpload(e)}
-                style={{display: "none"}}
-              />
-            </label>
-          </div>
-            
+                  onChange={(e) => handleAvatarUpload(e)}
+                  style={{ display: "none" }}
+                />
+              </label>
+            </div>
 
-          {/* Personal Details Section */}
-          {formError && <Text color="red.500">{formError}</Text>}
-          <FormControl>
-            <Input
-              id="username"
-              placeholder="Name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                fontSize: "16px",
-                borderRadius: "18px",
-              }}
-            />
-          </FormControl>
-          <FormControl>
-            <Textarea
-              id="bio"
-              placeholder="Bio"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                fontSize: "16px",
-                borderRadius: "18px",
-              }}
-              resize="vertical"
-            />
-          </FormControl>
 
-          {/* Interests Section */}
+            {/* Personal Details Section */}
+            {formError && <Text color="red.500">{formError}</Text>}
             <FormControl>
-            <FormLabel style={{
-                textAlign: "center",
-                padding: "10px",
-            }}>
-                What kind of topics do you like?
-            </FormLabel>
-            <Wrap spacing={4} justify="center" maxWidth={"600px"}>
-                {PodcastGenres.map((genre) => (
-                <WrapItem key={genre}>
-                    <Button
-                    size="sm"
-                    variant={selectedInterests.includes(genre) ? "solid" : "outline"}
-                    colorScheme="white"
-                    backgroundColor={
-                        selectedInterests.includes(genre)
-                        ? genreColors[genre] || getRandomGradient()
-                        : "transparent"
-                    }
-                    color="white"
-                    borderColor="white"
-                    borderRadius="full"
-                    _hover={{
-                        backgroundColor: selectedInterests.includes(genre)
-                        ? genreColors[genre] || getRandomGradient()
-                        : "gray",
-                    }}
-                    onClick={() => handleInterestClick(genre)}
-                    >
-                    {genre}
-                    </Button>
-                </WrapItem>
-                ))}
-            </Wrap>
+              <Input
+                id="username"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  fontSize: "16px",
+                  borderRadius: "18px",
+                }}
+              />
             </FormControl>
 
-          {/* Social Links Section */}
-          <FormControl>
-            <FormLabel>Social Links</FormLabel>
-            <InputGroup>
-              <InputLeftAddon 
-              children={<Icon as={FaTwitter} boxSize={4} />}
-              />
+            <FormControl>
               <Input
-                type="url"
-                placeholder="Twitter URL"
-                value={twitterLink}
-                onChange={(e) => setTwitterLink(e.target.value)}
-                borderRadius={"full"}
+                id="displayName"
+                placeholder="Display Name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  fontSize: "16px",
+                  borderRadius: "18px",
+                }}
               />
-            </InputGroup>
-            <InputGroup mt={3}>
-              <InputLeftAddon 
-              children={<Icon as={FaLinkedin} boxSize={4} />}
+            </FormControl>
+            <FormControl>
+              <Textarea
+                id="bio"
+                placeholder="Bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  fontSize: "16px",
+                  borderRadius: "18px",
+                }}
+                resize="vertical"
               />
-              <Input
-                type="url"
-                placeholder="LinkedIn URL"
-                value={linkedinLink}
-                onChange={(e) => setLinkedinLink(e.target.value)}
-                borderRadius={"full"}
-              />
-            </InputGroup>
-            <InputGroup mt={3}>
-              <InputLeftAddon 
-              children={<Icon as={FaGithub} boxSize={4} />}
-              />
-              <Input
-                type="url"
-                placeholder="GitHub URL"
-                value={githubLink}
-                onChange={(e) => setGithubLink(e.target.value)}
-                borderRadius={"full"}
-              />
-            </InputGroup>
-          </FormControl>
+            </FormControl>
 
-          {/* Update Profile Button */}
-          <Button
-            type="submit"
-            fontSize="md"
-            borderRadius={"full"}
-            minWidth={"200px"}
-            color={"white"}
-            marginTop={"15px"}
-            marginBottom={"10px"}
-            padding={"20px"}
-            outline={"1px solid rgba(255, 255, 255, 0.6)"}
-            style={{
-              background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
-              backgroundSize: '300% 300%',
-              animation: 'Gradient 10s infinite linear'
-            }}
-          >
-            Update Profile
-            <style jsx>{`
+            {/* Interests Section */}
+            <FormControl>
+              <FormLabel style={{
+                textAlign: "center",
+                padding: "10px",
+              }}>
+                What kind of topics do you like?
+              </FormLabel>
+              <Wrap spacing={4} justify="center" maxWidth={"600px"}>
+                {PodcastGenres.map((genre) => (
+                  <WrapItem key={genre}>
+                    <Button
+                      size="sm"
+                      variant={selectedInterests.includes(genre) ? "solid" : "outline"}
+                      colorScheme="white"
+                      backgroundColor={
+                        selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "transparent"
+                      }
+                      color="white"
+                      borderColor="white"
+                      borderRadius="full"
+                      _hover={{
+                        backgroundColor: selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "gray",
+                      }}
+                      onClick={() => handleInterestClick(genre)}
+                    >
+                      {genre}
+                    </Button>
+                  </WrapItem>
+                ))}
+              </Wrap>
+            </FormControl>
+
+            {/* Social Links Section */}
+            <FormControl>
+              <FormLabel>Social Links</FormLabel>
+              <InputGroup>
+                <InputLeftAddon
+                  children={<Icon as={FaTwitter} boxSize={4} />}
+                />
+                <Input
+                  type="url"
+                  placeholder="Twitter URL"
+                  value={twitterLink}
+                  onChange={(e) => setTwitterLink(e.target.value)}
+                  borderRadius={"full"}
+                />
+              </InputGroup>
+              <InputGroup mt={3}>
+                <InputLeftAddon
+                  children={<Icon as={FaLinkedin} boxSize={4} />}
+                />
+                <Input
+                  type="url"
+                  placeholder="LinkedIn URL"
+                  value={linkedinLink}
+                  onChange={(e) => setLinkedinLink(e.target.value)}
+                  borderRadius={"full"}
+                />
+              </InputGroup>
+              <InputGroup mt={3}>
+                <InputLeftAddon
+                  children={<Icon as={FaGithub} boxSize={4} />}
+                />
+                <Input
+                  type="url"
+                  placeholder="GitHub URL"
+                  value={githubLink}
+                  onChange={(e) => setGithubLink(e.target.value)}
+                  borderRadius={"full"}
+                />
+              </InputGroup>
+            </FormControl>
+
+            {/* Update Profile Button */}
+            <Button
+              type="submit"
+              fontSize="md"
+              borderRadius={"full"}
+              minWidth={"200px"}
+              color={"white"}
+              marginTop={"15px"}
+              marginBottom={"10px"}
+              padding={"20px"}
+              outline={"1px solid rgba(255, 255, 255, 0.6)"}
+              style={{
+                background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
+                backgroundSize: '300% 300%',
+                animation: 'Gradient 10s infinite linear'
+              }}
+            >
+              Update Profile
+              <style jsx>{`
               @keyframes Gradient {
                 0% {
                   background-position: 100% 0%;
@@ -360,13 +394,19 @@ const EditProfile: React.FC = () => {
                 }
               }
             `}</style>
-          </Button>
+            </Button>
 
-        </Stack>
-      </form>
-    </Box>
-     </>
+          </Stack>
+        </form>
+      </Box>
+    </>
   );
+
+  // Return the page if the user is logged in
+  if(userProfile!==undefined)
+  {
+    return editPage();
+  }
 };
 
 export default EditProfile;
