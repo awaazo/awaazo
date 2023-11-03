@@ -37,8 +37,8 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(4px)"
       boxShadow="sm"
-      _hover={{ boxShadow: "md" }}
-      transition="all 0.3s"
+      outline={"2px solid rgba(255, 255, 255, .1)"}
+      _hover={{ boxShadow: "lg" }}
     >
       {/* Left: Cover Art with Play Button */}
       <Box

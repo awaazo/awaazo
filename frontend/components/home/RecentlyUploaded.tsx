@@ -76,6 +76,7 @@ const RecentlyUploaded: React.FC<{ episodes: Episode[] }> = ({ episodes }) => {
             top="50%"
             transform="translateY(-50%)"
             zIndex={2}
+            borderRadius={"1.5em"}
             onMouseOver={previous} // Trigger previous slide on hover
           />
           <Slider ref={sliderRef} {...settings}>
@@ -100,8 +101,8 @@ const RecentlyUploaded: React.FC<{ episodes: Episode[] }> = ({ episodes }) => {
             top="50%"
             transform="translateY(-50%)"
             zIndex={2}
+            borderRadius={"1.5em"}
             onMouseOver={next} // Trigger next slide on hover
-            // Add additional styling as needed
           />
         </Box>
       </VStack>

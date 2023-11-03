@@ -17,7 +17,7 @@ const genres = [
 ];
 
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
-  const scale = isHovered ? "scale(1.1)" : "scale(0.9)";
+  const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
 
   return (
     <Box
@@ -29,10 +29,10 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
       _hover={{
         boxShadow: "xl",
         cursor: "pointer",
-        transition: "all 0.3s ease-in-out",
+        transition: "all 0.4s ease-in-out",
       }}
       transform={scale} // Apply the calculated scale
-      transition="all 0.3s ease-in-out" // Ensure the transition is smooth for both hover and unhover events
+      transition="all 0.4s ease-in-out" // Ensure the transition is smooth for both hover and unhover events
       boxSizing="border-box"
       border="1px solid"
       onMouseEnter={() => onMouseEnter(genre.name)}
