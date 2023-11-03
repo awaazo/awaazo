@@ -25,42 +25,42 @@ namespace Backend.Services
 
         public async Task<GetPodcastRequest?> CreatePodcast(CreatePodcastRequest createPodcastRequest,HttpContext httpContext)
         {
+            if (createPodcastRequest == null)
+                throw new InvalidDataException("Podcast request was missing");
 
+            Podcast podcast = new Podcast();
 
-            if (createPodcastRequest.coverImage != null && !AllowedTypes.Contains(createPodcastRequest.coverImage!.ContentType))
-            {
-                throw new InvalidDataException("Invalid Data Types");
-
-            }
+            // Check if user exists
             User? user = await _authService.IdentifyUserAsync(httpContext);
             if (user == null)
                 return null;
-            
-            Podcast? podcast = new Podcast();
-            podcast.PodcasterId = user.Id;
-            if(createPodcastRequest.coverImage != null)
+
+            podcast.PodcasterId = user.Id;         
+
+            // image has to exist AND has to contain the wrong type of cover image to throw error here. If it doesnt, just use default
+            if (createPodcastRequest.coverImage != null && !AllowedTypes.Contains(createPodcastRequest.coverImage!.ContentType))
             {
-                
-                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
-                if(coverImage == null) return null;
-                else { podcast.CoverId = coverImage.FileId; }
+                throw new InvalidDataException("Invalid Cover Image data Type: " + createPodcastRequest.coverImage.ContentType.ToString());
             }
+                
             if (createPodcastRequest.Tags != null)
-            {
                 podcast.Tags = createPodcastRequest.Tags;
 
-            }
-            if(createPodcastRequest.Description != null)
-            {
+            if (createPodcastRequest.Description != null)
                 podcast.Description = createPodcastRequest.Description;
-            }
-            podcast.Name = createPodcastRequest.Name!;
+         
+            if(createPodcastRequest.Name != null)
+                podcast.Name = createPodcastRequest.Name!;
+
+            if(createPodcastRequest.coverImage != null)
+            {                
+                Files? coverImage = await _fileService.UploadFile(createPodcastRequest.coverImage);
+                podcast.CoverId = coverImage.FileId;
+            }                     
+
             user.IsPodcaster = true;
 
-            
-
-
-            await _db.Podcasts!.AddAsync(podcast);
+            await _db.Podcasts!.AddAsync(podcast);         
             await _db.SaveChangesAsync();
 
             GetPodcastRequest getPodcastRequest = new GetPodcastRequest()
@@ -70,12 +70,9 @@ namespace Backend.Services
                 Description = podcast.Description,
                 Tags = podcast.Tags,
                 coverImage = podcast.Cover
-
             };
 
-
-            return getPodcastRequest;
-         
+            return getPodcastRequest;       
         }
 
         public async Task<Podcast?> GetPodcast(string id)
@@ -84,55 +81,43 @@ namespace Backend.Services
             {
                 return null;
             }
-            else
-            {
-
-                var podcastId = Guid.Parse(id);
-                return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).FirstOrDefaultAsync(u => u.Id == podcastId);
+            var podcastId = Guid.Parse(id);
+            return await _db.Podcasts!.Include(u => u.Cover).Include(u =>u.Episodes).ThenInclude(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == podcastId);
         
-            }
         }
 
 
         public async Task<List<GetPodcastResponse>> GetMyPodcast(HttpContext httpContext)
         {
            User? user = await  _authService.IdentifyUserAsync(httpContext);
-            if(user != null)
+            if(user == null)
             {
-                List<Podcast> podcasts = await _db.Podcasts!.Include(u => u.Episodes).Where(u => u.PodcasterId == user.Id).ToListAsync();
- 
-                List<GetPodcastResponse> response = new List<GetPodcastResponse>();
-                foreach(var podcast in podcasts)
+                throw new Exception("User not Found");
+
+            }
+            List<Podcast> podcasts = await _db.Podcasts!.Include(u => u.Episodes).Where(u => u.PodcasterId == user.Id).ToListAsync();
+
+            List<GetPodcastResponse> response = new List<GetPodcastResponse>();
+            foreach (var podcast in podcasts)
+            {
+                response.Add(new GetPodcastResponse()
                 {
-                    response.Add(new GetPodcastResponse()
-                    {
-                        Id = podcast.Id,
-                        Name = podcast.Name,
-                        Description = podcast.Description,
-                        CoverId = podcast.CoverId,
-                        Tags = podcast.Tags,
-                        IsExplicit = podcast.IsExplicit,
-                        Type = podcast.Type,
-                        AverageRating = podcast.AverageRating,
-                        TotalRatings = podcast.TotalRatings,
-                        NoOfEpisode = podcast.Episodes.Count,
+                    Id = podcast.Id,
+                    Name = podcast.Name,
+                    Description = podcast.Description,
+                    CoverId = podcast.CoverId,
+                    Tags = podcast.Tags,
+                    IsExplicit = podcast.IsExplicit,
+                    Type = podcast.Type,
+                    AverageRating = podcast.AverageRating,
+                    TotalRatings = podcast.TotalRatings,
+                    NoOfEpisode = podcast.Episodes.Count,
 
-                    });
-
-                }
-
-                return response;
-                
-      
-
-
-            }
-            else
-            {
-                throw new Exception("Not found");
+                });
 
             }
 
+            return response;
         }
 
 

@@ -11,5 +11,6 @@ namespace Backend.Services.Interfaces
         public bool? DeleteFile(string id);
     
         public bool? EditFile(Files file1,IFormFile file);
+       
     }
 }

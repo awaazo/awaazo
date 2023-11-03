@@ -32,35 +32,35 @@ namespace Backend.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteEpisodeRequest deleteEpisodeRequest)
         {
-            if (deleteEpisodeRequest != null)
-            {
-                Guid id = Guid.Parse(deleteEpisodeRequest.EpisodeId);
-                Episode? episode =  _db.Episodes!.Include(u => u.Podcast).FirstOrDefault(u => u.Id == id);
-                if(episode != null)
-                {
-                    User? user = await _authService.IdentifyUserAsync(HttpContext);
-                    if(user != null && episode.Podcast.PodcasterId == user.Id)
-                    {
-                        try
-                        {
-                           await _episodeService.DeleteEpisode(episode, deleteEpisodeRequest);
-                           return Ok( "Successfully deleted");
-                        }catch (Exception ex)
-                        {
-                            return BadRequest(ex.Message);
+            if (deleteEpisodeRequest == null)
+                return BadRequest("Nothing was recieved");
 
-                        }
-                        
+            if (deleteEpisodeRequest.EpisodeId == null)
+                return BadRequest("EpisodeId Not Provided");
 
-                    }
-                    return Unauthorized("Unauthorized");
-                }
+            Guid id = Guid.Parse(deleteEpisodeRequest.EpisodeId);
+            Episode? episode =  _db.Episodes!.Include(u => u.Podcast).FirstOrDefault(u => u.Id == id);
+            if(episode == null)
                 return NotFound("Episode Not Found");
 
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            if (episode.Podcast.PodcasterId != user.Id)
+                return BadRequest("Podcast does not belong to the user");
+
+            try
+            {
+                await _episodeService.DeleteEpisode(episode, deleteEpisodeRequest);
+                return Ok( "Successfully deleted");
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-            return BadRequest("Invalid Body");
-
-
         }
 
 
@@ -69,70 +69,65 @@ namespace Backend.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddEpisode([FromForm] CreateEpisodeRequest createEpisodRequest)
         {
-            if(createEpisodRequest.PodcastId != null)
-            {
-                 Guid id = Guid.Parse(createEpisodRequest.PodcastId);
-             
-                 Podcast? podcast = await _db.Podcasts!.FirstOrDefaultAsync(u => u.Id == id);
-               
-                if (podcast != null)
-                {
-                    User? user = await _authService.IdentifyUserAsync(HttpContext);
-                    if (user != null)
-                    {
-                        if(podcast.PodcasterId == user.Id) {
-                            try
-                            {
-                                Episode? episode = await _episodeService!.AddEpisode(createEpisodRequest,podcast,HttpContext);
-                                return Ok("Successfully Added the Episode");
+            if (createEpisodRequest == null)
+                return BadRequest("Nothing was recieved");
 
-                            }catch (Exception ex)
-                            {
+            if (createEpisodRequest.PodcastId == null)
+                return BadRequest("PodcastId Not Provided");
 
-                                return BadRequest(ex.Message);
-                            }
-                            
-                           
-                            
-                        }
-                        return BadRequest("Not Authorized");
-                    }
+            Guid id = Guid.Parse(createEpisodRequest.PodcastId);           
+            Podcast? podcast = await _db.Podcasts!.FirstOrDefaultAsync(u => u.Id == id);
 
-
-
-                }
+            if (podcast == null)
                 return NotFound("Podcast Not found");
 
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            if (podcast.PodcasterId != user.Id)
+                return BadRequest("Podcast Does not belong to the user");
+
+            try
+            {
+                Episode? episode = await _episodeService!.AddEpisode(createEpisodRequest, podcast, HttpContext);
+                if (episode == null)
+                    return BadRequest("There was an issue adding the Episode. Please try again later");
+
+                return Ok("Successfully Added the Episode");
             }
-
-            return NotFound("Invalid Request");
-
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
         [HttpPut("edit")]
         public async Task<IActionResult> EditEpisode([FromForm]EditEpisodeRequest editEpisodeRequest)
         {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
             try
             {
-            Episode? episode = await  _episodeService.EditEpisode(editEpisodeRequest, HttpContext);
+                Episode? episode = await  _episodeService.EditEpisode(editEpisodeRequest, HttpContext);
 
-            if(episode != null)
-            {
-                return Ok("Sucsessfully Editted the Epsiode");
+                if(episode != null)
+                    return Ok("Sucsessfully Editted the Epsiode");
+
+                return BadRequest("There was an issue editing the Episode");
             }
-                return BadRequest("Bad Request");
-            }catch(Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(ex.Message);
-
-
             }
-        }
-
-
-       
+        }      
     }
 }

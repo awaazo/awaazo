@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using NAudio.Wave;
 using System;
@@ -32,7 +33,6 @@ namespace Backend.Services
         {
             try
             {
-                Console.WriteLine(path);
                 using (var audioFileReader = new AudioFileReader(path))
                 {
                     Console.WriteLine(audioFileReader.TotalTime);
@@ -59,23 +59,15 @@ namespace Backend.Services
  
             }
             Files? audioFile = await _fileService.UploadFile(createEpisodeRequest.AudioFile!);
-            if (audioFile != null)
+            if (audioFile == null)
             {
-                
-              
-                episode.AudioFileId = audioFile.FileId;
+                throw new Exception("Uploading file not Successfull");    
             }
-            else
-            {
-                throw new Exception("Uploading file not Successfull"); 
-            }
-
+            episode.AudioFileId = audioFile.FileId;
             episode.EpisodeName = createEpisodeRequest.EpisodeName!;
             episode.IsExplicit = createEpisodeRequest.IsExplicit!;
-            episode.ReleaseDate = DateTime.Now;
+            episode.ReleaseDate = DateTime.UtcNow;
             episode.Duration = GetEpisodeDuration(_fileService.GetPath(audioFile.Path!));
-            
-
             podcast.Episodes.Add(episode);
             await _db.SaveChangesAsync();
             return episode;
@@ -88,92 +80,73 @@ namespace Backend.Services
             Guid? guid = Guid.Parse(deleteEpisodeRequest.EpisodeId);
             Files? file = await _db.File!.FirstOrDefaultAsync(u => u.FileId == episode.AudioFileId);
 
-            if (file != null)
+            if (file == null)
             {
-               var deleted = _fileService.DeleteFile(file.Path!);
-               if(deleted == true)
-                {
-                _db.Remove(file);
+                throw new Exception("File Not Found");
+    
+            }
+            _db.Remove(file);
+            _db.Remove(episode);
 
-                }
-               else { throw new Exception("Failed to Delete File"); }
-                _db.Remove(episode);
+            if (_fileService.DeleteFile(file.Path!) == true)
+            {
                 await _db.SaveChangesAsync();
                 return true;
             }
-            else
-            {
-                throw new Exception("File Not Found");
-            }
-
+            throw new Exception("Failed to Delete");
 
         }
 
 
         public async Task<Episode?> EditEpisode(EditEpisodeRequest editEpisodeRequest, HttpContext httpContext)
         {
-            if(editEpisodeRequest.EpisodeId != null)
+
+            if(editEpisodeRequest.EpisodeId == null)
             {
-
-                Episode? episode = await _db.Episodes!.Include(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == Guid.Parse(editEpisodeRequest.EpisodeId));
-                if (episode != null)
-                {
-
-                    if(editEpisodeRequest.AudioFile != null)
-                    {
-
-                        if (!AllowedTypes.Contains(editEpisodeRequest.AudioFile!.ContentType))
-                        {
-                            throw new InvalidDataException("Invalid Data Types");
-
-                        }
-
-                        bool? editted =  _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
-                        if(editted == true)
-                        {
-                            episode.AudioFile!.Name = editEpisodeRequest.AudioFile.FileName;
-                            episode.AudioFile!.MimeType = editEpisodeRequest.AudioFile.ContentType;
-                            
-                           
-                        }
-                        else
-                        {
-                            throw new Exception("Failed to Edit the file");
-
-                        }
-                        
-
-                    }
-                    if(editEpisodeRequest.EpisodeName != null)
-                    {
-                        episode.EpisodeName = editEpisodeRequest.EpisodeName;
-
-                        
-
-
-                    }
-
-                    if(editEpisodeRequest.IsExplicit != null)
-                     {
-                        episode.IsExplicit = (bool)editEpisodeRequest.IsExplicit;
-
-                    }
-
-                    await _db.SaveChangesAsync();
-                    return episode;
-                }
-                throw new BadHttpRequestException("Cannot Find the Episode");
-
+                throw new Exception("Please Enter Episode ID");
+            }
+            
+            Episode? episode = await _db.Episodes!.Include(u => u.AudioFile).FirstOrDefaultAsync(u => u.Id == Guid.Parse(editEpisodeRequest.EpisodeId));
+            
+            if (episode == null)
+            {
+                throw new Exception("Episode Not Found");
 
             }
-            throw new BadHttpRequestException("Please Pass Episode ID");
 
+            if (editEpisodeRequest.AudioFile != null)
+            {
+
+                if (!AllowedTypes.Contains(editEpisodeRequest.AudioFile!.ContentType))
+                {
+                    throw new InvalidDataException("Invalid Data Types");
+
+                }
+
+                bool? editted = _fileService.EditFile(episode.AudioFile!, editEpisodeRequest.AudioFile);
+                if (editted == false)
+                {
+                    throw new Exception("Failed to Edit the file");
+
+                    
+                }
+                episode.AudioFile!.Name = editEpisodeRequest.AudioFile.FileName;
+                episode.AudioFile!.MimeType = editEpisodeRequest.AudioFile.ContentType;
+                episode.Duration = GetEpisodeDuration(episode.AudioFile.Path!);
+
+            }
+            if (editEpisodeRequest.EpisodeName != null)
+            {
+                episode.EpisodeName = editEpisodeRequest.EpisodeName;
+            }
+
+            if (editEpisodeRequest.IsExplicit != null)
+            {
+                episode.IsExplicit = (bool)editEpisodeRequest.IsExplicit;
+            }
+
+            await _db.SaveChangesAsync();
+            return episode;
         }
-
-
-
-
-
-
     }
 }

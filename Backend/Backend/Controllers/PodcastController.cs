@@ -31,40 +31,27 @@ namespace Backend.Controllers
         {
             try
             {
+                GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
+                if (podcast == null) return BadRequest("Bad Request");
 
-            GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-                if (podcast != null)
-                {
-
-                    return Ok(podcast);
-
-                }
-                else { return BadRequest("Bad Request"); }
-
+                return Ok(podcast);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(e.Message);
             }
-            
-
            
-
         }
         [HttpGet("getById")]
         [Authorize]
         public async Task<IActionResult> GetPodcastById(string id)
         {
             Podcast? podcast =  await _podcastService.GetPodcast(id);
-            if(podcast != null)
-            {
-                return Ok(podcast);
-            }
-            else
+            if(podcast == null)
             {
                 return BadRequest("Bad Request");
             }
-        
+            return Ok(podcast);
         }
 
         [HttpGet("getMyPodcast")]
@@ -74,26 +61,18 @@ namespace Backend.Controllers
             try
             {
                 List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
+                if(collection == null)
+                {
+                    return BadRequest("Bad Request");
+
+                }
                 return Ok(collection);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-
-        }
-
-        //[HttpDelete("delete")]
-        //public async Task<IActionResult> DeletePodcast(string id)
-        //{
-
-
-
-        //}
-    
-    }
-        
-    
+        }      
+    }            
 }
 
