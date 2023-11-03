@@ -34,7 +34,7 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
       transform={scale} // Apply the calculated scale
       transition="all 0.4s ease-in-out" // Ensure the transition is smooth for both hover and unhover events
       boxSizing="border-box"
-      border="1px solid"
+      outline={"2px solid rgba(255, 255, 255, .3)"}
       onMouseEnter={() => onMouseEnter(genre.name)}
       onMouseLeave={onMouseLeave}
       zIndex={isHovered ? 1 : 0} // Ensure the hovered item stacks on top
