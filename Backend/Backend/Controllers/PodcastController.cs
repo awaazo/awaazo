@@ -79,9 +79,24 @@ public class PodcastController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeletePodcast()
+    public async Task<IActionResult> DeletePodcast(Guid podcastId)
     {
-        return Ok("Not implemented");
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return await _podcastService.DeletePodcastAsync(podcastId,user) ? Ok("Podcast deleted.") : Ok("Failed to delete podcast.");
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("myPodcasts")]
@@ -191,9 +206,24 @@ public class PodcastController : ControllerBase
     }
 
     [HttpDelete("{episodeId}/delete")]
-    public async Task<IActionResult> DeleteEpisode(string episodeId)
+    public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
-        return Ok(episodeId);
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return await _podcastService.DeleteEpisodeAsync(episodeId,user) ? Ok("Episode deleted.") : Ok("Failed to delete episode.");
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("{episodeId}")]

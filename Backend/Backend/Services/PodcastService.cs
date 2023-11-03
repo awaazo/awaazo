@@ -243,7 +243,7 @@ public class PodcastService : IPodcastService
 
         // Remove each podcast episode
         foreach (Episode episode in episodes)
-            await DeleteEpisodeAsync(episode.Id,podcastId,user);
+            await DeleteEpisodeAsync(episode.Id,user);
 
         // Remove the cover art from the server
         RemovePodcastCoverArt(podcast.CoverArt);
@@ -262,20 +262,20 @@ public class PodcastService : IPodcastService
     /// Removes an episode from the database and the server.
     /// </summary>
     /// <param name="episodeId"></param>
-    /// <param name="podcastId"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> DeleteEpisodeAsync(Guid episodeId, Guid podcastId, User user)
+    public async Task<bool> DeleteEpisodeAsync(Guid episodeId, User user)
     {
-        // Check if the podcast exists
-        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
-
         // Check if the episode exists and is owned by the user
-        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId && e.PodcastId == podcast.Id) ?? throw new Exception("Episode does not exist and/or it is not owned by user.");
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+
+        // Check if the podcast exists
+        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id) ?? throw new Exception("Episode podcast does not exist and/or it is not owned by user.");
+
 
         // Remove audio and thumbnail from server
-        RemovePodcastEpisodeThumbnail(episodeId, podcastId);
-        RemovePodcastEpisodeAudio(episodeId, podcastId);
+        RemovePodcastEpisodeThumbnail(episodeId, podcast.Id);
+        RemovePodcastEpisodeAudio(episodeId, podcast.Id);
 
         // TODO: Remove dependent entities as well
         // ===================================
