@@ -9,6 +9,7 @@ using Backend.Services;
 using Backend.Helper;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Backend.Middlewares;
 
 namespace Backend;
 
@@ -121,6 +122,11 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
+        {
+            app.UseMiddleware<ValidateUser>();
+        });
+        
         app.MapControllers();
 
         using (var scope = app.Services.CreateScope())

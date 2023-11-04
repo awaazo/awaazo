@@ -30,8 +30,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
-    public virtual DbSet<PlaylistElement>? PlaylistElements { get; set; }
-    public virtual DbSet<Playlist>? Playlists { get; set; }
+    public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
+    public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Files>? File { get; set; }
 
 

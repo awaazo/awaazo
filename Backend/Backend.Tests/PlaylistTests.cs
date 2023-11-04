@@ -41,9 +41,8 @@ public class PlaylistTests : IAsyncLifetime
         }.AsQueryable().BuildMockDbSet();
 
         dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object); 
-        object p = await service.Create(user, "testname");
-        Assert.IsType<Playlist>(p);
-        //Assert.True(playlists.Object.Count(e => true) == 1);
+        Playlist p = await service.Create(user, "testname");
+        Assert.NotNull(p);
     }
 
     [Fact]

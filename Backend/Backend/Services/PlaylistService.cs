@@ -23,14 +23,14 @@ public class PlaylistService
             Name = name,
             UserId = user.Id
         };
-        await _db.Playlists!.AddAsync(playlist);
+        await _db.Playlists.AddAsync(playlist);
         await _db.SaveChangesAsync();
         return playlist;
     }
 
     public async Task<bool> Append(User user, Guid playlistId, Guid episodeId)
     {
-        Playlist? playlist = await _db.Playlists!.FirstOrDefaultAsync(e => e.Id == playlistId);
+        Playlist? playlist = await _db.Playlists.FirstOrDefaultAsync(e => e.Id == playlistId);
         if (playlist is null)
             return false;
 
@@ -59,7 +59,7 @@ public class PlaylistService
 
     public async Task<List<PlaylistElement>?> PlaylistElements(User user, Guid playListId)
     {
-        Playlist? playlist = await _db.Playlists!.FirstOrDefaultAsync(e => e.Id == playListId);
+        Playlist? playlist = await _db.Playlists.FirstOrDefaultAsync(e => e.Id == playListId);
         if (playlist is null)
             return null;
         
@@ -72,7 +72,7 @@ public class PlaylistService
 
     public async Task<bool> DeleteElement(User user, Guid playlistElementId)
     {
-        PlaylistElement? element = await _db.PlaylistElements!.FirstOrDefaultAsync(e => e.Id == playlistElementId);
+        PlaylistElement? element = await _db.PlaylistElements.FirstOrDefaultAsync(e => e.Id == playlistElementId);
         if (element is null)
             return false;
         
@@ -80,14 +80,14 @@ public class PlaylistService
         if (element.Playlist?.UserId != user.Id)
             return false;
 
-        _db.PlaylistElements!.Remove(element);
+        _db.PlaylistElements.Remove(element);
         await _db.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> Delete(User user, Guid playlistId)
     {
-        Playlist? element = await _db.Playlists!.FirstOrDefaultAsync(e => e.Id == playlistId);
+        Playlist? element = await _db.Playlists.FirstOrDefaultAsync(e => e.Id == playlistId);
         if (element is null)
             return false;
         
@@ -95,7 +95,7 @@ public class PlaylistService
         if (element.UserId != user.Id)
             return false;
 
-        _db.Playlists!.Remove(element);
+        _db.Playlists.Remove(element);
         await _db.SaveChangesAsync();
         return true;
     }

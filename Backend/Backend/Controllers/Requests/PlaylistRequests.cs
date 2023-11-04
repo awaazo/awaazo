@@ -6,8 +6,7 @@ namespace Backend.Controllers.Requests
     [BindProperties]
     public class PlaylistCreateRequest
     {
-        [Required]
-        public string Name { get; set; }
+        [Required] public string Name { get; set; } = string.Empty;
     }
 
     [BindProperties]
