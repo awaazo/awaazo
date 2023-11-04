@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Backend.Controllers.Requests;
+using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
@@ -10,14 +11,15 @@ namespace Backend.Services;
 public class PodcastService : IPodcastService
 {
     private readonly AppDbContext _db;
-    private readonly IFileService _fileService;
-    private readonly IAuthService _authService;
+
     private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png" };
-    public PodcastService(AppDbContext db, IFileService fileService, IAuthService authService)
+    
+    private readonly IProfileService _profileService;
+
+    public PodcastService(AppDbContext db, IProfileService profileService)
     {
         _db = db;
-        _fileService = fileService;
-        _authService = authService;
+        _profileService = profileService;
     }
 
     #region Podcast
@@ -115,9 +117,9 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    public Task<Podcast> GetPodcastResponse(Podcast podcast)
+    public Task<Podcast> GetPodcastResponseAsync(Podcast podcast)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(podcast);        
     }
 
     #endregion Podcast
@@ -148,6 +150,7 @@ public class PodcastService : IPodcastService
             EpisodeName = request.EpisodeName,
             Description = request.Description,
             IsExplicit = request.IsExplicit,
+            ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
             CreatedAt = DateTime.Now
         };
@@ -199,7 +202,7 @@ public class PodcastService : IPodcastService
         if (request.AudioFile != null)
         {
             // Remove the old episode audio from the server
-            RemovePodcastEpisodeAudio(episodeId, episode.PodcastId);
+            RemovePodcastEpisodeAudio(episode.Audio, episode.PodcastId);
 
             // Save the new episode audio to the server
             episode.Audio = SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
@@ -209,7 +212,7 @@ public class PodcastService : IPodcastService
         if (request.Thumbnail != null)
         {
             // Remove the old episode thumbnail from the server
-            RemovePodcastEpisodeThumbnail(episodeId, episode.PodcastId);
+            RemovePodcastEpisodeThumbnail(episode.Thumbnail, episode.PodcastId);
 
             // Save the new episode thumbnail to the server
             episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, episode.PodcastId, request.Thumbnail);
@@ -274,8 +277,8 @@ public class PodcastService : IPodcastService
 
 
         // Remove audio and thumbnail from server
-        RemovePodcastEpisodeThumbnail(episodeId, podcast.Id);
-        RemovePodcastEpisodeAudio(episodeId, podcast.Id);
+        RemovePodcastEpisodeThumbnail(episode.Thumbnail, podcast.Id);
+        RemovePodcastEpisodeAudio(episode.Audio, podcast.Id);
 
         // TODO: Remove dependent entities as well
         // ===================================
@@ -285,6 +288,72 @@ public class PodcastService : IPodcastService
         // Remove episode from database
         _db.Episodes.Remove(episode);
         return await _db.SaveChangesAsync() > 0;
+    }
+
+    public Task<EpisodeResponse> GetEpisodeResponseAsync(Episode episode, string baseUrl)
+    {
+        // Domain Url (anything before the url for the controller)
+        string domainUrl = baseUrl.Split("podcast")[0];
+
+        // Create a new Episode Response
+        EpisodeResponse episodeResponse = new(episode,domainUrl);
+
+        return Task.FromResult(episodeResponse);
+    }
+
+    public async Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string baseUrl)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        return await GetEpisodeResponseAsync(episode, baseUrl);
+    }
+
+    public async Task<PodcastResponse> GetPodcastResponseAsync(Podcast podcast, string baseUrl)
+    {
+        // Domain Url (anything before the url for the controller)
+        string domainUrl = baseUrl.Split("podcast")[0];
+
+        // Get the user that owns the podcast
+        User user = await _db.Users.FirstOrDefaultAsync(u => u.Id == podcast.PodcasterId) ?? throw new Exception("Podcast does not exist for the given ID.");
+
+        // Get the podcast response
+        PodcastResponse podcastResponse = new(podcast, domainUrl)
+        {
+            User = _profileService.GetProfile(user, domainUrl)
+        };
+
+
+        return podcastResponse;
+    }
+
+    public async Task<string> GetEpisodeAudioNameAsync(Guid episodeId)
+    {
+        // If the episode does not exist, throw an exception, otherwise return the audio name
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+        return episode.Audio;
+    }
+
+    public async Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId)
+    {
+        // If the episode does not exist, throw an exception, otherwise return the thumbnail name
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+        return episode.Thumbnail;
+    }
+
+    public async Task<string> GetPodcastCoverArtNameAsync(Guid podcastId)
+    {
+        // If the podcast does not exist, throw an exception, otherwise return the cover art name
+        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        return podcast.CoverArt;
+    }
+
+    public async Task<Podcast> GetPodcastByIdAsync(Guid podcastId, string baseUrl)
+    {
+        // Check if the podcast exists, if it does retrieve it.
+        Podcast podcast = await _db.Podcasts.Include(p=>p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+
+        return podcast;
     }
 
     #endregion Episode

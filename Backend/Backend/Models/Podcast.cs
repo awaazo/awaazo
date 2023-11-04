@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NAudio.MediaFoundation;
 
 namespace Backend.Models;
 
@@ -65,5 +66,15 @@ public class Podcast : BaseEntity
     public enum PodcastType
     {
         Real, AIGenerated
+    }
+
+    public string GetPodcastTypeString()
+    {
+        return Type switch
+        {
+            PodcastType.Real => "Real",
+            PodcastType.AIGenerated => "AI Generated",
+            _ => "Unknown"
+        };
     }
 }

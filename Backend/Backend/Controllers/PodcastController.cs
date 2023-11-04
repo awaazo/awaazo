@@ -2,7 +2,9 @@
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Controllers;
 [ApiController]
@@ -90,7 +92,7 @@ public class PodcastController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return await _podcastService.DeletePodcastAsync(podcastId,user) ? Ok("Podcast deleted.") : Ok("Failed to delete podcast.");
+            return await _podcastService.DeletePodcastAsync(podcastId, user) ? Ok("Podcast deleted.") : Ok("Failed to delete podcast.");
         }
         catch (Exception e)
         {
@@ -118,24 +120,28 @@ public class PodcastController : ControllerBase
         return Ok("Not implemented");
     }
 
-    [HttpGet("byId")]
-    public async Task<IActionResult> GetPodcastById()
+    [HttpGet("{podcastId}")]
+    public async Task<IActionResult> GetPodcastById(Guid podcastId)
     {
-        return Ok("Not implemented");
-    }
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
 
 
-    [HttpGet("getById")]
-    public async Task<IActionResult> GetPodcastById(string id)
-    {
-        return Ok("Not implemented");
-        // Podcast? podcast = await _podcastService.GetPodcast(id);
-        // if (podcast == null)
-        // {
-        //     return BadRequest("Bad Request");
-        // }
-        // return Ok(podcast);
+            return Ok(await _podcastService.GetPodcastByIdAsync(podcastId, HttpContext.Request.GetDisplayUrl()));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
+
 
     [HttpGet("getMyPodcast")]
     public async Task<IActionResult> GetMyPodcast()
@@ -158,6 +164,34 @@ public class PodcastController : ControllerBase
         //     return BadRequest(ex.Message);
         // }
     }
+    
+    [HttpGet("{podcastId}/getCoverArt")]
+    public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Get the name of the cover art file
+            string coverArtName = await _podcastService.GetPodcastCoverArtNameAsync(podcastId);
+
+            // Return the cover art file from the server
+            return PhysicalFile(GetPodcastCoverArtPath(coverArtName), GetFileType(coverArtName),enableRangeProcessing:false);
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+
+
 
     #endregion 
 
@@ -217,7 +251,7 @@ public class PodcastController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return await _podcastService.DeleteEpisodeAsync(episodeId,user) ? Ok("Episode deleted.") : Ok("Failed to delete episode.");
+            return await _podcastService.DeleteEpisodeAsync(episodeId, user) ? Ok("Episode deleted.") : Ok("Failed to delete episode.");
         }
         catch (Exception e)
         {
@@ -226,10 +260,75 @@ public class PodcastController : ControllerBase
         }
     }
 
-    [HttpGet("{episodeId}")]
-    public async Task<IActionResult> GetEpisode(string episodeId)
+    [HttpGet("episode/{episodeId}")]
+    public async Task<IActionResult> GetEpisode(Guid episodeId)
     {
-        return Ok(episodeId);
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetEpisodeByIdAsync(episodeId, HttpContext.Request.GetDisplayUrl()));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{podcastId}/{episodeId}/getAudio")]
+    public async Task<ActionResult> GetEpisodeAudio(Guid podcastId, Guid episodeId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Get the name of the audio file
+            string audioName = await _podcastService.GetEpisodeAudioNameAsync(episodeId);
+
+            // Return the audio file from the server
+            return PhysicalFile(GetPodcastEpisodeAudioPath(audioName, podcastId), GetFileType(audioName),enableRangeProcessing:true);
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{podcastId}/{episodeId}/getThumbnail")]
+    public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId, Guid episodeId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Get the name of the thumbnail file
+            string thumbnailName = await _podcastService.GetEpisodeThumbnailNameAsync(episodeId);
+
+            // Return the thumbnail file from the server
+            return PhysicalFile(GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId), GetFileType(thumbnailName),enableRangeProcessing:false);
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
     #endregion

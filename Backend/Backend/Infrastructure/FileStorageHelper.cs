@@ -164,11 +164,21 @@ public static class FileStorageHelper
         // Get the file path
         string podcastCoverArt = GetPodcastCoverArtPath(coverArtName);
 
+        // Get the parent folder path
+        string podcastPath = GetPodcastPath(podcastCoverArt);
+
         // Check if the file exists
         if (File.Exists(podcastCoverArt))
         {
             // Delete the file
             File.Delete(podcastCoverArt);
+        }
+
+        // Check if the podcast dir is empty
+        if(Directory.GetFiles(podcastPath).Length==0)
+        {
+            // Delete the dir
+            Directory.Delete(podcastPath); 
         }
     }
 
@@ -179,10 +189,18 @@ public static class FileStorageHelper
     /// <returns></returns>
     public static string GetPodcastCoverArtPath(string coverArtName)
     {
-        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0], coverArtName.Split(FILE_SPLIT_KEY)[0]);
+        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0], coverArtName.Split(FILE_SPLIT_KEY)[0]);
     }
 
-
+    /// <summary>
+    /// Gets the path to a podcast folder in which the coverArtName is saved.
+    /// </summary>
+    /// <param name="coverArtName"></param>
+    /// <returns></returns>
+    public static string GetPodcastPath(string coverArtName)
+    {
+        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0]);
+    }
 
     /// <summary>
     /// Saves a podcast episode audio and returns the filename stored in the database.
@@ -233,22 +251,22 @@ public static class FileStorageHelper
     /// <summary>
     /// Removes a podcast episode audio.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="audioName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeAudio(Guid episodeId, Guid podcastId)
+    public static void RemovePodcastEpisodeAudio(string audioName, Guid podcastId)
     {
-        RemovePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString());
+        RemovePodcastEpisodeAudio(audioName, podcastId.ToString());
     }
 
     /// <summary>
     /// Removes a podcast episode audio.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="audioName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeAudio(string episodeId, string podcastId)
+    public static void RemovePodcastEpisodeAudio(string audioName, string podcastId)
     {
         // Get the file path
-        string podcastEpisodeAudio = GetPodcastEpisodeAudioPath(episodeId, podcastId);
+        string podcastEpisodeAudio = GetPodcastEpisodeAudioPath(audioName, podcastId);
 
         // Check if the file exists
         if (File.Exists(podcastEpisodeAudio))
@@ -278,7 +296,7 @@ public static class FileStorageHelper
     /// <returns></returns>
     public static string GetPodcastEpisodeAudioPath(string audioName, string podcastId)
     {
-        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, audioName.Split(FILE_SPLIT_KEY)[0]);
+        return Combine(Directory.GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, audioName.Split(FILE_SPLIT_KEY)[0]);
     }
 
     /// <summary>
@@ -330,22 +348,22 @@ public static class FileStorageHelper
     /// <summary>
     /// Removes a podcast episode thumbnail.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="thumbnailName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeThumbnail(Guid episodeId, Guid podcastId)
+    public static void RemovePodcastEpisodeThumbnail(string thumbnailName, Guid podcastId)
     {
-        RemovePodcastEpisodeThumbnail(episodeId.ToString(), podcastId.ToString());
+        RemovePodcastEpisodeThumbnail(thumbnailName, podcastId.ToString());
     }
 
     /// <summary>
     /// Removes a podcast episode thumbnail.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="thumbnailName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeThumbnail(string episodeId, string podcastId)
+    public static void RemovePodcastEpisodeThumbnail(string thumbnailName, string podcastId)
     {
         // Get the file path
-        string podcastEpisodeThumbnail = GetPodcastEpisodeThumbnailPath(episodeId, podcastId);
+        string podcastEpisodeThumbnail = GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId);
 
         // Check if the file exists
         if (File.Exists(podcastEpisodeThumbnail))

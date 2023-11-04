@@ -46,7 +46,6 @@ public class Episode : BaseEntity
 
     public bool IsExplicit { get; set; } = false;
 
-
     public ulong PlayCount { get; set; }
 
     public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
