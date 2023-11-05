@@ -1,14 +1,14 @@
-import { extendTheme, StyleFunctionProps } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 
-const overrides = extendTheme({
+const overrides = {
   styles: {
-    global: (props: StyleFunctionProps) => ({
+    global: {
       "*": {
-        fontFamily: '"Avenir Next"',
+        fontFamily: "Open Sans, sans-serif",
       },
-    }),
+    },
   },
-});
+};
 
 const AppTheme = extendTheme(overrides);
 
