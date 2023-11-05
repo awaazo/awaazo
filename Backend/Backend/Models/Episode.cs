@@ -1,9 +1,12 @@
-
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
 
 namespace Backend.Models;
+
+/// <summary>
+/// Podcast episode.
+/// </summary>
 public class Episode : BaseEntity
 {
 
@@ -13,8 +16,11 @@ public class Episode : BaseEntity
         Thumbnail = string.Empty;
     }
 
+    /// <summary>
+    /// The unique ID of the episode
+    /// </summary>
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// The podcast this episode belongs to
@@ -24,16 +30,25 @@ public class Episode : BaseEntity
     /// <summary>
     /// ID of the podcast this episode belongs to
     /// </summary>
-    public Guid PodcastId { get; set; }
+    public Guid PodcastId { get; set; } = Guid.Empty;
 
-    public string EpisodeName { get; set; }
+    /// <summary>
+    /// Name of the episode
+    /// </summary>
+    public string EpisodeName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Description of the episode
+    /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// String that points to the Audio File location on the server
+    /// </summary>
     public string Audio {get;set;} = string.Empty;
 
     /// <summary>
-    /// URL to the thumbnail image of the episode
+    /// String that points to the thumbnail image location on the server
     /// </summary>
     public string Thumbnail { get; set; }
 

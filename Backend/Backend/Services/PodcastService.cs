@@ -7,6 +7,8 @@ using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NAudio;
+using NAudio.Wave;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -317,6 +319,9 @@ public class PodcastService : IPodcastService
         // Save the episode thumbnail to the server
         episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, podcastId, request.Thumbnail!);
 
+        // Find and Save the duration of the audio in seconds
+        episode.Duration = new AudioFileReader(GetPodcastEpisodeAudioPath(episode.Audio, podcastId)).TotalTime.TotalSeconds;
+
         // Add the episode to the database and return status
         await _db.Episodes.AddAsync(episode);
         return await _db.SaveChangesAsync() > 0;
@@ -363,6 +368,9 @@ public class PodcastService : IPodcastService
 
             // Save the new episode audio to the server
             episode.Audio = SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
+
+            // Find and Save the duration of the audio in seconds
+            episode.Duration = new AudioFileReader(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId)).TotalTime.TotalSeconds;
         }
 
         // Update the episode thumbnail if it was changed
