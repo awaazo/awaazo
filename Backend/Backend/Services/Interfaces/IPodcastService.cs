@@ -3,29 +3,25 @@ using Backend.Controllers.Responses;
 using Backend.Models;
 using Microsoft.Extensions.FileProviders.Physical;
 
-namespace Backend.Services.Interfaces
+namespace Backend.Services.Interfaces;
+public interface IPodcastService
 {
-    public interface IPodcastService
-    {
+    // PODCASTS
+    public Task<bool> CreatePodcastAsync(CreatePodcastRequest request, User user);
+    public Task<bool> EditPodcastAsync(EditPodcastRequest request, User user);
+    public Task<bool> DeletePodcastAsync(Guid podcastId, User user);
+    public Task<string> GetPodcastCoverArtNameAsync(Guid podcastId);
+    public Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl);
+    public Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId);
+    public Task<List<PodcastResponse>> GetUserPodcastsAsync(string domainUrl, User user);
+    public Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm);
 
+    // EPISODES
 
-        // PODCASTS
-        public Task<bool> CreatePodcastAsync(CreatePodcastRequest request, User user);
-        public Task<bool> EditPodcastAsync(EditPodcastRequest request, User user);
-        public Task<bool> DeletePodcastAsync(Guid podcastId, User user);
-        public Task<string> GetPodcastCoverArtNameAsync(Guid podcastId);
-        public Task<PodcastResponse> GetPodcastResponseAsync(Podcast podcast, string baseUrl);
-        public Task<List<Podcast>> GetAllPodcastAsync();
-        public Task<Podcast> GetPodcastByIdAsync(Guid podcastId, string baseUrl);
-
-        // EPISODES
-
-        public Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
-        public Task<bool> EditEpisodeAsync(EditEpisodeRequest request, Guid podcastId, User user);
-        public Task<bool> DeleteEpisodeAsync(Guid episodeId, User user);
-        public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string baseUrl);
-        public Task<EpisodeResponse> GetEpisodeResponseAsync(Episode episode, string baseUrl);
-        public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
-        public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
-    }
+    public Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
+    public Task<bool> EditEpisodeAsync(EditEpisodeRequest request, Guid podcastId, User user);
+    public Task<bool> DeleteEpisodeAsync(Guid episodeId, User user);
+    public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl);
+    public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
+    public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
 }

@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using System.Reflection.Metadata;
+using AutoMapper;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
@@ -8,37 +10,44 @@ using Microsoft.EntityFrameworkCore;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
+
+/// <summary>
+/// Handles API requests for podcasts and episodes.
+/// </summary>
 public class PodcastService : IPodcastService
 {
+    /// <summary>
+    /// Current database instance
+    /// </summary>
     private readonly AppDbContext _db;
 
-    private readonly List<string> AllowedTypes = new List<string> { "image/bmp", "image/jpeg", "image/x-png", "image/png" };
+    /// <summary>
+    /// Accepted file types for cover art and thumbnail
+    /// </summary>
+    private static readonly string[] ALLOWED_IMG_FILES = {"image/jpeg", "image/png", "image/svg+xml" };
     
-    private readonly IProfileService _profileService;
+    /// <summary>
+    /// Accepted file types for audio files
+    /// </summary>
+    private static readonly string[] ALLOWED_AUDIO_FILES = {"audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4" };    
 
-    public PodcastService(AppDbContext db, IProfileService profileService)
+    /// <summary>
+    /// Maximum image file is 5MB
+    /// </summary>
+    private const int MAX_IMG_SIZE = 5242880;
+
+    /// <summary>
+    /// Maximum audio file is 2GB
+    /// </summary>
+    private const int MAX_AUDIO_SIZE = 2000000000;
+
+
+    public PodcastService(AppDbContext db)
     {
         _db = db;
-        _profileService = profileService;
     }
 
     #region Podcast
-
-    public async Task<List<Podcast>> GetAllPodcastAsync()
-    {
-        // Get all podcasts
-        List<Podcast> podcasts = await _db.Podcasts.ToListAsync();
-
-        // Get all episodes for each podcast
-        foreach (Podcast podcast in podcasts)
-        {
-            podcast.Episodes = await _db.Episodes.Where(e => e.PodcastId == podcast.Id).ToListAsync();
-        }
-
-        // Return the podcasts
-        return podcasts;
-    }
-
 
     /// <summary>
     /// Creates a new Podcast.
@@ -51,6 +60,18 @@ public class PodcastService : IPodcastService
         // Check if a podcast with the same name already exists
         if (await _db.Podcasts.AnyAsync(p => p.Name == request.Name))
             throw new Exception("A podcast with the same name already exists");
+
+        // Check if the cover art was provided
+        if (request.CoverImage == null)
+            throw new Exception("Cover art is required.");
+
+        // Check if the cover art is an image
+        if (!ALLOWED_IMG_FILES.Contains(request.CoverImage.ContentType))
+            throw new Exception("Cover art must be a JPEG, PNG, or SVG.");
+
+        // Check if the cover art is smaller than 5MB
+        if (request.CoverImage.Length > MAX_IMG_SIZE)
+            throw new Exception("Cover art must be smaller than 5MB.");
 
         // Create the new Podcast
         Podcast podcast = new()
@@ -102,6 +123,14 @@ public class PodcastService : IPodcastService
         // Update the cover art if it was changed
         if (request.CoverImage != null)
         {
+            // Check if the cover art is an image
+            if (!ALLOWED_IMG_FILES.Contains(request.CoverImage.ContentType))
+                throw new Exception("Cover art must be a JPEG, PNG, or SVG.");
+
+            // Check if the cover art is smaller than 5MB
+            if (request.CoverImage.Length > MAX_IMG_SIZE)
+                throw new Exception("Cover art must be smaller than 5MB.");
+
             // Remove the old cover art from the server
             RemovePodcastCoverArt(podcast.CoverArt);
 
@@ -117,9 +146,105 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    public Task<Podcast> GetPodcastResponseAsync(Podcast podcast)
+    /// <summary>
+    /// Gets the cover art name for the given podcast.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<string> GetPodcastCoverArtNameAsync(Guid podcastId)
     {
-        return Task.FromResult(podcast);        
+        // If the podcast does not exist, throw an exception, otherwise return the cover art name
+        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        return podcast.CoverArt;
+    }
+
+    /// <summary>
+    /// Gets a podcast by ID.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId)
+    {
+        // Check if the podcast exists, if it does retrieve it.
+        Podcast podcast = await _db.Podcasts.Include(p=>p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        
+        return new PodcastResponse(podcast,domainUrl);
+    }
+
+    /// <summary>
+    /// Gets all podcasts for the given user.
+    /// </summary>
+    /// <param name="domainUrl"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<PodcastResponse>> GetUserPodcastsAsync(string domainUrl, User user)
+    {
+        // Check if the user has any podcasts, if they do retrieve them.
+        List<Podcast> podcasts = await _db.Podcasts.Include(p=>p.Episodes).Where(p => p.PodcasterId == user.Id).ToListAsync() ?? throw new Exception("User doesnt have any podcasts.");
+
+        // Get the podcast responses and return them
+        List<PodcastResponse> podcastResponses = new();
+        foreach (Podcast podcast in podcasts)
+        {
+            podcastResponses.Add(new PodcastResponse(podcast,domainUrl));
+        }
+
+        return podcastResponses;
+    }
+
+    /// <summary>
+    /// Gets all podcasts for the given search term.
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <param name="searchTerm"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
+    {
+        // Get the podcasts from the database, where the podcast name sounds like the searchTerm
+        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        .Skip(page * pageSize)
+        .Where(p => AppDbContext.Soundex(p.Name)==AppDbContext.Soundex(searchTerm))
+        .Take(pageSize)
+        .ToListAsync() ?? throw new Exception("No podcasts found.");
+
+        // Create a list of podcast responses
+        List<PodcastResponse> podcastResponses = new();
+        foreach (Podcast podcast in podcasts)
+        {
+            podcastResponses.Add(new PodcastResponse(podcast, domainUrl));
+        }
+
+        return podcastResponses;
+    }
+
+    /// <summary>
+    /// Gets all podcasts.
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl)
+    {
+        // Get the podcasts from the database
+        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes).Skip(page * pageSize).Take(pageSize).ToListAsync() ?? throw new Exception("No podcasts found.");
+
+        // Create a list of podcast responses
+        List<PodcastResponse> podcastResponses = new();
+        foreach (Podcast podcast in podcasts)
+        {
+            podcastResponses.Add(new PodcastResponse(podcast, domainUrl));
+        }
+
+        return podcastResponses;
     }
 
     #endregion Podcast
@@ -141,6 +266,30 @@ public class PodcastService : IPodcastService
         // Check if the episode name already exists for the podcast
         if (await _db.Episodes.AnyAsync(e => e.PodcastId == podcastId && e.EpisodeName == request.EpisodeName))
             throw new Exception("An episode with the same name already exists for this podcast.");
+
+        // Check if the episode audio was provided
+        if (request.AudioFile == null)
+            throw new Exception("Audio file is required.");
+
+        // Check if the episode audio is an audio file
+        if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
+            throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
+
+        // Check if the episode audio is smaller than 2GB
+        if (request.AudioFile.Length > MAX_AUDIO_SIZE)
+            throw new Exception("Audio file must be smaller than 2GB.");
+
+        // Check if the episode thumbnail was provided
+        if (request.Thumbnail == null)
+            throw new Exception("Thumbnail is required.");
+
+        // Check if the episode thumbnail is an image
+        if (!ALLOWED_IMG_FILES.Contains(request.Thumbnail.ContentType))
+            throw new Exception("Thumbnail must be a JPEG, PNG, or SVG.");
+
+        // Check if the episode thumbnail is smaller than 5MB
+        if (request.Thumbnail.Length > MAX_IMG_SIZE)
+            throw new Exception("Thumbnail must be smaller than 5MB.");
 
         // Create the new episode
         Episode episode = new()
@@ -201,6 +350,14 @@ public class PodcastService : IPodcastService
         // Update the episode audio if it was changed
         if (request.AudioFile != null)
         {
+            // Check if the episode audio is an audio file
+            if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
+                throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
+
+            // Check if the episode audio is smaller than 2GB
+            if (request.AudioFile.Length > MAX_AUDIO_SIZE)
+                throw new Exception("Audio file must be smaller than 2GB.");
+
             // Remove the old episode audio from the server
             RemovePodcastEpisodeAudio(episode.Audio, episode.PodcastId);
 
@@ -211,6 +368,14 @@ public class PodcastService : IPodcastService
         // Update the episode thumbnail if it was changed
         if (request.Thumbnail != null)
         {
+            // Check if the episode thumbnail is an image
+            if (!ALLOWED_IMG_FILES.Contains(request.Thumbnail.ContentType))
+                throw new Exception("Thumbnail must be a JPEG, PNG, or SVG.");
+
+            // Check if the episode thumbnail is smaller than 5MB
+            if (request.Thumbnail.Length > MAX_IMG_SIZE)
+                throw new Exception("Thumbnail must be smaller than 5MB.");
+
             // Remove the old episode thumbnail from the server
             RemovePodcastEpisodeThumbnail(episode.Thumbnail, episode.PodcastId);
 
@@ -290,43 +455,28 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    public Task<EpisodeResponse> GetEpisodeResponseAsync(Episode episode, string baseUrl)
-    {
-        // Domain Url (anything before the url for the controller)
-        string domainUrl = baseUrl.Split("podcast")[0];
-
-        // Create a new Episode Response
-        EpisodeResponse episodeResponse = new(episode,domainUrl);
-
-        return Task.FromResult(episodeResponse);
-    }
-
-    public async Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string baseUrl)
+    /// <summary>
+    /// Retrieves an episode by ID.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
-        return await GetEpisodeResponseAsync(episode, baseUrl);
+        // Return the episode response
+        return new EpisodeResponse(episode,domainUrl);
     }
 
-    public async Task<PodcastResponse> GetPodcastResponseAsync(Podcast podcast, string baseUrl)
-    {
-        // Domain Url (anything before the url for the controller)
-        string domainUrl = baseUrl.Split("podcast")[0];
-
-        // Get the user that owns the podcast
-        User user = await _db.Users.FirstOrDefaultAsync(u => u.Id == podcast.PodcasterId) ?? throw new Exception("Podcast does not exist for the given ID.");
-
-        // Get the podcast response
-        PodcastResponse podcastResponse = new(podcast, domainUrl)
-        {
-            User = _profileService.GetProfile(user, domainUrl)
-        };
-
-
-        return podcastResponse;
-    }
-
+    /// <summary>
+    /// Gets the audio name for the given episode.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<string> GetEpisodeAudioNameAsync(Guid episodeId)
     {
         // If the episode does not exist, throw an exception, otherwise return the audio name
@@ -334,26 +484,17 @@ public class PodcastService : IPodcastService
         return episode.Audio;
     }
 
+    /// <summary>
+    /// Gets the thumbnail name for the given episode.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId)
     {
         // If the episode does not exist, throw an exception, otherwise return the thumbnail name
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
         return episode.Thumbnail;
-    }
-
-    public async Task<string> GetPodcastCoverArtNameAsync(Guid podcastId)
-    {
-        // If the podcast does not exist, throw an exception, otherwise return the cover art name
-        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
-        return podcast.CoverArt;
-    }
-
-    public async Task<Podcast> GetPodcastByIdAsync(Guid podcastId, string baseUrl)
-    {
-        // Check if the podcast exists, if it does retrieve it.
-        Podcast podcast = await _db.Podcasts.Include(p=>p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
-
-        return podcast;
     }
 
     #endregion Episode

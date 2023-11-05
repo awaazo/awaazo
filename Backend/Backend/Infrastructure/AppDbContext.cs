@@ -32,6 +32,18 @@ public class AppDbContext : DbContext
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
     public virtual DbSet<Files>? File { get; set; }
 
+    /// <summary>
+    /// Maps to the Soundex function in the database.
+    /// No need to implement on server as it will be used in db.
+    /// </summary>
+    /// <param name="keyTerm"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [DbFunction("SoundEx", IsBuiltIn =true)]
+    public static string Soundex(string keyTerm)
+    {
+        throw new NotImplementedException();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

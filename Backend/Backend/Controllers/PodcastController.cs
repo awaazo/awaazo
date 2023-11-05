@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Controllers;
+
 [ApiController]
 [Route("podcast")]
 [Authorize]
@@ -23,23 +24,9 @@ public class PodcastController : ControllerBase
 
     #region Podcast
 
-    //TODO : ADD middleware to Validate the File type inputted
     [HttpPost("create")]
     public async Task<IActionResult> CreatePodcast([FromForm] CreatePodcastRequest request)
     {
-        // try
-        // {
-        //     GetPodcastRequest? podcast = await _podcastService.CreatePodcast(createPodcastRequest, HttpContext);
-        //     if (podcast == null) return BadRequest("Bad Request");
-
-        //     return Ok(podcast);
-        // }
-        // catch (Exception e)
-        // {
-        //     return BadRequest(e.Message);
-        // }
-
-
         try
         {
             // Identify User from JWT Token
@@ -56,7 +43,6 @@ public class PodcastController : ControllerBase
             // If error occurs, return BadRequest
             return BadRequest(e.Message);
         }
-
     }
 
     [HttpPost("edit")]
@@ -104,20 +90,64 @@ public class PodcastController : ControllerBase
     [HttpGet("myPodcasts")]
     public async Task<IActionResult> GetMyPodcasts()
     {
-        return Ok("Not implemented");
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetUserPodcastsAsync(GetDomainUrl(HttpContext),user));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
-    // int page + int page size
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllPodcasts()
+    public async Task<IActionResult> GetAllPodcasts(int page=0, int pageSize=20)
     {
-        return Ok(await _podcastService.GetAllPodcastAsync());
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetAllPodcastsAsync(page,pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchPodcast()
+    public async Task<IActionResult> SearchPodcast(string searchTerm, int page=0,int pageSize=20)
     {
-        return Ok("Not implemented");
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),searchTerm));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("{podcastId}")]
@@ -132,8 +162,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-
-            return Ok(await _podcastService.GetPodcastByIdAsync(podcastId, HttpContext.Request.GetDisplayUrl()));
+            return Ok(await _podcastService.GetPodcastByIdAsync(GetDomainUrl(HttpContext),podcastId));
         }
         catch (Exception e)
         {
@@ -143,28 +172,6 @@ public class PodcastController : ControllerBase
     }
 
 
-    [HttpGet("getMyPodcast")]
-    public async Task<IActionResult> GetMyPodcast()
-    {
-        return Ok("Not implemented");
-
-
-        // try
-        // {
-        //     List<GetPodcastResponse> collection = await _podcastService.GetMyPodcast(HttpContext);
-        //     if (collection == null)
-        //     {
-        //         return BadRequest("Bad Request");
-
-        //     }
-        //     return Ok(collection);
-        // }
-        // catch (Exception ex)
-        // {
-        //     return BadRequest(ex.Message);
-        // }
-    }
-    
     [HttpGet("{podcastId}/getCoverArt")]
     public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId)
     {
@@ -190,13 +197,16 @@ public class PodcastController : ControllerBase
         }
     }
 
-
-
-
     #endregion 
 
     #region Episode
 
+    /// <summary>
+    /// Adds an episode to a podcast.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("{podcastId}/add")]
     public async Task<IActionResult> AddEpisode(Guid podcastId, [FromForm] CreateEpisodeRequest request)
     {
@@ -218,6 +228,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Edits an episode of a podcast by Id.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("{episodeId}/edit")]
     public async Task<IActionResult> EditEpisode(Guid episodeId, [FromForm] EditEpisodeRequest request)
     {
@@ -239,6 +255,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Deletes an episode of a podcast by Id.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpDelete("{episodeId}/delete")]
     public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
@@ -260,6 +281,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets an episode of a podcast by Id.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpGet("episode/{episodeId}")]
     public async Task<IActionResult> GetEpisode(Guid episodeId)
     {
@@ -281,6 +307,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the audio of an episode.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpGet("{podcastId}/{episodeId}/getAudio")]
     public async Task<ActionResult> GetEpisodeAudio(Guid podcastId, Guid episodeId)
     {
@@ -306,6 +338,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the thumbnail of an episode.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpGet("{podcastId}/{episodeId}/getThumbnail")]
     public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId, Guid episodeId)
     {
@@ -332,4 +370,14 @@ public class PodcastController : ControllerBase
     }
 
     #endregion
+
+    /// <summary>
+    /// Returns the domain url of the server.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static string GetDomainUrl(HttpContext context)
+    {
+        return context.Request.GetDisplayUrl().Split("podcast")[0];
+    }
 }

@@ -27,7 +27,6 @@ public class Program
 
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
-        builder.Services.AddScoped<IFileService,FileService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
 
 

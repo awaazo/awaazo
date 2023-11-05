@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
 using Moq;
 using System;
@@ -28,7 +26,6 @@ namespace Backend.Tests;
 public class PodcastTests
 {
     private Mock<AppDbContext> _dbContextMock;
-    private Mock<IFileService> _fileServiceMock;
     private Mock<HttpContext> _httpContextMock;
     private Mock<IAuthService> _authServiceMock;
     private PodcastService _podcastService;
@@ -41,11 +38,10 @@ public class PodcastTests
     {
         // Prevent Null objects in case of no test running
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
-        _fileServiceMock = new();
         _httpContextMock = new();
         _authServiceMock = new();
-        _podcastService = new(_dbContextMock.Object, _fileServiceMock.Object, _authServiceMock.Object);
-        _podcastController = new(_podcastService, _dbContextMock.Object, _fileServiceMock.Object);
+        _podcastService = new(_dbContextMock.Object);
+        _podcastController = new(_podcastService, _authServiceMock.Object);
         MockBasicUtilities(out var podcast, out var user);
     }
 
