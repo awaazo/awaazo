@@ -71,7 +71,7 @@ export default function Navbar() {
         session.user.email,
         session.user.name,
         (session as any).id,
-        session.user.image
+        session.user.image,
       ).then(() => {
         AuthHelper.authMeRequest().then((response) => {
           if (response.status == 200) {
@@ -133,9 +133,7 @@ export default function Navbar() {
           >
             👤 My Account
           </MenuItem>
-          <MenuItem
-            onClick={() => (window.location.href = "/profile/MyPodcasts")}
-          >
+          <MenuItem onClick={() => (window.location.href = "/MyPodcasts")}>
             🎙️ My Podcasts
           </MenuItem>
           <MenuDivider />
