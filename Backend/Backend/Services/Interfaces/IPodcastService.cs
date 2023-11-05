@@ -13,7 +13,8 @@ public interface IPodcastService
     public Task<string> GetPodcastCoverArtNameAsync(Guid podcastId);
     public Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl);
     public Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId);
-    public Task<List<PodcastResponse>> GetUserPodcastsAsync(string domainUrl, User user);
+    public Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, User user);
+    public Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId);
     public Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm);
 
     // EPISODES

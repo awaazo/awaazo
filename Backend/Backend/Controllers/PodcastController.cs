@@ -13,6 +13,9 @@ namespace Backend.Controllers;
 [Authorize]
 public class PodcastController : ControllerBase
 {
+    private const int MIN_PAGE=0;
+    private const int DEFAULT_PAGE_SIZE=20;
+
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
 
@@ -88,7 +91,7 @@ public class PodcastController : ControllerBase
     }
 
     [HttpGet("myPodcasts")]
-    public async Task<IActionResult> GetMyPodcasts()
+    public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
@@ -99,7 +102,28 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetUserPodcastsAsync(GetDomainUrl(HttpContext),user));
+            return Ok(await _podcastService.GetUserPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),user));
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("userPodcasts")]
+    public async Task<IActionResult> GetUserPodcasts(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetUserPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),userId));
         }
         catch (Exception e)
         {
@@ -109,7 +133,7 @@ public class PodcastController : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllPodcasts(int page=0, int pageSize=20)
+    public async Task<IActionResult> GetAllPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
@@ -130,7 +154,7 @@ public class PodcastController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchPodcast(string searchTerm, int page=0,int pageSize=20)
+    public async Task<IActionResult> SearchPodcast(string searchTerm, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {

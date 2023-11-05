@@ -183,10 +183,26 @@ public class PodcastService : IPodcastService
     /// <param name="user"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<List<PodcastResponse>> GetUserPodcastsAsync(string domainUrl, User user)
+    public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, User user)
+    {
+        return await GetUserPodcastsAsync(page,pageSize,domainUrl,user.Id);
+    }
+
+    /// <summary>
+    /// Gets all podcasts for the given user (to which the ID belongs).
+    /// </summary>
+    /// <param name="domainUrl"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId)
     {
         // Check if the user has any podcasts, if they do retrieve them.
-        List<Podcast> podcasts = await _db.Podcasts.Include(p=>p.Episodes).Where(p => p.PodcasterId == user.Id).ToListAsync() ?? throw new Exception("User doesnt have any podcasts.");
+        List<Podcast> podcasts = await _db.Podcasts.Include(p=>p.Episodes)
+        .Where(p => p.PodcasterId == userId)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .ToListAsync() ?? throw new Exception("User doesnt have any podcasts.");
 
         // Get the podcast responses and return them
         List<PodcastResponse> podcastResponses = new();
@@ -211,8 +227,8 @@ public class PodcastService : IPodcastService
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
         List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
-        .Skip(page * pageSize)
         .Where(p => AppDbContext.Soundex(p.Name)==AppDbContext.Soundex(searchTerm))
+        .Skip(page * pageSize)
         .Take(pageSize)
         .ToListAsync() ?? throw new Exception("No podcasts found.");
 
@@ -237,7 +253,10 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl)
     {
         // Get the podcasts from the database
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes).Skip(page * pageSize).Take(pageSize).ToListAsync() ?? throw new Exception("No podcasts found.");
+        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .ToListAsync() ?? throw new Exception("No podcasts found.");
 
         // Create a list of podcast responses
         List<PodcastResponse> podcastResponses = new();
