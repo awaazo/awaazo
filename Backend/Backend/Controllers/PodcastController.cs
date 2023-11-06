@@ -1,5 +1,6 @@
 ﻿using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -232,6 +233,8 @@ public class PodcastController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("{podcastId}/add")]
+    [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
+    [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
     public async Task<IActionResult> AddEpisode(Guid podcastId, [FromForm] CreateEpisodeRequest request)
     {
         try
@@ -248,7 +251,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
-            return BadRequest(e.Message);
+            return BadRequest(e.Message+e.StackTrace);
         }
     }
 
@@ -259,6 +262,8 @@ public class PodcastController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("{episodeId}/edit")]
+    [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
+    [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
     public async Task<IActionResult> EditEpisode(Guid episodeId, [FromForm] EditEpisodeRequest request)
     {
         try
@@ -322,7 +327,7 @@ public class PodcastController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetEpisodeByIdAsync(episodeId, HttpContext.Request.GetDisplayUrl()));
+            return Ok(await _podcastService.GetEpisodeByIdAsync(episodeId, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {

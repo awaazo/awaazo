@@ -6,9 +6,8 @@ using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using FFMpegCore.Builders.MetaData;
 using Microsoft.EntityFrameworkCore;
-using NAudio;
-using NAudio.Wave;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -39,9 +38,15 @@ public class PodcastService : IPodcastService
     private const int MAX_IMG_SIZE = 5242880;
 
     /// <summary>
-    /// Maximum audio file is 2GB
+    /// Maximum audio file is 1GB
     /// </summary>
-    private const int MAX_AUDIO_SIZE = 2000000000;
+    private const int MAX_AUDIO_SIZE = 1000000000;
+
+    /// <summary>
+    /// Maximum request size
+    /// </summary>
+    /// <param name="db"></param>
+    public const int MAX_REQUEST_SIZE = 1005242880;
 
 
     public PodcastService(AppDbContext db)
@@ -296,9 +301,9 @@ public class PodcastService : IPodcastService
         if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
             throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
 
-        // Check if the episode audio is smaller than 2GB
+        // Check if the episode audio is smaller than 1GB
         if (request.AudioFile.Length > MAX_AUDIO_SIZE)
-            throw new Exception("Audio file must be smaller than 2GB.");
+            throw new Exception("Audio file must be smaller than 1GB.");
 
         // Check if the episode thumbnail was provided
         if (request.Thumbnail == null)
@@ -333,13 +338,14 @@ public class PodcastService : IPodcastService
         }
 
         // Save the episode audio to the server
-        episode.Audio = SavePodcastEpisodeAudio(episode.Id, podcastId, request.AudioFile!);
+        episode.Audio = await SavePodcastEpisodeAudio(episode.Id, podcastId, request.AudioFile!);
 
         // Save the episode thumbnail to the server
         episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, podcastId, request.Thumbnail!);
 
         // Find and Save the duration of the audio in seconds
-        episode.Duration = new AudioFileReader(GetPodcastEpisodeAudioPath(episode.Audio, podcastId)).TotalTime.TotalSeconds;
+        var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+        episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Add the episode to the database and return status
         await _db.Episodes.AddAsync(episode);
@@ -378,18 +384,19 @@ public class PodcastService : IPodcastService
             if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
                 throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
 
-            // Check if the episode audio is smaller than 2GB
+            // Check if the episode audio is smaller than 1GB
             if (request.AudioFile.Length > MAX_AUDIO_SIZE)
-                throw new Exception("Audio file must be smaller than 2GB.");
+                throw new Exception("Audio file must be smaller than 1GB.");
 
             // Remove the old episode audio from the server
             RemovePodcastEpisodeAudio(episode.Audio, episode.PodcastId);
 
             // Save the new episode audio to the server
-            episode.Audio = SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
+            episode.Audio = await SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
 
             // Find and Save the duration of the audio in seconds
-            episode.Duration = new AudioFileReader(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId)).TotalTime.TotalSeconds;
+            var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+            episode.Duration = mediaInfo.Duration.TotalSeconds;
         }
 
         // Update the episode thumbnail if it was changed
