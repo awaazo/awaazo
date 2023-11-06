@@ -8,26 +8,32 @@ public class Podcast : BaseEntity
 
     public Podcast() 
     {
-        Tags = Array.Empty<string>();
+        Id = new Guid();
         Name  = string.Empty;
         Description = string.Empty;
-
+        Podcaster = null!;
+        PodcasterId = Guid.Empty;
+        Tags = Array.Empty<string>();
+        IsExplicit = false;
+        Type = PodcastType.Real;
+        Episodes = new List<Episode>();
+        AverageRating = 0;
+        TotalRatings = 0;       
     }
-
-    public User Podcaster { get; set; } = null!;
-
-    // Required reference navigation to principal
-    public Guid PodcasterId { get; set; }
 
     [Key]
     public Guid Id { get; set; }
 
-
     [Required]
     public string Name { get; set; }
     public string Description { get; set; }
-    public Guid? CoverId {  get; set; }
-    public Files? Cover { get; set; }
+    public string CoverArt {get;set;} = string.Empty;
+
+    public User Podcaster { get; set; }
+
+    // Required reference navigation to principal
+    public Guid PodcasterId { get; set; }
+
 
     /// <summary>
     /// Array of tags/categories associated with the podcast
@@ -37,14 +43,14 @@ public class Podcast : BaseEntity
     /// <summary>
     /// Optional flag indicating if the podcast has explicit content
     /// </summary>
-    public bool IsExplicit { get; set; } = false;
+    public bool IsExplicit { get; set; }
 
     /// <summary>
     /// Type of podcast: either real or AI-generated
     /// </summary>
     public PodcastType Type { get; set; }
 
-    public ICollection<Episode> Episodes { get; } = new List<Episode>();
+    public ICollection<Episode> Episodes { get; set; }
 
     /// <summary>
     /// computed average of all ratings for this podcast
@@ -59,5 +65,15 @@ public class Podcast : BaseEntity
     public enum PodcastType
     {
         Real, AIGenerated
+    }
+
+    public string GetPodcastTypeString()
+    {
+        return Type switch
+        {
+            PodcastType.Real => "Real",
+            PodcastType.AIGenerated => "AI Generated",
+            _ => "Unknown"
+        };
     }
 }

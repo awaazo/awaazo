@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 
@@ -30,14 +31,14 @@ public class ProfileController : ControllerBase
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
         // If User is not found, return 404
-        if(user is null)
+        if (user is null)
             return NotFound("User does not exist.");
 
         // Delete the User Profile 
         bool isDeleted = await _profileService.DeleteProfileAsync(user);
 
         // If User Profile is deleted successfully, return 200, else return 400 with error message. 
-        if(isDeleted)
+        if (isDeleted)
             return Ok("User profile deleted successfully.");
         else
             return BadRequest("User profile could not be deleted.");
@@ -54,7 +55,7 @@ public class ProfileController : ControllerBase
             return NotFound("User does not exist.");
 
         // Update User Profile
-        bool isChanged = await _profileService.SetupProfileAsync(setupRequest,user);
+        bool isChanged = await _profileService.SetupProfileAsync(setupRequest, user);
 
         return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
     }
@@ -62,17 +63,24 @@ public class ProfileController : ControllerBase
     [HttpPost("edit")]
     public async Task<ActionResult> Edit([FromForm] ProfileEditRequest editRequest)
     {
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
-        if (user == null)
-            return NotFound("User does not exist.");
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
 
-        // Update User Profile
-        bool isChanged = await _profileService.EditProfileAsync(editRequest,user);
+            // Update User Profile
+            bool isChanged = await _profileService.EditProfileAsync(editRequest, user);
 
-        return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
+            return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("get")]
@@ -86,7 +94,7 @@ public class ProfileController : ControllerBase
             return NotFound("User does not exist.");
 
 
-        return _profileService.GetProfile(user, HttpContext);
+        return _profileService.GetProfile(user, HttpContext.Request.GetDisplayUrl().Split("profile")[0]);
     }
 
     [HttpGet("avatar")]
@@ -96,14 +104,14 @@ public class ProfileController : ControllerBase
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
         // If User is not found, return 404
-        if(user is null)
+        if (user is null)
             return NotFound("User does not exist.");
 
         // If user has yet to upload an avatar, return default avatar. 
-        if(user.Avatar == "DefaultAvatar")
+        if (user.Avatar == "DefaultAvatar")
             return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
 
         // Otherwise, return the avatar
-        return PhysicalFile(GetUserAvatarPath(user.Avatar),GetFileType(user.Avatar));
+        return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
     }
 }
