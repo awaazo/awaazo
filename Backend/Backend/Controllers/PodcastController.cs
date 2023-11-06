@@ -402,6 +402,12 @@ public class PodcastController : ControllerBase
     /// <returns></returns>
     private static string GetDomainUrl(HttpContext context)
     {
-        return context.Request.GetDisplayUrl().Split("podcast")[0];
+        string domain = "";
+        domain +=  "http";
+        if (context.Request.IsHttps)
+            domain += "s";
+        domain += @"://" + context.Request.Host + @"/";
+
+        return domain;
     }
 }
