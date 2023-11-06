@@ -39,7 +39,7 @@ public class AppDbContext : DbContext
     /// <param name="keyTerm"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    [DbFunction("SoundEx", IsBuiltIn =true)]
+    [DbFunction("SoundEx", IsBuiltIn = true)]
     public static string Soundex(string keyTerm)
     {
         throw new NotImplementedException();
@@ -137,11 +137,6 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
-
-        
-
-
-
     }
     
     public override int SaveChanges()

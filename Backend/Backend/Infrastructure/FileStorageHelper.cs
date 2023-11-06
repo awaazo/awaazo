@@ -209,9 +209,9 @@ public static class FileStorageHelper
     /// <param name="podcastId"></param>
     /// <param name="audioFile"></param>
     /// <returns></returns>
-    public static string SavePodcastEpisodeAudio(Guid episodeId, Guid podcastId, IFormFile audioFile)
+    public static async Task<string> SavePodcastEpisodeAudio(Guid episodeId, Guid podcastId, IFormFile audioFile)
     {
-        return SavePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString(), audioFile);
+        return await SavePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString(), audioFile);
     }
 
     /// <summary>
@@ -221,7 +221,7 @@ public static class FileStorageHelper
     /// <param name="podcastId"></param>
     /// <param name="audioFile"></param>
     /// <returns></returns>
-    public static string SavePodcastEpisodeAudio(string episodeId, string podcastId, IFormFile audioFile)
+    public static async Task<string> SavePodcastEpisodeAudio(string episodeId, string podcastId, IFormFile audioFile)
     {
         // Filename stored on the server filesystem
         string audioFileName = string.Format("{0}.{1}", episodeId, audioFile.ContentType.Split('/')[1]);
@@ -241,7 +241,7 @@ public static class FileStorageHelper
 
         // Save the file
         using FileStream fileStream = Create(filePath);
-        audioFile.CopyTo(fileStream);
+        await audioFile.CopyToAsync(fileStream);
 
         // Return the filename stored in the database
         return audioName;
