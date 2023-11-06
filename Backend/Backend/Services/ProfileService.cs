@@ -110,14 +110,13 @@ public class ProfileService : IProfileService
     /// Returns the profile of a user
     /// </summary>
     /// <param name="user">User for which the profile belongs</param>
-    /// <param name="httpContext">Current HttpContext</param>
+    /// <param name="domainUrl">Url of the current domain (top level)</param>
     /// <returns>UserProfileResponse</returns>
-    public UserProfileResponse GetProfile(User user, HttpContext httpContext)
+    public UserProfileResponse GetProfile(User user, string domainUrl)
     {
         UserProfileResponse profile = (UserProfileResponse)user;
-        string url = httpContext.Request.GetDisplayUrl().ToString();
-        url = url[..^3];
-        profile.AvatarUrl = url + "avatar";
+        
+        profile.AvatarUrl = string.Format("{0}profile/avatar",domainUrl);
 
         return profile;
     }

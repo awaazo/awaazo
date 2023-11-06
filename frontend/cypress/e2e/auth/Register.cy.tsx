@@ -5,7 +5,6 @@ describe('Register', () => {
         cy.visit('/');
         cy.url().should('include', '/');
         cy.get('button[aria-label="Menu"]').click();
-        cy.get('button[aria-label="Menu"]').click();
         cy.get('button').contains('Register').click();
         cy.get('input[id="email"]').type('testRegister@email.com');
         cy.get('input[id="username"]').type('TestUsername');

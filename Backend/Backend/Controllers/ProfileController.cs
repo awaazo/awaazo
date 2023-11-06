@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 
@@ -93,7 +94,7 @@ public class ProfileController : ControllerBase
             return NotFound("User does not exist.");
 
 
-        return _profileService.GetProfile(user, HttpContext);
+        return _profileService.GetProfile(user, HttpContext.Request.GetDisplayUrl().Split("profile")[0]);
     }
 
     [HttpGet("avatar")]
