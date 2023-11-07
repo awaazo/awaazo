@@ -11,8 +11,6 @@ public class Podcast : BaseEntity
         Id = new Guid();
         Name  = string.Empty;
         Description = string.Empty;
-        CoverId = Guid.Empty;
-        Cover = null;
         Podcaster = null!;
         PodcasterId = Guid.Empty;
         Tags = Array.Empty<string>();
@@ -29,8 +27,8 @@ public class Podcast : BaseEntity
     [Required]
     public string Name { get; set; }
     public string Description { get; set; }
-    public Guid? CoverId {  get; set; }
-    public Files? Cover { get; set; }
+    public string CoverArt {get;set;} = string.Empty;
+
     public User Podcaster { get; set; }
 
     // Required reference navigation to principal
@@ -67,5 +65,15 @@ public class Podcast : BaseEntity
     public enum PodcastType
     {
         Real, AIGenerated
+    }
+
+    public string GetPodcastTypeString()
+    {
+        return Type switch
+        {
+            PodcastType.Real => "Real",
+            PodcastType.AIGenerated => "AI Generated",
+            _ => "Unknown"
+        };
     }
 }
