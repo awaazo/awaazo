@@ -81,11 +81,27 @@ export default class EndpointHelper {
   };
 
   /**
-   * Returns the Profile Get endpoint.
-   * @returns The Profile Get Endpoint
+   * Returns the Podcast Create endpoint.
+   * @returns The Podcast Create Endpoint
    */
   static getPodcastCreateEndpoint = () => {
     return this.getBackendAddress() + "/podcast/create";
+  };
+
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
+  static getPodcastMyPodcastsEndpoint = () => {
+    return this.getBackendAddress() + "/podcast/myPodcasts";
+  };
+
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
+  static getEpisodeAddEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/" + podcastId + "/add";
   };
 
   static profileGetRequest: any;

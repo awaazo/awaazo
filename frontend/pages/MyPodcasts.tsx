@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Box,
@@ -32,96 +32,51 @@ import {
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 
 import Navbar from "../components/shared/Navbar";
+import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
+import router from "next/router";
+import AuthHelper from "../helpers/AuthHelper";
+import PodcastHelper from "../helpers/PodcastHelper";
 import MyPodcast from "../components/myPodcast/MyPodcast";
 
-const podcasts = [
-  {
-    id: 1,
-    name: "Science Explorers",
-    podcaster: "James Harden",
-    description:
-      "A podcast that delves into the wonders of the natural world, from the depths of the ocean to the mysteries of the cosmos.",
-    cover: "https://i.ibb.co/RhjmQbm/koga-sum-te-pital.gif",
-    isExplicit: false,
-    tags: ["Science", "Nature", "Exploration"],
-    episodes: [
-      {
-        title: "Episode 1: Ocean Exploration",
-        description: "In this episode, we explore the depths of the ocean.",
-      },
-      {
-        title: "Episode 2: Space Exploration",
-        description: "In this episode, we explore the mysteries of the cosmos.",
-      },
-      {
-        title: "Episode 3: Nature Exploration",
-        description:
-          "In this episode, we delve into the wonders of the natural world.",
-      },
-    ],
-    rating: "7.6",
-  },
-  {
-    id: 2,
-    name: "Tech Talk",
-    podcaster: "James Harden",
-    description:
-      "Stay updated with the latest in technology, gadgets, and innovations from industry experts and tech enthusiasts.",
-    cover:
-      "https://d.newsweek.com/en/full/1962972/spacex-owner-tesla-ceo-elon-musk.jpg",
-    isExplicit: true,
-    tags: ["Technology", "Gadgets", "Innovation"],
-    episodes: [
-      {
-        title: "Episode 1",
-        description: "In this episode, we explore the depths of the ocean.",
-      },
-      {
-        title: "Episode 2",
-        description: "In this episode, we explore the mysteries of the cosmos.",
-      },
-      {
-        title: "Episode 3",
-        description:
-          "In this episode, we delve into the wonders of the natural world.",
-      },
-    ],
-    rating: "7.6",
-  },
-  {
-    id: 3,
-    name: "Mindful Living",
-    podcaster: "James Harden",
-    description:
-      "Explore the art of mindfulness and find inner peace with expert guidance on meditation, self-care, and holistic well-being.",
-    cover:
-      "https://www.amacad.org/sites/default/files/person/headshots/oprah.jpg",
-    isExplicit: false,
-    tags: ["Mindfulness", "Self-Care", "Well-being"],
-    episodes: [
-      {
-        title: "Episode 1",
-        description: "In this episode, we explore the depths of the ocean.",
-      },
-      {
-        title: "Episode 2",
-        description: "In this episode, we explore the mysteries of the cosmos.",
-      },
-      {
-        title: "Episode 3",
-        description:
-          "In this episode, we delve into the wonders of the natural world.",
-      },
-    ],
-    rating: "7.6",
-  },
-];
-
 const MyPodcasts = () => {
+  // Page refs
+  const loginPage = "/auth/Login";
+
+  useEffect(() => {
+    // Check to make sure the user has logged in
+    AuthHelper.authMeRequest().then((res) => {
+      // If logged in, set user, otherwise redirect to login page
+      if (res.status == 200) {
+        setUser(res.userMenuInfo);
+        PodcastHelper.podcastMyPodcastsGet().then((res2) => {
+          // If logged in, set user, otherwise redirect to login page
+          if (res2.status == 200) {
+            setPodcasts(res2.myPodcasts);
+          } else {
+            setCreateError("Podcasts cannot be fetched");
+          }
+        });
+      } else {
+        window.location.href = loginPage;
+      }
+    });
+  }, [router]);
+
   const { colorMode } = useColorMode();
 
+  // Current User
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
+
+  // podcasts data
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
+  // Form errors
+  const [createError, setCreateError] = useState("");
+
   // Initialize the state with the ID of the first podcast
-  const [selectedPodcastId, setSelectedPodcastId] = useState(podcasts[0].id);
+  const [selectedPodcastId, setSelectedPodcastId] = useState(
+    podcasts.length > 0 ? podcasts[0].id : null,
+  );
 
   const togglePodcastDetail = (id) => {
     if (selectedPodcastId === id) {
@@ -172,7 +127,7 @@ const MyPodcasts = () => {
                     borderRadius="2.5em"
                     boxSize="150px"
                     objectFit="cover"
-                    src={podcast.cover}
+                    src={podcast.coverArtUrl}
                     alt={podcast.name}
                     boxShadow={
                       selectedPodcastId === podcast.id
@@ -184,6 +139,7 @@ const MyPodcasts = () => {
                         selectedPodcastId === podcast.id
                           ? "3px solid #9ecaed"
                           : "1px solid rgba(255, 255, 255, 0.5)",
+                      cursor: "pointer",
                     }}
                   />
                 </Box>
@@ -298,7 +254,7 @@ const MyPodcasts = () => {
                     >
                       <VStack key={index} align="start" spacing={2}>
                         <HStack width="full" spacing={2}>
-                          <Text fontWeight="bold">{episode.title}</Text>
+                          <Text fontWeight="bold">{episode.episodeName}</Text>
                           <Spacer />
                           <HStack spacing={2}>
                             <Text fontSize="md" fontWeight="bold">
