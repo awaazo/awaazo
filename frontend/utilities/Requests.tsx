@@ -66,4 +66,12 @@ export interface PodcastCreateRequest {
 
 //#region Episode Requests
 
+export interface EpisodeAddRequest {
+  audioFile: File;
+  episodeName: String;
+  description: String;
+  thumbnail: File;
+  isExplicit: boolean;
+}
+
 //#endregion
