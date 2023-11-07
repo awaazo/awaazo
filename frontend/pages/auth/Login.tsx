@@ -123,11 +123,11 @@ const Login: React.FC = () => {
         <form onSubmit={handleLogin}>
           <Stack spacing={4}>
             <FormControl>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>Email address or Username</FormLabel>
               <Input
-                type="email"
+                type="text"
                 id="email"
-                placeholder="Enter your email"
+                placeholder="Enter your email/username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

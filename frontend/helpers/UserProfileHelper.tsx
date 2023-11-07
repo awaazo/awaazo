@@ -95,6 +95,9 @@ export default class UserProfileHelper {
         }
         catch (error) {
 
+            console.error(error);
+
+
             // Get the error message.
             let errorMsg = error.response.statusText
             if (error.response.status === 400) {
@@ -106,6 +109,8 @@ export default class UserProfileHelper {
                 
                 if(msg!="")
                     errorMsg = msg
+                else
+                    errorMsg = error.response.data
             }
 
             // Return the error.
