@@ -3,53 +3,67 @@
 /**
  * Login Request to be sent to the server
  */
-export interface LoginRequest{
-    email: string;
-    password: string;
+export interface LoginRequest {
+  email: string;
+  password: string;
 }
 
 /**
  * Register Request to be sent to the server
  */
-export interface RegisterRequest extends LoginRequest{
-    username: string;
-    gender: string;
-    dateOfBirth: string;
+export interface RegisterRequest extends LoginRequest {
+  username: string;
+  gender: string;
+  dateOfBirth: string;
 }
 
 /**
  * Google SSO Request to be sent to the server
  */
-export interface GoogleSSORequest{
-    email: string;
-    username: string;
-    sub: string;
-    avatar: string;
-    token: string;
+export interface GoogleSSORequest {
+  email: string;
+  username: string;
+  sub: string;
+  avatar: string;
+  token: string;
 }
 
 //#endregion
 
-
 //#region User Profile Requests
 
-export interface UserProfileSetupRequest{
-    displayName: string;
-    avatar: File;
-    bio: string;
-    interests: string[];
+export interface UserProfileSetupRequest {
+  displayName: string;
+  avatar: File;
+  bio: string;
+  interests: string[];
 }
 
-export interface UserProfileEditRequest{
-    avatar:File;
-    username: string;
-    displayName: string;
-    bio: string;
-    interests: string[];
-    twitterUrl: string;
-    linkedInUrl: string;
-    githubUrl: string;
-    websiteUrl: string;
+export interface UserProfileEditRequest {
+  avatar: File;
+  username: string;
+  displayName: string;
+  bio: string;
+  interests: string[];
+  twitterUrl: string;
+  linkedInUrl: string;
+  githubUrl: string;
+  websiteUrl: string;
 }
+
+//#endregion
+
+//#region Podcast Requests
+
+export interface PodcastCreateRequest {
+  name: string;
+  coverImage: File;
+  description: string;
+  tags: string[];
+}
+
+//#endregion
+
+//#region Episode Requests
 
 //#endregion
