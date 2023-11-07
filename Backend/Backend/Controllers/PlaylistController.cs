@@ -21,6 +21,11 @@ public class PlaylistController : ControllerBase
         _authService = authService;
     }
     
+    /// <summary>
+    /// Creates a Playlist for the logged in user
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>The created playlist</returns>
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] PlaylistCreateRequest request)
     {
@@ -28,6 +33,10 @@ public class PlaylistController : ControllerBase
                 await _authService.IdentifyUserAsync(HttpContext)!, request.Name));
     }
     
+    /// <summary>
+    /// Adds an element (Episode) to the given playlist
+    /// </summary>
+    /// <returns>Operation successful or not</returns>
     [HttpPut("append")]
     public async Task<IActionResult> Append([FromBody] PlaylistAppendRequest request)
     {
@@ -58,6 +67,11 @@ public class PlaylistController : ControllerBase
         return elements is null ? BadRequest("Invalid Playlist ID") : Ok();
     }
 
+    /// <summary>
+    /// Deletes a given playlist completely
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>Operation success or failure</returns>
     [HttpPut("delete")]
     public async Task<IActionResult> Delete([FromBody] PlaylistDeleteRequest request)
     {
@@ -67,6 +81,10 @@ public class PlaylistController : ControllerBase
         return result ? Ok() : BadRequest("Invalid Playlist ID");
     }
 
+    /// <summary>
+    /// Deletes an ELEMENT (Episode) from a given playlist
+    /// </summary>
+    /// <returns>Operation success or failure</returns>
     [HttpPut("deleteElement")]
     public async Task<IActionResult> DeleteElement([FromBody] PlaylistElementDeleteRequest request)
     {
