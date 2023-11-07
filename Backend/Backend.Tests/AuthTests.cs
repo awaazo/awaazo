@@ -391,7 +391,7 @@ public class AuthTests : IAsyncLifetime
         {
             Email = "XXXXXXXXXXXXXXXXX1",
             Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXXX",
             DateOfBirth = DateTime.Now,
             Gender = "NoValidGender"
         };
@@ -451,7 +451,7 @@ public class AuthTests : IAsyncLifetime
         {
             Email = "XXXXXXXXXXXXXXXXX1",
             Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXX11",
             DateOfBirth = DateTime.Now,
             Gender = "Male"
         };

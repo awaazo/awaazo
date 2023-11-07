@@ -1,93 +1,102 @@
-
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
 
-namespace Backend.Models
+namespace Backend.Models;
+
+/// <summary>
+/// Podcast episode.
+/// </summary>
+public class Episode : BaseEntity
 {
-    public class Episode : BaseEntity
+
+    public Episode()
     {
-
-        public Episode() 
-        {
-            EpisodeName = string.Empty;
-            Thumbnail = string.Empty;
-        }
-
-        [Key]
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// The podcast this episode belongs to
-        /// </summary>
-        public Podcast Podcast { get; set; } = null!;
-
-        /// <summary>
-        /// ID of the podcast this episode belongs to
-        /// </summary>
-        public Guid PodcastId { get; set; }
-
-        public string EpisodeName { get; set; }
-
-        [Required]
-        public Guid? AudioFileId { get; set; }
-        
-        
-        [Required]
-        public Files? AudioFile { get; set; }
-
-        /// <summary>
-        /// URL to the thumbnail image of the episode
-        /// </summary>
-        public string Thumbnail { get; set; }
-
-        /// <summary>
-        /// Duration of the episode in seconds
-        /// </summary>
-        public double Duration { get; set; }
-
-        public DateTime ReleaseDate { get; set; }
-
-        public bool IsExplicit { get; set; } = false;
-
-
-        public ulong PlayCount { get; set; }
-
-        public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
-
-        public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
-
-        public ICollection<Sponsor> Sponsors { get; } = new List<Sponsor>();
+        EpisodeName = string.Empty;
+        Thumbnail = string.Empty;
     }
 
-    public class UserEpisodeInteraction : BaseEntity
-    {
-        [Key]
-        public Guid Id { get; set; }
-        
-        public Guid UserId { get; set; }
+    /// <summary>
+    /// The unique ID of the episode
+    /// </summary>
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        public User User { get; set; } = null!;
-        
-        public Guid EpisodeId { get; set; }
+    /// <summary>
+    /// The podcast this episode belongs to
+    /// </summary>
+    public Podcast Podcast { get; set; } = null!;
 
-        [DefaultValue(false)]
-        public bool HasListened { get; set; }
+    /// <summary>
+    /// ID of the podcast this episode belongs to
+    /// </summary>
+    public Guid PodcastId { get; set; } = Guid.Empty;
 
-        [DefaultValue(false)]
-        public bool HasLiked {get; set;}
-        
-        public double LastListenPosition { get; set; }
-        
-        public DateTime DateListened { get; set; }
+    /// <summary>
+    /// Name of the episode
+    /// </summary>
+    public string EpisodeName { get; set; } = string.Empty;
 
-        private readonly AppDbContext _db;
-        public UserEpisodeInteraction(AppDbContext db)
-        {
-            _db = db;
-        }
+    /// <summary>
+    /// Description of the episode
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
 
-        public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
-    }
+    /// <summary>
+    /// String that points to the Audio File location on the server
+    /// </summary>
+    public string Audio {get;set;} = string.Empty;
 
+    /// <summary>
+    /// String that points to the thumbnail image location on the server
+    /// </summary>
+    public string Thumbnail { get; set; }
+
+    /// <summary>
+    /// Duration of the episode in seconds
+    /// </summary>
+    public double Duration { get; set; }
+
+    public DateTime ReleaseDate { get; set; }
+
+    public bool IsExplicit { get; set; } = false;
+
+    public ulong PlayCount { get; set; }
+
+    public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
+
+    public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
+
+    public ICollection<Sponsor> Sponsors { get; } = new List<Sponsor>();
 }
+
+public class UserEpisodeInteraction : BaseEntity
+{
+    [Key]
+    public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
+
+    public User User { get; set; } = null!;
+
+    public Guid EpisodeId { get; set; }
+
+    [DefaultValue(false)]
+    public bool HasListened { get; set; }
+
+    [DefaultValue(false)]
+    public bool HasLiked { get; set; }
+
+    public double LastListenPosition { get; set; }
+
+    public DateTime DateListened { get; set; }
+
+    private readonly AppDbContext _db;
+    public UserEpisodeInteraction(AppDbContext db)
+    {
+        _db = db;
+    }
+
+    public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
+}
+

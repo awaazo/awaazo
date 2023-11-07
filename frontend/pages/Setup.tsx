@@ -12,22 +12,21 @@ import {
   WrapItem,
   IconButton,
 } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
-
 import LogoWhite from "../public/logo_white.svg";
 import { UserProfileSetupRequest } from "../utilities/Requests";
-import { conforms, set } from "lodash";
 import UserProfileHelper from "../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../utilities/Interfaces";
 
 const Setup: React.FC = () => {
   // CONSTANTS
+
+  // Page refs
   const mainPage = "/Main";
   const loginPage = "/auth/Login";
-  const elementsPerLine = 3;
 
+  // Genres
   const PodcastGenres = [
     "Technology",
     "Comedy",
@@ -46,50 +45,63 @@ const Setup: React.FC = () => {
     "Fiction",
     "Food",
   ];
-  const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const [genreColors, setGenreColors] = useState({});
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File>(null);
-  const [user, setUser] = useState<UserMenuInfo>({username: "", avatarUrl: "", id: ""});
-  const router = useRouter();
-  const [setupError,setSetupError] = useState('')
 
+  // Current User 
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
+
+  // Form Values
+  const [displayName, setDisplayName] = useState("");
+  const [bio, setBio] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  
+  // Form errors
+  const [setupError, setSetupError] = useState('')
+  
+  // Other
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [genreColors, setGenreColors] = useState({});
+  
+  // Router
+  const router = useRouter();
+  
   useEffect(() => {
     // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
-      if(res.status == 200)
-      {
+      // If logged in, set user, otherwise redirect to login page
+      if (res.status == 200) {
         setUser(res.userMenuInfo)
       }
-      else{
+      else {
         window.location.href = loginPage;
       }
-        
+
     })
-
-    if(window)
-    {
-      setUser(JSON.parse(window.sessionStorage.getItem('userInfo')))
-    }
-
   }, [router]);
 
+  /**
+   * Handles Avatar upload
+   * @param e Upload event
+   */
   const handleAvatarUpload = (e: FormEvent) => {
     setAvatarFile((e.target as any).files[0])
-    setAvatar(URL.createObjectURL((e.target as any).files[0]))  
+    setAvatar(URL.createObjectURL((e.target as any).files[0]))
     e.preventDefault();
   };
 
+  /**
+   * Handles form submission
+   * @param e Click event
+   */
   const handleSetup = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     // Create request object
     const request: UserProfileSetupRequest = {
-      avatar : avatarFile,
-      bio : bio,
-      interests : selectedInterests
+      avatar: avatarFile,
+      bio: bio,
+      interests: selectedInterests,
+      displayName: displayName
     };
 
     // Send the request
@@ -102,10 +114,14 @@ const Setup: React.FC = () => {
     }
     else {
       // Handle error here
-      setSetupError("Avatar and Bio Required.")
+      setSetupError("Avatar, Display Name and Bio Required.")
     }
   };
 
+  /**
+   * Returns a random dark color code
+   * @returns Random Color code
+   */
   function getRandomDarkColor() {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -115,13 +131,21 @@ const Setup: React.FC = () => {
     return color;
   }
 
+  /**
+   * Returns a random gradient
+   * @returns Random Gradient
+   */
   function getRandomGradient() {
     const color1 = getRandomDarkColor();
     const color2 = getRandomDarkColor();
     return `linear-gradient(45deg, ${color1}, ${color2})`;
   }
-
-  const handleInterestClick = (genre) => {
+  
+  /**
+   * Adds/Removes a genre from selected interests
+   * @param genre Interest/Genre that was clicked 
+   */
+  const handleInterestClick = (genre: string) => {
     if (selectedInterests.includes(genre)) {
       setSelectedInterests(selectedInterests.filter((item) => item !== genre));
     } else {
@@ -131,9 +155,12 @@ const Setup: React.FC = () => {
       }
     }
   };
-  
 
-  return (
+  /**
+   * Contains the elements of the Setup page
+   * @returns Setup Page content
+   */
+  const SetupPage = () => (
     <>
       <Box
         p={6}
@@ -158,7 +185,7 @@ const Setup: React.FC = () => {
             fontFamily: "Avenir Next",
           }}
         >
-          Hey, {user.username}! Let's get you set up.
+          Hey, @{user.username}! Let's get you set up.
         </Text>
 
         <form onSubmit={handleSetup}>
@@ -212,6 +239,16 @@ const Setup: React.FC = () => {
               </label>
             </div>
             {setupError && <Text color="red.500">{setupError}</Text>}
+
+            <FormControl>
+              <Input
+                id="displayName"
+                placeholder="Display Name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                style={{ alignSelf: "center" }}
+              />
+            </FormControl>
 
             <FormControl>
               <Textarea
@@ -309,6 +346,11 @@ const Setup: React.FC = () => {
       </Box>
     </>
   );
+
+  // If user is logged in, return setup page, otherwise redirect to login page
+  if (user !== undefined) {
+    return SetupPage();
+  }
 };
 
 export default Setup;
