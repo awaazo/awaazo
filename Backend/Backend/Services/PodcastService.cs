@@ -154,6 +154,41 @@ public class PodcastService : IPodcastService
     }
 
     /// <summary>
+    /// Removes a Podcast from the database and the server, including all its episodes.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> DeletePodcastAsync(Guid podcastId, User user)
+    {
+        // Check if the podcast exists
+        Podcast podcast = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
+        .FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
+
+        // Remove each podcast episode
+        foreach (Episode episode in podcast.Episodes)
+            await DeleteEpisodeAsync(episode.Id,user);
+
+        // Remove the cover art from the server
+        RemovePodcastCoverArt(podcast.CoverArt);
+
+        // TODO: Remove dependent entities as well
+        // ===================================
+        
+        // Remove Ratings for that podcast
+        foreach (PodcastRating rating in podcast.Ratings)
+            _db.PodcastRatings.Remove(rating);
+
+        // ===================================
+
+        // Remove the podcast from the database
+        _db.Podcasts.Remove(podcast);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
     /// Gets the cover art name for the given podcast.
     /// </summary>
     /// <param name="podcastId"></param>
@@ -176,7 +211,10 @@ public class PodcastService : IPodcastService
     public async Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId)
     {
         // Check if the podcast exists, if it does retrieve it.
-        Podcast podcast = await _db.Podcasts.Include(p=>p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        Podcast podcast = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
+        .FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
         
         return new PodcastResponse(podcast,domainUrl);
     }
@@ -203,7 +241,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId)
     {
         // Check if the user has any podcasts, if they do retrieve them.
-        List<Podcast> podcasts = await _db.Podcasts.Include(p=>p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -231,7 +271,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p => p.Episodes)
+        .Include(p=>p.Ratings)
         .Where(p => AppDbContext.Soundex(p.Name)==AppDbContext.Soundex(searchTerm))
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -258,7 +300,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl)
     {
         // Get the podcasts from the database
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p => p.Episodes)
+        .Include(p=>p.Ratings)
         .Skip(page * pageSize)
         .Take(pageSize)
         .ToListAsync() ?? throw new Exception("No podcasts found.");
@@ -426,37 +470,6 @@ public class PodcastService : IPodcastService
 
         // Save the changes to the database and return status
         _db.Episodes.Update(episode);
-        return await _db.SaveChangesAsync() > 0;
-    }
-
-    /// <summary>
-    /// Removes a Podcast from the database and the server, including all its episodes.
-    /// </summary>
-    /// <param name="podcastId"></param>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    public async Task<bool> DeletePodcastAsync(Guid podcastId, User user)
-    {
-        // Check if the podcast exists
-        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
-
-        // Get the episodes for the podcast
-        List<Episode> episodes = await _db.Episodes.Where(e => e.PodcastId == podcastId).ToListAsync();
-
-        // Remove each podcast episode
-        foreach (Episode episode in episodes)
-            await DeleteEpisodeAsync(episode.Id,user);
-
-        // Remove the cover art from the server
-        RemovePodcastCoverArt(podcast.CoverArt);
-
-        // TODO: Remove dependent entities as well
-        // ===================================
-
-        // ===================================
-
-        // Remove the podcast from the database
-        _db.Podcasts.Remove(podcast);
         return await _db.SaveChangesAsync() > 0;
     }
 

@@ -12,6 +12,23 @@ namespace Backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReplyToCommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "File",
                 columns: table => new
                 {
@@ -28,19 +45,36 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Likes",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => new { x.UserId, x.EpisodeId, x.CommentId });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Interests = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TwitterUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LinkedInUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GitHubUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     IsPodcaster = table.Column<bool>(type: "bit", nullable: false),
@@ -79,6 +113,7 @@ namespace Backend.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PodcastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Rating = table.Column<long>(type: "bigint", nullable: false),
+                    Review = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -98,10 +133,10 @@ namespace Backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PodcasterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CoverArt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PodcasterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsExplicit = table.Column<bool>(type: "bit", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
@@ -113,11 +148,6 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Podcasts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Podcasts_File_CoverId",
-                        column: x => x.CoverId,
-                        principalTable: "File",
-                        principalColumn: "FileId");
                     table.ForeignKey(
                         name: "FK_Podcasts_Users_PodcasterId",
                         column: x => x.PodcasterId,
@@ -198,7 +228,8 @@ namespace Backend.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PodcastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EpisodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AudioFileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Audio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<double>(type: "float", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -210,12 +241,6 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Episodes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Episodes_File_AudioFileId",
-                        column: x => x.AudioFileId,
-                        principalTable: "File",
-                        principalColumn: "FileId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Episodes_Podcasts_PodcastId",
                         column: x => x.PodcastId,
@@ -347,11 +372,6 @@ namespace Backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Episodes_AudioFileId",
-                table: "Episodes",
-                column: "AudioFileId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Episodes_PodcastId",
                 table: "Episodes",
                 column: "PodcastId");
@@ -371,11 +391,6 @@ namespace Backend.Migrations
                 name: "IX_PodcastRatings_UserId",
                 table: "PodcastRatings",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Podcasts_CoverId",
-                table: "Podcasts",
-                column: "CoverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Podcasts_PodcasterId",
@@ -416,6 +431,15 @@ namespace Backend.Migrations
                 name: "Bookmark");
 
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "File");
+
+            migrationBuilder.DropTable(
+                name: "Likes");
+
+            migrationBuilder.DropTable(
                 name: "MediaLinks");
 
             migrationBuilder.DropTable(
@@ -444,9 +468,6 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Podcasts");
-
-            migrationBuilder.DropTable(
-                name: "File");
 
             migrationBuilder.DropTable(
                 name: "Users");

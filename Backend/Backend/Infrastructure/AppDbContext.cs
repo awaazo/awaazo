@@ -138,6 +138,14 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
+        // Rating many-to-1 podcast
+        modelBuilder.Entity<Podcast>()
+            .HasMany(e => e.Ratings)
+            .WithOne(e => e.Podcast)
+            .HasForeignKey(e => e.PodcastId)
+            .IsRequired();
+
     }
     
     public override int SaveChanges()

@@ -27,7 +27,6 @@ public interface ISocialService
 
     public Task<bool> AddRatingToPodcastAsync(Guid podcastId, User user, uint rating);
     public Task<bool> RemoveRatingFromPodcastAsync(Guid podcastId, User user);
-    public Task<int> GetPodcastMeanRatingAsync(Guid podcastId);
 
     // REVIEWS
 

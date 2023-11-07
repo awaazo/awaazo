@@ -34,3 +34,24 @@ public class CommentResponse
     public string Text { get; set; }
     public DateTime DateCreated {get;set;}
 }
+
+/// <summary>
+/// Rating Response to be sent to the client.
+/// </summary>
+public class RatingResponse
+{
+    public RatingResponse(PodcastRating rating)
+    {
+        Id = rating.Id;
+        UserId = rating.UserId;
+        PodcastId = rating.PodcastId;
+        Rating = (int)rating.Rating;
+        Review = rating.Review;
+    }
+
+    public Guid Id { get; set; } = Guid.Empty;
+    public Guid UserId { get; set; } = Guid.Empty;
+    public Guid PodcastId { get; set; } = Guid.Empty;
+    public int Rating { get; set; } = 0;
+    public string Review{get;set;} = string.Empty;
+}

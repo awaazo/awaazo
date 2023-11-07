@@ -251,7 +251,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
-            return BadRequest(e.Message+e.StackTrace);
+            return BadRequest(e.Message);
         }
     }
 

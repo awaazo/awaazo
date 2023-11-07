@@ -97,6 +97,36 @@ namespace Backend.Migrations
                     b.ToTable("Bookmark");
                 });
 
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReplyToCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
                     b.Property<Guid>("Id")
@@ -173,6 +203,28 @@ namespace Backend.Migrations
                     b.HasKey("FileId");
 
                     b.ToTable("File");
+                });
+
+            modelBuilder.Entity("Backend.Models.Like", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "EpisodeId", "CommentId");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
@@ -288,6 +340,10 @@ namespace Backend.Migrations
 
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

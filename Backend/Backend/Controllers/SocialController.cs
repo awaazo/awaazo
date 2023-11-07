@@ -163,6 +163,9 @@ public class SocialController : ControllerBase
         }
     }
 
+    #region Rating
+
+    
     [HttpPost("rating")]
     public async Task<ActionResult> AddRating(RatingRequest request)
     {
@@ -205,6 +208,9 @@ public class SocialController : ControllerBase
         }
     }
 
+    #endregion
+
+
     [HttpPost("review")]
     public async Task<ActionResult> AddReview(ReviewRequest request)
     {
@@ -239,27 +245,6 @@ public class SocialController : ControllerBase
                 return NotFound("User does not exist.");
 
             return await _socialService.RemoveReviewFromPodcastAsync(podcastId, user) ? Ok("Review deleted.") : Ok("Review could not be deleted.");
-        }
-        catch (Exception e)
-        {
-            // Return the error message
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpGet("getPodcastMeanRating")]
-    public async Task<ActionResult> GetPodcastRating(Guid podcastId)
-    {
-        try
-        {
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
-            return Ok(await _socialService.GetPodcastMeanRatingAsync(podcastId));
         }
         catch (Exception e)
         {

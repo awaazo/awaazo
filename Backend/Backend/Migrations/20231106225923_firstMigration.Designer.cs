@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231101225352_secondMigration")]
-    partial class secondMigration
+    [Migration("20231106225923_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,7 +112,7 @@ namespace Backend.Migrations
                     b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ReplyToCommentId")
+                    b.Property<Guid?>("ReplyToCommentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -136,12 +136,16 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AudioFileId")
+                    b.Property<string>("Audio")
                         .IsRequired()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Duration")
                         .HasColumnType("float");
@@ -170,8 +174,6 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AudioFileId");
 
                     b.HasIndex("PodcastId");
 
@@ -267,8 +269,9 @@ namespace Backend.Migrations
                     b.Property<float>("AverageRating")
                         .HasColumnType("real");
 
-                    b.Property<Guid?>("CoverId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoverArt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -301,8 +304,6 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CoverId");
 
                     b.HasIndex("PodcasterId");
 
@@ -342,6 +343,10 @@ namespace Backend.Migrations
 
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -430,6 +435,10 @@ namespace Backend.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -464,6 +473,9 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WebsiteUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -569,19 +581,11 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
-                    b.HasOne("Backend.Models.Files", "AudioFile")
-                        .WithMany()
-                        .HasForeignKey("AudioFileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Episodes")
                         .HasForeignKey("PodcastId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AudioFile");
 
                     b.Navigation("Podcast");
                 });
@@ -599,17 +603,11 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
-                    b.HasOne("Backend.Models.Files", "Cover")
-                        .WithMany()
-                        .HasForeignKey("CoverId");
-
                     b.HasOne("Backend.Models.User", "Podcaster")
                         .WithMany("Podcasts")
                         .HasForeignKey("PodcasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cover");
 
                     b.Navigation("Podcaster");
                 });

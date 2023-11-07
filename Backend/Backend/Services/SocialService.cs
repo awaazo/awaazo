@@ -246,6 +246,8 @@ public class SocialService : ISocialService
         }
     }
 
+    #region Rating
+
     /// <summary>
     /// Adds a rating to a podcast.
     /// </summary>
@@ -275,8 +277,8 @@ public class SocialService : ISocialService
                 UserId = user.Id,
                 PodcastId = podcastId,
                 Rating = rating
-            };
-            
+            }; 
+
             // Add the Rating to the DB
             await _db.PodcastRatings.AddAsync(podcastRating);
         }
@@ -317,22 +319,9 @@ public class SocialService : ISocialService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    /// <summary>
-    /// Gets the mean rating for a podcast. 
-    /// </summary>
-    /// <param name="podcastId"></param>
-    /// <returns></returns>
-    public async Task<int> GetPodcastMeanRatingAsync(Guid podcastId)
-    {
-        // Check if the Podcast exists
-        Podcast podcast = await _db.Podcasts!.FirstOrDefaultAsync(podcast => podcast.Id.Equals(podcastId)) ?? throw new Exception("Podcast does not exist with the given ID.");
+    #endregion
 
-        // Get the number of ratings for the podcast
-        int ratingCount = await _db.PodcastRatings.CountAsync(rating=>rating.PodcastId.Equals(podcastId));
-
-        // If there are no ratings, return 0, otherwise return the average
-        return ratingCount == 0 ? 0 : (int)Math.Round(_db.PodcastRatings.Where(rating => rating.PodcastId.Equals(podcastId)).Average(rating => rating.Rating));
-    }
+    #region Review
 
     /// <summary>
     /// Adds a review to a podcast. 
@@ -400,4 +389,7 @@ public class SocialService : ISocialService
         // Return the status
         return await _db.SaveChangesAsync() > 0;
     }
+
+    #endregion
+
 }
