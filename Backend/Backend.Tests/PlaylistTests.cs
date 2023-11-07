@@ -28,14 +28,8 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void CreatePlaylist_Valid_ReturnsPlaylist()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
-                
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
+
         Mock<DbSet<Playlist>> playlists = new Playlist[]
         {
         }.AsQueryable().BuildMockDbSet();
@@ -48,13 +42,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void AppendPlayList_InvalidPlaylistId_ReturnsFalse()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
                 
         Mock<DbSet<Playlist>> playlists = new Playlist[]
         {
@@ -73,13 +61,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void AppendPlayList_InvalidEpisodeId_ReturnsFalse()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
         
         Playlist playlist = new Playlist(dbContextMock.Object)
         {
@@ -106,13 +88,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void AppendPlayList_Valid_ReturnsTrue()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
         
         Playlist playlist = new Playlist(dbContextMock.Object)
         {
@@ -145,13 +121,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void AllPlayLists_Valid_ReturnsPlaylistList()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
 
         Mock<DbSet<Playlist>> playlists = new[]
         {
@@ -179,13 +149,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void PlayListElements_Valid_ReturnsPlaylistElementsList()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
 
         Guid playlistGuid = Guid.NewGuid();
         Mock<DbSet<Playlist>> playlists = new[]
@@ -225,13 +189,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void PlaylistDelete_InvalidPlaylistId_ReturnsFalse()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
 
         Guid playlistGuid = Guid.NewGuid();
         Mock<DbSet<Playlist>> playlists = new[]
@@ -252,13 +210,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void PlaylistDelete_Valid_ReturnsTrue()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
 
         Guid playlistGuid = Guid.NewGuid();
         Mock<DbSet<Playlist>> playlists = new[]
@@ -280,13 +232,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void PlaylistDeleteElement_InValid_ReturnsFalse()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
                 
         Mock<DbSet<Playlist>> playlists = new Playlist[]
         {
@@ -305,13 +251,7 @@ public class PlaylistTests : IAsyncLifetime
     [Fact]
     public async void PlaylistDeleteElement_Valid_ReturnsTrue()
     {
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        PlaylistService service = new(dbContextMock.Object, mapperMock.Object);
-        User user = new User()
-        {
-            Id = Guid.NewGuid()
-        };
+        SetupUser(out var dbContextMock, out var mapperMock, out var service, out var user);
 
         Guid playlistGuid = Guid.NewGuid();
         Mock<DbSet<Playlist>> playlists = new[]
@@ -349,6 +289,17 @@ public class PlaylistTests : IAsyncLifetime
 
         var count = playlistElements.Object.Count(e => true);
         //Assert.True(count == 1, $"Expected count 1 got {count}");
-    }  
+    }
+
+    private void SetupUser(out Mock<AppDbContext> dbContextMock, out Mock<IMapper> mapperMock, out PlaylistService service, out User user)
+    {
+        dbContextMock = new(new DbContextOptions<AppDbContext>());
+        mapperMock = new();
+        service = new(dbContextMock.Object, mapperMock.Object);
+        user = new User()
+        {
+            Id = Guid.NewGuid()
+        };
+    }
     #endregion
 }

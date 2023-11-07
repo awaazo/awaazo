@@ -37,12 +37,19 @@ public class PlaylistController : ControllerBase
         return result ? Ok() : BadRequest("Invalid Playlist ID or Episode ID");
     }
 
+    /// <summary>
+    /// This function retreives all playlist of the logged in user
+    /// </summary>
+    /// <returns>Returns a list of Playlist</returns>
     [HttpGet("all")]
     public async Task<IActionResult> All()
     {
         return Ok(await _service.All(await _authService.IdentifyUserAsync(HttpContext)!));
     }
 
+    /// <summary>
+    /// This function retreives all the elements (episodes) added to a given playlist
+    /// </summary>
     [HttpGet("elements")]
     public async Task<IActionResult> Elements([FromBody] PlaylistElementsRequest request)
     {
