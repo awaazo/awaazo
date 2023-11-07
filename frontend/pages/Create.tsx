@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -18,31 +18,75 @@ import {
   Center,
   Heading,
   Icon,
-} from '@chakra-ui/react';
-import { useDropzone } from 'react-dropzone';
+} from "@chakra-ui/react";
+import { useDropzone } from "react-dropzone";
 import { useSession } from "next-auth/react";
-import Navbar from '../components/shared/Navbar';
-import { AddIcon } from '@chakra-ui/icons';
-import router from 'next/router';
+import Navbar from "../components/shared/Navbar";
+import { AddIcon } from "@chakra-ui/icons";
+import router from "next/router";
 
 // Sample podcasts data (replace with actual data)
 const podcasts = [
-  { id: 1, name: 'Mystery Tales', image: 'https://source.unsplash.com/random/200x200?sig=1' },
-  { id: 2, name: 'Tech Tomorrow', image: 'https://source.unsplash.com/random/200x200?sig=2' },
-  { id: 3, name: 'Health Hacks', image: 'https://source.unsplash.com/random/200x200?sig=3' },
-  { id: 4, name: 'Eco Enigmas', image: 'https://source.unsplash.com/random/200x200?sig=4' },
-  { id: 5, name: 'Market Insights', image: 'https://source.unsplash.com/random/200x200?sig=5' },
-  { id: 6, name: 'Space Frontier', image: 'https://source.unsplash.com/random/200x200?sig=6' },
-  { id: 7, name: 'Historic Moments', image: 'https://source.unsplash.com/random/200x200?sig=7' },
-  { id: 8, name: 'Cooking Secrets', image: 'https://source.unsplash.com/random/200x200?sig=8' },
+  {
+    id: 1,
+    name: "Mystery Tales",
+    image: "https://source.unsplash.com/random/200x200?sig=1",
+  },
+  {
+    id: 2,
+    name: "Tech Tomorrow",
+    image: "https://source.unsplash.com/random/200x200?sig=2",
+  },
+  {
+    id: 3,
+    name: "Health Hacks",
+    image: "https://source.unsplash.com/random/200x200?sig=3",
+  },
+  {
+    id: 4,
+    name: "Eco Enigmas",
+    image: "https://source.unsplash.com/random/200x200?sig=4",
+  },
+  {
+    id: 5,
+    name: "Market Insights",
+    image: "https://source.unsplash.com/random/200x200?sig=5",
+  },
+  {
+    id: 6,
+    name: "Space Frontier",
+    image: "https://source.unsplash.com/random/200x200?sig=6",
+  },
+  {
+    id: 7,
+    name: "Historic Moments",
+    image: "https://source.unsplash.com/random/200x200?sig=7",
+  },
+  {
+    id: 8,
+    name: "Cooking Secrets",
+    image: "https://source.unsplash.com/random/200x200?sig=8",
+  },
   // ... add more podcasts as needed
 ];
 
-
 const PodcastGenres = [
-  "Technology", "Comedy", "Science", "History", "News", "True Crime",
-  "Business", "Health", "Education", "Travel", "Music", "Arts", 
-  "Sports", "Politics", "Fiction", "Food",
+  "Technology",
+  "Comedy",
+  "Science",
+  "History",
+  "News",
+  "True Crime",
+  "Business",
+  "Health",
+  "Education",
+  "Travel",
+  "Music",
+  "Arts",
+  "Sports",
+  "Politics",
+  "Fiction",
+  "Food",
 ];
 
 const CreateEpisode = () => {
@@ -63,37 +107,50 @@ const CreateEpisode = () => {
   const handlePodcastSelect = (podcast) => {
     setSelectedPodcast(podcast);
   };
-  
-    // Function to navigate to create podcast page
+
+  // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push('/createPodcast.tsx');
+    router.push("/NewPodcast");
   };
 
-return (
-  <>
+  return (
+    <>
       <Navbar />
       <Center>
         <VStack mt={"1em"}>
           <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
             Upload Episode
           </Heading>
-          <Text mb={"1em"} >Choose a Podcast</Text>
+          <Text mb={"1em"}>Choose a Podcast</Text>
         </VStack>
       </Center>
 
       <Box display="flex" width="100%" justifyContent="center">
-        <Flex direction="row" wrap="wrap" justifyContent="center" alignItems="center">
+        <Flex
+          direction="row"
+          wrap="wrap"
+          justifyContent="center"
+          alignItems="center"
+        >
           {podcasts.map((podcast) => (
             <Flex
               key={podcast.id}
               direction="column"
               alignItems="center"
-              bg={selectedPodcast && selectedPodcast.id === podcast.id 
-                  ? (colorMode === 'light' ? '#00000010' : '#FFFFFF10')
-                  : 'transparent'}
+              bg={
+                selectedPodcast && selectedPodcast.id === podcast.id
+                  ? colorMode === "light"
+                    ? "#00000010"
+                    : "#FFFFFF10"
+                  : "transparent"
+              }
               borderRadius="1em"
               cursor="pointer"
-              outline={selectedPodcast && selectedPodcast.id === podcast.id ? '2px solid #3182CE' : 'none'}
+              outline={
+                selectedPodcast && selectedPodcast.id === podcast.id
+                  ? "2px solid #3182CE"
+                  : "none"
+              }
               onClick={() => handlePodcastSelect(podcast)}
               p={2}
               m={2}
@@ -117,11 +174,11 @@ return (
             alignItems="center"
             borderRadius="1em"
             cursor="pointer"
-            outline='none'
+            outline="none"
             onClick={navigateToCreatePodcast}
             p={2}
             m={2}
-            bg='transparent'
+            bg="transparent"
           >
             <Box
               boxSize="100px"
@@ -138,31 +195,36 @@ return (
         </Flex>
       </Box>
 
-
-        
-    {/* Form Container */}
-    <Box display="flex" justifyContent="center">
-      <VStack spacing={5} align="center" p={5}>
-        {/* Form Container */}
+      {/* Form Container */}
+      <Box display="flex" justifyContent="center">
+        <VStack spacing={5} align="center" p={5}>
+          {/* Form Container */}
           {/* Displaying Selected Podcast Title */}
           {selectedPodcast && (
             <Text
               fontSize="xl"
               fontWeight="normal"
-              bg={colorMode === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} // Slight transparency
+              bg={
+                colorMode === "light"
+                  ? "rgba(0, 0, 0, 0.1)"
+                  : "rgba(255, 255, 255, 0.1)"
+              } // Slight transparency
               pl={5} // Padding for better visual spacing
               pr={5} // Padding for better visual spacing
               pt={2} // Padding for better visual spacing
               pb={2} // Padding for better visual spacing
               mb={5} // Margin for better visual spacing
               borderRadius="5em" // Rounded corners
-              outline={colorMode === 'light' ? '1px solid #000000' : '1px solid #FFFFFF'} // Black or white border
-              fontFamily={'Avenir Next'} 
+              outline={
+                colorMode === "light"
+                  ? "1px solid #000000"
+                  : "1px solid #FFFFFF"
+              } // Black or white border
+              fontFamily={"Avenir Next"}
             >
               {`${selectedPodcast.name}`}
             </Text>
           )}
-
 
           {/* Episode Name Input */}
           <FormControl>
@@ -185,19 +247,28 @@ return (
 
           {/* Genre Selection */}
           <FormControl>
-            <Select 
-              placeholder="Select genre" 
-              value={selectedGenre} 
+            <Select
+              placeholder="Select genre"
+              value={selectedGenre}
               onChange={(e) => setSelectedGenre(e.target.value)}
             >
               {PodcastGenres.map((genre) => (
-                <option key={genre} value={genre}>{genre}</option>
+                <option key={genre} value={genre}>
+                  {genre}
+                </option>
               ))}
             </Select>
           </FormControl>
 
           {/* File Upload */}
-          <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" width="300px">
+          <Box
+            {...getRootProps()}
+            border="2px dashed gray"
+            borderRadius="md"
+            p={4}
+            textAlign="center"
+            width="300px"
+          >
             <input {...getInputProps()} />
             {file ? (
               <p>{file.name}</p>
@@ -207,24 +278,27 @@ return (
           </Box>
 
           {/* Upload Button */}
-          <Button colorScheme="blue" onClick={() => {/* handle upload and save */}} style={{
-            outline: "solid 2px #3182CE",
-            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            borderRadius: "5em",
-            width: "50%",
-            height: "3em",
-            marginTop: "1em",
-            marginBottom: "1em",
-            
-
-          }}>Upload</Button>
-  
-
-      </VStack>
-    </Box>
-  </>
-);
-
-  };
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              /* handle upload and save */
+            }}
+            style={{
+              outline: "solid 2px #3182CE",
+              boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: "5em",
+              width: "50%",
+              height: "3em",
+              marginTop: "1em",
+              marginBottom: "1em",
+            }}
+          >
+            Upload
+          </Button>
+        </VStack>
+      </Box>
+    </>
+  );
+};
 
 export default CreateEpisode;
