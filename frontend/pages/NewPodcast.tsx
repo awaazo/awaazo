@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
 import LogoWhite from "../public/logo_white.svg";
+import Navbar from "../components/shared/Navbar";
 import { PodcastCreateRequest } from "../utilities/Requests";
 import PodcastHelper from "../helpers/PodcastHelper";
 import { UserMenuInfo } from "../utilities/Interfaces";
@@ -77,7 +78,7 @@ const NewPodcast: React.FC = () => {
   }, [router]);
 
   /**
-   * Handles Coer Image upload
+   * Handles Cover Image upload
    * @param e Upload event
    */
   const handleCoverImageUpload = (e: FormEvent) => {
@@ -158,6 +159,7 @@ const NewPodcast: React.FC = () => {
    */
   const NewPodcastPage = () => (
     <>
+      <Navbar />
       <Box
         p={6}
         display="flex"
@@ -165,14 +167,6 @@ const NewPodcast: React.FC = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <img
-          src={LogoWhite.src}
-          alt="logo"
-          style={{
-            maxHeight: "10em",
-            maxWidth: "3em",
-          }}
-        />
         <Text
           style={{
             fontSize: "1.5rem",
