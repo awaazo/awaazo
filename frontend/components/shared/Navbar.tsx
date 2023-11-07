@@ -243,6 +243,7 @@ export default function Navbar() {
                 e.preventDefault();
                 handleSearchSubmit();
               }}
+              color={colorMode === "dark" ? "white" : "black"}
             >
               <Input
                 placeholder="Search"
