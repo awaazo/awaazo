@@ -5,6 +5,7 @@ using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Controllers;
 
@@ -103,6 +104,6 @@ public class ProfileController : ControllerBase
             return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
 
         // Otherwise, return the avatar
-        return PhysicalFile(ProfileService.GetAvatarPath(user!.Avatar!),ProfileService.GetAvatarType(user!.Avatar!));
+        return PhysicalFile(GetUserAvatarPath(user.Avatar),GetFileType(user.Avatar));
     }
 }

@@ -41,11 +41,10 @@ function PlayerBar(props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(likes.isLiked);
   const [volume, setVolume] = useState(30); // Assuming a default volume level
-    const skipForward = () =>
-      setPosition((prevPos) => Math.min(prevPos + 10, duration));
-    const skipBackward = () =>
-      setPosition((prevPos) => Math.max(prevPos - 10, 0));
-
+  const skipForward = () =>
+    setPosition((prevPos) => Math.min(prevPos + 10, duration));
+  const skipBackward = () =>
+    setPosition((prevPos) => Math.max(prevPos - 10, 0));
 
   const togglePlayPause = () => setIsPlaying(!isPlaying);
   const toggleLike = () => setIsLiked(!isLiked);

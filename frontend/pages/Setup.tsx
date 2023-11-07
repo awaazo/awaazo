@@ -24,7 +24,7 @@ import { UserMenuInfo } from "../utilities/Interfaces";
 
 const Setup: React.FC = () => {
   // CONSTANTS
-  const mainPage = "/Main";
+  const mainPage = "/";
   const loginPage = "/auth/Login";
   const elementsPerLine = 3;
 

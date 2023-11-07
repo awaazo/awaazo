@@ -34,33 +34,6 @@ public class ProfileTests : IAsyncLifetime
 
     #region Test Service
 
-    [Fact]
-    public void GetAvatarPath_CorrectFileInfo_ReturnsPath()
-    {
-        // ARRANGE
-        string fileInfo = "72addbeb-86a1-4646-ba56-08dbd3cc5a57.png||image/png";
-        string filename = "72addbeb-86a1-4646-ba56-08dbd3cc5a57.png";
-
-        // ACT
-        string path = ProfileService.GetAvatarPath(fileInfo);
-
-        // ASSERT
-        Assert.Contains(Path.Combine("Avatars",filename), path);
-    }
-
-    [Fact]
-    public void GetAvatarType_CorrectFileInfo_ReturnsType()
-    {
-        // ARRANGE
-        string fileInfo = "72addbeb-86a1-4646-ba56-08dbd3cc5a57.png||image/png";
-        string type = "image/png";
-
-        // ACT
-        string avatarType  = ProfileService.GetAvatarType(fileInfo);
-
-        // ASSERT
-        Assert.Equal(type, avatarType);
-    }
 
     [Fact]
     public void SaveAvatar_SavedFile_ReturnsTrue()

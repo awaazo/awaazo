@@ -19,7 +19,7 @@ import { LoginRequest } from "../../utilities/Requests";
 
 const Login: React.FC = () => {
   // CONSTANTS
-  const mainPage = "/Main";
+  const mainPage = "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
