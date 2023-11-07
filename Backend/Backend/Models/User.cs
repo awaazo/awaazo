@@ -148,6 +148,10 @@ public class User : BaseEntity
     /// <returns></returns>
     public ICollection<UserEpisodeInteraction> EpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
+    public ICollection<Comment> Comments { get; } = new List<Comment>();
+
+    public ICollection<CommentReply> CommentReplies {get;} = new List<CommentReply>();
+
     /// <summary>
     /// Gender enum.
     /// </summary>

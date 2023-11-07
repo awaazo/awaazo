@@ -6,6 +6,7 @@ using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Controllers;
@@ -113,5 +114,26 @@ public class ProfileController : ControllerBase
 
         // Otherwise, return the avatar
         return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
+    }
+
+    [HttpGet("{userId}/avatar")]
+    public async Task<IActionResult> GetUserAvatar(Guid userId)
+    {
+        // Identify User from JWT Token
+        User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+        // If User is not found, return 404
+        if (user is null)
+            return NotFound("User does not exist.");
+
+        // Get the avatar name
+        string avatarName = await _profileService.GetUserAvatarNameAsync(userId);
+
+        // If user has yet to upload an avatar, return default avatar. 
+        if (avatarName == "DefaultAvatar")
+            return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
+
+        // Otherwise, return the avatar
+        return PhysicalFile(GetUserAvatarPath(avatarName), GetFileType(avatarName));
     }
 }

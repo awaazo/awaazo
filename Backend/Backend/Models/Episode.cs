@@ -45,29 +45,39 @@ public class Episode : BaseEntity
     /// <summary>
     /// String that points to the Audio File location on the server
     /// </summary>
-    public string Audio {get;set;} = string.Empty;
+    public string Audio { get; set; } = string.Empty;
 
     /// <summary>
     /// String that points to the thumbnail image location on the server
     /// </summary>
-    public string Thumbnail { get; set; }
+    public string Thumbnail { get; set; } = string.Empty;
 
     /// <summary>
     /// Duration of the episode in seconds
     /// </summary>
-    public double Duration { get; set; }
+    public double Duration { get; set; } = 0;
 
-    public DateTime ReleaseDate { get; set; }
+    public DateTime ReleaseDate { get; set; } = DateTime.Now;
 
     public bool IsExplicit { get; set; } = false;
 
-    public ulong PlayCount { get; set; }
+    public ulong PlayCount { get; set; } = 0;
 
     public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 
     public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
 
     public ICollection<Sponsor> Sponsors { get; } = new List<Sponsor>();
+
+    /// <summary>
+    /// Comments for this episode
+    /// </summary>
+    public ICollection<Comment> Comments { get; } = new List<Comment>();
+
+    /// <summary>
+    /// Episode likes for this episode
+    /// </summary>
+    public ICollection<EpisodeLike> Likes { get; } = new List<EpisodeLike>();
 }
 
 public class UserEpisodeInteraction : BaseEntity

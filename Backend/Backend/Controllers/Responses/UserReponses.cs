@@ -14,7 +14,7 @@ public class UserMenuInfoResponse
         Username = string.Empty;
     }
 
-    public UserMenuInfoResponse(User user, HttpContext httpContext)
+    public UserMenuInfoResponse(User user, string domainUrl)
     {
         Id = user.Id;
         Username = user.Username;
@@ -22,7 +22,7 @@ public class UserMenuInfoResponse
         if (user.Avatar == "DefaultAvatar")
             AvatarUrl = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
         else
-            AvatarUrl = httpContext.Request.GetDisplayUrl()[..^7] + "profile/avatar";
+            AvatarUrl = string.Format("{0}profile/{1}/avatar",domainUrl,user.Id);
     }
 
 

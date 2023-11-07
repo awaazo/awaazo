@@ -121,4 +121,15 @@ public class ProfileService : IProfileService
         return profile;
     }
 
+    /// <summary>
+    /// Gets the Avatar name for the given user.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<string> GetUserAvatarNameAsync(Guid userId)
+    {
+        // If the user does not exist, throw an exception, otherwise return the avatar name
+        User user = await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("User not found.");
+        return user.Avatar;
+    }
 }

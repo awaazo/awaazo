@@ -9,12 +9,17 @@ namespace Backend.Services.Interfaces;
 /// </summary>
 public interface ISocialService
 {
-    public Task<bool> AddCommentAsync(CommentRequest request, User user);
-    public Task<List<CommentResponse>> GetEpisodeCommentsAsync(Guid episodeId);
-    public Task<List<CommentResponse>> GetUserCommentsAsync(User user);
-    public Task<bool> DeleteCommentAsync(Guid commentId, User user);
+
+    // Comment
+    public Task<bool> AddCommentAsync(Guid episodeOrCommentId, User user, string commentText);
+    public Task<bool> AddCommentToEpisodeAsync(Guid episodeId, User user, string commentText);
+    public Task<bool> AddCommentToCommentAsync(Guid commentId, User user, string commentText);
+    public Task<bool> RemoveCommentAsync(Guid commentId, User user);
+
+    // Like
+    public Task<bool> AddLikeAsync(Guid episodeOrCommentId, User user);
     public Task<bool> AddLikeToEpisodeAsync(Guid episodeId, User user);
     public Task<bool> AddLikeToCommentAsync(Guid commentId, User user);
-    public Task<bool> RemoveEpisodeLikeAsync(Guid episodeId, User user);
-    public Task<bool> RemoveCommentLikeAsync(Guid commentId, User user);
+    public Task<bool> RemoveLikeAsync(Guid episodeOrCommentId, User user);
+
 }

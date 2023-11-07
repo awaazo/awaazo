@@ -8,19 +8,12 @@ namespace Backend.Controllers.Requests;
 /// </summary>
 [BindProperties]
 public class CommentRequest
-{
-    public CommentRequest()
-    {
-        EpisodeId = Guid.Empty;
-        ReplyToCommentId = Guid.Empty;
-        Text = string.Empty;
-    }   
-    
+{    
     [Required]
-    public Guid EpisodeId {get;set;}
+    public Guid EpisodeId {get;set;} = Guid.Empty;
 
-    public Guid? ReplyToCommentId {get;set;}
+    public Guid? ReplyToCommentId {get;set;} = null;
 
     [Required]
-    public string Text {get;set;}
+    public string Text {get;set;} = string.Empty;
 }

@@ -71,9 +71,12 @@ public class AuthController : ControllerBase
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
         // Return UserId
-        if (user is null) return BadRequest("User not found.");
+        if (user is null) 
+            return BadRequest("User not found.");
 
-        else return Ok(new UserMenuInfoResponse(user,HttpContext));
+        string domainUrl = GetDomainUrl(HttpContext);
+
+        return Ok(new UserMenuInfoResponse(user,domainUrl));
     }
 
 
@@ -98,5 +101,22 @@ public class AuthController : ControllerBase
     {
         Response.Cookies.Delete("jwt-token");   
         return Ok("Logged out.");
+    }
+
+
+    /// <summary>
+    /// Returns the domain url of the server.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static string GetDomainUrl(HttpContext context)
+    {
+        string domain = "";
+        domain +=  "http";
+        if (context.Request.IsHttps)
+            domain += "s";
+        domain += @"://" + context.Request.Host + @"/";
+
+        return domain;
     }
 }

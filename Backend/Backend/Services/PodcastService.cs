@@ -176,9 +176,17 @@ public class PodcastService : IPodcastService
     public async Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId)
     {
         // Check if the podcast exists, if it does retrieve it.
-        Podcast podcast = await _db.Podcasts.Include(p=>p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        PodcastResponse podcastResponse = await _db.Podcasts
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
+        .Where(p =>p.Id == podcastId)
+        .Select(p=>new PodcastResponse(p,domainUrl))
+        .FirstOrDefaultAsync() ?? throw new Exception("Podcast does not exist.");
         
-        return new PodcastResponse(podcast,domainUrl);
+        return podcastResponse;
     }
 
     /// <summary>
@@ -203,18 +211,17 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId)
     {
         // Check if the user has any podcasts, if they do retrieve them.
-        List<Podcast> podcasts = await _db.Podcasts.Include(p=>p.Episodes)
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
         .Take(pageSize)
+        .Select(p=>new PodcastResponse(p,domainUrl))
         .ToListAsync() ?? throw new Exception("User doesnt have any podcasts.");
-
-        // Get the podcast responses and return them
-        List<PodcastResponse> podcastResponses = new();
-        foreach (Podcast podcast in podcasts)
-        {
-            podcastResponses.Add(new PodcastResponse(podcast,domainUrl));
-        }
 
         return podcastResponses;
     }
@@ -231,18 +238,17 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
         .Where(p => AppDbContext.Soundex(p.Name)==AppDbContext.Soundex(searchTerm))
         .Skip(page * pageSize)
         .Take(pageSize)
+        .Select(p=>new PodcastResponse(p,domainUrl))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
-
-        // Create a list of podcast responses
-        List<PodcastResponse> podcastResponses = new();
-        foreach (Podcast podcast in podcasts)
-        {
-            podcastResponses.Add(new PodcastResponse(podcast, domainUrl));
-        }
 
         return podcastResponses;
     }
@@ -258,17 +264,16 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl)
     {
         // Get the podcasts from the database
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
         .Skip(page * pageSize)
         .Take(pageSize)
+        .Select(p=>new PodcastResponse(p,domainUrl))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
-
-        // Create a list of podcast responses
-        List<PodcastResponse> podcastResponses = new();
-        foreach (Podcast podcast in podcasts)
-        {
-            podcastResponses.Add(new PodcastResponse(podcast, domainUrl));
-        }
 
         return podcastResponses;
     }
@@ -499,7 +504,13 @@ public class PodcastService : IPodcastService
     public async Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
-        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+        Episode episode = await _db.Episodes
+            .Include(e => e.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Likes)
+            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
         // Return the episode response
         return new EpisodeResponse(episode,domainUrl);

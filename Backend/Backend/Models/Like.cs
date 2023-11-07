@@ -4,34 +4,69 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Models;
 
 /// <summary>
-/// Like entity. Represents a like on an episode or Comment.
+/// Represents a liked episode.
 /// </summary>
-[PrimaryKey(nameof(UserId),nameof(EpisodeId),nameof(CommentId))]
-public class Like: BaseEntity
+[PrimaryKey(nameof(UserId),nameof(EpisodeId))]
+public class EpisodeLike : BaseEntity
 {
-    public Like()
-    {
-        UserId = Guid.Empty;
-        EpisodeId = Guid.Empty;
-        CommentId = Guid.Empty;
-    }
-
     /// <summary>
     /// Id of the user who liked the episode.
     /// </summary>
     /// <value></value>
     [Required]
-    public Guid UserId { get; set; }
-    
+    public Guid UserId { get; set; } = Guid.Empty;
+
+    [Required]
     /// <summary>
-    /// EpisodeId of the episode that was liked.
+    /// Id of the episode that was liked.
     /// </summary>
     /// <value></value>
-    public Guid EpisodeId { get; set; }
+    public Guid EpisodeId { get; set; } = Guid.Empty;
 
+    /// <summary>
+    /// Episode that was liked.
+    /// </summary>
+    /// <value></value>
+    public Episode Episode { get; set; } = null!;
+}
+
+/// <summary>
+/// Represents a liked comment.
+/// </summary>
+[PrimaryKey(nameof(UserId),nameof(CommentId))]
+public class CommentLike : BaseEntity
+{
+    /// <summary>
+    /// Id of the user who liked the comment.
+    /// </summary>
+    /// <value></value>
+    [Required]
+    public Guid UserId { get; set; } = Guid.Empty;
+    
+
+    [Required]
     /// <summary>
     /// CommentId of the comment that was liked.
     /// </summary>
     /// <value></value>
-    public Guid CommentId { get; set; }
+    public Guid CommentId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Comment that was liked.
+    /// </summary>
+    /// <value></value>
+    public Comment Comment { get; set; } = null!;
+
+}
+
+[PrimaryKey(nameof(UserId),nameof(CommentReplyId))]
+public class CommentReplyLike : BaseEntity
+{
+    [Required]
+    public Guid UserId { get; set; } = Guid.Empty;
+
+    [Required]
+    public Guid CommentReplyId { get; set; } = Guid.Empty;
+
+    public CommentReply CommentReply { get; set; } = null!;
 }

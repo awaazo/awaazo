@@ -20,6 +20,8 @@ public class EpisodeResponse
         PlayCount=e.PlayCount;
         AudioUrl=domainUrl + string.Format("podcast/{0}/{1}/getAudio", e.PodcastId, e.Id);
         ThumbnailUrl=domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
+        Likes= e.Likes.Count;
+        Comments=e.Comments.Select(c => new CommentResponse(c,domainUrl)).ToList();
     }
 
     public Guid Id { get; set; } = Guid.Empty;
@@ -32,6 +34,8 @@ public class EpisodeResponse
     public ulong PlayCount { get; set; } = 0;
     public string AudioUrl { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
+    public int Likes {get;set;} = 0;
+    public List<CommentResponse> Comments { get; set; } = new();
 }
 
 [BindProperties]
