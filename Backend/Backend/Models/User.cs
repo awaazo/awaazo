@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace Backend.Models;
 
@@ -8,6 +9,16 @@ namespace Backend.Models;
 /// </summary>
 public class User : BaseEntity
 {
+    /// <summary>
+    /// Default Avatar name given if the user has yet to complete his profile setup.
+    /// </summary>
+    public const string DEFAULT_AVATAR_NAME = "DefaultAvatar";
+
+    ///<summary>
+    /// URL to the Avatar to be used by default.
+    ///</summary>
+    public const string DEFAULT_AVATAR_URL = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
+
     /// <summary>
     /// User Unique Identifier.
     /// </summary>
@@ -170,5 +181,41 @@ public class User : BaseEntity
             GenderEnum.None => "None",
             _ => "None",
         };
+    }
+
+    /// <summary>
+    /// Translates a GenderEnum to a string.
+    /// </summary>
+    /// <param name="gender"></param>
+    /// <returns></returns>
+    public static string GetGenderEnumString(GenderEnum gender)
+    {
+        return gender switch
+        {
+            GenderEnum.Male => "Male",
+            GenderEnum.Female => "Female",
+            GenderEnum.Other => "Other",
+            GenderEnum.None => "None",
+            _ => "None",
+        };
+    }
+
+    /// <summary>
+    /// Translates a string to a GenderEnum.
+    /// </summary>
+    /// <param name="gender"></param>
+    /// <returns></returns>
+    public static string GetGenderEnumFromString(string gender)
+    {   
+        GenderEnum genderEnum = GenderEnum.None;
+
+        if(gender.ToLower()=="male")
+            genderEnum = GenderEnum.Male;
+        else if(gender.ToLower()=="female")
+            genderEnum = GenderEnum.Female;
+        else if(gender.ToLower()=="other")
+            genderEnum = GenderEnum.Other;
+
+        return genderEnum.ToString();
     }
 }
