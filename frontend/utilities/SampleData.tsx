@@ -3,7 +3,8 @@ import { Podcast, Episode, Bookmark , TranscriptLine } from "./Interfaces";
 export const podcasts: Podcast[] = [
   {
     id: "podcast1",
-    coverArt: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
+    name: "Artificial Intelligence",
+    coverArtUrl: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
     podcasterId: "user123",
     podcaster: "Joe Mama",
     description: "A deep dive into the world of artificial intelligence and its implications for the future.",
@@ -17,7 +18,8 @@ export const podcasts: Podcast[] = [
   },
   {
     id: "podcast2",
-    coverArt: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
+    name: "Artificial Intelligence",
+    coverArtUrl: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
     podcasterId: "user456",
     podcaster: "Joe Mama",
     tags: ["history", "world wars"],
