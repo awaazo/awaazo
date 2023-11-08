@@ -5,7 +5,7 @@ import educationImage from "../../styles/images/genres/ed.png";
 import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
-import otherImage from "../../styles/images/genres/other.jpg"; // assuming there's an 'other.png'
+import otherImage from "../../styles/images/genres/other.jpg"; 
 
 const genres = [
   { name: "Tech", image: techImage },
@@ -31,13 +31,13 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
         cursor: "pointer",
         transition: "all 0.4s ease-in-out",
       }}
-      transform={scale} // Apply the calculated scale
-      transition="all 0.4s ease-in-out" // Ensure the transition is smooth for both hover and unhover events
+      transform={scale}
+      transition="all 0.4s ease-in-out" 
       boxSizing="border-box"
       outline={"2px solid rgba(255, 255, 255, .3)"}
       onMouseEnter={() => onMouseEnter(genre.name)}
       onMouseLeave={onMouseLeave}
-      zIndex={isHovered ? 1 : 0} // Ensure the hovered item stacks on top
+      zIndex={isHovered ? 1 : 0} 
     >
       <Image
         src={genre.image.src}

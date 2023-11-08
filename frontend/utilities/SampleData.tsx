@@ -71,7 +71,7 @@ const episodeTemplate: Episode = {
   podcastId: "podcast2",
   podcaster: "Joe Mama",
   episodeName: "World War II: A Deep Dive",
-  coverArt: "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
+  coverArt: "https://images.unsplash.com/photo-1699198489130-2e02f3726612?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   duration: 5400, 
   releaseDate: new Date("2023-02-20"),
   description: "In this episode, we explore the advancements in AI and what it means for industries and daily life.",

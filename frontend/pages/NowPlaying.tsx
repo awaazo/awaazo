@@ -89,7 +89,7 @@ const NowPlaying = () => {
   const isMobile = useBreakpointValue({ base: true, md: false }); 
 
   return (
-    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || "black"}>
+    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || null}>
       <Navbar />
       {isMobile ? (
         <Swiper
@@ -116,7 +116,7 @@ const NowPlaying = () => {
             transition="all 0.4s ease"
             onClick={() => handleComponentClick(index)}
             transform={selectedComponent === index ? "scale(1.01)" : "scale(1)"}
-            transformOrigin="center center" // Added transform origin
+            transformOrigin="center center" 
             opacity={comp.mainComponent || comp.coMainComponent ? 1 : 0.5}
           >
             {comp.component}
