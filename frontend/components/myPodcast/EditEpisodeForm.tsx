@@ -25,23 +25,33 @@ import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import router from "next/router";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
-import { EpisodeAddRequest } from "../../utilities/Requests";
+import { EpisodeEditRequest } from "../../utilities/Requests";
 
-export default function EditEpisodeForm() {
+export default function EditEpisodeForm({ episode }) {
+  useEffect(() => {
+    PodcastHelper.getEpisodeById(episode.id).then((res) => {
+      if (res.status == 200) {
+        setCoverImage(res.episode.thumbnailUrl);
+        setEpisodeName(res.episode.episodeName);
+        setDescription(res.episode.description);
+        setIsExplicit(res.episode.isExplicit);
+      } else {
+        setEditError("Episodes cannot be fetched");
+      }
+    });
+  }, [episode.id]);
   // Page refs
   const myPodcastsPage = "/MyPodcasts";
 
   // Form errors
-  const [addError, setAddError] = useState("");
+  const [editError, setEditError] = useState("");
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
-  // DELETE WHEN BACKEND UPDATES REQUEST FOR ADD EPISODE
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const handleCoverImageUpload = (e: FormEvent) => {
@@ -58,49 +68,36 @@ export default function EditEpisodeForm() {
 
   const { colorMode } = useColorMode();
 
-  const handlePodcastSelect = (podcast) => {
-    setSelectedPodcast(podcast);
-  };
-
   /**
    * Handles form submission
    * @param e Click event
    */
-  const handleAdd = async (e: FormEvent) => {
+  const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (selectedPodcast == null) {
-      setAddError("Please select the Podcast you wish to upload to");
+    // Create request object
+    const request: EpisodeEditRequest = {
+      audioFile: file,
+      description: description,
+      thumbnail: coverImageFile,
+      isExplicit: isExplicit,
+      episodeName: episodeName,
+    };
+
+    // Send the request
+    const response = await PodcastHelper.podcastEpisodeEditRequest(
+      request,
+      episode.id,
+    );
+    console.log(response);
+
+    if (response.status === 200) {
+      // Success, go to my podcasts page
+      window.location.href = myPodcastsPage;
     } else {
-      // Create request object
-      const request: EpisodeAddRequest = {
-        audioFile: file,
-        description: description,
-        thumbnail: coverImageFile,
-        isExplicit: isExplicit,
-        episodeName: episodeName,
-      };
-
-      // Send the request
-      const response = await PodcastHelper.episodeAddRequest(
-        request,
-        selectedPodcast.id,
-      );
-      console.log(response);
-
-      if (response.status === 200) {
-        // Success, go to my podcasts page
-        window.location.href = myPodcastsPage;
-      } else {
-        // Handle error here
-        setAddError("Episode File, Name and Description Required.");
-      }
+      // Handle error here
+      setEditError("Episode File, Name and Description Required.");
     }
-  };
-
-  // Function to navigate to create podcast page
-  const navigateToCreatePodcast = () => {
-    router.push("/NewPodcast");
   };
 
   return (
@@ -108,34 +105,7 @@ export default function EditEpisodeForm() {
       {/* Form Container */}
       <Box display="flex" justifyContent="center">
         <VStack spacing={5} align="center" p={5}>
-          {/* Form Container */}
-          {/* Displaying Selected Podcast Title */}
-          {selectedPodcast && (
-            <Text
-              fontSize="xl"
-              fontWeight="normal"
-              bg={
-                colorMode === "light"
-                  ? "rgba(0, 0, 0, 0.1)"
-                  : "rgba(255, 255, 255, 0.1)"
-              } // Slight transparency
-              pl={5} // Padding for better visual spacing
-              pr={5} // Padding for better visual spacing
-              pt={2} // Padding for better visual spacing
-              pb={2} // Padding for better visual spacing
-              mb={5} // Margin for better visual spacing
-              borderRadius="5em" // Rounded corners
-              outline={
-                colorMode === "light"
-                  ? "1px solid #000000"
-                  : "1px solid #FFFFFF"
-              } // Black or white border
-              fontFamily={"Avenir Next"}
-            >
-              {`${selectedPodcast.name}`}
-            </Text>
-          )}
-          <form onSubmit={handleAdd}>
+          <form onSubmit={handleUpdate}>
             <div
               style={{
                 position: "relative",
@@ -199,7 +169,7 @@ export default function EditEpisodeForm() {
                 />
               </label>
             </div>
-            {addError && <Text color="red.500">{addError}</Text>}
+            {editError && <Text color="red.500">{editError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
               <FormControl>
@@ -290,40 +260,6 @@ export default function EditEpisodeForm() {
                 `}</style>
               </Button>
               {/* Update Button */}
-              <Button
-                id="createBtn"
-                type="submit"
-                fontSize="md"
-                borderRadius={"full"}
-                minWidth={"200px"}
-                color={"white"}
-                marginTop={"15px"}
-                marginBottom={"10px"}
-                padding={"20px"}
-                // semi transparent white outline
-                outline={"1px solid rgba(255, 255, 255, 0.6)"}
-                style={{
-                  background:
-                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-                  backgroundSize: "300% 300%",
-                  animation: "Gradient 10s infinite linear",
-                }}
-              >
-                Delete
-                <style jsx>{`
-                  @keyframes Gradient {
-                    0% {
-                      background-position: 100% 0%;
-                    }
-                    50% {
-                      background-position: 0% 100%;
-                    }
-                    100% {
-                      background-position: 100% 0%;
-                    }
-                  }
-                `}</style>
-              </Button>
             </VStack>
           </form>
         </VStack>
