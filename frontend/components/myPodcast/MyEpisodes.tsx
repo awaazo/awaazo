@@ -212,9 +212,9 @@ const Episode = ({ episode }) => {
                 align="center"
                 backgroundColor={"transparent"}
               >
-                <Text>Edit Episode: {currentEpisode?.title}</Text>
+                <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
 
-                <EditEpisodeForm />
+                <EditEpisodeForm episode={episode} />
               </VStack>
             </Box>
           </ModalBody>

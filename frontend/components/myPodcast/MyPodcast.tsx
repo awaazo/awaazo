@@ -271,12 +271,6 @@ export default function MyPodcast({ podcastId }) {
                   >
                     Edit Episode
                   </Button>
-                  <Button
-                    colorScheme="red"
-                    leftIcon={<DeleteIcon style={{ marginLeft: "5px" }} />}
-                    onClick={onOpen}
-                    isLoading={isDeleting}
-                  ></Button>
                 </HStack>
                 <Text marginBottom={"2em"}>{episode.description}</Text>
               </VStack>
