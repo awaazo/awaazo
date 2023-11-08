@@ -22,7 +22,7 @@ describe('Login', () => {
     cy.get('input[id="password"]').type("password123");
     cy.get('button[id="loginBtn"]').click();
     cy.url().should('include', '/auth/Login');
-    cy.contains('Login failed. Invalid Email and/or Password.');
+    cy.contains('Login failed. Invalid Email/Username and/or Password.');
 
     cy.get('input[id="email"]').clear();
     cy.get('input[id="password"]').clear();
@@ -31,7 +31,7 @@ describe('Login', () => {
     cy.get('input[id="password"]').type("password123WRONG");
     cy.get('button[id="loginBtn"]').click();
     cy.url().should('include', '/auth/Login');
-    cy.contains('Login failed. Invalid Email and/or Password.');
+    cy.contains('Login failed. Invalid Email/Username and/or Password.');
   });
 
 

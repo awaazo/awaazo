@@ -2,14 +2,11 @@
 using Backend.Controllers.Requests;
 using Backend.Models;
 
-namespace Backend.Helper
+namespace Backend.Helper;
+public class AutoMapperProfile : Profile
 {
-    public class AutoMapperProfile : Profile 
+    public AutoMapperProfile()
     {
-        public AutoMapperProfile() {
-            CreateMap<RegisterRequest, User>();
-
-        }
-
+        CreateMap<RegisterRequest, User>();
     }
 }

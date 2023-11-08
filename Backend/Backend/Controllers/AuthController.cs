@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         // Login 
         User? user = await _authService.LoginAsync(request);
         if(user is null)
-            return BadRequest("Login failed. Invalid Email and/or Password.");
+            return BadRequest("Login failed. Invalid Email/Username and/or Password.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(user.Id,_configuration,TokenLifeTime);
@@ -53,7 +53,7 @@ public class AuthController : ControllerBase
         // Register User if he does not already exist
         User? newUser = await _authService.RegisterAsync(request);
         if(newUser is null)
-            return BadRequest("An Account with that Email already exists. Please Login or use a different Email address.");
+            return BadRequest("An Account with that Email and/or Username already exists. Please Login or use a different Email address.");
         
         // Generate JWT Token for user
         string token = _authService.GenerateToken(newUser.Id,_configuration,TokenLifeTime);
