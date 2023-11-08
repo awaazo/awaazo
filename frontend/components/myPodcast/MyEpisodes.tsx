@@ -47,8 +47,6 @@ const Episode = ({ episode }) => {
 
   // Edit Episode Modal
   //----------------------------------------------------------------------
-  const [isEditEpisodeModalOpen, setIsEditEpisodeModalOpen] = useState(false);
-  const [currentEditingEpisode, setCurrentEditingEpisode] = useState(null);
 
   // State for managing modal visibility and the current episode
   const [isModalEpisodeOpen, setIsModalEpisodeOpen] = useState(false);

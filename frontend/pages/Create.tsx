@@ -185,7 +185,12 @@ const CreateEpisode = () => {
                 boxShadow="lg"
                 outline="2px solid #FFFFFF80"
               />
-              <Text mt={2}>{podcast.name}</Text>
+              <Text mt={2}>
+                {" "}
+                {podcast.name.length > 18
+                  ? `${podcast.name.substring(0, 18)}...`
+                  : podcast.name}
+              </Text>
             </Flex>
           ))}
 

@@ -30,7 +30,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 
-import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
+import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 
 import Navbar from "../components/shared/Navbar";
 import MyPodcast from "../components/myPodcast/MyPodcast";
@@ -43,6 +43,7 @@ const MyPodcasts = () => {
   // Page refs
   const loginPage = "/auth/Login";
   const { colorMode } = useColorMode();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   // Current User
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
@@ -129,7 +130,12 @@ const MyPodcasts = () => {
         </Flex>
       </Box>
       <Box px={["1em", "2em", "4em"]} pt={6}>
-        <Flex justify="center" pb={5}>
+        <Flex
+          direction="row"
+          wrap="wrap"
+          justifyContent="center"
+          alignItems="center"
+        >
           <HStack spacing={5}>
             {podcasts.map((podcast) => (
               <VStack
