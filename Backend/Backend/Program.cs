@@ -30,6 +30,7 @@ public class Program
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
         builder.Services.AddScoped<PlaylistService>();
+        builder.Services.AddScoped<ValidateUser>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -122,7 +123,7 @@ public class Program
 
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
         {
-            app.UseMiddleware<ValidateUser>();
+            builder.UseMiddleware<ValidateUser>();
         });
         
         app.MapControllers();
