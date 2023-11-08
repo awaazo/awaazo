@@ -136,7 +136,7 @@ const MyPodcasts = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <HStack spacing={5}>
+          <Wrap spacing={6}>
             {podcasts.map((podcast) => (
               <VStack
                 key={podcast.id}
@@ -172,31 +172,30 @@ const MyPodcasts = () => {
                 </Text>
               </VStack>
             ))}
-          </HStack>
-          <Flex
-            direction="column"
-            alignItems="center"
-            borderRadius="1em"
-            cursor="pointer"
-            outline="none"
-            onClick={navigateToCreatePodcast}
-            p={2}
-            m={2}
-            bg="transparent"
-          >
-            <Box
-              boxSize="150px"
-              marginLeft="10px"
-              borderRadius="2em"
-              border="2px dashed gray"
-              display="flex"
+            <Flex
+              direction="column"
               alignItems="center"
-              justifyContent="center"
+              borderRadius="1em"
+              cursor="pointer"
+              outline="none"
+              onClick={navigateToCreatePodcast}
+              p={2}
+              m={2}
+              bg="transparent"
             >
-              <AddIcon w={10} h={10} />
-            </Box>
-            <Text mt={2}>Create a Podcast</Text>
-          </Flex>
+              <Box
+                boxSize="100px"
+                borderRadius="2em"
+                border="2px dashed gray"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <AddIcon w={10} h={10} />
+              </Box>
+              <Text mt={2}>Create a Podcast</Text>
+            </Flex>
+          </Wrap>
         </Flex>
         {selectedPodcastId !== null && (
           <MyPodcast podcastId={selectedPodcastId} />
