@@ -57,6 +57,7 @@ export default function MyPodcast({ podcastId }) {
   }, [podcastId]);
   // Page refs
   const MyPodcastsPage = "/MyPodcasts";
+  const CreatePage = "/Create";
   const { colorMode } = useColorMode();
 
   // Form Values
@@ -70,6 +71,11 @@ export default function MyPodcast({ podcastId }) {
 
   // Form errors
   const [createError, setCreateError] = useState("");
+
+  //
+  const navigateToCreatePage = () => {
+    window.location.href = CreatePage;
+  };
 
   // For delete pop up
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -106,13 +112,12 @@ export default function MyPodcast({ podcastId }) {
   //----------------------------------------------------------------------
   return (
     <>
-      <VStack
+      <Box
         p={4}
         mt={"2em"}
         borderWidth="1px"
         borderRadius="2em"
-        align="start"
-        padding={"3em"}
+        padding={"1.5em"}
       >
         <Flex justify="space-between" align="center" w="full">
           <Wrap align="center" spacing={4}>
@@ -200,47 +205,164 @@ export default function MyPodcast({ podcastId }) {
             </IconButton>
           </div>
         </Flex>
-        <Text
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            backdropFilter: "blur(10px)",
-            borderRadius: "1em",
-            padding: "1em",
-            outline: "2px solid rgba(255, 255, 255, 0.1)",
-            marginBottom: "0.5em",
-            marginTop: "1em",
-            wordBreak: "break-word",
-          }}
-        >
-          {description}
-        </Text>
-        <Box
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            backdropFilter: "blur(10px)",
-            borderRadius: "1em",
-            padding: "1em",
-            outline: "2px solid rgba(255, 255, 255, 0.1)",
-            marginBottom: "2em",
-            wordSpacing: "0.5em",
-          }}
-        >
-          <Text fontSize="md" fontWeight="bold">
-            🎧 Listeners: 5
-          </Text>
-          <Text fontSize="md" fontWeight="bold">
-            📊 Subscribers: 5
-          </Text>
-          <Text fontSize="md" fontWeight="bold">
-            ❤️ Likes: 5
-          </Text>
-        </Box>
-        <>
-          {episodes.map((episode, index) => (
-            <MyEpisodes episode={episode} />
-          ))}
-        </>
-      </VStack>
+
+        {isMobile ? (
+          <Box>
+            <Text
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(10px)",
+                borderRadius: "1em",
+                padding: "0.5em",
+                outline: "2px solid rgba(255, 255, 255, 0.1)",
+                marginBottom: "0.5em",
+                marginTop: "1em",
+                wordBreak: "break-word",
+              }}
+            >
+              {description}
+            </Text>
+            <Box
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(10px)",
+                borderRadius: "1em",
+                padding: "0.5em",
+                outline: "2px solid rgba(255, 255, 255, 0.1)",
+                marginBottom: "2em",
+                wordSpacing: "0.5em",
+              }}
+            >
+              <Text fontSize="md" fontWeight="bold">
+                🎧 Listeners: 5
+              </Text>
+              <Text fontSize="md" fontWeight="bold">
+                📊 Subscribers: 5
+              </Text>
+              <Text fontSize="md" fontWeight="bold">
+                ❤️ Likes: 5
+              </Text>
+            </Box>
+            <>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Text
+                  fontSize="md"
+                  style={{ fontWeight: "bold", paddingLeft: 15 }}
+                >
+                  Episodes:
+                </Text>{" "}
+                <Button
+                  onClick={navigateToCreatePage}
+                  style={{
+                    fontWeight: "bold",
+                    marginLeft: "10px",
+                  }}
+                >
+                  Create New Episode
+                </Button>
+              </div>
+
+              {episodes.length === 0 ? (
+                <Text
+                  fontSize="md"
+                  style={{ fontWeight: "bold", marginLeft: 20, marginTop: 25 }}
+                >
+                  This podcast has no episodes yet
+                </Text>
+              ) : (
+                episodes.map((episode, index) => (
+                  <MyEpisodes episode={episode} key={index} />
+                ))
+              )}
+            </>
+          </Box>
+        ) : (
+          <Flex justify="space-between" align="start">
+            {/* Sidebar on the left */}
+            <Box
+              p={4}
+              mt={"2em"}
+              height={"500px"}
+              width={"25%"}
+              borderWidth="1px"
+              borderRadius="1em"
+              padding={"1em"}
+              _focus={{
+                boxShadow: "none",
+                outline: "none",
+              }}
+            >
+              {/* Description and statistics */}
+              <Text
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "1em",
+                  padding: "1em",
+                  outline: "2px solid rgba(255, 255, 255, 0.1)",
+                  marginBottom: "0.5em",
+                  marginTop: "1em",
+                  wordBreak: "break-word",
+                }}
+              >
+                {description}
+              </Text>
+              <Box
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "1em",
+                  padding: "1em",
+                  marginTop: "1em",
+                  outline: "2px solid rgba(255, 255, 255, 0.1)",
+                  marginBottom: "2em",
+                  wordSpacing: "0.5em",
+                }}
+              >
+                {/* Podcast statistics */}
+                <Text fontSize="md" fontWeight="bold">
+                  🎧 Listeners: 5
+                </Text>
+                <Text fontSize="md" fontWeight="bold">
+                  📊 Subscribers: 5
+                </Text>
+                <Text fontSize="md" fontWeight="bold">
+                  ❤️ Likes: 5
+                </Text>
+              </Box>
+            </Box>
+
+            {/* Podcast mapping on the right */}
+            <div style={{ flex: 1, paddingLeft: 25 }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Text
+                  fontSize="25px"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: 20,
+                    marginTop: "1.5em",
+                  }}
+                >
+                  Episodes:
+                </Text>{" "}
+                <Button
+                  onClick={navigateToCreatePage}
+                  style={{
+                    fontWeight: "bold",
+                    marginLeft: "10px",
+                    marginTop: "2.5em",
+                  }}
+                >
+                  Create New Episode
+                </Button>
+              </div>
+              {episodes.map((episode, index) => (
+                <MyEpisodes key={index} episode={episode} />
+              ))}
+            </div>
+          </Flex>
+        )}
+      </Box>
       {/* Modal for deleting a podcast */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
