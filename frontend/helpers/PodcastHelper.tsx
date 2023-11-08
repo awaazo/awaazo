@@ -199,9 +199,7 @@ export default class PodcastHelper {
    * Deletes a podcast by podcastId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static deletePodcast = async (
-    podcastId,
-  ): Promise<EditMyPodcastResponse> => {
+  public static deletePodcast = async (podcastId): Promise<BaseResponse> => {
     // Create the request options.
     const options = {
       method: "Delete",
@@ -228,14 +226,12 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
-        podcast: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
-        podcast: null,
       };
     }
   };
@@ -270,6 +266,47 @@ export default class PodcastHelper {
       const requestResponse = await axios(options);
 
       console.debug("Received the following podcastCreateResponse...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+      };
+    }
+  };
+
+  /**
+   * Deletes an episode by episodeId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static deleteEpisode = async (episodeId): Promise<BaseResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Delete",
+      url: EndpointHelper.getPodcastEpisodeDeleteEndpoint(episodeId),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following deleteEpisode...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following deleteEpisode...");
       console.debug(requestResponse);
 
       // Return the response.
