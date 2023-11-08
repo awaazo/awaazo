@@ -17,8 +17,8 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 
 export default function EditPodcastForm({ podcastId }) {
   useEffect(() => {
+    console;
     PodcastHelper.getPodcastById(podcastId).then((res) => {
-      // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {
         setCoverImage(res.podcast.coverArtUrl);
         setPodcastName(res.podcast.name);
@@ -30,7 +30,7 @@ export default function EditPodcastForm({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const createPage = "/Create";
+  const myPodcastsPage = "/MyPodcasts";
 
   // Genres
   const PodcastGenres = [
@@ -84,7 +84,7 @@ export default function EditPodcastForm({ podcastId }) {
 
     // Create request object
     const request: PodcastEditRequest = {
-      podcastId: podcastId,
+      Id: podcastId,
       coverImage: coverImageFile,
       description: description,
       tags: tags,
@@ -96,8 +96,8 @@ export default function EditPodcastForm({ podcastId }) {
     console.log(response);
 
     if (response.status === 200) {
-      // Success, go to main page
-      window.location.href = createPage;
+      // Success, go to my podcasts page
+      window.location.href = myPodcastsPage;
     } else {
       // Handle error here
       setEditError("Cover Image, Podcast Name and Description Required.");
