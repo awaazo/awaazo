@@ -75,7 +75,7 @@ const episodeTemplate: Episode = {
   podcastId: "podcast2",
   podcaster: "Joe Mama",
   episodeName: "World War II: A Deep Dive",
-  coverArt:
+  thumbnailUrl:
     "https://images.unsplash.com/photo-1515375380578-a0587184cedd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2599&q=80",
   duration: 5400,
   releaseDate: new Date("2023-02-20"),

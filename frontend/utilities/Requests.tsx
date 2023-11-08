@@ -63,7 +63,7 @@ export interface PodcastCreateRequest {
 }
 
 export interface PodcastEditRequest {
-  podcastId: string;
+  Id: string;
   name: string;
   coverImage: File;
   description: string;
@@ -75,6 +75,14 @@ export interface PodcastEditRequest {
 //#region Episode Requests
 
 export interface EpisodeAddRequest {
+  audioFile: File;
+  episodeName: String;
+  description: String;
+  thumbnail: File;
+  isExplicit: boolean;
+}
+
+export interface EpisodeEditRequest {
   audioFile: File;
   episodeName: String;
   description: String;
