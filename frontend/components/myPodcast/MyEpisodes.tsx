@@ -101,7 +101,7 @@ const Episode = ({ episode }) => {
           boxSize={isMobile ? "0px" : "125px"}
           src={episode.thumbnailUrl}
           borderRadius="10%"
-          marginLeft="20px"
+          marginLeft={isMobile ? "0px" : "20px"}
           mt={1}
         />
       </Box>
