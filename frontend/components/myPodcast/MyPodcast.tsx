@@ -356,9 +356,19 @@ export default function MyPodcast({ podcastId }) {
                   Create New Episode
                 </Button>
               </div>
-              {episodes.map((episode, index) => (
-                <MyEpisodes key={index} episode={episode} />
-              ))}
+
+              {episodes.length === 0 ? (
+                <Text
+                  fontSize="lg"
+                  style={{ fontWeight: "bold", marginLeft: 45, marginTop: 45 }}
+                >
+                  This podcast has no episodes yet
+                </Text>
+              ) : (
+                episodes.map((episode, index) => (
+                  <MyEpisodes episode={episode} key={index} />
+                ))
+              )}
             </div>
           </Flex>
         )}
