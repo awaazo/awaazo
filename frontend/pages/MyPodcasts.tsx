@@ -95,13 +95,40 @@ const MyPodcasts = () => {
   return (
     <>
       <Navbar />
-      <Box px={["1em", "2em", "4em"]} pt={6}>
-        <Flex align="center" pb={4} flexWrap={"wrap"}>
-          <Text fontSize="30px" pb="1em">
+
+      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
+        <Flex
+          align="center"
+          justify="space-between"
+          p={4}
+          borderBottom="1px"
+          borderColor="gray.200"
+        >
+          <Text fontSize="30px" fontWeight="bold">
             My Podcasts
           </Text>
-        </Flex>
 
+          <Flex align="center" justify="flex-end" flex="1">
+            <Link href="/Main">
+              <Flex align="center">
+                <Tooltip label="Help">
+                  <IconButton
+                    aria-label="Help"
+                    icon={<QuestionOutlineIcon />}
+                    variant="ghost"
+                    size="lg"
+                    mr={1}
+                    rounded={"full"}
+                    opacity={0.7}
+                    color={colorMode === "dark" ? "white" : "black"}
+                  />
+                </Tooltip>
+              </Flex>
+            </Link>
+          </Flex>
+        </Flex>
+      </Box>
+      <Box px={["1em", "2em", "4em"]} pt={6}>
         <Flex justify="center" pb={5}>
           <HStack spacing={5}>
             {podcasts.map((podcast) => (
