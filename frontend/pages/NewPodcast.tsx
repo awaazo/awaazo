@@ -11,6 +11,9 @@ import {
   Wrap,
   WrapItem,
   IconButton,
+  Center,
+  Heading,
+  VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
@@ -19,6 +22,8 @@ import Navbar from "../components/shared/Navbar";
 import { PodcastCreateRequest } from "../utilities/Requests";
 import PodcastHelper from "../helpers/PodcastHelper";
 import { UserMenuInfo } from "../utilities/Interfaces";
+import CreatePodcastHeader from "../components/CreatePodcastHeader";
+import { useDropzone } from "react-dropzone";
 
 const NewPodcast: React.FC = () => {
   // Page refs
@@ -153,6 +158,13 @@ const NewPodcast: React.FC = () => {
     }
   };
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setCoverImageFile(acceptedFiles[0]);
+      setCoverImage(URL.createObjectURL(acceptedFiles[0]));
+    },
+  });
+
   /**
    * Contains the elements of the Create Podcast page
    * @returns Create Podcast Page content
@@ -160,6 +172,22 @@ const NewPodcast: React.FC = () => {
   const NewPodcastPage = () => (
     <>
       <Navbar />
+      <Center paddingBottom={"1em"}>
+        <VStack mt={"3em"}>
+          <Heading
+            fontWeight={"light"}
+            style={{
+              textShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            Create a New Podcast
+          </Heading>
+          <Text fontSize="5xl" role="img" aria-label="giant emoji">
+            ✨🎙️✨
+          </Text>
+        </VStack>
+      </Center>
+      <CreatePodcastHeader />
       <Box
         p={6}
         display="flex"
@@ -167,82 +195,77 @@ const NewPodcast: React.FC = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Text
-          style={{
-            fontSize: "1.5rem",
-            textAlign: "center",
-            marginTop: "1rem",
-            fontFamily: "Avenir Next",
-          }}
-        >
-          Let's Make Waves: Start Your Podcast Journey
-        </Text>
-
         <form onSubmit={handleCreate}>
           <Stack spacing={6} align={"center"}>
-            <div
-              style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+            <Box
+              {...getRootProps()}
+              border="2px dotted gray"
+              borderRadius="2em"
+              p={4}
+              textAlign="center"
+              width="300px"
+              height={"40%"}
             >
-              <img
-                src={
-                  coverImage ||
-                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
-                }
-                alt="Cover Photo"
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "50%",
-                  padding: "15px",
-                  position: "relative",
-                }}
+              <input
+                {...getInputProps()}
+                type="file"
+                id="Cover Photo"
+                accept="image/*"
+                onChange={(e) => handleCoverImageUpload(e)}
+                style={{ display: "none" }}
               />
+              {coverImage ? (
+                <img
+                  src={coverImage}
+                  alt="Cover Photo"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "inherit",
+                  }}
+                />
+              ) : (
+                <>
+                  <p
+                    style={{
+                      fontSize: "1em",
+                    }}
+                  >
+                    Drag & drop a cover image here, or click to select one
+                  </p>
+                  <span
+                    role="img"
+                    aria-label="upload emoji"
+                    style={{ fontSize: "3em" }}
+                  >
+                    🏔️
+                  </span>
+                </>
+              )}
               <label
                 htmlFor="Cover Photo"
                 style={{
-                  position: "absolute",
                   cursor: "pointer",
+                  position: "absolute",
                   bottom: "15px",
                   right: "5px",
                 }}
               >
-                <IconButton
-                  aria-label="Upload Cover Photo"
-                  icon={
-                    <img
-                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
-                      alt="Upload Icon"
-                      width="25px"
-                      height="25px"
-                    />
-                  }
-                  size="sm"
-                  variant="outline"
-                  borderRadius="full"
-                  border="1px solid grey"
-                  padding={3}
+                {/* IconButton replaced with simple img for consistency */}
+                <img
+                  src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                  alt="Upload Icon"
+                  width="25px"
+                  height="25px"
                   style={{
                     backdropFilter: "blur(5px)",
                     backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  }}
-                  zIndex={-999}
-                />
-                <input
-                  type="file"
-                  id="Cover Photo"
-                  accept="image/*"
-                  onChange={(e) => handleCoverImageUpload(e)}
-                  style={{
-                    display: "none",
+                    borderRadius: "50%",
                   }}
                 />
               </label>
-            </div>
+            </Box>
             {createError && <Text color="red.500">{createError}</Text>}
 
             <FormControl>
@@ -279,7 +302,7 @@ const NewPodcast: React.FC = () => {
                   padding: "10px",
                 }}
               >
-                What kind of topics are on the Podcast?
+                Which topics are on the Podcast?
               </FormLabel>
               <Wrap spacing={4} justify="center" maxWidth={"600px"}>
                 {PodcastGenres.map((genre) => (
