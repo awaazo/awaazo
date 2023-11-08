@@ -62,6 +62,14 @@ export interface PodcastCreateRequest {
   tags: string[];
 }
 
+export interface PodcastEditRequest {
+  podcastId: string;
+  name: string;
+  coverImage: File;
+  description: string;
+  tags: string[];
+}
+
 //#endregion
 
 //#region Episode Requests

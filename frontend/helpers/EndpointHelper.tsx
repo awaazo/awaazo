@@ -104,5 +104,29 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + podcastId + "/add";
   };
 
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
+  static getPodcastEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/" + podcastId;
+  };
+
+  /**
+   * Returns the Podcast delete endpoint.
+   * @returns The Podcast delete Endpoint
+   */
+  static getPodcastDeleteEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/delete?podcastId=" + podcastId;
+  };
+
+  /**
+   * Returns the Podcast edit endpoint.
+   * @returns The Podcast edit Endpoint
+   */
+  static getPodcastEditEndpoint = () => {
+    return this.getBackendAddress() + "/podcast/edit";
+  };
+
   static profileGetRequest: any;
 }

@@ -1,7 +1,15 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeAddRequest, PodcastCreateRequest } from "../utilities/Requests";
-import { BaseResponse, MyPodcastResponse } from "../utilities/Responses";
+import {
+  EpisodeAddRequest,
+  PodcastCreateRequest,
+  PodcastEditRequest,
+} from "../utilities/Requests";
+import {
+  BaseResponse,
+  MyPodcastResponse,
+  EditMyPodcastResponse,
+} from "../utilities/Responses";
 
 export default class PodcastHelper {
   static getUserProfile() {
@@ -110,6 +118,141 @@ export default class PodcastHelper {
       method: "POST",
       data: requestData,
       url: EndpointHelper.getEpisodeAddEndpoint(podcastId),
+      headers: {
+        accept: "*/*",
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastCreateRequest...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastCreateResponse...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+      };
+    }
+  };
+
+  /**
+   * Gets a podcast by podcastId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static getPodcastById = async (
+    podcastId,
+  ): Promise<EditMyPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getPodcastEndpoint(podcastId),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getPodcastById...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getPodcastById...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcast: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcast: null,
+      };
+    }
+  };
+
+  /**
+   * Deletes a podcast by podcastId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static deletePodcast = async (
+    podcastId,
+  ): Promise<EditMyPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Delete",
+      url: EndpointHelper.getPodcastDeleteEndpoint(podcastId),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following deletePodcast...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following deletePodcast...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcast: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcast: null,
+      };
+    }
+  };
+
+  /**
+   * Edits a podcast in the server.
+   * @param requestData Request data to be sent to the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastEditRequest = async (
+    requestData: PodcastEditRequest,
+  ): Promise<BaseResponse> => {
+    // Create the request options.
+    const options = {
+      method: "POST",
+      data: requestData,
+      url: EndpointHelper.getPodcastEditEndpoint(),
       headers: {
         accept: "*/*",
         "Content-Type": "multipart/form-data",

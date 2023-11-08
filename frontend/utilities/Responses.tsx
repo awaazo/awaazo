@@ -40,4 +40,8 @@ export interface MyPodcastResponse extends BaseResponse {
   myPodcasts: Podcast[];
 }
 
+export interface EditMyPodcastResponse extends BaseResponse {
+  podcast: Podcast;
+}
+
 //#endregion
