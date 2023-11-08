@@ -201,10 +201,11 @@ const NewPodcast: React.FC = () => {
               {...getRootProps()}
               border="2px dotted gray"
               borderRadius="2em"
-              p={4}
               textAlign="center"
               width="300px"
               height={"40%"}
+              padding={"1em"}
+              marginBottom={"1em"}
             >
               <input
                 {...getInputProps()}
@@ -274,7 +275,7 @@ const NewPodcast: React.FC = () => {
                 placeholder="Podcast Name"
                 value={podcastName}
                 onChange={(e) => setPodcastName(e.target.value)}
-                style={{ alignSelf: "center" }}
+                style={{ alignSelf: "center", borderRadius: "0.8em" }}
               />
             </FormControl>
 
