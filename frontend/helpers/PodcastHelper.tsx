@@ -4,11 +4,13 @@ import {
   EpisodeAddRequest,
   PodcastCreateRequest,
   PodcastEditRequest,
+  EpisodeEditRequest,
 } from "../utilities/Requests";
 import {
   BaseResponse,
   MyPodcastResponse,
-  EditMyPodcastResponse,
+  GetMyPodcastResponse,
+  GetMyEpisodeResponse,
 } from "../utilities/Responses";
 
 export default class PodcastHelper {
@@ -157,7 +159,7 @@ export default class PodcastHelper {
    */
   public static getPodcastById = async (
     podcastId,
-  ): Promise<EditMyPodcastResponse> => {
+  ): Promise<GetMyPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -258,14 +260,14 @@ export default class PodcastHelper {
     };
 
     try {
-      console.debug("Sending the following podcastCreateRequest...");
+      console.debug("Sending the following podcastEditRequest...");
       console.debug(options);
 
       console.log(options);
       // Send the request and wait for the response.
       const requestResponse = await axios(options);
 
-      console.debug("Received the following podcastCreateResponse...");
+      console.debug("Received the following podcastEditResponse...");
       console.debug(requestResponse);
 
       // Return the response.
@@ -278,6 +280,49 @@ export default class PodcastHelper {
       return {
         status: error.response.status,
         message: error.response.statusText,
+      };
+    }
+  };
+  /**
+   * Gets a episode by episodeId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static getEpisodeById = async (
+    episodeId,
+  ): Promise<GetMyEpisodeResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getPodcastEpisodeByIdEndpoint(episodeId),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getPodcastById...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getPodcastById...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        episode: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        episode: null,
       };
     }
   };
@@ -307,6 +352,53 @@ export default class PodcastHelper {
       const requestResponse = await axios(options);
 
       console.debug("Received the following deleteEpisode...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+      };
+    }
+  };
+
+  /**
+   * Edits a episode in the server.
+   * @param requestData Request data to be sent to the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastEpisodeEditRequest = async (
+    requestData: EpisodeEditRequest,
+    episodeId,
+  ): Promise<BaseResponse> => {
+    // Create the request options.
+    const options = {
+      method: "POST",
+      data: requestData,
+      url: EndpointHelper.getPodcastEpisodeEditEndpoint(episodeId),
+      headers: {
+        accept: "*/*",
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastEpisodeEditRequest...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastEpisodeEditRequest...");
       console.debug(requestResponse);
 
       // Return the response.

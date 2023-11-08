@@ -135,6 +135,14 @@ export default class EndpointHelper {
   static getPodcastEpisodeDeleteEndpoint = (episodeId) => {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/delete";
   };
+
+  /**
+   * Returns the Episode edit endpoint.
+   * @returns The Episode edit Endpoint
+   */
+  static getPodcastEpisodeByIdEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/episode/" + episodeId;
+  };
   /**
    * Returns the Episode edit endpoint.
    * @returns The Episode edit Endpoint
