@@ -85,8 +85,9 @@ const Episode = ({ episode }) => {
 
   return (
     <Flex
-      p={4}
-      mt={4}
+      paddingTop={5}
+      paddingBottom={5}
+      mt={3}
       width="100%"
       borderRadius="15px"
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
@@ -97,9 +98,10 @@ const Episode = ({ episode }) => {
     >
       <Box position="relative" mr={5}>
         <Image
-          boxSize={isMobile ? "90px" : "125px"}
+          boxSize={isMobile ? "0px" : "125px"}
           src={episode.thumbnailUrl}
           borderRadius="10%"
+          marginLeft="20px"
           mt={1}
         />
       </Box>
@@ -125,7 +127,8 @@ const Episode = ({ episode }) => {
           fontSize="sm"
           color={useColorModeValue("gray.500", "gray.400")}
         >
-          <Text>{episode.description}</Text>
+          {isMobile ? null : <Text>{episode.description}</Text>}
+
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
             Duration: {formatDuration(episode.duration)}
           </Text>
@@ -156,6 +159,7 @@ const Episode = ({ episode }) => {
               fontSize={isMobile ? "2xl" : "3xl"}
               rounded={"full"}
               opacity={0.7}
+              marginRight={5}
               color={colorMode === "dark" ? "white" : "black"}
               aria-label="Delete Episode"
               icon={<Icon as={MdDelete} />}
