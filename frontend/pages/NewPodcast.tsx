@@ -252,20 +252,7 @@ const NewPodcast: React.FC = () => {
                   bottom: "15px",
                   right: "5px",
                 }}
-              >
-                {/* IconButton replaced with simple img for consistency */}
-                <img
-                  src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
-                  alt="Upload Icon"
-                  width="25px"
-                  height="25px"
-                  style={{
-                    backdropFilter: "blur(5px)",
-                    backgroundColor: "rgba(0, 0, 0, 0.4)",
-                    borderRadius: "50%",
-                  }}
-                />
-              </label>
+              ></label>
             </Box>
             {createError && <Text color="red.500">{createError}</Text>}
 
