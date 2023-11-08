@@ -165,7 +165,9 @@ const MyPodcasts = () => {
             <Text mt={2}>Create a Podcast</Text>
           </Flex>
         </Flex>
-        <MyPodcast podcastId={selectedPodcastId} />
+        {selectedPodcastId !== null && (
+          <MyPodcast podcastId={selectedPodcastId} />
+        )}
       </Box>
     </>
   );

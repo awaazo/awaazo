@@ -278,7 +278,7 @@ export default function MyPodcast({ podcastId }) {
           ))}
         </>
       </VStack>
-      ;{/* Modal for editing a podcast */}
+      {/* Modal for editing a podcast */}
       <Modal isOpen={isModalPodcastOpen} onClose={closeEditPodcastModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent
@@ -306,7 +306,6 @@ export default function MyPodcast({ podcastId }) {
           </ModalBody>
         </ModalContent>
       </Modal>
-      ;
     </>
   );
 }
