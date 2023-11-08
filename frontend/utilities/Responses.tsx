@@ -41,14 +41,3 @@ export interface UserProfileResponse extends BaseResponse{
 }
 
 //#endregion
-
-export interface Comment {
-    episodeId: string;
-    replyToCommentId?: string;
-    text: string;
-    // ... any other properties of a comment
-}
-
-export interface CommentsResponse extends BaseResponse {
-    comments: Comment[];
-}

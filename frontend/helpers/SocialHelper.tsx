@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BaseResponse, CommentsResponse } from "../utilities/Responses";
+import { BaseResponse } from "../utilities/Responses";
 import EndpointHelper from "./EndpointHelper";
 
 export interface CommentRequest {
@@ -15,7 +15,7 @@ export default class SocialHelper {
      * @param requestData Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static postComment = async (requestData: CommentRequest): Promise<BaseResponse> => {
+    public static postComment = async (episodeOrCommentId, requestData: CommentRequest): Promise<BaseResponse> => {
         const dataWithTemporaryEpisodeId = {
             ...requestData,
             episodeId: requestData.episodeId || 'tempEpisodeId' // Replace 'tempEpisodeId' with a valid ID if needed
@@ -24,7 +24,7 @@ export default class SocialHelper {
         const options = {
             method: 'POST',
             data: dataWithTemporaryEpisodeId,
-            url: EndpointHelper.getCommentEndpoint(),
+            url: EndpointHelper.getCommentEndpoint(episodeOrCommentId),
             headers: {
                 accept: '*/*',
                 'Content-Type': 'application/json'
@@ -57,10 +57,10 @@ export default class SocialHelper {
      * Gets comments for an episode from the server.
      * @returns A CommentsResponse object with the server's response.
      */
-    public static getEpisodeComments = async (): Promise<CommentsResponse> => {
+    public static getEpisodeComments = async (episodeOrCommentId) => {
         const options = {
             method: 'GET',
-            url: EndpointHelper.getEpisodeCommentEndpoint(),
+            url: EndpointHelper.getEpisodeCommentEndpoint(episodeOrCommentId),
             headers: {
                 accept: '*/*',
             },
@@ -90,10 +90,10 @@ export default class SocialHelper {
      * Gets user comments from the server.
      * @returns A CommentsResponse object with the server's response.
      */
-    public static getUserComments = async (): Promise<CommentsResponse> => {
+    public static getUserComments = async (episodeOrCommentId)=> {
         const options = {
             method: 'GET',
-            url: EndpointHelper.getUserCommentsEndpoint(),
+            url: EndpointHelper.getUserCommentsEndpoint(episodeOrCommentId),
             headers: {
                 accept: '*/*',
             },
@@ -124,10 +124,10 @@ export default class SocialHelper {
          * @param commentId The ID of the comment to be liked.
          * @returns A BaseResponse object with the server's response.
          */
-        public static likeComment = async (commentId: string): Promise<BaseResponse> => {
+        public static likeComment = async (episodeOrCommentId): Promise<BaseResponse> => {
             const options = {
             method: 'POST', // Assuming liking is a POST request
-            url: `${EndpointHelper.getLikeEndpoint()}?commentId=${commentId}`,
+            url: `${EndpointHelper.getLikeEndpoint(episodeOrCommentId)}?commentId=${episodeOrCommentId}`,
             headers: {
                 accept: '*/*',
             },
@@ -135,7 +135,7 @@ export default class SocialHelper {
             };
 
             try {
-            console.debug(`Liking comment with ID: ${commentId}`);
+            console.debug(`Liking comment with ID: ${episodeOrCommentId}`);
             const requestResponse = await axios(options);
             return {
                 status: requestResponse.status,
@@ -154,10 +154,10 @@ export default class SocialHelper {
         * @param commentId The ID of the comment to be liked.
         * @returns A BaseResponse object with the server's response.
         */
-        public static unlikeComment = async (commentId: string): Promise<BaseResponse> => {
+        public static unlikeComment = async (episodeOrCommentId, ): Promise<BaseResponse> => {
             const options = {
             method: 'DELETE', 
-            url: `${EndpointHelper.getUnlikeEndpoint()}?commentId=${commentId}`,
+            url: `${EndpointHelper.getUnlikeEndpoint(episodeOrCommentId)}?commentId=${episodeOrCommentId}`,
             headers: {
                 accept: '*/*',
             },
@@ -165,7 +165,7 @@ export default class SocialHelper {
             };
 
             try {
-            console.debug(`Unliking comment with ID: ${commentId}`);
+            console.debug(`Unliking comment with ID: ${episodeOrCommentId}`);
             const requestResponse = await axios(options);
             return {
                 status: requestResponse.status,
@@ -184,10 +184,10 @@ export default class SocialHelper {
      * @param commentId The ID of the comment to be deleted.
      * @returns A BaseResponse object with the server's response.
      */
-    public static deleteComment = async (commentId: string): Promise<BaseResponse> => {
+    public static deleteComment = async (episodeOrCommentId, commentId: string): Promise<BaseResponse> => {
         const options = {
             method: 'DELETE',
-            url: `${EndpointHelper.getDeleteCommentEndpoint()}?commentId=${commentId}`,
+            url: `${EndpointHelper.getDeleteCommentEndpoint(episodeOrCommentId)}?commentId=${commentId}`,
             headers: {
                 accept: '*/*',
             },

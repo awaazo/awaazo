@@ -79,53 +79,55 @@ export default class EndpointHelper {
     static getProfileGetEndpoint = () => {
         return this.getBackendAddress() + "/profile/get";
     }
-  static profileGetRequest: any;
+  
 
     /**
      * Returns the Comment endpoint.
      * @returns The Comment API Endpoint
      */
-    static getCommentEndpoint = () => {
-      return this.getBackendAddress() + "/social/comment";
+    static getCommentEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() + "/social" +episodeOrCommentId + "/comment";
   };
 
   /**
    * Returns the Get Episode Comment endpoint.
    * @returns The Get Episode Comment API Endpoint
    */
-  static getEpisodeCommentEndpoint = () => {
-      return this.getBackendAddress() + "/social/getEpisodeComment";
+  static getEpisodeCommentEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() + "/social" +episodeOrCommentId + "/comment";
   };
 
   /**
    * Returns the Get User Comments endpoint.
    * @returns The Get User Comments API Endpoint
    */
-  static getUserCommentsEndpoint = () => {
-      return this.getBackendAddress() + "/social/getUserComments";
+  static getUserCommentsEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() + "/social" +episodeOrCommentId + "/comment";
   };
 
   /**
    * Returns the Delete Comment endpoint.
    * @returns The Delete Comment API Endpoint
    */
-  static getDeleteCommentEndpoint = () => {
-      return this.getBackendAddress() + "/social/deleteComment";
+  static getDeleteCommentEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() + "/social" +episodeOrCommentId + "/delete";
   };
 
   /**
    * Returns the Like endpoint.
    * @returns The Like API Endpoint
    */
-  static getLikeEndpoint = () => {
-      return this.getBackendAddress() + "/social/like";
+  static getLikeEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() +  "/social/" + episodeOrCommentId + "/like";
   };
 
   /**
    * Returns the Unlike endpoint.
    * @returns The Unlike API Endpoint
    */
-  static getUnlikeEndpoint = () => {
-      return this.getBackendAddress() + "/social/unlike";
+  static getUnlikeEndpoint = (episodeOrCommentId) => {
+      return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/unlike";
   };
+
+  static profileGetRequest: any;
 }
