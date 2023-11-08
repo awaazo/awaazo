@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231103214610_fifthMigration")]
-    partial class fifthMigration
+    [Migration("20231107193441_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,6 +206,52 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("MediaLinks");
+                });
+
+            modelBuilder.Entity("Backend.Models.Playlist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Playlists");
+                });
+
+            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PlayerlistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PlaylistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.ToTable("PlaylistElements");
                 });
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
@@ -545,6 +591,13 @@ namespace Backend.Migrations
                     b.Navigation("Annotation");
                 });
 
+            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+                {
+                    b.HasOne("Backend.Models.Playlist", null)
+                        .WithMany("Elements")
+                        .HasForeignKey("PlaylistId");
+                });
+
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.HasOne("Backend.Models.User", "Podcaster")
@@ -630,6 +683,11 @@ namespace Backend.Migrations
                     b.Navigation("Bookmarks");
 
                     b.Navigation("Sponsors");
+                });
+
+            modelBuilder.Entity("Backend.Models.Playlist", b =>
+                {
+                    b.Navigation("Elements");
                 });
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
