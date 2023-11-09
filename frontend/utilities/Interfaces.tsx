@@ -1,8 +1,9 @@
 export interface Podcast {
   id: string;
-  coverArt: string;
+  coverArtUrl: string;
+  name: string;
   podcasterId: string;
-  podcaster: string; // redundant, remove later 
+  podcaster: string; // redundant, remove later
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -17,7 +18,7 @@ export interface Episode {
   id: string;
   podcastId: string;
   podcaster: string;
-  coverArt: string;
+  thumbnailUrl: string;
   episodeName: string;
   description: string;
   duration: number;
@@ -37,7 +38,7 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
-};
+}
 
 export interface Section {
   id: string;
@@ -90,7 +91,7 @@ export interface Bookmark {
 }
 
 export interface TranscriptLine {
-  timestamp: number; 
+  timestamp: number;
   text: string;
   speaker: string;
 }
@@ -163,7 +164,7 @@ export interface UserProfile {
   gender: string;
 }
 
-export interface UserMenuInfo{
+export interface UserMenuInfo {
   id: string;
   username: string;
   avatarUrl: string;
