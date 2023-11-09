@@ -125,6 +125,7 @@ export default function MyPodcast({ podcastId }) {
         }
         backdropFilter={"blur(50px)"}
         dropShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"}
+        minHeight={"200px"}
       >
         <Flex justify="space-between" align="center" w="full">
           <Wrap align="center" spacing={4}>
@@ -291,7 +292,6 @@ export default function MyPodcast({ podcastId }) {
             <Box
               p={4}
               mt={"2em"}
-              height={"500px"}
               width={"25%"}
               borderWidth="1px"
               borderRadius="1em"
