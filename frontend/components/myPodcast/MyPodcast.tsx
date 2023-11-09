@@ -220,6 +220,7 @@ export default function MyPodcast({ podcastId }) {
               <DeleteIcon
                 w={isMobile === true ? "5" : "6"}
                 h={isMobile === false ? "5" : "6"}
+                color={colorMode === "dark" ? "#FF6666" : "#FF0000"}
               />
             </IconButton>
           </div>
