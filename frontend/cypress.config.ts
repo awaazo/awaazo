@@ -3,7 +3,7 @@ import { defineConfig } from "cypress";
 export default defineConfig({
   e2e: {
     experimentalStudio: true,
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://localhost:3500",
     specPattern:
     [
       "cypress/e2e/**/Register.cy.tsx","cypress/e2e/**/Login.cy.tsx","cypress/e2e/**/Logout.cy.tsx",
