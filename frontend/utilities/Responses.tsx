@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { UserMenuInfo, UserProfile } from "./Interfaces";
+import { UserMenuInfo, UserProfile, PodcastReview, PodcastRating } from "./Interfaces";
 
 export interface BaseResponse{
     status: number;
@@ -40,4 +40,15 @@ export interface UserProfileResponse extends BaseResponse{
     userProfile: UserProfile;
 }
 
+//#endregion
+
+
+//#region Podcast Rating Responses
+export interface PodcastRatingResponse extends BaseResponse{
+    podcastRating: PodcastRating;
+}
+
+export interface PodcastReviewResponse extends BaseResponse{
+    podcastReview: PodcastReview;
+}
 //#endregion

@@ -1,22 +1,22 @@
 export interface Podcast {
   id: string;
-  coverArt: string;
-  podcasterId: string;
-  podcaster: string; // redundant, remove later 
+  name: string;
   description: string;
+  coverArtUrl: string;
+  podcasterId: string;
   tags: string[];
   isExplicit: boolean;
   type: "real" | "ai-generated";
-  creationDate: Date;
   episodes: Episode[];
-  averageRating?: number;
-  monthlyListeners: number;
+  creationDate: Date;
+  averageRating: number;
+  totalRaings: number;
+  ratings: string[];
 }
 
 export interface Episode {
   id: string;
   podcastId: string;
-  podcaster: string;
   coverArt: string;
   episodeName: string;
   description: string;
@@ -131,7 +131,16 @@ export interface PodcastRating {
   id: string;
   userId: string;
   podcastId: string;
-  rating: number;
+  ratings: number[];
+  averageRating: number;
+  timestamp: Date;
+}
+
+export interface PodcastReview {
+  id: string;
+  userId: string;
+  podcastId: string;
+  review: string;
   timestamp: Date;
 }
 

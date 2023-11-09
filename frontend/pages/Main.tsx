@@ -5,8 +5,20 @@ import ForYouSection from "../components/home/ForYouSection";
 import ContinueListeningSection from "../components/home/ContinueListening";
 import ExploreGenresSection from "../components/home/ExploreGenres";
 import { podcasts, episodes } from "../utilities/SampleData";
+import RatingComponent from "../components/rating/ratingComponent";   
+
+
+
+ 
+
+
+
+
 
 const Main = () => {
+
+   // Replace 'test-podcast-id' with an actual ID from your backend
+   const testPodcastId = 'd919f1d4-d567-44bc-9909-5b0b8adcdcf3';
   return (
     <>
       {/* Navbar */}
@@ -20,6 +32,10 @@ const Main = () => {
           <Text fontSize="xl" fontWeight="bold" ml={3} mt={3}>
             For You
           </Text>
+          <div>
+      <h1>Podcast Rating Test</h1>
+      <RatingComponent podcastId={testPodcastId} />
+    </div>
           <Box overflowY="auto" overflowX="hidden" className="no-scrollbar" height="calc(100vh - 60px - 80px)">
             <ForYouSection episodes={episodes} />
           </Box>

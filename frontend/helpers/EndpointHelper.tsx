@@ -70,7 +70,33 @@ export default class EndpointHelper {
      */
     static getProfileEditEndpoint = () => {
         return this.getBackendAddress() + "/profile/edit";
+    };
+
+    /**
+     * Returns the Podcast Rating and Reviews endpoint.
+     * @returns The Podcast Rating Endpoint
+     */
+
+    static getPodcastRatingEndpoint = () => {
+        return this.getBackendAddress() + "/social/rating";
     }
+
+    static getPodcastRatingDeleteEndpoint = () => {
+        return this.getBackendAddress() + "/social/deleteRating";
+    }
+
+    static getPodcastReviewEndpoint = () => {
+        return this.getBackendAddress() + "/social/review";
+    }
+
+    static getPodcastReviewDeleteEndpoint = () => {
+        return this.getBackendAddress() + "/social/deleteReview";
+    }
+
+    static getPodcastEndpoint = () => {
+      return this.getBackendAddress() + "/podcast/myPodcasts";
+    }
+
 
     /**
      * Returns the Profile Get endpoint.

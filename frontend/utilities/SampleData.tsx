@@ -97,7 +97,9 @@ const episodeTemplate: Episode = {
 };
 
 export const episodes: Episode[] = [
-  ...Array(10).fill(episodeTemplate).map((ep, idx) => ({ ...ep, id: `episode${idx + 3}` }))
+  ...Array(10)
+  .fill(episodeTemplate)
+  .map((ep, idx) => ({ ...ep, id: `episode${idx + 3}` })),
 ];
 
 episodes.forEach(episode => {
