@@ -247,6 +247,7 @@ export default function MyPodcast({ podcastId }) {
                 backdropFilter: "blur(10px)",
                 borderRadius: "1em",
                 padding: "1em",
+                marginTop: "1em",
                 outline: "2px solid rgba(255, 255, 255, 0.1)",
                 marginBottom: "2em",
                 wordSpacing: "0.5em",
@@ -303,7 +304,7 @@ export default function MyPodcast({ podcastId }) {
             <Box
               p={4}
               mt={"2em"}
-              width={"25%"}
+              width={"30%"}
               padding={"1em"}
               _focus={{
                 boxShadow: "none",
