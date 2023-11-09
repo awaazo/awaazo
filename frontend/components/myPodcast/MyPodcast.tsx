@@ -293,8 +293,6 @@ export default function MyPodcast({ podcastId }) {
               p={4}
               mt={"2em"}
               width={"25%"}
-              borderWidth="1px"
-              borderRadius="1em"
               padding={"1em"}
               _focus={{
                 boxShadow: "none",
