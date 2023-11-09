@@ -22,37 +22,36 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
-import PodcastHelper from "../helpers/PodcastHelper";
-import AuthHelper from "../helpers/AuthHelper";
-import Navbar from "../components/shared/Navbar";
-import { AddIcon } from "@chakra-ui/icons";
+import PodcastHelper from "../../helpers/PodcastHelper";
 import router from "next/router";
-import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
-import { EpisodeAddRequest } from "../utilities/Requests";
-import LogoWhite from "../public/logo_white.svg";
+import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
+import { EpisodeEditRequest } from "../../utilities/Requests";
 
-const CreateEpisode = () => {
+export default function EditEpisodeForm({ episode }) {
+  useEffect(() => {
+    PodcastHelper.getEpisodeById(episode.id).then((res) => {
+      if (res.status == 200) {
+        setCoverImage(res.episode.thumbnailUrl);
+        setEpisodeName(res.episode.episodeName);
+        setDescription(res.episode.description);
+        setIsExplicit(res.episode.isExplicit);
+      } else {
+        setEditError("Episodes cannot be fetched");
+      }
+    });
+  }, [episode.id]);
   // Page refs
-  const loginPage = "/auth/Login";
   const myPodcastsPage = "/MyPodcasts";
 
-  // Current User
-  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
-
-  // podcasts data
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-
   // Form errors
-  const [addError, setAddError] = useState("");
+  const [editError, setEditError] = useState("");
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
-  // DELETE WHEN BACKEND UPDATES REQUEST FOR ADD EPISODE
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const handleCoverImageUpload = (e: FormEvent) => {
@@ -60,26 +59,6 @@ const CreateEpisode = () => {
     setCoverImage(URL.createObjectURL((e.target as any).files[0]));
     e.preventDefault();
   };
-
-  useEffect(() => {
-    // Check to make sure the user has logged in
-    AuthHelper.authMeRequest().then((res) => {
-      // If logged in, set user, otherwise redirect to login page
-      if (res.status == 200) {
-        setUser(res.userMenuInfo);
-        PodcastHelper.podcastMyPodcastsGet().then((res2) => {
-          // If logged in, set user, otherwise redirect to login page
-          if (res2.status == 200) {
-            setPodcasts(res2.myPodcasts);
-          } else {
-            setAddError("Podcasts cannot be fetched");
-          }
-        });
-      } else {
-        window.location.href = loginPage;
-      }
-    });
-  }, [router]);
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -89,169 +68,44 @@ const CreateEpisode = () => {
 
   const { colorMode } = useColorMode();
 
-  const handlePodcastSelect = (podcast) => {
-    setSelectedPodcast(podcast);
-  };
-
   /**
    * Handles form submission
    * @param e Click event
    */
-  const handleAdd = async (e: FormEvent) => {
+  const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (selectedPodcast == null) {
-      setAddError("Please select the Podcast you wish to upload to");
+    // Create request object
+    const request: EpisodeEditRequest = {
+      audioFile: file,
+      description: description,
+      thumbnail: coverImageFile,
+      isExplicit: isExplicit,
+      episodeName: episodeName,
+    };
+
+    // Send the request
+    const response = await PodcastHelper.podcastEpisodeEditRequest(
+      request,
+      episode.id,
+    );
+    console.log(response);
+
+    if (response.status === 200) {
+      // Success, go to my podcasts page
+      window.location.href = myPodcastsPage;
     } else {
-      // Create request object
-      const request: EpisodeAddRequest = {
-        audioFile: file,
-        description: description,
-        thumbnail: coverImageFile,
-        isExplicit: isExplicit,
-        episodeName: episodeName,
-      };
-
-      // Send the request
-      const response = await PodcastHelper.episodeAddRequest(
-        request,
-        selectedPodcast.id,
-      );
-      console.log(response);
-
-      if (response.status === 200) {
-        // Success, go to my podcasts page
-        window.location.href = myPodcastsPage;
-      } else {
-        // Handle error here
-        setAddError("Episode File, Name and Description Required.");
-      }
+      // Handle error here
+      setEditError("Episode File, Name and Description Required.");
     }
-  };
-
-  // Function to navigate to create podcast page
-  const navigateToCreatePodcast = () => {
-    router.push("/NewPodcast");
   };
 
   return (
     <>
-      <Navbar />
-      <Center>
-        <VStack mt={"1em"}>
-          <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
-            Upload Episode
-          </Heading>
-          <Text mb={"1em"}>Choose a Podcast</Text>
-        </VStack>
-      </Center>
-
-      <Box display="flex" width="100%" justifyContent="center">
-        <Flex
-          direction="row"
-          wrap="wrap"
-          justifyContent="center"
-          alignItems="center"
-        >
-          {podcasts.map((podcast) => (
-            <Flex
-              key={podcast.id}
-              direction="column"
-              alignItems="center"
-              bg={
-                selectedPodcast && selectedPodcast.id === podcast.id
-                  ? colorMode === "light"
-                    ? "#00000010"
-                    : "#FFFFFF10"
-                  : "transparent"
-              }
-              borderRadius="1em"
-              cursor="pointer"
-              outline={
-                selectedPodcast && selectedPodcast.id === podcast.id
-                  ? "2px solid #3182CE"
-                  : "none"
-              }
-              onClick={() => handlePodcastSelect(podcast)}
-              p={2}
-              m={2}
-            >
-              <Image
-                src={podcast.coverArtUrl}
-                alt={podcast.name}
-                boxSize="100px"
-                borderRadius="2em"
-                objectFit="cover"
-                boxShadow="lg"
-                outline="2px solid #FFFFFF80"
-              />
-              <Text mt={2}>
-                {" "}
-                {podcast.name.length > 18
-                  ? `${podcast.name.substring(0, 18)}...`
-                  : podcast.name}
-              </Text>
-            </Flex>
-          ))}
-
-          {/* Create a Podcast Option */}
-          <Flex
-            direction="column"
-            alignItems="center"
-            borderRadius="1em"
-            cursor="pointer"
-            outline="none"
-            onClick={navigateToCreatePodcast}
-            p={2}
-            m={2}
-            bg="transparent"
-          >
-            <Box
-              boxSize="100px"
-              borderRadius="2em"
-              border="2px dashed gray"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <AddIcon w={8} h={8} />
-            </Box>
-            <Text mt={2}>Create a Podcast</Text>
-          </Flex>
-        </Flex>
-      </Box>
-
       {/* Form Container */}
       <Box display="flex" justifyContent="center">
         <VStack spacing={5} align="center" p={5}>
-          {/* Form Container */}
-          {/* Displaying Selected Podcast Title */}
-          {selectedPodcast && (
-            <Text
-              fontSize="xl"
-              fontWeight="normal"
-              bg={
-                colorMode === "light"
-                  ? "rgba(0, 0, 0, 0.1)"
-                  : "rgba(255, 255, 255, 0.1)"
-              } // Slight transparency
-              pl={5} // Padding for better visual spacing
-              pr={5} // Padding for better visual spacing
-              pt={2} // Padding for better visual spacing
-              pb={2} // Padding for better visual spacing
-              mb={5} // Margin for better visual spacing
-              borderRadius="5em" // Rounded corners
-              outline={
-                colorMode === "light"
-                  ? "1px solid #000000"
-                  : "1px solid #FFFFFF"
-              } // Black or white border
-              fontFamily={"Avenir Next"}
-            >
-              {`${selectedPodcast.name}`}
-            </Text>
-          )}
-          <form onSubmit={handleAdd}>
+          <form onSubmit={handleUpdate}>
             <div
               style={{
                 position: "relative",
@@ -315,7 +169,7 @@ const CreateEpisode = () => {
                 />
               </label>
             </div>
-            {addError && <Text color="red.500">{addError}</Text>}
+            {editError && <Text color="red.500">{editError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
               <FormControl>
@@ -370,7 +224,7 @@ const CreateEpisode = () => {
                 )}
               </Box>
 
-              {/* Upload Button */}
+              {/* Update Button */}
               <Button
                 id="createBtn"
                 type="submit"
@@ -390,7 +244,7 @@ const CreateEpisode = () => {
                   animation: "Gradient 10s infinite linear",
                 }}
               >
-                Upload
+                Update
                 <style jsx>{`
                   @keyframes Gradient {
                     0% {
@@ -405,12 +259,11 @@ const CreateEpisode = () => {
                   }
                 `}</style>
               </Button>
+              {/* Update Button */}
             </VStack>
           </form>
         </VStack>
       </Box>
     </>
   );
-};
-
-export default CreateEpisode;
+}

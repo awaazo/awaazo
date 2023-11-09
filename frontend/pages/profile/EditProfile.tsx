@@ -24,8 +24,6 @@ import { UserProfile } from "../../utilities/Interfaces";
 import { forEach, set } from "lodash";
 import { Router, useRouter } from "next/router";
 
-
-
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -40,7 +38,9 @@ const EditProfile: React.FC = () => {
   const [avatarFile, setAvatarFile] = useState<File>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
-  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(
+    undefined,
+  );
 
   const PodcastGenres = [
     "Technology",
@@ -61,28 +61,26 @@ const EditProfile: React.FC = () => {
     "Food",
   ];
 
-  // Router 
+  // Router
   const router = useRouter();
 
   useEffect(() => {
-
     // Get the user profile
     UserProfileHelper.profileGetRequest().then((response) => {
       if (response.status == 200) {
-        setUserProfile(response.userProfile)
-        setUsername(response.userProfile.username)
-        setDisplayName(response.userProfile.displayName)
-        setBio(response.userProfile.bio)
-        setTwitterLink(response.userProfile.twitterUrl)
-        setLinkedinLink(response.userProfile.linkedInUrl)
-        setGithubLink(response.userProfile.githubUrl)
-        setWebsiteUrl(response.userProfile.websiteUrl)
-        setAvatar(response.userProfile.avatarUrl)
-      }
-      else {
+        setUserProfile(response.userProfile);
+        setUsername(response.userProfile.username);
+        setDisplayName(response.userProfile.displayName);
+        setBio(response.userProfile.bio);
+        setTwitterLink(response.userProfile.twitterUrl);
+        setLinkedinLink(response.userProfile.linkedInUrl);
+        setGithubLink(response.userProfile.githubUrl);
+        setWebsiteUrl(response.userProfile.websiteUrl);
+        setAvatar(response.userProfile.avatarUrl);
+      } else {
         router.push("/auth/login");
       }
-    })
+    });
   }, [router]);
 
   /**
@@ -92,7 +90,7 @@ const EditProfile: React.FC = () => {
   const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
 
-    console.log("Update Clicked")
+    console.log("Update Clicked");
 
     // Create the request
     const request: UserProfileEditRequest = {
@@ -104,32 +102,31 @@ const EditProfile: React.FC = () => {
       twitterUrl: twitterLink != "" ? twitterLink : null,
       linkedInUrl: linkedinLink != "" ? linkedinLink : null,
       githubUrl: githubLink != "" ? githubLink : null,
-      websiteUrl: websiteUrl != "" ? websiteUrl: null
-    }
+      websiteUrl: websiteUrl != "" ? websiteUrl : null,
+    };
 
     // Get the Response
     const response = await UserProfileHelper.profileEditRequest(request);
 
     // If Profile is saved, return to profile page
     if (response.status === 200) {
-      router.push('/profile/MyProfile');
+      router.push("/profile/MyProfile");
+    } else {
+      setFormError(response.message);
     }
-    else {
-      setFormError(response.message)
-    }
-
-  }
+  };
 
   /**
    * Handles uploading an avatar
    * @param e FormEvent
    */
   const handleAvatarUpload = (e: FormEvent) => {
-    setAvatarFile((e.target as any).files[0])
-    setAvatar(URL.createObjectURL((e.target as any).files[0]))
+    setAvatarFile((e.target as any).files[0]);
+    setAvatar(URL.createObjectURL((e.target as any).files[0]));
     e.preventDefault();
   };
 
+  //test
   // Add the given functions
   //test
   const getRandomDarkColor = () => {
@@ -147,10 +144,10 @@ const EditProfile: React.FC = () => {
     return `linear-gradient(45deg, ${color1}, ${color2})`;
   };
 
-  const handleInterestClick = (genre:string) => {
-    console.log(genre)
-    console.log(selectedInterests)
-    console.log(genreColors)
+  const handleInterestClick = (genre: string) => {
+    console.log(genre);
+    console.log(selectedInterests);
+    console.log(genreColors);
     if (selectedInterests.includes(genre)) {
       setSelectedInterests(selectedInterests.filter((item) => item !== genre));
     } else {
@@ -160,7 +157,6 @@ const EditProfile: React.FC = () => {
       }
     }
   };
-
 
   const editPage = () => (
     <>
@@ -184,13 +180,10 @@ const EditProfile: React.FC = () => {
           Edit Profile
         </Text>
         {/* // username here*/}
-        <Text>
-          @{userProfile.username}
-        </Text>
+        <Text>@{userProfile.username}</Text>
 
         <form onSubmit={handleProfileUpdate}>
           <Stack spacing={6} align={"center"}>
-
             {/* Avatar Section */}
             <div
               style={{
@@ -201,7 +194,10 @@ const EditProfile: React.FC = () => {
               }}
             >
               <img
-                src={avatar || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
+                src={
+                  avatar ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
                 alt="Avatar"
                 style={{
                   width: "150px",
@@ -211,10 +207,25 @@ const EditProfile: React.FC = () => {
                   position: "relative",
                 }}
               />
-              <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right: "5px" }}>
+              <label
+                htmlFor="avatar"
+                style={{
+                  position: "absolute",
+                  cursor: "pointer",
+                  bottom: "15px",
+                  right: "5px",
+                }}
+              >
                 <IconButton
                   aria-label="Upload avatar"
-                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  icon={
+                    <img
+                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                      alt="Upload Icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  }
                   size="sm"
                   variant="outline"
                   borderRadius="full"
@@ -222,7 +233,7 @@ const EditProfile: React.FC = () => {
                   padding={3}
                   style={{
                     backdropFilter: "blur(5px)",
-                    backgroundColor: "rgba(0, 0, 0, 0.4)"
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
                   }}
                   zIndex={-999}
                 />
@@ -230,13 +241,11 @@ const EditProfile: React.FC = () => {
                   type="file"
                   id="avatar"
                   accept="image/*"
-
                   onChange={(e) => handleAvatarUpload(e)}
                   style={{ display: "none" }}
                 />
               </label>
             </div>
-
 
             {/* Personal Details Section */}
             {formError && <Text color="red.500">{formError}</Text>}
@@ -287,10 +296,12 @@ const EditProfile: React.FC = () => {
 
             {/* Interests Section */}
             <FormControl>
-              <FormLabel style={{
-                textAlign: "center",
-                padding: "10px",
-              }}>
+              <FormLabel
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                }}
+              >
                 What kind of topics do you like?
               </FormLabel>
               <Wrap spacing={4} justify="center" maxWidth={"600px"}>
@@ -298,7 +309,9 @@ const EditProfile: React.FC = () => {
                   <WrapItem key={genre}>
                     <Button
                       size="sm"
-                      variant={selectedInterests.includes(genre) ? "solid" : "outline"}
+                      variant={
+                        selectedInterests.includes(genre) ? "solid" : "outline"
+                      }
                       colorScheme="white"
                       backgroundColor={
                         selectedInterests.includes(genre)
@@ -350,9 +363,7 @@ const EditProfile: React.FC = () => {
                 />
               </InputGroup>
               <InputGroup mt={3}>
-                <InputLeftAddon
-                  children={<Icon as={FaGithub} boxSize={4} />}
-                />
+                <InputLeftAddon children={<Icon as={FaGithub} boxSize={4} />} />
                 <Input
                   type="url"
                   placeholder="GitHub URL"
@@ -375,27 +386,27 @@ const EditProfile: React.FC = () => {
               padding={"20px"}
               outline={"1px solid rgba(255, 255, 255, 0.6)"}
               style={{
-                background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
-                backgroundSize: '300% 300%',
-                animation: 'Gradient 10s infinite linear'
+                background:
+                  "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                backgroundSize: "300% 300%",
+                animation: "Gradient 10s infinite linear",
               }}
             >
               Update Profile
               <style jsx>{`
-              @keyframes Gradient {
-                0% {
-                  background-position: 100% 0%;
+                @keyframes Gradient {
+                  0% {
+                    background-position: 100% 0%;
+                  }
+                  50% {
+                    background-position: 0% 100%;
+                  }
+                  100% {
+                    background-position: 100% 0%;
+                  }
                 }
-                50% {
-                  background-position: 0% 100%;
-                }
-                100% {
-                  background-position: 100% 0%;
-                }
-              }
-            `}</style>
+              `}</style>
             </Button>
-
           </Stack>
         </form>
       </Box>
@@ -403,11 +414,9 @@ const EditProfile: React.FC = () => {
   );
 
   // Return the page if the user is logged in
-  if(userProfile!==undefined)
-  {
+  if (userProfile !== undefined) {
     return editPage();
   }
 };
 
 export default EditProfile;
-
