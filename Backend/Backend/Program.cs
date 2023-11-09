@@ -9,6 +9,7 @@ using Backend.Services;
 using Backend.Helper;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Backend.Middlewares;
 
 namespace Backend;
 
@@ -28,7 +29,10 @@ public class Program
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+
         builder.Services.AddScoped<ISocialService, SocialService>();
+        builder.Services.AddScoped<PlaylistService>();
+        builder.Services.AddScoped<ValidateUser>();
 
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -120,6 +124,11 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
+        {
+            builder.UseMiddleware<ValidateUser>();
+        });
+        
         app.MapControllers();
 
         using (var scope = app.Services.CreateScope())
