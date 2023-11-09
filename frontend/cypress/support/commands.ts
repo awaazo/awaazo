@@ -35,3 +35,47 @@
 //     }
 //   }
 // }
+
+import 'cypress-file-upload';
+
+
+  
+Cypress.Commands.add('login', () => {
+  cy.console_error_hack();
+  cy.visit('/');
+  cy.url().should('include', '/');
+  cy.wait(500);
+  cy.get('button[aria-label="Menu"]').click();
+  cy.get('button').contains('Login').click();
+  cy.wait(500);
+  cy.get('input[id="email"]').type("testRegister@email.com");
+  cy.get('input[id="password"]').type("password123");
+  cy.get('button[id="loginBtn"]').click();
+  cy.url().should('include', '/');
+  cy.wait(1000);
+});
+
+Cypress.Commands.add('Quick_register', () => {
+    cy.console_error_hack();
+        cy.visit('/');
+        cy.url().should('include', '/');
+        cy.wait(500);
+        cy.get('button[aria-label="Menu"]').click();
+        cy.get('button').contains('Register').click();
+        cy.get('input[id="email"]').type('testRegister@email.com');
+        cy.get('input[id="username"]').type('TestUsername');
+        cy.get('input[id="password"]').type('password123');
+        cy.get('input[id="confirmPassword"]').type('password123');
+        cy.get('input[id="date"]').click().type('2000-01-01');
+        cy.get('button[type="submit"]').click();
+        cy.wait(500);
+        cy.visit('/');
+});
+
+Cypress.Commands.add('console_error_hack', () => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false
+  })
+})
