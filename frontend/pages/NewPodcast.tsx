@@ -14,6 +14,7 @@ import {
   Center,
   Heading,
   VStack,
+  Switch,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
@@ -255,7 +256,15 @@ const NewPodcast: React.FC = () => {
               ></label>
             </Box>
             {createError && <Text color="red.500">{createError}</Text>}
-
+            <Switch
+              id="explicitToggle"
+              colorScheme="purple"
+              // isChecked={isExplicit}
+              // onChange={() => setIsExplicit(!isExplicit)}
+              opacity={0.9} // Setting the opacity to 0.7 to make it slightly faded
+            >
+              AI Generated
+            </Switch>
             <FormControl>
               <Input
                 id="podcastName"
