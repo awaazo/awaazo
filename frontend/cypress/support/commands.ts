@@ -41,7 +41,6 @@ import 'cypress-file-upload';
 
   
 Cypress.Commands.add('login', () => {
-  cy.console_error_hack();
   cy.visit('/');
   cy.url().should('include', '/');
   cy.wait(500);
@@ -55,8 +54,19 @@ Cypress.Commands.add('login', () => {
   cy.wait(1000);
 });
 
+Cypress.Commands.add('logout', () => {
+  cy.visit('/');
+  cy.url().should('include', '/');
+  cy.wait(500);
+  cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+  cy.wait(500);
+  cy.get('button[aria-label="loggedInMenu"]').click();
+  cy.wait(500);
+  cy.get('button').contains('Logout').click();
+  cy.url().should('include', '/');
+});
+
 Cypress.Commands.add('Quick_register', () => {
-    cy.console_error_hack();
         cy.visit('/');
         cy.url().should('include', '/');
         cy.wait(500);
