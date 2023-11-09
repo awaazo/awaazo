@@ -76,7 +76,7 @@ const MyPodcasts = () => {
           if (res2.status == 200) {
             setPodcasts(res2.myPodcasts);
             setSelectedPodcastId(
-              res2.myPodcasts.length > 0 ? res2.myPodcasts[0].id : null,
+              res2.myPodcasts.length > 0 ? res2.myPodcasts[0].id : null
             );
           } else {
             setCreateError("Podcasts cannot be fetched");
@@ -98,14 +98,8 @@ const MyPodcasts = () => {
       <Navbar />
 
       <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
-        <Flex
-          align="center"
-          justify="space-between"
-          p={4}
-          borderBottom="1px"
-          borderColor="gray.200"
-        >
-          <Text fontSize="30px" fontWeight="bold">
+        <Flex align="center" justify="space-between" p={4}>
+          <Text fontSize="30px" fontWeight={"light"}>
             My Podcasts
           </Text>
 

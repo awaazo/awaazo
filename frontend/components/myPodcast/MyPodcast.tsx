@@ -116,8 +116,15 @@ export default function MyPodcast({ podcastId }) {
         p={4}
         mt={"2em"}
         borderWidth="1px"
-        borderRadius="2em"
+        borderRadius="1em"
         padding={"1.5em"}
+        bg={
+          colorMode === "dark"
+            ? "rgba(255, 255, 255, 0.05)"
+            : "rgba(0, 0, 0, 0.05)"
+        }
+        backdropFilter={"blur(50px)"}
+        dropShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"}
       >
         <Flex justify="space-between" align="center" w="full">
           <Wrap align="center" spacing={4}>
