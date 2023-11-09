@@ -256,7 +256,9 @@ const NewPodcast: React.FC = () => {
               ></label>
             </Box>
             {createError && <Text color="red.500">{createError}</Text>}
-            <Switch
+
+            {/* TODO: AI GENERATED SWITCH */}
+            {/* <Switch
               id="explicitToggle"
               colorScheme="purple"
               // isChecked={isExplicit}
@@ -264,7 +266,7 @@ const NewPodcast: React.FC = () => {
               opacity={0.9} // Setting the opacity to 0.7 to make it slightly faded
             >
               AI Generated
-            </Switch>
+            </Switch> */}
             <FormControl>
               <Input
                 id="podcastName"
