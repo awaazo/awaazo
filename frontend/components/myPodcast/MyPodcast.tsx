@@ -220,7 +220,7 @@ export default function MyPodcast({ podcastId }) {
                 backgroundColor: "rgba(0, 0, 0, 0.1)",
                 backdropFilter: "blur(10px)",
                 borderRadius: "1em",
-                padding: "0.5em",
+                padding: "1em",
                 outline: "2px solid rgba(255, 255, 255, 0.1)",
                 marginBottom: "0.5em",
                 marginTop: "1em",
@@ -234,7 +234,7 @@ export default function MyPodcast({ podcastId }) {
                 backgroundColor: "rgba(0, 0, 0, 0.1)",
                 backdropFilter: "blur(10px)",
                 borderRadius: "1em",
-                padding: "0.5em",
+                padding: "1em",
                 outline: "2px solid rgba(255, 255, 255, 0.1)",
                 marginBottom: "2em",
                 wordSpacing: "0.5em",
@@ -267,7 +267,7 @@ export default function MyPodcast({ podcastId }) {
                     borderColor: "rgba(158, 202, 237, 0.6)",
                   }}
                 >
-                  Create New Episode
+                  New Episode
                 </Button>
               </div>
 
@@ -307,7 +307,7 @@ export default function MyPodcast({ podcastId }) {
                   backgroundColor: "rgba(0, 0, 0, 0.1)",
                   backdropFilter: "blur(10px)",
                   borderRadius: "1em",
-                  padding: "1em",
+                  padding: "2em",
                   outline: "2px solid rgba(255, 255, 255, 0.1)",
                   marginBottom: "0.5em",
                   marginTop: "1em",
@@ -321,7 +321,7 @@ export default function MyPodcast({ podcastId }) {
                   backgroundColor: "rgba(0, 0, 0, 0.1)",
                   backdropFilter: "blur(10px)",
                   borderRadius: "1em",
-                  padding: "1em",
+                  padding: "2em",
                   marginTop: "1em",
                   outline: "2px solid rgba(255, 255, 255, 0.1)",
                   marginBottom: "2em",
@@ -362,7 +362,7 @@ export default function MyPodcast({ podcastId }) {
                     borderColor: "rgba(158, 202, 237, 0.6)",
                   }}
                 >
-                  Create New Episode
+                  New Episode
                 </Button>
               </div>
 
