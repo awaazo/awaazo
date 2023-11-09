@@ -286,10 +286,14 @@ export default function MyPodcast({ podcastId }) {
 
               {episodes.length === 0 ? (
                 <Text
+                  align={"center"}
                   fontSize="md"
-                  style={{ fontWeight: "bold", marginLeft: 20, marginTop: 25 }}
+                  style={{
+                    fontWeight: "normal",
+                    marginTop: "2em",
+                  }}
                 >
-                  This podcast has no episodes yet
+                  (This podcast has no episodes yet)
                 </Text>
               ) : (
                 episodes.map((episode, index) => (
@@ -355,10 +359,14 @@ export default function MyPodcast({ podcastId }) {
             <div style={{ flex: 1, paddingLeft: 25 }}>
               {episodes.length === 0 ? (
                 <Text
+                  align={"center"}
                   fontSize="lg"
-                  style={{ fontWeight: "bold", marginLeft: 45, marginTop: 45 }}
+                  style={{
+                    fontWeight: "normal",
+                    marginTop: "5em",
+                  }}
                 >
-                  This podcast has no episodes yet
+                  (This podcast has no episodes yet)
                 </Text>
               ) : (
                 episodes.map((episode, index) => (
