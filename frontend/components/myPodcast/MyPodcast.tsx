@@ -145,7 +145,7 @@ export default function MyPodcast({ podcastId }) {
                   }
                   px={3}
                   py={1}
-                  borderRadius="md"
+                  borderRadius="10em"
                 >
                   <Text fontSize="md">{tag}</Text>
                 </Box>
