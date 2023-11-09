@@ -152,6 +152,17 @@ export default function MyPodcast({ podcastId }) {
                 </Box>
               </WrapItem>
             ))}
+            <Button
+              onClick={navigateToCreatePage}
+              style={{
+                fontWeight: "bold",
+                marginLeft: "10px",
+                borderRadius: "10em",
+                borderColor: "rgba(158, 202, 237, 0.6)",
+              }}
+            >
+              New Episode
+            </Button>
           </Wrap>
           <div
             style={{
@@ -341,29 +352,6 @@ export default function MyPodcast({ podcastId }) {
 
             {/* Podcast mapping on the right */}
             <div style={{ flex: 1, paddingLeft: 25 }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Text
-                  fontSize="25px"
-                  style={{
-                    fontWeight: "bold",
-                    paddingLeft: 20,
-                    marginTop: "1.5em",
-                  }}
-                ></Text>{" "}
-                <Button
-                  onClick={navigateToCreatePage}
-                  style={{
-                    fontWeight: "bold",
-                    marginLeft: "10px",
-                    marginTop: "2.5em",
-                    borderRadius: "10em",
-                    borderColor: "rgba(158, 202, 237, 0.6)",
-                  }}
-                >
-                  New Episode
-                </Button>
-              </div>
-
               {episodes.length === 0 ? (
                 <Text
                   fontSize="lg"
