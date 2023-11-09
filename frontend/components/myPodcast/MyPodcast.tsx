@@ -187,7 +187,7 @@ export default function MyPodcast({ podcastId }) {
                     colorMode === "dark"
                       ? "solid 1px rgba(158, 202, 237, 0.6)"
                       : "solid 1px rgba(158, 202, 237, 0.6)",
-                  boxShadow: "0 0 15px rgba(158, 202, 237, 0.6)",
+                  // boxShadow: "0 0 15px rgba(158, 202, 237, 0.6)",
                 }}
               >
                 Edit Podcast
@@ -263,6 +263,8 @@ export default function MyPodcast({ podcastId }) {
                   style={{
                     fontWeight: "bold",
                     marginLeft: "10px",
+                    borderRadius: "10em",
+                    borderColor: "rgba(158, 202, 237, 0.6)",
                   }}
                 >
                   Create New Episode
@@ -349,15 +351,15 @@ export default function MyPodcast({ podcastId }) {
                     paddingLeft: 20,
                     marginTop: "1.5em",
                   }}
-                >
-                  Episodes:
-                </Text>{" "}
+                ></Text>{" "}
                 <Button
                   onClick={navigateToCreatePage}
                   style={{
                     fontWeight: "bold",
                     marginLeft: "10px",
                     marginTop: "2.5em",
+                    borderRadius: "10em",
+                    borderColor: "rgba(158, 202, 237, 0.6)",
                   }}
                 >
                   Create New Episode
