@@ -125,6 +125,7 @@ export default function MyPodcast({ podcastId }) {
         }
         backdropFilter={"blur(50px)"}
         dropShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"}
+        minHeight={"200px"}
       >
         <Flex justify="space-between" align="center" w="full">
           <Wrap align="center" spacing={4}>
@@ -151,6 +152,17 @@ export default function MyPodcast({ podcastId }) {
                 </Box>
               </WrapItem>
             ))}
+            <Button
+              onClick={navigateToCreatePage}
+              style={{
+                fontWeight: "bold",
+                marginLeft: "10px",
+                borderRadius: "10em",
+                borderColor: "rgba(158, 202, 237, 0.6)",
+              }}
+            >
+              New Episode
+            </Button>
           </Wrap>
           <div
             style={{
@@ -235,6 +247,7 @@ export default function MyPodcast({ podcastId }) {
                 backdropFilter: "blur(10px)",
                 borderRadius: "1em",
                 padding: "1em",
+                marginTop: "1em",
                 outline: "2px solid rgba(255, 255, 255, 0.1)",
                 marginBottom: "2em",
                 wordSpacing: "0.5em",
@@ -273,10 +286,14 @@ export default function MyPodcast({ podcastId }) {
 
               {episodes.length === 0 ? (
                 <Text
+                  align={"center"}
                   fontSize="md"
-                  style={{ fontWeight: "bold", marginLeft: 20, marginTop: 25 }}
+                  style={{
+                    fontWeight: "normal",
+                    marginTop: "2em",
+                  }}
                 >
-                  This podcast has no episodes yet
+                  (This podcast has no episodes yet)
                 </Text>
               ) : (
                 episodes.map((episode, index) => (
@@ -291,10 +308,7 @@ export default function MyPodcast({ podcastId }) {
             <Box
               p={4}
               mt={"2em"}
-              height={"500px"}
-              width={"25%"}
-              borderWidth="1px"
-              borderRadius="1em"
+              width={"30%"}
               padding={"1em"}
               _focus={{
                 boxShadow: "none",
@@ -343,35 +357,16 @@ export default function MyPodcast({ podcastId }) {
 
             {/* Podcast mapping on the right */}
             <div style={{ flex: 1, paddingLeft: 25 }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Text
-                  fontSize="25px"
-                  style={{
-                    fontWeight: "bold",
-                    paddingLeft: 20,
-                    marginTop: "1.5em",
-                  }}
-                ></Text>{" "}
-                <Button
-                  onClick={navigateToCreatePage}
-                  style={{
-                    fontWeight: "bold",
-                    marginLeft: "10px",
-                    marginTop: "2.5em",
-                    borderRadius: "10em",
-                    borderColor: "rgba(158, 202, 237, 0.6)",
-                  }}
-                >
-                  New Episode
-                </Button>
-              </div>
-
               {episodes.length === 0 ? (
                 <Text
+                  align={"center"}
                   fontSize="lg"
-                  style={{ fontWeight: "bold", marginLeft: 45, marginTop: 45 }}
+                  style={{
+                    fontWeight: "normal",
+                    marginTop: "5em",
+                  }}
                 >
-                  This podcast has no episodes yet
+                  (This podcast has no episodes yet)
                 </Text>
               ) : (
                 episodes.map((episode, index) => (
