@@ -45,31 +45,33 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231106225923_firstMigration.cs
                 name: "Likes",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-========
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => new { x.UserId, x.EpisodeId, x.CommentId });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Playlists",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> main:Backend/Backend/Migrations/20231107193441_firstMigration.cs
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231106225923_firstMigration.cs
-                    table.PrimaryKey("PK_Likes", x => new { x.UserId, x.EpisodeId, x.CommentId });
-========
                     table.PrimaryKey("PK_Playlists", x => x.Id);
->>>>>>>> main:Backend/Backend/Migrations/20231107193441_firstMigration.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -131,29 +133,6 @@ namespace Backend.Migrations
                     table.PrimaryKey("PK_PodcastFollows", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PodcastFollows_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PodcastRatings",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PodcastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Rating = table.Column<long>(type: "bigint", nullable: false),
-                    Review = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PodcastRatings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PodcastRatings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -279,6 +258,35 @@ namespace Backend.Migrations
                         principalTable: "Podcasts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PodcastRatings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PodcastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Rating = table.Column<long>(type: "bigint", nullable: false),
+                    Review = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PodcastRatings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PodcastRatings_Podcasts_PodcastId",
+                        column: x => x.PodcastId,
+                        principalTable: "Podcasts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PodcastRatings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -425,6 +433,11 @@ namespace Backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PodcastRatings_PodcastId",
+                table: "PodcastRatings",
+                column: "PodcastId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PodcastRatings_UserId",
                 table: "PodcastRatings",
                 column: "UserId");
@@ -468,7 +481,6 @@ namespace Backend.Migrations
                 name: "Bookmark");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231106225923_firstMigration.cs
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -478,11 +490,6 @@ namespace Backend.Migrations
                 name: "Likes");
 
             migrationBuilder.DropTable(
-========
-                name: "File");
-
-            migrationBuilder.DropTable(
->>>>>>>> main:Backend/Backend/Migrations/20231107193441_firstMigration.cs
                 name: "MediaLinks");
 
             migrationBuilder.DropTable(

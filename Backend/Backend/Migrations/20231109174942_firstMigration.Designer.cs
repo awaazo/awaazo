@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231106225923_firstMigration.Designer.cs
-    [Migration("20231106225923_firstMigration")]
-========
-    [Migration("20231107193441_firstMigration")]
->>>>>>>> main:Backend/Backend/Migrations/20231107193441_firstMigration.Designer.cs
+    [Migration("20231109174942_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -406,6 +402,8 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PodcastId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("PodcastRatings");
@@ -682,11 +680,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PodcastRating", b =>
                 {
+                    b.HasOne("Backend.Models.Podcast", "Podcast")
+                        .WithMany("Ratings")
+                        .HasForeignKey("PodcastId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Podcast");
 
                     b.Navigation("User");
                 });
@@ -753,6 +759,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
