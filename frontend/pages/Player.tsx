@@ -14,7 +14,12 @@ const currentEpisode = episodes[0];
 
 const componentsData = [
   {
-    component: <CoverArt imageUrl={currentEpisode.coverArt} description={currentEpisode.description} />,
+    component: (
+      <CoverArt
+        imageUrl={currentEpisode.thumbnailUrl}
+        description={currentEpisode.description}
+      />
+    ),
     isVisible: true,
     mainComponent: true,
   },
@@ -35,20 +40,22 @@ const componentsData = [
 ];
 
 const Player = () => {
-  const {
-    data: palette,
-  } = usePalette(
-    currentEpisode.coverArt, // src img
-    2, 
+  const { data: palette } = usePalette(
+    currentEpisode.thumbnailUrl, // src img
+    2,
     "hex",
     {
       crossOrigin: "Anonymous",
       quality: 10,
-    }
+    },
   );
 
-  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
-  const [currentAdditionalComponent, setCurrentAdditionalComponent] = useState<number | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<number | null>(
+    null,
+  );
+  const [currentAdditionalComponent, setCurrentAdditionalComponent] = useState<
+    number | null
+  >(null);
   const [components, setComponents] = useState<
     {
       component: React.ReactNode;
@@ -65,7 +72,10 @@ const Player = () => {
     setComponents(updatedComponents);
     setSelectedComponent(index);
 
-    if (!components[index].mainComponent && !components[index].coMainComponent) {
+    if (
+      !components[index].mainComponent &&
+      !components[index].coMainComponent
+    ) {
       setCurrentAdditionalComponent(index);
     }
   };
@@ -87,7 +97,14 @@ const Player = () => {
 
   const visibleComponents = components.filter((comp) => comp.isVisible);
   return (
-    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || "black"}>
+    <Box
+      w="100vw"
+      h="100vh"
+      display="flex"
+      flexDirection="column"
+      overflow="hidden"
+      bgColor={palette || "black"}
+    >
       <Navbar />
 
       <Grid
@@ -96,12 +113,14 @@ const Player = () => {
         gap={4}
         mt="4"
         mx="4"
-        padding="1.5rem" 
+        padding="1.5rem"
       >
         {visibleComponents.map((comp, index) => (
           <Box
             key={index}
-            gridColumn={comp.mainComponent ? { base: "span 3", md: "span 2" } : "span 1"}
+            gridColumn={
+              comp.mainComponent ? { base: "span 3", md: "span 2" } : "span 1"
+            }
             gridRow={comp.coMainComponent ? "1" : "auto"}
             w="full"
             h="full"

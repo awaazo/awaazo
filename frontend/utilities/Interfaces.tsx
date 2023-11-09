@@ -1,23 +1,24 @@
 export interface Podcast {
   id: string;
-  name: string;
-  description: string;
   coverArtUrl: string;
+  name: string;
   podcasterId: string;
+  podcaster: string; // redundant, remove later
+  description: string;
   tags: string[];
   isExplicit: boolean;
   type: "real" | "ai-generated";
-  episodes: Episode[];
   creationDate: Date;
-  averageRating: number;
-  totalRaings: number;
-  ratings: string[];
+  episodes: Episode[];
+  averageRating?: number;
+  monthlyListeners: number;
 }
 
 export interface Episode {
   id: string;
   podcastId: string;
-  coverArt: string;
+  podcaster: string;
+  thumbnailUrl: string;
   episodeName: string;
   description: string;
   duration: number;
@@ -37,7 +38,7 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
-};
+}
 
 export interface Section {
   id: string;
@@ -90,7 +91,7 @@ export interface Bookmark {
 }
 
 export interface TranscriptLine {
-  timestamp: number; 
+  timestamp: number;
   text: string;
   speaker: string;
 }
@@ -131,16 +132,7 @@ export interface PodcastRating {
   id: string;
   userId: string;
   podcastId: string;
-  ratings: number[];
-  averageRating: number;
-  timestamp: Date;
-}
-
-export interface PodcastReview {
-  id: string;
-  userId: string;
-  podcastId: string;
-  review: string;
+  rating: number;
   timestamp: Date;
 }
 
@@ -172,7 +164,7 @@ export interface UserProfile {
   gender: string;
 }
 
-export interface UserMenuInfo{
+export interface UserMenuInfo {
   id: string;
   username: string;
   avatarUrl: string;
