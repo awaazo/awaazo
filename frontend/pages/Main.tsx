@@ -11,8 +11,6 @@ import { podcasts, episodes } from "../utilities/SampleData";
 
 const Main = () => {
 
-   // Replace 'test-podcast-id' with an actual ID from your backend
-   const testPodcastId = 'd919f1d4-d567-44bc-9909-5b0b8adcdcf3';
   return (
     <>
       {/* Navbar */}
