@@ -571,5 +571,10 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
+    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Episode episode)
+    {
+       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episode.Id).FirstOrDefaultAsync();
+    }
+
     #endregion Episode
 }

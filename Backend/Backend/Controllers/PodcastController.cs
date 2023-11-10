@@ -1,4 +1,6 @@
 ﻿using Backend.Controllers.Requests;
+using Backend.Controllers.Responses;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
@@ -19,11 +21,13 @@ public class PodcastController : ControllerBase
 
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
+    private readonly AppDbContext _db;
 
-    public PodcastController(IPodcastService podcastService, IAuthService authService)
+    public PodcastController(IPodcastService podcastService, IAuthService authService, AppDbContext db)
     {
         _podcastService = podcastService;
         _authService = authService;
+        _db = db;
     }
 
     #region Podcast
@@ -398,6 +402,56 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// THis function saves the last watched position on a specific episode
+    /// On the frontend:
+    ///     - You need to add a onBeforeUnload  hook to the episode webpage and this hook should
+    ///       send request to this route.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="episodeId"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/saveWatchHistory")]
+    public async Task<IActionResult> SaveWatchHistory(Guid podcastId, Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
+    {
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+            
+            var episode = await _podcastService.GetEpisodeByIdAsync(episodeId, GetDomainUrl(HttpContext));
+            
+            // Check if user had episode interaction before
+            var interaction = await _podcastService.GetUserEpisodeInteraction(user, episode.Episode);
+            if (interaction is null)
+            {
+                interaction = new UserEpisodeInteraction(_db)
+                {
+                    EpisodeId = episode.Id,
+                    UserId = user.Id,
+                    DateListened = DateTime.Now,
+                    LastListenPosition = Math.Min(episode.Episode.Duration, request.ListenPosition)
+                };
+                await _db.UserEpisodeInteractions!.AddAsync(interaction);
+            }
+            else
+            {
+                interaction.DateListened = DateTime.Now;
+                interaction.LastListenPosition = Math.Min(episode.Episode.Duration, request.ListenPosition);
+                _db.UserEpisodeInteractions!.Update(interaction);
+            }
+            
+            await _db.SaveChangesAsync();
+            return Ok(interaction);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     #endregion
 
     /// <summary>

@@ -1,6 +1,7 @@
 using System.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Backend.Controllers.Responses;
 
@@ -10,6 +11,7 @@ public class EpisodeResponse
 
     public EpisodeResponse(Episode e, string domainUrl)
     {
+        Episode = e;
         Id=e.Id;
         PodcastId=e.PodcastId;
         EpisodeName=e.EpisodeName;
@@ -32,6 +34,8 @@ public class EpisodeResponse
     public ulong PlayCount { get; set; } = 0;
     public string AudioUrl { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
+
+    [BindNever] public Episode Episode { get; private set; } = null!;
 }
 
 [BindProperties]
