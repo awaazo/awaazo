@@ -2,6 +2,7 @@ import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
 import {
    PodcastRatingRequest,
+   PodcastReviewRequest
 } from "../utilities/Requests";
 import {
    BaseResponse,
@@ -23,7 +24,7 @@ export default class ReviewsHelper {
    // Post a new rating
    public static postPodcastRating = async (
       requestData: PodcastRatingRequest,
-    
+
     ): Promise<BaseResponse> => {
       const options = {
         method: "POST",
@@ -84,6 +85,87 @@ export default class ReviewsHelper {
          const requestResponse = await axios(options);
 
          console.debug("Received the following deletePodcastRating...");
+         console.debug(requestResponse);
+
+         // Return the response.
+         return {
+            status: requestResponse.status,
+            message: requestResponse.statusText,
+         };
+      } catch (error) {
+         return {
+            status: error.response.status,
+            message: error.response.statusText,
+         };
+      }
+
+    };
+
+    // post a new review
+    public static postPodcastReview = async (
+      requestData: PodcastReviewRequest,
+
+    ): Promise<BaseResponse> => {
+      const options = {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json"
+          // No Authorization header needed if using cookies for session
+        },
+        data: requestData, // No need to stringify if your server expects an object
+        url: EndpointHelper.getPodcastReviewEndpoint(),
+        withCredentials: true, // This will send the session cookie with the request
+        cache: false
+      };
+    
+      try {
+         console.debug("Sending the following postPodcastReview...");
+         console.debug(options);
+
+         console.log(options);
+         // Send the request and wait for the response.
+         const requestResponse = await axios(options);
+
+         console.debug("Received the following postPodcastReview...");
+         console.debug(requestResponse);
+
+         // Return the response.
+         return {
+            status: requestResponse.status,
+            message: requestResponse.statusText,
+         };
+      } catch (error) {
+         return {
+            status: error.response?.status,
+            message: error.response?.statusText,
+         };
+      }
+    };
+
+    // delete a review
+    public static deletePodcastReview = async (podcastId): Promise<BaseResponse> => {
+      // Retrieve the token from local storage or your state management solution
+      
+      const options = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        url: EndpointHelper.getPodcastReviewDeleteEndpoint(podcastId),
+        withCredentials: true,
+        cache: false,
+      };
+    
+      try {
+         console.debug("Sending the following deletePodcastReview...");
+         console.debug(options);
+
+         console.log(options);
+         // Send the request and wait for the response.
+         const requestResponse = await axios(options);
+
+         console.debug("Received the following deletePodcastReview...");
          console.debug(requestResponse);
 
          // Return the response.

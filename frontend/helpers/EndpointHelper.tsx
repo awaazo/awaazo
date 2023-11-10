@@ -164,8 +164,8 @@ static getPodcastReviewEndpoint = () => {
     return this.getBackendAddress() + "/social/review";
 }
 
-static getPodcastReviewDeleteEndpoint = () => {
-    return this.getBackendAddress() + "/social/deleteReview";
+static getPodcastReviewDeleteEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/social/deleteReview?podcastId=" + podcastId;
 }
 
   static profileGetRequest: any;

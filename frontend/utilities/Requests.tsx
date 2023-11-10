@@ -104,4 +104,12 @@ export interface PodcastReviewRequest{
 }
 //#endregion
 
+//#region Episode Rating Requests
+export interface EpisodeCommentRequest{
+    episodeId: string;
+    replyToCommentId: string;
+    text: string;
+}
+
+
 
