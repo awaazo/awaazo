@@ -29,6 +29,7 @@ public class Program
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
 
