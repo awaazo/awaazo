@@ -31,20 +31,23 @@ const Chatbot: React.FC = () => {
         <Image src={awaazoBird} alt="Awaazo Bird AI Helper Logo" boxSize={boxSize} />
       </Flex>
 
-      <Flex flexDirection="column" flexGrow={1} className="no-scrollbar" overflowY="auto" mb={4} maxH="60vh">
-        <VStack spacing={4} align="start" flex="1">
+      {/* Message Container */}
+      <Flex flexDirection="column" flexGrow={1} px={4} overflowY="auto" mb={4} maxH="60vh">
+        <VStack spacing={4} align="start" flex="1" pb={4}> {/* Added paddingBottom here */}
           {messages.map((message, idx) => (
             <Flex key={idx} align="center">
               <Box boxSize="24px" mr={2}>
                 <Image src={message.sender === "user" ? userAvatar : awaazoBirdRe} alt={`${message.sender} avatar`} boxSize="24px" objectFit="cover" borderRadius="full" />
               </Box>
               <Box p={2} borderRadius="full" boxShadow="md" backdropBlur="4px" bg="rgba(255, 255, 255, 0.1)" borderColor="rgba(255, 255, 255, 0.1)">
-                {message.content}
+                <Text>{message.content}</Text> {/* Wrapped content in Text for better text handling */}
               </Box>
             </Flex>
           ))}
         </VStack>
       </Flex>
+
+      {/* Input Area */}
       <Box mt="auto">
         <Text fontSize="sm" color="gray.500" mb={2}>
           Things you could ask me:
@@ -54,9 +57,22 @@ const Chatbot: React.FC = () => {
         </Text>
 
         <InputGroup>
-          <Input placeholder="Ask me about this podcast..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} rounded="3xl" p={inputPadding} />
+          <Input
+            placeholder="Ask me about this podcast..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            rounded="3xl"
+            p={inputPadding}
+          />
           <InputRightElement>
-            <IconButton aria-label="Send" icon={<BsArrowUpCircle />} onClick={handleSendMessage} variant="ghost" rounded="full" />
+            <IconButton
+              aria-label="Send"
+              icon={<BsArrowUpCircle />}
+              onClick={handleSendMessage}
+              variant="ghost"
+              rounded="full"
+            />
           </InputRightElement>
         </InputGroup>
       </Box>
