@@ -302,6 +302,52 @@ namespace Backend.Migrations
                     b.ToTable("MediaLinks");
                 });
 
+            modelBuilder.Entity("Backend.Models.Playlist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Playlists");
+                });
+
+            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PlayerlistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PlaylistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.ToTable("PlaylistElements");
+                });
+
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.Property<Guid>("Id")
@@ -386,6 +432,10 @@ namespace Backend.Migrations
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -393,6 +443,8 @@ namespace Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PodcastId");
 
                     b.HasIndex("UserId");
 
@@ -710,6 +762,13 @@ namespace Backend.Migrations
                     b.Navigation("Annotation");
                 });
 
+            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+                {
+                    b.HasOne("Backend.Models.Playlist", null)
+                        .WithMany("Elements")
+                        .HasForeignKey("PlaylistId");
+                });
+
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.HasOne("Backend.Models.User", "Podcaster")
@@ -734,11 +793,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PodcastRating", b =>
                 {
+                    b.HasOne("Backend.Models.Podcast", "Podcast")
+                        .WithMany("Ratings")
+                        .HasForeignKey("PodcastId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Podcast");
 
                     b.Navigation("User");
                 });
@@ -813,9 +880,16 @@ namespace Backend.Migrations
                     b.Navigation("Sponsors");
                 });
 
+            modelBuilder.Entity("Backend.Models.Playlist", b =>
+                {
+                    b.Navigation("Elements");
+                });
+
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>

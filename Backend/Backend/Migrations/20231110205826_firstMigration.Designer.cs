@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231107182715_firstMigration.Designer.cs
-    [Migration("20231107182715_firstMigration")]
+    [Migration("20231110205826_firstMigration")]
     partial class firstMigration
-========
-    [Migration("20231108151147_secondMigration")]
-    partial class secondMigration
->>>>>>>> main:Backend/Backend/Migrations/20231108151147_secondMigration.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,7 +100,6 @@ namespace Backend.Migrations
                     b.ToTable("Bookmark");
                 });
 
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231107182715_firstMigration.Designer.cs
             modelBuilder.Entity("Backend.Models.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -210,8 +204,6 @@ namespace Backend.Migrations
                     b.ToTable("CommentReplyLikes");
                 });
 
-========
->>>>>>>> main:Backend/Backend/Migrations/20231108151147_secondMigration.Designer.cs
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
                     b.Property<Guid>("Id")
@@ -262,25 +254,17 @@ namespace Backend.Migrations
                     b.ToTable("Episodes");
                 });
 
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231107182715_firstMigration.Designer.cs
             modelBuilder.Entity("Backend.Models.EpisodeLike", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("EpisodeId")
-========
-            modelBuilder.Entity("Backend.Models.Files", b =>
-                {
-                    b.Property<Guid>("FileId")
-                        .ValueGeneratedOnAdd()
->>>>>>>> main:Backend/Backend/Migrations/20231108151147_secondMigration.Designer.cs
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231107182715_firstMigration.Designer.cs
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -289,25 +273,6 @@ namespace Backend.Migrations
                     b.HasIndex("EpisodeId");
 
                     b.ToTable("EpisodeLikes");
-========
-                    b.Property<string>("MimeType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("FileId");
-
-                    b.ToTable("File");
->>>>>>>> main:Backend/Backend/Migrations/20231108151147_secondMigration.Designer.cs
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
@@ -470,6 +435,10 @@ namespace Backend.Migrations
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -477,6 +446,8 @@ namespace Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PodcastId");
 
                     b.HasIndex("UserId");
 
@@ -703,7 +674,6 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Comment", b =>
                 {
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231107182715_firstMigration.Designer.cs
                     b.HasOne("Backend.Models.Episode", "Episode")
                         .WithMany("Comments")
                         .HasForeignKey("EpisodeId")
@@ -764,8 +734,6 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
-========
->>>>>>>> main:Backend/Backend/Migrations/20231108151147_secondMigration.Designer.cs
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Episodes")
                         .HasForeignKey("PodcastId")
@@ -828,11 +796,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PodcastRating", b =>
                 {
+                    b.HasOne("Backend.Models.Podcast", "Podcast")
+                        .WithMany("Ratings")
+                        .HasForeignKey("PodcastId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Podcast");
 
                     b.Navigation("User");
                 });
@@ -915,6 +891,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>

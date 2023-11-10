@@ -10,6 +10,10 @@ namespace Backend.Controllers.Responses;
 [BindProperties]
 public class UserMenuInfoResponse
 {
+    public UserMenuInfoResponse()
+    {
+    }
+
     public UserMenuInfoResponse(User user, string domainUrl)
     {
         Id = user.Id;

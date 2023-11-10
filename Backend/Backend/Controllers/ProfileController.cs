@@ -178,7 +178,7 @@ public class ProfileController : ControllerBase
                 return NotFound("User does not exist.");
 
             // Get the avatar name of the user. 
-            string avatarName = await _profileService.GetUserAvatarName(userId);
+            string avatarName = await _profileService.GetUserAvatarNameAsync(userId);
 
             // If the avatar name is the default avatar name, return the default avatar. 
             // Otherwise, return the user's avatar.

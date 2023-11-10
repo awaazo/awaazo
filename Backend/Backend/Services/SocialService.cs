@@ -54,10 +54,6 @@ public class SocialService : ISocialService
             CreatedAt = DateTime.Now
         };
 
-        // Make sure its not a duplicate like
-        if (await _db.Likes.CountAsync(l => l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId)) > 0)
-            throw new Exception("Episode has already been liked.");
-
         // Add the Like to the DB and return the status
         await _db.EpisodeLikes.AddAsync(like);
         return await _db.SaveChangesAsync() > 0;

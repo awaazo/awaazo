@@ -204,6 +204,14 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
 
+        // Rating many-to-1 user
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Ratings)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
     
     public override int SaveChanges()
