@@ -17,3 +17,22 @@ public class CommentRequest
     [Required]
     public string Text {get;set;} = string.Empty;
 }
+
+[BindProperties]
+public class RatingRequest
+{
+    [Required]
+    public Guid PodcastId{get;set;}
+
+    [Required]
+    public int Rating {get;set;}
+}
+
+public class ReviewRequest
+{
+    [Required]
+    public Guid PodcastId{get;set; }
+
+    [Required]
+    public string Review{get;set;} = string.Empty;
+}

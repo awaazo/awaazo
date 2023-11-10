@@ -25,12 +25,12 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Accepted file types for cover art and thumbnail
     /// </summary>
-    private static readonly string[] ALLOWED_IMG_FILES = {"image/jpeg", "image/png", "image/svg+xml" };
-    
+    private static readonly string[] ALLOWED_IMG_FILES = { "image/jpeg", "image/png", "image/svg+xml" };
+
     /// <summary>
     /// Accepted file types for audio files
     /// </summary>
-    private static readonly string[] ALLOWED_AUDIO_FILES = {"audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4" };    
+    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4" };
 
     /// <summary>
     /// Maximum image file is 5MB
@@ -182,6 +182,7 @@ public class PodcastService : IPodcastService
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Ratings)
         .Where(p =>p.Id == podcastId)
         .Select(p=>new PodcastResponse(p,domainUrl))
         .FirstOrDefaultAsync() ?? throw new Exception("Podcast does not exist.");
@@ -198,7 +199,7 @@ public class PodcastService : IPodcastService
     /// <exception cref="Exception"></exception>
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, User user)
     {
-        return await GetUserPodcastsAsync(page,pageSize,domainUrl,user.Id);
+        return await GetUserPodcastsAsync(page, pageSize, domainUrl, user.Id);
     }
 
     /// <summary>
@@ -217,6 +218,7 @@ public class PodcastService : IPodcastService
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Ratings)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -244,6 +246,7 @@ public class PodcastService : IPodcastService
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Ratings)
         .Where(p => AppDbContext.Soundex(p.Name)==AppDbContext.Soundex(searchTerm))
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -270,6 +273,7 @@ public class PodcastService : IPodcastService
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.User)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Comments).ThenInclude(c=>c.Likes)
         .Include(p=>p.Episodes).ThenInclude(e=>e.Comments).ThenInclude(c=>c.Likes)
+        .Include(p=>p.Ratings)
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(p=>new PodcastResponse(p,domainUrl))
@@ -393,11 +397,21 @@ public class PodcastService : IPodcastService
             if (request.AudioFile.Length > MAX_AUDIO_SIZE)
                 throw new Exception("Audio file must be smaller than 1GB.");
 
-            // Remove the old episode audio from the server
-            RemovePodcastEpisodeAudio(episode.Audio, episode.PodcastId);
+            try
+            {
+                // Remove the old episode audio from the server
+                RemovePodcastEpisodeAudio(episode.Audio, episode.PodcastId);
+            }
+            catch (Exception)
+            {
+                // TODO: Log if any error happens here
+            }
+            finally
+            {
+                // Save the new episode audio to the server
+                episode.Audio = await SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
+            }
 
-            // Save the new episode audio to the server
-            episode.Audio = await SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
 
             // Find and Save the duration of the audio in seconds
             var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
@@ -415,11 +429,20 @@ public class PodcastService : IPodcastService
             if (request.Thumbnail.Length > MAX_IMG_SIZE)
                 throw new Exception("Thumbnail must be smaller than 5MB.");
 
-            // Remove the old episode thumbnail from the server
-            RemovePodcastEpisodeThumbnail(episode.Thumbnail, episode.PodcastId);
-
-            // Save the new episode thumbnail to the server
-            episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, episode.PodcastId, request.Thumbnail);
+            try
+            {
+                // Remove the old episode thumbnail from the server
+                RemovePodcastEpisodeThumbnail(episode.Thumbnail, episode.PodcastId);
+            }
+            catch (Exception)
+            {
+                // TODO: Log if any error happens here
+            }
+            finally
+            {
+                // Save the new episode thumbnail to the server
+                episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, episode.PodcastId, request.Thumbnail);
+            }
         }
 
         // Check if the episode is explicit and the podcast is not
@@ -450,10 +473,17 @@ public class PodcastService : IPodcastService
 
         // Remove each podcast episode
         foreach (Episode episode in episodes)
-            await DeleteEpisodeAsync(episode.Id,user);
+            await DeleteEpisodeAsync(episode.Id, user);
 
-        // Remove the cover art from the server
-        RemovePodcastCoverArt(podcast.CoverArt);
+        try
+        {
+            // Remove the cover art from the server
+            RemovePodcastCoverArt(podcast.CoverArt);
+        }
+        catch (Exception)
+        {
+            // TODO: Log if any error happens here
+        }
 
         // TODO: Remove dependent entities as well
         // ===================================
@@ -479,10 +509,24 @@ public class PodcastService : IPodcastService
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id) ?? throw new Exception("Episode podcast does not exist and/or it is not owned by user.");
 
-
         // Remove audio and thumbnail from server
-        RemovePodcastEpisodeThumbnail(episode.Thumbnail, podcast.Id);
-        RemovePodcastEpisodeAudio(episode.Audio, podcast.Id);
+        try
+        {
+            RemovePodcastEpisodeThumbnail(episode.Thumbnail, podcast.Id);
+        }
+        catch (Exception)
+        {
+            // TODO: Log if any error happens here
+        }
+
+        try
+        {
+            RemovePodcastEpisodeAudio(episode.Audio, podcast.Id);
+        }
+        catch (Exception)
+        {
+            // TODO: Log if any error happens here
+        }
 
         // TODO: Remove dependent entities as well
         // ===================================
@@ -513,7 +557,7 @@ public class PodcastService : IPodcastService
             .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
         // Return the episode response
-        return new EpisodeResponse(episode,domainUrl);
+        return new EpisodeResponse(episode, domainUrl);
     }
 
     /// <summary>

@@ -4,17 +4,21 @@ using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
 
+/// <summary>
+/// Handles all profile related operations.
+/// </summary>
 public class ProfileService : IProfileService
-{
+{   
+    /// <summary>
+    /// Current DB instance.
+    /// </summary>
     private readonly AppDbContext _db;
-
+    
     public ProfileService(AppDbContext db)
     {
         _db = db;
@@ -114,22 +118,66 @@ public class ProfileService : IProfileService
     /// <returns>UserProfileResponse</returns>
     public UserProfileResponse GetProfile(User user, string domainUrl)
     {
-        UserProfileResponse profile = (UserProfileResponse)user;
-        
-        profile.AvatarUrl = string.Format("{0}profile/avatar",domainUrl);
-
-        return profile;
+        return new UserProfileResponse(user, domainUrl);
     }
 
     /// <summary>
-    /// Gets the Avatar name for the given user.
+    /// Gets the full user profile for a given user.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<FullUserProfileResponse> GetUserProfile(Guid userId, string domainUrl)
+    {
+        // Check if the user exists
+        User user = await _db.Users.
+        Include(u => u.Podcasts).ThenInclude(p => p.Episodes)
+        .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("No user was found for the given userId.");
+
+        // If the user exists, return the profile
+        return new FullUserProfileResponse(user, domainUrl);
+    }
+
+    /// <summary>
+    /// Get all user profiles that match the given searchterm by sound.
+    /// </summary>
+    /// <param name="searchTerm"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<List<UserProfileResponse>> SearchUserProfiles(string searchTerm, int page, int pageSize, string domainUrl)
+    {
+        // Get the searched user profiles
+        List<UserProfileResponse> userProfiles = await _db.Users
+        .Where
+        (
+            u =>
+            AppDbContext.Soundex(u.Username) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.DisplayName) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.Email) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.Bio) == AppDbContext.Soundex(searchTerm)
+        )
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(u => new UserProfileResponse(u, domainUrl))
+        .ToListAsync();
+
+        return userProfiles;
+    }
+
+    /// <summary>
+    /// Returns the Avatar name of the user.
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
     public async Task<string> GetUserAvatarNameAsync(Guid userId)
     {
-        // If the user does not exist, throw an exception, otherwise return the avatar name
-        User user = await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("User not found.");
+        // Check if the user exists
+        User user = await _db.Users
+        .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("No user was found for the given userId.");
+
+        // If the user exists, return the Avatar name
         return user.Avatar;
     }
 }

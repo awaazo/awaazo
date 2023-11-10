@@ -35,7 +35,7 @@ public class SocialController : ControllerBase
 
             return await _socialService.AddCommentAsync(episodeOrCommentId,user,commentText)? Ok("Comment added."):Ok("Failed to add comment.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -56,7 +56,7 @@ public class SocialController : ControllerBase
 
             return await _socialService.RemoveCommentAsync(commentId,user)? Ok("Comment deleted."):Ok("Failed to delete comment.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -77,7 +77,7 @@ public class SocialController : ControllerBase
 
             return await _socialService.AddLikeAsync(episodeOrCommentId,user)? Ok("Like added."):Ok("Failed to add like.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
@@ -98,68 +98,100 @@ public class SocialController : ControllerBase
 
             return await _socialService.RemoveLikeAsync(episodeOrCommentId,user)? Ok("Like removed."):Ok("Failed to remove like.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Return the error message
             return BadRequest(e.Message);
         }
     }
 
+    #region Rating
+
+    
+    [HttpPost("rating")]
+    public async Task<ActionResult> AddRating(RatingRequest request)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.AddRatingToPodcastAsync(request.PodcastId, user, (uint)request.Rating) ? Ok("Rating saved.") : Ok("Rating could not be saved.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("deleteRating")]
+    public async Task<ActionResult> RemoveRating(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return await _socialService.RemoveRatingFromPodcastAsync(podcastId, user) ? Ok("Rating deleted.") : Ok("Rating could not be deleted.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion
 
 
+    [HttpPost("review")]
+    public async Task<ActionResult> AddReview(ReviewRequest request)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-    // [HttpPost("like")]
-    // public async Task<ActionResult> AddLike(Guid episodeId, Guid commentId)
-    // {
-    //     try
-    //     {
-    //         // Identify User from JWT Token
-    //         User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
 
-    //         // If User is not found, return 404
-    //         if (user is null)
-    //             return NotFound("User does not exist.");
+            return await _socialService.AddReviewToPodcastAsync(request.PodcastId, user, request.Review) ? Ok("Review saved.") : Ok("Review could not be saved.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
 
-    //         // Add like to the right entity.
-    //         if(episodeId!=Guid.Empty)
-    //             return await _socialService.AddLikeToEpisodeAsync(episodeId,user) ? Ok("Episode liked."): Ok("Episode failed to be liked.");
-    //         else if (commentId!=Guid.Empty)
-    //             return await _socialService.AddLikeToCommentAsync(commentId,user) ? Ok("Comment liked."): Ok("Comment failed to be liked.");
-    //         else
-    //             return BadRequest("Episode or Comment ID is required.");
-    //     }
-    //     catch(Exception e)
-    //     {
-    //         // Return the error message
-    //         return BadRequest(e.Message);
-    //     }
-    // }
+    [HttpDelete("deleteReview")]
+    public async Task<ActionResult> RemoveReview(Guid podcastId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-    // [HttpDelete("unlike")]
-    // public async Task<ActionResult> RemoveLike(Guid episodeId, Guid commentId)
-    // {
-    //      try
-    //     {
-    //         // Identify User from JWT Token
-    //         User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
 
-    //         // If User is not found, return 404
-    //         if (user is null)
-    //             return NotFound("User does not exist.");
-
-    //         // Add like to the right entity.
-    //         if(episodeId!=Guid.Empty)
-    //             return await _socialService.RemoveEpisodeLikeAsync(episodeId,user) ? Ok("Episode unliked."): Ok("Episode failed to be unliked.");
-    //         else if (commentId!=Guid.Empty)
-    //             return await _socialService.RemoveCommentLikeAsync(commentId,user) ? Ok("Comment unliked."): Ok("Comment failed to be unliked.");
-    //         else
-    //             return BadRequest("Episode or Comment ID is required.");
-    //     }
-    //     catch(Exception e)
-    //     {
-    //         // Return the error message
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-
+            return await _socialService.RemoveReviewFromPodcastAsync(podcastId, user) ? Ok("Review deleted.") : Ok("Review could not be deleted.");
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            return BadRequest(e.Message);
+        }
+    }
 }

@@ -27,12 +27,14 @@ public class AppDbContext : DbContext
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
     public virtual DbSet<Sponsor>? Sponsors { get; set; }
     public virtual DbSet<MediaLink>? MediaLinks { get; set; }
-    public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
+    public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
     public virtual DbSet<EpisodeLike> EpisodeLikes  { get; set; }
     public virtual DbSet<CommentLike> CommentLikes {get;set;}
     public virtual DbSet<CommentReplyLike> CommentReplyLikes {get;set;}
+    public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
+    public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
 
@@ -77,8 +79,8 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
-
         
+
         // User 1-to-many Bookmark
         modelBuilder.Entity<User>()
             .HasMany(e => e.Bookmarks)
@@ -132,7 +134,6 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
-
             .IsRequired();
         
         // User 1-to-many UserEpisodeInteraction 
@@ -195,6 +196,14 @@ public class AppDbContext : DbContext
             .HasForeignKey(c=>c.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Rating many-to-1 podcast
+        modelBuilder.Entity<Podcast>()
+            .HasMany(e => e.Ratings)
+            .WithOne(e => e.Podcast)
+            .HasForeignKey(e => e.PodcastId)
+            .IsRequired();
+
     }
     
     public override int SaveChanges()
