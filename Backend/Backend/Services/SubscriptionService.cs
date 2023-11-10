@@ -119,5 +119,7 @@ namespace Backend.Services
         {
             return await _db.PodcastFollows!.AnyAsync(u => (u.PodcastId == PodcastId) && (u.UserId == user.Id));
         }
+
+        
     }
 }

@@ -33,6 +33,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Files>? File { get; set; }
+    public virtual DbSet<Notification>? Notifications { get; set; }
 
     /// <summary>
     /// Maps to the Soundex function in the database.
