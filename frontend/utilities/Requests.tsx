@@ -111,5 +111,11 @@ export interface EpisodeCommentRequest{
     text: string;
 }
 
+export interface EpisodeLikeRequest{
+    episodeId: string;
+    commentId: string;
+  }
+
+
 
 

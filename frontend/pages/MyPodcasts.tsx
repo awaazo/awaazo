@@ -39,6 +39,7 @@ import router from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
 import PodcastHelper from "../helpers/PodcastHelper";
 import RatingComponent from "../components/rating/RatingComponent";
+import ReviewComponent from "../components/rating/ReviewComponent";
 
 
 const MyPodcasts = () => {
@@ -164,6 +165,7 @@ const MyPodcasts = () => {
                 </Box>
                 
                 <RatingComponent  podcastId={podcast.id}/>
+                <ReviewComponent podcastId={podcast.id}/>
                 
                 <Text fontSize="lg">
                   {podcast.name.length > 18
