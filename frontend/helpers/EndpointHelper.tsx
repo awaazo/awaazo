@@ -151,5 +151,22 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/edit";
   };
 
+
+  static getPodcastRatingEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/social/rating";
+}
+
+static getPodcastRatingDeleteEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/social/deleteRating?podcastId=" + podcastId;
+}
+
+static getPodcastReviewEndpoint = () => {
+    return this.getBackendAddress() + "/social/review";
+}
+
+static getPodcastReviewDeleteEndpoint = () => {
+    return this.getBackendAddress() + "/social/deleteReview";
+}
+
   static profileGetRequest: any;
 }

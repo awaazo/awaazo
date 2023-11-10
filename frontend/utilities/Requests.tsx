@@ -93,25 +93,15 @@ export interface EpisodeEditRequest {
 //#endregion
 
 //#region Podcast Rating Requests
-
 export interface PodcastRatingRequest{
     podcastId: string;
     rating: number;
-}
-
-export interface PodcastRatingDeleteRequest{
-    podcastId: string;
 }
 
 export interface PodcastReviewRequest{
     podcastId: string;
     review: string;
 }
-
-export interface PodcastReviewDeleteRequest{
-    podcastId: string;
-}
-
 //#endregion
 
 

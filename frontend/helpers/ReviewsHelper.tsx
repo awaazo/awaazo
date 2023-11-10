@@ -2,106 +2,145 @@ import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
 import {
    PodcastRatingRequest,
-   PodcastRatingDeleteRequest,
-   PodcastReviewRequest,
-   PodcastReviewDeleteRequest
 } from "../utilities/Requests";
 import {
    BaseResponse,
-   PodcastRatingResponse,
-   PodcastReviewResponse
+   GetMyPodcastResponse,
+   MyPodcastResponse
 } from "../utilities/Responses";
 
-export default class PodcastsHelper {
+export default class ReviewsHelper {
    static getPodcastRating() {
-      return axios.get<PodcastRatingResponse>(EndpointHelper.getPodcastRatingEndpoint());
+      throw new Error("Method not implemented.");
    }
 
+   /**
+    * creates a new podcast review
+    * @param requestData 
+    * @param podcastId 
+    * @returns 
+    */
    // Post a new rating
    public static postPodcastRating = async (
       requestData: PodcastRatingRequest,
+      podcastId,
     ): Promise<BaseResponse> => {
       const options = {
         method: "POST",
         headers: {
+          accept: "*/*",
           "Content-Type": "application/json"
           // No Authorization header needed if using cookies for session
         },
         data: requestData, // No need to stringify if your server expects an object
-        url: EndpointHelper.getPodcastRatingEndpoint(),
+        url: EndpointHelper.getPodcastRatingEndpoint(podcastId),
         withCredentials: true, // This will send the session cookie with the request
         cache: false
       };
     
       try {
-        const response = await axios(options);
-        return { status: response.status, message: "Rating saved." };
+         console.debug("Sending the following postPodcastRating...");
+         console.debug(options);
+
+         console.log(options);
+         // Send the request and wait for the response.
+         const requestResponse = await axios(options);
+
+         console.debug("Received the following postPodcastRating...");
+         console.debug(requestResponse);
+
+         // Return the response.
+         return {
+            status: requestResponse.status,
+            message: requestResponse.statusText,
+         };
       } catch (error) {
-        return {
-          status: error.response ? error.response.status : 500,
-          message: error.response ? error.response.data.message : "An error occurred"
-        };
+         return {
+            status: error.response?.status,
+            message: error.response?.statusText,
+         };
       }
     };
     
-    public static deletePodcastRating = async (
-      requestData: PodcastRatingDeleteRequest,
-    ): Promise<BaseResponse> => {
+    public static deletePodcastRating = async (podcastId): Promise<BaseResponse> => {
       // Retrieve the token from local storage or your state management solution
-
+      
       const options = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Include the token in the Authorization header
         },
-        data: requestData,
-        url: EndpointHelper.getPodcastRatingDeleteEndpoint(),
+        url: EndpointHelper.getPodcastRatingDeleteEndpoint(podcastId),
         withCredentials: true,
         cache: false,
       };
     
       try {
-        const response = await axios(options);
-        return { status: response.status, message: "Rating deleted successfully." };
+         console.debug("Sending the following deletePodcastRating...");
+         console.debug(options);
+
+         console.log(options);
+         // Send the request and wait for the response.
+         const requestResponse = await axios(options);
+
+         console.debug("Received the following deletePodcastRating...");
+         console.debug(requestResponse);
+
+         // Return the response.
+         return {
+            status: requestResponse.status,
+            message: requestResponse.statusText,
+         };
       } catch (error) {
+         return {
+            status: error.response.status,
+            message: error.response.statusText,
+         };
+      }
+
+    };
+
+ 
+    public static getPodcastById = async (
+      podcastId,
+    ): Promise<GetMyPodcastResponse> => {
+      // Create the request options.
+      const options = {
+        method: "Get",
+        url: EndpointHelper.getPodcastEndpoint(podcastId),
+        headers: {
+          accept: "*/*",
+        },
+        withCredentials: true,
+        cache: false,
+      };
+  
+      try {
+        console.debug("Sending the following getPodcastById...");
+        console.debug(options);
+  
+        console.log(options);
+        // Send the request and wait for the response.
+        const requestResponse = await axios(options);
+  
+        console.debug("Received the following getPodcastById...");
+        console.debug(requestResponse);
+        // Return the response.
         return {
-          status: error.response ? error.response.status : 500,
-          message: error.response ? error.response.data.message : "An error occurred"
+          status: requestResponse.status,
+          message: requestResponse.statusText,
+          podcast: requestResponse.data,
+        };
+      } catch (error) {
+        // Return the error.
+        return {
+          status: error.response.status,
+          message: error.response.statusText,
+          podcast: null,
         };
       }
     };
-    
-
-   public static deletePodcastReview = async (
-      requestData: PodcastReviewDeleteRequest,
-   ): Promise<BaseResponse> => {
-      const options = {
-         method: "DELETE",
-         headers: { "content-type": "application/json" },
-         data: requestData,
-         url: EndpointHelper.getPodcastReviewEndpoint(),
-         withCredentials: true,
-         cache: false,
-      };
-
-      return axios(options);
-   };
-
-   public static getPodcastEndpoint = async (
-      requestData: PodcastRatingRequest,
-   ): Promise<BaseResponse> => {
-      const options = {
-         method: "GET",
-         headers: { "content-type": "application/json" },
-         data: requestData,
-         url: EndpointHelper.getPodcastEndpoint(),
-         withCredentials: true,
-         cache: false,
-      };
-
-      return axios(options);
-   }
+  
 }
 
 

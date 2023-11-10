@@ -1,86 +1,69 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import EndpointHelper from '../../helpers/EndpointHelper';
-import { PodcastRatingRequest, PodcastRatingDeleteRequest } from '../../utilities/Requests';
-import { PodcastRatingResponse } from '../../utilities/Responses';
-import StarRatingComponent from 'react-star-rating-component'; // This is a hypothetical star rating component library
+import ReviewsHelper from '../../helpers/ReviewsHelper';
+import { FaTrash, FaStar, FaCheckCircle } from 'react-icons/fa';
+import { Box, Button, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
 
 const RatingComponent = ({ podcastId }) => {
-    const [rating, setRating] = useState(0);
-    const [podcastRatings, setPodcastRatings] = useState([]);
+  const [podcast, setPodcast] = useState(null);
+  const [userRating, setUserRating] = useState(0);
 
-    
+  useEffect(() => {
+    const fetchPodcast = async () => {
+      const response = await ReviewsHelper.getPodcastById(podcastId);
+      if (response.status === 200) {
+        setPodcast(response.podcast);
+      } else {
+        // Handle error
+        console.error(response.message);
+      }
+    };
 
- 
-
-    useEffect(() => {
-      const fetchRatings = async () => {
-          try {
-              const response = await axios.get<PodcastRatingResponse>(EndpointHelper.getPodcastEndpoint());
-              // Assuming `podcastRating` is the object that contains the ratings array and the average rating.
-              const podcastRating = response.data.podcastRating;
-  
-              // Set the array of ratings.
-              // Ensure that `podcastRating.ratings` is indeed an array. The type definition should match this.
-              setPodcastRatings(podcastRating.ratings || []);
-  
-              // Set the average rating.
-              // Here we ensure we're updating the average rating state, which should be a number.
-              setRating(podcastRating.averageRating || 0);
-          } catch (error) {
-              console.error('Error fetching podcast ratings', error);
-          }
-      };
-  
-      fetchRatings();
+    fetchPodcast();
   }, [podcastId]);
-  
-  
-  
-    // Post a new rating
-    const postRating = async newRating => {
-        try {
-            const requestData: PodcastRatingRequest = {
-                podcastId,
-                rating: newRating
-            };
-            await axios.post(EndpointHelper.getPodcastRatingEndpoint(), requestData);
-            setRating(newRating); // Update the rating locally
-        } catch (error) {
-            console.error('Error posting podcast rating', error);
-        }
-    };
 
-    // Delete a rating
-    const deleteRating = async () => {
-        try {
-            const requestData: PodcastRatingDeleteRequest = {
-                podcastId
-            };
-            await axios.delete(EndpointHelper.getPodcastRatingDeleteEndpoint(), { data: requestData });
-            setRating(0); // Reset the rating locally
-        } catch (error) {
-            console.error('Error deleting podcast rating', error);
-        }
-    };
+  const handleRatingChange = (value) => {
+   setUserRating(value);
+ };
+  const handleRatingSubmit = async (rating) => {
+    const requestData = { rating }; // Replace with actual rating data structure
+    const response = await ReviewsHelper.postPodcastRating(rating, podcastId);
+    // Handle response
+  };
 
-    // Handle star click
-    const onStarClick = nextValue => {
-        postRating(nextValue);
-    };
+  const handleRatingDelete = async (podcastId) => {
+    const response = await ReviewsHelper.deletePodcastRating(podcastId);
+    // Handle response
+  };
 
-    return (
-        <div>
-            <h2>Rate this Podcast</h2>
-            <StarRatingComponent 
-                name="podcastRating"
-                starCount={5}
-                value={rating}
-                onStarClick={onStarClick}
-            />
-            <button onClick={deleteRating}>Remove My Rating</button>
-        </div>
-    );
+
+  return (
+   <Box>
+     {podcast && (
+       <>
+         {/* <Text fontSize="2xl" fontWeight="bold">{podcast.name}</Text> */}
+         {/* Slider for rating */}
+         <Slider
+           defaultValue={0}
+           min={0}
+           max={5}
+           step={1}
+           onChange={handleRatingChange}
+           mb={4}
+         >
+           <SliderTrack>
+             <SliderFilledTrack />
+           </SliderTrack>
+           <SliderThumb boxSize={6}>
+             <Box color="yellow.400" as={FaStar} />
+           </SliderThumb>
+         </Slider>
+         <Button m={1} colorScheme="blue" onClick={() => handleRatingSubmit(userRating)}><Box as={FaCheckCircle} /></Button>
+         <Button colorScheme="red" onClick={() => handleRatingDelete(podcast.id)} ml={2}>
+           <Box as={FaTrash} />
+         </Button>
+       </>
+     )}
+   </Box>
+ );
 };
-
 export default RatingComponent;
