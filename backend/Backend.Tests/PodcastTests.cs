@@ -48,7 +48,7 @@ public class PodcastTests
         _authServiceMock = new();
         _httpRequestMock  = new();
         _podcastService = new(_dbContextMock.Object);
-        _podcastController = new(_podcastService, _authServiceMock.Object)
+        _podcastController = new(_podcastService, _authServiceMock.Object, _dbContextMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -67,7 +67,7 @@ public class PodcastTests
         _authServiceMock = new();
         _httpRequestMock = new();
         _podcastService = new(_dbContextMock.Object);
-        _podcastController = new(_podcastService, _authServiceMock.Object) 
+        _podcastController = new(_podcastService, _authServiceMock.Object, _dbContextMock.Object) 
         { 
             ControllerContext = new ControllerContext()
             {
