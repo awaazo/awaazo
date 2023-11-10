@@ -11,6 +11,7 @@ using Backend.Services;
 using Google.Apis.Auth;
 using Backend.Services.Interfaces;
 using Backend.Controllers.Responses;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers;
 
@@ -73,7 +74,7 @@ public class AuthController : ControllerBase
         // Return UserId
         if (user is null) return BadRequest("User not found.");
 
-        else return Ok(new UserMenuInfoResponse(user,HttpContext));
+        else return Ok(new UserMenuInfoResponse(user,GetDomainUrl(HttpContext)));
     }
 
 
