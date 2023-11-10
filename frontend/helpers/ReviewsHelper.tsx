@@ -23,7 +23,7 @@ export default class ReviewsHelper {
    // Post a new rating
    public static postPodcastRating = async (
       requestData: PodcastRatingRequest,
-      podcastId,
+    
     ): Promise<BaseResponse> => {
       const options = {
         method: "POST",
@@ -33,7 +33,7 @@ export default class ReviewsHelper {
           // No Authorization header needed if using cookies for session
         },
         data: requestData, // No need to stringify if your server expects an object
-        url: EndpointHelper.getPodcastRatingEndpoint(podcastId),
+        url: EndpointHelper.getPodcastRatingEndpoint(),
         withCredentials: true, // This will send the session cookie with the request
         cache: false
       };

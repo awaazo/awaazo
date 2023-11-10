@@ -152,7 +152,7 @@ export default class EndpointHelper {
   };
 
 
-  static getPodcastRatingEndpoint = (podcastId) => {
+  static getPodcastRatingEndpoint = () => {
     return this.getBackendAddress() + "/social/rating";
 }
 
