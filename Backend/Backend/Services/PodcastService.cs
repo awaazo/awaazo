@@ -176,7 +176,10 @@ public class PodcastService : IPodcastService
     public async Task<PodcastResponse> GetPodcastByIdAsync(string domainUrl, Guid podcastId)
     {
         // Check if the podcast exists, if it does retrieve it.
-        Podcast podcast = await _db.Podcasts.Include(p => p.Episodes).FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
+        Podcast podcast = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
+        .FirstOrDefaultAsync(p => p.Id == podcastId) ?? throw new Exception("Podcast does not exist.");
 
         return new PodcastResponse(podcast, domainUrl);
     }
@@ -203,7 +206,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId)
     {
         // Check if the user has any podcasts, if they do retrieve them.
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -231,7 +236,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
         .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(searchTerm))
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -258,7 +265,9 @@ public class PodcastService : IPodcastService
     public async Task<List<PodcastResponse>> GetAllPodcastsAsync(int page, int pageSize, string domainUrl)
     {
         // Get the podcasts from the database
-        List<Podcast> podcasts = await _db.Podcasts.Include(p => p.Episodes)
+        List<Podcast> podcasts = await _db.Podcasts
+        .Include(p=>p.Episodes)
+        .Include(p=>p.Ratings)
         .Skip(page * pageSize)
         .Take(pageSize)
         .ToListAsync() ?? throw new Exception("No podcasts found.");
