@@ -11,6 +11,7 @@ using Backend.Services;
 using Google.Apis.Auth;
 using Backend.Services.Interfaces;
 using Backend.Controllers.Responses;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers;
 
@@ -98,22 +99,5 @@ public class AuthController : ControllerBase
     {
         Response.Cookies.Delete("jwt-token");   
         return Ok("Logged out.");
-    }
-
-
-    /// <summary>
-    /// Returns the domain url of the server.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    private static string GetDomainUrl(HttpContext context)
-    {
-        string domain = "";
-        domain +=  "http";
-        if (context.Request.IsHttps)
-            domain += "s";
-        domain += @"://" + context.Request.Host + @"/";
-
-        return domain;
     }
 }
