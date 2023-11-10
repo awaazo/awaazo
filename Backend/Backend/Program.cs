@@ -29,8 +29,11 @@ public class Program
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+
+        builder.Services.AddScoped<ISocialService, SocialService>();
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
