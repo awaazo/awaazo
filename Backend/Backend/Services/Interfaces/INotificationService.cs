@@ -14,5 +14,7 @@ namespace Backend.Services.Interfaces
 
         public Task<List<NotificationResponse>> GetAllNotificationAsync(User user);
 
+        public Task<int> GetUnreadNoticationCountAsync(User user);
+
     }
 }

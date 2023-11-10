@@ -37,6 +37,21 @@ namespace Backend.Controllers
 
         }
 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetUnreadNotificationCount()
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(new { count =  await _notificationService.GetUnreadNoticationCountAsync(user) });
+        }
+
+
+
         
     }
 }

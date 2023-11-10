@@ -33,12 +33,13 @@ namespace Backend.Services
            
         }
 
+        // Trigger Function
         public async Task<ITriggerResult> TriggerNotification(string channel,string Event, Notification notification)
         {
            return await _pusher.TriggerAsync(channel,Event,notification); 
         }
 
-
+        // Trigger Message and Save the Notification to the Database 
         public async Task<bool> CreateNotification(Notification notification, AppDbContext db)
         {
             // Check Whether the User Id is null or not
@@ -59,17 +60,50 @@ namespace Backend.Services
             return true;
         }
 
-        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user)
+        // Gets Number of Unread Notifications
+        public async Task<int> GetUnreadNoticationCountAsync(User user)
         {
-           return await _db.Notifications!.Where(u => u.UserId == user.Id).Select(u => (NotificationResponse)u ).ToListAsync();
+            return await _db.Notifications!.Where(u => (u.UserId == user.Id) && u.IsRead == false).CountAsync();
 
         }
 
        
+        // Get All the Notifications
+        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user)
+        {
+          
+          //Get the Notifications
+          List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).ToListAsync();
 
+          // Update the IsRead Bool value to True
+          List<NotificationResponse> response = new List<NotificationResponse>();
 
+          
+          foreach (Notification notification in notifications)
+          {
+                // Cast the Notification Object to Desired Output
+                response.Add((NotificationResponse)notification);
 
-        // Will Send Notification to all the Subscribed User
+                // Update the IsRead Value
+                if(notification.IsRead == false)
+                {
+                    notification.IsRead = true;
+                    _db.Update(notification);
+
+                }  
+
+          }
+          // Save the Changes to DB
+          await _db.SaveChangesAsync();
+
+          //Return the List of Notification Response 
+          return response;
+          
+        }
+
+      
+
+        // HELPER FUNCTION - Will Send Notification to all the Subscribed User 
         public async Task<bool> AddEpisodeNotification(Guid PodcastId,Episode episode,AppDbContext db)
         {
             // Get All the followers
@@ -78,12 +112,14 @@ namespace Backend.Services
             //Loop through all of them
             foreach (PodcastFollow follow in podcastFollow)
             {
+                // TODO Add an Apropriete Picture for the Notification
                 Notification notification = new Notification()
                 {
                     UserId = follow.UserId,
                     Title = "Podcast : " + episode.Podcast.Name,
                     Message = "New Episode added : " + episode.EpisodeName,
                     Link = episode.Id.ToString(),
+                    Media = "https://png.pngtree.com/png-vector/20211018/ourmid/pngtree-simple-podcast-logo-design-png-image_3991612.png",
                     Type = Notification.NotificationType.PodcastAlert,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
