@@ -34,12 +34,17 @@ import { Comment, Reply } from "../../utilities/Interfaces";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import axios from "axios";
 
-const CommentComponent = ({ episodeIdOrCommentId }) => {
+const CommentComponent = ({ 
+    episodeIdOrCommentId,
+    initialLikes,
+    initialIsLiked
+ }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [replyText, setReplyText] = useState("");
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [likes, setLikes] = useState(initialLikes);
 
   useEffect(() => {
     if (isOpen) {
@@ -119,14 +124,8 @@ const CommentComponent = ({ episodeIdOrCommentId }) => {
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the unlike
-            /*setComments((comments) =>
-              comments.map((c, i) => {
-                if (i === index) {
-                  return { ...c, likes: c.likes - 1, isLiked: false };
-                }
-                return c;
-              }),
-            );*/
+            setLikes(likes - 1);
+            setIsLiked(false);
           } else {
             console.error("Error unliking comment:", response.message);
           }
@@ -140,15 +139,9 @@ const CommentComponent = ({ episodeIdOrCommentId }) => {
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the like
-            /* setComments((comments) =>
-              comments.map((c, i) => {
-                if (i === index) {
-                  return { ...c, likes: c.likes + 1, isLiked: true };
-                }
-                return c;
-              }),
-            );*/
-          } else {
+            setLikes(likes + 1);
+            setIsLiked(true);
+            } else {
             console.error("Error liking comment:", response.message);
           }
         })
@@ -207,7 +200,7 @@ const CommentComponent = ({ episodeIdOrCommentId }) => {
                     width="100%"
                   >
                     <HStack spacing={5}>
-                      <Avatar src={comment.user.avatar} />
+                      <Avatar src={comment.user.avatarUrl} />
                       <VStack align="start" spacing={1} flex="1">
                         <Text fontWeight="bold" isTruncated>
                           {comment.user.username}
@@ -223,7 +216,7 @@ const CommentComponent = ({ episodeIdOrCommentId }) => {
                     </HStack>
                     <HStack mt={3} spacing={2}>
                       <Tooltip
-                        label="Like this comment"
+                        label={isLiked ? "Unlike this comment" : "Like this comment"}
                         aria-label="Like tooltip"
                       >
                         <IconButton
@@ -252,9 +245,9 @@ const CommentComponent = ({ episodeIdOrCommentId }) => {
                       </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
-                      {comment.replies.map((reply) => (
+                      {comment.replies.map((reply, index) => (
                         <Box
-                          key={reply.dateCreated.toString()}
+                          key={index}
                           bg="gray.650"
                           p={2}
                           borderRadius="md"

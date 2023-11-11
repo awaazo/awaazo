@@ -124,7 +124,7 @@ const Episode = ({ episode }) => {
           <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text>
           <LikeComponent
             episodeOrCommentId={episode.id}
-            initialLikes={5}
+            initialLikes={episode.likes}
             initialIsLiked={false}
           />
           <CommentComponent episodeIdOrCommentId={episode.id} />

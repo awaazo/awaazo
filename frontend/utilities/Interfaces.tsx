@@ -109,7 +109,7 @@ export interface User {
   email: string;
   passwordHash: string;
   salt: string;
-  avatar: string;
+  avatarUrl: string;
   interests: string[];
   dateOfBirth: Date;
   gender: "male" | "female" | "other" | "prefer not to say";
