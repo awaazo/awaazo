@@ -31,10 +31,10 @@ public class Program
         builder.Services.AddScoped<IProfileService, ProfileService>();
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
-
-
+        builder.Services.AddScoped<ISocialService, SocialService>();
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

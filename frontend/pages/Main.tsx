@@ -5,8 +5,12 @@ import ForYouSection from "../components/home/ForYouSection";
 import ContinueListeningSection from "../components/home/ContinueListening";
 import ExploreGenresSection from "../components/home/ExploreGenres";
 import { podcasts, episodes } from "../utilities/SampleData";
+ 
+
+
 
 const Main = () => {
+
   return (
     <>
       {/* Navbar */}

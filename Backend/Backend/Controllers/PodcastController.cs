@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers;
 
@@ -251,7 +252,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
-            return BadRequest(e.Message+e.StackTrace);
+            return BadRequest(e.Message);
         }
     }
 
@@ -399,20 +400,4 @@ public class PodcastController : ControllerBase
     }
 
     #endregion
-
-    /// <summary>
-    /// Returns the domain url of the server.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    private static string GetDomainUrl(HttpContext context)
-    {
-        string domain = "";
-        domain +=  "http";
-        if (context.Request.IsHttps)
-            domain += "s";
-        domain += @"://" + context.Request.Host + @"/";
-
-        return domain;
-    }
 }

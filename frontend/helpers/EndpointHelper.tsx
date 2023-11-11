@@ -151,5 +151,56 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/edit";
   };
 
+
+/**
+ * Returns the Podcast rating endpoint.
+ * @returns The Podcast rating Endpoint
+ * */
+
+  static getPodcastRatingEndpoint = () => {
+    return this.getBackendAddress() + "/social/rating";
+}
+/**
+ * Returns the Podcast rating endpoint.
+ * @returns The Podcast rating Endpoint
+ * */
+
+static getPodcastRatingDeleteEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/social/deleteRating?podcastId=" + podcastId;
+}
+/**
+ * Returns the Podcast rating endpoint.
+ * @returns The Podcast rating Endpoint
+ * */
+
+static getPodcastReviewEndpoint = () => {
+    return this.getBackendAddress() + "/social/review";
+}
+/**
+ * Returns the Podcast rating endpoint.
+ * @returns The Podcast rating Endpoint
+ * */
+
+static getPodcastReviewDeleteEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/social/deleteReview?podcastId=" + podcastId;
+}
+
+
+static getEpisodeCommentEndpoint = () => {
+    return this.getBackendAddress() + "/social/comment";
+}
+
+static getEpisodeCommentDeleteEndpoint = (commentId) => {
+    return this.getBackendAddress() + "/social/deleteComment?commentId=" + commentId;
+}
+
+static getEpisodeLikeEndpoint = () => {
+    return this.getBackendAddress() + "/social/like";
+}
+
+static getEpisodeUnLikeEndpoint = (commentId) => {
+    return this.getBackendAddress() + "/social/deleteLike?commentId=" + commentId;
+}
+
   static profileGetRequest: any;
 }
