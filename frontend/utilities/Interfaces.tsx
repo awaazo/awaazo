@@ -29,10 +29,7 @@ export interface Episode {
     count: number;
     isLiked: boolean;
   };
-  comments: {
-    count: number;
-    isCommented: boolean;
-  };
+  comments: Comment[];
   bookmarks?: Bookmark[];
   sections?: Section[];
   annotations: Annotation[];
@@ -50,17 +47,26 @@ export interface Section {
 
 export interface Comment {
   id: number;
-  userId: number;
+  user: User;
   episodeId: string;
   text: string;
   dateCreated: Date;
   likes: Like[];
+  replies: Reply[];
 }
 
 export interface Like {
   userId: number;
   commentId?: number;
   episodeId?: string;
+}
+
+export interface Reply {
+  id: number;
+  user: User;
+  text: string;
+  dateCreated: Date;
+  likes: Like[];
 }
 
 export interface Annotation {
