@@ -245,18 +245,23 @@ const CommentComponent = ({
                       </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
-                      {comment.replies.map((reply, index) => (
+                      {
+                      comment.replies.map((reply, index) => (
                         <Box
                           key={index}
                           bg="gray.650"
                           p={2}
                           borderRadius="md"
                         >
+                            <Avatar src={reply.user.avatarUrl} />
                           <Text fontWeight="bold">{reply.user.username}:</Text>
                           <Text>{reply.text}</Text>
-                          <Text fontSize="xs" color="gray.500">
-                            {reply.dateCreated.toLocaleString()}
-                          </Text>
+                          <HStack spacing={1} p={2} borderRadius="md">
+                            <Icon as={FaClock} color="gray.500" />
+                            <Text fontSize="xs" color="gray.500">
+                                {reply.dateCreated.toLocaleString()}
+                            </Text>
+                            </HStack>
                         </Box>
                       ))}
                       <Input
