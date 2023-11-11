@@ -106,8 +106,5 @@ export interface PodcastReviewRequest {
 
 //#region Episode Rating Requests
 export interface EpisodeCommentRequest {
-  episodeOrCommentId: string;
-  episodeId: string;
-  replyToCommentId: string;
   text: string;
 }
