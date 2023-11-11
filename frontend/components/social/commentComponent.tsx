@@ -1,4 +1,6 @@
 import { useState, useEffect  } from 'react';
+import SocialHelper from '../../helpers/SocialHelper';
+import PodcastHelper from '../../helpers/PodcastHelper';
 import {
     Button,
     Modal,
@@ -24,47 +26,86 @@ import {
 import { FaComments, FaClock, FaPaperPlane, FaHeart, FaReply } from 'react-icons/fa';
 import EndpointHelper from '../../helpers/EndpointHelper';
 import axios from 'axios';
-import SocialHelper from '../../helpers/SocialHelper';
 
-const CommentComponent = () => {
+const CommentComponent = ({ episodeIdOrCommentId }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [comments, setComments] = useState<Array<{
        replies: any;
        likes: number;
        isLiked: any; user: string, avatar: string, timestamp: Date, text: string 
-}>>([]);
+    }>>([]);
     const [newComment, setNewComment] = useState('');
     const [replyText, setReplyText] = useState('');
 
-    const handleAddComment = async () => {
-      if (newComment.trim()) {
-          const newCommentData = {
-              user: "John Doe",
-              avatar: "https://via.placeholder.com/150",
-              timestamp: new Date(),
-              text: newComment.trim(),
-              likes: 0,
-              isLiked: false,
-              replies: []
-          };
-          setComments(prevComments => [...prevComments, newCommentData]);
-          setNewComment('');
-          
-          // Send the comment to the server
-          const commentRequest = {
-              episodeId: "tempEpisodeId", // Replace with the actual episode ID
-              text: newComment.trim()
+    useEffect(() => {
+        if (isOpen) {
+            const fetchEpisodeDetails = async () => {
+                try {
+                    const response = await PodcastHelper.getPodcastById(episodeIdOrCommentId);
+                    if (response.status === 200 && response.podcast) {
+                        // Find the specific episode
+                        const episode = response.podcast.episodes.find(ep => ep.id === episodeIdOrCommentId);
+                        if (episode) {
+                            // Transform the comments to match your expected format
+                            const transformedComments = episode.comments.map(comment => ({
+                                id: comment.id,
+                                user: comment.user.username,
+                                avatar: comment.user.avatarUrl,
+                                timestamp: new Date(comment.dateCreated),
+                                text: comment.text,
+                                likes: comment.likes,
+                                isLiked: false, // You might need to adjust this based on user's like status
+                                replies: comment.replies.map(reply => ({
+                                    ...reply,
+                                    // Add any necessary transformations for replies here
+                                    timestamp: new Date(reply.dateCreated) // Example transformation
+                                }))
+                            }));
+                            setComments(transformedComments);
+                        }
+                    } else {
+                        console.error("Error fetching episode details:", response.message);
+                    }
+                } catch (error) {
+                    console.error("Error fetching episode details:", error.message);
+                }
             };
-            
-            const response = await SocialHelper.postComment(commentRequest);
-            if (response.status !== 200) {
-                console.error("Error posting comment:", response.message);
-            } else {
-                // Optionally update the state with the new comment returned from the server
-            }
-        };
+    
+            fetchEpisodeDetails();
+        }
+    }, [isOpen, episodeIdOrCommentId]);
+    
 
+        
+    const handleAddComment = async () => {
+        if (newComment.trim()) {
+            const commentRequest = {
+                episodeId: episodeIdOrCommentId, // Use the passed episodeIdOrCommentId
+                replyToCommentId: null, // This is a new comment, not a reply
+                text: newComment.trim(),
+            };
+    
+            const response = await SocialHelper.postEpisodeComment(commentRequest, episodeIdOrCommentId);
+            if (response.status === 200) {
+                // Update the UI to reflect the new comment
+                const newComment = {
+                    id: response.commentId, // Assuming the response contains the new comment's id
+                    user: "John Doe", // This should be replaced with the actual user's name
+                    avatar: "https://via.placeholder.com/150", // This should be replaced with the actual user's avatar
+                    timestamp: new Date(),
+                    text: commentRequest.text,
+                    likes: 0,
+                    isLiked: false,
+                    replies: []
+                };
+                setComments(comments => [...comments, newComment]);
+            } else {
+                console.error("Error posting comment:", response.message);
+            }
+            setNewComment('');
+        }
     };
+    
         
 
   const handleReply = (index: number) => {
@@ -146,18 +187,6 @@ const CommentComponent = () => {
 };
 
 
-  useEffect(() => {
-    if (isOpen) {
-        SocialHelper.getEpisodeComments()
-            .then(response => {
-                if (response.status === 200) {
-                    setComments(response.comments);
-                } else {
-                    console.error("Error fetching episode comments:", response.message);
-                }
-            });
-    }
-}, [isOpen]);
 
   return (
    <>

@@ -39,6 +39,9 @@ import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode } from "../../utilities/Interfaces";
+import CommentComponent from "../social/commentComponent";
+import Episode from "../myPodcast/MyEpisodes";
+import LikeComponent from "../social/likeComponent";
 
 export default function MyPodcast({ podcastId }) {
   useEffect(() => {
@@ -261,7 +264,7 @@ export default function MyPodcast({ podcastId }) {
                 📊 Subscribers: 5
               </Text>
               <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5
+                ❤️ Likes: 5 
               </Text>
             </Box>
             <>
@@ -353,6 +356,8 @@ export default function MyPodcast({ podcastId }) {
                 <Text fontSize="md" fontWeight="bold">
                   ❤️ Likes: 5
                 </Text>
+                <CommentComponent episodeIdOrCommentId={episodes}/>
+                <LikeComponent episodeIdOrCommentId={episodes}/>
               </Box>
             </Box>
 

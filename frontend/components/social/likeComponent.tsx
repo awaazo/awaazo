@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from 'react-icons/fa';
 import SocialHelper from '../../helpers/SocialHelper';
+import Episode from '../myPodcast/MyEpisodes';
 
 const LikeComponent = ({ episodeId, initialLikes = 0, initialIsLiked = false }) => {
    const [likes, setLikes] = useState(initialLikes);
    const [isLiked, setIsLiked] = useState(initialIsLiked);
 
-   const handleLike = (episodeOrCommentId) => {
+   const handleLike = (episodeId, episodeOrCommentId) => {
     // Toggle the like status based on whether the episode is currently liked
     if (isLiked) {
       // Call unlikeEpisode because the episode is currently liked
-      SocialHelper.unlikeComment(episodeOrCommentId) // This method needs to be implemented in SocialHelper
+      SocialHelper.deleteEpisodeLike(episodeOrCommentId) // This method needs to be implemented in SocialHelper
         .then(response => {
           if (response.status === 200) {
             // Update the UI to reflect the unlike
@@ -26,7 +27,7 @@ const LikeComponent = ({ episodeId, initialLikes = 0, initialIsLiked = false }) 
         });
     } else {
       // Call likeEpisode because the episode is currently not liked
-      SocialHelper.likeComment(episodeOrCommentId) // This method needs to be implemented in SocialHelper
+      SocialHelper.postEpisodeLike(episodeOrCommentId, episodeId) // This method needs to be implemented in SocialHelper
         .then(response => {
           if (response.status === 200) {
             // Update the UI to reflect the like

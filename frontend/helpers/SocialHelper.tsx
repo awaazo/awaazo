@@ -1,217 +1,201 @@
 import axios from "axios";
-import { BaseResponse } from "../utilities/Responses";
 import EndpointHelper from "./EndpointHelper";
+import {
+    EpisodeCommentRequest,
+    EpisodeLikeRequest
+} from "../utilities/Requests";
+import {
+    BaseResponse,
+    GetMyPodcastResponse,
+    MyPodcastResponse,
+    GetMyEpisodeResponse
+} from "../utilities/Responses";
+import { request } from "http";
 
-export interface CommentRequest {
-    episodeId: string;
-    replyToCommentId?: string;
-    text: string;
-}
-
-export default class SocialHelper {
+export default class SocialHelper{
+    static getEpisodeComments() {
+        throw new Error("Method not implemented.");
+    }
 
     /**
-     * Posts a new comment or reply to the server.
-     * @param requestData Request data to be sent to the server.
-     * @returns A BaseResponse object with the server's response.
+     * creates a new episode comment
+     * @param requestData
+     * @param episodeId
+     * @param replyToCommentId
+     * @param commentId
+     * @returns
      */
-    public static postComment = async (episodeOrCommentId, requestData: CommentRequest): Promise<BaseResponse> => {
-        const dataWithTemporaryEpisodeId = {
-            ...requestData,
-            episodeId: requestData.episodeId || 'tempEpisodeId' // Replace 'tempEpisodeId' with a valid ID if needed
-          };
-        
+
+    // Post a new comment
+    public static postEpisodeComment = async (
+        requestData: EpisodeCommentRequest,
+        episodeOrCommentId,
+    ): Promise<BaseResponse> => {
         const options = {
-            method: 'POST',
-            data: dataWithTemporaryEpisodeId,
-            url: EndpointHelper.getCommentEndpoint(episodeOrCommentId),
+            method: "POST",
             headers: {
-                accept: '*/*',
-                'Content-Type': 'application/json'
+                accept: "*/*",
+                "Content-Type": "application/json"
+
             },
-            withCredentials: true
+            data: requestData,
+            url: EndpointHelper.getEpisodeCommentEndpoint(episodeOrCommentId),
+            withCredentials: true, // This will send the session cookie with the request
+            cache: false
         };
 
-        try {
-            console.debug("Sending the following comment...");
+        try{
+            console.debug("Sending the following postEpisodeComment...");
             console.debug(options);
 
+            console.log(options);
+            // Send the request and wait for the response.
             const requestResponse = await axios(options);
 
-            console.debug("Received the following response...");
+            console.debug("Received the following postEpisodeComment...");
             console.debug(requestResponse);
 
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText
-            };
-        } catch (error) {
-            return {
-                status: error.response.status,
-                message: error.response.statusText
-            };
-        }
-    }
-
-    /**
-     * Gets comments for an episode from the server.
-     * @returns A CommentsResponse object with the server's response.
-     */
-    public static getEpisodeComments = async (episodeOrCommentId) => {
-        const options = {
-            method: 'GET',
-            url: EndpointHelper.getEpisodeCommentEndpoint(episodeOrCommentId),
-            headers: {
-                accept: '*/*',
-            },
-            withCredentials: true
-        };
-
-        try {
-            console.debug("Fetching episode comments...");
-            const requestResponse = await axios(options);
+            // Return the response.
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
-                comments: requestResponse.data
             };
         } catch (error) {
             return {
-                status: error.response.status,
-                message: error.response.statusText,
-                comments: []
+                status: error.response?.status,
+                message: error.response?.statusText,
+            };
+        }
+    };
+
+    public static deleteComment = async (commentId): Promise<BaseResponse> => {
+        // Create the request options.
+        const options = {
+            method: "DELETE",
+            url: EndpointHelper.getEpisodeCommentDeleteEndpoint(commentId),
+            headers: {
+                accept: "*/*",
+            },
+            withCredentials: true, // This will send the session cookie with the request
+            cache: false
+        };
+
+        try {
+            console.debug("Sending the following deleteComment...");
+            console.debug(options);
+
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following deleteComment...");
+            console.debug(requestResponse);
+
+            // Return the response.
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+            };
+        } catch (error) {
+            return {
+                status: error.response?.status,
+                message: error.response?.statusText,
+            };
+        }
+    };
+
+    // Post a new like
+    public static postEpisodeLike = async (
+        requestData: EpisodeLikeRequest,
+        episodeOrCommentId,
+    ): Promise<BaseResponse> => {
+        const options = {
+            method: "POST",
+            headers: {
+                accept: "*/*",
+                "Content-Type": "application/json"
+            },
+            data: requestData,
+            url: EndpointHelper.getEpisodeLikeEndpoint(episodeOrCommentId),
+            withCredentials: true, 
+            cache: false
+        };
+
+        try {
+            console.debug("Sending the following postEpisodeLike...");
+            console.debug(options);
+
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following postEpisodeLike...");
+            console.debug(requestResponse);
+
+            // Return the response.
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+            };
+        } catch (error) {
+            return {
+                status: error.response?.status,
+                message: error.response?.statusText,
+            };
+        }
+    };
+
+    // Delete a like
+    public static deleteEpisodeLike = async (
+        episodeOrCommentId,
+    ): Promise<BaseResponse> => {
+        const options = {
+            method: "DELETE",
+            url: EndpointHelper.getEpisodeUnlikeEndpoint(episodeOrCommentId),
+            headers: {
+                accept: "*/*",
+            },
+            withCredentials: true, 
+            cache: false
+        };
+
+        try {
+            console.debug("Sending the following deleteEpisodeLike...");
+            console.debug(options);
+
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following deleteEpisodeLike...");
+            console.debug(requestResponse);
+
+            // Return the response.
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+            };
+        } catch (error) {
+            return {
+                status: error.response?.status,
+                message: error.response?.statusText,
             };
         }
     };
 
 
 
-    /**
-     * Gets user comments from the server.
-     * @returns A CommentsResponse object with the server's response.
-     */
-    public static getUserComments = async (episodeOrCommentId)=> {
-        const options = {
-            method: 'GET',
-            url: EndpointHelper.getUserCommentsEndpoint(episodeOrCommentId),
-            headers: {
-                accept: '*/*',
-            },
-            withCredentials: true
-        };
-
-        try {
-            console.debug("Fetching user comments...");
-            const requestResponse = await axios(options);
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText,
-                comments: requestResponse.data
-                
-            };
-        } catch (error) {
-            return {
-                status: error.response.status,
-                message: error.response.statusText,
-                comments: []
-                
-            };
-        }
-    };
-
-        /**
-         * Likes a comment on the server.
-         * @param commentId The ID of the comment to be liked.
-         * @returns A BaseResponse object with the server's response.
-         */
-        public static likeComment = async (episodeOrCommentId): Promise<BaseResponse> => {
-            const options = {
-            method: 'POST', // Assuming liking is a POST request
-            url: `${EndpointHelper.getLikeEndpoint(episodeOrCommentId)}?commentId=${episodeOrCommentId}`,
-            headers: {
-                accept: '*/*',
-            },
-            withCredentials: true
-            };
-
-            try {
-            console.debug(`Liking comment with ID: ${episodeOrCommentId}`);
-            const requestResponse = await axios(options);
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText,
-            };
-            } catch (error) {
-            return {
-                status: error.response.status,
-                message: error.response.statusText,
-            };
-            }
-        };
-
-        /**
-        * UnLikes a comment on the server.
-        * @param commentId The ID of the comment to be liked.
-        * @returns A BaseResponse object with the server's response.
-        */
-        public static unlikeComment = async (episodeOrCommentId, ): Promise<BaseResponse> => {
-            const options = {
-            method: 'DELETE', 
-            url: `${EndpointHelper.getUnlikeEndpoint(episodeOrCommentId)}?commentId=${episodeOrCommentId}`,
-            headers: {
-                accept: '*/*',
-            },
-            withCredentials: true
-            };
-
-            try {
-            console.debug(`Unliking comment with ID: ${episodeOrCommentId}`);
-            const requestResponse = await axios(options);
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText,
-            };
-            } catch (error) {
-            return {
-                status: error.response.status,
-                message: error.response.statusText,
-            };
-            }
-        };
-
-    /**
-     * Deletes a comment from the server.
-     * @param commentId The ID of the comment to be deleted.
-     * @returns A BaseResponse object with the server's response.
-     */
-    public static deleteComment = async (episodeOrCommentId, commentId: string): Promise<BaseResponse> => {
-        const options = {
-            method: 'DELETE',
-            url: `${EndpointHelper.getDeleteCommentEndpoint(episodeOrCommentId)}?commentId=${commentId}`,
-            headers: {
-                accept: '*/*',
-            },
-            withCredentials: true
-        };
-
-        try {
-            console.debug(`Deleting comment with ID: ${commentId}`);
-            const requestResponse = await axios(options);
-            return {
-                status: requestResponse.status,
-                message: requestResponse.statusText,
-               
-            };
-        } catch (error) {
-            return {
-                status: error.response.status,
-                message: error.response.statusText,
-                
-            };
-        }
-    };
-
- 
-    }
 
 
+
+
+
+
+
+
+
+
+
+
+
+}

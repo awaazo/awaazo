@@ -43,7 +43,7 @@ const ContinueListening = () => {
                 {episode.title}
               </Text>
               <HStack spacing={3}>
-                <LikeComponent />
+                <LikeComponent episodeId={index} />
                 <CommentComponent />
               </HStack>
             </HStack>

@@ -34,6 +34,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import LikeComponent from "../social/likeComponent";
 
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
@@ -120,6 +121,7 @@ const Episode = ({ episode }) => {
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
           <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text>
+          <LikeComponent episodeId={episode.episodeId} />
         </Text>
         {/* Episode Details */}
         <Flex
