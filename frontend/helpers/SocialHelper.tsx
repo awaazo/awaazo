@@ -1,6 +1,5 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeCommentRequest } from "../utilities/Requests";
 import {
   BaseResponse,
   GetMyPodcastResponse,
@@ -25,7 +24,7 @@ export default class SocialHelper {
 
   // Post a new comment
   public static postEpisodeComment = async (
-    requestData: EpisodeCommentRequest,
+    data,
     episodeOrCommentId,
   ): Promise<BaseResponse> => {
     const options = {
@@ -34,7 +33,7 @@ export default class SocialHelper {
         accept: "*/*",
         "Content-Type": "application/json",
       },
-      data: requestData,
+      data: data,
       url: EndpointHelper.getEpisodeCommentEndpoint(episodeOrCommentId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
