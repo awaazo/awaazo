@@ -1,5 +1,4 @@
-﻿using AutoMapper.Internal;
-using Backend.Models;
+﻿using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -122,7 +121,7 @@ namespace Backend.Controllers
                     return NotFound("User does not exist.");
 
 
-                return Ok(await _subscriptionService.GetPodcastSubscriptionAsync(PodcastId,GetDomainUrl(HttpContext)));
+                return Ok(await _subscriptionService.GetPodcastSubscriptionAsync(PodcastId,user,GetDomainUrl(HttpContext)));
             }
             catch (Exception ex)
             {

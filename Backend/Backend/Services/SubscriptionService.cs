@@ -1,4 +1,5 @@
-﻿using Backend.Controllers.Responses;
+﻿using AutoMapper;
+using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
@@ -9,11 +10,11 @@ namespace Backend.Services
     public class SubscriptionService : ISubscriptionService
     {
         private readonly AppDbContext _db;
-        private readonly IProfileService _profileService;
+  
 
-        public SubscriptionService(AppDbContext db,IProfileService profileService) { 
+        public SubscriptionService(AppDbContext db) { 
             _db = db;
-            _profileService = profileService;
+         
         }
 
         public async Task<List<PodcastResponse>> MySubscriptionsAsync(User user,string DomainUrl)
@@ -37,17 +38,25 @@ namespace Backend.Services
             return list;
         }
 
-        public async Task<List<UserProfileResponse>> GetPodcastSubscriptionAsync(Guid PodcastId, string DomainUrl)
+        public async Task<List<UserProfileResponse>> GetPodcastSubscriptionAsync(Guid PodcastId,User user,string DomainUrl)
         {
+            if (await _db.Podcasts.AnyAsync(u => (u.Id == PodcastId) && (u.PodcasterId == user.Id)) == false)
+            {
+                throw new Exception("Podcast Does not Exist or You are not Authorized");
+            }
+
             // Get the PodcastFollow object for the Podcast
-            List<PodcastFollow> podcastFollows = await _db.PodcastFollows!.Where(u => u.PodcastId == PodcastId).ToListAsync();
+            List<PodcastFollow> podcastFollows = await _db.PodcastFollows!.Where(u => u.PodcastId == PodcastId).Include(u => u.User).ToListAsync();
 
             List<UserProfileResponse> list = new List<UserProfileResponse>();
             // Loop through Podcast Follow Objects
             foreach (PodcastFollow follow in podcastFollows)
             {
-
-                list.Add(_profileService.GetProfile(follow.User,DomainUrl));
+                Console.WriteLine(follow.User);
+                User u1 = follow.User;
+                UserProfileResponse res = (UserProfileResponse)u1;
+                res.AvatarUrl = string.Format("{0}profile/avatar", DomainUrl);
+                list.Add(res);
             }
 
             return list;
