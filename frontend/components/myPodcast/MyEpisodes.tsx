@@ -35,6 +35,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
+import CommentComponent from "../social/commentComponent";
 
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
@@ -126,6 +127,7 @@ const Episode = ({ episode }) => {
             initialLikes={5}
             initialIsLiked={false}
           />
+          <CommentComponent episodeIdOrCommentId={episode.id} />
         </Text>
         {/* Episode Details */}
         <Flex
