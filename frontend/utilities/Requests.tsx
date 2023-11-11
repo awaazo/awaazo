@@ -93,30 +93,21 @@ export interface EpisodeEditRequest {
 //#endregion
 
 //#region Podcast Rating Requests
-export interface PodcastRatingRequest{
-    podcastId: string;
-    rating: number;
+export interface PodcastRatingRequest {
+  podcastId: string;
+  rating: number;
 }
 
-export interface PodcastReviewRequest{
-    podcastId: string;
-    review: string;
+export interface PodcastReviewRequest {
+  podcastId: string;
+  review: string;
 }
 //#endregion
 
 //#region Episode Rating Requests
-export interface EpisodeCommentRequest{
-    episodeOrCommentId: string;
-    episodeId: string;
-    replyToCommentId: string;
-    text: string;
+export interface EpisodeCommentRequest {
+  episodeOrCommentId: string;
+  episodeId: string;
+  replyToCommentId: string;
+  text: string;
 }
-
-export interface EpisodeLikeRequest{
-    episodeId: string;
-    commentId: string;
-  }
-
-
-
-
