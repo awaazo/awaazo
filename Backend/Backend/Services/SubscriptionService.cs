@@ -54,7 +54,7 @@ namespace Backend.Services
             {
                 Console.WriteLine(follow.User);
                 User u1 = follow.User;
-                UserProfileResponse res = (UserProfileResponse)u1;
+                UserProfileResponse res = new UserProfileResponse(u1,DomainUrl);
                 res.AvatarUrl = string.Format("{0}profile/avatar", DomainUrl);
                 list.Add(res);
             }

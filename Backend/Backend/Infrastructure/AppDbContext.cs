@@ -146,7 +146,7 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Restrict);
 
     }
     
