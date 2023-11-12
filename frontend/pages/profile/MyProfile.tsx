@@ -67,7 +67,9 @@ const myProfile = () => {
 }, [router]);
 
 //If the user is logged in
-if(userProfile!==undefined) {
+//(remove next line when authentication works)
+if(userProfile==undefined) {
+//if(userProfile!==undefined) {
   return (
     <>
       <Navbar />
