@@ -144,9 +144,13 @@ const ForYou: React.FC = () => {
         </Text>
       </Box>
       <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
-        {podcasts.map((podcast, index) => (
-          <PodcastCard key={index} podcast={podcast} />
-        ))}
+        {podcasts ? (
+          podcasts.map((podcast, index) => (
+            <PodcastCard key={index} podcast={podcast} />
+          ))
+        ) : (
+          <p>No podcasts available</p>
+        )}
       </SimpleGrid>
     </>
   );

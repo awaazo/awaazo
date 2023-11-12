@@ -44,7 +44,7 @@ const CommentComponent = ({
   const [newComment, setNewComment] = useState("");
   const [replyText, setReplyText] = useState("");
   const [isLiked, setIsLiked] = useState(initialIsLiked);
-  const [likes, setLikes] = useState(initialLikes);
+  const [noOfComments, setNoOfComments] = useState(initialLikes);
 
   useEffect(() => {
     if (isOpen) {
@@ -133,7 +133,7 @@ const CommentComponent = ({
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the unlike
-            setLikes(likes - 1);
+            setNoOfComments(noOfComments - 1);
             setIsLiked(false);
           } else {
             console.error("Error unliking comment:", response.message);
@@ -148,7 +148,7 @@ const CommentComponent = ({
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the like
-            setLikes(likes + 1);
+            setNoOfComments(noOfComments + 1);
             setIsLiked(true);
           } else {
             console.error("Error liking comment:", response.message);
@@ -186,7 +186,7 @@ const CommentComponent = ({
           leftIcon={<Icon as={FaComments} />}
           onClick={onOpen}
         >
-          {comments.length}
+          {noOfComments}
         </Button>
       </Tooltip>
 
