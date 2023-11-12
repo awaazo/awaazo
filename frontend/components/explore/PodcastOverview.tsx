@@ -66,7 +66,7 @@ export default function PodcastOverview({ podcast }) {
               border={"3px solid rgba(255, 255, 255, 0.2)"}
             />
           </Box>
-          <Flex direction="column" flex={1} style={{ paddingTop: "20px" }}>
+          <Flex direction="column" flex={1} style={{ paddingTop: "10px" }}>
             {/* Episode Name */}
 
             <Text fontSize="xl" fontWeight="bold">
@@ -95,7 +95,6 @@ export default function PodcastOverview({ podcast }) {
             <Flex direction="column" fontSize="sm">
               <Text
                 style={{
-                  fontWeight: "bold",
                   fontSize: "larger",
                   paddingTop: "10px",
                 }}
