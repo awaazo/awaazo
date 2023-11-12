@@ -27,12 +27,9 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 
-import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
-
-import { MdEdit } from "react-icons/md";
-
 import EditPodcastForm from "../myPodcast/EditPodcastForm";
-import MyEpisodes from "../myPodcast/MyEpisodes";
+import Episode from "../explore/Episode";
+import Reviews from "../explore/Reviews";
 
 export default function PodcastOverview({ podcast }) {
   const { colorMode } = useColorMode();
@@ -42,7 +39,6 @@ export default function PodcastOverview({ podcast }) {
     <>
       <Box
         p={4}
-        mt={"2em"}
         borderRadius="1em"
         padding={"2em"}
         dropShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"}
@@ -148,28 +144,7 @@ export default function PodcastOverview({ podcast }) {
             >
               {podcast.description}
             </Text>
-            <Box
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "1em",
-                padding: "1em",
-                marginTop: "1em",
-                outline: "2px solid rgba(255, 255, 255, 0.1)",
-                marginBottom: "2em",
-                wordSpacing: "0.5em",
-              }}
-            >
-              <Text fontSize="md" fontWeight="bold">
-                🎧 Listeners: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                📊 Subscribers: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5
-              </Text>
-            </Box>
+
             <>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <Text
@@ -193,7 +168,7 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <MyEpisodes episode={episode} key={index} />
+                  <Episode episode={episode} key={index} />
                 ))
               )}
             </>
@@ -211,44 +186,7 @@ export default function PodcastOverview({ podcast }) {
                 outline: "none",
               }}
             >
-              {/* Description and statistics */}
-              <Text
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.1)",
-                  backdropFilter: "blur(10px)",
-                  borderRadius: "1em",
-                  padding: "2em",
-                  outline: "2px solid rgba(255, 255, 255, 0.1)",
-                  marginBottom: "0.5em",
-                  marginTop: "1em",
-                  wordBreak: "break-word",
-                }}
-              >
-                {podcast.description}
-              </Text>
-              <Box
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.1)",
-                  backdropFilter: "blur(10px)",
-                  borderRadius: "1em",
-                  padding: "2em",
-                  marginTop: "1em",
-                  outline: "2px solid rgba(255, 255, 255, 0.1)",
-                  marginBottom: "2em",
-                  wordSpacing: "0.5em",
-                }}
-              >
-                {/* Podcast statistics */}
-                <Text fontSize="md" fontWeight="bold">
-                  🎧 Listeners: 5
-                </Text>
-                <Text fontSize="md" fontWeight="bold">
-                  📊 Subscribers: 5
-                </Text>
-                <Text fontSize="md" fontWeight="bold">
-                  ❤️ Likes: 5
-                </Text>
-              </Box>
+              <Reviews podcast={podcast} />
             </Box>
 
             {/* Podcast mapping on the right */}
@@ -266,7 +204,7 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <MyEpisodes episode={episode} key={index} />
+                  <Episode episode={episode} key={index} />
                 ))
               )}
             </div>
