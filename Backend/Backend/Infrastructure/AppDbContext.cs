@@ -18,20 +18,34 @@ public class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<User>? Users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<Episode>? Episodes { get; set; }
+    public virtual DbSet<Episode> Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }
     public virtual DbSet<Annotation>? Annotations { get; set; }
-    public virtual DbSet<Podcast>? Podcasts { get; set; }
+    public virtual DbSet<Podcast> Podcasts { get; set; }
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
     public virtual DbSet<Sponsor>? Sponsors { get; set; }
     public virtual DbSet<MediaLink>? MediaLinks { get; set; }
     public virtual DbSet<PodcastRating>? PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
+    public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
+    public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Files>? File { get; set; }
 
+    /// <summary>
+    /// Maps to the Soundex function in the database.
+    /// No need to implement on server as it will be used in db.
+    /// </summary>
+    /// <param name="keyTerm"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [DbFunction("SoundEx", IsBuiltIn = true)]
+    public static string Soundex(string keyTerm)
+    {
+        throw new NotImplementedException();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -125,9 +139,6 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
-
- 
-
     }
     
     public override int SaveChanges()

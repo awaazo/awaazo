@@ -6,7 +6,7 @@ namespace Backend.Services.Interfaces;
 
 public interface IProfileService
 {
-    public UserProfileResponse GetProfile(User user, HttpContext httpContext);
+    public UserProfileResponse GetProfile(User user, string domainUrl);
 
     public Task<bool> SetupProfileAsync(ProfileSetupRequest request, User user);
 
