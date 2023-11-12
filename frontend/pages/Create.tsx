@@ -47,12 +47,15 @@ const CreateEpisode = () => {
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
+  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
-  // DELETE WHEN BACKEND UPDATES REQUEST FOR ADD EPISODE
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const handleCoverImageUpload = (e: FormEvent) => {
@@ -127,6 +130,22 @@ const CreateEpisode = () => {
         setAddError("Episode File, Name and Description Required.");
       }
     }
+  };
+
+  // Ensures episode name is not longer than 25 characters
+  const handleEpisodeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value.slice(0, 25);
+    setEpisodeName(newName);
+    setEpisodeNameCharacterCount(newName.length);
+  };
+
+  // Ensures episode description is not longer than 250 characters
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newDesc = e.target.value.slice(0, 250);
+    setDescription(newDesc);
+    setDescriptionCharacterCount(newDesc.length);
   };
 
   // Function to navigate to create podcast page
@@ -318,22 +337,41 @@ const CreateEpisode = () => {
             {addError && <Text color="red.500">{addError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
-              <FormControl>
+              <FormControl position="relative">
                 <Input
                   value={episodeName}
-                  onChange={(e) => setEpisodeName(e.target.value)}
+                  onChange={handleEpisodeNameChange}
                   placeholder="Enter episode name..."
                   rounded="lg"
+                  pr="50px"
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {episodeNameCharacterCount}/25
+                </Text>
               </FormControl>
 
               {/* Description Textarea */}
-              <FormControl>
+              <FormControl position="relative">
                 <Textarea
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleDescriptionChange}
                   placeholder="Enter episode description..."
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {descriptionCharacterCount}/250
+                </Text>
               </FormControl>
 
               {/* Genre Selection */}
