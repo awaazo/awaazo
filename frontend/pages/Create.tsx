@@ -106,6 +106,17 @@ const CreateEpisode = () => {
     if (selectedPodcast == null) {
       setAddError("Please select the Podcast you wish to upload to");
     } else {
+      // Ensure all required fields are filled
+      if (
+        coverImageFile == null ||
+        episodeName == "" ||
+        description == "" ||
+        file == null
+      ) {
+        setAddError("Cover Image, Episode Name and Description Required.");
+        return;
+      }
+
       // Create request object
       const request: EpisodeAddRequest = {
         audioFile: file,
@@ -127,7 +138,7 @@ const CreateEpisode = () => {
         window.location.href = myPodcastsPage;
       } else {
         // Handle error here
-        setAddError("Episode File, Name and Description Required.");
+        setAddError(response.data);
       }
     }
   };

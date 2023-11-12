@@ -80,7 +80,11 @@ export default function EditEpisodeForm({ episode }) {
    */
   const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
-
+    // Ensure all required fields are filled
+    if (episodeName == "" || description == "") {
+      setEditError("Cover Image, Episode Name and Description Required.");
+      return;
+    }
     // Create request object
     const request: EpisodeEditRequest = {
       audioFile: file,
@@ -102,7 +106,7 @@ export default function EditEpisodeForm({ episode }) {
       window.location.href = myPodcastsPage;
     } else {
       // Handle error here
-      setEditError("Episode File, Name and Description Required.");
+      setEditError(response.data);
     }
   };
 
