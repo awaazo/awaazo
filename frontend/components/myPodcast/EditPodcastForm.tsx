@@ -22,7 +22,9 @@ export default function EditPodcastForm({ podcastId }) {
       if (res.status == 200) {
         setCoverImage(res.podcast.coverArtUrl);
         setPodcastName(res.podcast.name);
+        setPodcastNameCharacterCount(res.podcast.name.length);
         setDescription(res.podcast.description);
+        setDescriptionCharacterCount(res.podcast.description.length);
         setTags(res.podcast.tags);
       } else {
         setEditError("Podcasts cannot be fetched");
@@ -55,7 +57,11 @@ export default function EditPodcastForm({ podcastId }) {
   // Form Values
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [podcastName, setPodcastName] = useState("");
+  const [podcastNameCharacterCount, setPodcastNameCharacterCount] =
+    useState<number>(0);
   const [tags, setTags] = useState([]);
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
 
   // Form errors
@@ -142,6 +148,22 @@ export default function EditPodcastForm({ podcastId }) {
     }
   };
 
+  // Ensures podcast name is not longer than 25 characters
+  const handlePodcastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value.slice(0, 25);
+    setPodcastName(newName);
+    setPodcastNameCharacterCount(newName.length);
+  };
+
+  // Ensures episode description is not longer than 250 characters
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newDesc = e.target.value.slice(0, 250);
+    setDescription(newDesc);
+    setDescriptionCharacterCount(newDesc.length);
+  };
+
   /**
    * Contains the elements of the Create Podcast page
    * @returns Create Podcast Page content
@@ -222,22 +244,32 @@ export default function EditPodcastForm({ podcastId }) {
             </div>
             {editError && <Text color="red.500">{editError}</Text>}
 
-            <FormControl>
+            <FormControl position="relative">
               <Input
                 id="podcastName"
                 placeholder="Podcast Name"
                 value={podcastName}
-                onChange={(e) => setPodcastName(e.target.value)}
-                style={{ alignSelf: "center" }}
-              />
+                onChange={handlePodcastNameChange}
+                style={{ alignSelf: "center", borderRadius: "0.8em" }}
+                pr="50px"
+              />{" "}
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {podcastNameCharacterCount}/25
+              </Text>
             </FormControl>
 
-            <FormControl>
+            <FormControl position="relative">
               <Textarea
                 id="description"
                 placeholder="What's the Podcast about?"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 style={{
                   width: "100%",
                   height: "100px",
@@ -247,6 +279,15 @@ export default function EditPodcastForm({ podcastId }) {
                 }}
                 resize="vertical" // Made the bio textarea resizable
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {descriptionCharacterCount}/250
+              </Text>
             </FormControl>
 
             <FormControl>
