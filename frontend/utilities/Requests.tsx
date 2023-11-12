@@ -103,8 +103,3 @@ export interface PodcastReviewRequest {
   review: string;
 }
 //#endregion
-
-//#region Episode Rating Requests
-export interface EpisodeCommentRequest {
-  string;
-}
