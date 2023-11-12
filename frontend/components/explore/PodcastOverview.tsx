@@ -57,11 +57,13 @@ export default function PodcastOverview({ podcast }) {
         <Flex paddingTop={5} width="100%" boxShadow="sm">
           <Box position="relative" mr={5}>
             <Image
-              boxSize={isMobile ? "0px" : "180px"}
+              boxSize={isMobile ? "100%" : "180px"}
+              objectFit="cover"
               src={podcast.coverArtUrl}
-              borderRadius="10%"
+              borderRadius="2em"
               marginLeft={isMobile ? "0px" : "20px"}
               mt={1}
+              border={"3px solid rgba(255, 255, 255, 0.2)"}
             />
           </Box>
           <Flex direction="column" flex={1} style={{ paddingTop: "20px" }}>

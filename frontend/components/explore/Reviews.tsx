@@ -44,17 +44,24 @@ const Reviews = ({ podcast }) => {
 
   return (
     <VStack align="start" spacing={4}>
-      {podcast.ratings.map((rating) => (
-        <Box key={rating.id} w="100%" p={4} borderWidth="1px" borderRadius="lg">
-          <HStack justify="space-between" align="center">
-            <Text color="gray.500">{rating.userId}</Text>
-            <Text color="gray.500">{rating.rating}</Text>
-            <Text color="gray.500">{rating.review}</Text>
-          </HStack>
-          <Text mt={2}>{rating.text}</Text>
-          {/* Include other components or information related to the rating */}
-        </Box>
-      ))}
+      {podcast.ratings &&
+        podcast.ratings.map((rating) => (
+          <Box
+            key={rating.id}
+            w="100%"
+            p={4}
+            borderWidth="1px"
+            borderRadius="lg"
+          >
+            <HStack justify="space-between" align="center">
+              <Text color="gray.500">{rating.userId}</Text>
+              <Text color="gray.500">{rating.rating}</Text>
+              <Text color="gray.500">{rating.review}</Text>
+            </HStack>
+            <Text mt={2}>{rating.text}</Text>
+            {/* Include other components or information related to the rating */}
+          </Box>
+        ))}
     </VStack>
   );
 };

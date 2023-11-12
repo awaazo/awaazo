@@ -28,14 +28,14 @@ const PodcastCard = ({ podcast }) => (
     background={"transparent"}
     onClick={() => navigateToExplorePodcast(podcast.id)}
     _hover={{
-      transform: "scale(1.05)",
+      transform: "scale(1.07)",
       textDecoration: "none",
     }}
     height={"100%"}
     position="relative" // Ensure the card has a relative position for absolute child positioning
     style={{
-      outline: "solid 1px rgba(255, 255, 255, 0.1)",
-      borderRadius: "1.2em",
+      outline: "solid 3px rgba(255, 255, 255, 0.15)",
+      borderRadius: "1.5em",
       transition: "all 0.4s ease-in-out",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
     }}
