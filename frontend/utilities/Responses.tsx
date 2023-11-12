@@ -34,8 +34,15 @@ export interface UserProfileResponse extends BaseResponse {
 
 //#endregion
 
-
 //#region Podcast Responses
+export interface CreatePodcastResponse extends BaseResponse {
+  data: string;
+}
+
+export interface EditPodcastResponse extends BaseResponse {
+  data: string;
+}
+
 export interface MyPodcastResponse extends BaseResponse {
   myPodcasts: Podcast[];
 }
@@ -47,6 +54,13 @@ export interface GetMyPodcastResponse extends BaseResponse {
 //#endregion
 
 //#region Podcast Responses
+export interface CreateEpisodeResponse extends BaseResponse {
+  data: string;
+}
+
+export interface EditEpisodeResponse extends BaseResponse {
+  data: string;
+}
 
 export interface GetMyEpisodeResponse extends BaseResponse {
   episode: Episode;

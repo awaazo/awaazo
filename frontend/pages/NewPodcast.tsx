@@ -103,6 +103,11 @@ const NewPodcast: React.FC = () => {
    */
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
+    // Ensure all required fields are filled
+    if (coverImageFile == null || podcastName == "" || description == "") {
+      setCreateError("Cover Image, Podcast Name and Description Required.");
+      return;
+    }
 
     // Create request object
     const request: PodcastCreateRequest = {
@@ -121,7 +126,7 @@ const NewPodcast: React.FC = () => {
       window.location.href = createPage;
     } else {
       // Handle error here
-      setCreateError("Cover Image, Podcast Name and Description Required.");
+      setCreateError(response.data);
     }
   };
 

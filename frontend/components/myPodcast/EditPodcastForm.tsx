@@ -87,7 +87,11 @@ export default function EditPodcastForm({ podcastId }) {
    */
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
-
+    // Ensure all required fields are filled
+    if (podcastName == "" || description == "") {
+      setEditError("Cover Image, Podcast Name and Description Required.");
+      return;
+    }
     // Create request object
     const request: PodcastEditRequest = {
       Id: podcastId,
@@ -106,7 +110,7 @@ export default function EditPodcastForm({ podcastId }) {
       window.location.href = myPodcastsPage;
     } else {
       // Handle error here
-      setEditError("Cover Image, Podcast Name and Description Required.");
+      setEditError(response.data);
     }
   };
 

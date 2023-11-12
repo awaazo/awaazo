@@ -8,9 +8,13 @@ import {
 } from "../utilities/Requests";
 import {
   BaseResponse,
+  CreatePodcastResponse,
   MyPodcastResponse,
   GetMyPodcastResponse,
+  CreateEpisodeResponse,
+  EditEpisodeResponse,
   GetMyEpisodeResponse,
+  EditPodcastResponse,
 } from "../utilities/Responses";
 
 export default class PodcastHelper {
@@ -25,7 +29,7 @@ export default class PodcastHelper {
    */
   public static podcastCreateRequest = async (
     requestData: PodcastCreateRequest,
-  ): Promise<BaseResponse> => {
+  ): Promise<CreatePodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -54,12 +58,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -114,7 +120,7 @@ export default class PodcastHelper {
   public static episodeAddRequest = async (
     requestData: EpisodeAddRequest,
     podcastId,
-  ): Promise<BaseResponse> => {
+  ): Promise<CreateEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -143,12 +149,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -245,7 +253,7 @@ export default class PodcastHelper {
    */
   public static podcastEditRequest = async (
     requestData: PodcastEditRequest,
-  ): Promise<BaseResponse> => {
+  ): Promise<EditPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -274,12 +282,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -376,7 +386,7 @@ export default class PodcastHelper {
   public static podcastEpisodeEditRequest = async (
     requestData: EpisodeEditRequest,
     episodeId,
-  ): Promise<BaseResponse> => {
+  ): Promise<EditEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -405,12 +415,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
