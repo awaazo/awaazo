@@ -21,13 +21,11 @@ public class PodcastController : ControllerBase
 
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
-    private readonly AppDbContext _db;
 
-    public PodcastController(IPodcastService podcastService, IAuthService authService, AppDbContext db)
+    public PodcastController(IPodcastService podcastService, IAuthService authService)
     {
         _podcastService = podcastService;
         _authService = authService;
-        _db = db;
     }
 
     #region Podcast
@@ -413,37 +411,15 @@ public class PodcastController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
-    public async Task<IActionResult> SaveWatchHistory(Guid podcastId, Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
+    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
     {
         try
         {
             User? user = await _authService.IdentifyUserAsync(HttpContext);
             if (user is null)
                 return NotFound("User not found");
-            
-            var episode = await _podcastService.GetEpisodeByIdAsync(episodeId, GetDomainUrl(HttpContext));
-            
-            // Check if user had episode interaction before
-            var interaction = await _podcastService.GetUserEpisodeInteraction(user, episode.Episode);
-            if (interaction is null)
-            {
-                interaction = new UserEpisodeInteraction(_db)
-                {
-                    EpisodeId = episode.Id,
-                    UserId = user.Id,
-                    DateListened = DateTime.Now,
-                    LastListenPosition = Math.Min(episode.Episode.Duration, request.ListenPosition)
-                };
-                await _db.UserEpisodeInteractions!.AddAsync(interaction);
-            }
-            else
-            {
-                interaction.DateListened = DateTime.Now;
-                interaction.LastListenPosition = Math.Min(episode.Episode.Duration, request.ListenPosition);
-                _db.UserEpisodeInteractions!.Update(interaction);
-            }
-            
-            await _db.SaveChangesAsync();
+
+            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
             return Ok(interaction);
         }
         catch (Exception e)

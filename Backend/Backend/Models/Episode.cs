@@ -72,13 +72,10 @@ public class Episode : BaseEntity
 
 public class UserEpisodeInteraction : BaseEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
     public Guid UserId { get; set; }
 
     public User User { get; set; } = null!;
-
+    
     public Guid EpisodeId { get; set; }
 
     [DefaultValue(false)]
