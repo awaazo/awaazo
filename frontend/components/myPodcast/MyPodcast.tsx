@@ -39,9 +39,6 @@ import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode } from "../../utilities/Interfaces";
-import CommentComponent from "../social/commentComponent";
-import Episode from "../myPodcast/MyEpisodes";
-import LikeComponent from "../social/likeComponent";
 
 export default function MyPodcast({ podcastId }) {
   useEffect(() => {
@@ -264,7 +261,7 @@ export default function MyPodcast({ podcastId }) {
                 📊 Subscribers: 5
               </Text>
               <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5 
+                ❤️ Likes: 5
               </Text>
             </Box>
             <>
@@ -275,17 +272,6 @@ export default function MyPodcast({ podcastId }) {
                 >
                   Episodes:
                 </Text>{" "}
-                <Button
-                  onClick={navigateToCreatePage}
-                  style={{
-                    fontWeight: "bold",
-                    marginLeft: "10px",
-                    borderRadius: "10em",
-                    borderColor: "rgba(158, 202, 237, 0.6)",
-                  }}
-                >
-                  New Episode
-                </Button>
               </div>
 
               {episodes.length === 0 ? (
@@ -311,7 +297,7 @@ export default function MyPodcast({ podcastId }) {
             {/* Sidebar on the left */}
             <Box
               p={4}
-              mt={"2em"}
+              mt={"0.5em"}
               width={"30%"}
               padding={"1em"}
               _focus={{
@@ -356,13 +342,11 @@ export default function MyPodcast({ podcastId }) {
                 <Text fontSize="md" fontWeight="bold">
                   ❤️ Likes: 5
                 </Text>
-                <CommentComponent episodeIdOrCommentId={episodes}/>
-                <LikeComponent episodeIdOrCommentId={episodes}/>
               </Box>
             </Box>
 
             {/* Podcast mapping on the right */}
-            <div style={{ flex: 1, paddingLeft: 25 }}>
+            <div style={{ flex: 1, paddingLeft: 25, marginTop: "1.5em" }}>
               {episodes.length === 0 ? (
                 <Text
                   align={"center"}
