@@ -34,11 +34,11 @@ import { Comment, Reply } from "../../utilities/Interfaces";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import axios from "axios";
 
-const CommentComponent = ({ 
-    episodeIdOrCommentId,
-    initialLikes,
-    initialIsLiked
- }) => {
+const CommentComponent = ({
+  episodeIdOrCommentId,
+  initialLikes,
+  initialIsLiked,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -101,16 +101,25 @@ const CommentComponent = ({
     }
   };
 
-  const handleReply = (index: number) => {
-    if (replyText.trim()) {
-      const reply = {
-        text: replyText.trim(),
-      };
-      const updatedComments = [...comments];
-      updatedComments[index].replies.push(reply);
-      setComments(updatedComments);
-      setReplyText("");
+  const handleReply = async (index: number) => {
+    const comment = comments[index];
+    const commentId = comment.id; // Assuming each comment has a unique 'id' property
+
+    const updatedComments = [...comments];
+    //updatedComments[index].replies.push(replyText);
+    setComments(updatedComments);
+    const response = await SocialHelper.postEpisodeComment(
+      replyText,
+      commentId,
+    );
+    if (response.status === 200) {
+      // Update the UI to reflect the new comment
+      //to fix
+      //setComments((comments) => [...comments, newComment]);
+    } else {
+      console.error("Error posting comment:", response.message);
     }
+    setReplyText("");
   };
 
   const handleLike = (index: number) => {
@@ -141,7 +150,7 @@ const CommentComponent = ({
             // Update the UI to reflect the like
             setLikes(likes + 1);
             setIsLiked(true);
-            } else {
+          } else {
             console.error("Error liking comment:", response.message);
           }
         })
@@ -216,7 +225,9 @@ const CommentComponent = ({
                     </HStack>
                     <HStack mt={3} spacing={2}>
                       <Tooltip
-                        label={isLiked ? "Unlike this comment" : "Like this comment"}
+                        label={
+                          isLiked ? "Unlike this comment" : "Like this comment"
+                        }
                         aria-label="Like tooltip"
                       >
                         <IconButton
@@ -245,23 +256,17 @@ const CommentComponent = ({
                       </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
-                      {
-                      comment.replies.map((reply, index) => (
-                        <Box
-                          key={index}
-                          bg="gray.650"
-                          p={2}
-                          borderRadius="md"
-                        >
-                            <Avatar src={reply.user.avatarUrl} />
+                      {comment.replies.map((reply, index) => (
+                        <Box key={index} bg="gray.650" p={2} borderRadius="md">
+                          <Avatar src={reply.user.avatarUrl} />
                           <Text fontWeight="bold">{reply.user.username}:</Text>
                           <Text>{reply.text}</Text>
                           <HStack spacing={1} p={2} borderRadius="md">
                             <Icon as={FaClock} color="gray.500" />
                             <Text fontSize="xs" color="gray.500">
-                                {reply.dateCreated.toLocaleString()}
+                              {reply.dateCreated.toLocaleString()}
                             </Text>
-                            </HStack>
+                          </HStack>
                         </Box>
                       ))}
                       <Input
