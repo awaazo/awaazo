@@ -47,6 +47,9 @@ export interface MyPodcastResponse extends BaseResponse {
   myPodcasts: Podcast[];
 }
 
+export interface AllPodcastResponse extends BaseResponse {
+  podcasts: Podcast[];
+}
 export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
 }

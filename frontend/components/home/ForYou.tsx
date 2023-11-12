@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SimpleGrid,
   Box,
@@ -9,71 +9,14 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import { Podcast } from "../../utilities/Interfaces";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
-// Dummy podcast data
-const podcasts = [
-  {
-    title: "The Daily Education",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,education",
-    description: "The Daily Education is a podcast about education.",
-  },
-  {
-    title: "Tech Talk",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,technology",
-    description: "Tech Talk is a podcast about technology.",
-  },
-  {
-    title: "History Uncovered",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,history",
-    description: "History Uncovered is a podcast about history.",
-  },
-  {
-    title: "Science Explorers",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,science",
-    description: "Science Explorers is a podcast about science.",
-  },
-  {
-    title: "Business Insights",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,business",
-    description: "Business Insights is a podcast about business.",
-  },
-  {
-    title: "Health and Wellness",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,health",
-    description: "Health and Wellness is a podcast about health.",
-  },
-  {
-    title: "Sports Talk",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,sports",
-    description: "Sports Talk is a podcast about sports.",
-  },
-  {
-    title: "True Crime Stories",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,truecrime",
-    description: "True Crime Stories is a podcast about true crime.",
-  },
-  {
-    title: "Comedy Central",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,comedy",
-    description: "Comedy Central is a podcast about comedy.",
-  },
-  {
-    title: "Art and Culture",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,art",
-    description: "Art and Culture is a podcast about art.",
-  },
-  {
-    title: "Personal D",
-    imageUrl:
-      "https://source.unsplash.com/random/300x300?podcast,personaldevelopment",
-    description: "Its a podcast about personal development.",
-  },
-  {
-    title: "New Podcast",
-    imageUrl: "https://source.unsplash.com/random/300x300?podcast,new",
-    description: "New Podcast is a podcast about something new.",
-  },
-];
+// Function to navigate to explore podcast page
+const navigateToExplorePodcast = (podcastId) => {
+  const podcastPage = "/Explore/" + podcastId;
+  window.location.href = podcastPage;
+};
 
 const PodcastCard = ({ podcast }) => (
   <Card
@@ -83,6 +26,7 @@ const PodcastCard = ({ podcast }) => (
     rounded="md"
     overflow="hidden"
     background={"transparent"}
+    onClick={() => navigateToExplorePodcast(podcast.id)}
     _hover={{
       transform: "scale(1.05)",
       textDecoration: "none",
@@ -128,7 +72,7 @@ const PodcastCard = ({ podcast }) => (
           right: 0,
           bottom: 0,
           left: 0,
-          background: `url(${podcast.imageUrl})`,
+          background: `url(${podcast.coverArtUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "blur(20px)",
@@ -137,7 +81,7 @@ const PodcastCard = ({ podcast }) => (
       />
     </div>
     <Image
-      src={podcast.imageUrl}
+      src={podcast.coverArtUrl}
       alt={podcast.title}
       height={{
         base: "150px",
@@ -148,10 +92,12 @@ const PodcastCard = ({ podcast }) => (
     />
     <Flex direction="column" align="center" p={4}>
       <Text fontSize="xl" fontWeight="bold" mb={2}>
-        {podcast.title}
+        {podcast.name}
       </Text>
       <Text fontSize="sm" textAlign="center" opacity={"0.6"}>
-        {podcast.description}
+        {podcast.description.length <= 50
+          ? podcast.description
+          : podcast.description.slice(0, 50) + "..."}
       </Text>
     </Flex>
     {/* button */}
@@ -163,27 +109,24 @@ const PodcastCard = ({ podcast }) => (
         transform: "translate(-50%, 50%)", // This ensures the center of the button is exactly in the middle
         zIndex: 999,
       }}
-    >
-      <button
-        style={{
-          backgroundColor: "rgba(30, 215, 96, 0.45)",
-          border: "none",
-          borderRadius: "1.5rem",
-          boxShadow: "0 1px 16px rgba(0, 0, 0, 0.7)",
-          cursor: "pointer",
-          padding: "0.4em 2em 0.4em 2em",
-          backdropFilter: "blur(10px)",
-          outline: "2px solid rgba(255, 255, 255, .5)",
-        }}
-      >
-        View
-      </button>
-    </div>
+    ></div>
   </Card>
 );
 
 const ForYou: React.FC = () => {
+  useEffect(() => {
+    PodcastHelper.podcastAllPodcastsGet(0, 20).then((res) => {
+      // If logged in, set user, otherwise redirect to login page
+      if (res.status == 200) {
+        setPodcasts(res.podcasts);
+      } else {
+        setPodcasts(null);
+      }
+    });
+  });
+
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
 
   return (
     <>

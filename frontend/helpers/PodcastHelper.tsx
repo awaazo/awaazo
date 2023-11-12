@@ -12,6 +12,7 @@ import {
   MyPodcastResponse,
   GetMyPodcastResponse,
   CreateEpisodeResponse,
+  AllPodcastResponse,
   EditEpisodeResponse,
   GetMyEpisodeResponse,
   EditPodcastResponse,
@@ -108,6 +109,51 @@ export default class PodcastHelper {
         status: error.response.status,
         message: error.response.statusText,
         myPodcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all podcasts from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastAllPodcastsGet = async (
+    page,
+    pageSize,
+  ): Promise<AllPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getPodcastAllPodcastsEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastAllPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastAllPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcasts: null,
       };
     }
   };
