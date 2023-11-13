@@ -100,7 +100,7 @@ const Reviews = ({ podcast }) => {
         )}
       </Flex>
       {isAddingReview && (
-        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.5em">
+        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
           <Flex direction="column" mt={0}>
             <Flex justify="center">
               {[1, 2, 3, 4, 5].map((index) => (
@@ -110,7 +110,7 @@ const Reviews = ({ podcast }) => {
                   cursor="pointer"
                   onClick={() => setNewRating(index)}
                   boxSize={5}
-                  margin={2} // Increase spacing between stars
+                  margin={2}
                 />
               ))}
               {reviewError && <Text color="red.500">{reviewError}</Text>}
