@@ -13,6 +13,7 @@ import {
   FormControl,
   Button,
   VStack,
+  HStack,
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import { MdEdit, MdClose, MdDelete } from "react-icons/md";
@@ -99,27 +100,20 @@ const Reviews = ({ podcast }) => {
         )}
       </Flex>
       {isAddingReview && (
-        <Box w="100%" p={4} borderWidth="1px" borderRadius="lg">
-          <Flex justify="space-between" align="center">
-            <Text fontWeight="bold">Add Your Review</Text>
-            <IconButton
-              icon={<MdClose />}
-              onClick={() => setIsAddingReview(false)}
-              aria-label="Cancel"
-            />
-          </Flex>
-          <Flex direction="column" mt={4}>
-            <Box ml={5}>
+        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.5em">
+          <Flex direction="column" mt={0}>
+            <Flex justify="center">
               {[1, 2, 3, 4, 5].map((index) => (
                 <StarIcon
                   key={index}
                   color={newRating >= index ? "yellow.400" : "gray.300"}
                   cursor="pointer"
                   onClick={() => setNewRating(index)}
+                  boxSize={5}
                 />
               ))}
               {reviewError && <Text color="red.500">{reviewError}</Text>}
-            </Box>
+            </Flex>
             <FormControl position="relative">
               <Textarea
                 placeholder="Write your review here..."
@@ -137,10 +131,19 @@ const Reviews = ({ podcast }) => {
                 {reviewCharacterCount}/150
               </Text>
             </FormControl>
-            {/* Add a submit button */}
-            <Button mt={4} onClick={handleAddReview}>
-              Submit Review
-            </Button>
+            <HStack justifyContent="space-between" mt={"5"}>
+              {/* Add a submit button */}
+              <Button onClick={handleAddReview} width="50%" borderRadius="7px">
+                Submit Review
+              </Button>
+              <Button
+                onClick={() => setIsAddingReview(false)}
+                width="50%"
+                borderRadius="7px"
+              >
+                Cancel
+              </Button>
+            </HStack>
           </Flex>
         </Box>
       )}

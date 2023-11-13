@@ -129,7 +129,7 @@ const CreateEpisode = () => {
       // Send the request
       const response = await PodcastHelper.episodeAddRequest(
         request,
-        selectedPodcast.id,
+        selectedPodcast.id
       );
       console.log(response);
 
@@ -152,7 +152,7 @@ const CreateEpisode = () => {
 
   // Ensures episode description is not longer than 250 characters
   const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
