@@ -580,5 +580,38 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
+    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Episode episode)
+    {
+       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episode.Id).FirstOrDefaultAsync();
+    }
+
+    public async Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPisition, string domain)
+    {
+        var episode = await GetEpisodeByIdAsync(episodeId, domain);
+            
+        // Check if user had episode interaction before
+        var interaction = await GetUserEpisodeInteraction(user, episode.Episode);
+        if (interaction is null)
+        {
+            interaction = new UserEpisodeInteraction(_db)
+            {
+                EpisodeId = episode.Id,
+                UserId = user.Id,
+                DateListened = DateTime.Now,
+                LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition)
+            };
+            await _db.UserEpisodeInteractions!.AddAsync(interaction);
+        }
+        else
+        {
+            interaction.DateListened = DateTime.Now;
+            interaction.LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition);
+            _db.UserEpisodeInteractions!.Update(interaction);
+        }
+            
+        await _db.SaveChangesAsync();
+        return interaction;
+    }
+
     #endregion Episode
 }
