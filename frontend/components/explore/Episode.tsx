@@ -33,7 +33,7 @@ import {
 import { MdEdit, MdDelete } from "react-icons/md";
 
 import { FaPlay } from "react-icons/fa";
-import PlayingBar from "../nowPlaying/PlayingBar";
+import PlayingBar from "../player/PlayingBar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
