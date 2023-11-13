@@ -26,4 +26,6 @@ public interface IPodcastService
     public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl);
     public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
     public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
+    public Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Episode episode);
+    public Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPosition, string domain);
 }
