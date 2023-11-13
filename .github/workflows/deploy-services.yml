@@ -25,10 +25,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ghcr.io/${{ github.repository }}/frontend
+          images: ghcr.io/${{ github.repository_owner }}/frontend
           tags: |
             type=ref,event=branch
             type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -59,10 +60,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ghcr.io/${{ github.repository }}/backend
+          images: ghcr.io/${{ github.repository_owner }}/backend
           tags: |
             type=ref,event=branch
             type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
         
       - name: Build and push Docker images
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
