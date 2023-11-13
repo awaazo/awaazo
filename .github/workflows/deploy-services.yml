@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+
+      - name: Add .env.local frontend
+        working-directory: frontend
+        env:
+          settings: ${{ vars.NEXT_ENV_FILE_RELEASE }}
+        run: |
+          touch .env.local
+          echo $settings > .env.local
       
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -52,7 +60,7 @@ jobs:
       - name: Add Config Backend
         working-directory: Backend/Backend
         env:
-          settings: ${{ vars.APPSETTINGSBACKEND }}
+          settings: ${{ vars.APP_SETTINGS_BACKEND_RELEASE }}
         run: |
           touch appsettings.Development.json
           touch appsettings.json
