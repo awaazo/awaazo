@@ -1,13 +1,17 @@
 ﻿using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using AutoMapper;
+using Azure;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using FFMpegCore.Builders.MetaData;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -288,6 +292,41 @@ public class PodcastService : IPodcastService
         {
             podcastResponses.Add(new PodcastResponse(podcast, domainUrl));
         }
+
+        return podcastResponses;
+    }
+
+    /// <summary>
+    /// Gets all podcasts for the given genres/tags.
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <param name="tags"></param>
+    /// <returns></returns>
+    public async Task<List<PodcastResponse>> GetPodcastsByTagsAsync(int page, int pageSize, string domainUrl, string[] tags)
+    {
+        // Add conditions to find each tag
+        List<string> tagQueries = new();
+        foreach(string tag in tags)
+            tagQueries.Add(string.Format(" LOWER(Tags) like '%{0}%' ",tag));
+
+        // Build the query
+        string query = " WHERE "+string.Join(" OR ", tagQueries);
+
+        // Execute the query
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+            .FromSqlRaw($"SELECT * FROM dbo.Podcasts {query}")
+            .Include(p => p.Episodes)
+            .Include(p => p.Ratings)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(p => new PodcastResponse(p, domainUrl))
+            .ToListAsync();
+
+        // Remove all tags that dont belong
+        podcastResponses
+            .RemoveAll(p => !p.Tags.Any(t => tags.Contains(t)));
 
         return podcastResponses;
     }
@@ -594,17 +633,17 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
-    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Episode episode)
+    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Guid episodeId)
     {
-       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episode.Id).FirstOrDefaultAsync();
+       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episodeId).FirstOrDefaultAsync();
     }
 
     public async Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPisition, string domain)
     {
-        var episode = await GetEpisodeByIdAsync(episodeId, domain);
+        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
             
         // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episode.Episode);
+        var interaction = await GetUserEpisodeInteraction(user, episodeId);
         if (interaction is null)
         {
             interaction = new UserEpisodeInteraction(_db)
@@ -612,14 +651,14 @@ public class PodcastService : IPodcastService
                 EpisodeId = episode.Id,
                 UserId = user.Id,
                 DateListened = DateTime.Now,
-                LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition)
+                LastListenPosition = Math.Min(episode.Duration, listenPisition)
             };
             await _db.UserEpisodeInteractions!.AddAsync(interaction);
         }
         else
         {
             interaction.DateListened = DateTime.Now;
-            interaction.LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition);
+            interaction.LastListenPosition = Math.Min(episode.Duration, listenPisition);
             _db.UserEpisodeInteractions!.Update(interaction);
         }
             
