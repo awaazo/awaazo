@@ -73,17 +73,17 @@ public class CommentReplyResponse
 /// </summary>
 public class RatingResponse
 {
-    public RatingResponse(PodcastRating rating)
+    public RatingResponse(PodcastRating rating, string domainUrl)
     {
         Id = rating.Id;
-        UserId = rating.UserId;
+        User = new (rating.User,domainUrl);
         PodcastId = rating.PodcastId;
         Rating = (int)rating.Rating;
         Review = rating.Review;
     }
 
     public Guid Id { get; set; } = Guid.Empty;
-    public Guid UserId { get; set; } = Guid.Empty;
+    public UserMenuInfoResponse User { get; set; } = null!;
     public Guid PodcastId { get; set; } = Guid.Empty;
     public int Rating { get; set; } = 0;
     public string Review{get;set;} = string.Empty;
