@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Text } from "@chakra-ui/react";
+import { Box, IconButton, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Text, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import PlayingHelper from '../../helpers/PlayingHelper';
+import { MdMoreVert } from "react-icons/md";
 
 const PlayComponent = ({ podcastId, episodeId }) => {
   const [audioUrl, setAudioUrl] = useState('');
@@ -11,6 +12,7 @@ const PlayComponent = ({ podcastId, episodeId }) => {
   const audioRef = useRef(new Audio());
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
   useEffect(() => {
    const fetchAudio = async () => {
@@ -85,6 +87,11 @@ const PlayComponent = ({ podcastId, episodeId }) => {
    };
  }, []);
 
+ useEffect(() => {
+   audioRef.current.playbackRate = playbackSpeed;
+ }, [playbackSpeed]);
+ 
+
    // Function to format time in mm:ss format
    const formatTime = (time) => {
       const minutes = Math.floor(time / 60);
@@ -97,6 +104,15 @@ const PlayComponent = ({ podcastId, episodeId }) => {
    audioRef.current.currentTime = seekTime;
    setCurrentTime(seekTime);
  };
+ const handleDownload = () => {
+   const link = document.createElement("a");
+   link.href = audioUrl;
+   link.download = `downloaded_audio.mp3`; // You can dynamically set the filename
+   document.body.appendChild(link);
+   link.click();
+   document.body.removeChild(link);
+ };
+ 
  
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -137,6 +153,20 @@ const PlayComponent = ({ podcastId, episodeId }) => {
            borderRadius="full"
            mr={2}
          />
+         <Menu>
+         <MenuButton as={IconButton} icon={<MdMoreVert />} size="md" colorScheme="blue" borderRadius="full" mr={2} />
+         <MenuList>
+            <MenuItem onClick={handleDownload}>Download</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(0.25)}>0.25x</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(0.5)}>0.5x</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(0.75)}>0.75x</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(1)}>Normal</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(1.25)}>1.25x</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(1.5)}>1.5x</MenuItem>
+            <MenuItem onClick={() => setPlaybackSpeed(2)}>2x</MenuItem>
+         </MenuList>
+         </Menu>
+
          <Text color="white" mt={2}>
           {formatTime(currentTime)} / {formatTime(duration)}
         </Text>
