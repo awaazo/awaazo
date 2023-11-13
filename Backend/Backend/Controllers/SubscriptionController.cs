@@ -70,7 +70,7 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-                return Ok(new { IsSubscribed =  await _subscriptionService.IsSubscribed(PodcastId, user) }) ;
+                return Ok(await _subscriptionService.IsSubscribed(PodcastId, user)) ;
             }
             catch (Exception ex)
             {
