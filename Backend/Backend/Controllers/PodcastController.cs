@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Controllers;
 
@@ -199,7 +200,7 @@ public class PodcastController : ControllerBase
 
 
     [HttpGet("{podcastId}/getCoverArt")]
-    public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId)
+    public async Task<ActionResult> GetPodcastCoverArt(Guid podcastId)
     {
         try
         {
@@ -219,6 +220,27 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("byTags")]
+    public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Return the podcasts that match the given genres
+            return Ok(await _podcastService.GetPodcastsByTagsAsync(page,pageSize,GetDomainUrl(HttpContext),tags));
+        }
+        catch(Exception e)
+        {
             return BadRequest(e.Message);
         }
     }
