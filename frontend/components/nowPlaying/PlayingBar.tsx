@@ -106,7 +106,7 @@ const PlayComponent = ({ podcastId, episodeId }) => {
     return <div>Loading...</div>;
   }
   return (
-   <Box p={2} m={3} bg="gray.500" borderRadius="lg" boxShadow="md">
+   <Box p={2} m={3} bg="gray.500" borderRadius="lg" boxShadow="md" width="full">
      {audioUrl ? (
        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
          <IconButton
@@ -135,7 +135,11 @@ const PlayComponent = ({ podcastId, episodeId }) => {
            size="md"
            colorScheme="blue"
            borderRadius="full"
+           mr={2}
          />
+         <Text color="white" mt={2}>
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </Text>
        </Box>
      ) : (
        <Box textAlign="center" p={3} color="red.500" borderRadius="lg">

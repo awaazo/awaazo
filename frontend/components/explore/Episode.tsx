@@ -134,6 +134,9 @@ const Episode = ({ episode }) => {
             Duration: {formatDuration(episode.duration)}
           </Text>
         </Flex>
+        <PlayingBar podcastId= {episode.podcastId}
+            episodeId= {episode.id} 
+        />
       </Flex>
 
       {/* Edit and Delete Buttons */}
@@ -150,9 +153,6 @@ const Episode = ({ episode }) => {
             initialIsLiked={episode.likes}
           />
 
-          <PlayingBar podcastId= {episode.podcastId}
-              episodeId= {episode.id} 
-          />
         </div>
       </Flex>
     </Flex>
