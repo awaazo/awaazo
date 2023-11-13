@@ -110,6 +110,7 @@ const Reviews = ({ podcast }) => {
                   cursor="pointer"
                   onClick={() => setNewRating(index)}
                   boxSize={5}
+                  margin={2} // Increase spacing between stars
                 />
               ))}
               {reviewError && <Text color="red.500">{reviewError}</Text>}
