@@ -190,6 +190,16 @@ export default function PodcastOverview({ podcast }) {
 
             {/* Podcast mapping on the right */}
             <div style={{ flex: 1, paddingLeft: 25, marginTop: "1.5em" }}>
+              <Text
+                mt={5}
+                style={{
+                  fontWeight: "bold",
+                  paddingLeft: 15,
+                  fontSize: "25px",
+                }}
+              >
+                Episodes:
+              </Text>{" "}
               {podcast.episodes.length === 0 ? (
                 <Text
                   align={"center"}

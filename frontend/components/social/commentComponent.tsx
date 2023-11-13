@@ -226,7 +226,9 @@ const CommentComponent = ({
                     <HStack mt={3} spacing={2}>
                       <Tooltip
                         label={
-                          isLiked ? "Unlike this comment" : "Like this comment"
+                          comment.likes
+                            ? "Unlike this comment"
+                            : "Like this comment"
                         }
                         aria-label="Like tooltip"
                       >
@@ -234,7 +236,7 @@ const CommentComponent = ({
                           icon={
                             <Icon
                               as={FaHeart}
-                              color={isLiked ? "red.500" : "gray.500"}
+                              color={comment.likes ? "red.500" : "gray.500"}
                             />
                           }
                           onClick={() => handleLike(index)}
@@ -243,17 +245,6 @@ const CommentComponent = ({
                         />
                       </Tooltip>
                       <Text fontSize="sm">{comment.likes.length}</Text>
-                      <Tooltip
-                        label="Reply to this comment"
-                        aria-label="Reply tooltip"
-                      >
-                        <IconButton
-                          icon={<Icon as={FaReply} />}
-                          onClick={() => handleReply(index)}
-                          aria-label="Reply to Comment"
-                          size="sm"
-                        />
-                      </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
                       {comment.replies.map((reply, index) => (
@@ -264,16 +255,32 @@ const CommentComponent = ({
                           <HStack spacing={1} p={2} borderRadius="md">
                             <Icon as={FaClock} color="gray.500" />
                             <Text fontSize="xs" color="gray.500">
-                              {reply.dateCreated.toLocaleString()}
+                              {new Date(reply.dateCreated).toLocaleString()}
                             </Text>
                           </HStack>
                         </Box>
                       ))}
-                      <Input
-                        placeholder="Reply to this comment..."
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                      />
+                      <Box mt={2}>
+                        <HStack spacing={2}>
+                          <Input
+                            flex="1"
+                            placeholder="Reply to this comment..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                          />
+                          <Tooltip
+                            label="Reply to this comment"
+                            aria-label="Reply tooltip"
+                          >
+                            <IconButton
+                              icon={<Icon as={FaReply} />}
+                              onClick={() => handleReply(index)}
+                              aria-label="Reply to Comment"
+                              size="sm"
+                            />
+                          </Tooltip>
+                        </HStack>
+                      </Box>
                     </VStack>
                   </Box>
                 ))

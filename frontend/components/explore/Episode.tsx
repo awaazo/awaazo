@@ -35,7 +35,6 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
-import PlayingBar from "../nowPlaying/PlayingBar";
 
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
@@ -87,6 +86,7 @@ const Episode = ({ episode }) => {
 
   return (
     <Flex
+      className="hoverEffect"
       paddingTop={5}
       paddingBottom={5}
       mt={3}
@@ -95,8 +95,14 @@ const Episode = ({ episode }) => {
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(4px)"
       boxShadow="sm"
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", transition: "transform 0.3s" }}
       onClick={() => console.log(episode.id, episode.name)}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = "scale(1.05)";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+      }}
     >
       <Box position="relative" mr={5}>
         <Image
@@ -134,9 +140,6 @@ const Episode = ({ episode }) => {
             Duration: {formatDuration(episode.duration)}
           </Text>
         </Flex>
-        <PlayingBar podcastId= {episode.podcastId}
-            episodeId= {episode.id} 
-        />
       </Flex>
 
       {/* Edit and Delete Buttons */}
@@ -150,9 +153,8 @@ const Episode = ({ episode }) => {
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
-            initialIsLiked={episode.likes}
+            initialIsLiked={false}
           />
-
         </div>
       </Flex>
     </Flex>
