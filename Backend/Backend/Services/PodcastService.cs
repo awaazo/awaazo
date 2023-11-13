@@ -619,17 +619,17 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
-    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Episode episode)
+    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Guid episodeId)
     {
-       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episode.Id).FirstOrDefaultAsync();
+       return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episodeId).FirstOrDefaultAsync();
     }
 
     public async Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPisition, string domain)
     {
-        var episode = await GetEpisodeByIdAsync(episodeId, domain);
+        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
             
         // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episode.Episode);
+        var interaction = await GetUserEpisodeInteraction(user, episodeId);
         if (interaction is null)
         {
             interaction = new UserEpisodeInteraction(_db)
@@ -637,14 +637,14 @@ public class PodcastService : IPodcastService
                 EpisodeId = episode.Id,
                 UserId = user.Id,
                 DateListened = DateTime.Now,
-                LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition)
+                LastListenPosition = Math.Min(episode.Duration, listenPisition)
             };
             await _db.UserEpisodeInteractions!.AddAsync(interaction);
         }
         else
         {
             interaction.DateListened = DateTime.Now;
-            interaction.LastListenPosition = Math.Min(episode.Episode.Duration, listenPisition);
+            interaction.LastListenPosition = Math.Min(episode.Duration, listenPisition);
             _db.UserEpisodeInteractions!.Update(interaction);
         }
             
