@@ -11,11 +11,11 @@ const Sections: React.FC<SectionsProps> = ({ sections }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
 
   return (
-    <Box p={4} borderRadius="2xl" boxShadow="xl" backdropBlur="4px" bg="rgba(255, 255, 255, 0.01)" width="100%" minH="100%">
+    <Box className={"sticky-box"} >
       <Text fontSize={fontSize} fontWeight="bold" mb={4}>
         Sections
       </Text>
-      <VStack spacing={3} align="start">
+      <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="28vh">
         {sections?.map((section, index) => (
           <Box 
             key={index} 

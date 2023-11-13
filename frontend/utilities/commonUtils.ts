@@ -8,3 +8,16 @@ export const convertTime = (seconds: number): string => {
     ? `${timeParts[0]}:${timeParts[1]}:${timeParts[2]}`
     : `${timeParts[1]}:${timeParts[2]}`;
 };
+
+
+export const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows:false,
+  cssEase:"ease",
+  easing:"linear",
+  mobileFirst:"true",
+};

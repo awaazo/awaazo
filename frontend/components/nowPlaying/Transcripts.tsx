@@ -17,7 +17,6 @@ const Transcripts: React.FC<TranscriptsProps> = ({ transcripts }) => {
     <Box
       p={4}
       borderRadius="2xl"
-      boxShadow="xl"
       backdropBlur="4px"
       bg="rgba(255, 255, 255, 0.01)"
       width="100%"
