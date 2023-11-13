@@ -15,13 +15,16 @@ const theme = extendTheme({
     secondary: {
       1: "#81e6d9",
     },
+    background: {
+      light: "rgba(255, 255, 255, 0.2)",
+      dark: "rgba(0, 0, 0, 0.2)",
+    },
   },
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    // 3. Pass the new theme to `ChakraProvider`
-    <ChakraProvider theme={AppTheme}>
+    <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
       <Box
         position="fixed"

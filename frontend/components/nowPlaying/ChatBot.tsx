@@ -1,4 +1,4 @@
-import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex, useBreakpointValue, useColorModeValue } from "@chakra-ui/react";
 import { BsArrowUpCircle } from "react-icons/bs";
 import { useState } from "react";
 
@@ -26,21 +26,22 @@ const Chatbot: React.FC = () => {
   const inputPadding = useBreakpointValue({ base: "1", md: "4" });
 
   return (
-    <Box p={4} boxShadow="xl" rounded="2xl" width="100%" minH="100%" display="flex" flexDirection="column">
+    <Box p={4}  width="100%" minH="100%" display="flex" flexDirection="column"  boxSizing="border-box" position="sticky"   borderRadius="2em" bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}  style={{ backdropFilter: "blur(50px)" }} border="3px solid rgba(255, 255, 255, 0.05)" boxShadow="0px 0px 15px rgba(0, 0, 0, 0.01)">
+      
       <Flex marginBottom={4} justifyContent="center">
         <Image src={awaazoBird} alt="Awaazo Bird AI Helper Logo" boxSize={boxSize} />
       </Flex>
 
       {/* Message Container */}
-      <Flex flexDirection="column" flexGrow={1} px={4} overflowY="auto" mb={4} maxH="60vh">
-        <VStack spacing={4} align="start" flex="1" pb={4}> {/* Added paddingBottom here */}
+      <Flex flexDirection="column" flexGrow={1} px={4} overflowY="auto" mb={4} maxH="55vh">
+        <VStack spacing={4} align="start" flex="1" pb={4}> 
           {messages.map((message, idx) => (
             <Flex key={idx} align="center">
               <Box boxSize="24px" mr={2}>
                 <Image src={message.sender === "user" ? userAvatar : awaazoBirdRe} alt={`${message.sender} avatar`} boxSize="24px" objectFit="cover" borderRadius="full" />
               </Box>
               <Box p={2} borderRadius="full" boxShadow="md" backdropBlur="4px" bg="rgba(255, 255, 255, 0.1)" borderColor="rgba(255, 255, 255, 0.1)">
-                <Text>{message.content}</Text> {/* Wrapped content in Text for better text handling */}
+                <Text>{message.content}</Text> 
               </Box>
             </Flex>
           ))}

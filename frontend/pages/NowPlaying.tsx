@@ -8,138 +8,105 @@ import Transcripts from "../components/nowPlaying/Transcripts";
 import CoverArt from "../components/nowPlaying/CoverArt";
 import Sections from "../components/nowPlaying/Sections";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import { episodes } from "../utilities/SampleData";
 import { usePalette } from "color-thief-react";
+import { sliderSettings } from "../utilities/commonUtils"
 
 const currentEpisode = episodes[0];
-
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
-
 const componentsData = [
   {
-    component: (
-      <CoverArt
-        imageUrl={currentEpisode.coverArt}
-        description={currentEpisode.description}
-      />
-    ),
-    isVisible: true,
-    mainComponent: true,
+    component: <CoverArt imageUrl={currentEpisode.coverArt} description={currentEpisode.description} />,
+    inSlider: false
   },
-  { component: <ChatBot />, isVisible: true, coMainComponent: true },
-  {
-    component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
-    isVisible: true,
-  },
-  {
-    component: <Transcripts transcripts={currentEpisode.transcript} />,
-    isVisible: true,
-  },
-  {
-    component: <Sections sections={currentEpisode.sections} />,
-    isVisible: true,
-  },
+  { component: <ChatBot />, inSlider: false},
+  { component: <Bookmarks bookmarks={currentEpisode.bookmarks} />, inSlider: true },
+  { component: <Transcripts transcripts={currentEpisode.transcript} />, inSlider: true },
+  { component: <Sections sections={currentEpisode.sections} />, inSlider: true },
 ];
 
 const NowPlaying = () => {
-  const palette = usePalette(currentEpisode.coverArt, 2, "hex", {
-    crossOrigin: "Anonymous",
+  const palette = usePalette(currentEpisode.coverArt, 2, 'hex', {
+    crossOrigin: 'Anonymous',
     quality: 10,
   }).data;
 
-  const [selectedComponent, setSelectedComponent] = useState<number | null>(
-    null,
-  );
-  const [components, setComponents] = useState(() =>
-    componentsData.map((component, index) => ({
-      ...component,
-      mainComponent: index === 0,
-      coMainComponent: index === 0 && component.coMainComponent,
-    })),
-  );
+  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
+  const [components] = useState(componentsData);
+
 
   const handleComponentClick = (index: number) => {
-    if (index === selectedComponent) {
-      setSelectedComponent(null);
-    } else {
-      setSelectedComponent(index);
-      setComponents((currentComponents) =>
-        currentComponents.map((comp, compIndex) => ({
-          ...comp,
-          mainComponent: index === compIndex,
-          coMainComponent: comp.coMainComponent && index === compIndex,
-        })),
-      );
-    }
+    setSelectedComponent(index === selectedComponent ? null : index);
   };
 
-  const visibleComponents = components.filter((comp) => comp.isVisible);
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const sliderComponents = components.filter(comp => comp.inSlider );
 
   return (
-    <Box
-      w="100vw"
-      h="100vh"
-      display="flex"
-      flexDirection="column"
-      overflow="hidden"
-      bgColor={palette || null}
-    >
+    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || null}>
       <Navbar />
       {isMobile ? (
-        <Slider {...sliderSettings}>
-          {componentsData.map((comp, index) => (
-            <Box
-              key={index}
-              w="full"
-              h="80vh"
-              p={4}
-              alignItems="stretch"
-              justifyContent="center"
-            >
-              {comp.component}
-            </Box>
-          ))}
-        </Slider>
-      ) : (
+      <Slider {...sliderSettings} >
+      {componentsData.map((comp, index) => (
+  <Box 
+  key={index}
+    w="full" 
+    h="80vh" 
+    p={4} 
+    alignItems="stretch" 
+    justifyContent="center"
+  >
+    {comp.component}
+  </Box>
+))}
+    </Slider>
+      ) :  (
         <Grid
           flexGrow={1}
-          templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }}
-          gap={4}
-          mt="4"
-          mx="4"
-          padding="1.5rem"
+          templateAreas={{
+            md: `
+              "slider comain"
+              "main comain"
+            `
+          }}
+          gridTemplateRows={{ md: '1fr 1fr' }}
+          gridTemplateColumns={{ md: '1fr 1fr' }}
+          gap={1}
+          mt={1}
+          mx={0.5}
+          p={4}
         >
-          {visibleComponents.map((comp, index) => (
-            <Box
-              key={index}
-              gridColumn={
-                comp.mainComponent ? { base: "span 3", md: "span 2" } : "span 1"
-              }
-              gridRow={comp.coMainComponent ? "1" : "auto"}
-              w="full"
-              h="full"
-              mb={{ base: "4", md: "0" }}
-              p={1}
-              transition="all 0.4s ease"
-              onClick={() => handleComponentClick(index)}
-              transform={
-                selectedComponent === index ? "scale(1.01)" : "scale(1)"
-              }
-              transformOrigin="center center"
-              opacity={comp.mainComponent || comp.coMainComponent ? 1 : 0.5}
-            >
-              {comp.component}
-            </Box>
-          ))}
+          <Box
+            gridArea="main"
+            p={4}
+            onClick={() => handleComponentClick(0)} 
+            opacity={selectedComponent === 0 ? 1 : 0.5}
+            transition="opacity 0.4s ease"
+          >
+            {components[0].component}
+          </Box>
+          <Box
+            gridArea="comain"
+            p={4}
+            onClick={() => handleComponentClick(1)} 
+            opacity={selectedComponent === 1 ? 1 : 0.5}
+            transition="opacity 0.4s ease"
+          >
+            {components[1].component}
+          </Box>
+          <Box gridArea="slider"  w="50vw" 
+    h="25vh" 
+    alignItems="stretch" 
+    justifyContent="center" >
+            <Slider {...sliderSettings}>
+              {sliderComponents.map((comp, index) => (
+                <Box key={index} >
+                  {comp.component}
+                </Box>
+              ))}
+            </Slider>
+          </Box>
         </Grid>
       )}
       <PlayerBar {...currentEpisode} />

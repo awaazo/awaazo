@@ -27,17 +27,6 @@ const CoverArt: React.FC<CoverArtProps> = ({ imageUrl, description }) => {
         objectFit="cover"
       />
 
-      {/* Gradient Overlay */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        w="full"
-        h="full"
-        bgGradient="linear(to-b, rgba(0,0,0,0), rgba(0,0,0,0.4))"
-        zIndex={1}
-      />
-
       <Box
         position="absolute"
         bottom={0}
@@ -51,7 +40,7 @@ const CoverArt: React.FC<CoverArtProps> = ({ imageUrl, description }) => {
           <Text color="white" fontSize="xl" fontWeight="bold" pb="1">
             About This Episode:
           </Text>
-          <Text color="white" maxW="70%" noOfLines={6}>
+          <Text color="white" maxW="100%" noOfLines={6}>
             {description}
           </Text>
         </VStack>

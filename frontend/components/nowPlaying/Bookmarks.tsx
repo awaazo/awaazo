@@ -13,7 +13,7 @@ const Bookmarks: React.FC<BookmarkProps> = ({ bookmarks }) => {
 
 
   return (
-    <VStack spacing={4} p={6} rounded="2xl" boxShadow="xl" backdropBlur="4px" width="100%" minH="100%">
+    <VStack spacing={4} p={6} rounded="2xl" backdropBlur="4px" width="100%" minH="100%" overflowY="auto" mb={4} maxH="28vh">
       <Flex justifyContent="flex-start" alignItems="center" width="100%">
         <Icon as={FiBookmark} boxSize={iconSize} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2} mr={2}>
