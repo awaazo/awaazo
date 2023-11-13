@@ -19,7 +19,6 @@ public class AppDbContext : DbContext
     }
 
     public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<Episode> Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }
     public virtual DbSet<Annotation>? Annotations { get; set; }
@@ -33,6 +32,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Files>? File { get; set; }
+    public virtual DbSet<Notification>? Notifications { get; set; }
     public virtual DbSet<Like> Likes { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
 
@@ -149,7 +149,7 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Restrict);
 
     }
     

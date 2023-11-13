@@ -17,10 +17,15 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
+
+
     /// <summary>
     /// Current database instance
     /// </summary>
     private readonly AppDbContext _db;
+
+
+    private readonly INotificationService _notificationService;
 
     /// <summary>
     /// Accepted file types for cover art and thumbnail
@@ -42,6 +47,7 @@ public class PodcastService : IPodcastService
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
 
+
     /// <summary>
     /// Maximum request size
     /// </summary>
@@ -49,9 +55,13 @@ public class PodcastService : IPodcastService
     public const int MAX_REQUEST_SIZE = 1005242880;
 
 
-    public PodcastService(AppDbContext db)
+   
+
+
+    public PodcastService(AppDbContext db, INotificationService notificationService)
     {
         _db = db;
+        _notificationService = notificationService;
     }
 
     #region Podcast
@@ -358,6 +368,10 @@ public class PodcastService : IPodcastService
 
         // Add the episode to the database and return status
         await _db.Episodes.AddAsync(episode);
+
+        // Send Notification to All the Subscribed Users
+        await _notificationService.AddEpisodeNotification(podcastId, episode,_db);
+ 
         return await _db.SaveChangesAsync() > 0;
     }
 

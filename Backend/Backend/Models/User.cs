@@ -159,6 +159,14 @@ public class User : BaseEntity
     /// <returns></returns>
     public ICollection<UserEpisodeInteraction> EpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
+
+    /// <summary>
+    /// User Notification.
+    /// </summary>
+    /// <typeparam name="Notification"></typeparam>
+    /// <returns></returns>
+    public ICollection<Notification> Notifications {  get; } = new List<Notification>();
+
     /// <summary>
     /// Gender enum.
     /// </summary>
