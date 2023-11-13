@@ -65,7 +65,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
 
             v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
-        
+
+        modelBuilder.Entity<UserEpisodeInteraction>()
+            .HasKey(uei => new { uei.UserId, uei.EpisodeId });
+
         // User 1-to-many Podcast
         modelBuilder.Entity<User>()
             .HasMany(e => e.Podcasts)

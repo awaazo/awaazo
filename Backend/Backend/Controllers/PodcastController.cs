@@ -1,4 +1,6 @@
 ﻿using Backend.Controllers.Requests;
+using Backend.Controllers.Responses;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Controllers;
 
@@ -199,7 +202,7 @@ public class PodcastController : ControllerBase
 
 
     [HttpGet("{podcastId}/getCoverArt")]
-    public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId)
+    public async Task<ActionResult> GetPodcastCoverArt(Guid podcastId)
     {
         try
         {
@@ -219,6 +222,27 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("byTags")]
+    public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Return the podcasts that match the given genres
+            return Ok(await _podcastService.GetPodcastsByTagsAsync(page,pageSize,GetDomainUrl(HttpContext),tags));
+        }
+        catch(Exception e)
+        {
             return BadRequest(e.Message);
         }
     }
@@ -399,5 +423,33 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// THis function saves the last watched position on a specific episode
+    /// On the frontend:
+    ///     - You need to add a onBeforeUnload  hook to the episode webpage and this hook should
+    ///       send request to this route.
+    /// </summary>
+    /// <param name="podcastId"></param>
+    /// <param name="episodeId"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/saveWatchHistory")]
+    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
+    {
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
+            return Ok(interaction);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     #endregion
 }
