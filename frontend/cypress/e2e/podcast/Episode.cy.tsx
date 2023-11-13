@@ -4,16 +4,20 @@ describe ('Episode_Create', () => {
     const filepath_mp3_episode = 'mp3_files/Never_Gonna_Give_You_Up.mp3';
     const filepath_Episode_cover = 'images/charles_leclerc.jpg';
 
-    // User that exists should be able to create an Episode given that a Podcast exists
-    it('Should Successfully create a new Episode', function () {
-        cy.visit('/');
+    beforeEach(() => {
+        cy.visit('/'); 
         cy.url().should('include', '/');
         cy.login();
+        cy.wait(500);
+      });
+
+    // User that exists should be able to create an Episode given that a Podcast exists
+    it('Should Successfully create a new Episode', function () {
         cy.visit('/Create');
         cy.url().should('include', '/Create');
         cy.wait(500);
         cy.get('input[type="file"]').attachFile(filepath_Episode_cover);
-        cy.get('input[placeholder="Enter episode name..."]').type("Episode 2: Charles Leclerc");
+        cy.get('input[placeholder="Enter episode name..."]').type("Charles Leclerc");
         cy.get('textarea[placeholder="Enter episode description..."]').type('From his rise in f2 to his demise at Ferrari');
         cy.get('.css-70ttu').should('be.visible').within(() => {
             cy.get('input').attachFile(filepath_mp3_episode);
@@ -22,20 +26,17 @@ describe ('Episode_Create', () => {
         cy.get('button[id=createBtn]').click();
         cy.wait(1000);
         cy.url().should('include', '/MyPodcasts')
-        cy.contains('Episode 2: Charles Leclerc');
+        cy.contains('Charles Leclerc');
         cy.contains('From his rise in f2 to his demise at Ferrari');
     });
 
     //Podcast should not be created if the Episode name already exists
     it('Should not create an Episode if the episode already exists', function () {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.visit('/Create');
         cy.url().should('include', '/Create');
         cy.wait(500);
         cy.get('input[type="file"]').attachFile(filepath_Episode_cover);
-        cy.get('input[placeholder="Enter episode name..."]').type("Episode 2: Charles Leclerc");
+        cy.get('input[placeholder="Enter episode name..."]').type("Charles Leclerc");
         cy.get('textarea[placeholder="Enter episode description..."]').type('From his rise in f2 to his demise at Ferrari');
         cy.get('.css-70ttu').should('be.visible').within(() => {
             cy.get('input').attachFile(filepath_mp3_episode);
@@ -44,34 +45,28 @@ describe ('Episode_Create', () => {
         cy.get('button[id=createBtn]').click();
         cy.wait(1000);
         cy.url().should('include', '/Create')
-        cy.contains('Required.').should('exist');
+        cy.contains('An episode with the same name already exists for this podcast.').should('exist');
     });
 
     // User should be able to edit a episode name and have it reflected immediately
     it('Should successfully edit an episode', function () {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click();
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
         cy.wait(1000);
-        cy.get('.css-1yp4ln > :nth-child(1) > .chakra-button').click();
+        cy.get(':nth-child(1) > .css-1yp4ln > :nth-child(1) > .chakra-button > .chakra-icon').click();
         cy.wait(500);
         cy.get('input[placeholder="Enter episode name..."]').clear().type(' {selectall}{backspace}');
-        cy.get('input[placeholder="Enter episode name..."]').type("Episode 2: Romain Grosjean");
+        cy.get('input[placeholder="Enter episode name..."]').type("Romain Grosjean");
         cy.contains('Button', 'Update').click();
         cy.url().should('include', '/MyPodcasts');
-        cy.contains('Episode 2: Romain Grosjean');
+        cy.contains('Romain Grosjean');
     });
     
     // Episodes should not be created if the fields are empty
     it('Should not create an Episode if the fields are blank.', function () {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.visit('/Create');
         cy.url().should('include', '/Create');
         cy.wait(500);
@@ -84,9 +79,6 @@ describe ('Episode_Create', () => {
 
     // Episode should not be created if it's not linked to a Podcast
     it('Should not create an Episode if no podcast is selected.', function () {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.visit('/Create');
         cy.url().should('include', '/Create');
         cy.wait(500);
@@ -104,9 +96,6 @@ describe ('Episode_Create', () => {
 
     // Users should be allowed to delete their own episodes
     it('Should successfully delete an episode', function () {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click();
@@ -121,9 +110,6 @@ describe ('Episode_Create', () => {
     
     // Episode names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in episode name', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.visit('/Create');
         cy.url().should('include', '/Create');
         cy.wait(500);

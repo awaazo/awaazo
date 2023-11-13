@@ -1,9 +1,9 @@
 describe('Register', () => {
 
     beforeEach(() => {
-        cy.visit('/'); // Replace with the URL of your application
+        cy.visit('/'); 
       });
-
+ 
     // Test successful registration from the main page
     it('Should Successfully Register & setup new User', function () {
         cy.url().should('include', '/');
