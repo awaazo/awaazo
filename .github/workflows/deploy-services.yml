@@ -1,7 +1,12 @@
-name: Publish Docker images
+name: Publish Docker images used for releases
 
 on:
-  push
+  push:
+    branches:
+      - "main"
+    paths:
+      - "Backend/Backend/**"
+      - "frontend/**"
 
 jobs:
   push_frontend_to_registry:
