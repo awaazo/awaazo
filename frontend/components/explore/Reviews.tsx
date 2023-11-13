@@ -80,7 +80,13 @@ const Reviews = ({ podcast }) => {
       <Flex justify="space-between" w="100%" alignItems="center">
         {!isAddingReview && (
           <>
-            <Text ml={3} style={{ fontSize: "25px" }}>
+            <Text
+              ml={3}
+              style={{
+                fontSize: isMobile ? "18px" : "25px",
+                fontWeight: "bold",
+              }}
+            >
               Reviews:
             </Text>
             <Button
