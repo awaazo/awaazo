@@ -230,7 +230,7 @@ const PlayerBar: React.FC<Episode> = ({
               icon={<FaCommentAlt />}
               variant="ghost"
               size="sm"
-              color={comments.isCommented ? "blue.500" : commentedColor}
+              // color={comments.isCommented ? "blue.500" : commentedColor}
               onClick={() => console.log("Navigating to comments...")}
             />
           </Flex>

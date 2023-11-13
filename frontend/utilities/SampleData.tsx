@@ -87,10 +87,17 @@ const episodeTemplate: Episode = {
     count: 6500,
     isLiked: false,
   },
-  comments: {
-    count: 200,
-    isCommented: true,
-  },
+  comments: [
+    {
+      id: 15,
+      user: null,
+      episodeId: "string",
+      text: "string",
+      dateCreated: null,
+      likes: [],
+      replies: [],
+    },
+  ],
   bookmarks: bookmarks,
   sections: [
     { id: "r1", episodeId: "EP001", timestamp: 0, title: "Sponsors" },
