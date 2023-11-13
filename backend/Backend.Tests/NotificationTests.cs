@@ -22,6 +22,7 @@ namespace Backend.Tests
         private Mock<AppDbContext> _dbContextMock;
         private Mock<IAuthService> _authServiceMock;
         private Mock<HttpContext> _httpContextMock;
+        private Mock<DbSet<User>> _user;
 
         private NotificationController _notificationController;
         private NotificationService _notificationService;
@@ -47,7 +48,7 @@ namespace Backend.Tests
                 }
             };
 
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
         }
 
         [TestInitialize]
@@ -72,7 +73,7 @@ namespace Backend.Tests
                 }
             };
 
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
         }
 
         #region Service Tests
@@ -80,12 +81,12 @@ namespace Backend.Tests
         [Fact]
         public void Notification_CreateNotification_ValidRequest_Success()
         {
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
             int response = 0;
 
             try
             {
-                response = _notificationService.GetUnreadNoticationCountAsync(user.Object.First()).Result;
+                response = _notificationService.GetUnreadNoticationCountAsync(_user.Object.First()).Result;
             }
             catch (Exception e)
             {
@@ -98,12 +99,12 @@ namespace Backend.Tests
         [Fact]
         public void Notification_GetAllNotificationAsync_ValidRequest_Success()
         {
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
             List<NotificationResponse> response = null;
 
             try
             {
-                response = _notificationService.GetAllNotificationAsync(user.Object.First()).Result;
+                response = _notificationService.GetAllNotificationAsync(_user.Object.First()).Result;
             }
             catch (Exception e)
             {
@@ -121,7 +122,7 @@ namespace Backend.Tests
         [Fact]
         public void Notification_GetAllNotification_ValidRequest_Success()
         {
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
             OkObjectResult? response = null;
 
             try
@@ -141,7 +142,7 @@ namespace Backend.Tests
         [Fact]
         public void Notification_GetUnreadNotificationCount_ValidRequest_Success()
         {
-            MockBasicUtilities(out var user);
+            MockBasicUtilities();
             OkObjectResult? response = null;
 
             try
@@ -162,43 +163,43 @@ namespace Backend.Tests
 
         #region Private Method
 
-        private void MockBasicUtilities(out Mock<DbSet<User>> user)
+        private void MockBasicUtilities()
         {
             var userGuid = Guid.NewGuid();
-            user = new[]
+            _user = new[]
             {
-            new User()
+                new User()
+                {
+                    Id = userGuid,
+                    Email = "XXXXXXXXXXXXXXXXX",
+                    Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
+                    Username = "XXXXXXXXXXXXXXXXX",
+                    DateOfBirth = DateTime.Now,
+                    Gender = Models.User.GenderEnum.Male
+                }
+            }.AsQueryable().BuildMockDbSet();            
+            var notification = new[]
             {
-                Id = userGuid,
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = Models.User.GenderEnum.Male
-            }
-        }.AsQueryable().BuildMockDbSet();            
-        var notification = new[]
-{
-            new Notification()
-            {
-                Id = Guid.NewGuid(),
-                User = user.Object.First(),
-                UserId = userGuid,
-                IsRead = false,
-            }
-        }.AsQueryable().BuildMockDbSet();
+                new Notification()
+                {
+                    Id = Guid.NewGuid(),
+                    User = _user.Object.First(),
+                    UserId = userGuid,
+                    IsRead = false,
+                }
+            }.AsQueryable().BuildMockDbSet();
 
             // Configuration
             IConfiguration config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .Build();
 
-            _dbContextMock.SetupGet(db => db.Users).Returns(user.Object);
+            _dbContextMock.SetupGet(db => db.Users).Returns(_user.Object);
             _dbContextMock.SetupGet(db => db.Notifications).Returns(notification.Object);
             _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
 
             var filesMock = new Mock<Files>();
-            _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(user.Object.First()));
+            _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(_user.Object.First()));
         }
 
         #endregion
