@@ -127,6 +127,36 @@ export default class EndpointHelper {
   };
 
   /**
+   * Returns the Podcasts by tags endpoint.
+   * @returns The Podcasts by tags Endpoint
+   */
+  static getByTagsPodcastEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/byTags?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
+   * Returns the Podcast search endpoint.
+   * @returns The Podcast search Endpoint
+   */
+  static getSearchPodcastEndpoint = (searchTerm, page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/search?searchterm=" +
+      searchTerm +
+      "&page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
    * Returns the Podcast delete endpoint.
    * @returns The Podcast delete Endpoint
    */
@@ -151,8 +181,8 @@ export default class EndpointHelper {
   };
 
   /**
-   * Returns the Episode edit endpoint.
-   * @returns The Episode edit Endpoint
+   * Returns the Episode by id endpoint.
+   * @returns The Episode by id Endpoint
    */
   static getPodcastEpisodeByIdEndpoint = (episodeId) => {
     return this.getBackendAddress() + "/podcast/episode/" + episodeId;
@@ -206,7 +236,6 @@ export default class EndpointHelper {
    * Returns the Podcast COMMENTS + LIKES endpoint.
    * @returns The Podcast COMMENTS + LIKES Endpoint
    * */
-
   static getEpisodeCommentEndpoint = (episodeOrCommentId: string) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/comment"
@@ -227,7 +256,10 @@ export default class EndpointHelper {
     );
   };
 
-  static getPodcastEpisodePlayEndpoint = (podcastId: string, episodeId: string) => {
+  static getPodcastEpisodePlayEndpoint = (
+    podcastId: string,
+    episodeId: string,
+  ) => {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
