@@ -11,6 +11,7 @@ import Navbar from "../../components/shared/Navbar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Podcast } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
+import PlayerBar from "../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
   // Get the podcast ID from the link
@@ -42,6 +43,8 @@ export default function MyPodcast() {
     <>
       <Navbar />
       {podcast && <PodcastOverview podcast={podcast} />}
+
+      {podcast && <PlayerBar {...podcast.episodes[0]} />}
     </>
   );
 }

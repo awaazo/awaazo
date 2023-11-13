@@ -32,6 +32,7 @@ import {
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 
+import PlayingBar from "../nowPlaying/PlayingBar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";

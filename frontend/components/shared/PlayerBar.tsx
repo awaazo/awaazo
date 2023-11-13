@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Flex,
@@ -27,29 +27,126 @@ import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import { Episode } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
+import PlayingHelper from "../../helpers/PlayingHelper";
 
-const PlayerBar: React.FC<Episode> = ({
-  thumbnailUrl,
-  episodeName = "Unknown Episode",
-  podcaster = "Unknown Podcaster",
-  duration,
-  likes,
-  comments,
-  sections = [],
-}) => {
+const PlayerBar: React.FC<Episode> = (episode) => {
+  const [audioUrl, setAudioUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const audioRef = useRef(new Audio());
+
   const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLiked, setIsLiked] = useState(likes.isLiked);
+  const [isLiked, setIsLiked] = useState(false);
   const [volume, setVolume] = useState(30);
   const [isMuted, setIsMuted] = useState(false);
 
+  // Fetch audio from backend using the episode and podcast Ids
+  useEffect(() => {
+    const fetchAudio = async () => {
+      setIsLoading(true);
+      try {
+        const audioUrl = await PlayingHelper.getEpisodePlaying(
+          episode.podcastId,
+          episode.id,
+        );
+        setAudioUrl(audioUrl);
+      } catch (error) {
+        console.error("Error fetching episode:", error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchAudio();
+  }, [episode]);
+
+  // Load the audio url
+  useEffect(() => {
+    console.log("Audio URL:", audioUrl);
+    if (audioUrl) {
+      audioRef.current.src = audioUrl;
+      audioRef.current.load();
+    }
+  }, [audioUrl]);
+
+  // Handle playing/pausing the audio when the button is pressed
+  useEffect(() => {
+    isPlaying ? audioRef.current.play() : audioRef.current.pause();
+  }, [isPlaying]);
+
+  // Handle muting the audio when the mute button is pressed
+  useEffect(() => {
+    audioRef.current.muted = isMuted;
+  }, [isMuted]);
+
+  // Handles the play/pause button
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch((e) => {
+        console.error("Error playing audio:", e);
+        // Handle the error (e.g., show an error message to the user)
+      });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Sets the duration of the audio
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const setAudioData = () => {
+      setDuration(audio.duration);
+    };
+
+    const updatePosition = () => {
+      setPosition(audio.currentTime);
+    };
+
+    audio.addEventListener("loadedmetadata", setAudioData);
+    audio.addEventListener("timeupdate", updatePosition);
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", setAudioData);
+      audio.removeEventListener("timeupdate", updatePosition);
+    };
+  }, []);
+
+  // Changes postion when slider or skip buttons are clicked
+  const handleSeek = (newValue) => {
+    const seekTime = Number(newValue);
+    audioRef.current.currentTime = seekTime;
+    setPosition(seekTime);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = audioUrl;
+    link.download = `downloaded_audio.mp3`; // You can dynamically set the filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    audioRef.current.playbackRate = playbackSpeed;
+  }, [playbackSpeed]);
+
   // Helper functions for player control
   const skipAmount = 10; // seconds
-  const skipForward = () =>
-    setPosition((prevPos) => Math.min(prevPos + skipAmount, duration));
-  const skipBackward = () =>
-    setPosition((prevPos) => Math.max(prevPos - skipAmount, 0));
-  const togglePlayPause = () => setIsPlaying(!isPlaying);
+  const skipForward = () => {
+    const newPosition = Math.min(position + skipAmount, duration);
+    audioRef.current.currentTime = newPosition;
+    setPosition(Math.min(position + skipAmount, duration));
+  };
+
+  const skipBackward = () => {
+    const newPosition = Math.max(position - skipAmount, 0);
+    audioRef.current.currentTime = newPosition;
+    setPosition(newPosition);
+  };
   const toggleLike = () => setIsLiked(!isLiked);
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -61,22 +158,22 @@ const PlayerBar: React.FC<Episode> = ({
 
   // Section and time display logic
   const currentTime = convertTime(position);
-  const timeLeft = convertTime(duration - position);
-  const getCurrentSectionName = () => {
+  const timeLeft = convertTime(episode.duration - position);
+  /*const getCurrentSectionName = () => {
     const totalSeconds = position;
     return (
-      sections
+      episode.sections
         .slice()
         .reverse()
         .find((section) => totalSeconds >= section.timestamp)?.title || ""
     );
-  };
+  };*/
 
   // Color mode and palette detection
   const likedColor = useColorModeValue("gray.900", "gray.100");
   const commentedColor = useColorModeValue("gray.900", "gray.100");
 
-  const { data: palette } = usePalette(thumbnailUrl, 2, "rgbArray", {
+  const { data: palette } = usePalette(episode.thumbnailUrl, 2, "rgbArray", {
     crossOrigin: "Anonymous",
     quality: 10,
   });
@@ -106,7 +203,7 @@ const PlayerBar: React.FC<Episode> = ({
         >
           <Image
             boxSize={isMobile ? "30px" : "40px"}
-            src={thumbnailUrl}
+            src={episode.thumbnailUrl}
             borderRadius="full"
             mr={4}
             objectFit="cover"
@@ -117,10 +214,10 @@ const PlayerBar: React.FC<Episode> = ({
               fontSize={isMobile ? "sm" : "md"}
               color={useColorModeValue("gray.900", "gray.100")}
             >
-              {episodeName}
+              {episode.episodeName}
             </Text>
             <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
-              {podcaster}
+              {episode.podcaster}
             </Text>
           </Box>
         </Flex>
@@ -172,13 +269,13 @@ const PlayerBar: React.FC<Episode> = ({
         {!isMobile && (
           <Flex width="50%" mx={4} alignItems="center">
             <Text mr={3} fontSize="sm" fontWeight="bold">
-              {currentTime}
+              {convertTime(position)}
             </Text>
             <Slider
               aria-label="Track Timeline"
               value={position}
               max={duration}
-              onChange={(val) => setPosition(val)}
+              onChange={(val) => handleSeek(val)}
             >
               <SliderTrack bg="transparent"></SliderTrack>
               <SliderTrack>
@@ -193,7 +290,7 @@ const PlayerBar: React.FC<Episode> = ({
                 />
               </SliderTrack>
               <Tooltip
-                label={getCurrentSectionName()}
+                label={/*getCurrentSectionName()*/ "label"}
                 placement="top"
                 openDelay={900}
                 bg="transparent"
@@ -230,7 +327,6 @@ const PlayerBar: React.FC<Episode> = ({
               icon={<FaCommentAlt />}
               variant="ghost"
               size="sm"
-              color={comments.isCommented ? "blue.500" : commentedColor}
               onClick={() => console.log("Navigating to comments...")}
             />
           </Flex>
