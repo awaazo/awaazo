@@ -70,6 +70,10 @@ export interface PodcastEditRequest {
   tags: string[];
 }
 
+export interface PodcastByTagsRequest {
+  tags: string[];
+}
+
 //#endregion
 
 //#region Episode Requests
