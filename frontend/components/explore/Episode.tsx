@@ -32,12 +32,13 @@ import {
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 
+import { FaPlay } from "react-icons/fa";
 import PlayingBar from "../nowPlaying/PlayingBar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 
-const Episode = ({ episode }) => {
+const Episode = ({ episode, onSelectEpisode }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -45,44 +46,6 @@ const Episode = ({ episode }) => {
     const minutes = Math.floor(duration / 60);
     const seconds = Math.floor(duration % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  // Edit Episode Modal
-  //----------------------------------------------------------------------
-
-  // State for managing modal visibility and the current episode
-  const [isModalEpisodeOpen, setIsModalEpisodeOpen] = useState(false);
-  const [currentEpisode, setCurrentEpisode] = useState(null);
-
-  const openEditEpisodeModal = (episode) => {
-    setCurrentEpisode(episode);
-    setIsModalEpisodeOpen(true);
-  };
-  const closeEditEpisodeModal = () => {
-    setIsModalEpisodeOpen(false);
-    setCurrentEpisode(null);
-  };
-  //----------------------------------------------------------------------
-
-  // For delete pop up
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isDeleting, setDeleting] = useState(false);
-
-  // Form errors
-  const [episodeError, setEpisodeError] = useState("");
-  // Handle Deletion of podcast
-  const handleDelete = async (episodeId) => {
-    setDeleting(true);
-    // Create request object
-    const response = await PodcastHelper.deleteEpisode(episode.id);
-    console.log(response);
-    if (response.status == 200) {
-      window.location.reload();
-    } else {
-      setEpisodeError("Episode cannot be deleted");
-    }
-    onClose();
-    setDeleting(false);
   };
 
   return (
@@ -97,7 +60,7 @@ const Episode = ({ episode }) => {
       backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
-      onClick={() => console.log(episode.id, episode.name)}
+      onClick={() => onSelectEpisode(episode)}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
       }}
@@ -113,6 +76,20 @@ const Episode = ({ episode }) => {
           marginLeft={isMobile ? "0px" : "20px"}
           mt={1}
         />
+        {!isMobile && (
+          <IconButton
+            aria-label="Play"
+            icon={<FaPlay />}
+            position="absolute"
+            left="60%"
+            top="50%"
+            transform="translate(-50%, -50%)"
+            variant="ghost"
+            fontSize="25px"
+            shadow={"md"}
+            _hover={{ boxShadow: "lg" }}
+          />
+        )}
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}

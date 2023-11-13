@@ -27,7 +27,7 @@ const Main = () => {
         </Box>
 
         {/* Player Bar */}
-        <PlayerBar {...episodes[0]} />
+        <PlayerBar episode={null} />
       </Box>
     </>
   );

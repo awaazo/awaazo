@@ -13,7 +13,7 @@ import { Podcast } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
 import PlayerBar from "../../components/shared/PlayerBar";
 
-export default function MyPodcast() {
+export default function Podcast() {
   // Get the podcast ID from the link
   const router = useRouter();
   const path = router.asPath;
@@ -38,13 +38,24 @@ export default function MyPodcast() {
   // Form Values
   const [podcast, setPodcast] = useState<Podcast | null>(null);
   const [getError, setGetError] = useState("");
+  // State variable for selected episode
+
+  const [selectedEpisode, setSelectedEpisode] = useState(null);
+  const handleEpisodeClick = (episode) => {
+    setSelectedEpisode(episode);
+  };
 
   return (
     <>
       <Navbar />
-      {podcast && <PodcastOverview podcast={podcast} />}
+      {podcast && (
+        <PodcastOverview
+          podcast={podcast}
+          onEpisodeClick={handleEpisodeClick}
+        />
+      )}
 
-      {podcast && <PlayerBar {...podcast.episodes[0]} />}
+      {podcast && <PlayerBar episode={selectedEpisode} />}
     </>
   );
 }

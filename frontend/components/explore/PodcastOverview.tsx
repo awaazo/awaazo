@@ -31,7 +31,7 @@ import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
 
-export default function PodcastOverview({ podcast }) {
+export default function PodcastOverview({ podcast, onEpisodeClick }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -156,7 +156,11 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode episode={episode} key={index} />
+                  <Episode
+                    key={index}
+                    episode={episode}
+                    onSelectEpisode={onEpisodeClick}
+                  />
                 ))
               )}
             </>
@@ -213,7 +217,11 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode episode={episode} key={index} />
+                  <Episode
+                    key={index}
+                    episode={episode}
+                    onSelectEpisode={onEpisodeClick}
+                  />
                 ))
               )}
             </div>

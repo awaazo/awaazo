@@ -29,7 +29,10 @@ import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
 
-const PlayerBar: React.FC<Episode> = (episode) => {
+const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
+  if (!episode) {
+    return null;
+  }
   const [audioUrl, setAudioUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
@@ -67,6 +70,9 @@ const PlayerBar: React.FC<Episode> = (episode) => {
     if (audioUrl) {
       audioRef.current.src = audioUrl;
       audioRef.current.load();
+      audioRef.current.addEventListener("loadedmetadata", () => {
+        setDuration(audioRef.current.duration);
+      });
     }
   }, [audioUrl]);
 
@@ -290,7 +296,7 @@ const PlayerBar: React.FC<Episode> = (episode) => {
                 />
               </SliderTrack>
               <Tooltip
-                label={/*getCurrentSectionName()*/ "label"}
+                // label={getCurrentSectionName()}
                 placement="top"
                 openDelay={900}
                 bg="transparent"
