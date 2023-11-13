@@ -35,6 +35,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
+import PlayingBar from "../nowPlaying/PlayingBar";
 
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
@@ -147,6 +148,10 @@ const Episode = ({ episode }) => {
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
             initialIsLiked={episode.likes}
+          />
+
+          <PlayingBar podcastId= {episode.podcastId}
+              episodeId= {episode.id} 
           />
         </div>
       </Flex>

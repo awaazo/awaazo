@@ -227,5 +227,9 @@ export default class EndpointHelper {
     );
   };
 
+  static getPodcastEpisodePlayEndpoint = (podcastId: string, episodeId: string) => {
+    return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
+  };
+
   static profileGetRequest: any;
 }
