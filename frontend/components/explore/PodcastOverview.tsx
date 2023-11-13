@@ -64,17 +64,19 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
     position: "relative",
     overflow: "hidden",
     marginBottom: "20px",
-    paddingBottom: "20px",
+    paddingBottom: "40px", // Increased padding to overlap with button
     ":after": {
       content: '""',
       position: "absolute",
       bottom: 0,
       left: 0,
       width: "100%",
-      height: "20px",
-      backgroundImage: "linear-gradient(to bottom, transparent, white)",
+      height: "40px", // Increased height for a clear fade effect
+      backgroundImage:
+        "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))",
     },
   };
+
   return (
     <>
       <Box
@@ -133,18 +135,25 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
               </Wrap>
             </Text>
             {/* Episode Details */}
-            <Flex direction="column" fontSize="sm">
+            <Flex direction="column" fontSize="sm" position="relative">
               {renderDescription()}
               {podcast.description.split("\n").length > 3 && (
                 <Button
                   size="sm"
-                  colorScheme="blue"
+                  background={"rgba(255, 255, 255, 0.1)"}
                   onClick={() => setShowMore(!showMore)}
                   mt={1}
+                  bottom="0" // Align to the bottom of the parent Flex
+                  left="0"
+                  right="0"
+                  mx="auto" // Center the button
+                  borderRadius={"3em"}
+                  outline={"1px solid rgba(255, 255, 255, 0.2)"}
                 >
                   {showMore ? "Show Less" : "Show More"}
                 </Button>
               )}
+
               <Text fontSize="md" style={{ paddingTop: "10px" }}>
                 {podcast.totalRatings === 0 ? (
                   "This podcast has no ratings yet"
