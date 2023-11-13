@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Backend.Controllers.Responses;
+﻿using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
@@ -10,11 +9,9 @@ namespace Backend.Services
     public class SubscriptionService : ISubscriptionService
     {
         private readonly AppDbContext _db;
-  
 
         public SubscriptionService(AppDbContext db) { 
-            _db = db;
-         
+            _db = db;      
         }
 
         public async Task<List<PodcastResponse>> MySubscriptionsAsync(User user,string DomainUrl)
@@ -22,19 +19,19 @@ namespace Backend.Services
             // Get the PodcastFollow object for the User
             List<PodcastFollow> podcastFollows = await _db.PodcastFollows!.Where(u => u.UserId == user.Id).ToListAsync();
             List<PodcastResponse> list = new List<PodcastResponse>();
+
             // Loop through Objects and find the Append the corrosponding podcast to the list
             foreach (PodcastFollow podcastfollow in podcastFollows)
             {
                 Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(u => u.Id == podcastfollow.PodcastId);
+
                 if (podcast == null)
                 {
                     throw new Exception("Illegal State");
-
                 }
-               
+                
                 list.Add(new PodcastResponse(podcast,DomainUrl));
             }
-
             return list;
         }
 
@@ -60,11 +57,8 @@ namespace Backend.Services
             }
 
             return list;
-
         }
-
-        
-
+       
         public async Task<bool> SubscribeAsync(Guid PodcastId, User user)
         {
             // Check Whether the passed Argument is NULL or Not
@@ -75,7 +69,8 @@ namespace Backend.Services
 
             Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(u => u.Id == PodcastId);
             // Check Whether the Podcast Exist or not
-            if(podcast == null) {
+            if(podcast == null) 
+            {
                 throw new Exception("Podcast Does not Exist");
             }
             // Check Whether the user is trying subscribe to his own podcast
@@ -93,8 +88,7 @@ namespace Backend.Services
             PodcastFollow podcastFollow = new PodcastFollow()
             {
                 PodcastId = PodcastId,
-                UserId = user.Id,
-                
+                UserId = user.Id,              
             };
 
             await _db.PodcastFollows!.AddAsync(podcastFollow);
@@ -121,14 +115,11 @@ namespace Backend.Services
             }
             _db.PodcastFollows!.Remove(podcastFollow);
             return await _db.SaveChangesAsync() > 0;
-
         }
 
         public async Task<bool> IsSubscribed(Guid PodcastId, User user)
         {
             return await _db.PodcastFollows!.AnyAsync(u => (u.PodcastId == PodcastId) && (u.UserId == user.Id));
-        }
-
-        
+        }        
     }
 }

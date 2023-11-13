@@ -48,8 +48,5 @@ namespace Backend.Models
                 _ => "None",
             };
         }
-
-    }
-
-    
+    }   
 }

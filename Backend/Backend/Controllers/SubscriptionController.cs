@@ -2,6 +2,7 @@
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers
 {
@@ -29,18 +30,16 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-
                 return await _subscriptionService.SubscribeAsync(PodcastId, user) ? Ok("Successfully Subscribed to the Podcast"):Ok("Failed to subscribe the Podcast");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
         }
 
         [HttpPost("{PodcastId}/unsubscribe")]
-        public async Task<IActionResult> unsubscribe(Guid PodcastId)
+        public async Task<IActionResult> Unsubscribe(Guid PodcastId)
         {
             try
             {
@@ -51,13 +50,11 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-
                 return await _subscriptionService.UnsubscribeAsync(PodcastId, user) ? Ok("Successfully unsubscribed to the Podcast") : Ok("Failed to unsubscribe the Podcast");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
         }
 
@@ -73,17 +70,13 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-
                 return Ok(new { IsSubscribed =  await _subscriptionService.IsSubscribed(PodcastId, user) }) ;
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
-
         }
-
 
         [HttpGet("MySubscriptions")]
         public async Task<IActionResult> MySubscriptions()
@@ -97,15 +90,12 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-
                 return Ok(await _subscriptionService.MySubscriptionsAsync(user, GetDomainUrl(HttpContext))); 
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
-
         }
 
         [HttpGet("{PodcastId}/GetAllPodcastSubscriber")]
@@ -120,36 +110,12 @@ namespace Backend.Controllers
                 if (user is null)
                     return NotFound("User does not exist.");
 
-
-                return Ok(await _subscriptionService.GetPodcastSubscriptionAsync(PodcastId,user,GetDomainUrl(HttpContext)));
+                return Ok(await _subscriptionService.GetPodcastSubscriptionAsync(PodcastId, user, GetDomainUrl(HttpContext)));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
-
         }
-
-        /// <summary>
-        /// Returns the domain url of the server.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private static string GetDomainUrl(HttpContext context)
-        {
-            string domain = "";
-            domain += "http";
-            if (context.Request.IsHttps)
-                domain += "s";
-            domain += @"://" + context.Request.Host + @"/";
-
-            return domain;
-        }
-
-
-
-
-
     }
 }

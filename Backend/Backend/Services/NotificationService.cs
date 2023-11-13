@@ -25,62 +25,32 @@ namespace Backend.Services
                 Encrypted = true
             };
             _pusher = new Pusher(
-              _configuration["Pusher:PUSHER_APP_ID"],
-              _configuration["Pusher:PUSHER_APP_KEY"],
-              _configuration["Pusher:PUSHER_APP_SECRET"],
-              options
-            );
-           
+                _configuration["Pusher:PUSHER_APP_ID"],
+                _configuration["Pusher:PUSHER_APP_KEY"],
+                _configuration["Pusher:PUSHER_APP_SECRET"],
+                options
+            );         
         }
 
-        // Trigger Function
-        public async Task<ITriggerResult> TriggerNotification(string channel,string Event, Notification notification)
-        {
-           return await _pusher.TriggerAsync(channel,Event,notification); 
-        }
-
-        // Trigger Message and Save the Notification to the Database 
-        public async Task<bool> CreateNotification(Notification notification, AppDbContext db)
-        {
-            // Check Whether the User Id is null or not
-            if(notification.UserId == Guid.Empty)
-            {
-                throw new Exception("Please Pass User ID");
-
-            }
-            // Check if user Exist
-            if(_db.Users.FirstOrDefaultAsync(u => u.Id == notification.UserId) == null)
-            {
-                throw new Exception("User does not Exist");
-            }
-            // Trigger Notification
-            await TriggerNotification(notification.UserId.ToString(), "notification", notification);
-            //Add the Notification to DB
-            await db.Notifications!.AddAsync(notification);
-            return true;
-        }
 
         // Gets Number of Unread Notifications
         public async Task<int> GetUnreadNoticationCountAsync(User user)
         {
             return await _db.Notifications!.Where(u => (u.UserId == user.Id) && u.IsRead == false).CountAsync();
-
         }
 
        
         // Get All the Notifications
         public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user)
-        {
-          
-          //Get the Notifications
-          List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).ToListAsync();
+        {         
+            //Get the Notifications
+            List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).ToListAsync();
 
-          // Update the IsRead Bool value to True
-          List<NotificationResponse> response = new List<NotificationResponse>();
-
+            // Update the IsRead Bool value to True
+            List<NotificationResponse> response = new List<NotificationResponse>();
           
-          foreach (Notification notification in notifications)
-          {
+            foreach (Notification notification in notifications)
+            {
                 // Cast the Notification Object to Desired Output
                 response.Add((NotificationResponse)notification);
 
@@ -89,19 +59,14 @@ namespace Backend.Services
                 {
                     notification.IsRead = true;
                     _db.Update(notification);
-
                 }  
+            }
+            // Save the Changes to DB
+            await _db.SaveChangesAsync();
 
-          }
-          // Save the Changes to DB
-          await _db.SaveChangesAsync();
-
-          //Return the List of Notification Response 
-          return response;
-          
-        }
-
-      
+            //Return the List of Notification Response 
+            return response;        
+        }     
 
         // HELPER FUNCTION - Will Send Notification to all the Subscribed User 
         public async Task<bool> AddEpisodeNotification(Guid PodcastId,Episode episode,AppDbContext db)
@@ -123,14 +88,42 @@ namespace Backend.Services
                     Type = Notification.NotificationType.PodcastAlert,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
-                };
-                
+                };            
                 await CreateNotification(notification, db);
-
             }
             return true;
         }
 
+        #region Private Methods
 
+        // Trigger Message and Save the Notification to the Database 
+        private async Task<bool> CreateNotification(Notification notification, AppDbContext db)
+        {
+            // Check Whether the User Id is null or not
+            if (notification.UserId == Guid.Empty)
+            {
+                throw new Exception("Please Pass User ID");
+            }
+            // Check if user Exist
+            if (_db.Users.FirstOrDefaultAsync(u => u.Id == notification.UserId) == null)
+            {
+                throw new Exception("User does not Exist");
+            }
+
+            // Trigger Notification
+            await TriggerNotification(notification.UserId.ToString(), "notification", notification);
+
+            //Add the Notification to DB
+            await db.Notifications!.AddAsync(notification);
+            return true;
+        }
+
+        // Trigger Function
+        private async Task<ITriggerResult> TriggerNotification(string channel, string Event, Notification notification)
+        {
+            return await _pusher.TriggerAsync(channel, Event, notification);
+        }
+
+        #endregion
     }
 }
