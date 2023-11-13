@@ -139,7 +139,7 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
                   mt={10}
                   style={{ fontWeight: "bold", paddingLeft: 15 }}
                 >
-                  Episodes:
+                  Episodes
                 </Text>{" "}
               </div>
 
@@ -202,7 +202,7 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
                   fontSize: "25px",
                 }}
               >
-                Episodes:
+                Episodes
               </Text>{" "}
               {podcast.episodes.length === 0 ? (
                 <Text

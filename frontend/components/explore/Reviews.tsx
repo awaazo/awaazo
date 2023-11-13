@@ -88,7 +88,7 @@ const Reviews = ({ podcast }) => {
                 fontWeight: "bold",
               }}
             >
-              Reviews:
+              Reviews
             </Text>
             <Button
               onClick={() => setIsAddingReview(true)}
@@ -134,13 +134,19 @@ const Reviews = ({ podcast }) => {
             </FormControl>
             <HStack justifyContent="space-between" mt={"5"}>
               {/* Add a submit button */}
-              <Button onClick={handleAddReview} width="50%" borderRadius="7px">
+              <Button
+                onClick={handleAddReview}
+                width="50%"
+                borderRadius="7px"
+                colorScheme="blue"
+              >
                 Submit Review
               </Button>
               <Button
                 onClick={() => setIsAddingReview(false)}
                 width="50%"
                 borderRadius="7px"
+                colorScheme="red"
               >
                 Cancel
               </Button>
