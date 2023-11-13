@@ -25,6 +25,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spacer,
+  Button,
 } from "@chakra-ui/react";
 
 import EditPodcastForm from "../myPodcast/EditPodcastForm";
@@ -34,7 +35,46 @@ import Reviews from "../explore/Reviews";
 export default function PodcastOverview({ podcast, onEpisodeClick }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [showMore, setShowMore] = useState(false);
 
+  // Function to render the podcast description
+  const renderDescription = () => {
+    const descriptionLines = podcast.description.split("\n");
+    return descriptionLines
+      .map((line, index) => (
+        <Text
+          key={index}
+          style={index === 3 && !showMore ? fadeTextStyle : textStyle}
+        >
+          {line}
+        </Text>
+      ))
+      .slice(0, showMore ? descriptionLines.length : 3);
+  };
+
+  // Text style
+  const textStyle = {
+    fontSize: "larger",
+    paddingTop: "10px",
+  };
+
+  // Fade text style
+  const fadeTextStyle = {
+    ...textStyle,
+    position: "relative",
+    overflow: "hidden",
+    marginBottom: "20px",
+    paddingBottom: "20px",
+    ":after": {
+      content: '""',
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: "20px",
+      backgroundImage: "linear-gradient(to bottom, transparent, white)",
+    },
+  };
   return (
     <>
       <Box
@@ -94,18 +134,18 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
             </Text>
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm">
-              <Text
-                style={{
-                  fontSize: "larger",
-                  paddingTop: "10px",
-                }}
-              >
-                {podcast.description}
-              </Text>
-              <Text
-                fontSize={isMobile ? "md" : "md"}
-                style={{ paddingTop: "10px" }}
-              >
+              {renderDescription()}
+              {podcast.description.split("\n").length > 3 && (
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={() => setShowMore(!showMore)}
+                  mt={1}
+                >
+                  {showMore ? "Show Less" : "Show More"}
+                </Button>
+              )}
+              <Text fontSize="md" style={{ paddingTop: "10px" }}>
                 {podcast.totalRatings === 0 ? (
                   "This podcast has no ratings yet"
                 ) : (
@@ -118,7 +158,7 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
                         ? "yellow"
                         : "green"
                     }
-                    fontSize={isMobile ? "10px" : "md"}
+                    fontSize="md"
                   >
                     {`${podcast.averageRating.toFixed(1)} / 5 (${
                       podcast.totalRatings
