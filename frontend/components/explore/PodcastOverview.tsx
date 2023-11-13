@@ -57,7 +57,7 @@ export default function PodcastOverview({ podcast }) {
         <Flex paddingTop={5} width="100%" boxShadow="sm">
           <Box position="relative" mr={5}>
             <Image
-              boxSize={isMobile ? "100%" : "180px"}
+              boxSize={isMobile ? "0" : "180px"}
               objectFit="cover"
               src={podcast.coverArtUrl}
               borderRadius="2em"
@@ -131,21 +131,6 @@ export default function PodcastOverview({ podcast }) {
 
         {isMobile ? (
           <Box>
-            <Text
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "1em",
-                padding: "1em",
-                outline: "2px solid rgba(255, 255, 255, 0.1)",
-                marginBottom: "0.5em",
-                marginTop: "1em",
-                wordBreak: "break-word",
-              }}
-            >
-              {podcast.description}
-            </Text>
-
             <>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <Text
@@ -173,6 +158,17 @@ export default function PodcastOverview({ podcast }) {
                 ))
               )}
             </>
+            <Box
+              p={4}
+              mt={"0.5em"}
+              padding={"1em"}
+              _focus={{
+                boxShadow: "none",
+                outline: "none",
+              }}
+            >
+              <Reviews podcast={podcast} />
+            </Box>
           </Box>
         ) : (
           <Flex justify="space-between" align="start">
