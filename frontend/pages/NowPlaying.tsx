@@ -132,7 +132,6 @@ const NowPlaying = () => {
           </Box>
         </Grid>
       )}
-      <PlayerBar episode={null} />
     </Box>
   );
 };

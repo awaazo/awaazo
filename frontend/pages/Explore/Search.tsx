@@ -138,8 +138,6 @@ export default function MyPodcast() {
         <Box flex="1" borderRadius="35px" marginTop={"2em"}>
           <ForYou />
         </Box>
-        {/* Player Bar */}
-        <PlayerBar episode={null} />
       </Box>
     </>
   );

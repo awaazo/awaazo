@@ -28,19 +28,21 @@ import { Episode } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
+import { usePlayer } from "../../utilities/PlayerContext";
 
-const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
+const PlayerBar = () => {
+  const { state, dispatch, audioRef } = usePlayer();
+  const { episode } = state;
   if (!episode) {
     return null;
   }
-  const [audioUrl, setAudioUrl] = useState("");
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const audioRef = useRef(new Audio());
-
-  const [position, setPosition] = useState(0);
+  const [audioUrl, setAudioUrl] = useState("");
   const [duration, setDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
@@ -52,7 +54,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
       try {
         const audioUrl = await PlayingHelper.getEpisodePlaying(
           episode.podcastId,
-          episode.id
+          episode.id,
         );
         setAudioUrl(audioUrl);
       } catch (error) {
@@ -62,6 +64,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
     };
 
     fetchAudio();
+    setIsPlaying(true);
   }, [episode]);
 
   // Load the audio url
@@ -88,14 +91,6 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
 
   // Handles the play/pause button
   const togglePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch((e) => {
-        console.error("Error playing audio:", e);
-        // Handle the error (e.g., show an error message to the user)
-      });
-    }
     setIsPlaying(!isPlaying);
   };
 
@@ -108,6 +103,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
     };
 
     const updatePosition = () => {
+      dispatch({ type: "SET_CT", payload: audio.currentTime });
       setPosition(audio.currentTime);
     };
 
@@ -145,7 +141,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
   const skipForward = () => {
     const newPosition = Math.min(position + skipAmount, duration);
     audioRef.current.currentTime = newPosition;
-    setPosition(Math.min(position + skipAmount, duration));
+    setPosition(newPosition);
   };
 
   const skipBackward = () => {
@@ -287,12 +283,13 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
                   bgGradient={
                     palette?.length >= 2
                       ? `linear(to-l, rgba(${palette[0].join(
-                          ","
+                          ",",
                         )}, 0.5), rgba(${palette[1].join(",")}, 0.5))`
                       : "black"
                   }
                 />
               </SliderTrack>
+              {/* MAKES SEARCH UNFUCNTIONAL
               <Tooltip
                 // label={getCurrentSectionName()}
                 placement="top"
@@ -306,7 +303,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
                 boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
               >
                 <SliderThumb boxSize={2} />
-              </Tooltip>
+              </Tooltip>*/}
             </Slider>
 
             <Text ml={3} fontSize="sm" fontWeight="bold">

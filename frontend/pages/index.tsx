@@ -25,9 +25,6 @@ const Main = () => {
           </Box>
           <ForYou />
         </Box>
-
-        {/* Player Bar */}
-        <PlayerBar episode={null} />
       </Box>
     </>
   );

@@ -41,21 +41,11 @@ export default function Podcast() {
   // State variable for selected episode
 
   const [selectedEpisode, setSelectedEpisode] = useState(null);
-  const handleEpisodeClick = (episode) => {
-    setSelectedEpisode(episode);
-  };
 
   return (
     <>
       <Navbar />
-      {podcast && (
-        <PodcastOverview
-          podcast={podcast}
-          onEpisodeClick={handleEpisodeClick}
-        />
-      )}
-
-      {podcast && <PlayerBar episode={selectedEpisode} />}
+      {podcast && <PodcastOverview podcast={podcast} />}
     </>
   );
 }

@@ -33,6 +33,7 @@ import {
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 
 import Navbar from "../components/shared/Navbar";
+import PlayerBar from "../components/shared/PlayerBar";
 import MyPodcast from "../components/myPodcast/MyPodcast";
 import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
 import router from "next/router";

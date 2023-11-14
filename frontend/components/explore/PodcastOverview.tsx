@@ -32,7 +32,7 @@ import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
 
-export default function PodcastOverview({ podcast, onEpisodeClick }) {
+export default function PodcastOverview({ podcast }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [showMore, setShowMore] = useState(false);
@@ -205,11 +205,7 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode
-                    key={index}
-                    episode={episode}
-                    onSelectEpisode={onEpisodeClick}
-                  />
+                  <Episode key={index} episode={episode} />
                 ))
               )}
             </>
@@ -266,11 +262,7 @@ export default function PodcastOverview({ podcast, onEpisodeClick }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode
-                    key={index}
-                    episode={episode}
-                    onSelectEpisode={onEpisodeClick}
-                  />
+                  <Episode key={index} episode={episode} />
                 ))
               )}
             </div>
