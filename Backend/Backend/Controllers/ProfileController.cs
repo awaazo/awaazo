@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
+using Backend.Infrastructure;
 
 namespace Backend.Controllers;
 
@@ -31,7 +32,7 @@ public class ProfileController : ControllerBase
     #region Current User
 
     [HttpDelete("delete")]
-    public async Task<ActionResult> Delete()
+    public async Task<ActionResult> DeleteProfile()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -51,7 +52,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("setup")]
-    public async Task<ActionResult> Setup([FromForm] ProfileSetupRequest setupRequest)
+    public async Task<ActionResult> SetupProfile([FromForm] ProfileSetupRequest setupRequest)
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -67,7 +68,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("edit")]
-    public async Task<ActionResult> Edit([FromForm] ProfileEditRequest editRequest)
+    public async Task<ActionResult> EditProfile([FromForm] ProfileEditRequest editRequest)
     {
         try
         {
@@ -90,7 +91,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<ActionResult<UserProfileResponse>> Get()
+    public async Task<ActionResult<UserProfileResponse>> GetProfile()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -100,11 +101,11 @@ public class ProfileController : ControllerBase
             return NotFound("User does not exist.");
 
 
-        return _profileService.GetProfile(user, HttpContext.Request.GetDisplayUrl().Split("profile")[0]);
+        return await _profileService.GetProfileAsync(user, GetDomainUrl(HttpContext));
     }
 
     [HttpGet("avatar")]
-    public async Task<ActionResult> Avatar()
+    public async Task<ActionResult> GetProfileAvatar()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);

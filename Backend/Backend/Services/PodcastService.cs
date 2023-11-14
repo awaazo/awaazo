@@ -1,17 +1,9 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection.Metadata;
-using AutoMapper;
-using Azure;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using FFMpegCore.Builders.MetaData;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -402,7 +394,7 @@ public class PodcastService : IPodcastService
         episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, podcastId, request.Thumbnail!);
 
         // Find and Save the duration of the audio in seconds
-        var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+        var mediaInfo = await GetMediaAnalysis(episode.Audio, podcastId);
         episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Add the episode to the database and return status
@@ -465,9 +457,8 @@ public class PodcastService : IPodcastService
                 episode.Audio = await SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
             }
 
-
             // Find and Save the duration of the audio in seconds
-            var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+            var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
             episode.Duration = mediaInfo.Duration.TotalSeconds;
         }
 
@@ -673,4 +664,13 @@ public class PodcastService : IPodcastService
     }
 
     #endregion Episode
+
+    #region Private Method
+
+    private async Task<FFMpegCore.IMediaAnalysis> GetMediaAnalysis(string audioName, Guid podcastId)
+    {
+        return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
+    }
+
+    #endregion
 }
