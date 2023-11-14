@@ -77,7 +77,7 @@ const Reviews = ({ podcast }) => {
   };
 
   return (
-    <VStack align="start" spacing={4} marginTop={4} >
+    <VStack align="start" spacing={4} marginTop={4}>
       <Flex justify="space-between" w="100%" alignItems="center">
         {!isAddingReview && (
           <>
@@ -155,7 +155,7 @@ const Reviews = ({ podcast }) => {
           </Flex>
         </Box>
       )}
-      {podcast.ratings &&
+      {podcast.ratings && podcast.ratings.length > 0 ? (
         podcast.ratings.map((rating) => (
           <Box
             key={rating.id}
@@ -175,7 +175,7 @@ const Reviews = ({ podcast }) => {
               </Flex>
               <Box>
                 {Array.from({ length: rating.rating }, (_, index) => (
-                  <StarIcon key={index} color="yellow.400"/>
+                  <StarIcon key={index} color="yellow.400" />
                 ))}
               </Box>
             </Flex>
@@ -186,7 +186,12 @@ const Reviews = ({ podcast }) => {
               <Text>{rating.text}</Text>
             </Box>
           </Box>
-        ))}
+        ))
+      ) : (
+        <Flex justify="center" align="center" mt={8} width="100%">
+          <Text>(No reviews have been posted yet)</Text>
+        </Flex>
+      )}
     </VStack>
   );
 };
