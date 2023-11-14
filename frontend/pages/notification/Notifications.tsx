@@ -3,7 +3,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalCloseButton,
   ModalBody,
   Box,
@@ -19,7 +18,6 @@ import {
   Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Navbar from "../../components/shared/Navbar";
 import {
   UserEpisodeInteraction,
   User,
@@ -61,6 +59,19 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
   const userNotifications = notifications.filter(
     (notification): notification is User => "username" in notification
   );
+
+  const [episodeNotifications, setEpisodeNotifications] = useState(episodes.map(episode => ({
+    ...episode,
+    isRead: false
+  })));
+
+  const markAsRead = (episodeId) => {
+    setEpisodeNotifications(episodeNotifications.map(notification => 
+      notification.id === episodeId ? { ...notification, isRead: true } : notification
+    ));
+  };
+  
+  
   // Fetch notifications (replace with real API call)
   useEffect(() => {
     // Simulate fetching data from an API
@@ -129,43 +140,18 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
       },
       // ... add more episodes as needed
     ]);
-    setNotifications([
-      {
-        id: "episode_1",
-        userId: "666",
-        episodeId: "777",
-        hasListened: false,
-        lastListenedPosition: 23,
-        dateListened: new Date(),
-      },
-      {
-        id: "user_1",
-        username: "john_doe",
-        displayName: "John Doe",
-        email: "john@example.com",
-        passwordHash: "hashed_password",
-        salt: "salt",
-        avatar: "path_to_avatar",
-        interests: ["music", "podcasts"],
-        dateOfBirth: new Date(),
-        gender: "male",
-        isPodcaster: false,
-      },
-      {
-        id: "interaction_1",
-        userId: "user_1",
-        episodeId: "episode_1",
-        hasListened: true,
-        lastListenedPosition: 10,
-        dateListened: new Date(),
-      },
-    ]);
+    
   }, []);
 
   const bgBlur = useColorModeValue(
     "rgba(255, 255, 255, 0.3)",
     "rgba(26, 32, 44, 0.3)"
   ); // Adjust the RGBA values as needed
+
+  const clearAllNotifications = () => {
+    setEpisodeNotifications(episodeNotifications.map(notification => ({ ...notification, isRead: true })));
+  };
+  
 
   return (
     <>
@@ -204,38 +190,42 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                 <Button onClick={() => setSortByDate(!sortByDate)}>
                   Sort by {sortByDate ? "Oldest" : "Newest"}
                 </Button>
+                <Button onClick={clearAllNotifications} mb={4}>
+                  Clear All
+                </Button>
+
                 <List
                   spacing={4}
                   width="110%"
                   maxHeight="50vh"
                   overflowY="auto"
                 >
-                  {episodes.map((episode, index) => (
+                  {episodeNotifications.map((notification, index) => (
                     <ListItem
                       key={index}
-                      bg="whiteAlpha.50"
+                      bg={notification.isRead ? "gray.100" : "whiteAlpha.50"}
                       p={"6"}
                       width={"100%"}
                       boxShadow={"dark-lg"}
                     >
                       <HStack spacing={4}>
-                        <Avatar src={episode.coverArt} />
+                        <Avatar src={notification.coverArt} />
                         <VStack align="start" spacing={1} flex="1">
                           {" "}
                           {/* Added flex="1" here */}
                           <Text color="blue.400" fontWeight="bold">
-                            {episode.podcaster}
+                            {notification.podcaster}
                           </Text>
-                          <Text fontWeight="bold">{`New episode: ${episode.episodeName}`}</Text>
+                          <Text fontWeight="bold">{`New episode: ${notification.episodeName}`}</Text>
                           <Text
                             fontSize="sm"
                             color="gray.400"
                           >{`Released: ${formatDistanceToNow(
-                            episode.releaseDate
+                            notification.releaseDate
                           )} ago`}</Text>
                           <HStack>
-                            <Badge colorScheme="green">{`${episode.duration} minutes`}</Badge>
-                            <Badge colorScheme="red">{`${episode.likes.count} likes`}</Badge>
+                            <Badge colorScheme="green">{`${notification.duration} minutes`}</Badge>
+                            <Badge colorScheme="red">{`${notification.likes.count} likes`}</Badge>
                           </HStack>
                         </VStack>
                         <HStack spacing={4}>
@@ -255,6 +245,9 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                           />
                         </HStack>
                       </HStack>
+                      {!notification.isRead && (
+                          <Button onClick={() => markAsRead(notification.id)}>Mark as Read</Button>
+                        )}
                     </ListItem>
                   ))}
                 </List>
