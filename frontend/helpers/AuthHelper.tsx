@@ -1,8 +1,8 @@
 import axios from "axios";
-import { BaseResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../utilities/Responses";
+import { BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../utilities/Responses";
 import EndpointHelper from "./EndpointHelper";
 import RestHelper, { UserInfo } from "./RestHelper";
-import { LoginRequest, RegisterRequest } from "../utilities/Requests";
+import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../utilities/Requests";
 import { data } from "cypress/types/jquery";
 import { UserMenuInfo } from "../utilities/Interfaces";
 
@@ -11,15 +11,15 @@ import { UserMenuInfo } from "../utilities/Interfaces";
 /**
  * Handles the Authentication process with the Backend.
  */
-export default class AuthHelper{
+export default class AuthHelper {
 
     /**
      * Logs the user out of the application.
      * @returns A BaseResponse object with the server's response.
      */
-    public static authLogoutRequest = async () : Promise<LogoutResponse> => {
+    public static authLogoutRequest = async (): Promise<LogoutResponse> => {
 
-        if(window){
+        if (window) {
             window.sessionStorage.removeItem("userInfo")
         }
 
@@ -51,7 +51,7 @@ export default class AuthHelper{
                 message: requestResponse.statusText
             }
         }
-        catch(error) {
+        catch (error) {
             // Return the error.
             return {
                 status: error.response.status,
@@ -60,8 +60,8 @@ export default class AuthHelper{
         }
     }
 
-    
-    public static authLoginRequest = async (requestData: LoginRequest) : Promise<LoginResponse> => {
+
+    public static authLoginRequest = async (requestData: LoginRequest): Promise<LoginResponse> => {
         // Create the request options.
         const options =
         {
@@ -76,7 +76,7 @@ export default class AuthHelper{
             withCredentials: true
         }
 
-        try{
+        try {
             console.debug("Sending the following authLoginRequest...");
             console.debug(options);
 
@@ -93,7 +93,7 @@ export default class AuthHelper{
                 data: requestResponse.data
             }
         }
-        catch(error){
+        catch (error) {
             console.log(error)
             return {
                 status: error.response.status,
@@ -103,7 +103,7 @@ export default class AuthHelper{
         }
     }
 
-    public static authRegisterRequest = async (requestData: RegisterRequest) : Promise<RegisterResponse> => {
+    public static authRegisterRequest = async (requestData: RegisterRequest): Promise<RegisterResponse> => {
         // Create the request options.
         const options =
         {
@@ -118,7 +118,7 @@ export default class AuthHelper{
             withCredentials: true
         }
 
-        try{
+        try {
             console.debug("Sending the following authRegisterRequest...");
             console.debug(options);
 
@@ -135,7 +135,7 @@ export default class AuthHelper{
                 data: requestResponse.data
             }
         }
-        catch(error){
+        catch (error) {
             return {
                 status: error.response.status,
                 message: error.response.statusText,
@@ -144,7 +144,7 @@ export default class AuthHelper{
         }
     }
 
-    public static authMeRequest = async () : Promise<MeResponse> => {
+    public static authMeRequest = async (): Promise<MeResponse> => {
         // Create the request options.
         const options =
         {
@@ -157,7 +157,7 @@ export default class AuthHelper{
             withCredentials: true
         }
 
-        try{
+        try {
             console.debug("Sending the following authMeRequest...");
             console.debug(options);
 
@@ -167,8 +167,8 @@ export default class AuthHelper{
             console.debug("Received the following authMeResponse...");
             console.debug(requestResponse);
 
-            if(window){
-                window.sessionStorage.setItem("userInfo",JSON.stringify(requestResponse.data))
+            if (window) {
+                window.sessionStorage.setItem("userInfo", JSON.stringify(requestResponse.data))
             }
 
             // Return the response
@@ -178,7 +178,7 @@ export default class AuthHelper{
                 userMenuInfo: requestResponse.data,
             }
         }
-        catch(error){
+        catch (error) {
 
             return {
                 status: error.response.status,
@@ -188,25 +188,53 @@ export default class AuthHelper{
         }
     }
 
-
-    public static loginGoogleSSO = async (email:string,username:string,sub:string,avatar:string): Promise<boolean> =>
-    {
-        // Send the request.
-        const res = await RestHelper.authGoogleSSORequest(email,username,sub,avatar);
-
-        console.debug(res);
-        
-        // Successful login.
-        if(res.status === 200){
-            console.debug("Login Successful")
-            return true;
+    /**
+     * Sends a Google SSO request to the backend.
+     * @param requestData GoogleSSORequest
+     * @returns GoogleSSOResponse
+     */
+    public static loginGoogleSSO = async (requestData: GoogleSSORequest): Promise<GoogleSSOResponse> => {
+        // Create the request options.
+        const options =
+        {
+            method: 'POST',
+            url: EndpointHelper.getGoogleSSOEndpoint(),
+            data: requestData,
+            headers:
+            {
+                accept: '*/*',
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
         }
-        // Unsuccessful login.
-        else{
-            console.error("Login Failed")
-            return false;
+
+        try {
+            console.debug("Sending the following authGoogleSSORequest...");
+            console.debug(options);
+
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following authGoogleSSOResponse...");
+            console.debug(requestResponse);
+
+
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+                data: requestResponse.data
+            }
         }
-        
+        catch (error) {
+
+            return {
+                status: error.response.status,
+                message: error.response.statusText,
+                data: error.response.data
+            }
+        }
+
     }
 
 }

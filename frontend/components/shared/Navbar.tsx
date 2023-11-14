@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { Profile } from "next-auth";
+import { useSession, signOut, getSession } from "next-auth/react";
+import { DefaultSession, Profile } from "next-auth";
 import {
   Box,
   Flex,
@@ -33,6 +33,8 @@ import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
+import { GoogleSSORequest } from "../../utilities/Requests";
+import { MdIntegrationInstructions, MdToken } from "react-icons/md";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -53,7 +55,25 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
 
+  interface SessionExt extends DefaultSession {
+    token: {
+      email: string,
+      sub: string,
+      id_token: string,
+      name: string,
+      picture:string
+    }
+  }
+
   useEffect(() => {
+
+    if (session !== null) {
+      console.log(session);
+    }
+
+    console.log(isLoggedIn)
+
+
     // Custom User logged in
     if (!isUserSet) {
       AuthHelper.authMeRequest().then((response) => {
@@ -66,22 +86,32 @@ export default function Navbar() {
       });
     }
     // Google User logged in
-    else if (session && !isLoggedIn) {
-      AuthHelper.loginGoogleSSO(
-        session.user.email,
-        session.user.name,
-        (session as any).id,
-        session.user.image,
-      ).then(() => {
-        AuthHelper.authMeRequest().then((response) => {
-          if (response.status == 200) {
-            setUser(response.userMenuInfo);
-            setIsUserLoggedIn(true); // Set login status to true
-            setIsUserSet(true);
-            setIsLoggedIn(true);
+    if (session !== null && session!==undefined && !isLoggedIn) {
+      // Get the session info
+      const currentSession = session as SessionExt;
+      const googleSSORequest: GoogleSSORequest = {
+        email: currentSession.token.email,
+        sub: currentSession.token.sub,
+        token: currentSession.token.id_token,
+        avatar: currentSession.token.picture,
+        name: currentSession.token.name
+      }
+
+      AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
+        if (response.status == 200) {
+          if (!isUserSet) {
+            AuthHelper.authMeRequest().then((response) => {
+              if (response.status == 200) {
+                setUser(response.userMenuInfo);
+                setIsUserLoggedIn(true); // Set login status to true
+                setIsUserSet(true);
+                setIsLoggedIn(true);
+              }
+            });
           }
-        });
+        }
       });
+
     }
   }, [session, isLoggedIn]);
 
