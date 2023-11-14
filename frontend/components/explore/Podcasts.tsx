@@ -11,22 +11,16 @@ import {
 } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
-
-// Function to navigate to explore podcast page
-const navigateToExplorePodcast = (podcastId) => {
-  const podcastPage = "/Explore/" + podcastId;
-  window.location.href = podcastPage;
-};
+import NextLink from "next/link";
 
 const PodcastCard = ({ podcast }) => (
+  <NextLink href={`/Explore/${podcast.id}`} passHref>
+   
   <Card
-    as={Link}
-    href="#"
     boxShadow="lg"
     rounded="md"
     overflow="hidden"
     background={"transparent"}
-    onClick={() => navigateToExplorePodcast(podcast.id)}
     _hover={{
       transform: "scale(1.07)",
       textDecoration: "none",
@@ -111,6 +105,8 @@ const PodcastCard = ({ podcast }) => (
       }}
     ></div>
   </Card>
+ 
+  </NextLink>
 );
 
 const ForYou: React.FC = () => {

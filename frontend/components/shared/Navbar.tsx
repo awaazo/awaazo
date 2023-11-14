@@ -33,6 +33,7 @@ import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
+import NextLink from "next/link";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -133,19 +134,22 @@ export default function Navbar() {
       </MenuButton>
       <MenuList>
         <MenuGroup>
-          <MenuItem
-            onClick={() => (window.location.href = "/profile/MyProfile")}
-          >
+        <NextLink href="/profile/MyProfile" passHref>
+          <MenuItem >
             👤 My Account
           </MenuItem>
-          <MenuItem onClick={() => (window.location.href = "/MyPodcasts")}>
+        </NextLink>
+        <NextLink href="/MyPodcasts" passHref>
+          <MenuItem>
             🎙️ My Podcasts
           </MenuItem>
+          </NextLink>
           <MenuDivider />
-
-          <MenuItem onClick={() => (window.location.href = "/Settings")}>
+          <NextLink href="/Create" passHref>
+          <MenuItem >
             ⚙️ Settings
           </MenuItem>
+          </NextLink>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>

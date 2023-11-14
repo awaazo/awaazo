@@ -6,6 +6,7 @@ import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
 import otherImage from "../../styles/images/genres/other.jpg";
+import NexLink from "next/link";
 
 const genres = [
   { name: "Tech", image: techImage, link: "Technology" },
@@ -19,13 +20,11 @@ const genres = [
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
 
-  // Function to navigate to genre page
-  const navigateToExploreGenre = (genreName) => {
-    const genrePage = "/Explore/Genre/" + genreName;
-    window.location.href = genrePage;
-  };
+
 
   return (
+    <NexLink href={`/Explore/${genre.link}`} passHref>
+      
     <Box
       key={genre.name}
       h="100%"
@@ -43,7 +42,6 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
       outline={"2px solid rgba(255, 255, 255, .3)"}
       onMouseEnter={() => onMouseEnter(genre.name)}
       onMouseLeave={onMouseLeave}
-      onClick={() => navigateToExploreGenre(genre.link)}
       zIndex={isHovered ? 1 : 0}
     >
       <Image
@@ -67,6 +65,7 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
         {genre.name}
       </Text>
     </Box>
+   </NexLink>
   );
 };
 

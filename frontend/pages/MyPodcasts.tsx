@@ -39,6 +39,7 @@ import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
 import router from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
 import PodcastHelper from "../helpers/PodcastHelper";
+import NextLink from "next/link";
 
 const MyPodcasts = () => {
   // Page refs
@@ -139,6 +140,7 @@ const MyPodcasts = () => {
                 onClick={() => togglePodcastDetail(podcast.id)}
                 align="center"
               >
+                <NextLink href={`/podcasts/${podcast.id}`} passHref>
                 <Box position="relative" boxSize="150px">
                   <Image
                     borderRadius="2.5em"
@@ -161,6 +163,7 @@ const MyPodcasts = () => {
                     data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`}
                   />
                 </Box>
+                </NextLink>
 
                 <Text fontSize="lg">
                   {podcast.name.length > 18
@@ -169,13 +172,13 @@ const MyPodcasts = () => {
                 </Text>
               </VStack>
             ))}
+            <NextLink href="/NewPodcast" passHref>
             <Flex
               direction="column"
               alignItems="center"
               borderRadius="1em"
               cursor="pointer"
               outline="none"
-              onClick={navigateToCreatePodcast}
               p={2}
               m={2}
               bg="transparent"
@@ -192,6 +195,7 @@ const MyPodcasts = () => {
               </Box>
               <Text mt={2}>Create a Podcast</Text>
             </Flex>
+            </NextLink>
           </Wrap>
         </Flex>
         {selectedPodcastId !== null && (
