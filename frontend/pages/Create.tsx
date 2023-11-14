@@ -291,11 +291,7 @@ const CreateEpisode = () => {
               }}
             >
               <img
-                src={
-                  coverImage ||
-                  selectedPodcast?.coverArtUrl ||
-                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
-                }
+                src={selectedPodcast?.coverArtUrl}
                 alt="Cover Photo"
                 style={{
                   width: "150px",
@@ -303,6 +299,7 @@ const CreateEpisode = () => {
                   borderRadius: "50%",
                   padding: "15px",
                   position: "relative",
+                  objectFit: "cover",
                 }}
               />
               <label
