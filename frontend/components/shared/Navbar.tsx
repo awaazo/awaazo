@@ -99,6 +99,10 @@ export default function Navbar() {
     window.location.href = indexPage;
   };
 
+  /**
+   * Shows the Basic info about the user currently logged in and gives access to btns.
+   * @returns User Profile Menu for the top-right corner
+   */
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton
@@ -155,6 +159,10 @@ export default function Navbar() {
     </Menu>
   );
 
+  /**
+   * Shows login and register options for the user to eventually log in.
+   * @returns Logged Out Meny for the top-right corner
+   */
   const LoggedOutMenu = () => (
     <Menu>
       <MenuButton
@@ -180,6 +188,93 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
+
+  /**
+   * @returns Top-right Menu adapted for Mobile View
+   */
+  const MobileMenu = () => (
+    <Flex alignItems={"center"}>
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
+      />
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
+  /**
+   * @returns Top-right Menu adapted for Desktop View
+   */
+  const DesktopMenu = () => (
+    <Flex
+      alignItems={"center"}
+      as="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearchSubmit();
+      }}
+      color={colorMode === "dark" ? "white" : "black"}
+    >
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
+      />
+      <Link href="/Create">
+        <IconButton
+          aria-label="Create"
+          icon={<AddIcon />}
+          variant="ghost"
+          size="md"
+          rounded={"full"}
+          opacity={0.7}
+          mr={3}
+          color={colorMode === "dark" ? "white" : "black"}
+        />
+      </Link>
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
 
   return (
     <>
@@ -207,83 +302,7 @@ export default function Navbar() {
               />
             </Box>
           </Link>
-          {isMobile ? (
-            <Flex alignItems={"center"}>
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              <UserProfileMenu />
-            </Flex>
-          ) : (
-            <Flex
-              alignItems={"center"}
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearchSubmit();
-              }}
-              color={colorMode === "dark" ? "white" : "black"}
-            >
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <Link href="/Create">
-                <IconButton
-                  aria-label="Create"
-                  icon={<AddIcon />}
-                  variant="ghost"
-                  size="md"
-                  rounded={"full"}
-                  opacity={0.7}
-                  mr={3}
-                  color={colorMode === "dark" ? "white" : "black"}
-                />
-              </Link>
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-            </Flex>
-          )}
+          {isMobile ? <MobileMenu/> : <DesktopMenu/>}
         </Flex>
       </Box>
     </>
