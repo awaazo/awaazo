@@ -42,7 +42,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session}>
         <PlayerProvider>
           <Component {...pageProps} />
-          <PlayerBar />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <PlayerBar />
+          </div>
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
