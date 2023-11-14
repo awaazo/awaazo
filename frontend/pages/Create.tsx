@@ -411,7 +411,7 @@ const CreateEpisode = () => {
                 textAlign="center"
                 width="300px"
               >
-                <input {...getInputProps()} />
+                <input {...getInputProps()} accept=".mp3, .wav, .mp4, .mpeg" />
                 {file ? (
                   <p>{file.name}</p>
                 ) : (
