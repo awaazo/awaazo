@@ -9,7 +9,7 @@ public interface IProfileService
 
     // Current User
 
-    public UserProfileResponse GetProfile(User user, string domainUrl);
+    public Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl);
 
     public Task<bool> SetupProfileAsync(ProfileSetupRequest request, User user);
 

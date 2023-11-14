@@ -1,11 +1,8 @@
 ﻿using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
-using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;

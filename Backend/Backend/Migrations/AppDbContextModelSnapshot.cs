@@ -578,8 +578,10 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -587,9 +589,6 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("DateListened")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EpisodeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HasLiked")
                         .HasColumnType("bit");
@@ -603,12 +602,7 @@ namespace Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "EpisodeId");
 
                     b.ToTable("UserEpisodeInteractions");
                 });
