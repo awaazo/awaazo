@@ -5,19 +5,25 @@ import educationImage from "../../styles/images/genres/ed.png";
 import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
-import otherImage from "../../styles/images/genres/other.jpg"; 
+import otherImage from "../../styles/images/genres/other.jpg";
 
 const genres = [
-  { name: "Tech", image: techImage },
-  { name: "Education", image: educationImage },
-  { name: "Comedy", image: comedyImage },
-  { name: "Politics", image: politicsImage },
-  { name: "Crime", image: crimeImage },
-  { name: "Other", image: otherImage },
+  { name: "Tech", image: techImage, link: "Technology" },
+  { name: "Education", image: educationImage, link: "Education" },
+  { name: "Comedy", image: comedyImage, link: "Comedy" },
+  { name: "Politics", image: politicsImage, link: "Politics" },
+  { name: "Crime", image: crimeImage, link: "Crime" },
+  { name: "Other", image: otherImage, link: "Other" },
 ];
 
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
+
+  // Function to navigate to genre page
+  const navigateToExploreGenre = (genreName) => {
+    const genrePage = "/Explore/Genre/" + genreName;
+    window.location.href = genrePage;
+  };
 
   return (
     <Box
@@ -32,12 +38,13 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
         transition: "all 0.4s ease-in-out",
       }}
       transform={scale}
-      transition="all 0.4s ease-in-out" 
+      transition="all 0.4s ease-in-out"
       boxSizing="border-box"
       outline={"2px solid rgba(255, 255, 255, .3)"}
       onMouseEnter={() => onMouseEnter(genre.name)}
       onMouseLeave={onMouseLeave}
-      zIndex={isHovered ? 1 : 0} 
+      onClick={() => navigateToExploreGenre(genre.link)}
+      zIndex={isHovered ? 1 : 0}
     >
       <Image
         src={genre.image.src}
