@@ -46,7 +46,11 @@ const ForYou: React.FC = () => {
       <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
         {podcasts ? (
           podcasts.map((podcast, index) => (
-            <PodcastCard key={index} podcast={podcast} />
+            <PodcastCard 
+            key={index} 
+            podcast={podcast} 
+            data-cy={`podcast-card-${index}`} // Unique data-cy attribute for each PodcastCard
+            />
           ))
         ) : (
           <Text style={{ marginTop: "50px", marginLeft: "30px" }}>

@@ -158,6 +158,7 @@ const MyPodcasts = () => {
                           : "1px solid rgba(255, 255, 255, 0.5)",
                       cursor: "pointer",
                     }}
+                    data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`}
                   />
                 </Box>
 

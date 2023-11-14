@@ -138,7 +138,7 @@ describe ('Postcast_Create', () => {
         cy.url().should('include', '/MyPodcasts');
     });
 
-    it.only('limits the number of characters in the input field', () => {
+    it('limits the number of characters in the input field', () => {
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -153,8 +153,8 @@ describe ('Postcast_Create', () => {
         cy.get(':nth-child(10) > .chakra-button').click();
         cy.get('button[id=createBtn]').click(); 
         cy.url().should('include', '/Create');
-        cy.visit('/MyPodcasts'); 
-        cy.contains('aaaaaaaaaaaaaaaaaaaaaaaaa');
+        cy.visit('/MyPodcasts'); ;
+        cy.contains('aaaaaaaaaaaaaaaaaa...')
       });
     
 });
