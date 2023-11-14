@@ -72,19 +72,21 @@ export default function MyPodcast() {
         px={["1em", "2em", "4em"]}
         height="calc(100vh - 60px - 80px)"
       >
-        <Box
-          bgGradient="linear(to-r, #ad602d, transparent)"
-          w={{ base: "70%", md: "30%" }}
-          borderRadius="0.5em"
-          boxShadow="lg"
-          p="8px"
-        >
-          {!loading && (
-            <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
-              Searching for: "{searchTerm}"
-            </Text>
-          )}
-        </Box>
+        {loading ? null : (
+          <Box
+            bgGradient="linear(to-r, #ad602d, transparent)"
+            w={{ base: "70%", md: "30%" }}
+            borderRadius="0.5em"
+            boxShadow="lg"
+            p="8px"
+          >
+            {!loading && (
+              <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
+                Searching for: "{searchTerm}"
+              </Text>
+            )}
+          </Box>
+        )}
 
         {loading ? (
           // Show loading indicator or spinner
