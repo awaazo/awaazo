@@ -81,6 +81,22 @@ export default class EndpointHelper {
   };
 
   /**
+   * Returns the Profile search endpoint.
+   * @returns The Profile search Endpoint
+   */
+  static getProfileSearchEndpoint = (searchTerm, page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/profile/search?searchterm=" +
+      searchTerm +
+      "&page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
    * Returns the Podcast Create endpoint.
    * @returns The Podcast Create Endpoint
    */
