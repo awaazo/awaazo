@@ -52,6 +52,9 @@ const PlayerBar = () => {
   // Fetch audio from backend using the episode and podcast Ids
   useEffect(() => {
     const fetchAudio = async () => {
+      if (isPlaying) {
+        togglePlayPause();
+      }
       setIsLoading(true);
       try {
         const audioUrl = await PlayingHelper.getEpisodePlaying(
@@ -66,7 +69,6 @@ const PlayerBar = () => {
     };
 
     fetchAudio();
-    setIsPlaying(true);
   }, [episode]);
 
   // Load the audio url

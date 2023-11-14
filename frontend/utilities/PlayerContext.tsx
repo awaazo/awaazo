@@ -11,7 +11,6 @@ import { Episode } from "./Interfaces";
 
 interface PlayerState {
   episode: null | Episode;
-  currentTime: number;
 }
 
 interface PlayerContextProps {
@@ -24,7 +23,6 @@ const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
 
 const initialState: PlayerState = {
   episode: null,
-  currentTime: 0,
 };
 
 const playerReducer = (state: PlayerState, action: any) => {
@@ -56,22 +54,12 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const storedEpisode = localStorage.getItem("storedEpisode");
-    const storedPosition = sessionStorage.getItem("playbackPosition");
 
     if (storedEpisode) {
       const parsedEpisode = JSON.parse(storedEpisode);
       dispatch({ type: "SET_EPISODE", payload: parsedEpisode });
     }
-    if (storedPosition) {
-      const parsedPosition = JSON.parse(storedPosition);
-      console.log("Parsed pos:" + parsedPosition);
-      audioRef.current.currentTime = parsedPosition;
-    }
   }, []);
-
-  useEffect(() => {
-    if (state.currentTime > 5) storeTimeInLocalStorage(state.currentTime);
-  }, [state.currentTime]);
 
   useEffect(() => {
     storeEpisodeInLocalStorage(state.episode);
@@ -101,8 +89,4 @@ export const usePlayer = () => {
 
 const storeEpisodeInLocalStorage = (episode: Episode): void => {
   localStorage.setItem("storedEpisode", JSON.stringify(episode));
-};
-
-const storeTimeInLocalStorage = (position): void => {
-  localStorage.setItem("playbackPosition", JSON.stringify(position));
 };
