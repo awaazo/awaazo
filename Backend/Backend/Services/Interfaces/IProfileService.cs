@@ -7,7 +7,7 @@ namespace Backend.Services.Interfaces;
 public interface IProfileService
 {
 
-    // Current User
+    // Current USER Profile
 
     public Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl);
 
@@ -17,10 +17,10 @@ public interface IProfileService
 
     public Task<bool> DeleteProfileAsync(User user);
 
-    // Other Users
+    // Other USER Profile
 
     public Task<FullUserProfileResponse> GetUserProfile(Guid userId, string domainUrl);
     public Task<List<UserProfileResponse>> SearchUserProfiles(string searchTerm, int page, int pageSize, string domainUrl);
-    public Task<string> GetUserAvatarName(Guid userId);
+    public Task<string> GetUserAvatarNameAsync(Guid userId);
 
 }

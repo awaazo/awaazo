@@ -29,12 +29,14 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
+    public virtual DbSet<EpisodeLike> EpisodeLikes  { get; set; }
+    public virtual DbSet<CommentLike> CommentLikes {get;set;}
+    public virtual DbSet<CommentReplyLike> CommentReplyLikes {get;set;}
     public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
-    public virtual DbSet<Files>? File { get; set; }
     public virtual DbSet<Notification>? Notifications { get; set; }
-    public virtual DbSet<Like> Likes { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
+    public virtual DbSet<CommentReply> CommentReplies { get; set; }
 
     /// <summary>
     /// Maps to the Soundex function in the database.
@@ -144,12 +146,74 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
+        // Episode 1-to-many EpisodeLikes
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.Likes)
+            .WithOne(l => l.Episode)
+            .HasForeignKey(l => l.EpisodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Comment 1-to-many CommentLikes
+        modelBuilder.Entity<Comment>()
+            .HasMany(e => e.Likes)
+            .WithOne(l => l.Comment)
+            .HasForeignKey(l => l.CommentId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // CommentReply 1-to-many CommentReplyLikes
+        modelBuilder.Entity<CommentReply>()
+            .HasMany(e => e.Likes)
+            .WithOne(l => l.CommentReply)
+            .HasForeignKey(l => l.CommentReplyId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);        
+
+        // Comment 1-to-many CommentReply
+        modelBuilder.Entity<Comment>()
+            .HasMany(c => c.Comments)
+            .WithOne(c1=>c1.ReplyToComment)
+            .HasForeignKey(c1=>c1.ReplyToCommentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Episode 1-to-many Comments
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.Comments)
+            .WithOne(c=>c.Episode)
+            .HasForeignKey(c=>c.EpisodeId)
+            .IsRequired();
+
+        // User 1-to-many Comments
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Comments)
+            .WithOne(c=>c.User)
+            .HasForeignKey(c=>c.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // User 1-to-many CommentReplies
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.CommentReplies)
+            .WithOne(c=>c.User)
+            .HasForeignKey(c=>c.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
+
         // Rating many-to-1 podcast
         modelBuilder.Entity<Podcast>()
             .HasMany(e => e.Ratings)
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Rating many-to-1 user
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Ratings)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
 
     }
     

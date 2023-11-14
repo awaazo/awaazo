@@ -23,8 +23,8 @@ public class SocialController : ControllerBase
 
     #region Comment
 
-    [HttpPost("comment")]
-    public async Task<ActionResult> AddComment(CommentRequest request)
+    [HttpPost("{episodeOrCommentId}/comment")]
+    public async Task<IActionResult> AddComment(Guid episodeOrCommentId, [FromBody] string commentText)
     {
         try
         {
@@ -35,8 +35,7 @@ public class SocialController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            // Return the add comment status
-            return await _socialService.AddCommentAsync(request, user) ? Ok("Comment saved.") : Ok("Comment failed to save.");
+            return await _socialService.AddCommentAsync(episodeOrCommentId,user,commentText)? Ok("Comment added."):Ok("Failed to add comment.");
         }
         catch (Exception e)
         {
@@ -45,8 +44,8 @@ public class SocialController : ControllerBase
         }
     }
 
-    [HttpGet("getEpisodeComment")]
-    public async Task<ActionResult> GetEpisodeComments([Required] Guid episodeId)
+    [HttpDelete("{commentId}/delete")]
+    public async Task<IActionResult> DeleteComment(Guid commentId)
     {
         try
         {
@@ -57,8 +56,7 @@ public class SocialController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            // Return the comments
-            return Ok(await _socialService.GetEpisodeCommentsAsync(episodeId));
+            return await _socialService.RemoveCommentAsync(commentId,user)? Ok("Comment deleted."):Ok("Failed to delete comment.");
         }
         catch (Exception e)
         {
@@ -67,8 +65,8 @@ public class SocialController : ControllerBase
         }
     }
 
-    [HttpGet("getUserComments")]
-    public async Task<ActionResult> GetUserComments()
+    [HttpPost("{episodeOrCommentId}/like")]
+    public async Task<IActionResult> AddLike(Guid episodeOrCommentId)
     {
         try
         {
@@ -79,8 +77,7 @@ public class SocialController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            // Return the comments
-            return Ok(await _socialService.GetUserCommentsAsync(user));
+            return await _socialService.AddLikeAsync(episodeOrCommentId,user)? Ok("Like added."):Ok("Failed to add like.");
         }
         catch (Exception e)
         {
@@ -89,8 +86,8 @@ public class SocialController : ControllerBase
         }
     }
 
-    [HttpDelete("deleteComment")]
-    public async Task<ActionResult> DeleteComment([Required] Guid commentId)
+    [HttpDelete("{episodeOrCommentId}/unlike")]
+    public async Task<IActionResult> RemoveLike(Guid episodeOrCommentId)
     {
         try
         {
@@ -101,62 +98,7 @@ public class SocialController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            // Return the add comment status
-            return await _socialService.DeleteCommentAsync(commentId, user) ? Ok("Comment deleted.") : Ok("Comment failed to be deleted.");
-        }
-        catch (Exception e)
-        {
-            // Return the error message
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpPost("like")]
-    public async Task<ActionResult> AddLike(Guid episodeId, Guid commentId)
-    {
-        try
-        {
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
-            // Add like to the right entity.
-            if (episodeId != Guid.Empty)
-                return await _socialService.AddLikeToEpisodeAsync(episodeId, user) ? Ok("Episode liked.") : Ok("Episode failed to be liked.");
-            else if (commentId != Guid.Empty)
-                return await _socialService.AddLikeToCommentAsync(commentId, user) ? Ok("Comment liked.") : Ok("Comment failed to be liked.");
-            else
-                return BadRequest("Episode or Comment ID is required.");
-        }
-        catch (Exception e)
-        {
-            // Return the error message
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpDelete("unlike")]
-    public async Task<ActionResult> RemoveLike(Guid episodeId, Guid commentId)
-    {
-        try
-        {
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
-            // Add like to the right entity.
-            if (episodeId != Guid.Empty)
-                return await _socialService.RemoveEpisodeLikeAsync(episodeId, user) ? Ok("Episode unliked.") : Ok("Episode failed to be unliked.");
-            else if (commentId != Guid.Empty)
-                return await _socialService.RemoveCommentLikeAsync(commentId, user) ? Ok("Comment unliked.") : Ok("Comment failed to be unliked.");
-            else
-                return BadRequest("Episode or Comment ID is required.");
+            return await _socialService.RemoveLikeAsync(episodeOrCommentId,user)? Ok("Like removed."):Ok("Failed to remove like.");
         }
         catch (Exception e)
         {

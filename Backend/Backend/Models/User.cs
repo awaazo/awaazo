@@ -159,6 +159,9 @@ public class User : BaseEntity
     /// <returns></returns>
     public ICollection<UserEpisodeInteraction> EpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
+    public ICollection<Comment> Comments { get; } = new List<Comment>();
+
+    public ICollection<CommentReply> CommentReplies {get;} = new List<CommentReply>();
 
     /// <summary>
     /// User Notification.
@@ -166,6 +169,7 @@ public class User : BaseEntity
     /// <typeparam name="Notification"></typeparam>
     /// <returns></returns>
     public ICollection<Notification> Notifications {  get; } = new List<Notification>();
+
 
     /// <summary>
     /// Gender enum.

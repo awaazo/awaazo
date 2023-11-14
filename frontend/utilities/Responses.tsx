@@ -36,6 +36,7 @@ export interface UserProfileResponse extends BaseResponse {
 
 //#endregion
 
+
 //#region Podcast Responses
 export interface MyPodcastResponse extends BaseResponse {
   myPodcasts: Podcast[];

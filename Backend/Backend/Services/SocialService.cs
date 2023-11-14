@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
@@ -27,126 +28,6 @@ public class SocialService : ISocialService
     }
 
     /// <summary>
-    /// Adds a Comment to the DB.
-    /// </summary>
-    /// <param name="request">Comment Request</param>
-    /// <param name="user">Current User</param>
-    /// <returns></returns>
-    public async Task<bool> AddCommentAsync(CommentRequest request, User user)
-    {
-        // Check if the episode exists
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(episode => episode.Id.Equals(request.EpisodeId)) ?? throw new Exception("Episode does not exist with the given ID.");
-
-        // If the comment is a reply to a comment, check if the comment exists
-        if (request.ReplyToCommentId is not null)
-        {
-            Comment parentComment = await _db.Comments.FirstOrDefaultAsync(comment => comment.Id.Equals(request.ReplyToCommentId)) ?? throw new Exception("Comment does not exist");
-        }
-
-        // Create the Comment
-        Comment comment = new()
-        {
-            Id = Guid.NewGuid(),
-            UserId = user.Id,
-            EpisodeId = request.EpisodeId,
-            ReplyToCommentId = request.ReplyToCommentId,
-            Text = request.Text,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        };
-
-        // Add the Comment to the DB and return the status
-        await _db.Comments.AddAsync(comment);
-        return await _db.SaveChangesAsync() > 0;
-    }
-
-    /// <summary>
-    /// Gets all Comments for an Episode.
-    /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
-    public async Task<List<CommentResponse>> GetEpisodeCommentsAsync(Guid episodeId)
-    {
-        // Get the comments for the episode
-        List<CommentResponse> comments = await _db.Comments.Where(comment => comment.EpisodeId.Equals(episodeId)).Select(c => new CommentResponse(c)).ToListAsync();
-
-        // Get the likes for each comment
-        foreach (CommentResponse comment in comments)
-        {
-            comment.Likes = await _db.Likes.Where(like => like.CommentId.Equals(comment.Id)).CountAsync();
-        }
-
-        // Return the comments
-        return comments;
-    }
-
-    /// <summary>
-    /// Gets all Comments for a User.
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    public async Task<List<CommentResponse>> GetUserCommentsAsync(User user)
-    {
-        // Get the comments for the user
-        List<CommentResponse> comments = await _db.Comments.Where(comment => comment.UserId.Equals(user.Id)).Select(c => new CommentResponse(c)).ToListAsync();
-
-        // Get the likes for each comment
-        foreach (CommentResponse comment in comments)
-        {
-            comment.Likes = await _db.Likes.Where(like => like.CommentId.Equals(comment.Id)).CountAsync();
-        }
-
-        // Return the comments
-        return comments;
-    }
-
-    /// <summary>
-    /// Deletes a Comment from the DB.
-    /// </summary>
-    /// <param name="commentId">Comment to be deleted.</param>
-    /// <param name="user">User that is deleting the comment</param>
-    /// <returns></returns>
-    public async Task<bool> DeleteCommentAsync(Guid commentId, User user)
-    {
-        // Get the comment from the DB if it exists
-        Comment comment = await _db.Comments.FirstOrDefaultAsync(comment => comment.Id.Equals(commentId)) ?? throw new Exception("Comment does not exist for the given ID.");
-        // Get the episode from the DB if it exists
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(episode => episode.Id.Equals(comment!.EpisodeId)) ?? throw new Exception("Error finding episode.");
-        // Get the podcast from the DB if it exists
-        Podcast podcast = await _db.Podcasts!.FirstOrDefaultAsync(podcast => podcast.Id.Equals(episode.PodcastId)) ?? throw new Exception("Error finding podcast.");
-        // Find all subcomments of the comment
-        List<Comment> subcomments = await _db.Comments.Where(comment => comment.ReplyToCommentId.Equals(commentId)).ToListAsync();
-        // Get all likes for the comment
-        List<Like> likes = await _db.Likes.Where(like => like.CommentId.Equals(commentId)).ToListAsync();
-
-        // If the user is the owner of the comment or of the episode, 
-        // delete it and return the status
-        if (comment.UserId.Equals(user.Id) || podcast.PodcasterId.Equals(user.Id))
-        {
-            // Update all subcomments so that they don't point to the deleted one
-            foreach (Comment subcomment in subcomments)
-            {
-                subcomment.ReplyToCommentId = comment.ReplyToCommentId;
-                _db.Comments.Update(subcomment);
-            }
-
-            // Delete all likes for the comment
-            foreach (Like like in likes)
-            {
-                _db.Likes.Remove(like);
-            }
-
-            // Delete the comment and return the status
-            _db.Comments.Remove(comment);
-            return await _db.SaveChangesAsync() > 0;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Adds a like to an Episode.
     /// </summary>
     /// <param name="episodeId"></param>
@@ -154,22 +35,27 @@ public class SocialService : ISocialService
     /// <returns></returns>
     public async Task<bool> AddLikeToEpisodeAsync(Guid episodeId, User user)
     {
+        // Get the episode to be liked
+        Episode episode = await _db.Episodes
+        .Include(e => e.Likes)
+        .Where(e => e.Id.Equals(episodeId))
+        .FirstOrDefaultAsync() ?? throw new Exception("Episode does not exist with the given ID.");
+
+        // Check if the user has already liked the episode
+        if (episode.Likes.Any(l => l.UserId.Equals(user.Id)))
+            throw new Exception("Episode has already been liked.");
+
         // Create the Like
-        Like like = new()
+        EpisodeLike like = new()
         {
             UserId = user.Id,
             EpisodeId = episodeId,
-            CommentId = Guid.Empty,
             UpdatedAt = DateTime.Now,
             CreatedAt = DateTime.Now
         };
 
-        // Make sure its not a duplicate like
-        if (await _db.Likes.CountAsync(l => l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId)) > 0)
-            throw new Exception("Episode has already been liked.");
-
         // Add the Like to the DB and return the status
-        await _db.Likes.AddAsync(like);
+        await _db.EpisodeLikes.AddAsync(like);
         return await _db.SaveChangesAsync() > 0;
     }
 
@@ -181,69 +67,229 @@ public class SocialService : ISocialService
     /// <returns></returns>
     public async Task<bool> AddLikeToCommentAsync(Guid commentId, User user)
     {
-        // Create the Like
-        Like like = new()
+        // Get the comment to be liked
+        Comment? comment = await _db.Comments
+            .Include(c => c.Likes)
+            .Include(c => c.Episode)
+            .Include(c => c.Comments)
+            .Where(c => c.Id.Equals(commentId))
+            .FirstOrDefaultAsync();
+
+        CommentReply? commentReply = await _db.CommentReplies
+            .Include(c => c.Likes)
+            .Where(c => c.Id == commentId)
+            .FirstOrDefaultAsync();
+
+        // If the comment exist, add a like
+        if (comment is not null)
         {
-            UserId = user.Id,
-            EpisodeId = Guid.Empty,
-            CommentId = commentId,
-            UpdatedAt = DateTime.Now,
-            CreatedAt = DateTime.Now
-        };
+            // Check that the comment is not already liked
+            if (comment.Likes.Any(l => l.UserId.Equals(user.Id)))
+                throw new Exception("Comment has already been liked.");
 
-        // Make sure its not a duplicate like
-        if (await _db.Likes.CountAsync(l => l.UserId.Equals(like.UserId) && l.EpisodeId.Equals(like.EpisodeId) && l.CommentId.Equals(like.CommentId)) > 0)
-            throw new Exception("Comment has already been liked.");
+            // Create the Like
+            CommentLike like = new()
+            {
+                UserId = user.Id,
+                CommentId = commentId,
+                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.Now
+            };
 
-        // Add the Like to the DB and return the status
-        await _db.Likes.AddAsync(like);
+            await _db.CommentLikes.AddAsync(like);
+        }
+        else if (commentReply is not null)
+        {
+            // Check that the comment is not already liked
+            if (commentReply.Likes.Any(l => l.UserId.Equals(user.Id)))
+                throw new Exception("Comment has already been liked.");
+
+            // Create the like
+            CommentReplyLike like = new()
+            {
+                UserId = user.Id,
+                CommentReplyId = commentId,
+                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.Now
+            };
+
+            await _db.CommentReplyLikes.AddAsync(like);
+        }
+        else
+            throw new Exception("Given ID does not belong to any commment and/or episode.");
+
+        // Save changes to the DB and return the status
         return await _db.SaveChangesAsync() > 0;
     }
 
     /// <summary>
-    /// Removes a like from an episode.
+    /// Adds a comment to an episode or a comment.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="episodeOrCommentId"></param>
     /// <param name="user"></param>
+    /// <param name="commentText"></param>
     /// <returns></returns>
-    public async Task<bool> RemoveEpisodeLikeAsync(Guid episodeId, User user)
+    public async Task<bool> AddCommentAsync(Guid episodeOrCommentId, User user, string commentText)
     {
-        // Find if the like exists
-        Like? like = await _db.Likes.FirstOrDefaultAsync(like => like.EpisodeId.Equals(episodeId) && like.UserId.Equals(user.Id));
-
-        // If the like exists, remove it from the DB and return the status
-        if (like != null)
-        {
-            _db.Likes.Remove(like);
-            return await _db.SaveChangesAsync() > 0;
-        }
-        else
-        {
-            return false;
-        }
+        // Check if the comment is a reply to a comment or an episode
+        return await _db.Episodes.AnyAsync(e => e.Id == episodeOrCommentId) ?
+            await AddCommentToEpisodeAsync(episodeOrCommentId, user, commentText) :
+            await AddCommentToCommentAsync(episodeOrCommentId, user, commentText);
     }
 
     /// <summary>
-    /// Removes a like from a comment.
+    /// Adds a comment to an episode.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="user"></param>
+    /// <param name="commentText"></param>
+    /// <returns></returns>
+    public async Task<bool> AddCommentToEpisodeAsync(Guid episodeId, User user, string commentText)
+    {
+        // Check if the episode exists
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id.Equals(episodeId)) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Create the comment
+        Comment comment = new()
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            EpisodeId = episodeId,
+            Text = commentText,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        // Save the comment to the DB and return the status
+        await _db.Comments.AddAsync(comment);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Adds a comment to a comment.
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <param name="user"></param>
+    /// <param name="commentText"></param>
+    /// <returns></returns>
+    public async Task<bool> AddCommentToCommentAsync(Guid commentId, User user, string commentText)
+    {
+        // Check if the comment exists
+        Comment comment = await _db.Comments
+        .FirstOrDefaultAsync(c => c.Id == commentId) ?? throw new Exception("Comment does not exist for the given ID.");
+
+        // Create the comment
+        CommentReply commentReply = new()
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            ReplyToCommentId = commentId,
+            Text = commentText,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        // Save the comment to the DB and return the status
+        await _db.CommentReplies.AddAsync(commentReply);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Removes a comment.
     /// </summary>
     /// <param name="commentId"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> RemoveCommentLikeAsync(Guid commentId, User user)
+    public async Task<bool> RemoveCommentAsync(Guid commentId, User user)
     {
-        // Find if the like exists
-        Like? like = await _db.Likes.FirstOrDefaultAsync(like => like.CommentId.Equals(commentId) && like.UserId.Equals(user.Id));
+        // Check if the comment exists
+        Comment? comment = await _db.Comments
+        .Include(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(c => c.Likes)
+        .FirstOrDefaultAsync(c => c.Id == commentId);
 
-        // If the like exists, remove it from the DB and return the status
-        if (like != null)
+        // If it does not, check if its a comment reply
+        if (comment is null)
         {
-            _db.Likes.Remove(like);
-            return await _db.SaveChangesAsync() > 0;
+            CommentReply commentReply = await _db.CommentReplies
+            .Include(c => c.Likes)
+            .FirstOrDefaultAsync(c => c.Id == commentId) ?? throw new Exception("No Comment exist for the given comment ID.");
+
+            if (commentReply.UserId != user.Id)
+                throw new Exception("User is not the owner of the comment.");
+
+            // Remove all likes
+            _db.CommentReplyLikes.RemoveRange(commentReply.Likes);
+
+            // If it is, remove it.
+            _db.CommentReplies.Remove(commentReply);
         }
         else
         {
-            return false;
+            if (comment.UserId != user.Id)
+                throw new Exception("User is not the owner of the comment.");
+
+            // Remove all replies and likes
+            foreach(CommentReply reply in comment.Comments)
+                _db.CommentReplyLikes.RemoveRange(reply.Likes);
+
+            _db.CommentLikes.RemoveRange(comment.Likes);
+            _db.CommentReplies.RemoveRange(comment.Comments);
+
+            // Remove the top comment last
+            _db.Comments.Remove(comment);
         }
+
+
+        // Save the changes and return the status.
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Adds a like.
+    /// </summary>
+    /// <param name="episodeOrCommentId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> AddLikeAsync(Guid episodeOrCommentId, User user)
+    {
+        // Check if the like is for a comment or an episode
+        return await _db.Episodes.AnyAsync(e => e.Id == episodeOrCommentId) ?
+            await AddLikeToEpisodeAsync(episodeOrCommentId, user) :
+            await AddLikeToCommentAsync(episodeOrCommentId, user);
+    }
+
+    /// <summary>
+    /// Removes a like.
+    /// </summary>
+    /// <param name="episodeOrCommentId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> RemoveLikeAsync(Guid episodeOrCommentId, User user)
+    {
+        // Get the episodeLike, commentLike or commentReplyLike
+        EpisodeLike? episodeLike = await _db.EpisodeLikes
+        .FirstOrDefaultAsync(l => l.EpisodeId == episodeOrCommentId && l.UserId == user.Id);
+
+        CommentLike? commentLike = await _db.CommentLikes
+        .FirstOrDefaultAsync(l => l.CommentId == episodeOrCommentId && l.UserId == user.Id);
+
+        CommentReplyLike? commentReplyLike = await _db.CommentReplyLikes
+        .FirstOrDefaultAsync(l => l.CommentReplyId == episodeOrCommentId && l.UserId == user.Id);
+
+        // Remove the like
+        if (episodeLike is not null)
+            _db.EpisodeLikes.Remove(episodeLike);
+        else if (commentLike is not null)
+            _db.CommentLikes.Remove(commentLike);
+        else if (commentReplyLike is not null)
+            _db.CommentReplyLikes.Remove(commentReplyLike);
+        else
+            throw new Exception("Like does not exist for the given ID.");
+
+        // Save the changes and return the status.
+        return await _db.SaveChangesAsync() > 0;
     }
 
     #region Rating
@@ -391,5 +437,4 @@ public class SocialService : ISocialService
     }
 
     #endregion
-
 }

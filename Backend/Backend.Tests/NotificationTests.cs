@@ -198,7 +198,6 @@ namespace Backend.Tests
             _dbContextMock.SetupGet(db => db.Notifications).Returns(notification.Object);
             _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
 
-            var filesMock = new Mock<Files>();
             _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(_user.Object.First()));
         }
 

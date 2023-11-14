@@ -126,7 +126,6 @@ const EditProfile: React.FC = () => {
     e.preventDefault();
   };
 
-  //test
   // Add the given functions
   //test
   const getRandomDarkColor = () => {

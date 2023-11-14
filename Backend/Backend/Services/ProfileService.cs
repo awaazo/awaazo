@@ -171,7 +171,7 @@ public class ProfileService : IProfileService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    public async Task<string> GetUserAvatarName(Guid userId)
+    public async Task<string> GetUserAvatarNameAsync(Guid userId)
     {
         // Check if the user exists
         User user = await _db.Users

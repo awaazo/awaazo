@@ -43,7 +43,6 @@ const ReviewComponent = ({ podcastId }) => {
          console.error(response.message);
        }
      };
-
      fetchPodcast();
    }, [podcastId]);
 

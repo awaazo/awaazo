@@ -34,6 +34,8 @@ import { MdEdit, MdDelete } from "react-icons/md";
 
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import LikeComponent from "../social/likeComponent";
+import CommentComponent from "../social/commentComponent";
 
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
@@ -119,7 +121,13 @@ const Episode = ({ episode }) => {
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text>
+          {/* <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text> */}
+          <LikeComponent
+            episodeOrCommentId={episode.id}
+            initialLikes={episode.likes}
+            initialIsLiked={false}
+          />
+          <CommentComponent episodeIdOrCommentId={episode.id} initialLikes={undefined} initialIsLiked={undefined} />
         </Text>
         {/* Episode Details */}
         <Flex

@@ -18,7 +18,6 @@ const RatingComponent = ({ podcastId }) => {
         console.error(response.message);
       }
     };
-
     fetchPodcast();
   }, [podcastId]);
 
