@@ -170,7 +170,6 @@ namespace Backend.Migrations
                 name: "UserEpisodeInteractions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HasListened = table.Column<bool>(type: "bit", nullable: false),
@@ -182,7 +181,7 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserEpisodeInteractions", x => x.Id);
+                    table.PrimaryKey("PK_UserEpisodeInteractions", x => new { x.UserId, x.EpisodeId });
                     table.ForeignKey(
                         name: "FK_UserEpisodeInteractions_Users_UserId",
                         column: x => x.UserId,
@@ -263,12 +262,7 @@ namespace Backend.Migrations
                         name: "FK_PodcastRatings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231110205826_firstMigration.cs
                         principalColumn: "Id");
-========
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
->>>>>>>> main:Backend/Backend/Migrations/20231113170922_firstMigration.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -591,11 +585,6 @@ namespace Backend.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_UserId",
                 table: "Subscriptions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserEpisodeInteractions_UserId",
-                table: "UserEpisodeInteractions",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(

@@ -35,7 +35,6 @@ public class AppDbContext : DbContext
     public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
     public virtual DbSet<Notification>? Notifications { get; set; }
-    public virtual DbSet<Like> Likes { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
 

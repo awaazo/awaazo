@@ -127,7 +127,7 @@ const Episode = ({ episode }) => {
             initialLikes={episode.likes}
             initialIsLiked={false}
           />
-          <CommentComponent episodeIdOrCommentId={episode.id} />
+          <CommentComponent episodeIdOrCommentId={episode.id} initialLikes={undefined} initialIsLiked={undefined} />
         </Text>
         {/* Episode Details */}
         <Flex

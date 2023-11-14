@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Backend/Backend/Migrations/20231110205826_firstMigration.Designer.cs
-    [Migration("20231110205826_firstMigration")]
-========
-    [Migration("20231113170922_firstMigration")]
->>>>>>>> main:Backend/Backend/Migrations/20231113170922_firstMigration.Designer.cs
+    [Migration("20231114203847_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -630,8 +626,10 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -639,9 +637,6 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("DateListened")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EpisodeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HasLiked")
                         .HasColumnType("bit");
@@ -655,12 +650,7 @@ namespace Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "EpisodeId");
 
                     b.ToTable("UserEpisodeInteractions");
                 });

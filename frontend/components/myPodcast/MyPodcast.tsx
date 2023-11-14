@@ -40,7 +40,6 @@ import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode } from "../../utilities/Interfaces";
 import CommentComponent from "../social/commentComponent";
-import Episode from "../myPodcast/MyEpisodes";
 import LikeComponent from "../social/likeComponent";
 
 export default function MyPodcast({ podcastId }) {
@@ -356,8 +355,8 @@ export default function MyPodcast({ podcastId }) {
                 <Text fontSize="md" fontWeight="bold">
                   ❤️ Likes: 5
                 </Text>
-                <CommentComponent episodeIdOrCommentId={episodes}/>
-                <LikeComponent episodeIdOrCommentId={episodes}/>
+                <CommentComponent episodeIdOrCommentId={episodes} initialLikes={undefined} initialIsLiked={undefined}/>
+                <LikeComponent episodeOrCommentId={episodes} initialLikes={undefined} initialIsLiked={undefined}/>
               </Box>
             </Box>
 

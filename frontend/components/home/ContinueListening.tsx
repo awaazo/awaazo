@@ -43,8 +43,8 @@ const ContinueListening = () => {
                 {episode.title}
               </Text>
               <HStack spacing={3}>
-                <LikeComponent episodeId={index} />
-                <CommentComponent />
+                <LikeComponent episodeOrCommentId={index} initialIsLiked={false} initialLikes={0} />
+                <CommentComponent episodeIdOrCommentId={undefined} initialLikes={undefined} initialIsLiked={undefined} />
               </HStack>
             </HStack>
             <Progress value={episode.progress} size="xs" colorScheme="teal" mb={2} />
