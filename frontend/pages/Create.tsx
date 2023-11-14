@@ -108,7 +108,7 @@ const CreateEpisode = () => {
     } else {
       // Ensure all required fields are filled
       if (
-        coverImageFile == null ||
+        (coverImageFile == null && coverImage == null) ||
         episodeName == "" ||
         description == "" ||
         file == null
@@ -293,6 +293,7 @@ const CreateEpisode = () => {
               <img
                 src={
                   coverImage ||
+                  selectedPodcast?.coverArtUrl ||
                   "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
                 }
                 alt="Cover Photo"
