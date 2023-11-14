@@ -43,7 +43,12 @@ export default function Navbar() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
   const handleSearchChange = (event) => setSearchValue(event.target.value);
-  const handleSearchSubmit = () => console.log("Search Value:", searchValue);
+
+  const handleSearchSubmit = () => {
+    const searchlink = "/Explore/Search?searchTerm=" + searchValue;
+    window.location.href = searchlink;
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",

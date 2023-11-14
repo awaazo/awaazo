@@ -42,7 +42,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [volume, setVolume] = useState(30);
+  const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
 
   // Fetch audio from backend using the episode and podcast Ids
@@ -355,6 +355,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
               onChange={(val) => {
                 setVolume(val);
                 setIsMuted(val === 0);
+                audioRef.current.volume = val / 100;
               }}
               mx={2}
             >

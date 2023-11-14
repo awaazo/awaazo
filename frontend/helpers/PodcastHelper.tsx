@@ -168,16 +168,16 @@ export default class PodcastHelper {
   public static podcastByTagsPodcastsGet = async (
     page,
     pageSize,
-    requestData: PodcastByTagsRequest,
+    requestHeader: PodcastByTagsRequest,
   ): Promise<ByTagsPodcastResponse> => {
     // Create the request options.
 
     const options = {
-      method: "Get",
-      data: requestData,
+      method: "get",
       url: EndpointHelper.getByTagsPodcastEndpoint(page, pageSize),
       headers: {
         accept: "*/*",
+        tags: requestHeader.tags,
       },
       withCredentials: true,
       cache: false,
