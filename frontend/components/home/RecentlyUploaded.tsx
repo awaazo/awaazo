@@ -113,21 +113,25 @@ const RecentlyUploaded: React.FC = () => {
         flex="1"
         marginBottom={"2em"}
       >
-        <Box width="100%" position="relative" px={{ base: "50px", md: "50px" }}>
-          <IconButton
-            aria-label="Previous"
-            icon={<FiChevronLeft />}
-            position="absolute"
-            left="0"
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            borderRadius={"1.5em"}
-            onMouseOver={previous} // Trigger previous slide on hover
-          />
-          <Slider ref={sliderRef} {...settings}>
-            {allEpisodes ? (
-              allEpisodes.map((episode) => (
+        {allEpisodes && allEpisodes.length > 0 ? (
+          <Box
+            width="100%"
+            position="relative"
+            px={{ base: "50px", md: "50px" }}
+          >
+            <IconButton
+              aria-label="Previous"
+              icon={<FiChevronLeft />}
+              position="absolute"
+              left="0"
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={2}
+              borderRadius={"1.5em"}
+              onMouseOver={previous} // Trigger previous slide on hover
+            />
+            <Slider ref={sliderRef} {...settings}>
+              {allEpisodes.map((episode) => (
                 <Box
                   key={episode.id}
                   px={2}
@@ -135,34 +139,35 @@ const RecentlyUploaded: React.FC = () => {
                   display="flex"
                   justifyContent="center"
                 >
+                  {/* Assuming PodcastTicket is a valid component */}
                   <PodcastTicket episode={episode} />
                 </Box>
-              ))
-            ) : (
-              <Text
-                style={{
-                  marginTop: "50px",
-                  marginBottom: "50px",
-                  marginLeft: "30px",
-                }}
-              >
-                (No episodes available)
-              </Text>
-            )}
-          </Slider>
-          {/* Custom Next Arrow */}
-          <IconButton
-            aria-label="Next"
-            icon={<FiChevronRight />}
-            position="absolute"
-            right="-4"
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            borderRadius={"1.5em"}
-            onMouseOver={next} // Trigger next slide on hover
-          />
-        </Box>
+              ))}
+            </Slider>
+            {/* Custom Next Arrow */}
+            <IconButton
+              aria-label="Next"
+              icon={<FiChevronRight />}
+              position="absolute"
+              right="-4"
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={2}
+              borderRadius={"1.5em"}
+              onMouseOver={next} // Trigger next slide on hover
+            />
+          </Box>
+        ) : (
+          <Text
+            style={{
+              marginTop: "50px",
+              marginBottom: "50px",
+              marginLeft: "20px",
+            }}
+          >
+            (No episodes available)
+          </Text>
+        )}
       </VStack>
     </>
   );

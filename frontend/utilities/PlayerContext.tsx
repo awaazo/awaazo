@@ -53,17 +53,6 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   );
 
   useEffect(() => {
-    const storedEpisode = localStorage.getItem("storedEpisode");
-
-    if (storedEpisode) {
-      const parsedEpisode = JSON.parse(storedEpisode);
-      dispatch({ type: "SET_EPISODE", payload: parsedEpisode });
-    }
-  }, []);
-
-  useEffect(() => {
-    storeEpisodeInLocalStorage(state.episode);
-
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -85,8 +74,4 @@ export const usePlayer = () => {
     throw new Error("usePlayer must be used within a PlayerProvider");
   }
   return context;
-};
-
-const storeEpisodeInLocalStorage = (episode: Episode): void => {
-  localStorage.setItem("storedEpisode", JSON.stringify(episode));
 };
