@@ -143,6 +143,14 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
     
   }, []);
 
+   // Update episodeNotifications when episodes changes
+   useEffect(() => {
+    setEpisodeNotifications(episodes.map(episode => ({
+      ...episode,
+      isRead: false
+    })));
+  }, [episodes]); // This useEffect depends on episodes
+
   const bgBlur = useColorModeValue(
     "rgba(255, 255, 255, 0.3)",
     "rgba(26, 32, 44, 0.3)"
@@ -203,7 +211,7 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                   {episodeNotifications.map((notification, index) => (
                     <ListItem
                       key={index}
-                      bg={notification.isRead ? "gray.100" : "whiteAlpha.50"}
+                      bg={notification.isRead ? "gray.600" : "whiteAlpha.50"}
                       p={"6"}
                       width={"100%"}
                       boxShadow={"dark-lg"}
@@ -246,8 +254,17 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                         </HStack>
                       </HStack>
                       {!notification.isRead && (
-                          <Button onClick={() => markAsRead(notification.id)}>Mark as Read</Button>
-                        )}
+                        <Text
+                          as="span"
+                          color="blue.500"
+                          textDecoration="underline"
+                          cursor="pointer"
+                          onClick={() => markAsRead(notification.id)}
+                          fontSize="sm"
+                        >
+                          Mark as Read
+                        </Text>
+                      )}
                     </ListItem>
                   ))}
                 </List>
