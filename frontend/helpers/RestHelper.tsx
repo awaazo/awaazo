@@ -392,8 +392,8 @@ export class EndpointHelper {
       process.env.NODE_ENV === "development" ||
       process.env.NODE_ENV === "test"
     )
-      return "http://localhost:32773";
-    else return "http://localhost:32773";
+      return process.env.NEXT_PUBLIC_BASE_URL;
+    else return process.env.NEXT_PUBLIC_BASE_URL;
   };
 
   /**

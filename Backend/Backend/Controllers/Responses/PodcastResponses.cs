@@ -1,6 +1,7 @@
 using System.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Backend.Controllers.Responses;
 
@@ -10,6 +11,7 @@ public class EpisodeResponse
 
     public EpisodeResponse(Episode e, string domainUrl)
     {
+        //Episode = e;
         Id=e.Id;
         PodcastId=e.PodcastId;
         EpisodeName=e.EpisodeName;
@@ -52,7 +54,7 @@ public class PodcastResponse
         Type = p.GetPodcastTypeString();
         PodcasterId = p.PodcasterId;
         Episodes = p.Episodes.Select(e => new EpisodeResponse(e, domainUrl)).ToList();
-        Ratings = p.Ratings.Select(r => new RatingResponse(r)).ToList();
+        Ratings = p.Ratings.Select(r => new RatingResponse(r,domainUrl)).ToList();
         TotalRatings = (ulong) Ratings.Where(r=>r.Rating!=0).Count();
         if(TotalRatings>0)
             AverageRating = (float) Ratings.Where(r=>r.Rating!=0).Average(r=>r.Rating);

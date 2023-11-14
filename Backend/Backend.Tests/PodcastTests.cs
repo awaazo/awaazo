@@ -36,6 +36,7 @@ public class PodcastTests
     private PodcastController _podcastController;
     private const string DOMAIN = "TestDomain";
     private Mock<HttpRequest> _httpRequestMock;
+    private Mock<INotificationService> _notificationServiceMock;
 
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
@@ -47,7 +48,8 @@ public class PodcastTests
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock  = new();
-        _podcastService = new(_dbContextMock.Object);
+        _notificationServiceMock = new();
+        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
         _podcastController = new(_podcastService, _authServiceMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -66,7 +68,8 @@ public class PodcastTests
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
-        _podcastService = new(_dbContextMock.Object);
+        _notificationServiceMock = new();
+        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
         _podcastController = new(_podcastService, _authServiceMock.Object) 
         { 
             ControllerContext = new ControllerContext()
