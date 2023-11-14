@@ -139,8 +139,14 @@ const RecentlyUploaded: React.FC = () => {
                 </Box>
               ))
             ) : (
-              <Text style={{ marginTop: "50px", marginLeft: "30px" }}>
-                (No podcasts available)
+              <Text
+                style={{
+                  marginTop: "50px",
+                  marginBottom: "50px",
+                  marginLeft: "30px",
+                }}
+              >
+                (No episodes available)
               </Text>
             )}
           </Slider>
