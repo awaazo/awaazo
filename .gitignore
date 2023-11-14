@@ -291,3 +291,4 @@ backend/.env
 *appsettings.Development.json
 *backend/backend/serverfiles
 *desktop.ini
+docker-compose.release.yml

@@ -1,17 +1,9 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection.Metadata;
-using AutoMapper;
-using Azure;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using FFMpegCore.Builders.MetaData;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -21,10 +13,15 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
+
+
     /// <summary>
     /// Current database instance
     /// </summary>
     private readonly AppDbContext _db;
+
+
+    private readonly INotificationService _notificationService;
 
     /// <summary>
     /// Accepted file types for cover art and thumbnail
@@ -46,6 +43,7 @@ public class PodcastService : IPodcastService
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
 
+
     /// <summary>
     /// Maximum request size
     /// </summary>
@@ -53,9 +51,13 @@ public class PodcastService : IPodcastService
     public const int MAX_REQUEST_SIZE = 1005242880;
 
 
-    public PodcastService(AppDbContext db)
+   
+
+
+    public PodcastService(AppDbContext db, INotificationService notificationService)
     {
         _db = db;
+        _notificationService = notificationService;
     }
 
     #region Podcast
@@ -392,11 +394,15 @@ public class PodcastService : IPodcastService
         episode.Thumbnail = SavePodcastEpisodeThumbnail(episode.Id, podcastId, request.Thumbnail!);
 
         // Find and Save the duration of the audio in seconds
-        var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+        var mediaInfo = await GetMediaAnalysis(episode.Audio, podcastId);
         episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Add the episode to the database and return status
         await _db.Episodes.AddAsync(episode);
+
+        // Send Notification to All the Subscribed Users
+        await _notificationService.AddEpisodeNotification(podcastId, episode,_db);
+ 
         return await _db.SaveChangesAsync() > 0;
     }
 
@@ -451,9 +457,8 @@ public class PodcastService : IPodcastService
                 episode.Audio = await SavePodcastEpisodeAudio(episode.Id, episode.PodcastId, request.AudioFile);
             }
 
-
             // Find and Save the duration of the audio in seconds
-            var mediaInfo = await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId));
+            var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
             episode.Duration = mediaInfo.Duration.TotalSeconds;
         }
 
@@ -659,4 +664,13 @@ public class PodcastService : IPodcastService
     }
 
     #endregion Episode
+
+    #region Private Method
+
+    private async Task<FFMpegCore.IMediaAnalysis> GetMediaAnalysis(string audioName, Guid podcastId)
+    {
+        return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
+    }
+
+    #endregion
 }

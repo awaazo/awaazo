@@ -23,11 +23,11 @@ test('Test EndpointHelper.getBackendAddress() method', () => {
     // Test that the correct address is returned, depending on the environment.
     if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getBackendAddress();
-        expect(result).toBe('http://localhost:32773');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL);
     }
     else {
         const result = EndpointHelper.getBackendAddress();
-        expect(result).toBe('http://backend:32773');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL);
     }
 });
 
@@ -41,11 +41,11 @@ test('Test EndpointHelper.getAuthLoginEndpoint() method', () => {
     // Test that the correct endpoint is returned, depending on the environment.
     if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getAuthLoginEndpoint();
-        expect(result).toBe('http://localhost:32773/auth/login');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL+'/auth/login');
     }
     else {
         const result = EndpointHelper.getAuthLoginEndpoint();
-        expect(result).toBe('http://backend:32773/auth/login');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL+'/auth/login');
     }
 });
 
@@ -59,11 +59,11 @@ test('Test EndpointHelper.getAuthRegisterEndpoint() method', () => {
     // Test that the correct endpoint is returned, depending on the environment.
     if (currentEnv === 'development'|| currentEnv==='test') {
         const result = EndpointHelper.getAuthRegisterEndpoint();
-        expect(result).toBe('http://localhost:32773/auth/register');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL+'/auth/register');
     }
     else {
         const result = EndpointHelper.getAuthRegisterEndpoint();
-        expect(result).toBe('http://backend:32773/auth/register');
+        expect(result).toBe(process.env.NEXT_PUBLIC_BASE_URL+'/auth/register');
     }
 });
 
