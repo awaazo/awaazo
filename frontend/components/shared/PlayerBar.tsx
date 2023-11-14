@@ -25,6 +25,8 @@ import {
 } from "react-icons/fa";
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import { Episode } from "../../utilities/Interfaces";
+import CommentComponent from "../social/commentComponent";
+import LikeComponent from "../social/likeComponent";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
@@ -182,6 +184,7 @@ const PlayerBar = () => {
 
   return (
     <Box
+      maxWidth="92%"
       p={4}
       borderRadius="2em"
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
@@ -315,20 +318,15 @@ const PlayerBar = () => {
         {/* Like and Comment - Hidden in mobile */}
         {!isMobile && (
           <Flex alignItems="center">
-            <IconButton
-              aria-label="Like"
-              icon={<FaHeart />}
-              variant="ghost"
-              size="sm"
-              color={isLiked ? "red.500" : likedColor}
-              onClick={toggleLike}
+            <LikeComponent
+              episodeOrCommentId={episode.id}
+              initialLikes={episode.likes}
+              initialIsLiked={false}
             />
-            <IconButton
-              aria-label="Comment"
-              icon={<FaCommentAlt />}
-              variant="ghost"
-              size="sm"
-              onClick={() => console.log("Navigating to comments...")}
+            <CommentComponent
+              episodeIdOrCommentId={episode.id}
+              initialLikes={episode.comments.length}
+              initialIsLiked={false}
             />
           </Flex>
         )}
