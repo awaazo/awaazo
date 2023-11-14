@@ -1,8 +1,9 @@
 export interface Podcast {
   id: string;
-  coverArt: string;
+  coverArtUrl: string;
+  name: string;
   podcasterId: string;
-  podcaster: string; // redundant, remove later 
+  podcaster: string; // redundant, remove later
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -17,7 +18,7 @@ export interface Episode {
   id: string;
   podcastId: string;
   podcaster: string;
-  coverArt: string;
+  thumbnailUrl: string;
   episodeName: string;
   description: string;
   duration: number;
@@ -28,16 +29,13 @@ export interface Episode {
     count: number;
     isLiked: boolean;
   };
-  comments: {
-    count: number;
-    isCommented: boolean;
-  };
+  comments: Comment[];
   bookmarks?: Bookmark[];
   sections?: Section[];
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
-};
+}
 
 export interface Section {
   id: string;
@@ -49,17 +47,26 @@ export interface Section {
 
 export interface Comment {
   id: number;
-  userId: number;
+  user: User;
   episodeId: string;
   text: string;
   dateCreated: Date;
   likes: Like[];
+  replies: Reply[];
 }
 
 export interface Like {
   userId: number;
   commentId?: number;
   episodeId?: string;
+}
+
+export interface Reply {
+  id: number;
+  user: User;
+  text: string;
+  dateCreated: Date;
+  likes: Like[];
 }
 
 export interface Annotation {
@@ -90,7 +97,7 @@ export interface Bookmark {
 }
 
 export interface TranscriptLine {
-  timestamp: number; 
+  timestamp: number;
   text: string;
   speaker: string;
 }
@@ -102,7 +109,7 @@ export interface User {
   email: string;
   passwordHash: string;
   salt: string;
-  avatar: string;
+  avatarUrl: string;
   interests: string[];
   dateOfBirth: Date;
   gender: "male" | "female" | "other" | "prefer not to say";
@@ -163,7 +170,7 @@ export interface UserProfile {
   gender: string;
 }
 
-export interface UserMenuInfo{
+export interface UserMenuInfo {
   id: string;
   username: string;
   avatarUrl: string;

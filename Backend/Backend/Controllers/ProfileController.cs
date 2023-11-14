@@ -1,12 +1,14 @@
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Models;
-using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using static Backend.Infrastructure.FileStorageHelper;
+using static Backend.Infrastructure.ControllerHelper;
+using Backend.Infrastructure;
 
 namespace Backend.Controllers;
 
@@ -15,6 +17,9 @@ namespace Backend.Controllers;
 [Authorize]
 public class ProfileController : ControllerBase
 {
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 20;
+
     private readonly IAuthService _authService;
     private readonly IProfileService _profileService;
 
@@ -24,8 +29,10 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
+    #region Current User
+
     [HttpDelete("delete")]
-    public async Task<ActionResult> Delete()
+    public async Task<ActionResult> DeleteProfile()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -45,7 +52,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("setup")]
-    public async Task<ActionResult> Setup([FromForm] ProfileSetupRequest setupRequest)
+    public async Task<ActionResult> SetupProfile([FromForm] ProfileSetupRequest setupRequest)
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -61,7 +68,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("edit")]
-    public async Task<ActionResult> Edit([FromForm] ProfileEditRequest editRequest)
+    public async Task<ActionResult> EditProfile([FromForm] ProfileEditRequest editRequest)
     {
         try
         {
@@ -84,7 +91,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<ActionResult<UserProfileResponse>> Get()
+    public async Task<ActionResult<UserProfileResponse>> GetProfile()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -94,11 +101,11 @@ public class ProfileController : ControllerBase
             return NotFound("User does not exist.");
 
 
-        return _profileService.GetProfile(user, HttpContext.Request.GetDisplayUrl().Split("profile")[0]);
+        return await _profileService.GetProfileAsync(user, GetDomainUrl(HttpContext));
     }
 
     [HttpGet("avatar")]
-    public async Task<ActionResult> Avatar()
+    public async Task<ActionResult> GetProfileAvatar()
     {
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -114,4 +121,77 @@ public class ProfileController : ControllerBase
         // Otherwise, return the avatar
         return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
     }
+
+    #endregion 
+
+    #region Other Users
+
+    [HttpGet("search")]
+    public async Task<IActionResult> ProfileSearch(string searchTerm = "", int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _profileService.SearchUserProfiles(searchTerm,page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{userId}/get")]
+    public async Task<IActionResult> GetUser(Guid userId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _profileService.GetUserProfile(userId, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{userId}/avatar")]
+    public async Task<IActionResult> GetUserAvatar(Guid userId)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Get the avatar name of the user. 
+            string avatarName = await _profileService.GetUserAvatarNameAsync(userId);
+
+            // If the avatar name is the default avatar name, return the default avatar. 
+            // Otherwise, return the user's avatar.
+            return avatarName == Models.User.DEFAULT_AVATAR_NAME ?
+                Redirect(Models.User.DEFAULT_AVATAR_URL) :
+                PhysicalFile(GetUserAvatarPath(avatarName), GetFileType(avatarName));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion
 }

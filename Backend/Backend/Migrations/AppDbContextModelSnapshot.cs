@@ -97,6 +97,110 @@ namespace Backend.Migrations
                     b.ToTable("Bookmark");
                 });
 
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EpisodeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentLike", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentLikes");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentReply", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ReplyToCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReplyToCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentReplies");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentReplyLike", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CommentReplyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "CommentReplyId");
+
+                    b.HasIndex("CommentReplyId");
+
+                    b.ToTable("CommentReplyLikes");
+                });
+
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
                     b.Property<Guid>("Id")
@@ -147,32 +251,25 @@ namespace Backend.Migrations
                     b.ToTable("Episodes");
                 });
 
-            modelBuilder.Entity("Backend.Models.Files", b =>
+            modelBuilder.Entity("Backend.Models.EpisodeLike", b =>
                 {
-                    b.Property<Guid>("FileId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MimeType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("FileId");
+                    b.HasKey("UserId", "EpisodeId");
 
-                    b.ToTable("File");
+                    b.HasIndex("EpisodeId");
+
+                    b.ToTable("EpisodeLikes");
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
@@ -203,6 +300,50 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("MediaLinks");
+                });
+
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Media")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Backend.Models.Playlist", b =>
@@ -335,6 +476,10 @@ namespace Backend.Migrations
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -342,6 +487,8 @@ namespace Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PodcastId");
 
                     b.HasIndex("UserId");
 
@@ -476,8 +623,10 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -485,9 +634,6 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("DateListened")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EpisodeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HasLiked")
                         .HasColumnType("bit");
@@ -501,12 +647,7 @@ namespace Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "EpisodeId");
 
                     b.ToTable("UserEpisodeInteractions");
                 });
@@ -566,6 +707,66 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany("Comments")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentLike", b =>
+                {
+                    b.HasOne("Backend.Models.Comment", "Comment")
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentReply", b =>
+                {
+                    b.HasOne("Backend.Models.Comment", "ReplyToComment")
+                        .WithMany("Comments")
+                        .HasForeignKey("ReplyToCommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("CommentReplies")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ReplyToComment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentReplyLike", b =>
+                {
+                    b.HasOne("Backend.Models.CommentReply", "CommentReply")
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentReplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommentReply");
+                });
+
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
                     b.HasOne("Backend.Models.Podcast", "Podcast")
@@ -577,6 +778,17 @@ namespace Backend.Migrations
                     b.Navigation("Podcast");
                 });
 
+            modelBuilder.Entity("Backend.Models.EpisodeLike", b =>
+                {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany("Likes")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+                });
+
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
                 {
                     b.HasOne("Backend.Models.Annotation", "Annotation")
@@ -586,6 +798,17 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Annotation");
+                });
+
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+                {
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
@@ -619,11 +842,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PodcastRating", b =>
                 {
+                    b.HasOne("Backend.Models.Podcast", "Podcast")
+                        .WithMany("Ratings")
+                        .HasForeignKey("PodcastId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Podcast");
 
                     b.Navigation("User");
                 });
@@ -673,11 +904,27 @@ namespace Backend.Migrations
                     b.Navigation("MediaLink");
                 });
 
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("Backend.Models.CommentReply", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("Backend.Models.Episode", b =>
                 {
                     b.Navigation("Annotations");
 
                     b.Navigation("Bookmarks");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
 
                     b.Navigation("Sponsors");
                 });
@@ -690,13 +937,21 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Podcast", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
                     b.Navigation("Bookmarks");
 
+                    b.Navigation("CommentReplies");
+
+                    b.Navigation("Comments");
+
                     b.Navigation("EpisodeInteractions");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("PodcastFollows");
 

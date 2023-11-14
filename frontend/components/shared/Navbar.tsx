@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { Profile } from "next-auth";
+import { useSession, signOut, getSession } from "next-auth/react";
+import { DefaultSession, Profile } from "next-auth";
 import {
   Box,
   Flex,
@@ -33,6 +33,8 @@ import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
+import { GoogleSSORequest } from "../../utilities/Requests";
+import { MdIntegrationInstructions, MdToken } from "react-icons/md";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -53,7 +55,19 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
 
+  interface SessionExt extends DefaultSession {
+    token: {
+      email: string,
+      sub: string,
+      id_token: string,
+      name: string,
+      picture:string
+    }
+  }
+
   useEffect(() => {
+
+
     // Custom User logged in
     if (!isUserSet) {
       AuthHelper.authMeRequest().then((response) => {
@@ -66,22 +80,32 @@ export default function Navbar() {
       });
     }
     // Google User logged in
-    else if (session && !isLoggedIn) {
-      AuthHelper.loginGoogleSSO(
-        session.user.email,
-        session.user.name,
-        (session as any).id,
-        session.user.image
-      ).then(() => {
-        AuthHelper.authMeRequest().then((response) => {
-          if (response.status == 200) {
-            setUser(response.userMenuInfo);
-            setIsUserLoggedIn(true); // Set login status to true
-            setIsUserSet(true);
-            setIsLoggedIn(true);
+    if (session !== null && session!==undefined && !isLoggedIn) {
+      // Get the session info
+      const currentSession = session as SessionExt;
+      const googleSSORequest: GoogleSSORequest = {
+        email: currentSession.token.email,
+        sub: currentSession.token.sub,
+        token: currentSession.token.id_token,
+        avatar: currentSession.token.picture,
+        name: currentSession.token.name
+      }
+
+      AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
+        if (response.status == 200) {
+          if (!isUserSet) {
+            AuthHelper.authMeRequest().then((response) => {
+              if (response.status == 200) {
+                setUser(response.userMenuInfo);
+                setIsUserLoggedIn(true); // Set login status to true
+                setIsUserSet(true);
+                setIsLoggedIn(true);
+              }
+            });
           }
-        });
+        }
       });
+
     }
   }, [session, isLoggedIn]);
 
@@ -99,6 +123,10 @@ export default function Navbar() {
     window.location.href = indexPage;
   };
 
+  /**
+   * Shows the Basic info about the user currently logged in and gives access to btns.
+   * @returns User Profile Menu for the top-right corner
+   */
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton
@@ -157,6 +185,10 @@ export default function Navbar() {
     </Menu>
   );
 
+  /**
+   * Shows login and register options for the user to eventually log in.
+   * @returns Logged Out Meny for the top-right corner
+   */
   const LoggedOutMenu = () => (
     <Menu>
       <MenuButton
@@ -182,6 +214,93 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
+
+  /**
+   * @returns Top-right Menu adapted for Mobile View
+   */
+  const MobileMenu = () => (
+    <Flex alignItems={"center"}>
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
+      />
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
+  /**
+   * @returns Top-right Menu adapted for Desktop View
+   */
+  const DesktopMenu = () => (
+    <Flex
+      alignItems={"center"}
+      as="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearchSubmit();
+      }}
+      color={colorMode === "dark" ? "white" : "black"}
+    >
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
+      />
+      <Link href="/Create">
+        <IconButton
+          aria-label="Create"
+          icon={<AddIcon />}
+          variant="ghost"
+          size="md"
+          rounded={"full"}
+          opacity={0.7}
+          mr={3}
+          color={colorMode === "dark" ? "white" : "black"}
+        />
+      </Link>
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
 
   return (
     <>
@@ -209,82 +328,7 @@ export default function Navbar() {
               />
             </Box>
           </Link>
-          {isMobile ? (
-            <Flex alignItems={"center"}>
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              <UserProfileMenu />
-            </Flex>
-          ) : (
-            <Flex
-              alignItems={"center"}
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearchSubmit();
-              }}
-            >
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <Link href="/Create">
-                <IconButton
-                  aria-label="Create"
-                  icon={<AddIcon />}
-                  variant="ghost"
-                  size="md"
-                  rounded={"full"}
-                  opacity={0.7}
-                  mr={3}
-                  color={colorMode === "dark" ? "white" : "black"}
-                />
-              </Link>
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-            </Flex>
-          )}
+          {isMobile ? <MobileMenu/> : <DesktopMenu/>}
         </Flex>
       </Box>
     </>

@@ -1,71 +1,60 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Models;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers.Responses;
 
+/// <summary>
+/// Response containing minimal public information about a user's profile.
+/// </summary>
 [BindProperties]
 public class UserMenuInfoResponse
 {
     public UserMenuInfoResponse()
     {
-        AvatarUrl = string.Empty;
-        Username = string.Empty;
     }
 
-    public UserMenuInfoResponse(User user, HttpContext httpContext)
+    public UserMenuInfoResponse(User user, string domainUrl)
     {
         Id = user.Id;
-        Username = user.Username;
-
-        if (user.Avatar == "DefaultAvatar")
-            AvatarUrl = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
+        if (!user.Avatar.Contains("google"))
+            AvatarUrl = string.Format("{0}profile/{1}/avatar",domainUrl,user.Id);
         else
-            AvatarUrl = httpContext.Request.GetDisplayUrl()[..^7] + "profile/avatar";
+            AvatarUrl = user.Avatar;
+        Username = user.Username;
     }
 
-
-    [Required]
-    public Guid Id { get; set; }
-
-    [Required]
-    public string AvatarUrl { get; set; }
-
-    [Required]
-    public string Username { get; set; }
-
-    public static explicit operator UserMenuInfoResponse(User v)
-    {
-        UserMenuInfoResponse response = new()
-        {
-            Id = v.Id,
-            Username = v.Username
-        };
-
-        if (v.Avatar == "DefaultAvatar")
-        {
-            response.AvatarUrl = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
-        }
-
-        return response;
-    }
-}
-
-[BindProperties]
-public class UserProfileResponse
-{
     [Required]
     public Guid Id { get; set; } = Guid.Empty;
 
     [Required]
-    public string AvatarUrl { get; set; } = "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png";
-
-    [Required]
-    public string Email { get; set; } = string.Empty;
+    public string AvatarUrl { get; set; } = User.DEFAULT_AVATAR_URL;
 
     [Required]
     public string Username { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Response containing all public information about a user's profile.
+/// </summary>
+[BindProperties]
+public class UserProfileResponse : UserMenuInfoResponse
+{
+    public UserProfileResponse(User user, string domainUrl) : base(user, domainUrl)
+    {
+        Email = user.Email;
+        DisplayName = user.DisplayName;
+        Bio = user.Bio;
+        Interests = user.Interests;
+        TwitterUrl = user.TwitterUrl;
+        GitHubUrl = user.GitHubUrl;
+        WebsiteUrl = user.WebsiteUrl;
+        DateOfBirth = user.DateOfBirth;
+        Gender = user.GetGenderString();
+    }
+
+    [Required]
+    public string Email { get; set; } = string.Empty;
 
     [Required]
     public string DisplayName { get; set; } = string.Empty;
@@ -92,26 +81,21 @@ public class UserProfileResponse
     public DateTime DateOfBirth { get; set; } = DateTime.Now;
 
     [Required]
-    public string Gender { get; set; } = "None";
+    public string Gender { get; set; } = User.GetGenderEnumString(User.GenderEnum.None);
+    
+}
 
-    public static explicit operator UserProfileResponse(User v)
+/// <summary>
+/// Response containing all public information about a user.
+/// </summary>
+[BindProperties]
+public class FullUserProfileResponse : UserProfileResponse
+{   
+    public FullUserProfileResponse(User user, string domainUrl) : base(user, domainUrl)
     {
-        UserProfileResponse response = new()
-        {
-            Id = v.Id,
-            Email = v.Email,
-            Username = v.Username,
-            DisplayName = v.DisplayName,
-            Bio = v.Bio,
-            Interests = v.Interests,
-            TwitterUrl = v.TwitterUrl,
-            LinkedInUrl = v.LinkedInUrl,
-            GitHubUrl = v.GitHubUrl,
-            WebsiteUrl = v.WebsiteUrl,
-            DateOfBirth = v.DateOfBirth,
-            Gender = v.GetGenderString()
-        };
-
-        return response;
+        Podcasts = user.Podcasts.Select(p => new PodcastResponse(p, domainUrl)).ToList();
     }
+
+    [Required]
+    public List<PodcastResponse> Podcasts {get;set;} = new();
 }

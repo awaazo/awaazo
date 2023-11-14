@@ -54,3 +54,9 @@ public class EditEpisodeRequest : CreateEpisodeRequest
 
     public new IFormFile? Thumbnail { get; set; }
 }
+
+[BindProperties]
+public class EpisodeHistorySaveRequest
+{
+    public double ListenPosition { get; set; }
+}
