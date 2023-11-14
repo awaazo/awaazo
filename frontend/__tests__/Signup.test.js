@@ -5,7 +5,6 @@ import { SessionProvider } from "next-auth/react";
 import { MemoryRouter } from "react-router-dom";
 import Signup from "../pages/auth/Signup";
 import Login from "../pages/auth/Login";
-import Main from "../pages/Main";
 import "jest-webextension-mock";
 
 // Mock Next.js' router to prevent issues
