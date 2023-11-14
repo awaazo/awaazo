@@ -89,3 +89,10 @@ Cypress.Commands.add('console_error_hack', () => {
     return false
   })
 })
+
+
+// cy.get('[data-cy]').then(($elements) => {
+//   $elements.each((index, element) => {
+//     cy.log(`Element ${index + 1}: ${Cypress.$(element).attr('data-cy')}`);
+//   });
+// });

@@ -77,7 +77,7 @@ const Reviews = ({ podcast }) => {
   };
 
   return (
-    <VStack align="start" spacing={4} marginTop={4}>
+    <VStack align="start" spacing={4} marginTop={4} >
       <Flex justify="space-between" w="100%" alignItems="center">
         {!isAddingReview && (
           <>
@@ -111,6 +111,7 @@ const Reviews = ({ podcast }) => {
                   onClick={() => setNewRating(index)}
                   boxSize={5}
                   margin={2}
+                  data-cy={`star-icon-${index}`}
                 />
               ))}
               {reviewError && <Text color="red.500">{reviewError}</Text>}
@@ -174,7 +175,7 @@ const Reviews = ({ podcast }) => {
               </Flex>
               <Box>
                 {Array.from({ length: rating.rating }, (_, index) => (
-                  <StarIcon key={index} color="yellow.400" />
+                  <StarIcon key={index} color="yellow.400"/>
                 ))}
               </Box>
             </Flex>
