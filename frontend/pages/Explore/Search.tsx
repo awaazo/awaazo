@@ -8,6 +8,7 @@ import {
   VStack,
   useColorMode,
   useBreakpointValue,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { PodcastByTagsRequest } from "../../utilities/Requests";
@@ -44,7 +45,7 @@ export default function MyPodcast() {
         } else {
           setGetError("Podcasts cannot be fetched");
         }
-      },
+      }
     );
     UserProfileHelper.profileSearchProfilesGet(index3, index4, searchTerm)
       .then((res) => {
@@ -87,7 +88,9 @@ export default function MyPodcast() {
 
         {loading ? (
           // Show loading indicator or spinner
-          <></>
+          <Flex justify="center" align="center" height="100%">
+            <Spinner size="xl" color="gray.500" />
+          </Flex>
         ) : podcasts.length > 0 ? (
           <>
             <Flex width="100%">
