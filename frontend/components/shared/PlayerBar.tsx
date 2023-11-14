@@ -52,7 +52,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
       try {
         const audioUrl = await PlayingHelper.getEpisodePlaying(
           episode.podcastId,
-          episode.id,
+          episode.id
         );
         setAudioUrl(audioUrl);
       } catch (error) {
@@ -186,19 +186,17 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
 
   return (
     <Box
-      boxSizing="border-box"
-      position="sticky"
-      bottom={4}
-      left={0}
-      right={0}
       p={4}
-      m={3}
       borderRadius="2em"
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       shadow="md"
       style={{ backdropFilter: "blur(50px)" }}
       border="3px solid rgba(255, 255, 255, 0.05)"
       boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+      position="fixed"
+      width="100%"
+      zIndex={999}
+      bottom={"1em"}
     >
       <Flex justifyContent="space-between" alignItems="center">
         {/* Episode Info */}
@@ -289,7 +287,7 @@ const PlayerBar: React.FC<{ episode: Episode | null }> = ({ episode }) => {
                   bgGradient={
                     palette?.length >= 2
                       ? `linear(to-l, rgba(${palette[0].join(
-                          ",",
+                          ","
                         )}, 0.5), rgba(${palette[1].join(",")}, 0.5))`
                       : "black"
                   }
