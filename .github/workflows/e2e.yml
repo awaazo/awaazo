@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cypress-screenshots
-          path: frontend/cypress/screenshots
+          path: /home/runner/work/awaazo/awaazo/frontend/cypress/screenshots
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v3
         with:
