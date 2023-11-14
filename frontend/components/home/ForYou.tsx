@@ -15,7 +15,7 @@ import PodcastCard from "../explore/PodcastCard";
 
 const ForYou: React.FC = () => {
   useEffect(() => {
-    PodcastHelper.podcastAllPodcastsGet(0, 20).then((res) => {
+    PodcastHelper.podcastAllPodcastsGet(0, 12).then((res) => {
       // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {
         setPodcasts(res.podcasts);
@@ -23,7 +23,7 @@ const ForYou: React.FC = () => {
         setPodcasts(null);
       }
     });
-  });
+  }, []);
 
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
