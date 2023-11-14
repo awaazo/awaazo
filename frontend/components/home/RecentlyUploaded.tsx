@@ -126,17 +126,29 @@ const RecentlyUploaded: React.FC = () => {
             onMouseOver={previous} // Trigger previous slide on hover
           />
           <Slider ref={sliderRef} {...settings}>
-            {allEpisodes?.map((episode) => (
-              <Box
-                key={episode.id}
-                px={2}
-                py={2}
-                display="flex"
-                justifyContent="center"
+            {allEpisodes ? (
+              allEpisodes.map((episode) => (
+                <Box
+                  key={episode.id}
+                  px={2}
+                  py={2}
+                  display="flex"
+                  justifyContent="center"
+                >
+                  <PodcastTicket episode={episode} />
+                </Box>
+              ))
+            ) : (
+              <Text
+                style={{
+                  marginTop: "50px",
+                  marginBottom: "50px",
+                  marginLeft: "30px",
+                }}
               >
-                <PodcastTicket episode={episode} />
-              </Box>
-            ))}
+                (No episodes available)
+              </Text>
+            )}
           </Slider>
           {/* Custom Next Arrow */}
           <IconButton
