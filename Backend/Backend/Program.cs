@@ -113,12 +113,18 @@ public class Program
         }));
 
         var app = builder.Build();
+        app.UseStaticFiles();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(s=>
+            {
+                s.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                s.InjectJavascript("/swagger-ui/custom.js");
+                s.DocumentTitle = "AWAAZO Backend API";
+            });
         }
 
         app.UseHttpsRedirection();
