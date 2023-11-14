@@ -54,12 +54,13 @@ const RecentlyUploaded: React.FC = () => {
   useEffect(() => {
     const extractEpisodes = () => {
       const allEpisodesArray: Episode[] = [];
-
-      podcasts.forEach((podcast) => {
-        if (podcast.episodes && podcast.episodes.length > 0) {
-          allEpisodesArray.push(...podcast.episodes);
-        }
-      });
+      if (podcasts != null) {
+        podcasts.forEach((podcast) => {
+          if (podcast.episodes && podcast.episodes.length > 0) {
+            allEpisodesArray.push(...podcast.episodes);
+          }
+        });
+      }
 
       setAllEpisodes(allEpisodesArray);
       console.log(allEpisodes);
