@@ -952,7 +952,7 @@ public class PodcastTests
         _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));
         _httpContextMock.Setup(ctx => ctx.Request).Returns(_httpRequestMock.Object);
 
-        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(user.Object.First()));
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(_user.Object.First()));
     }
 
     #endregion

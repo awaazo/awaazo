@@ -21,6 +21,8 @@ public class SocialController : ControllerBase
         _socialService = socialService;
     }
 
+    #region Comment
+
     [HttpPost("{episodeOrCommentId}/comment")]
     public async Task<IActionResult> AddComment(Guid episodeOrCommentId, [FromBody] string commentText)
     {

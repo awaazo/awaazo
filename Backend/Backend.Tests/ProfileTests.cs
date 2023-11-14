@@ -218,7 +218,7 @@ public class ProfileTests
         // Act
         try
         {
-            response = _profileService.GetUserAvatarName(user.Object.First().Id).Result;
+            response = _profileService.GetUserAvatarNameAsync(user.Object.First().Id).Result;
         }
         // Assert
         catch (Exception e)
@@ -467,8 +467,6 @@ public class ProfileTests
         _httpRequestMock.Setup(t => t.IsHttps).Returns(true);
         _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));
         _httpContextMock.Setup(ctx => ctx.Request).Returns(_httpRequestMock.Object);
-
-        var filesMock = new Mock<Files>();
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(user.Object.First()));
     }
 
