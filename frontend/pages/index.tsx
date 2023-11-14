@@ -21,7 +21,7 @@ const Main = () => {
         <ExploreGenresSection />
         <Box flex="1" borderRadius="35px">
           <Box overflowY="hidden" overflowX="hidden" className="no-scrollbar">
-            <RecentlyUploaded episodes={episodes} />
+            <RecentlyUploaded />
           </Box>
           <ForYou />
         </Box>

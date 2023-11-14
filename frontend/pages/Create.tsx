@@ -108,7 +108,7 @@ const CreateEpisode = () => {
     } else {
       // Ensure all required fields are filled
       if (
-        (coverImageFile == null && coverImage == null) ||
+        coverImageFile == null ||
         episodeName == "" ||
         description == "" ||
         file == null
@@ -129,7 +129,7 @@ const CreateEpisode = () => {
       // Send the request
       const response = await PodcastHelper.episodeAddRequest(
         request,
-        selectedPodcast.id
+        selectedPodcast.id,
       );
       console.log(response);
 
@@ -152,7 +152,7 @@ const CreateEpisode = () => {
 
   // Ensures episode description is not longer than 250 characters
   const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
@@ -214,7 +214,6 @@ const CreateEpisode = () => {
                 objectFit="cover"
                 boxShadow="lg"
                 outline="2px solid #FFFFFF80"
-                data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`}
               />
               <Text mt={2}>
                 {" "}
@@ -292,7 +291,10 @@ const CreateEpisode = () => {
               }}
             >
               <img
-                src={selectedPodcast?.coverArtUrl}
+                src={
+                  coverImage ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
                 alt="Cover Photo"
                 style={{
                   width: "150px",
@@ -300,7 +302,6 @@ const CreateEpisode = () => {
                   borderRadius: "50%",
                   padding: "15px",
                   position: "relative",
-                  objectFit: "cover",
                 }}
               />
               <label
@@ -410,7 +411,7 @@ const CreateEpisode = () => {
                 textAlign="center"
                 width="300px"
               >
-                <input {...getInputProps()} accept=".mp3, .wav, .mp4, .mpeg" />
+                <input {...getInputProps()} />
                 {file ? (
                   <p>{file.name}</p>
                 ) : (
