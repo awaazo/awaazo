@@ -91,7 +91,13 @@ export default function MyPodcast() {
         {loading ? (
           // Show loading indicator or spinner
           <Flex justify="center" align="center" height="100%">
-            <Spinner size="xl" color="gray.500" />
+            <Spinner
+              size="xl"
+              color="blue.200"
+              thickness="1px"
+              speed="0.45s"
+              emptyColor="transparent"
+            />
           </Flex>
         ) : podcasts.length > 0 ? (
           <>
