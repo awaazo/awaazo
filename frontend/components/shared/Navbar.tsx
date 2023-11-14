@@ -67,12 +67,6 @@ export default function Navbar() {
 
   useEffect(() => {
 
-    if (session !== null) {
-      console.log(session);
-    }
-
-    console.log(isLoggedIn)
-
 
     // Custom User logged in
     if (!isUserSet) {

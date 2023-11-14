@@ -210,7 +210,7 @@ export default class AuthHelper {
 
         try {
             console.debug("Sending the following authGoogleSSORequest...");
-            console.debug(options);
+            //console.debug(options);
 
             // Send the request and wait for the response.
             const requestResponse = await axios(options);
