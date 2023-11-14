@@ -13,7 +13,10 @@ public class UserMenuInfoResponse
     public UserMenuInfoResponse(User user, string domainUrl)
     {
         Id = user.Id;
-        AvatarUrl = string.Format("{0}profile/{1}/avatar",domainUrl,user.Id);
+        if (!user.Avatar.Contains("google"))
+            AvatarUrl = string.Format("{0}profile/{1}/avatar",domainUrl,user.Id);
+        else
+            AvatarUrl = user.Avatar;
         Username = user.Username;
     }
 

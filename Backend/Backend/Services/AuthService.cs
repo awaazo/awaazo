@@ -11,6 +11,8 @@ using AutoMapper;
 using static Backend.Models.User;
 using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 
 namespace Backend.Services;
@@ -36,27 +38,26 @@ public class AuthService : IAuthService
     public string GenerateToken(Guid userId, IConfiguration configuration, TimeSpan tokenLifeTime)
     {
         // Check if key is null
-        if (configuration["Jwt:Key"] is null) 
+        if (configuration["Jwt:Key"] is null)
             throw new Exception("Key is null");
-        
+
         // Check if Issuer is null
-        if(configuration["Jwt:Issuer"] is null)
+        if (configuration["Jwt:Issuer"] is null)
             throw new Exception("Issuer is null");
-        
+
         // Check if Audience is null
-        if(configuration["Jwt:Audience"] is null)
+        if (configuration["Jwt:Audience"] is null)
             throw new Exception("Audience is null");
-        
+
         // Create Credentials
-        SymmetricSecurityKey key = new (Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
-        SigningCredentials credentials = new (key, SecurityAlgorithms.HmacSha256);
+        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
+        SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
 
         // Declare all Claims
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
 
         // Create Security Token
-        JwtSecurityToken token = new 
-        (
+        JwtSecurityToken token = new(
             configuration["Jwt:Issuer"],
             configuration["Jwt:Audience"],
             claims,
@@ -94,7 +95,7 @@ public class AuthService : IAuthService
         bool isValidGender = Enum.TryParse(request.Gender, out GenderEnum gender);
         if (!isValidGender)
             request.Gender = "None";
-        
+
         // Create the new User
         User newUser = _mapper.Map<User>(request);
         newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
@@ -106,7 +107,7 @@ public class AuthService : IAuthService
         // Add the User to the Database
         await _db.Users!.AddAsync(newUser);
         await _db.SaveChangesAsync();
-        
+
         return newUser;
     }
 
@@ -130,37 +131,55 @@ public class AuthService : IAuthService
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public void AuthGoogle(IConfiguration configuration ,GoogleRequest request){
+    public void AuthGoogle(IConfiguration configuration, GoogleRequest request)
+    {
         GoogleJsonWebSignature.ValidationSettings settings = new()
         {
             Audience = new List<string> { configuration["jwt:Google_ClientId"]! }
         };
         GoogleJsonWebSignature.Payload payload = GoogleJsonWebSignature.ValidateAsync(request.Token, settings).Result;
-         
+
     }
 
     /// <summary>
     /// Retrieves or Creates the Google SSO user.
     /// </summary>
     /// <param name="request"></param>
-    /// <returns></returns>
+    /// <returns>The Google SSO User, otherwise null</returns>
     public async Task<User?> GoogleSSOAsync(GoogleRequest request)
     {
-        // Check if the User exists
-        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => 
-            u.Email == request.Email);
-        
+        // Get the user from the Database if he exists already.
+        User? existingUser = await _db.Users
+        .FirstOrDefaultAsync(u =>u.Email == request.Email);
+
+        // Check if the email is already used by another account.
+        if(existingUser is not null && !BCrypt.Net.BCrypt.Verify(request.Sub, existingUser.Password))
+            return null;
+
         // Return the user if he exists already
-        if(existingUser is not null)
+        if (existingUser is not null)
             return existingUser;
 
-        // Otherwise create the user
+        // The user's email will be used as a default username if possible.
+        string username = request.Email!.Split('@')[0];
+        // Define a random number generator
+        Random randomNumberGen = new(DateTime.Now.Millisecond);
+
+        // Make sure the username is unique
+        while(await _db.Users.AnyAsync(u=>u.Username==username))
+        {    
+            // Append a random number to the username
+            username+=randomNumberGen.Next(1,100).ToString();
+        }
+        
+        // Create the user
         User newUser = new()
         {
             Id = Guid.NewGuid(),
-            Email = request.Email!,
-            Avatar = request.Avatar!,
-            Username = request.Username!,
+            Email = request.Email,
+            Username = username,
+            DisplayName = request.Name,
+            Avatar = request.Avatar,
             Password = BCrypt.Net.BCrypt.HashPassword(request.Sub),
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -169,12 +188,22 @@ public class AuthService : IAuthService
         // Add the User to the Database
         await _db.Users!.AddAsync(newUser);
         await _db.SaveChangesAsync();
-        
+
         return newUser;
+    }
+
+    /// <summary>
+    /// Validates the Google Token.
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<bool> ValidateGoogleTokenAsync(string token)
+    {
+        return await GoogleJsonWebSignature.ValidateAsync(token) is not null;
     }
 }
 
-    
+
 
 
 
