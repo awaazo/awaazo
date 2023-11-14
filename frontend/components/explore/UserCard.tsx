@@ -9,10 +9,6 @@ import {
 } from "@chakra-ui/react";
 
 const UserCard = ({ user }) => {
-  const handleClick = () => {
-    console.log(`User ID: ${user.id}`);
-  };
-
   return (
     <Flex
       className="hoverEffect"
@@ -27,7 +23,7 @@ const UserCard = ({ user }) => {
       backdropFilter="blur(50px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
-      onClick={() => handleClick}
+      onClick={() => console.log(user.id)}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
       }}
