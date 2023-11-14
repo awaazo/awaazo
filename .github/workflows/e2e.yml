@@ -42,7 +42,7 @@ jobs:
       - name: Add .env.local
         working-directory: frontend
         env:
-          envSettings: $${{ vars.NEXT_ENV_FILE }}
+          envSettings: ${{ vars.NEXT_ENV_FILE }}
         run: |
           touch .env.local
           echo $envSettings > .env.local
