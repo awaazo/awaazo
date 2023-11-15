@@ -1,163 +1,416 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, FormEvent, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
   Button,
   Textarea,
-  Select,
   Box,
   VStack,
   Image,
-    Text,
-    Input,
-    Link,
+  Input,
+  IconButton,
+  Grid,
+  GridItem,
+  Select,
+  Flex,
+  Switch,
+  HStack,
+  useColorMode,
+  Text,
+  Center,
+  Heading,
+  Icon,
+} from "@chakra-ui/react";
+import { useDropzone } from "react-dropzone";
+import PodcastHelper from "../helpers/PodcastHelper";
+import AuthHelper from "../helpers/AuthHelper";
+import Navbar from "../components/shared/Navbar";
+import { AddIcon } from "@chakra-ui/icons";
+import router from "next/router";
+import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
+import { EpisodeAddRequest } from "../utilities/Requests";
+import LogoWhite from "../public/logo_white.svg";
 
-} from '@chakra-ui/react';
-import { useDropzone } from 'react-dropzone';
-import { useSession } from "next-auth/react";
+const CreateEpisode = () => {
+  // Page refs
+  const loginPage = "/auth/Login";
+  const myPodcastsPage = "/MyPodcasts";
 
-import Navbar from '../components/shared/Navbar';
-import { useRouter } from 'next/router';
+  // Current User
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
 
-const PodcastGenres = [
-    "Technology",
-    "Comedy",
-    "Science",
-    "History",
-    "News",
-    "True Crime",
-    "Business",
-    "Health",
-    "Education",
-    "Travel",
-    "Music",
-    "Arts",
-    "Sports",
-    "Politics",
-    "Fiction",
-    "Food",
-];
+  // podcasts data
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
 
-const CreatePodcast = () => {
+  // Form errors
+  const [addError, setAddError] = useState("");
+
+  // Form values
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedPodcast, setSelectedPodcast] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
+  const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
+
+  // DELETE WHEN BACKEND UPDATES REQUEST FOR ADD EPISODE
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const handleCoverImageUpload = (e: FormEvent) => {
+    setCoverImageFile((e.target as any).files[0]);
+    setCoverImage(URL.createObjectURL((e.target as any).files[0]));
+    e.preventDefault();
+  };
+
+  useEffect(() => {
+    // Check to make sure the user has logged in
+    AuthHelper.authMeRequest().then((res) => {
+      // If logged in, set user, otherwise redirect to login page
+      if (res.status == 200) {
+        setUser(res.userMenuInfo);
+        PodcastHelper.podcastMyPodcastsGet().then((res2) => {
+          // If logged in, set user, otherwise redirect to login page
+          if (res2.status == 200) {
+            setPodcasts(res2.myPodcasts);
+          } else {
+            setAddError("Podcasts cannot be fetched");
+          }
+        });
+      } else {
+        window.location.href = loginPage;
+      }
+    });
+  }, [router]);
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    onDropAccepted(files, event) {
-        console.log(files);
-    },
-  });
-  const { data: session } = useSession();
-  const router = useRouter();
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const { colorMode } = useColorMode();
+
+  const handlePodcastSelect = (podcast) => {
+    setSelectedPodcast(podcast);
+  };
+
+  /**
+   * Handles form submission
+   * @param e Click event
+   */
+  const handleAdd = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (selectedPodcast == null) {
+      setAddError("Please select the Podcast you wish to upload to");
+    } else {
+      // Create request object
+      const request: EpisodeAddRequest = {
+        audioFile: file,
+        description: description,
+        thumbnail: coverImageFile,
+        isExplicit: isExplicit,
+        episodeName: episodeName,
+      };
+
+      // Send the request
+      const response = await PodcastHelper.episodeAddRequest(
+        request,
+        selectedPodcast.id,
+      );
+      console.log(response);
+
+      if (response.status === 200) {
+        // Success, go to my podcasts page
+        window.location.href = myPodcastsPage;
+      } else {
+        // Handle error here
+        setAddError("Episode File, Name and Description Required.");
+      }
+    }
+  };
+
+  // Function to navigate to create podcast page
+  const navigateToCreatePodcast = () => {
+    router.push("/NewPodcast");
+  };
 
   return (
     <>
-    <Navbar />
-    <Box style={{
-        display: "flex",
-        justifyContent: "center",
-    }}>
-    <VStack spacing={5} align="center" p={5}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
+      <Navbar />
+      <Center>
+        <VStack mt={"1em"}>
+          <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
+            Upload Episode
+          </Heading>
+          <Text mb={"1em"}>Choose a Podcast</Text>
+        </VStack>
+      </Center>
+
+      <Box display="flex" width="100%" justifyContent="center">
+        <Flex
+          direction="row"
+          wrap="wrap"
           justifyContent="center"
-          p={6}
-          bg="gray.100"
-          borderRadius="md"
-          
+          alignItems="center"
         >
-          <Image
-            src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"}
-            alt="User Profile Picture"
-            boxSize="100px"
-            borderRadius="full"
-          />
-          <Text>@username</Text>
-        </Box>
-      <FormControl>
-        <FormLabel>Episode Name</FormLabel>
-        <Input
-          value={episodeName}
-          onChange={(e) => setEpisodeName(e.target.value)}
-          placeholder="Enter episode name..."
-          rounded={"full"}
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Description</FormLabel>
-        <Textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter podcast description..."
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Select Podcast</FormLabel>
-        <Select 
-          placeholder="Select Podcast" 
-          value={selectedPodcast} 
-          onChange={(e) => setSelectedPodcast(e.target.value)}
-        >
-          {/* {Podcast.map((podcast) => (
-            <option key={podcast} value={podcast}>{podcast}</option>
-          ))} */}
-        </Select>
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Podcast Genre</FormLabel>
-        <Select 
-          placeholder="Select genre" 
-          value={selectedGenre} 
-          onChange={(e) => setSelectedGenre(e.target.value)}
-        >
-          {PodcastGenres.map((genre) => (
-            <option key={genre} value={genre}>{genre}</option>
+          {podcasts.map((podcast) => (
+            <Flex
+              key={podcast.id}
+              direction="column"
+              alignItems="center"
+              bg={
+                selectedPodcast && selectedPodcast.id === podcast.id
+                  ? colorMode === "light"
+                    ? "#00000010"
+                    : "#FFFFFF10"
+                  : "transparent"
+              }
+              borderRadius="1em"
+              cursor="pointer"
+              outline={
+                selectedPodcast && selectedPodcast.id === podcast.id
+                  ? "2px solid #3182CE"
+                  : "none"
+              }
+              onClick={() => handlePodcastSelect(podcast)}
+              p={2}
+              m={2}
+            >
+              <Image
+                src={podcast.coverArtUrl}
+                alt={podcast.name}
+                boxSize="100px"
+                borderRadius="2em"
+                objectFit="cover"
+                boxShadow="lg"
+                outline="2px solid #FFFFFF80"
+              />
+              <Text mt={2}>
+                {" "}
+                {podcast.name.length > 18
+                  ? `${podcast.name.substring(0, 18)}...`
+                  : podcast.name}
+              </Text>
+            </Flex>
           ))}
-        </Select>
-      </FormControl>
 
-      <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" width="300px">
-        <input {...getInputProps()} />
-        {file ? (
-          <p>{file.name}</p>
-        ) : (
-          <p>Drag & drop a podcast file here, or click to select one</p>
-        )}
+          {/* Create a Podcast Option */}
+          <Flex
+            direction="column"
+            alignItems="center"
+            borderRadius="1em"
+            cursor="pointer"
+            outline="none"
+            onClick={navigateToCreatePodcast}
+            p={2}
+            m={2}
+            bg="transparent"
+          >
+            <Box
+              boxSize="100px"
+              borderRadius="2em"
+              border="2px dashed gray"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <AddIcon w={8} h={8} />
+            </Box>
+            <Text mt={2}>Create a Podcast</Text>
+          </Flex>
+        </Flex>
       </Box>
 
-      <Button colorScheme="blue" onClick={() => {/* handle upload and save */}}>Upload</Button>
-      <Link href="/CreateAI">
-        <Box position='fixed'
-            bottom='40px'
-            right={['16px', '84px', '84px', '84px', '54px']}
-            zIndex={2}
-        >
-            <Button
-              colorScheme="cyan"
-              color="#236D73"
-              p='6'
-            onClick={() => {/* handle AI podcast creation */}}>
-            Generate with AI
-            </Button>
+      {/* Form Container */}
+      <Box display="flex" justifyContent="center">
+        <VStack spacing={5} align="center" p={5}>
+          {/* Form Container */}
+          {/* Displaying Selected Podcast Title */}
+          {selectedPodcast && (
+            <Text
+              fontSize="xl"
+              fontWeight="normal"
+              bg={
+                colorMode === "light"
+                  ? "rgba(0, 0, 0, 0.1)"
+                  : "rgba(255, 255, 255, 0.1)"
+              } // Slight transparency
+              pl={5} // Padding for better visual spacing
+              pr={5} // Padding for better visual spacing
+              pt={2} // Padding for better visual spacing
+              pb={2} // Padding for better visual spacing
+              mb={5} // Margin for better visual spacing
+              borderRadius="5em" // Rounded corners
+              outline={
+                colorMode === "light"
+                  ? "1px solid #000000"
+                  : "1px solid #FFFFFF"
+              } // Black or white border
+              fontFamily={"Avenir Next"}
+            >
+              {`${selectedPodcast.name}`}
+            </Text>
+          )}
+          <form onSubmit={handleAdd}>
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={
+                  coverImage ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
+                alt="Cover Photo"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  borderRadius: "50%",
+                  padding: "15px",
+                  position: "relative",
+                }}
+              />
+              <label
+                htmlFor="Cover Photo"
+                style={{
+                  position: "absolute",
+                  cursor: "pointer",
+                  bottom: "15px",
+                  right: "5px",
+                }}
+              >
+                <IconButton
+                  aria-label="Upload Cover Photo"
+                  icon={
+                    <img
+                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                      alt="Upload Icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  }
+                  size="sm"
+                  variant="outline"
+                  borderRadius="full"
+                  border="1px solid grey"
+                  padding={3}
+                  style={{
+                    backdropFilter: "blur(5px)",
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
+                  }}
+                  zIndex={-999}
+                />
+                <input
+                  type="file"
+                  id="Cover Photo"
+                  accept="image/*"
+                  onChange={(e) => handleCoverImageUpload(e)}
+                  style={{
+                    display: "none",
+                  }}
+                />
+              </label>
+            </div>
+            {addError && <Text color="red.500">{addError}</Text>}
+            <VStack spacing={5} align="center" p={5}>
+              {/* Episode Name Input */}
+              <FormControl>
+                <Input
+                  value={episodeName}
+                  onChange={(e) => setEpisodeName(e.target.value)}
+                  placeholder="Enter episode name..."
+                  rounded="lg"
+                />
+              </FormControl>
+
+              {/* Description Textarea */}
+              <FormControl>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter episode description..."
+                />
+              </FormControl>
+
+              {/* Genre Selection */}
+              <FormControl
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Switch
+                  id="explicitToggle"
+                  colorScheme="purple"
+                  isChecked={isExplicit}
+                  onChange={() => setIsExplicit(!isExplicit)}
+                  opacity={0.9} // Setting the opacity to 0.7 to make it slightly faded
+                >
+                  Explicit
+                </Switch>
+              </FormControl>
+
+              {/* File Upload */}
+              <Box
+                {...getRootProps()}
+                border="2px dashed gray"
+                borderRadius="md"
+                p={4}
+                textAlign="center"
+                width="300px"
+              >
+                <input {...getInputProps()} />
+                {file ? (
+                  <p>{file.name}</p>
+                ) : (
+                  <p>Drag & drop a podcast file here, or click to select one</p>
+                )}
+              </Box>
+
+              {/* Upload Button */}
+              <Button
+                id="createBtn"
+                type="submit"
+                fontSize="md"
+                borderRadius={"full"}
+                minWidth={"200px"}
+                color={"white"}
+                marginTop={"15px"}
+                marginBottom={"10px"}
+                padding={"20px"}
+                // semi transparent white outline
+                outline={"1px solid rgba(255, 255, 255, 0.6)"}
+                style={{
+                  background:
+                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                  backgroundSize: "300% 300%",
+                  animation: "Gradient 10s infinite linear",
+                }}
+              >
+                Upload
+                <style jsx>{`
+                  @keyframes Gradient {
+                    0% {
+                      background-position: 100% 0%;
+                    }
+                    50% {
+                      background-position: 0% 100%;
+                    }
+                    100% {
+                      background-position: 100% 0%;
+                    }
+                  }
+                `}</style>
+              </Button>
+            </VStack>
+          </form>
+        </VStack>
       </Box>
-      </Link>
-    </VStack>
-    </Box>
     </>
   );
 };
 
-export default CreatePodcast;
+export default CreateEpisode;

@@ -1,4 +1,6 @@
-import { Box, Text, VStack, Image, Flex, Progress, useColorModeValue } from "@chakra-ui/react";
+import { Box, Text, VStack, Image, Flex, Progress, useColorModeValue, HStack } from "@chakra-ui/react";
+import LikeComponent from "../social/likeComponent";
+import CommentComponent from "../social/commentComponent";
 
 const ContinueListening = () => {
   // Sample data for the continue listening section
@@ -36,9 +38,15 @@ const ContinueListening = () => {
         <Flex key={index} mb={5} alignItems="center">
           <Image boxSize={{ base: "100px", md: "100px" }} src={episode.thumbnail} alt={episode.title} mr={4} borderRadius="25px" />
           <Box flex="1">
-            <Text fontWeight="bold" mb={2}>
-              {episode.title}
-            </Text>
+            <HStack justifyContent="space-between" width="100%">
+              <Text fontWeight="bold">
+                {episode.title}
+              </Text>
+              <HStack spacing={3}>
+                <LikeComponent episodeOrCommentId={index} initialIsLiked={false} initialLikes={0} />
+                <CommentComponent episodeIdOrCommentId={undefined} initialLikes={undefined} initialIsLiked={undefined} />
+              </HStack>
+            </HStack>
             <Progress value={episode.progress} size="xs" colorScheme="teal" mb={2} />
             <Text fontSize="sm" color="gray.600">
               {episode.description}

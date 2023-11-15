@@ -9,14 +9,17 @@ using Backend.Services;
 using Backend.Helper;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Backend.Middlewares;
+using System.Reflection;
 
 namespace Backend;
 
 [ExcludeFromCodeCoverage]
 public class Program
 {
-    public static void Main(string[] args) {
-        
+    public static void Main(string[] args)
+    {
+
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;
         builder.Services.AddControllers().AddJsonOptions(options =>
@@ -27,9 +30,13 @@ public class Program
 
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
-        builder.Services.AddScoped<IEpisodeService, EpisodeService>();
-        builder.Services.AddScoped<IFileService,FileService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<ISocialService, SocialService>();
+        builder.Services.AddScoped<PlaylistService>();
+        builder.Services.AddScoped<ValidateUser>();
+        builder.Services.AddScoped<ILogger, FileLogger>();
 
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -61,11 +68,15 @@ public class Program
                     new List<string>()
                 }
             });
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x => {
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+        {
             x.RequireHttpsMetadata = false;
             x.SaveToken = true;
-            x.TokenValidationParameters = new TokenValidationParameters() {
+            x.TokenValidationParameters = new TokenValidationParameters()
+            {
                 ValidIssuer = config["Jwt:Issuer"],
                 ValidAudience = config["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"])),
@@ -84,16 +95,16 @@ public class Program
             };
         });
         builder.Services.AddAuthorization();
-        
+
         // Check if we are running in a docker container.
         bool inDockerEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-       
+
         builder.Services.AddDbContext<AppDbContext>(options =>
         {
             // Set the connection string to the docker container if we are running in a docker container.
             if (inDockerEnv)
                 options.UseSqlServer(config.GetConnectionString("DockerConnection"));
-            else 
+            else
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         });
 
@@ -101,25 +112,37 @@ public class Program
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.WithOrigins("http://localhost:3000", "https://localhost:3000",
-            "http://localhost:3500", "https://localhost:3500","http://fronted:3500", "https://fronted:3500")
+            "http://localhost:3500", "https://localhost:3500", "http://fronted:3500", "https://fronted:3500",
+            "http://173.177.247.82:3500", "https://173.177.247.82:3500", "https://173.177.247.82:32773/", "http://173.177.247.82:32773/")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         }));
 
         var app = builder.Build();
+        app.UseStaticFiles();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(s =>
+            {
+                s.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                s.InjectJavascript("/swagger-ui/custom.js");
+                s.DocumentTitle = "AWAAZO Backend API";
+            });
         }
 
         app.UseHttpsRedirection();
         app.UseCors("Dev-policy");
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
+        {
+            builder.UseMiddleware<ValidateUser>();
+        });
 
         app.MapControllers();
 
