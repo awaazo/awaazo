@@ -140,32 +140,30 @@ const MyPodcasts = () => {
                 onClick={() => togglePodcastDetail(podcast.id)}
                 align="center"
               >
-                <NextLink href={`/podcasts/${podcast.id}`} passHref>
-                  <Box position="relative" boxSize="150px">
-                    <Image
-                      borderRadius="2.5em"
-                      boxSize="150px"
-                      objectFit="cover"
-                      src={podcast.coverArtUrl}
-                      alt={podcast.name}
-                      boxShadow={
+                <Box position="relative" boxSize="150px">
+                  <Image
+                    borderRadius="2.5em"
+                    boxSize="150px"
+                    objectFit="cover"
+                    src={podcast.coverArtUrl}
+                    alt={podcast.name}
+                    boxShadow={
+                      selectedPodcastId === podcast.id
+                        ? "0 0 10px rgba(0, 0, 0, 0.5)"
+                        : ""
+                    }
+                    style={{
+                      outline:
                         selectedPodcastId === podcast.id
-                          ? "0 0 10px rgba(0, 0, 0, 0.5)"
-                          : ""
-                      }
-                      style={{
-                        outline:
-                          selectedPodcastId === podcast.id
-                            ? "3px solid #9ecaed"
-                            : "1px solid rgba(255, 255, 255, 0.5)",
-                        cursor: "pointer",
-                      }}
-                      data-cy={`podcast-image-${podcast.name
-                        .replace(/\s+/g, "-")
-                        .toLowerCase()}`}
-                    />
-                  </Box>
-                </NextLink>
+                          ? "3px solid #9ecaed"
+                          : "1px solid rgba(255, 255, 255, 0.5)",
+                      cursor: "pointer",
+                    }}
+                    data-cy={`podcast-image-${podcast.name
+                      .replace(/\s+/g, "-")
+                      .toLowerCase()}`}
+                  />
+                </Box>
 
                 <Text fontSize="lg">
                   {podcast.name.length > 18
