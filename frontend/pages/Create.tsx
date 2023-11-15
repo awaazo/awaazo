@@ -47,12 +47,15 @@ const CreateEpisode = () => {
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
+  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
-  // DELETE WHEN BACKEND UPDATES REQUEST FOR ADD EPISODE
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const handleCoverImageUpload = (e: FormEvent) => {
@@ -103,6 +106,17 @@ const CreateEpisode = () => {
     if (selectedPodcast == null) {
       setAddError("Please select the Podcast you wish to upload to");
     } else {
+      // Ensure all required fields are filled
+      if (
+        coverImageFile == null ||
+        episodeName == "" ||
+        description == "" ||
+        file == null
+      ) {
+        setAddError("Cover Image, Episode Name and Description Required.");
+        return;
+      }
+
       // Create request object
       const request: EpisodeAddRequest = {
         audioFile: file,
@@ -124,9 +138,25 @@ const CreateEpisode = () => {
         window.location.href = myPodcastsPage;
       } else {
         // Handle error here
-        setAddError("Episode File, Name and Description Required.");
+        setAddError(response.data);
       }
     }
+  };
+
+  // Ensures episode name is not longer than 25 characters
+  const handleEpisodeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value.slice(0, 25);
+    setEpisodeName(newName);
+    setEpisodeNameCharacterCount(newName.length);
+  };
+
+  // Ensures episode description is not longer than 250 characters
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newDesc = e.target.value.slice(0, 250);
+    setDescription(newDesc);
+    setDescriptionCharacterCount(newDesc.length);
   };
 
   // Function to navigate to create podcast page
@@ -184,6 +214,7 @@ const CreateEpisode = () => {
                 objectFit="cover"
                 boxShadow="lg"
                 outline="2px solid #FFFFFF80"
+                data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`} // Adding a data-cy attribute to the Image component
               />
               <Text mt={2}>
                 {" "}
@@ -318,22 +349,41 @@ const CreateEpisode = () => {
             {addError && <Text color="red.500">{addError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
-              <FormControl>
+              <FormControl position="relative">
                 <Input
                   value={episodeName}
-                  onChange={(e) => setEpisodeName(e.target.value)}
+                  onChange={handleEpisodeNameChange}
                   placeholder="Enter episode name..."
                   rounded="lg"
+                  pr="50px"
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {episodeNameCharacterCount}/25
+                </Text>
               </FormControl>
 
               {/* Description Textarea */}
-              <FormControl>
+              <FormControl position="relative">
                 <Textarea
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleDescriptionChange}
                   placeholder="Enter episode description..."
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {descriptionCharacterCount}/250
+                </Text>
               </FormControl>
 
               {/* Genre Selection */}

@@ -9,6 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { FaPlay, FaHeart } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
+import LikeComponent from "../social/likeComponent";
+import { usePlayer } from "../../utilities/PlayerContext";
 
 const formatDuration = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -29,6 +31,12 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
     ? "red.500"
     : useColorModeValue("gray.400", "gray.600");
 
+  const { dispatch } = usePlayer();
+
+  const handleEpisodeClick = () => {
+    dispatch({ type: "SET_EPISODE", payload: episode });
+  };
+
   return (
     <>
     <Flex
@@ -39,7 +47,14 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       backdropFilter="blur(4px)"
       boxShadow="sm"
       outline={"2px solid rgba(255, 255, 255, .1)"}
-      _hover={{ boxShadow: "lg" }}
+      style={{ cursor: "pointer", transition: "transform 0.3s" }}
+      onClick={() => handleEpisodeClick()}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = "scale(1.02)";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+      }}
     >
       {/* Left: Cover Art with Play Button */}
       <Box
@@ -71,7 +86,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           <VStack>
             <Text>
               {podcaster}
-              <Text>{formatDuration(duration)}</Text>
+              {formatDuration(duration)}
             </Text>
           </VStack>
         </Flex>
@@ -79,21 +94,11 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       {/* Right: Like button */}
       <VStack>
-        <IconButton
-          aria-label="Like"
-          icon={<FaHeart />}
-          variant="ghost"
-          color={likedColor}
-          size="md"
-          _hover={{
-            color: "red.500",
-          }}
+        <LikeComponent
+          episodeOrCommentId={episode.id}
+          initialLikes={episode.likes}
+          initialIsLiked={false}
         />
-        <Text marginTop={"-1em"} fontSize={"0.8em"} fontWeight={"Bold"}>
-          {likes?.count >= 1000
-            ? `${(likes?.count / 1000).toFixed(1)}k`
-            : likes?.count}
-        </Text>
       </VStack>
     </Flex>
     </>

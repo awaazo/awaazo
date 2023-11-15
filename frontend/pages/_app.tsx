@@ -6,6 +6,8 @@ import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import AppTheme from "../styles/customTheme";
 import '../styles/globals.css';
+import PlayerBar from "../components/shared/PlayerBar";
+import { PlayerProvider } from "../utilities/PlayerContext";
 
 const theme = extendTheme({
   colors: {
@@ -17,8 +19,8 @@ const theme = extendTheme({
       1: "#81e6d9",
     },
     background: {
-      light: 'rgba(255, 255, 255, 0.2)', 
-      dark: 'rgba(0, 0, 0, 0.2)', 
+      light: "rgba(255, 255, 255, 0.2)",
+      dark: "rgba(0, 0, 0, 0.2)",
     },
   },
 });
@@ -40,7 +42,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       />
       <ColorModeScript initialColorMode="dark" />
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <PlayerProvider>
+          <Component {...pageProps} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <PlayerBar />
+          </div>
+        </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
   );

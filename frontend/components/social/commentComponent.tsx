@@ -44,14 +44,14 @@ const CommentComponent = ({
   const [newComment, setNewComment] = useState("");
   const [replyText, setReplyText] = useState("");
   const [isLiked, setIsLiked] = useState(initialIsLiked);
-  const [likes, setLikes] = useState(initialLikes);
+  const [noOfComments, setNoOfComments] = useState(initialLikes);
 
   useEffect(() => {
     if (isOpen) {
       const fetchEpisodeDetails = async () => {
         try {
           const response = await PodcastHelper.getEpisodeById(
-            episodeIdOrCommentId,
+            episodeIdOrCommentId
           );
           if (response.status === 200) {
             if (response.episode) {
@@ -65,7 +65,7 @@ const CommentComponent = ({
                   text: comment.text,
                   likes: comment.likes,
                   replies: comment.replies,
-                }),
+                })
               );
               setComments(transformedComments);
             }
@@ -85,7 +85,7 @@ const CommentComponent = ({
     if (newComment.trim()) {
       const response = await SocialHelper.postEpisodeComment(
         newComment,
-        episodeIdOrCommentId,
+        episodeIdOrCommentId
       );
       if (response.status === 200) {
         // Update the UI to reflect the new comment
@@ -110,7 +110,7 @@ const CommentComponent = ({
     setComments(updatedComments);
     const response = await SocialHelper.postEpisodeComment(
       replyText,
-      commentId,
+      commentId
     );
     if (response.status === 200) {
       // Update the UI to reflect the new comment
@@ -133,7 +133,7 @@ const CommentComponent = ({
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the unlike
-            setLikes(likes - 1);
+            setNoOfComments(noOfComments - 1);
             setIsLiked(false);
           } else {
             console.error("Error unliking comment:", response.message);
@@ -148,7 +148,7 @@ const CommentComponent = ({
         .then((response) => {
           if (response.status === 200) {
             // Update the UI to reflect the like
-            setLikes(likes + 1);
+            setNoOfComments(noOfComments + 1);
             setIsLiked(true);
           } else {
             console.error("Error liking comment:", response.message);
@@ -165,7 +165,7 @@ const CommentComponent = ({
       .then((response) => {
         if (response.status === 200) {
           setComments((prevComments) =>
-            prevComments.filter((comment) => comment.id !== commentId),
+            prevComments.filter((comment) => comment.id !== commentId)
           );
         } else {
           console.error("Error deleting comment:", response.message);
@@ -185,15 +185,30 @@ const CommentComponent = ({
           m={1}
           leftIcon={<Icon as={FaComments} />}
           onClick={onOpen}
+          variant={"ghost"}
         >
-          {comments.length}
+          {noOfComments}
         </Button>
       </Tooltip>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Comments</ModalHeader>
+        <ModalContent
+          boxShadow="dark-lg"
+          backdropFilter="blur(40px)"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          alignSelf={"center"}
+          padding={"2em"}
+          backgroundColor="rgba(255, 255, 255, 0.1)"
+          borderRadius={"2em"}
+          outlineColor="rgba(255, 255, 255, 0.25)"
+        >
+          <ModalHeader fontWeight={"light"} fontSize={"1.5em"}>
+            Comments
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={5} align="start" height="300px" overflowY="auto">
@@ -226,7 +241,9 @@ const CommentComponent = ({
                     <HStack mt={3} spacing={2}>
                       <Tooltip
                         label={
-                          isLiked ? "Unlike this comment" : "Like this comment"
+                          comment.likes
+                            ? "Unlike this comment"
+                            : "Like this comment"
                         }
                         aria-label="Like tooltip"
                       >
@@ -234,26 +251,16 @@ const CommentComponent = ({
                           icon={
                             <Icon
                               as={FaHeart}
-                              color={isLiked ? "red.500" : "gray.500"}
+                              color={comment.likes ? "red.500" : "gray.500"}
                             />
                           }
                           onClick={() => handleLike(index)}
                           aria-label="Like Comment"
                           size="sm"
+                          backgroundColor={"transparent"}
                         />
                       </Tooltip>
                       <Text fontSize="sm">{comment.likes.length}</Text>
-                      <Tooltip
-                        label="Reply to this comment"
-                        aria-label="Reply tooltip"
-                      >
-                        <IconButton
-                          icon={<Icon as={FaReply} />}
-                          onClick={() => handleReply(index)}
-                          aria-label="Reply to Comment"
-                          size="sm"
-                        />
-                      </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
                       {comment.replies.map((reply, index) => (
@@ -264,40 +271,72 @@ const CommentComponent = ({
                           <HStack spacing={1} p={2} borderRadius="md">
                             <Icon as={FaClock} color="gray.500" />
                             <Text fontSize="xs" color="gray.500">
-                              {reply.dateCreated.toLocaleString()}
+                              {new Date(reply.dateCreated).toLocaleString()}
                             </Text>
                           </HStack>
                         </Box>
                       ))}
-                      <Input
-                        placeholder="Reply to this comment..."
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                      />
+                      <Box mt={2}>
+                        <HStack spacing={2}>
+                          <Input
+                            flex="1"
+                            placeholder="Reply to this comment..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                          />
+                          <Tooltip
+                            label="Reply to this comment"
+                            aria-label="Reply tooltip"
+                          >
+                            <IconButton
+                              icon={<Icon as={FaReply} />}
+                              onClick={() => handleReply(index)}
+                              aria-label="Reply to Comment"
+                              size="sm"
+                            />
+                          </Tooltip>
+                        </HStack>
+                      </Box>
                     </VStack>
                   </Box>
                 ))
               ) : (
-                <Text color="gray.500">Be the first to comment!</Text>
+                <Text color="gray.500" alignSelf={"center"}>
+                  No comments yet. Be the first!
+                </Text>
               )}
             </VStack>
-            <Box position="relative" mt={4}>
+            <VStack position={"relative"}>
               <Textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment..."
-                paddingRight="40px"
+                borderRadius={"1em"}
               />
               <Button
-                position="absolute"
-                right="5px"
-                bottom="5px"
                 leftIcon={<Icon as={FaPaperPlane} />}
                 colorScheme="blue"
                 onClick={handleAddComment}
                 zIndex="1"
-              />
-            </Box>
+                fontSize="md"
+                borderRadius={"full"}
+                minWidth={"10em"}
+                color={"white"}
+                marginTop={"15px"}
+                marginBottom={"10px"}
+                padding={"20px"}
+                // semi transparent white outline
+                outline={"1px solid rgba(255, 255, 255, 0.6)"}
+                style={{
+                  background:
+                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                  backgroundSize: "300% 300%",
+                  animation: "Gradient 10s infinite linear",
+                }}
+              >
+                Add Comment
+              </Button>
+            </VStack>
           </ModalBody>
         </ModalContent>
       </Modal>

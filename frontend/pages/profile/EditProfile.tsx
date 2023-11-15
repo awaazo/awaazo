@@ -26,10 +26,15 @@ import { Router, useRouter } from "next/router";
 
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
+  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [genreColors, setGenreColors] = useState({});
   const [username, setUsername] = useState("");
+  const [usernameCharacterCount, setUsernameCharacterCount] =
+    useState<number>(0);
   const [displayName, setDisplayName] = useState("");
+  const [displayNameCharacterCount, setDisplayNameCharacterCount] =
+    useState<number>(0);
   const [twitterLink, setTwitterLink] = useState("");
   const [linkedinLink, setLinkedinLink] = useState("");
   const [githubLink, setGithubLink] = useState("");
@@ -70,8 +75,11 @@ const EditProfile: React.FC = () => {
       if (response.status == 200) {
         setUserProfile(response.userProfile);
         setUsername(response.userProfile.username);
+        setUsernameCharacterCount(response.userProfile.username.length);
         setDisplayName(response.userProfile.displayName);
+        setDisplayNameCharacterCount(response.userProfile.displayName.length);
         setBio(response.userProfile.bio);
+        setBioCharacterCount(response.userProfile.bio.length);
         setTwitterLink(response.userProfile.twitterUrl);
         setLinkedinLink(response.userProfile.linkedInUrl);
         setGithubLink(response.userProfile.githubUrl);
@@ -155,6 +163,27 @@ const EditProfile: React.FC = () => {
         setGenreColors({ ...genreColors, [genre]: getRandomDarkColor() });
       }
     }
+  };
+
+  // Ensures username is not longer than 25 characters
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUsername = e.target.value.slice(0, 25);
+    setUsername(newUsername);
+    setUsernameCharacterCount(newUsername.length);
+  };
+
+  // Ensures display name is not longer than 25 characters
+  const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDisplayName = e.target.value.slice(0, 25);
+    setDisplayName(newDisplayName);
+    setDisplayNameCharacterCount(newDisplayName.length);
+  };
+
+  // Ensures bio is not longer than 250 characters
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newBio = e.target.value.slice(0, 250);
+    setBio(newBio);
+    setBioCharacterCount(newBio.length);
   };
 
   const editPage = () => (
@@ -248,49 +277,72 @@ const EditProfile: React.FC = () => {
 
             {/* Personal Details Section */}
             {formError && <Text color="red.500">{formError}</Text>}
-            <FormControl>
+            <FormControl position="relative">
+              <FormLabel>Username</FormLabel>
               <Input
+                type="text"
                 id="username"
-                placeholder="Username"
+                placeholder="Enter your username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  fontSize: "16px",
-                  borderRadius: "18px",
-                }}
+                onChange={handleUsernameChange}
+                required
+                pr="50px"
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {usernameCharacterCount}/25
+              </Text>
             </FormControl>
 
-            <FormControl>
+            <FormControl position="relative">
+              <FormLabel>Display name</FormLabel>
               <Input
                 id="displayName"
                 placeholder="Display Name"
                 value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  fontSize: "16px",
-                  borderRadius: "18px",
-                }}
+                onChange={handleDisplayNameChange}
+                style={{ alignSelf: "center" }}
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {displayNameCharacterCount}/25
+              </Text>
             </FormControl>
-            <FormControl>
+            <FormControl position="relative">
+              <FormLabel>Bio</FormLabel>
               <Textarea
                 id="bio"
-                placeholder="Bio"
+                placeholder="What's your story? (Optional)"
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                onChange={handleBioChange}
                 style={{
                   width: "100%",
+                  height: "100px",
                   padding: "12px",
                   fontSize: "16px",
                   borderRadius: "18px",
                 }}
                 resize="vertical"
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {bioCharacterCount}/250
+              </Text>
             </FormControl>
 
             {/* Interests Section */}
