@@ -112,7 +112,7 @@ public class Program
         {
             builder.WithOrigins("http://localhost:3000", "https://localhost:3000",
             "http://localhost:3500", "https://localhost:3500", "http://fronted:3500", "https://fronted:3500",
-            "http://173.177.247.82:3555", "https://173.177.247.82:3555", "https://173.177.247.82:32775/", "http://173.177.247.82:32775/")
+            "http://173.177.247.82:3500", "https://173.177.247.82:3500", "https://173.177.247.82:32773/", "http://173.177.247.82:32773/")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
