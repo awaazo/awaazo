@@ -112,9 +112,7 @@ export default function Podcasts({ childToParent }) {
             </Box>
           </Link>
           <Button colorScheme="blue" onClick={() => {
-            //setSubscribe; // Subscribe/Unsubscribe
           }}>{
-            //subscribedText
             "Edit"
           }</Button>
           </Stack>
