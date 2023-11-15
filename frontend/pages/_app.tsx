@@ -5,6 +5,8 @@ import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import AppTheme from "../styles/customTheme";
+import { PlayerProvider } from "../utilities/PlayerContext";
+import PlayerBar from "../components/shared/PlayerBar";
 
 const theme = extendTheme({
   colors: {
@@ -15,13 +17,16 @@ const theme = extendTheme({
     secondary: {
       1: "#81e6d9",
     },
+    background: {
+      light: "rgba(255, 255, 255, 0.2)",
+      dark: "rgba(0, 0, 0, 0.2)",
+    },
   },
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    // 3. Pass the new theme to `ChakraProvider`
-    <ChakraProvider theme={AppTheme}>
+    <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
       <Box
         position="fixed"
@@ -35,7 +40,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       />
       <ColorModeScript initialColorMode="dark" />
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <PlayerProvider>
+          <Component {...pageProps} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <PlayerBar />
+          </div>
+        </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
   );

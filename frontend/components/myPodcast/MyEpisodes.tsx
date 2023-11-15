@@ -121,13 +121,7 @@ const Episode = ({ episode }) => {
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          {/* <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text> */}
-          <LikeComponent
-            episodeOrCommentId={episode.id}
-            initialLikes={episode.likes}
-            initialIsLiked={false}
-          />
-          <CommentComponent episodeIdOrCommentId={episode.id} initialLikes={undefined} initialIsLiked={undefined} />
+          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes}</Text>
         </Text>
         {/* Episode Details */}
         <Flex

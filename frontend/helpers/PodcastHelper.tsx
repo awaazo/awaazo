@@ -4,13 +4,21 @@ import {
   EpisodeAddRequest,
   PodcastCreateRequest,
   PodcastEditRequest,
+  PodcastByTagsRequest,
   EpisodeEditRequest,
 } from "../utilities/Requests";
 import {
   BaseResponse,
+  CreatePodcastResponse,
   MyPodcastResponse,
   GetMyPodcastResponse,
+  CreateEpisodeResponse,
+  ByTagsPodcastResponse,
+  SearchPodcastResponse,
+  AllPodcastResponse,
+  EditEpisodeResponse,
   GetMyEpisodeResponse,
+  EditPodcastResponse,
 } from "../utilities/Responses";
 
 export default class PodcastHelper {
@@ -25,7 +33,7 @@ export default class PodcastHelper {
    */
   public static podcastCreateRequest = async (
     requestData: PodcastCreateRequest,
-  ): Promise<BaseResponse> => {
+  ): Promise<CreatePodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -54,12 +62,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -107,6 +117,145 @@ export default class PodcastHelper {
   };
 
   /**
+   * Gets all podcasts from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastAllPodcastsGet = async (
+    page,
+    pageSize,
+  ): Promise<AllPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getPodcastAllPodcastsEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastAllPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastAllPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all podcasts by genre from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastByTagsPodcastsGet = async (
+    page,
+    pageSize,
+    requestHeader: PodcastByTagsRequest,
+  ): Promise<ByTagsPodcastResponse> => {
+    // Create the request options.
+
+    const options = {
+      method: "get",
+      url: EndpointHelper.getByTagsPodcastEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+        tags: requestHeader.tags,
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastAllPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastAllPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all podcasts by genre from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastSearchPodcastsGet = async (
+    page,
+    pageSize,
+    searchTerm,
+  ): Promise<SearchPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getSearchPodcastEndpoint(searchTerm, page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastSearchPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastSearchPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcasts: null,
+      };
+    }
+  };
+
+  /**
    * Creates a new episode add request to the server.
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
@@ -114,7 +263,7 @@ export default class PodcastHelper {
   public static episodeAddRequest = async (
     requestData: EpisodeAddRequest,
     podcastId,
-  ): Promise<BaseResponse> => {
+  ): Promise<CreateEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -143,12 +292,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -245,7 +396,7 @@ export default class PodcastHelper {
    */
   public static podcastEditRequest = async (
     requestData: PodcastEditRequest,
-  ): Promise<BaseResponse> => {
+  ): Promise<EditPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -274,12 +425,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -376,7 +529,7 @@ export default class PodcastHelper {
   public static podcastEpisodeEditRequest = async (
     requestData: EpisodeEditRequest,
     episodeId,
-  ): Promise<BaseResponse> => {
+  ): Promise<EditEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -405,12 +558,14 @@ export default class PodcastHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };

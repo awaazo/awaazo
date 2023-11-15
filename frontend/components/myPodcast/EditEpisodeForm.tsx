@@ -33,7 +33,9 @@ export default function EditEpisodeForm({ episode }) {
       if (res.status == 200) {
         setCoverImage(res.episode.thumbnailUrl);
         setEpisodeName(res.episode.episodeName);
+        setEpisodeNameCharacterCount(res.episode.episodeName.length);
         setDescription(res.episode.description);
+        setDescriptionCharacterCount(res.episode.description.length);
         setIsExplicit(res.episode.isExplicit);
       } else {
         setEditError("Episodes cannot be fetched");
@@ -48,7 +50,11 @@ export default function EditEpisodeForm({ episode }) {
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
+  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -74,7 +80,11 @@ export default function EditEpisodeForm({ episode }) {
    */
   const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
-
+    // Ensure all required fields are filled
+    if (episodeName == "" || description == "") {
+      setEditError("Cover Image, Episode Name and Description Required.");
+      return;
+    }
     // Create request object
     const request: EpisodeEditRequest = {
       audioFile: file,
@@ -96,8 +106,24 @@ export default function EditEpisodeForm({ episode }) {
       window.location.href = myPodcastsPage;
     } else {
       // Handle error here
-      setEditError("Episode File, Name and Description Required.");
+      setEditError(response.data);
     }
+  };
+
+  // Ensures episode name is not longer than 25 characters
+  const handleEpisodeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value.slice(0, 25);
+    setEpisodeName(newName);
+    setEpisodeNameCharacterCount(newName.length);
+  };
+
+  // Ensures episode description is not longer than 250 characters
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newDesc = e.target.value.slice(0, 250);
+    setDescription(newDesc);
+    setDescriptionCharacterCount(newDesc.length);
   };
 
   return (
@@ -172,22 +198,41 @@ export default function EditEpisodeForm({ episode }) {
             {editError && <Text color="red.500">{editError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
-              <FormControl>
+              <FormControl position="relative">
                 <Input
                   value={episodeName}
-                  onChange={(e) => setEpisodeName(e.target.value)}
+                  onChange={handleEpisodeNameChange}
                   placeholder="Enter episode name..."
                   rounded="lg"
+                  pr="50px"
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {episodeNameCharacterCount}/25
+                </Text>
               </FormControl>
 
               {/* Description Textarea */}
-              <FormControl>
+              <FormControl position="relative">
                 <Textarea
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleDescriptionChange}
                   placeholder="Enter episode description..."
                 />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
+                  {descriptionCharacterCount}/250
+                </Text>
               </FormControl>
 
               {/* Genre Selection */}

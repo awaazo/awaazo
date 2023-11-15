@@ -3,13 +3,17 @@ describe ('Postcast_Create', () => {
     
     // Declare the filepath for the podcast cover image
     const filepath_Podcast_cover = 'images/max_verstappen_cover.jpg';
-   
-    // User that exists should be able to create a Podcast
-    it('Should successfully create a Podcast', ()  => {
-        cy.visit('/');
+    
+    beforeEach(() => {
+        cy.visit('/'); 
         cy.url().should('include', '/');
         cy.login();
         cy.wait(500);
+      });
+
+
+    // User that exists should be able to create a Podcast
+    it('Should successfully create a Podcast', ()  => {
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -29,10 +33,6 @@ describe ('Postcast_Create', () => {
 
     //Podcast should not be created if the Podcast name already exists
     it('Should not create a podcast if the same podcast name already exists', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
-        cy.wait(500);
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -47,14 +47,11 @@ describe ('Postcast_Create', () => {
         cy.get(':nth-child(10) > .chakra-button').click();
         cy.get('button[id=createBtn]').click(); 
         cy.url().should('include', '/NewPodcast');
-        cy.contains('Required.').should('exist');
+        cy.contains('A podcast with the same name already exists').should('exist');
     });
 
     // User should be able to edit a podcast name and have it reflected immediately
     it('Should edit a Podcast', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click();
@@ -72,6 +69,7 @@ describe ('Postcast_Create', () => {
 
     // User should be re-directed to Login if they try to create a Podcast without being logged in
     it('Shold redirect you to login if a user is not logged in', () =>{
+        cy.logout();
         cy.visit('/');
         cy.url().should('include', '/');
         cy.get('button[aria-label="Create"]').click();
@@ -81,10 +79,6 @@ describe ('Postcast_Create', () => {
 
     // Podcast should not be created if the fields are empty
     it('Should not create a podcast if fields are empty', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
-        cy.wait(500);
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -97,10 +91,6 @@ describe ('Postcast_Create', () => {
 
     // Podcast cover photos should not accept anything else other than image files
     it('Should not accept files other than image files', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
-        cy.wait(500);
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -115,15 +105,11 @@ describe ('Postcast_Create', () => {
         cy.get(':nth-child(10) > .chakra-button').click();
         cy.get('button[id=createBtn]').click(); 
         cy.url().should('include', '/NewPodcast');
-        cy.contains('Required.').should('exist');
+        cy.contains('Cover art must be a JPEG, PNG, or SVG.').should('exist');
     });
 
     // Podcast names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in podcast name', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
-        cy.wait(500);
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -141,9 +127,6 @@ describe ('Postcast_Create', () => {
 
     // Users should be allowed to delete their own podcasts
     it('Should delete a Podcast', () => {
-        cy.visit('/');
-        cy.url().should('include', '/');
-        cy.login();
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click();
@@ -153,5 +136,43 @@ describe ('Postcast_Create', () => {
         cy.get('.css-1r37h6l').click();
         cy.contains('Button', 'Delete').click();
         cy.url().should('include', '/MyPodcasts');
+    });
+
+    it('limits the number of characters in the input field', () => {
+        cy.get('button[aria-label="Create"]').click();
+        cy.url().should('include', '/Create');
+        cy.get('.css-1bdrd0f').click();
+        cy.url().should('include', '/NewPodcast');
+        cy.wait(500);
+        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
+        cy.wait(550);
+        cy.get('input[id="podcastName"]').type('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        cy.get('textarea[id="description"]').type('A podcast about error handling.');
+        cy.get(':nth-child(5) > .chakra-button').click();
+        cy.get(':nth-child(7) > .chakra-button').click();
+        cy.get(':nth-child(10) > .chakra-button').click();
+        cy.get('button[id=createBtn]').click(); 
+        cy.url().should('include', '/Create');
+        cy.visit('/MyPodcasts'); ;
+        cy.contains('aaaaaaaaaaaaaaaaaa...')
+      });
+    
+
+      it('Should successfully create a Podcast for reviewing purposes', ()  => {
+        cy.get('button[aria-label="Create"]'). click();
+        cy.url().should('include', '/Create');
+        cy.get('.css-1bdrd0f').click();
+        cy.url().should('include', '/NewPodcast');
+        cy.wait(500);
+        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
+        cy.wait(550);
+        cy.get('input[id="podcastName"]').type('Review');
+        cy.get('textarea[id="description"]').type('A podcast about reviews.');
+        cy.get(':nth-child(5) > .chakra-button').click();
+        cy.get(':nth-child(7) > .chakra-button').click();
+        cy.get(':nth-child(10) > .chakra-button').click();
+        cy.get('button[id=createBtn]').click(); 
+        cy.url().should('include', '/Create');
+        cy.contains('Review');
     });
 });

@@ -35,6 +35,7 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import { MdIntegrationInstructions, MdToken } from "react-icons/md";
+import NextLink from "next/link";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -45,7 +46,12 @@ export default function Navbar() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
   const handleSearchChange = (event) => setSearchValue(event.target.value);
-  const handleSearchSubmit = () => console.log("Search Value:", searchValue);
+
+  const handleSearchSubmit = () => {
+    const searchlink = "/Explore/Search?searchTerm=" + searchValue;
+    window.location.href = searchlink;
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",
@@ -57,17 +63,15 @@ export default function Navbar() {
 
   interface SessionExt extends DefaultSession {
     token: {
-      email: string,
-      sub: string,
-      id_token: string,
-      name: string,
-      picture:string
-    }
+      email: string;
+      sub: string;
+      id_token: string;
+      name: string;
+      picture: string;
+    };
   }
 
   useEffect(() => {
-
-
     // Custom User logged in
     if (!isUserSet) {
       AuthHelper.authMeRequest().then((response) => {
@@ -80,7 +84,7 @@ export default function Navbar() {
       });
     }
     // Google User logged in
-    if (session !== null && session!==undefined && !isLoggedIn) {
+    if (session !== null && session !== undefined && !isLoggedIn) {
       // Get the session info
       const currentSession = session as SessionExt;
       const googleSSORequest: GoogleSSORequest = {
@@ -88,8 +92,8 @@ export default function Navbar() {
         sub: currentSession.token.sub,
         token: currentSession.token.id_token,
         avatar: currentSession.token.picture,
-        name: currentSession.token.name
-      }
+        name: currentSession.token.name,
+      };
 
       AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
         if (response.status == 200) {
@@ -105,7 +109,6 @@ export default function Navbar() {
           }
         }
       });
-
     }
   }, [session, isLoggedIn]);
 
@@ -156,19 +159,16 @@ export default function Navbar() {
       </MenuButton>
       <MenuList>
         <MenuGroup>
-          <MenuItem
-            onClick={() => (window.location.href = "/profile/MyProfile")}
-          >
-            👤 My Account
-          </MenuItem>
-          <MenuItem onClick={() => (window.location.href = "/MyPodcasts")}>
-            🎙️ My Podcasts
-          </MenuItem>
+          <NextLink href="/profile/MyProfile" passHref>
+            <MenuItem>👤 My Account</MenuItem>
+          </NextLink>
+          <NextLink href="/MyPodcasts" passHref>
+            <MenuItem>🎙️ My Podcasts</MenuItem>
+          </NextLink>
           <MenuDivider />
-
-          <MenuItem onClick={() => (window.location.href = "/Settings")}>
-            ⚙️ Settings
-          </MenuItem>
+          <NextLink href="/Create" passHref>
+            <MenuItem>⚙️ Settings</MenuItem>
+          </NextLink>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -299,7 +299,6 @@ export default function Navbar() {
     </Flex>
   );
 
-
   return (
     <>
       <Box
@@ -326,7 +325,7 @@ export default function Navbar() {
               />
             </Box>
           </Link>
-          {isMobile ? <MobileMenu/> : <DesktopMenu/>}
+          {isMobile ? <MobileMenu /> : <DesktopMenu />}
         </Flex>
       </Box>
     </>

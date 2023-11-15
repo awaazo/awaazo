@@ -33,14 +33,13 @@ import {
 import { AddIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 
 import Navbar from "../components/shared/Navbar";
+import PlayerBar from "../components/shared/PlayerBar";
 import MyPodcast from "../components/myPodcast/MyPodcast";
 import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
 import router from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
 import PodcastHelper from "../helpers/PodcastHelper";
-import RatingComponent from "../components/rating/RatingComponent";
-import ReviewComponent from "../components/rating/ReviewComponent";
-
+import NextLink from "next/link";
 
 const MyPodcasts = () => {
   // Page refs
@@ -79,7 +78,7 @@ const MyPodcasts = () => {
           if (res2.status == 200) {
             setPodcasts(res2.myPodcasts);
             setSelectedPodcastId(
-              res2.myPodcasts.length > 0 ? res2.myPodcasts[0].id : null
+              res2.myPodcasts.length > 0 ? res2.myPodcasts[0].id : null,
             );
           } else {
             setCreateError("Podcasts cannot be fetched");
@@ -160,44 +159,43 @@ const MyPodcasts = () => {
                           : "1px solid rgba(255, 255, 255, 0.5)",
                       cursor: "pointer",
                     }}
+                    data-cy={`podcast-image-${podcast.name
+                      .replace(/\s+/g, "-")
+                      .toLowerCase()}`}
                   />
-                  
                 </Box>
-                
-                <RatingComponent  podcastId={podcast.id}/>
-                <ReviewComponent podcastId={podcast.id}/>
-                
+
                 <Text fontSize="lg">
                   {podcast.name.length > 18
                     ? `${podcast.name.substring(0, 18)}...`
                     : podcast.name}
                 </Text>
-                
               </VStack>
             ))}
-            <Flex
-              direction="column"
-              alignItems="center"
-              borderRadius="1em"
-              cursor="pointer"
-              outline="none"
-              onClick={navigateToCreatePodcast}
-              p={2}
-              m={2}
-              bg="transparent"
-            >
-              <Box
-                boxSize="100px"
-                borderRadius="2em"
-                border="2px dashed gray"
-                display="flex"
+            <NextLink href="/NewPodcast" passHref>
+              <Flex
+                direction="column"
                 alignItems="center"
-                justifyContent="center"
+                borderRadius="1em"
+                cursor="pointer"
+                outline="none"
+                p={2}
+                m={2}
+                bg="transparent"
               >
-                <AddIcon w={10} h={10} />
-              </Box>
-              <Text mt={2}>Create a Podcast</Text>
-            </Flex>
+                <Box
+                  boxSize="100px"
+                  borderRadius="2em"
+                  border="2px dashed gray"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <AddIcon w={10} h={10} />
+                </Box>
+                <Text mt={2}>Create a Podcast</Text>
+              </Flex>
+            </NextLink>
           </Wrap>
         </Flex>
         {selectedPodcastId !== null && (
