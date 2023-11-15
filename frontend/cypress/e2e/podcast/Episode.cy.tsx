@@ -193,9 +193,10 @@ describe ('Episode_Create', () => {
         cy.get('button[id=createBtn]').click();
         cy.wait(1000);
         cy.url().should('include', '/MyPodcasts')
+        cy.get('[data-cy="podcast-image-review"]').click();
         cy.get('[data-cy="podcast-image-cool-pets"]').click();
-        // cy.contains('Funny Shibas');
-        // cy.contains('Silly dogs');
+        cy.contains('Funny Shibas');
+        cy.contains('Silly dogs');
         cy.get('button').contains('New Episode').click();
         cy.get('input[type="file"]').attachFile(cat);
         cy.get('input[placeholder="Enter episode name..."]').type("Funny cats");
@@ -207,12 +208,14 @@ describe ('Episode_Create', () => {
         cy.get('button[id=createBtn]').click();
         cy.wait(1000);
         cy.url().should('include', '/MyPodcasts')
+        cy.get('[data-cy="podcast-image-review"]').click();
         cy.get('[data-cy="podcast-image-cool-pets"]').click();
-        // cy.contains('Funny cats');
-        // cy.contains('Silly cats');
+        cy.contains('Funny cats');
+        cy.contains('Silly cats');
         cy.get('[data-cy="podcast-delete"]').click();
         cy.contains('Button', 'Delete').click();
         cy.url().should('include', '/MyPodcasts');
+        cy.get('[data-cy="podcast-image-review"]').click();
         cy.get('[data-cy="podcast-image-cool-pets"]').should('not.exist');
         cy.get('Funny cats').should('not.exist');
         cy.get('Funny Shibas').should('not.exist');
