@@ -36,6 +36,7 @@ public class Program
         builder.Services.AddScoped<ISocialService, SocialService>();
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
+        builder.Services.AddScoped<BookmarkService>();
 
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -139,6 +140,10 @@ public class Program
         app.UseAuthorization();
 
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
+        {
+            builder.UseMiddleware<ValidateUser>();
+        });
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/bookmark"), builder =>
         {
             builder.UseMiddleware<ValidateUser>();
         });
