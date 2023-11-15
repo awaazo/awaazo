@@ -18,17 +18,6 @@ import {
   SimpleGrid,
   VStack,
   Image,
-  HStack,
-  Wrap,
-  WrapItem,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spacer,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 
@@ -61,12 +50,6 @@ const Episode = ({ episode, onSelectEpisode }) => {
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
       onClick={() => onSelectEpisode(episode)}
-      onMouseOver={(e) => {
-        e.currentTarget.style.transform = "scale(1.05)";
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-      }}
     >
       <Box position="relative" mr={5}>
         <Image
