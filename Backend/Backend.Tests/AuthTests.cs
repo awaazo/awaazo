@@ -1,15 +1,11 @@
 using AutoMapper;
-using AutoMapper.Configuration.Annotations;
-using Azure;
 using Backend.Controllers;
 using Backend.Controllers.Requests;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
@@ -25,10 +21,14 @@ namespace Backend.Tests;
 [Collection("Sequential")]
 public class AuthTests : IAsyncLifetime
 {
+    private Mock<Microsoft.Extensions.Logging.ILogger> _IloggerMock;
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
-    public AuthTests(){ }
+    public AuthTests()
+    { 
+        _IloggerMock = new ();
+    }
 
     public Task InitializeAsync()
 
@@ -734,7 +734,7 @@ public class AuthTests : IAsyncLifetime
         
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -775,7 +775,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -813,7 +813,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -855,7 +855,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
         // Create the Request
 
@@ -896,7 +896,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -929,7 +929,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
         // ACT
         IActionResult actionResult = await authController.Me();
@@ -953,7 +953,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -995,7 +995,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
 
         // Create the Request

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -31,6 +32,7 @@ public class PodcastTests
     private Mock<DbSet<Podcast>> _podcast;
     private Mock<DbSet<Episode>> _episode;
     private Mock<DbSet<UserEpisodeInteraction>> _userEpisodeInteraction;
+    private Mock<ILogger> _loggerMock;
 
 
     private PodcastService _podcastService;
@@ -52,8 +54,9 @@ public class PodcastTests
         _authServiceMock = new();
         _httpRequestMock  = new();
         _notificationServiceMock = new();
+        _loggerMock = new();
         _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
-        _podcastController = new(_podcastService, _authServiceMock.Object)
+        _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -72,8 +75,9 @@ public class PodcastTests
         _authServiceMock = new();
         _httpRequestMock = new();
         _notificationServiceMock = new();
+        _loggerMock = new();
         _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
-        _podcastController = new(_podcastService, _authServiceMock.Object) 
+        _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object) 
         { 
             ControllerContext = new ControllerContext()
             {
