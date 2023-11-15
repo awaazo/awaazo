@@ -88,7 +88,7 @@ test.skip("Submits the login form with valid fields", async () => {
   expect(consoleSpy).toHaveBeenCalledWith(
     expect.objectContaining({
       method: "POST",
-      url: "http://localhost:32773/auth/login",
+      url: process.env.NEXT_PUBLIC_BASE_URL+"auth/login",
       data: { email: "any@email.com", password: "anyPassword" },
       headers: { accept: "*/*", "Content-Type": "application/json" },
     })

@@ -35,6 +35,11 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       width="100%"
       borderRadius="15px"
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
+    <Flex
+      p={4}
+      width="100%"
+      borderRadius="15px"
+      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(4px)"
       boxShadow="sm"
       outline={"2px solid rgba(255, 255, 255, .1)"}

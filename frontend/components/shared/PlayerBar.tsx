@@ -122,12 +122,18 @@ const PlayerBar: React.FC<Episode> = ({ coverArt, episodeName = "Unknown Episode
                 <SliderFilledTrack />
               </SliderTrack>
               <SliderThumb />
+              <SliderThumb />
             </Slider>
+            <IconButton aria-label="Volume Up" icon={<FaVolumeUp />} variant="ghost" size="sm" onClick={() => setVolume(Math.min(volume + 10, 100))} />
           </Flex>
         )}
       </Flex>
     </Box>
   );
-};
+}
 
 export default PlayerBar;
+
+
+
+
