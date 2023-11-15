@@ -21,10 +21,14 @@ const Main = () => {
         <ExploreGenresSection />
         <Box flex="1" borderRadius="35px">
           <Box overflowY="hidden" overflowX="hidden" className="no-scrollbar">
+
             <RecentlyUploaded />
           </Box>
           <ForYou />
         </Box>
+
+        {/* Player Bar */}
+        <PlayerBar/>
       </Box>
     </>
   );

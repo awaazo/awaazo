@@ -39,7 +39,7 @@ const PlayerBar = () => {
     return null;
   }
 
-  const PlayerBar: React.FC<Episode> = () => {
+  const PlayerBar: React.FC<Episode> = ({ thumbnailUrl, episodeName = "Unknown Episode", podcaster = "Unknown Podcaster", likes, comments, sections = [] }) => {
     const [position, setPosition] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
