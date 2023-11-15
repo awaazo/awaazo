@@ -33,7 +33,7 @@ const Chatbot: React.FC = () => {
       </Flex>
 
       {/* Message Container */}
-      <Flex flexDirection="column" flexGrow={1} px={4} overflowY="auto" mb={4} maxH="55vh">
+      <Flex flexDirection="column" flexGrow={1} px={4} overflowY="auto" mb={4} maxH="56vh">
         <VStack spacing={4} align="start" flex="1" pb={4}> 
           {messages.map((message, idx) => (
             <Flex key={idx} align="center">
