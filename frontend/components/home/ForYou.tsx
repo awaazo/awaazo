@@ -44,7 +44,7 @@ const ForYou: React.FC = () => {
         </Text>
       </Box>
       <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
-        {podcasts ? (
+        {podcasts && podcasts.length > 0 ? (
           podcasts.map((podcast, index) => (
             <PodcastCard
               key={index}
@@ -57,7 +57,7 @@ const ForYou: React.FC = () => {
             style={{
               marginTop: "50px",
               marginBottom: "50px",
-              marginLeft: "30px",
+              marginLeft: "35px",
             }}
           >
             (No podcasts available)

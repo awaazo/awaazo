@@ -141,28 +141,30 @@ const MyPodcasts = () => {
                 align="center"
               >
                 <NextLink href={`/podcasts/${podcast.id}`} passHref>
-                <Box position="relative" boxSize="150px">
-                  <Image
-                    borderRadius="2.5em"
-                    boxSize="150px"
-                    objectFit="cover"
-                    src={podcast.coverArtUrl}
-                    alt={podcast.name}
-                    boxShadow={
-                      selectedPodcastId === podcast.id
-                        ? "0 0 10px rgba(0, 0, 0, 0.5)"
-                        : ""
-                    }
-                    style={{
-                      outline:
+                  <Box position="relative" boxSize="150px">
+                    <Image
+                      borderRadius="2.5em"
+                      boxSize="150px"
+                      objectFit="cover"
+                      src={podcast.coverArtUrl}
+                      alt={podcast.name}
+                      boxShadow={
                         selectedPodcastId === podcast.id
-                          ? "3px solid #9ecaed"
-                          : "1px solid rgba(255, 255, 255, 0.5)",
-                      cursor: "pointer",
-                    }}
-                    data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`}
-                  />
-                </Box>
+                          ? "0 0 10px rgba(0, 0, 0, 0.5)"
+                          : ""
+                      }
+                      style={{
+                        outline:
+                          selectedPodcastId === podcast.id
+                            ? "3px solid #9ecaed"
+                            : "1px solid rgba(255, 255, 255, 0.5)",
+                        cursor: "pointer",
+                      }}
+                      data-cy={`podcast-image-${podcast.name
+                        .replace(/\s+/g, "-")
+                        .toLowerCase()}`}
+                    />
+                  </Box>
                 </NextLink>
 
                 <Text fontSize="lg">
@@ -173,28 +175,28 @@ const MyPodcasts = () => {
               </VStack>
             ))}
             <NextLink href="/NewPodcast" passHref>
-            <Flex
-              direction="column"
-              alignItems="center"
-              borderRadius="1em"
-              cursor="pointer"
-              outline="none"
-              p={2}
-              m={2}
-              bg="transparent"
-            >
-              <Box
-                boxSize="100px"
-                borderRadius="2em"
-                border="2px dashed gray"
-                display="flex"
+              <Flex
+                direction="column"
                 alignItems="center"
-                justifyContent="center"
+                borderRadius="1em"
+                cursor="pointer"
+                outline="none"
+                p={2}
+                m={2}
+                bg="transparent"
               >
-                <AddIcon w={10} h={10} />
-              </Box>
-              <Text mt={2}>Create a Podcast</Text>
-            </Flex>
+                <Box
+                  boxSize="100px"
+                  borderRadius="2em"
+                  border="2px dashed gray"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <AddIcon w={10} h={10} />
+                </Box>
+                <Text mt={2}>Create a Podcast</Text>
+              </Flex>
             </NextLink>
           </Wrap>
         </Flex>
