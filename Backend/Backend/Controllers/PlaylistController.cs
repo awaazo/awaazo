@@ -14,9 +14,11 @@ public class PlaylistController : ControllerBase
 {
     private readonly PlaylistService _service;
     private readonly IAuthService _authService;
+    private readonly ILogger _logger;
 
-    public PlaylistController(PlaylistService service, IAuthService authService)
+    public PlaylistController(PlaylistService service, IAuthService authService, ILogger logger)
     {
+        _logger = logger;
         _service = service;
         _authService = authService;
     }
@@ -29,6 +31,7 @@ public class PlaylistController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] PlaylistCreateRequest request)
     {
+        _logger.LogDebug(@"Using the playlist\create Endpoint");
         return Ok(await _service.Create(
                 await _authService.IdentifyUserAsync(HttpContext)!, request.Name));
     }
@@ -40,6 +43,8 @@ public class PlaylistController : ControllerBase
     [HttpPut("append")]
     public async Task<IActionResult> Append([FromBody] PlaylistAppendRequest request)
     {
+        _logger.LogDebug(@"Using the playlist\append Endpoint");
+
         bool result = await _service.Append(
             await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistId, request.EpisodeId);
 
@@ -53,6 +58,8 @@ public class PlaylistController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> All()
     {
+        _logger.LogDebug(@"Using the playlist\all Endpoint");
+
         return Ok(await _service.All(await _authService.IdentifyUserAsync(HttpContext)!));
     }
 
@@ -62,6 +69,8 @@ public class PlaylistController : ControllerBase
     [HttpGet("elements")]
     public async Task<IActionResult> Elements([FromBody] PlaylistElementsRequest request)
     {
+        _logger.LogDebug(@"Using the playlist\elements Endpoint");
+
         var elements =
             await _service.PlaylistElements(await _authService.IdentifyUserAsync(HttpContext)!, request.PlayListId);
         return elements is null ? BadRequest("Invalid Playlist ID") : Ok();
@@ -75,6 +84,8 @@ public class PlaylistController : ControllerBase
     [HttpPut("delete")]
     public async Task<IActionResult> Delete([FromBody] PlaylistDeleteRequest request)
     {
+        _logger.LogDebug(@"Using the playlist\delete Endpoint");
+
         bool result = await _service.Delete(
             await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistId);
 
@@ -88,6 +99,8 @@ public class PlaylistController : ControllerBase
     [HttpPut("deleteElement")]
     public async Task<IActionResult> DeleteElement([FromBody] PlaylistElementDeleteRequest request)
     {
+        _logger.LogDebug(@"Using the playlist\deleteElement Endpoint");
+
         bool result = await _service.DeleteElement(
             await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistElementId);
 

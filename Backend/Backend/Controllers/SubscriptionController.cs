@@ -13,14 +13,19 @@ namespace Backend.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ISubscriptionService _subscriptionService;
-        public SubscriptionController(IAuthService authService, ISubscriptionService subscriptionService) { 
+        private readonly ILogger _logger;
+
+        public SubscriptionController(IAuthService authService, ISubscriptionService subscriptionService, ILogger logger) { 
             _authService = authService;
             _subscriptionService = subscriptionService;
+            _logger = logger;
         }
 
         [HttpPost("{PodcastId}/subscribe")]
         public async Task<IActionResult> Subscribe(Guid PodcastId)
         {
+            _logger.LogDebug(@"Using the subscription\PodcastId\subscribe Endpoint");
+
             try
             {
                 // Identify User from JWT Token
@@ -32,15 +37,18 @@ namespace Backend.Controllers
 
                 return await _subscriptionService.SubscribeAsync(PodcastId, user) ? Ok("Successfully Subscribed to the Podcast"):Ok("Failed to subscribe the Podcast");
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(e, "");
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPost("{PodcastId}/unsubscribe")]
         public async Task<IActionResult> Unsubscribe(Guid PodcastId)
         {
+            _logger.LogDebug(@"Using the subscription\PodcastId\unsubscribe Endpoint");
+
             try
             {
                 // Identify User from JWT Token
@@ -52,15 +60,18 @@ namespace Backend.Controllers
 
                 return await _subscriptionService.UnsubscribeAsync(PodcastId, user) ? Ok("Successfully unsubscribed to the Podcast") : Ok("Failed to unsubscribe the Podcast");
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(e, "");
+                return BadRequest(e.Message);
             }
         }
 
         [HttpGet("{PodcastId}/IsSubscribed")]
         public async Task<IActionResult> IsSubscribed(Guid PodcastId)
         {
+            _logger.LogDebug(@"Using the subscription\PodcastId\IsSubscribed Endpoint");
+
             try
             {
                 // Identify User from JWT Token
@@ -72,15 +83,18 @@ namespace Backend.Controllers
 
                 return Ok(await _subscriptionService.IsSubscribed(PodcastId, user)) ;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(e, "");
+                return BadRequest(e.Message);
             }
         }
 
         [HttpGet("MySubscriptions")]
         public async Task<IActionResult> MySubscriptions()
         {
+            _logger.LogDebug(@"Using the subscription\MySubscriptions Endpoint");
+
             try
             {
                 // Identify User from JWT Token
@@ -92,15 +106,18 @@ namespace Backend.Controllers
 
                 return Ok(await _subscriptionService.MySubscriptionsAsync(user, GetDomainUrl(HttpContext))); 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(e, "");
+                return BadRequest(e.Message);
             }
         }
 
         [HttpGet("{PodcastId}/GetAllPodcastSubscriber")]
         public async Task<IActionResult> GetAllPodcastSubscriber(Guid PodcastId)
         {
+            _logger.LogDebug(@"Using the subscription\PodcastId\GetAllPodcastSubscriber Endpoint");
+
             try
             {
                 // Identify User from JWT Token
@@ -112,9 +129,10 @@ namespace Backend.Controllers
 
                 return Ok(await _subscriptionService.GetPodcastSubscriptionAsync(PodcastId, user, GetDomainUrl(HttpContext)));
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(e, "");
+                return BadRequest(e.Message);
             }
         }
     }
