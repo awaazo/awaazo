@@ -100,7 +100,6 @@ export default function MyPodcast() {
         )}
 
         {/* Player Bar */}
-        <PlayerBar episode={null} />
       </Box>
     </>
   );

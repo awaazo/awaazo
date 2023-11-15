@@ -36,11 +36,8 @@ public class EpisodeResponse
     public ulong PlayCount { get; set; } = 0;
     public string AudioUrl { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
-
     public int Likes { get; set; } = 0;
     public List<CommentResponse> Comments { get; set; } = new();
-
-    //[BindNever] public Episode Episode { get; private set; } = null!;
 }
 
 [BindProperties]

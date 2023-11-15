@@ -21,6 +21,8 @@ public class SocialController : ControllerBase
         _socialService = socialService;
     }
 
+    #region Comment
+
     [HttpPost("{episodeOrCommentId}/comment")]
     public async Task<IActionResult> AddComment(Guid episodeOrCommentId, [FromBody] string commentText)
     {
@@ -105,9 +107,11 @@ public class SocialController : ControllerBase
         }
     }
 
+    #endregion
+
     #region Rating
 
-    
+
     [HttpPost("rating")]
     public async Task<ActionResult> AddRating(RatingRequest request)
     {
@@ -152,6 +156,7 @@ public class SocialController : ControllerBase
 
     #endregion
 
+    #region Review
 
     [HttpPost("review")]
     public async Task<ActionResult> AddReview(ReviewRequest request)
@@ -194,4 +199,7 @@ public class SocialController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    #endregion
+
 }

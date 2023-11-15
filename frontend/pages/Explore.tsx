@@ -1,5 +1,6 @@
 import { Box, Center, Text } from "@chakra-ui/react";
-import Navbar from "../components/shared/Navbar"; 
+import Navbar from "../components/shared/Navbar";
+import PlayerBar from "../components/shared/PlayerBar";
 
 export default function Explore() {
   return (

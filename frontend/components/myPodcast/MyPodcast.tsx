@@ -221,6 +221,7 @@ export default function MyPodcast({ podcastId }) {
                 w={isMobile === true ? "5" : "6"}
                 h={isMobile === false ? "5" : "6"}
                 color={colorMode === "dark" ? "#FF6666" : "#FF0000"}
+                data-cy={`podcast-delete`} // Adding a data-cy attribute to delete button
               />
             </IconButton>
           </div>

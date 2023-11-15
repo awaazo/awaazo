@@ -3,6 +3,10 @@ describe ('Episode_Create', () => {
 
     const filepath_mp3_episode = 'mp3_files/Never_Gonna_Give_You_Up.mp3';
     const filepath_Episode_cover = 'images/charles_leclerc.jpg';
+    const filepath_Episode_cover_science ='images/Has_science_gone_too_far.jpg';
+    const bunny = 'images/bunny.jpg';
+    const cat = 'images/cat.jpg';
+    const shiba = 'images/shiba.jpg';
 
     beforeEach(() => {
         cy.visit('/'); 
@@ -124,5 +128,94 @@ describe ('Episode_Create', () => {
         cy.wait(1000);
         cy.url().should('include', '/MyPodcasts')
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ');
+    });
+
+    it('Should add an episode from the Podcast interface', () => {
+        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.get('button').contains('My Podcasts').click();
+        cy.wait(1000);
+        cy.get('button').contains('New Episode').click();
+        cy.get('input[type="file"]').attachFile(filepath_Episode_cover_science);
+        cy.get('input[placeholder="Enter episode name..."]').type("Has science gone too far?");
+        cy.get('textarea[placeholder="Enter episode description..."]').type('Is AI the future?!');
+        cy.get('.css-70ttu').should('be.visible').within(() => {
+            cy.get('input').attachFile(filepath_mp3_episode);
+        });
+        cy.get('.css-1xmcsij > :nth-child(1) > .chakra-image').click();
+        cy.get('button[id=createBtn]').click();
+        cy.wait(1000);
+        cy.url().should('include', '/MyPodcasts')
+        cy.contains('Has science gone too far?');
+        cy.contains('Is AI the future?!');
+      });
+    
+    it('limits the number of characters in the input field', () => {
+        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.get('button').contains('My Podcasts').click();
+        cy.wait(1000);
+        cy.get('button').contains('New Episode').click();
+        cy.get('input[type="file"]').attachFile(filepath_Episode_cover_science);
+        cy.get('input[placeholder="Enter episode name..."]').type("This is a very long episode title that should be cut off after 25 characters");
+        cy.get('textarea[placeholder="Enter episode description..."]').type('Testing so fun!!');
+        cy.get('.css-70ttu').should('be.visible').within(() => {
+            cy.get('input').attachFile(filepath_mp3_episode);
+        });
+        cy.get('.css-1xmcsij > :nth-child(1) > .chakra-image').click();
+        cy.get('button[id=createBtn]').click();
+        cy.wait(1000);
+        cy.url().should('include', '/MyPodcasts')
+        cy.contains('This is a very long episo');
+    });
+
+    it.only('Should detele all episodes if a podcast is deleted', () => {
+        cy.get('button[aria-label="Create"]').click();
+        cy.url().should('include', '/Create');
+        cy.get('.css-1bdrd0f').click();
+        cy.url().should('include', '/NewPodcast');
+        cy.wait(500);
+        cy.get('input[type="file"]').attachFile(bunny);
+        cy.wait(550);
+        cy.get('input[id="podcastName"]').type('Cool pets');
+        cy.get('textarea[id="description"]').type('A podcast about pets and their coolness.');
+        cy.get(':nth-child(5) > .chakra-button').click();
+        cy.get('button[id=createBtn]').click(); 
+        cy.url().should('include', '/Create');
+        cy.contains('Cool pets');
+        cy.get('input[type="file"]').attachFile(shiba);
+        cy.get('input[placeholder="Enter episode name..."]').type("Funny Shibas");
+        cy.get('textarea[placeholder="Enter episode description..."]').type('Silly dogs');
+        cy.get('.css-70ttu').should('be.visible').within(() => {
+            cy.get('input').attachFile(filepath_mp3_episode);
+        });
+        cy.data_log();
+        cy.get('[data-cy="podcast-image-cool-pets"]').click();
+        cy.get('button[id=createBtn]').click();
+        cy.wait(1000);
+        cy.url().should('include', '/MyPodcasts')
+        cy.get('[data-cy="podcast-image-cool-pets"]').click();
+        cy.contains('Funny Shibas');
+        cy.contains('Silly dogs');
+        cy.get('button').contains('New Episode').click();
+        cy.get('input[type="file"]').attachFile(cat);
+        cy.get('input[placeholder="Enter episode name..."]').type("Funny cats");
+        cy.get('textarea[placeholder="Enter episode description..."]').type('Silly cats');
+        cy.get('.css-70ttu').should('be.visible').within(() => {
+            cy.get('input').attachFile(filepath_mp3_episode);
+        });
+        cy.get('[data-cy="podcast-image-cool-pets"]').click();
+        cy.get('button[id=createBtn]').click();
+        cy.wait(1000);
+        cy.url().should('include', '/MyPodcasts')
+        cy.get('[data-cy="podcast-image-cool-pets"]').click();
+        cy.contains('Funny cats');
+        cy.contains('Silly cats');
+        cy.get('[data-cy="podcast-delete"]').click();
+        cy.contains('Button', 'Delete').click();
+        cy.url().should('include', '/MyPodcasts');
+        cy.get('[data-cy="podcast-image-cool-pets"]').should('not.exist');
+        cy.get('Funny cats').should('not.exist');
+        cy.get('Funny Shibas').should('not.exist');
     });
 });

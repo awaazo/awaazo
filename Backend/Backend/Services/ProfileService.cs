@@ -116,7 +116,7 @@ public class ProfileService : IProfileService
     /// <param name="user">User for which the profile belongs</param>
     /// <param name="domainUrl">Url of the current domain (top level)</param>
     /// <returns>UserProfileResponse</returns>
-    public UserProfileResponse GetProfile(User user, string domainUrl)
+    public async Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl)
     {
         return new UserProfileResponse(user, domainUrl);
     }

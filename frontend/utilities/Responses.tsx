@@ -22,7 +22,9 @@ export interface RegisterResponse extends BaseResponse {
   data: string;
 }
 
-export interface GoogleSSOResponse extends BaseResponse {}
+export interface GoogleSSOResponse extends BaseResponse {
+  data: string;
+}
 
 export interface LogoutResponse extends BaseResponse {}
 

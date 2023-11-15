@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231114031831_xMigration")]
-    partial class xMigration
+    [Migration("20231114224013_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,6 +303,50 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("MediaLinks");
+                });
+
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Media")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Backend.Models.Playlist", b =>
@@ -759,6 +803,17 @@ namespace Backend.Migrations
                     b.Navigation("Annotation");
                 });
 
+            modelBuilder.Entity("Backend.Models.Notification", b =>
+                {
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
                 {
                     b.HasOne("Backend.Models.Playlist", null)
@@ -793,7 +848,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Ratings")
                         .HasForeignKey("PodcastId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
@@ -898,6 +953,8 @@ namespace Backend.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("EpisodeInteractions");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("PodcastFollows");
 

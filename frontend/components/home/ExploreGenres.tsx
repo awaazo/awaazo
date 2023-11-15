@@ -6,6 +6,7 @@ import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
 import otherImage from "../../styles/images/genres/other.jpg";
+import NexLink from "next/link";
 
 const genres = [
   { name: "Tech", image: techImage, link: "Technology" },
@@ -19,54 +20,49 @@ const genres = [
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
 
-  // Function to navigate to genre page
-  const navigateToExploreGenre = (genreName) => {
-    const genrePage = "/Explore/Genre/" + genreName;
-    window.location.href = genrePage;
-  };
-
   return (
-    <Box
-      key={genre.name}
-      h="100%"
-      borderRadius="1.2em"
-      overflow="hidden"
-      position="relative"
-      _hover={{
-        boxShadow: "xl",
-        cursor: "pointer",
-        transition: "all 0.4s ease-in-out",
-      }}
-      transform={scale}
-      transition="all 0.4s ease-in-out"
-      boxSizing="border-box"
-      outline={"2px solid rgba(255, 255, 255, .3)"}
-      onMouseEnter={() => onMouseEnter(genre.name)}
-      onMouseLeave={onMouseLeave}
-      onClick={() => navigateToExploreGenre(genre.link)}
-      zIndex={isHovered ? 1 : 0}
-    >
-      <Image
-        src={genre.image.src}
-        alt={`${genre.name} background`}
-        width="100%"
-        height="100%"
-        objectFit="cover"
-        opacity="0.8"
-      />
-      <Text
-        fontWeight="bold"
-        fontSize={["md", "lg", "xl"]}
-        position="absolute"
-        left="50%"
-        top="50%"
-        transform="translate(-50%, -50%)"
-        textShadow="2px 2px 4px #000000"
-        p={1}
+    <NexLink href={`/Explore/Genre/${genre.link}`} passHref>
+      <Box
+        key={genre.name}
+        h="100%"
+        borderRadius="1.2em"
+        overflow="hidden"
+        position="relative"
+        _hover={{
+          boxShadow: "xl",
+          cursor: "pointer",
+          transition: "all 0.4s ease-in-out",
+        }}
+        transform={scale}
+        transition="all 0.4s ease-in-out"
+        boxSizing="border-box"
+        outline={"2px solid rgba(255, 255, 255, .3)"}
+        onMouseEnter={() => onMouseEnter(genre.name)}
+        onMouseLeave={onMouseLeave}
+        zIndex={isHovered ? 1 : 0}
       >
-        {genre.name}
-      </Text>
-    </Box>
+        <Image
+          src={genre.image.src}
+          alt={`${genre.name} background`}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          opacity="0.8"
+        />
+        <Text
+          fontWeight="bold"
+          fontSize={["md", "lg", "xl"]}
+          position="absolute"
+          left="50%"
+          top="50%"
+          transform="translate(-50%, -50%)"
+          textShadow="2px 2px 4px #000000"
+          p={1}
+        >
+          {genre.name}
+        </Text>
+      </Box>
+    </NexLink>
   );
 };
 

@@ -164,6 +164,14 @@ public class User : BaseEntity
     public ICollection<CommentReply> CommentReplies {get;} = new List<CommentReply>();
 
     /// <summary>
+    /// User Notification.
+    /// </summary>
+    /// <typeparam name="Notification"></typeparam>
+    /// <returns></returns>
+    public ICollection<Notification> Notifications {  get; } = new List<Notification>();
+
+
+    /// <summary>
     /// Gender enum.
     /// </summary>
     public enum GenderEnum

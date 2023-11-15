@@ -22,12 +22,17 @@ import {
 import { MdEdit, MdDelete } from "react-icons/md";
 
 import { FaPlay } from "react-icons/fa";
-import PlayingBar from "../player/PlayingBar";
-import PodcastHelper from "../../helpers/PodcastHelper";
+import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 
-const Episode = ({ episode, onSelectEpisode }) => {
+const Episode = ({ episode }) => {
+  const { dispatch } = usePlayer();
+
+  const handleEpisodeClick = () => {
+    dispatch({ type: "SET_EPISODE", payload: episode });
+  };
+
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -49,7 +54,15 @@ const Episode = ({ episode, onSelectEpisode }) => {
       backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
-      onClick={() => onSelectEpisode(episode)}
+
+      onClick={() => handleEpisodeClick()}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = "scale(1.05)";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+      }}
+
     >
       <Box position="relative" mr={5}>
         <Image

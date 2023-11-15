@@ -9,22 +9,23 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import NextLink  from "next/link";
 
 // Function to navigate to explore podcast page
-const navigateToExplorePodcast = (podcastId) => {
-  const podcastPage = "/Explore/" + podcastId;
-  window.location.href = podcastPage;
-};
+// const navigateToExplorePodcast = (podcastId) => {
+//   const podcastPage = "/Explore/" + podcastId;
+//   window.location.href = podcastPage;
+// };
+
 
 const PodcastCard = ({ podcast }) => (
+  <NextLink href={`/Explore/${podcast.id}`} passHref>
+  
   <Card
-    as={Link}
-    href="#"
     boxShadow="lg"
     rounded="md"
     overflow="hidden"
     background={"transparent"}
-    onClick={() => navigateToExplorePodcast(podcast.id)}
     _hover={{
       transform: "scale(1.07)",
       textDecoration: "none",
@@ -109,6 +110,8 @@ const PodcastCard = ({ podcast }) => (
       }}
     ></div>
   </Card>
+ 
+  </NextLink>
 );
 
 export default PodcastCard;

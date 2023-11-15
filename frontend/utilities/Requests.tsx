@@ -22,9 +22,9 @@ export interface RegisterRequest extends LoginRequest {
  */
 export interface GoogleSSORequest {
   email: string;
-  username: string;
-  sub: string;
+  name: string;
   avatar: string;
+  sub: string;
   token: string;
 }
 
