@@ -1,18 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Backend.Infrastructure;
-using Backend.Services;
-using Google.Apis.Auth;
 using Backend.Services.Interfaces;
 using Backend.Controllers.Responses;
 using static Backend.Infrastructure.ControllerHelper;
-using Google.Apis.Auth.OAuth2.Requests;
+
 
 namespace Backend.Controllers;
 
@@ -24,9 +17,11 @@ public class AuthController : ControllerBase
     private static readonly TimeSpan TokenLifeTime = TimeSpan.FromDays(30);
     private readonly IConfiguration _configuration;
     private readonly IAuthService _authService;
+    private readonly ILogger _logger;
 
-    public AuthController(IConfiguration configuration, IAuthService authService)
+    public AuthController(IConfiguration configuration, IAuthService authService, ILogger logger)
     {
+        _logger = logger;
         _configuration = configuration;
         _authService = authService;
     }
@@ -35,6 +30,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        _logger.LogDebug(@"Using the auth\login Endpoint");
+
         // Login 
         User? user = await _authService.LoginAsync(request);
         if (user is null)
@@ -53,6 +50,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
+        _logger.LogDebug(@"Using the auth\register Endpoint");
 
         // Register User if he does not already exist
         User? newUser = await _authService.RegisterAsync(request);
@@ -71,6 +69,8 @@ public class AuthController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> Me()
     {
+        _logger.LogDebug(@"Using the auth\me Endpoint");
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -90,6 +90,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
     {
+        _logger.LogDebug(@"Using the auth\googleSSO Endpoint");
+
         try
         {
             // Verify the Google Token
@@ -110,6 +112,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -117,6 +120,8 @@ public class AuthController : ControllerBase
     [HttpGet("logout")]
     public ActionResult Logout()
     {
+        _logger.LogDebug(@"Using the auth\logout Endpoint");
+
         Response.Cookies.Delete("jwt-token");
         return Ok("Logged out.");
     }

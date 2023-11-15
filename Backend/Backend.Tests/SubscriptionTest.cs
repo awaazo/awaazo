@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -25,6 +26,7 @@ namespace Backend.Tests
         private Mock<DbSet<Podcast>> _podcast;
         private Mock<DbSet<User>> _user;
         private Mock<DbSet<PodcastFollow>> _podcastFollows;
+        private Mock<ILogger> _loggerMock;
 
         private SubscriptionService _subscriptionService;
         private SubscriptionController _subscriptionController;
@@ -38,8 +40,9 @@ namespace Backend.Tests
             _authServiceMock = new();
             _httpContextMock = new();
             _httpRequestMock = new();
+            _loggerMock = new();
             _subscriptionService = new(_dbContextMock.Object);
-            _subscriptionController = new(_authServiceMock.Object, _subscriptionService)
+            _subscriptionController = new(_authServiceMock.Object, _subscriptionService, _loggerMock.Object)
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -58,8 +61,9 @@ namespace Backend.Tests
             _authServiceMock = new();
             _httpContextMock = new();
             _httpRequestMock = new();
+            _loggerMock = new();
             _subscriptionService = new(_dbContextMock.Object);
-            _subscriptionController = new( _authServiceMock.Object,_subscriptionService)
+            _subscriptionController = new( _authServiceMock.Object,_subscriptionService, _loggerMock.Object)
             {
                 ControllerContext = new ControllerContext()
                 {

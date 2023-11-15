@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -28,6 +29,7 @@ public class ProfileTests
     private ProfileController _profileController;
     private const string DOMAIN = "TestDomain";
     private Mock<HttpRequest> _httpRequestMock;
+    private Mock<ILogger> _loggerMock;
 
     public ProfileTests()
     {
@@ -36,8 +38,9 @@ public class ProfileTests
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
+        _loggerMock = new();
         _profileService = new(_dbContextMock.Object);
-        _profileController = new(_authServiceMock.Object, _profileService)
+        _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -55,8 +58,9 @@ public class ProfileTests
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
+        _loggerMock = new();
         _profileService = new(_dbContextMock.Object);
-        _profileController = new(_authServiceMock.Object, _profileService)
+        _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
