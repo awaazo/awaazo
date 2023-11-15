@@ -157,4 +157,22 @@ describe ('Postcast_Create', () => {
         cy.contains('aaaaaaaaaaaaaaaaaa...')
       });
     
+
+      it('Should successfully create a Podcast for reviewing purposes', ()  => {
+        cy.get('button[aria-label="Create"]'). click();
+        cy.url().should('include', '/Create');
+        cy.get('.css-1bdrd0f').click();
+        cy.url().should('include', '/NewPodcast');
+        cy.wait(500);
+        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
+        cy.wait(550);
+        cy.get('input[id="podcastName"]').type('Review');
+        cy.get('textarea[id="description"]').type('A podcast about reviews.');
+        cy.get(':nth-child(5) > .chakra-button').click();
+        cy.get(':nth-child(7) > .chakra-button').click();
+        cy.get(':nth-child(10) > .chakra-button').click();
+        cy.get('button[id=createBtn]').click(); 
+        cy.url().should('include', '/Create');
+        cy.contains('Review');
+    });
 });

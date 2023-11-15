@@ -214,6 +214,7 @@ const CreateEpisode = () => {
                 objectFit="cover"
                 boxShadow="lg"
                 outline="2px solid #FFFFFF80"
+                data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`} // Adding a data-cy attribute to the Image component
               />
               <Text mt={2}>
                 {" "}

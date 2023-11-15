@@ -18,7 +18,7 @@ import NextLink  from "next/link";
 // };
 
 
-const PodcastCard = ({ podcast }) => (
+const PodcastCard = ({ podcast}) => (
   <NextLink href={`/Explore/${podcast.id}`} passHref>
   
   <Card
@@ -88,10 +88,12 @@ const PodcastCard = ({ podcast }) => (
         lg: "200px",
       }}
       objectFit={"cover"}
+      
     />
     <Flex direction="column" align="center" p={4}>
-      <Text fontSize="xl" fontWeight="bold" mb={2}>
+      <Text fontSize="xl" fontWeight="bold" mb={2} data-cy={`podcast-card-${podcast.name}`}>
         {podcast.name}
+        
       </Text>
       <Text fontSize="sm" textAlign="center" opacity={"0.6"}>
         {podcast.description.length <= 50

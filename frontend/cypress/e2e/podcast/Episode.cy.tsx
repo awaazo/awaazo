@@ -169,7 +169,7 @@ describe ('Episode_Create', () => {
         cy.contains('This is a very long episo');
     });
 
-    it.only('Should detele all episodes if a podcast is deleted', () => {
+    it('Should detele all episodes if a podcast is deleted', () => {
         cy.get('button[aria-label="Create"]').click();
         cy.url().should('include', '/Create');
         cy.get('.css-1bdrd0f').click();
@@ -189,7 +189,6 @@ describe ('Episode_Create', () => {
         cy.get('.css-70ttu').should('be.visible').within(() => {
             cy.get('input').attachFile(filepath_mp3_episode);
         });
-        cy.data_log();
         cy.get('[data-cy="podcast-image-cool-pets"]').click();
         cy.get('button[id=createBtn]').click();
         cy.wait(1000);
