@@ -6,7 +6,7 @@ import { Episode } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 
-const PlayerBar: React.FC<Episode> = ({ coverArt, episodeName = "Unknown Episode", podcaster = "Unknown Podcaster", duration, likes, comments, sections = [] }) => {
+const PlayerBar: React.FC<Episode> = ({ thumbnailUrl, episodeName = "Unknown Episode", podcaster = "Unknown Podcaster", duration, likes, comments, sections = [] }) => {
   const [position, setPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(likes.isLiked);
@@ -44,7 +44,7 @@ const PlayerBar: React.FC<Episode> = ({ coverArt, episodeName = "Unknown Episode
   const likedColor = useColorModeValue("gray.900", "gray.100");
   const commentedColor = useColorModeValue("gray.900", "gray.100");
 
-  const { data: palette } = usePalette(coverArt, 2, "rgbArray", {
+  const { data: palette } = usePalette(thumbnailUrl, 2, "rgbArray", {
     crossOrigin: "Anonymous",
     quality: 10,
   });
@@ -54,7 +54,7 @@ const PlayerBar: React.FC<Episode> = ({ coverArt, episodeName = "Unknown Episode
       <Flex justifyContent="space-between" alignItems="center">
         {/* Episode Info */}
         <Flex alignItems="center" onClick={() => console.log("Navigating to player page...")} cursor="pointer">
-          <Image boxSize={isMobile ? "30px" : "40px"} src={coverArt} borderRadius="full" mr={4} objectFit="cover" />
+          <Image boxSize={isMobile ? "30px" : "40px"} src={thumbnailUrl} borderRadius="full" mr={4} objectFit="cover" />
           <Box>
             <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"} color={useColorModeValue("gray.900", "gray.100")}>
               {episodeName}
@@ -100,7 +100,7 @@ const PlayerBar: React.FC<Episode> = ({ coverArt, episodeName = "Unknown Episode
         {!isMobile && (
           <Flex alignItems="center">
             <IconButton aria-label="Like" icon={<FaHeart />} variant="ghost" size="sm" color={isLiked ? "red.500" : likedColor} onClick={toggleLike} />
-            <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.isCommented ? "blue.500" : commentedColor} onClick={() => console.log("Navigating to comments...")} />
+            <IconButton aria-label="Comment" icon={<FaCommentAlt />} variant="ghost" size="sm" color={comments.length !==0 ? "blue.500" : commentedColor} onClick={() => console.log("Navigating to comments...")} />
           </Flex>
         )}
 

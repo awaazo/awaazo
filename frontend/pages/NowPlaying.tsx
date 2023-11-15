@@ -17,7 +17,7 @@ import { sliderSettings } from "../utilities/commonUtils"
 const currentEpisode = episodes[0];
 const componentsData = [
   {
-    component: <CoverArt imageUrl={currentEpisode.coverArt} description={currentEpisode.description} />,
+    component: <CoverArt imageUrl={currentEpisode.thumbnailUrl} description={currentEpisode.description} />,
     inSlider: false
   },
   { component: <ChatBot />, inSlider: false},
@@ -27,7 +27,7 @@ const componentsData = [
 ];
 
 const NowPlaying = () => {
-  const palette = usePalette(currentEpisode.coverArt, 2, 'hex', {
+  const palette = usePalette(currentEpisode.thumbnailUrl, 2, 'hex', {
     crossOrigin: 'Anonymous',
     quality: 10,
   }).data;

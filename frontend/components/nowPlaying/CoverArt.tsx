@@ -2,7 +2,7 @@ import { Box, Image, Text, VStack, Flex, useBreakpointValue } from "@chakra-ui/r
 import { Episode } from "../../utilities/Interfaces";
 
 interface CoverArtProps {
-  imageUrl: Episode["coverArt"];
+  imageUrl: Episode["thumbnailUrl"];
   description: Episode["description"];
 }
 

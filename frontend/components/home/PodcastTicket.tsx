@@ -24,17 +24,13 @@ const formatDuration = (seconds: number): string => {
 };
 
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
-  const { coverArt, episodeName, podcaster, duration, likes } = episode;
+  const { thumbnailUrl, episodeName, podcaster, duration, likes } = episode;
   const likedColor = likes?.isLiked
     ? "red.500"
     : useColorModeValue("gray.400", "gray.600");
 
   return (
-    <Flex
-      p={4}
-      width="100%"
-      borderRadius="15px"
-      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
+    <>
     <Flex
       p={4}
       width="100%"
@@ -53,7 +49,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           base: "60px",
         }}
       >
-        <Image boxSize="60px" src={coverArt} borderRadius="10%" />
+        <Image boxSize="60px" src={thumbnailUrl} borderRadius="10%" />
         <IconButton
           aria-label="Play"
           icon={<FaPlay />}
@@ -100,6 +96,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
         </Text>
       </VStack>
     </Flex>
+    </>
   );
 };
 
