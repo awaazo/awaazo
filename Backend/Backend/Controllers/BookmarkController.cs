@@ -19,13 +19,18 @@ public class BookmarkController : ControllerBase
         _bookmarkService = bookmark;
     }
 
+    /// <summary>
+    /// Returns all bookmarks for logged in user for a given episode
+    /// </summary>
+    /// <param name="episodeId">Episode ID</param>
+    /// <returns></returns>
     [HttpGet("{episodeId}/allBookmarks")]
     public async Task<IActionResult> GetBookmarks(Guid episodeId)
     {
         try
         {
             // Identify User from JWT Token
-            User user = await _authService.IdentifyUserAsync(HttpContext);
+            User user = (await _authService.IdentifyUserAsync(HttpContext))!;
             return Ok(await _bookmarkService.GetBookmarks(user, episodeId));
         }
         catch (Exception e)
@@ -64,5 +69,5 @@ public class BookmarkController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    
+
 }
