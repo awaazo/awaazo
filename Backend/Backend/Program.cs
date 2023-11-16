@@ -119,6 +119,9 @@ public class Program
                 .AllowAnyMethod();
         }));
 
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+        
         var app = builder.Build();
         app.UseStaticFiles();
 

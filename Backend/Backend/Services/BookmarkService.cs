@@ -24,7 +24,7 @@ public class BookmarkService
         Episode? episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodId);
         if (episode is null)
             throw new Exception("Invalid episode ID " + episodId);
-        
+
         Bookmark bookmark = new Bookmark(_db)
         {
             EpisodeId = episodId,
