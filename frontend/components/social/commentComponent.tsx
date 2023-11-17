@@ -17,11 +17,9 @@ import {
   Text,
   HStack,
   Box,
-  Flex,
   Tooltip,
   Input,
   IconButton,
-  Spacer,
 } from "@chakra-ui/react";
 import {
   FaComments,
@@ -30,10 +28,9 @@ import {
   FaHeart,
   FaReply,
 } from "react-icons/fa";
-import { Comment, Reply } from "../../utilities/Interfaces";
-import EndpointHelper from "../../helpers/EndpointHelper";
-import axios from "axios";
+import { Comment } from "../../utilities/Interfaces";
 
+// CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const CommentComponent = ({
   episodeIdOrCommentId,
   initialLikes,
@@ -46,6 +43,7 @@ const CommentComponent = ({
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [noOfComments, setNoOfComments] = useState(initialLikes);
 
+  // Fetch episode details and transform comments when the modal is opened
   useEffect(() => {
     if (isOpen) {
       const fetchEpisodeDetails = async () => {
@@ -81,6 +79,7 @@ const CommentComponent = ({
     }
   }, [isOpen, episodeIdOrCommentId]);
 
+  // Add a new comment
   const handleAddComment = async () => {
     if (newComment.trim()) {
       const response = await SocialHelper.postEpisodeComment(
@@ -101,6 +100,7 @@ const CommentComponent = ({
     }
   };
 
+  // Reply to a comment
   const handleReply = async (index: number) => {
     const comment = comments[index];
     const commentId = comment.id; // Assuming each comment has a unique 'id' property
@@ -122,6 +122,7 @@ const CommentComponent = ({
     setReplyText("");
   };
 
+  // Like/unlike a comment
   const handleLike = (index: number) => {
     const comment = comments[index];
     const commentId = comment.id; // Assuming each comment has a unique 'id' property
