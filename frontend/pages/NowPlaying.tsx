@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Grid, useBreakpointValue } from "@chakra-ui/react";
 import Navbar from "../components/shared/Navbar";
-import PlayerBar from "../components/shared/PlayerBar";
 import ChatBot from "../components/player/ChatBot";
 import Bookmarks from "../components/player/Bookmarks";
 import Transcripts from "../components/player/Transcripts";

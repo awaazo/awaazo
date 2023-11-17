@@ -10,15 +10,12 @@ import {
   Text,
   Wrap,
   WrapItem,
-  IconButton,
   Center,
   Heading,
   VStack,
-  Switch,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
-import LogoWhite from "../public/logo_white.svg";
 import Navbar from "../components/shared/Navbar";
 import { PodcastCreateRequest } from "../utilities/Requests";
 import PodcastHelper from "../helpers/PodcastHelper";

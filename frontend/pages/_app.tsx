@@ -1,10 +1,8 @@
 // pages/_app.tsx
 import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
-import { AppProps } from "next/app";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
-import AppTheme from "../styles/customTheme";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
 

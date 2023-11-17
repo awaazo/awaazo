@@ -19,10 +19,8 @@ import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Navbar from "../../components/shared/Navbar";
 import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
-import { profile } from "console";
 import { UserProfile } from "../../utilities/Interfaces";
-import { forEach, set } from "lodash";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
