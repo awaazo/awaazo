@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   Heading,
@@ -15,13 +15,10 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { UserProfile } from "../../utilities/Interfaces";
-import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
-import { FaGithub, FaLinkedin, FaQuora, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import router from "next/router";
-import { set } from "lodash";
-import EndpointHelper from "../../helpers/EndpointHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 
 const iconProps = {
@@ -176,3 +173,4 @@ export default function Header() {
     </>
   );
 }
+

@@ -15,6 +15,7 @@ import {
 // Here we have used react-icons package for the icon
 import { FaPlay } from "react-icons/fa";
 
+// Define an array of episodes
 const episodes = [
   {
     podcastId: 1,
@@ -55,12 +56,15 @@ const episodes = [
   },
 ];
 
+// Define the MyEpisodes component
 export default function MyEpisodes({ selectedPodcastId }) {
+  // Filter the episodes based on the selected podcastId
   let selectedEpisodes = episodes.filter(
     (episode) => episode.podcastId === selectedPodcastId
   );
   return (
     <>
+      {/* Render the heading */}
       <h1
         style={{
           marginBottom: "0.5em",
@@ -70,6 +74,7 @@ export default function MyEpisodes({ selectedPodcastId }) {
       >
         My Episodes
       </h1>
+      {/* Render the list of selected episodes */}
       <VStack spacing={8} w={{ base: "auto", md: "2xl" }}>
         {selectedEpisodes.map((episode, index) => (
           <Stack
@@ -95,6 +100,7 @@ export default function MyEpisodes({ selectedPodcastId }) {
             }}
             rounded="2em"
           >
+            {/* Render the tags */}
             <HStack spacing={2} mb={1}>
               {episode.tags.map((category, index) => (
                 <Tag
@@ -106,6 +112,7 @@ export default function MyEpisodes({ selectedPodcastId }) {
                 </Tag>
               ))}
             </HStack>
+            {/* Render the episode details */}
             <Box textAlign="left">
               <Link
                 fontSize="xl"
@@ -120,6 +127,7 @@ export default function MyEpisodes({ selectedPodcastId }) {
                 {episode.content}
               </Text>
             </Box>
+            {/* Render the user avatar and author credentials */}
             <Box>
               <Avatar
                 size="sm"
@@ -132,13 +140,14 @@ export default function MyEpisodes({ selectedPodcastId }) {
                 justify="space-between"
                 direction={{ base: "column", sm: "row" }}
               >
-                {/* author credentials section */}
+                {/* Render the author credentials */}
                 <Box>
                   <Text fontSize="sm" fontWeight="bold">
                     {episode.username}
                   </Text>
                   <Text fontSize="sm">{episode.created_at}</Text>
                 </Box>
+                {/* Render the play button */}
                 <HStack
                   as={Link}
                   spacing={1}
