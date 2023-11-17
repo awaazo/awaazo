@@ -1,33 +1,26 @@
 import React, { useCallback, useState, FormEvent, useEffect } from "react";
 import {
   FormControl,
-  FormLabel,
   Button,
   Textarea,
   Box,
   VStack,
-  Image,
   Input,
   IconButton,
-  Grid,
-  GridItem,
-  Select,
-  Flex,
   Switch,
-  HStack,
   useColorMode,
   Text,
-  Center,
-  Heading,
-  Icon,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import router from "next/router";
-import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import { EpisodeEditRequest } from "../../utilities/Requests";
 
+/**
+ * Component for editing an episode
+ * @param episode The episode to edit
+ */
 export default function EditEpisodeForm({ episode }) {
+  // Fetch episode data on component mount
   useEffect(() => {
     PodcastHelper.getEpisodeById(episode.id).then((res) => {
       if (res.status == 200) {
@@ -42,6 +35,7 @@ export default function EditEpisodeForm({ episode }) {
       }
     });
   }, [episode.id]);
+
   // Page refs
   const myPodcastsPage = "/MyPodcasts";
 
@@ -60,12 +54,18 @@ export default function EditEpisodeForm({ episode }) {
 
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+
+  /**
+   * Handles cover image upload
+   * @param e Form event
+   */
   const handleCoverImageUpload = (e: FormEvent) => {
     setCoverImageFile((e.target as any).files[0]);
     setCoverImage(URL.createObjectURL((e.target as any).files[0]));
     e.preventDefault();
   };
 
+  // Handles file drop
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
   }, []);
@@ -312,3 +312,5 @@ export default function EditEpisodeForm({ episode }) {
     </>
   );
 }
+
+

@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
-  Avatar,
   IconButton,
   Button,
-  MenuGroup,
   Tooltip,
-  useColorModeValue,
   useColorMode,
   useDisclosure,
   useBreakpointValue,
   Text,
-  Collapse,
-  SimpleGrid,
   VStack,
-  Image,
-  HStack,
   Wrap,
   WrapItem,
   Modal,
@@ -28,10 +20,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
 } from "@chakra-ui/react";
 
-import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 import { MdEdit } from "react-icons/md";
 

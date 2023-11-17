@@ -1,37 +1,21 @@
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import {
   Box,
   Flex,
-  useColorModeValue,
   useColorMode,
-  useDisclosure,
   useBreakpointValue,
   Text,
-  Collapse,
   Tag,
-  SimpleGrid,
-  VStack,
   Image,
-  HStack,
   Wrap,
   WrapItem,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  Icon,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spacer,
   Button,
 } from "@chakra-ui/react";
 
-import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
 
+// Component to render the podcast overview
 export default function PodcastOverview({ podcast }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });

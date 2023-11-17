@@ -5,12 +5,12 @@ import PodcastTicket from "./PodcastTicket";
 import { Episode } from "../../utilities/Interfaces";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../explore/PodcastCard";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
+// Component to display recently uploaded podcasts
 const RecentlyUploaded: React.FC = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [allEpisodes, setAllEpisodes] = useState<Episode[]>([]);
@@ -41,6 +41,7 @@ const RecentlyUploaded: React.FC = () => {
   };
 
   useEffect(() => {
+    // Fetch recently uploaded podcasts
     PodcastHelper.podcastAllPodcastsGet(0, 12).then((res) => {
       // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {

@@ -1,15 +1,4 @@
-import {
-  Box,
-  Text,
-  VStack,
-  Image,
-  Flex,
-  Progress,
-  useColorModeValue,
-  HStack,
-} from "@chakra-ui/react";
-import LikeComponent from "../social/likeComponent";
-import CommentComponent from "../social/commentComponent";
+import { Box, Text, VStack, Image, Flex, Progress, HStack } from "@chakra-ui/react";
 
 const ContinueListening = () => {
   // Sample data for the continue listening section
