@@ -44,6 +44,7 @@ services:
     links:
       - sql:database
       - sql:sql_server
+      - python_backend:py
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:

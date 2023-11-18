@@ -28,9 +28,13 @@ def create_transcript(audio_path):
 
         # Transcribe the audio file
         result = model.transcribe(audio_path,verbose=True)
+        
+        # Extract the desired keys from the result
+        desired_keys = ['id','seek','start','end','text']
+        result = [{key: v for key, v in line.items() if key in desired_keys} for line in result['segments']]
 
         # Save the transcript to a json file
-        json.dump(result['segments'], open(transcript_file_path, 'w'))
+        json.dump(result, open(transcript_file_path, 'w'))
 
         # Once the transcript is created, delete the status file
         os.remove(status_file_path)

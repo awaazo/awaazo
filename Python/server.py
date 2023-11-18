@@ -38,7 +38,7 @@ async def handle_transcription_request(request):
 
         # Check if the transcript already exists
         if os.path.isfile(transcript_file_path):
-            raise Exception(f'Transcript already exists for the given episodeID.')
+            raise Exception(f'Transcript already exists for the given episode.')
 
         # Check if the transcription is already in progress
         if os.path.isfile(status_file_path):
@@ -46,7 +46,7 @@ async def handle_transcription_request(request):
                 status = f.read()
                 f.close()
             if status == 'In progress':
-                raise Exception(f'Transcription is already in progress for the given episodeID.')
+                raise Exception(f'Transcription is already in progress for the given episode.')
     
     
         # Launch the thread to create the transcript (DO NOT AWAIT as it could take a long time depending on the audio size)
@@ -66,4 +66,4 @@ app = web.Application()
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
 
 # Start the server
-web.run_app(app, host=HOST, port=PORT)
+web.run_app(app, port=PORT)
