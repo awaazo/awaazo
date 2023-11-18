@@ -32,7 +32,7 @@ jobs:
   
     # Start/Run the Database 
     - name: Start Database Container
-      run: docker-compose -f "docker-compose.yml" up -d --build sql
+      run: docker-compose -f "docker-compose.ci.yml" up -d --build sql
   
 
       # Add appsettings.Development.json + appsettings.json for 
@@ -48,7 +48,7 @@ jobs:
 
     # Start/Run the Backend
     - name: Start Backend Container
-      run: docker-compose -f "docker-compose.yml" up -d --build backend
+      run: docker-compose -f "docker-compose.ci.yml" up -d --build backend
 
     # Install Node
     - name: Install node
