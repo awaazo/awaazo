@@ -1,11 +1,13 @@
 import { Box, Image, Text, VStack } from "@chakra-ui/react";
 import { Episode } from "../../utilities/Interfaces";
 
+// Define the props for the CoverArt component
 interface CoverArtProps {
-  imageUrl: Episode["thumbnailUrl"];
-  description: Episode["description"];
+  imageUrl: Episode["thumbnailUrl"]; // The URL of the episode's thumbnail image
+  description: Episode["description"]; // The description of the episode
 }
 
+// Define the CoverArt component
 const CoverArt: React.FC<CoverArtProps> = ({ imageUrl, description }) => {
   return (
     <Box

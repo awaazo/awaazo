@@ -8,6 +8,7 @@ import crimeImage from "../../styles/images/genres/crime.png";
 import otherImage from "../../styles/images/genres/other.jpg";
 import NexLink from "next/link";
 
+// Define the genres array with name, image, and link properties
 const genres = [
   { name: "Tech", image: techImage, link: "Technology" },
   { name: "Education", image: educationImage, link: "Education" },
@@ -17,6 +18,7 @@ const genres = [
   { name: "Other", image: otherImage, link: "Other" },
 ];
 
+// Define the GenreCard component
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
 
@@ -66,6 +68,7 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   );
 };
 
+// Define the ExploreGenres component
 const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 

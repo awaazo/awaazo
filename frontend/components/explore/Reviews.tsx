@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
   Avatar,
-  IconButton,
-  useColorModeValue,
   useColorMode,
-  useDisclosure,
   useBreakpointValue,
   Text,
   Textarea,
@@ -16,13 +13,13 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
-import { MdEdit, MdClose, MdDelete } from "react-icons/md";
 import ReviewsHelper from "../../helpers/ReviewsHelper";
 import {
   PodcastRatingRequest,
   PodcastReviewRequest,
 } from "../../utilities/Requests";
 
+// Component for displaying and adding reviews
 const Reviews = ({ podcast }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -32,6 +29,7 @@ const Reviews = ({ podcast }) => {
   const [reviewCharacterCount, setReviewCharacterCount] = useState<number>(0);
   const [reviewError, setReviewError] = useState("");
 
+  // Function to handle adding a review
   const handleAddReview = async () => {
     if (newRating == 0) {
       setReviewError("You must submit a rating");
@@ -41,7 +39,7 @@ const Reviews = ({ podcast }) => {
         podcastId: podcast.id,
         review: newReviewText,
       };
-      // Send the request
+      // Send the request to add the review
       const res1 = await ReviewsHelper.postPodcastReview(reviewRequest);
       console.log(res1);
 
@@ -57,7 +55,7 @@ const Reviews = ({ podcast }) => {
         rating: newRating,
       };
 
-      // Send the request
+      // Send the request to add the rating
       const res2 = await ReviewsHelper.postPodcastRating(ratingRequest);
       if (res2.status === 200) {
         setIsAddingReview(false);
@@ -69,7 +67,7 @@ const Reviews = ({ podcast }) => {
     }
   };
 
-  // Ensures review text is not longer than 150 characters
+  // Function to handle changes in the review text
   const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDesc = e.target.value.slice(0, 150);
     setNewReviewText(newDesc);

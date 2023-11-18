@@ -1,34 +1,25 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
-  Avatar,
   IconButton,
   Tag,
-  MenuGroup,
-  Tooltip,
   useColorModeValue,
   useColorMode,
-  useDisclosure,
   useBreakpointValue,
   Text,
-  Icon,
-  Button,
-  Collapse,
-  SimpleGrid,
-  VStack,
   Image,
 } from "@chakra-ui/react";
-import { MdEdit, MdDelete } from "react-icons/md";
 
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 
+// Component to display an episode
 const Episode = ({ episode }) => {
   const { dispatch } = usePlayer();
 
+  // Handle click on episode
   const handleEpisodeClick = () => {
     dispatch({ type: "SET_EPISODE", payload: episode });
   };
@@ -36,6 +27,7 @@ const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+  // Format duration in minutes and seconds
   const formatDuration = (duration) => {
     const minutes = Math.floor(duration / 60);
     const seconds = Math.floor(duration % 60);
@@ -54,7 +46,6 @@ const Episode = ({ episode }) => {
       backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
-
       onClick={() => handleEpisodeClick()}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
@@ -62,7 +53,6 @@ const Episode = ({ episode }) => {
       onMouseOut={(e) => {
         e.currentTarget.style.transform = "scale(1)";
       }}
-
     >
       <Box position="relative" mr={5}>
         <Image

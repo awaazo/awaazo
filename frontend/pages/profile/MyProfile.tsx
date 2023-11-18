@@ -1,5 +1,4 @@
-import * as React from 'react';
-import {useState, useEffect} from 'react';
+import { useState } from 'react';
 import {
   Container,
   Box,
@@ -11,7 +10,6 @@ import Navbar from "../../components/shared/Navbar";
 import Header from "../../components/profile/Header";
 import MyEpisodes from "../../components/profile/MyEpisodes";
 import Podcasts from "../../components/profile/Podcasts";
-import { useSession } from "next-auth/react";
 
 //For later to subscribe to podcasts {session?.user?.subscribedPodcastsID}
 //const { data: session } = useSession();

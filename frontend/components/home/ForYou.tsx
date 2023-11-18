@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  SimpleGrid,
-  Box,
-  Image,
-  Text,
-  useBreakpointValue,
-  Card,
-  Flex,
-  Link,
-} from "@chakra-ui/react";
+import { SimpleGrid, Box, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../explore/PodcastCard";
 
+// Component to display recommended podcasts
 const ForYou: React.FC = () => {
   useEffect(() => {
+    // Fetch recommended podcasts from the server
     PodcastHelper.podcastAllPodcastsGet(0, 12).then((res) => {
-      // If logged in, set user, otherwise redirect to login page
+      // If the request is successful, set the podcasts state
       if (res.status == 200) {
         setPodcasts(res.podcasts);
       } else {
@@ -25,11 +18,13 @@ const ForYou: React.FC = () => {
     });
   }, []);
 
+  // Determine the number of columns based on the screen size
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
 
   return (
     <>
+      {/* Background gradient */}
       <Box
         bgGradient="linear(to-r, #6a39c4, transparent)"
         w={{ base: "70%", md: "20%" }}
@@ -39,12 +34,16 @@ const ForYou: React.FC = () => {
         borderRadius={"0.5em"}
         boxShadow={"lg"}
       >
+        {/* Title */}
         <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
           Podcasts For You
         </Text>
       </Box>
+      {/* Grid to display the recommended podcasts */}
       <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
+        {/* Check if there are podcasts available */}
         {podcasts && podcasts.length > 0 ? (
+          // Map through the podcasts and render a PodcastCard for each one
           podcasts.map((podcast, index) => (
             <PodcastCard
               key={index}
@@ -53,6 +52,7 @@ const ForYou: React.FC = () => {
             />
           ))
         ) : (
+          // Display a message if no podcasts are available
           <Text
             style={{
               marginTop: "50px",

@@ -7,11 +7,12 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { FaPlay, FaHeart } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
 import LikeComponent from "../social/likeComponent";
 import { usePlayer } from "../../utilities/PlayerContext";
 
+// Function to format the duration of an episode
 const formatDuration = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds - hours * 3600) / 60);
@@ -25,6 +26,7 @@ const formatDuration = (seconds: number): string => {
   return formattedDuration.trim();
 };
 
+// Component to display a podcast episode ticket
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
   {
     console.log(episode);
@@ -36,6 +38,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
   const { dispatch } = usePlayer();
 
+  // Function to handle episode click
   const handleEpisodeClick = () => {
     dispatch({ type: "SET_EPISODE", payload: episode });
   };

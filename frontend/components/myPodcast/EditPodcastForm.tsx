@@ -17,7 +17,7 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 
 export default function EditPodcastForm({ podcastId }) {
   useEffect(() => {
-    console;
+    console; // Log to console
     PodcastHelper.getPodcastById(podcastId).then((res) => {
       if (res.status == 200) {
         setCoverImage(res.podcast.coverArtUrl);

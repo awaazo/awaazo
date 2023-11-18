@@ -1,13 +1,6 @@
-import React from "react";
-import {
-  Box,
-  Image,
-  Flex,
-  useColorModeValue,
-  Text,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Image, Flex, useColorModeValue, Text } from "@chakra-ui/react";
 
+// Define the UserCard component
 const UserCard = ({ user }) => {
   return (
     <Flex

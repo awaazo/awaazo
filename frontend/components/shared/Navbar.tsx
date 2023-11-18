@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession, signOut, getSession } from "next-auth/react";
-import { DefaultSession, Profile } from "next-auth";
+import { useSession, signOut } from "next-auth/react";
+import { DefaultSession } from "next-auth";
 import {
   Box,
   Flex,
@@ -19,24 +19,19 @@ import {
   Image,
   Input,
   useBreakpointValue,
-  Icon,
 } from "@chakra-ui/react";
-import {
-  MoonIcon,
-  SunIcon,
-  SearchIcon,
-  AddIcon,
-  HamburgerIcon,
-} from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
-import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
-import { MdIntegrationInstructions, MdToken } from "react-icons/md";
 import NextLink from "next/link";
 
+/**
+ * The Navbar component displays the navigation bar at the top of the page.
+ * It includes functionality for user authentication, search, and menu options.
+ */
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
