@@ -1,24 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Backend.Infrastructure;
 
 namespace Backend.Models;
 
 public class Bookmark : BaseEntity
 {
+    private readonly AppDbContext _db;
 
-    public Bookmark() 
+    public Bookmark(AppDbContext db) 
     {
         Title = string.Empty;
         Note = string.Empty;
+        _db = db;
     }
 
     [Key]
     public Guid Id { get; set; }
 
-    public User User { get; set; } = null!;
+    public User? User => _db.Users.FirstOrDefault(u => u.Id == UserId);
     
     public Guid UserId { get; set; }
 
-    public Episode Episode { get; set; } = null!;
+    public Episode? Episode => _db.Episodes.FirstOrDefault(e => e.Id == EpisodeId);
     
     public Guid EpisodeId { get; set; }
     
