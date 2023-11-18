@@ -46,16 +46,21 @@ public class PodcastTests
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
-    public PodcastTests() 
+    public PodcastTests()
     {
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
+
         // Prevent Null objects in case of no test running
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         _httpContextMock = new();
         _authServiceMock = new();
-        _httpRequestMock  = new();
+        _httpRequestMock = new();
         _notificationServiceMock = new();
         _loggerMock = new();
-        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
+        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object,config);
         _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -70,25 +75,27 @@ public class PodcastTests
     public void Initialize()
     {
         // Re-initilize every test
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
+
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
         _notificationServiceMock = new();
         _loggerMock = new();
-        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object);
-        _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object) 
-        { 
+
+        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object, config);
+        _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object)
+        {
             ControllerContext = new ControllerContext()
             {
                 HttpContext = _httpContextMock.Object
-            }          
+            }
         };
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
 
         // Set the Key to null
         config["Jwt:Key"] = null;
@@ -104,7 +111,7 @@ public class PodcastTests
         // Arrange
         var request = CreateStandardPodcastRequest();
         bool response = false;
-           
+
         // Act
         try
         {
@@ -474,7 +481,7 @@ public class PodcastTests
         // Act
         try
         {
-           response = _podcastController.CreatePodcast(request).Result as OkObjectResult;
+            response = _podcastController.CreatePodcast(request).Result as OkObjectResult;
         }
         // Assert
         catch (Exception e)
@@ -917,7 +924,7 @@ public class PodcastTests
             new Podcast()
             {
                 Id = podGuid,
-                
+
                 Tags = TAGS,
                 Name = "Sample Podcast Name",
                 Description = "Sample Podcast Description",

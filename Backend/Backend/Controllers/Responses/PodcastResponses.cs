@@ -73,3 +73,45 @@ public class PodcastResponse
     public ulong TotalRatings { get; set; } = 0;
     public List<RatingResponse> Ratings { get; set; } = new List<RatingResponse>();
 }
+
+/// <summary>
+/// Response for Transcript Line.
+/// </summary>
+[BindProperties]
+public class TranscriptLineResponse
+{
+    /// <summary>
+    /// Line Id.
+    /// </summary>
+    public int Id {get;set;} = 0;
+
+    /// <summary>
+    /// Seek Position in milliseconds.
+    /// </summary>
+    public int Seek {get;set;}= 0;
+
+    /// <summary>
+    /// Start Position in seconds.
+    /// </summary>
+    public float Start {get;set;} = 0;
+    
+    /// <summary>
+    /// End Position in seconds.
+    /// </summary>
+    public float End {get;set;} = 0;
+    
+    /// <summary>
+    /// Transcript Text.
+    /// </summary>
+    public string Text {get;set;} = string.Empty;
+}
+
+[BindProperties]
+public class EpisodeTranscriptResponse
+{
+    public Guid EpisodeId { get; set; } = Guid.Empty;
+
+    public string Status {get;set;} = "Ready";
+
+    public List<TranscriptLineResponse> Lines { get; set; } = new List<TranscriptLineResponse>();
+}

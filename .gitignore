@@ -293,3 +293,4 @@ backend/.env
 *desktop.ini
 docker-compose.release.yml
 Backend/Backend/Logs
+python/*ServerFiles

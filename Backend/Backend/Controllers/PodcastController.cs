@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
+using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
@@ -472,12 +473,11 @@ public class PodcastController : ControllerBase
     }
 
     /// <summary>
-    /// THis function saves the last watched position on a specific episode
+    /// This function saves the last watched position on a specific episode
     /// On the frontend:
     ///     - You need to add a onBeforeUnload  hook to the episode webpage and this hook should
     ///       send request to this route.
     /// </summary>
-    /// <param name="podcastId"></param>
     /// <param name="episodeId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -502,5 +502,30 @@ public class PodcastController : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Gets the transcript of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
+    /// <returns>The transcript or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getTranscript")]
+    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
+    {
+        _logger.LogDebug(@"Using the podcast\episodeId\getTranscript Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId));
+        }
+        catch(Exception e)
+        {
+             _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 }
