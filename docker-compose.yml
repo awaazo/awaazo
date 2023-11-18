@@ -19,7 +19,7 @@ services:
   # PYTHON Server (For AI related Stuff)
   python_backend:
     build: 
-      context: python/.
+      context: Python/.
     deploy:
       resources:
         reservations:
