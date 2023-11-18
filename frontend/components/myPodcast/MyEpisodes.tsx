@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   Flex,
-  Avatar,
   IconButton,
   Tag,
-  MenuGroup,
   Tooltip,
   useColorModeValue,
   useColorMode,
@@ -14,13 +12,8 @@ import {
   Text,
   Icon,
   Button,
-  Collapse,
-  SimpleGrid,
   VStack,
   Image,
-  HStack,
-  Wrap,
-  WrapItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -28,19 +21,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import LikeComponent from "../social/likeComponent";
-import CommentComponent from "../social/commentComponent";
 
+// Component to render an episode
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+  // Function to format the duration of the episode
   const formatDuration = (duration) => {
     const minutes = Math.floor(duration / 60);
     const seconds = Math.floor(duration % 60);
@@ -54,10 +46,13 @@ const Episode = ({ episode }) => {
   const [isModalEpisodeOpen, setIsModalEpisodeOpen] = useState(false);
   const [currentEpisode, setCurrentEpisode] = useState(null);
 
+  // Function to open the edit episode modal
   const openEditEpisodeModal = (episode) => {
     setCurrentEpisode(episode);
     setIsModalEpisodeOpen(true);
   };
+
+  // Function to close the edit episode modal
   const closeEditEpisodeModal = () => {
     setIsModalEpisodeOpen(false);
     setCurrentEpisode(null);
@@ -70,7 +65,8 @@ const Episode = ({ episode }) => {
 
   // Form errors
   const [episodeError, setEpisodeError] = useState("");
-  // Handle Deletion of podcast
+
+  // Function to handle deletion of the episode
   const handleDelete = async (episodeId) => {
     setDeleting(true);
     // Create request object
@@ -121,13 +117,7 @@ const Episode = ({ episode }) => {
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          {/* <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.playCount}</Text> */}
-          <LikeComponent
-            episodeOrCommentId={episode.id}
-            initialLikes={episode.likes}
-            initialIsLiked={false}
-          />
-          <CommentComponent episodeIdOrCommentId={episode.id} initialLikes={undefined} initialIsLiked={undefined} />
+          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes}</Text>
         </Text>
         {/* Episode Details */}
         <Flex
@@ -177,6 +167,7 @@ const Episode = ({ episode }) => {
         </Box>
       </Flex>
 
+      {/* Delete Episode Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -202,6 +193,7 @@ const Episode = ({ episode }) => {
         </ModalContent>
       </Modal>
 
+      {/* Edit Episode Modal */}
       <Modal isOpen={isModalEpisodeOpen} onClose={closeEditEpisodeModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent

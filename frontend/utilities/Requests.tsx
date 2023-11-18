@@ -70,6 +70,10 @@ export interface PodcastEditRequest {
   tags: string[];
 }
 
+export interface PodcastByTagsRequest {
+  tags: string[];
+}
+
 //#endregion
 
 //#region Episode Requests
@@ -103,8 +107,3 @@ export interface PodcastReviewRequest {
   review: string;
 }
 //#endregion
-
-//#region Episode Rating Requests
-export interface EpisodeCommentRequest {
-  string;
-}

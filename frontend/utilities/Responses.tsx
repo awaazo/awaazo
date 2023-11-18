@@ -1,5 +1,11 @@
 import { SetStateAction } from "react";
-import { UserMenuInfo, UserProfile, Podcast, Episode } from "./Interfaces";
+import {
+  UserMenuInfo,
+  UserProfile,
+  Podcast,
+  Episode,
+  User,
+} from "./Interfaces";
 
 export interface BaseResponse {
   status: number;
@@ -26,6 +32,10 @@ export interface MeResponse extends BaseResponse {
   userMenuInfo: UserMenuInfo;
 }
 
+export interface SearchProfilesResponse extends BaseResponse {
+  users: User[];
+}
+
 //#endregion
 
 //#region User Profile Responses
@@ -36,10 +46,29 @@ export interface UserProfileResponse extends BaseResponse {
 
 //#endregion
 
-
 //#region Podcast Responses
+export interface CreatePodcastResponse extends BaseResponse {
+  data: string;
+}
+
+export interface EditPodcastResponse extends BaseResponse {
+  data: string;
+}
+
 export interface MyPodcastResponse extends BaseResponse {
   myPodcasts: Podcast[];
+}
+
+export interface AllPodcastResponse extends BaseResponse {
+  podcasts: Podcast[];
+}
+
+export interface ByTagsPodcastResponse extends BaseResponse {
+  podcasts: Podcast[];
+}
+
+export interface SearchPodcastResponse extends BaseResponse {
+  podcasts: Podcast[];
 }
 
 export interface GetMyPodcastResponse extends BaseResponse {
@@ -49,6 +78,13 @@ export interface GetMyPodcastResponse extends BaseResponse {
 //#endregion
 
 //#region Podcast Responses
+export interface CreateEpisodeResponse extends BaseResponse {
+  data: string;
+}
+
+export interface EditEpisodeResponse extends BaseResponse {
+  data: string;
+}
 
 export interface GetMyEpisodeResponse extends BaseResponse {
   episode: Episode;

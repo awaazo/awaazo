@@ -1,0 +1,2 @@
+openai-whisper
+aiohttp==3.8.6

@@ -4,7 +4,11 @@ import {
   UserProfileSetupRequest,
 } from "../utilities/Requests";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, UserProfileResponse } from "../utilities/Responses";
+import {
+  BaseResponse,
+  UserProfileResponse,
+  SearchProfilesResponse,
+} from "../utilities/Responses";
 
 export default class UserProfileHelper {
   static getUserProfile() {
@@ -152,6 +156,52 @@ export default class UserProfileHelper {
         status: error.response.status,
         message: error.response.statusText,
         userProfile: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all users by search from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static profileSearchProfilesGet = async (
+    page,
+    pageSize,
+    searchTerm,
+  ): Promise<SearchProfilesResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getProfileSearchEndpoint(searchTerm, page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following profileSearchPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following profileSearchPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        users: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        users: null,
       };
     }
   };

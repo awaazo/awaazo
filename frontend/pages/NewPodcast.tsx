@@ -10,15 +10,12 @@ import {
   Text,
   Wrap,
   WrapItem,
-  IconButton,
   Center,
   Heading,
   VStack,
-  Switch,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../helpers/AuthHelper";
-import LogoWhite from "../public/logo_white.svg";
 import Navbar from "../components/shared/Navbar";
 import { PodcastCreateRequest } from "../utilities/Requests";
 import PodcastHelper from "../helpers/PodcastHelper";
@@ -58,8 +55,12 @@ const NewPodcast: React.FC = () => {
   // Form Values
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [podcastName, setPodcastName] = useState("");
+  const [podcastNameCharacterCount, setPodcastNameCharacterCount] =
+    useState<number>(0);
   const [tags, setTags] = useState([]);
   const [description, setDescription] = useState("");
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
 
   // Form errors
   const [createError, setCreateError] = useState("");
@@ -99,6 +100,11 @@ const NewPodcast: React.FC = () => {
    */
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
+    // Ensure all required fields are filled
+    if (coverImageFile == null || podcastName == "" || description == "") {
+      setCreateError("Cover Image, Podcast Name and Description Required.");
+      return;
+    }
 
     // Create request object
     const request: PodcastCreateRequest = {
@@ -117,7 +123,7 @@ const NewPodcast: React.FC = () => {
       window.location.href = createPage;
     } else {
       // Handle error here
-      setCreateError("Cover Image, Podcast Name and Description Required.");
+      setCreateError(response.data);
     }
   };
 
@@ -165,6 +171,22 @@ const NewPodcast: React.FC = () => {
       setCoverImage(URL.createObjectURL(acceptedFiles[0]));
     },
   });
+
+  // Ensures podcast name is not longer than 25 characters
+  const handlePodcastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value.slice(0, 25);
+    setPodcastName(newName);
+    setPodcastNameCharacterCount(newName.length);
+  };
+
+  // Ensures episode description is not longer than 250 characters
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newDesc = e.target.value.slice(0, 250);
+    setDescription(newDesc);
+    setDescriptionCharacterCount(newDesc.length);
+  };
 
   /**
    * Contains the elements of the Create Podcast page
@@ -267,22 +289,32 @@ const NewPodcast: React.FC = () => {
             >
               AI Generated
             </Switch> */}
-            <FormControl>
+            <FormControl position="relative">
               <Input
                 id="podcastName"
                 placeholder="Podcast Name"
                 value={podcastName}
-                onChange={(e) => setPodcastName(e.target.value)}
+                onChange={handlePodcastNameChange}
                 style={{ alignSelf: "center", borderRadius: "0.8em" }}
-              />
+                pr="50px"
+              />{" "}
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {podcastNameCharacterCount}/25
+              </Text>
             </FormControl>
 
-            <FormControl>
+            <FormControl position="relative">
               <Textarea
                 id="description"
                 placeholder="What's the Podcast about?"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 style={{
                   width: "100%",
                   height: "100px",
@@ -292,6 +324,15 @@ const NewPodcast: React.FC = () => {
                 }}
                 resize="vertical" // Made the bio textarea resizable
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {descriptionCharacterCount}/250
+              </Text>
             </FormControl>
 
             <FormControl>

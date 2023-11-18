@@ -37,6 +37,8 @@ public class Program
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
         builder.Services.AddScoped<BookmarkService>();
+        builder.Services.AddScoped<ILogger, FileLogger>();
+
 
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

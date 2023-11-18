@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
-  Avatar,
   IconButton,
   Button,
-  MenuGroup,
   Tooltip,
-  useColorModeValue,
   useColorMode,
   useDisclosure,
   useBreakpointValue,
   Text,
-  Collapse,
-  SimpleGrid,
   VStack,
-  Image,
-  HStack,
   Wrap,
   WrapItem,
   Modal,
@@ -28,10 +20,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
 } from "@chakra-ui/react";
 
-import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 import { MdEdit } from "react-icons/md";
 
@@ -39,8 +30,6 @@ import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode } from "../../utilities/Interfaces";
-import CommentComponent from "../social/commentComponent";
-import LikeComponent from "../social/likeComponent";
 
 export default function MyPodcast({ podcastId }) {
   useEffect(() => {
@@ -223,6 +212,7 @@ export default function MyPodcast({ podcastId }) {
                 w={isMobile === true ? "5" : "6"}
                 h={isMobile === false ? "5" : "6"}
                 color={colorMode === "dark" ? "#FF6666" : "#FF0000"}
+                data-cy={`podcast-delete`} // Adding a data-cy attribute to delete button
               />
             </IconButton>
           </div>
@@ -263,7 +253,7 @@ export default function MyPodcast({ podcastId }) {
                 📊 Subscribers: 5
               </Text>
               <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5 
+                ❤️ Likes: 5
               </Text>
             </Box>
             <>
@@ -274,17 +264,6 @@ export default function MyPodcast({ podcastId }) {
                 >
                   Episodes:
                 </Text>{" "}
-                <Button
-                  onClick={navigateToCreatePage}
-                  style={{
-                    fontWeight: "bold",
-                    marginLeft: "10px",
-                    borderRadius: "10em",
-                    borderColor: "rgba(158, 202, 237, 0.6)",
-                  }}
-                >
-                  New Episode
-                </Button>
               </div>
 
               {episodes.length === 0 ? (
@@ -310,7 +289,7 @@ export default function MyPodcast({ podcastId }) {
             {/* Sidebar on the left */}
             <Box
               p={4}
-              mt={"2em"}
+              mt={"0.5em"}
               width={"30%"}
               padding={"1em"}
               _focus={{
@@ -355,13 +334,11 @@ export default function MyPodcast({ podcastId }) {
                 <Text fontSize="md" fontWeight="bold">
                   ❤️ Likes: 5
                 </Text>
-                <CommentComponent episodeIdOrCommentId={episodes} initialLikes={undefined} initialIsLiked={undefined}/>
-                <LikeComponent episodeOrCommentId={episodes} initialLikes={undefined} initialIsLiked={undefined}/>
               </Box>
             </Box>
 
             {/* Podcast mapping on the right */}
-            <div style={{ flex: 1, paddingLeft: 25 }}>
+            <div style={{ flex: 1, paddingLeft: 25, marginTop: "1.5em" }}>
               {episodes.length === 0 ? (
                 <Text
                   align={"center"}
