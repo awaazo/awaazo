@@ -44,7 +44,7 @@ jobs:
 
     - name: See name
       run: |
-      echo ${{ steps.extract_branch.outputs.branch }}
+        echo ${{ steps.extract_branch.outputs.branch }}
 
   # Push frontend Image to Registry
   push_frontend_to_registry:
