@@ -5,18 +5,7 @@ name: .NET Backend CI
 
 # Action Triggers
 on:
-  push:
-    branches: 
-      - "main"
-    paths:
-      - "Backend/**"
-      - ".github/workflows/backend.yml"
-  pull_request:
-    branches: 
-      - "main"
-    paths:
-      - "Backend/**"
-      - ".github/workflows/backend.yml"
+  workflow_call:
  
 
 jobs:
@@ -29,7 +18,7 @@ jobs:
 
     # Checkout Changes
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
 
       # Add appsettings.Development.json + appsettings.json
@@ -43,7 +32,7 @@ jobs:
         echo $settings > appsettings.Development.json
         echo $settings > appsettings.json
 
-    # Add appsettings.Development.json + appsettings.json fpr tests
+    # Add appsettings.Development.json + appsettings.json for tests
     - name: Add Config Backend Tests
       working-directory: Backend/Backend.Tests
       env:

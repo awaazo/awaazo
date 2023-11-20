@@ -63,3 +63,10 @@ jobs:
     needs: check_changes
     if: ${{ needs.check_changes.outputs.backend == 'true' }}
     uses: ./.github/workflows/build-backend-image.yml
+
+  run_backend_unit_tests:
+    permissions:
+      contents: read
+    name: Run ASP.NET Unit Tests
+    needs: push_backend_to_registry
+    uses: ./.github/workflows/backend.yml
