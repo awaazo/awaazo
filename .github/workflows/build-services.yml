@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build Docker Images and Run Tests
 
 # Only run when PR to main
 on:

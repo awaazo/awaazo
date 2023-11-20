@@ -20,6 +20,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        shortSha = $(git rev-parse --short ${{ github.sha }})
+        echo "::set-output name=short_sha::$shortSha"
+    
+        
+    - name: Confirm git commit SHA output
+      run: echo ${{ steps.vars.outputs.short_sha }}
+
     - name: Test SHA
       run: | 
         echo ${{ github.head_ref }}.${{ github.sha }}
