@@ -71,6 +71,13 @@ jobs:
     needs: push_backend_to_registry
     uses: ./.github/workflows/backend.yml
 
+  run_frontend_unit_tests:
+    permissions:
+      contents: read
+    name: Run Jest Unit Tests
+    needs: push_frontend_to_registry
+    uses: ./.github/workflows/frontend.yml
+
   run_E2E_tests:
     permissions:
       contents: read

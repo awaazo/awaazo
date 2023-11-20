@@ -5,18 +5,7 @@ name: Next.js Frontend CI
 
 # Action Triggers
 on:
-  push:
-    branches: 
-      - "main"
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
-  pull_request:
-    branches: 
-      - "main"
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
+  workflow_call:
  
 
 jobs:

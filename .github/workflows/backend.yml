@@ -20,6 +20,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Test SHA
+      run: | 
+        echo ${{ github.head_ref }}.${{ github.sha }}
+
 
       # Add appsettings.Development.json + appsettings.json
     - name: Add Config Backend
