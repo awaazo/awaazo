@@ -1,4 +1,4 @@
-name: Publish Docker Images from Main
+name: Build Docker Images
 
 # Only run when PR to main
 on:
