@@ -39,6 +39,9 @@ jobs:
     name: Push Docker frontend image to github container registry
     needs: check_changes
     if: ${{ needs.check_changes.outputs.frontend == 'true' }}
+    permissions:
+      packages: write
+      contents: read
     uses: ./.github/workflows/build-frontend-image.yml
   
   # Push Python Image to Registry
@@ -46,6 +49,9 @@ jobs:
     name: Push Docker python backend image to github container registry
     needs: check_changes
     if: ${{ needs.check_changes.outputs.py_backend == 'true' }}
+    permissions:
+      packages: write
+      contents: read
     uses: ./.github/workflows/build-py-image.yml
 
   # Push Backend Image to Registry
@@ -53,4 +59,7 @@ jobs:
     name: Push Docker backend image to github container registry
     needs: check_changes
     if: ${{ needs.check_changes.outputs.backend == 'true' }}
+    permissions:
+      packages: write
+      contents: read
     uses: ./.github/workflows/build-backend-image.yml
