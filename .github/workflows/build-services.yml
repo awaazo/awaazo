@@ -34,6 +34,11 @@ jobs:
           frontend:
             - 'frontend/**'
 
+    - name: check Branch
+      run: |
+          echo $github.ref_name
+            
+
   # Push frontend Image to Registry
   push_frontend_to_registry:
     permissions:
