@@ -23,7 +23,7 @@ const Setup: React.FC = () => {
   // CONSTANTS
 
   // Page refs
-  const mainPage = "/Main";
+  const mainPage = "/";
   const loginPage = "/auth/Login";
 
   // Genres
