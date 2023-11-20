@@ -23,14 +23,6 @@ jobs:
           run: |
             touch appsettings.json
             echo $settings > appsettings.json
-
-        # Add appsettings.json for release version if needed
-        - name: Set release Config Backend
-          working-directory: Backend/Backend
-          env:
-            settings: ${{ vars.APP_SETTINGS_BACKEND_RELEASE }}
-          run: |
-            echo $settings > appsettings.json
         
           # Login to Container registy
         - name: Log in to the Container registry

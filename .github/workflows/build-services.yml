@@ -29,15 +29,13 @@ jobs:
         filters: |
           py:
             - 'Python/**'
+            - '/github/**'
           backend:
             - 'Backend/Backend/**'
+            - '/github/**'
           frontend:
             - 'frontend/**'
-
-    - name: check Branch
-      run: |
-          echo github.ref_name
-            
+            - '/github/**'
 
   # Push frontend Image to Registry
   push_frontend_to_registry:

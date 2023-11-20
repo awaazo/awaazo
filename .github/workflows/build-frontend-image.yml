@@ -23,15 +23,6 @@ jobs:
               run: |
                 touch .env.local
                 echo $settings > .env.local
-
-            # Load the release version of .env.local
-            - name: Set release .env.local frontend
-              if: github.ref_name == github.event.repository.default_branch
-              working-directory: frontend
-              env:
-                settings: ${{ vars.NEXT_ENV_FILE_RELEASE }}
-              run: |
-                echo $settings > .env.local
             
             # Login to Container registy
             - name: Log in to the Container registry
