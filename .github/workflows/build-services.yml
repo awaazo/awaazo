@@ -29,13 +29,22 @@ jobs:
         filters: |
           py:
             - 'Python/**'
-            - '.github/**'
+            - '.github/workflows/**'
           backend:
             - 'Backend/Backend/**'
-            - '.github/**'
+            - '.github/workflows/**'
           frontend:
             - 'frontend/**'
-            - '.github/**'
+            - '.github/workflows/**'
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+
+    - name: See name
+      run: |
+      echo ${{ steps.extract_branch.outputs.branch }}
 
   # Push frontend Image to Registry
   push_frontend_to_registry:
@@ -78,7 +87,8 @@ jobs:
     permissions:
       contents: read
     name: Run Jest Unit Tests
-    needs: push_frontend_to_registry
+    if: ${{ always() }}
+    needs: [push_backend_to_registry,push_python_to_registry]
     uses: ./.github/workflows/frontend.yml
 
   run_E2E_tests:
