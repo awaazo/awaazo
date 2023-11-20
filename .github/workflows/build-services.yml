@@ -29,13 +29,13 @@ jobs:
         filters: |
           py:
             - 'Python/**'
-            - '/.github/**'
+            - '.github/**'
           backend:
             - 'Backend/Backend/**'
-            - '/.github/**'
+            - '.github/**'
           frontend:
             - 'frontend/**'
-            - '/.github/**'
+            - '.github/**'
 
   # Push frontend Image to Registry
   push_frontend_to_registry:
