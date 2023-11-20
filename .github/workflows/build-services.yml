@@ -36,7 +36,7 @@ jobs:
 
     - name: check Branch
       run: |
-          echo $github.ref_name
+          echo github.ref_name
             
 
   # Push frontend Image to Registry
