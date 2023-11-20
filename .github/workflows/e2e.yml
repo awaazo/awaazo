@@ -2,20 +2,7 @@ name: E2E Cypress CI
 
 # Action Triggers
 on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "Backend/**"
-      - "frontend/**"
-      - ".github/workflows/e2e.yml"
-  pull_request:
-    branches:
-      - "main"
-    paths:
-      - "Backend/**"
-      - "frontend/**"
-      - ".github/workflows/e2e.yml"
+  workflow_call:
 
 jobs:
   cypress-run:
