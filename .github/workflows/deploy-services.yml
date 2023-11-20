@@ -9,14 +9,7 @@ on:
       - "Backend/Backend/**"
       - "frontend/**"
       - "Python/**"
-  pull_request:
-    branches:
-      - "main"
-    paths:
-      - "Backend/Backend/**"
-      - "frontend/**"
-      - "Python/**"
-
+      
 jobs:
 
   # Checks which images have to be build. Only images for which the source code was changed will be build.
@@ -25,7 +18,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      backend: ${{ steps.filter.outputs.changes.backend }}
+      backend: ${{ steps.filter.outputs.backend }}
       py_backend: ${{ steps.filter.outputs.py_backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
@@ -41,7 +34,7 @@ jobs:
           frontend:
             - 'frontend/**'
 
-  # Push frontend container
+  # Push frontend Image to Registry
   push_frontend_to_registry:
     name: Push Docker frontend image to github container registry
     needs: check_changes
@@ -93,7 +86,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   
-  # Push python container
+  # Push Python Image to Registry
   push_python_to_registry:
     name: Push Docker python backend image to github container registry
     needs: check_changes
@@ -136,7 +129,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  # Push backend container
+  # Push Backend Image to Registry
   push_backend_to_registry:
     name: Push Docker backend image to github container registry
     needs: check_changes
