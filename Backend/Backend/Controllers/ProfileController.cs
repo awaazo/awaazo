@@ -22,11 +22,13 @@ public class ProfileController : ControllerBase
 
     private readonly IAuthService _authService;
     private readonly IProfileService _profileService;
+    private readonly ILogger _logger;
 
-    public ProfileController(IAuthService authService, IProfileService profileService)
+    public ProfileController(IAuthService authService, IProfileService profileService, ILogger logger)
     {
         _authService = authService;
         _profileService = profileService;
+        _logger = logger;
     }
 
     #region Current User
@@ -34,6 +36,8 @@ public class ProfileController : ControllerBase
     [HttpDelete("delete")]
     public async Task<ActionResult> DeleteProfile()
     {
+        _logger.LogDebug(@"Using the profile\delete Endpoint");
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -54,6 +58,8 @@ public class ProfileController : ControllerBase
     [HttpPost("setup")]
     public async Task<ActionResult> SetupProfile([FromForm] ProfileSetupRequest setupRequest)
     {
+        _logger.LogDebug(@"Using the profile\setup Endpoint");
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -70,6 +76,8 @@ public class ProfileController : ControllerBase
     [HttpPost("edit")]
     public async Task<ActionResult> EditProfile([FromForm] ProfileEditRequest editRequest)
     {
+        _logger.LogDebug(@"Using the profile\edit Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -84,15 +92,18 @@ public class ProfileController : ControllerBase
 
             return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
         }
     }
 
     [HttpGet("get")]
     public async Task<ActionResult<UserProfileResponse>> GetProfile()
     {
+        _logger.LogDebug(@"Using the profile\get Endpoint");
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -107,6 +118,8 @@ public class ProfileController : ControllerBase
     [HttpGet("avatar")]
     public async Task<ActionResult> GetProfileAvatar()
     {
+        _logger.LogDebug(@"Using the profile\avatar Endpoint");
+
         // Identify User from JWT Token
         User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -129,6 +142,8 @@ public class ProfileController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> ProfileSearch(string searchTerm = "", int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the profile\search Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -142,6 +157,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -149,6 +165,8 @@ public class ProfileController : ControllerBase
     [HttpGet("{userId}/get")]
     public async Task<IActionResult> GetUser(Guid userId)
     {
+        _logger.LogDebug(@"Using the profile\get Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -162,6 +180,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -169,6 +188,8 @@ public class ProfileController : ControllerBase
     [HttpGet("{userId}/avatar")]
     public async Task<IActionResult> GetUserAvatar(Guid userId)
     {
+        _logger.LogDebug(@"Using the profile\userId\avatar Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -189,6 +210,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }

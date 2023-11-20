@@ -7,5 +7,6 @@ declare namespace Cypress {
       console_error_hack(): Chainable<any>;
       upload_image_from_fixtures(): Chainable<any>;
       Quick_register(): Chainable<any>;
+      data_log(): Chainable<any>;
     }
   }

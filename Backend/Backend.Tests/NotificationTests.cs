@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -23,6 +24,7 @@ namespace Backend.Tests
         private Mock<IAuthService> _authServiceMock;
         private Mock<HttpContext> _httpContextMock;
         private Mock<DbSet<User>> _user;
+        private Mock<ILogger> _loggerMock;
 
         private NotificationController _notificationController;
         private NotificationService _notificationService;
@@ -33,6 +35,7 @@ namespace Backend.Tests
             _dbContextMock = new(new DbContextOptions<AppDbContext>());
             _authServiceMock = new();
             _httpContextMock = new();
+            _loggerMock = new();
 
             // Configuration
             IConfiguration config = new ConfigurationBuilder()
@@ -40,7 +43,7 @@ namespace Backend.Tests
             .Build();
 
             _notificationService = new (config, _dbContextMock.Object);
-            _notificationController = new(_authServiceMock.Object, _notificationService)
+            _notificationController = new(_authServiceMock.Object, _notificationService, _loggerMock.Object)
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -58,6 +61,7 @@ namespace Backend.Tests
             _dbContextMock = new(new DbContextOptions<AppDbContext>());
             _authServiceMock = new();
             _httpContextMock = new();
+            _loggerMock = new();
 
             // Configuration
             IConfiguration config = new ConfigurationBuilder()
@@ -65,7 +69,7 @@ namespace Backend.Tests
             .Build();
 
             _notificationService = new(config, _dbContextMock.Object);
-            _notificationController = new(_authServiceMock.Object, _notificationService)
+            _notificationController = new(_authServiceMock.Object, _notificationService, _loggerMock.Object)
             {
                 ControllerContext = new ControllerContext()
                 {

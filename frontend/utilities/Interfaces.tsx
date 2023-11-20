@@ -42,7 +42,6 @@ export interface Section {
   episodeId: string;
   title?: string;
   timestamp?: number;
-  duration?: number;
 }
 
 export interface Comment {

@@ -2,20 +2,21 @@ import { useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import SocialHelper from "../../helpers/SocialHelper";
-import Episode from "../myPodcast/MyEpisodes";
 
+// This component represents a like button for an episode or comment
 const LikeComponent = ({
-  episodeOrCommentId,
-  initialLikes,
-  initialIsLiked,
+  episodeOrCommentId, // The ID of the episode or comment to like/unlike
+  initialLikes, // The initial number of likes
+  initialIsLiked, // Whether the episode or comment is initially liked
 }) => {
-  const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [likes, setLikes] = useState(initialLikes); // State to track the number of likes
+  const [isLiked, setIsLiked] = useState(initialIsLiked); // State to track whether the episode or comment is liked
 
+  // Function to handle the like/unlike action
   const handleLike = () => {
-    // Toggle the like status based on whether the episode is currently liked
+    // Toggle the like status based on whether the episode or comment is currently liked
     if (isLiked) {
-      // Call unlikeEpisode because the episode is currently liked
+      // Call unlikeEpisode or unlikeComment because the episode or comment is currently liked
       SocialHelper.deleteEpisodeLike(episodeOrCommentId) // This method needs to be implemented in SocialHelper
         .then((response) => {
           if (response.status === 200) {
@@ -23,14 +24,14 @@ const LikeComponent = ({
             setLikes(likes - 1);
             setIsLiked(false);
           } else {
-            console.error("Error unliking episode:", response.message);
+            console.error("Error unliking episode or comment:", response.message);
           }
         })
         .catch((error) => {
-          console.error("Exception when calling unlikeEpisode:", error.message);
+          console.error("Exception when calling unlikeEpisode or unlikeComment:", error.message);
         });
     } else {
-      // Call likeEpisode because the episode is currently not liked
+      // Call likeEpisode or likeComment because the episode or comment is currently not liked
       SocialHelper.postEpisodeLike(episodeOrCommentId) // This method needs to be implemented in SocialHelper
         .then((response) => {
           if (response.status === 200) {
@@ -38,21 +39,23 @@ const LikeComponent = ({
             setLikes(likes + 1);
             setIsLiked(true);
           } else {
-            console.error("Error liking episode:", response.message);
+            console.error("Error liking episode or comment:", response.message);
           }
         })
         .catch((error) => {
-          console.error("Exception when calling likeEpisode:", error.message);
+          console.error("Exception when calling likeEpisode or likeComment:", error.message);
         });
     }
   };
 
   return (
     <>
+      {/* Tooltip to display the like/unlike action */}
       <Tooltip
-        label={isLiked ? "Unlike this episode" : "Like this episode"}
+        label={isLiked ? "Unlike this episode or comment" : "Like this episode or comment"}
         aria-label="Like tooltip"
       >
+        {/* Button to trigger the like/unlike action */}
         <Button
           p={2}
           leftIcon={
@@ -60,7 +63,7 @@ const LikeComponent = ({
           }
           onClick={() => handleLike()}
         >
-          {likes}
+          {likes} {/* Display the number of likes */}
         </Button>
       </Tooltip>
     </>

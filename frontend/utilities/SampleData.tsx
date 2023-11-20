@@ -87,7 +87,17 @@ const episodeTemplate: Episode = {
     count: 6500,
     isLiked: false,
   },
-  comments: [],
+  comments: [
+    {
+      id: 15,
+      user: null,
+      episodeId: "string",
+      text: "string",
+      dateCreated: null,
+      likes: [],
+      replies: [],
+    },
+  ],
   bookmarks: bookmarks,
   sections: [
     { id: "r1", episodeId: "EP001", timestamp: 0, title: "Sponsors" },
@@ -97,6 +107,14 @@ const episodeTemplate: Episode = {
       episodeId: "EP001",
       timestamp: 200,
       title: "Part 1: Why bears are cool?",
+    },
+    { id: "3er", episodeId: "EP001", timestamp: 300, title: "Part 2: part 2" },
+    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
+    {
+      id: "3eerr",
+      episodeId: "EP001",
+      timestamp: 1000,
+      title: "Part 4: part 4",
     },
   ],
   annotations: [],

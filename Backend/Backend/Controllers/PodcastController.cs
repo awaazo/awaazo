@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
+using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
@@ -20,11 +21,14 @@ public class PodcastController : ControllerBase
 
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
+    private readonly ILogger _logger;
 
-    public PodcastController(IPodcastService podcastService, IAuthService authService)
+    public PodcastController(IPodcastService podcastService, IAuthService authService, ILogger logger)
     {
+        _logger = logger;
         _podcastService = podcastService;
         _authService = authService;
+        _logger = logger;
     }
 
     #region Podcast
@@ -32,6 +36,8 @@ public class PodcastController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreatePodcast([FromForm] CreatePodcastRequest request)
     {
+        _logger.LogDebug(@"Using the podcast\create Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -46,6 +52,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -53,6 +60,8 @@ public class PodcastController : ControllerBase
     [HttpPost("edit")]
     public async Task<IActionResult> EditPodcast([FromForm] EditPodcastRequest request)
     {
+        _logger.LogDebug(@"Using the podcast\edit Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -67,6 +76,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -74,6 +84,8 @@ public class PodcastController : ControllerBase
     [HttpDelete("delete")]
     public async Task<IActionResult> DeletePodcast(Guid podcastId)
     {
+        _logger.LogDebug(@"Using the podcast\delete Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -88,6 +100,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -95,6 +108,8 @@ public class PodcastController : ControllerBase
     [HttpGet("myPodcasts")]
     public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the podcast\myPodcasts Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -109,6 +124,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -116,6 +132,8 @@ public class PodcastController : ControllerBase
     [HttpGet("userPodcasts")]
     public async Task<IActionResult> GetUserPodcasts(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the podcast\userPodcasts Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -130,6 +148,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -137,6 +156,8 @@ public class PodcastController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> GetAllPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the podcast\all Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -151,6 +172,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -158,6 +180,8 @@ public class PodcastController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> SearchPodcast(string searchTerm, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the podcast\search Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -172,6 +196,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -179,6 +204,8 @@ public class PodcastController : ControllerBase
     [HttpGet("{podcastId}")]
     public async Task<IActionResult> GetPodcastById(Guid podcastId)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -193,6 +220,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -201,6 +229,8 @@ public class PodcastController : ControllerBase
     [HttpGet("{podcastId}/getCoverArt")]
     public async Task<ActionResult> GetPodcastCoverArt(Guid podcastId)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\getCoverArt Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -219,6 +249,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -226,6 +257,8 @@ public class PodcastController : ControllerBase
     [HttpGet("byTags")]
     public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
+        _logger.LogDebug(@"Using the podcast\byTags Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -240,6 +273,7 @@ public class PodcastController : ControllerBase
         }
         catch(Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -259,6 +293,8 @@ public class PodcastController : ControllerBase
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
     public async Task<IActionResult> AddEpisode(Guid podcastId, [FromForm] CreateEpisodeRequest request)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\add Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -273,6 +309,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -288,6 +325,8 @@ public class PodcastController : ControllerBase
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
     public async Task<IActionResult> EditEpisode(Guid episodeId, [FromForm] EditEpisodeRequest request)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\edit Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -302,6 +341,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -314,6 +354,8 @@ public class PodcastController : ControllerBase
     [HttpDelete("{episodeId}/delete")]
     public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\delete Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -328,6 +370,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -340,6 +383,8 @@ public class PodcastController : ControllerBase
     [HttpGet("episode/{episodeId}")]
     public async Task<IActionResult> GetEpisode(Guid episodeId)
     {
+        _logger.LogDebug(@"Using the podcast\episode\episodeId Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -354,6 +399,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -367,6 +413,8 @@ public class PodcastController : ControllerBase
     [HttpGet("{podcastId}/{episodeId}/getAudio")]
     public async Task<ActionResult> GetEpisodeAudio(Guid podcastId, Guid episodeId)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\episodeId\getAudio Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -385,6 +433,7 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -398,6 +447,8 @@ public class PodcastController : ControllerBase
     [HttpGet("{podcastId}/{episodeId}/getThumbnail")]
     public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId, Guid episodeId)
     {
+        _logger.LogDebug(@"Using the podcast\podcastId\episodeId\getThumbnail Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -416,23 +467,25 @@ public class PodcastController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
 
     /// <summary>
-    /// THis function saves the last watched position on a specific episode
+    /// This function saves the last watched position on a specific episode
     /// On the frontend:
     ///     - You need to add a onBeforeUnload  hook to the episode webpage and this hook should
     ///       send request to this route.
     /// </summary>
-    /// <param name="podcastId"></param>
     /// <param name="episodeId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
     {
+        _logger.LogDebug(@"Using the podcast\episodeId\saveWatchHistory Endpoint");
+
         try
         {
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -444,9 +497,35 @@ public class PodcastController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
     
+    /// <summary>
+    /// Gets the transcript of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
+    /// <returns>The transcript or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getTranscript")]
+    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
+    {
+        _logger.LogDebug(@"Using the podcast\episodeId\getTranscript Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId));
+        }
+        catch(Exception e)
+        {
+             _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 }
