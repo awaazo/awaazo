@@ -7,9 +7,6 @@ import Header from "../../components/profile/Header";
 import MyEpisodes from "../../components/profile/MyEpisodes";
 import Podcasts from "../../components/profile/Podcasts";
 import { UserProfile } from "../../utilities/Interfaces";
-//import { useSession } from "next-auth/react";
-//const { data: session } = useSession();
-//For later to subscribe to podcasts {session?.user?.subscribedPodcastsID}
 
 import { Router, useRouter } from "next/router";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
@@ -18,17 +15,6 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 const myProfile = () => {
 
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
-  const [bio, setBio] = useState("");
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const [genreColors, setGenreColors] = useState({});
-  const [username, setUsername] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [twitterLink, setTwitterLink] = useState("");
-  const [linkedinLink, setLinkedinLink] = useState("");
-  const [githubLink, setGithubLink] = useState("");
-  const [websiteUrl, setWebsiteUrl] = useState("");
-  const [avatar, setAvatar] = useState<string | null>(null);
-
 
   const isInline = useBreakpointValue({
     base: false,
@@ -51,25 +37,15 @@ const myProfile = () => {
   UserProfileHelper.profileGetRequest().then((response) => {
     if (response.status == 200) {
       setUserProfile(response.userProfile)
-      setUsername(response.userProfile.username)
-      setDisplayName(response.userProfile.displayName)
-      setBio(response.userProfile.bio)
-      setTwitterLink(response.userProfile.twitterUrl)
-      setLinkedinLink(response.userProfile.linkedInUrl)
-      setGithubLink(response.userProfile.githubUrl)
-      setWebsiteUrl(response.userProfile.websiteUrl)
-      setAvatar(response.userProfile.avatarUrl)
     }
     else {
-      router.push("/auth/login");
+      router.push("/auth/Login");
     }
   })
 }, [router]);
 
 //If the user is logged in
-//(remove next line when authentication works)
-if(userProfile==undefined) {
-//if(userProfile!==undefined) {
+if(userProfile!==undefined) {
   return (
     <>
       <Navbar />
