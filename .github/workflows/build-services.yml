@@ -75,5 +75,7 @@ jobs:
     permissions:
       contents: read
     name: Run Cypress E2E Tests
+    if: ${{ always() }}
     needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry]
     uses: ./.github/workflows/e2e.yml
+
