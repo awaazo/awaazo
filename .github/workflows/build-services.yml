@@ -19,7 +19,7 @@ jobs:
       pull-requests: read
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
-      py_backend: ${{ steps.filter.outputs.py_backend }}
+      py: ${{ steps.filter.outputs.py }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
     - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
       id: filter
       with:
         filters: |
-          py_backend:
+          py:
             - 'Python/**'
           backend:
             - 'Backend/Backend/**'
@@ -51,7 +51,7 @@ jobs:
       contents: read
     name: Push Docker python backend image to github container registry
     needs: check_changes
-    if: ${{ needs.check_changes.outputs.py_backend == 'true' }}
+    if: ${{ needs.check_changes.outputs.py == 'true' }}
     uses: ./.github/workflows/build-py-image.yml
 
   # Push Backend Image to Registry
