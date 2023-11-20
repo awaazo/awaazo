@@ -1,14 +1,6 @@
-import * as React from 'react';
-import {
-  Container,
-  Center,
-  VStack,
-  Box,
-  HStack,
-} from '@chakra-ui/react';
+import { Center, Box } from "@chakra-ui/react";
 
 import Navbar from "../../components/shared/Navbar"; // Import the Navbar component
-
 
 const myPodcasts = () => {
   return (

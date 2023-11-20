@@ -1,5 +1,16 @@
-import React, { useCallback, useState } from "react";
-import { FormControl, FormLabel, Button, Textarea, Select, Box, VStack, Image, Text, Input, Link } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
+import {
+  FormControl,
+  FormLabel,
+  Button,
+  Textarea,
+  Select,
+  Box,
+  VStack,
+  Image,
+  Text,
+  Input,
+} from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import { useSession } from "next-auth/react";
 import Navbar from "../components/shared/Navbar";

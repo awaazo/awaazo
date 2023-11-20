@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import ReviewsHelper from "../../helpers/ReviewsHelper";
-import { FaTrash, FaStar, FaCheckCircle } from "react-icons/fa";
-import { FaComments, FaClock, FaPaperPlane, FaHeart, FaReply } from 'react-icons/fa';
+import { FaTrash } from "react-icons/fa";
+import { FaPaperPlane } from "react-icons/fa";
 import {
   Box,
   Button,
   Text,
-  IconButton,
-  Icon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,62 +13,60 @@ import {
   ModalCloseButton,
   ModalBody,
   Textarea,
-  VStack,
   useDisclosure,
-  Avatar,
-  HStack,
-  Flex,
-  Tooltip,
-  Input,
-  Spacer
-
 } from "@chakra-ui/react";
-import { PodcastRatingRequest, PodcastReviewRequest } from "../../utilities/Requests";
+import { PodcastReviewRequest } from "../../utilities/Requests";
 
-
+// This component represents the review section for a podcast
 const ReviewComponent = ({ podcastId }) => {
-   const { isOpen, onOpen, onClose } = useDisclosure();
-   const [podcast, setPodcast] = useState(null);
-   const [userReview, setUserReview] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [podcast, setPodcast] = useState(null);
+  const [userReview, setUserReview] = useState("");
 
-   useEffect(() => {
-     const fetchPodcast = async () => {
-       const response = await ReviewsHelper.getPodcastById(podcastId);
-       if (response.status === 200) {
-         setPodcast(response.podcast);
-       } else {
-         // Handle error
-         console.error(response.message);
-       }
-     };
-     fetchPodcast();
-   }, [podcastId]);
+  useEffect(() => {
+    // Fetch the podcast by its ID
+    const fetchPodcast = async () => {
+      const response = await ReviewsHelper.getPodcastById(podcastId);
+      if (response.status === 200) {
+        setPodcast(response.podcast);
+      } else {
+        // Handle error
+        console.error(response.message);
+      }
+    };
+    fetchPodcast();
+  }, [podcastId]);
 
-   const handleReviewChange = (event) => {
-     setUserReview(event.target.value);
-   };
+  // Handle the change in the user's review input
+  const handleReviewChange = (event) => {
+    setUserReview(event.target.value);
+  };
 
-   const handleReviewSubmit = async (review) => {
-     const request: PodcastReviewRequest = {
-       podcastId: podcast.id,
-       review: review,
-     };
-     // Send the request
-     const response = await ReviewsHelper.postPodcastReview(request);
-   };
+  // Handle the submission of the user's review
+  const handleReviewSubmit = async (review) => {
+    const request: PodcastReviewRequest = {
+      podcastId: podcast.id,
+      review: review,
+    };
+    // Send the request to post the review
+    const response = await ReviewsHelper.postPodcastReview(request);
+  };
 
-   const handleReviewDelete = async () => {
-     const response = await ReviewsHelper.deletePodcastReview(podcast.id);
-     // Handle response
-   };
+  // Handle the deletion of the user's review
+  const handleReviewDelete = async () => {
+    const response = await ReviewsHelper.deletePodcastReview(podcast.id);
+    // Handle the response
+  };
 
-   return (
+  return (
     <>
       <Box>
         {podcast && (
           <>
             <Box>
-              <Text cursor="pointer" onClick={onOpen} color={"blue.500"}>Reviews</Text>
+              <Text cursor="pointer" onClick={onOpen} color={"blue.500"}>
+                Reviews
+              </Text>
             </Box>
 
             <Modal isOpen={isOpen} onClose={onClose}>

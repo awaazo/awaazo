@@ -12,9 +12,6 @@ COPY . .
 WORKDIR "/src/."
 RUN dotnet build "Backend.csproj" -c Release -o /app/build
 
-#RUN dotnet ef migrations add InitialMigration -c AppDbContext
-#RUN dotnet ef database update -c AppDbContext
-
 FROM build AS publish
 RUN dotnet publish "Backend.csproj" -c Release -o /app/publish /p:UseAppHost=false
 

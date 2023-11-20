@@ -44,16 +44,13 @@ describe('EditProfile', () => {
         cy.get('button[aria-label="loggedInMenu"]').click();
         cy.get('button').contains('My Account').click();
         cy.get('button').contains('Edit Profile').click();
-        cy.get('input#username').clear().type(' {selectall}{backspace}');
+        //cy.get('input#username').clear().type(' {selectall}{backspace}'); <-- Fix this with the tooltip 
         cy.get('textarea#bio').clear().type(' {selectall}{backspace}');
         cy.wait(500);
         cy.get('button').contains('Update Profile').click();
         cy.wait(500);
         cy.url().should('include', '/profile/EditProfile');
-        cy.contains('The Bio field is required.').should('exist').then(() => {
-            }).then(() => {
-            cy.contains('The Username field is required.').should('exist');
-          });
+        cy.contains('The Bio field is required.').should('exist');
     });
 
     

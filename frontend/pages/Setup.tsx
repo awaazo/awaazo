@@ -23,7 +23,7 @@ const Setup: React.FC = () => {
   // CONSTANTS
 
   // Page refs
-  const mainPage = "/Main";
+  const mainPage = "/";
   const loginPage = "/auth/Login";
 
   // Genres
@@ -46,37 +46,38 @@ const Setup: React.FC = () => {
     "Food",
   ];
 
-  // Current User 
+  // Current User
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
 
   // Form Values
   const [displayName, setDisplayName] = useState("");
+  const [displayNameCharacterCount, setDisplayNameCharacterCount] =
+    useState<number>(0);
   const [bio, setBio] = useState("");
+  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  
+
   // Form errors
-  const [setupError, setSetupError] = useState('')
-  
+  const [setupError, setSetupError] = useState("");
+
   // Other
   const [avatar, setAvatar] = useState<string | null>(null);
   const [genreColors, setGenreColors] = useState({});
-  
+
   // Router
   const router = useRouter();
-  
+
   useEffect(() => {
     // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
       // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {
-        setUser(res.userMenuInfo)
-      }
-      else {
+        setUser(res.userMenuInfo);
+      } else {
         window.location.href = loginPage;
       }
-
-    })
+    });
   }, [router]);
 
   /**
@@ -84,8 +85,8 @@ const Setup: React.FC = () => {
    * @param e Upload event
    */
   const handleAvatarUpload = (e: FormEvent) => {
-    setAvatarFile((e.target as any).files[0])
-    setAvatar(URL.createObjectURL((e.target as any).files[0]))
+    setAvatarFile((e.target as any).files[0]);
+    setAvatar(URL.createObjectURL((e.target as any).files[0]));
     e.preventDefault();
   };
 
@@ -101,20 +102,19 @@ const Setup: React.FC = () => {
       avatar: avatarFile,
       bio: bio,
       interests: selectedInterests,
-      displayName: displayName
+      displayName: displayName,
     };
 
     // Send the request
     const response = await UserProfileHelper.profileSetupRequest(request);
-    console.log(response)
+    console.log(response);
 
     if (response.status === 200) {
       // Success, go to main page
       window.location.href = mainPage;
-    }
-    else {
+    } else {
       // Handle error here
-      setSetupError("Avatar, Display Name and Bio Required.")
+      setSetupError("Avatar, Display Name and Bio Required.");
     }
   };
 
@@ -140,10 +140,10 @@ const Setup: React.FC = () => {
     const color2 = getRandomDarkColor();
     return `linear-gradient(45deg, ${color1}, ${color2})`;
   }
-  
+
   /**
    * Adds/Removes a genre from selected interests
-   * @param genre Interest/Genre that was clicked 
+   * @param genre Interest/Genre that was clicked
    */
   const handleInterestClick = (genre: string) => {
     if (selectedInterests.includes(genre)) {
@@ -154,6 +154,20 @@ const Setup: React.FC = () => {
         setGenreColors({ ...genreColors, [genre]: getRandomDarkColor() });
       }
     }
+  };
+
+  // Ensures display name is not longer than 25 characters
+  const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDisplayName = e.target.value.slice(0, 25);
+    setDisplayName(newDisplayName);
+    setDisplayNameCharacterCount(newDisplayName.length);
+  };
+
+  // Ensures bio is not longer than 250 characters
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newBio = e.target.value.slice(0, 250);
+    setBio(newBio);
+    setBioCharacterCount(newBio.length);
   };
 
   /**
@@ -212,10 +226,25 @@ const Setup: React.FC = () => {
                   position: "relative",
                 }}
               />
-              <label htmlFor="avatar" style={{ position: "absolute", cursor: "pointer", bottom: "15px", right: "5px" }}>
+              <label
+                htmlFor="avatar"
+                style={{
+                  position: "absolute",
+                  cursor: "pointer",
+                  bottom: "15px",
+                  right: "5px",
+                }}
+              >
                 <IconButton
                   aria-label="Upload avatar"
-                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  icon={
+                    <img
+                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                      alt="Upload Icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  }
                   size="sm"
                   variant="outline"
                   borderRadius="full"
@@ -223,7 +252,7 @@ const Setup: React.FC = () => {
                   padding={3}
                   style={{
                     backdropFilter: "blur(5px)", // This line adds the blur effect
-                    backgroundColor: "rgba(0, 0, 0, 0.4)" // Semi-transparent white background to enhance the blur effect
+                    backgroundColor: "rgba(0, 0, 0, 0.4)", // Semi-transparent white background to enhance the blur effect
                   }}
                   zIndex={-999}
                 />
@@ -240,22 +269,31 @@ const Setup: React.FC = () => {
             </div>
             {setupError && <Text color="red.500">{setupError}</Text>}
 
-            <FormControl>
+            <FormControl position="relative">
               <Input
                 id="displayName"
                 placeholder="Display Name"
                 value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
+                onChange={handleDisplayNameChange}
                 style={{ alignSelf: "center" }}
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {displayNameCharacterCount}/25
+              </Text>
             </FormControl>
 
-            <FormControl>
+            <FormControl position="relative">
               <Textarea
                 id="bio"
                 placeholder="What's your story? (Optional)"
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                onChange={handleBioChange}
                 style={{
                   width: "100%",
                   height: "100px",
@@ -263,17 +301,26 @@ const Setup: React.FC = () => {
                   fontSize: "16px",
                   borderRadius: "18px",
                 }}
-                resize="vertical" // Made the bio textarea resizable
+                resize="vertical"
               />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {bioCharacterCount}/250
+              </Text>
             </FormControl>
 
             <FormControl>
-              <FormLabel style={
-                {
+              <FormLabel
+                style={{
                   textAlign: "center",
                   padding: "10px",
-                }
-              }>
+                }}
+              >
                 What kind of topics do you like?
               </FormLabel>
               <Wrap spacing={4} justify="center" maxWidth={"600px"}>
@@ -281,7 +328,9 @@ const Setup: React.FC = () => {
                   <WrapItem key={genre}>
                     <Button
                       size="sm"
-                      variant={selectedInterests.includes(genre) ? "solid" : "outline"}
+                      variant={
+                        selectedInterests.includes(genre) ? "solid" : "outline"
+                      }
                       colorScheme="white"
                       backgroundColor={
                         selectedInterests.includes(genre)
@@ -317,30 +366,27 @@ const Setup: React.FC = () => {
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}
               style={{
-                background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
-                backgroundSize: '300% 300%',
-                animation: 'Gradient 10s infinite linear'
+                background:
+                  "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                backgroundSize: "300% 300%",
+                animation: "Gradient 10s infinite linear",
               }}
             >
               Start Listening
               <style jsx>{`
-                    @keyframes Gradient {
-                        0% {
-                            background-position: 100% 0%;
-                        }
-                        50% {
-                            background-position: 0% 100%;
-                        }
-                        100% {
-                            background-position: 100% 0%;
-                        }
-                    }
-                `}</style>
+                @keyframes Gradient {
+                  0% {
+                    background-position: 100% 0%;
+                  }
+                  50% {
+                    background-position: 0% 100%;
+                  }
+                  100% {
+                    background-position: 100% 0%;
+                  }
+                }
+              `}</style>
             </Button>
-
-
-
-
           </Stack>
         </form>
       </Box>

@@ -14,11 +14,13 @@ public class SocialController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly ISocialService _socialService;
+    private readonly ILogger _logger;
 
-    public SocialController(IAuthService authService, ISocialService socialService)
+    public SocialController(IAuthService authService, ISocialService socialService, ILogger logger)
     {
         _authService = authService;
         _socialService = socialService;
+        _logger = logger;
     }
 
     #region Comment
@@ -26,6 +28,8 @@ public class SocialController : ControllerBase
     [HttpPost("{episodeOrCommentId}/comment")]
     public async Task<IActionResult> AddComment(Guid episodeOrCommentId, [FromBody] string commentText)
     {
+        _logger.LogDebug(@"Using the social\episodeOrCommentId\comment Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -40,6 +44,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -47,6 +52,8 @@ public class SocialController : ControllerBase
     [HttpDelete("{commentId}/delete")]
     public async Task<IActionResult> DeleteComment(Guid commentId)
     {
+        _logger.LogDebug(@"Using the social\episodeOrCommentId\delete Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -61,6 +68,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -68,6 +76,8 @@ public class SocialController : ControllerBase
     [HttpPost("{episodeOrCommentId}/like")]
     public async Task<IActionResult> AddLike(Guid episodeOrCommentId)
     {
+        _logger.LogDebug(@"Using the social\episodeOrCommentId\like Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -82,6 +92,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -89,6 +100,8 @@ public class SocialController : ControllerBase
     [HttpDelete("{episodeOrCommentId}/unlike")]
     public async Task<IActionResult> RemoveLike(Guid episodeOrCommentId)
     {
+        _logger.LogDebug(@"Using the social\episodeOrCommentId\unlike Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -103,6 +116,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -115,6 +129,8 @@ public class SocialController : ControllerBase
     [HttpPost("rating")]
     public async Task<ActionResult> AddRating(RatingRequest request)
     {
+        _logger.LogDebug(@"Using the social\rating Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -129,6 +145,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -136,6 +153,8 @@ public class SocialController : ControllerBase
     [HttpDelete("deleteRating")]
     public async Task<ActionResult> RemoveRating(Guid podcastId)
     {
+        _logger.LogDebug(@"Using the social\deleteRating Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -150,6 +169,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -161,6 +181,8 @@ public class SocialController : ControllerBase
     [HttpPost("review")]
     public async Task<ActionResult> AddReview(ReviewRequest request)
     {
+        _logger.LogDebug(@"Using the social\review Endpoint");
+
         try
         {
             // Identify User from JWT Token
@@ -175,6 +197,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }
@@ -182,6 +205,7 @@ public class SocialController : ControllerBase
     [HttpDelete("deleteReview")]
     public async Task<ActionResult> RemoveReview(Guid podcastId)
     {
+        _logger.LogDebug(@"Using the social\deleteReview Endpoint");
         try
         {
             // Identify User from JWT Token
@@ -196,6 +220,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }

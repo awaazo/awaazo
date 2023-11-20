@@ -22,6 +22,8 @@ const SignUp: React.FC = () => {
 
   const [email, setEmail] = useState<string | null>("");
   const [username, setUsername] = useState<string | null>("");
+  const [usernameCharacterCount, setUsernameCharacterCount] =
+    useState<number>(0);
   const [password, setPassword] = useState<string | null>("");
   const [confirmPassword, setConfirmPassword] = useState<string | null>("");
   const [dateOfBirth, setDateOfBirth] = useState<string | null>("");
@@ -30,11 +32,18 @@ const SignUp: React.FC = () => {
   const { data: session } = useSession();
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
-  useEffect(() => { }, [session, googleSignUpClicked]);
+  useEffect(() => {}, [session, googleSignUpClicked]);
 
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
+  };
+
+  // Ensures username is not longer than 25 characters
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUsername = e.target.value.slice(0, 25);
+    setUsername(newUsername);
+    setUsernameCharacterCount(newUsername.length);
   };
 
   /**
@@ -48,28 +57,24 @@ const SignUp: React.FC = () => {
     if (!(password === confirmPassword)) {
       setSignUpError("Passwords do not match.");
       console.debug(signUpError);
-
-    }
-    else {
+    } else {
       // Register with Backend
       const registerRequest: RegisterRequest = {
         email: email,
         password: password,
         username: username,
         dateOfBirth: dateOfBirth,
-        gender: "None"
-      }
+        gender: "None",
+      };
 
       const response = await AuthHelper.authRegisterRequest(registerRequest);
 
       if (response.status === 200) {
         window.location.href = setupPage;
-      }
-      else {
+      } else {
         setSignUpError(response.data);
       }
     }
-
   };
 
   return (
@@ -120,17 +125,28 @@ const SignUp: React.FC = () => {
               required
             />
           </FormControl>
-          <FormControl>
+          <FormControl position="relative">
             <FormLabel>Username</FormLabel>
             <Input
               type="text"
               id="username"
               placeholder="Enter your username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
               required
+              pr="50px"
             />
+            <Text
+              position="absolute"
+              right="8px"
+              bottom="8px"
+              fontSize="sm"
+              color="gray.500"
+            >
+              {usernameCharacterCount}/25
+            </Text>
           </FormControl>
+
           <FormControl>
             <FormLabel>Password</FormLabel>
             <Input

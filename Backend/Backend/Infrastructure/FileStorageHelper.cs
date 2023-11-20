@@ -36,6 +36,24 @@ public static class FileStorageHelper
     /// </summary>
     public const string PODCASTS_DIR_NAME = "Podcasts";
 
+    /// <summary>
+    /// Identifies if the file is a transcription status file.
+    /// </summary>
+    public const string STATUS_ID = "_status.txt";
+
+    /// <summary>
+    /// Identifies the file type for transcript files.
+    /// </summary>
+    public const string TRANSCRIPT_FILE_TYPE = ".json";
+
+    public enum TranscriptStatus 
+    {
+        InProgress=0,
+        Failed=1,
+        Ready=2,
+        None=3
+    };
+
     #region User Profile
 
     /// <summary>
@@ -276,7 +294,6 @@ public static class FileStorageHelper
         }
     }
 
-
     /// <summary>
     /// Gets the path to a podcast episode audio.
     /// </summary>
@@ -344,7 +361,6 @@ public static class FileStorageHelper
         return thumbnailName;
     }
 
-
     /// <summary>
     /// Removes a podcast episode thumbnail.
     /// </summary>
@@ -394,6 +410,72 @@ public static class FileStorageHelper
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, thumbnailName.Split(FILE_SPLIT_KEY)[0]);
     }
+
+    #region Transcript
+
+    /// <summary>
+    /// Deletes a transcript.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    public static void RemoveTranscript(Guid episodeId,Guid podcastId)
+    {
+        // Get the file path
+        string transcriptPath = GetTranscriptPath(episodeId, podcastId);
+
+        // Check if the file exists
+        if (File.Exists(transcriptPath))
+        {
+            // Delete the file
+            File.Delete(transcriptPath);
+        }
+    }
+
+    /// <summary>
+    /// Get the transcription status.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static TranscriptStatus GetTranscriptStatus(Guid episodeId, Guid podcastId)
+    {
+        if (File.Exists(GetTranscriptPath(episodeId, podcastId)))
+            return TranscriptStatus.Ready;
+        if(File.Exists(GetTranscriptStatusPath(episodeId,podcastId)))
+        {
+            string fileContent = ReadAllText(GetTranscriptStatusPath(episodeId, podcastId)).ToLower();
+
+            if(fileContent.Contains("progress"))
+                return TranscriptStatus.InProgress;
+            else
+                return TranscriptStatus.Failed;
+        }
+        return TranscriptStatus.None;
+    }
+
+    /// <summary>
+    /// Gets the transcript file path for the given episode id.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetTranscriptPath(Guid episodeId, Guid podcastId)
+    {
+        return Combine(GetCurrentDirectory(),BASE_DIR,PODCASTS_DIR_NAME,podcastId.ToString(),episodeId.ToString()+TRANSCRIPT_FILE_TYPE);
+    }
+
+    /// <summary>
+    /// Get the transcript status file path
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetTranscriptStatusPath(Guid episodeId, Guid podcastId)
+    {
+        return Combine(GetCurrentDirectory(),BASE_DIR,PODCASTS_DIR_NAME,podcastId.ToString(),episodeId.ToString()+STATUS_ID);
+    }
+
+    #endregion
 
 
     #endregion
