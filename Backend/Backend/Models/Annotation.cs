@@ -16,6 +16,7 @@ public class Annotation : BaseEntity
     public Guid EpisodeId { get; set; }
     
     public double Timestamp { get; set; }
+    
     public string Content { get; set; }
     public AnnotationType Type { get; set;}
     
