@@ -24,7 +24,7 @@ jobs:
       id: vars
       run: |
         shortSha=$(git rev-parse --short ${{ github.sha }})
-        echo "COMMIT_SHORT_SHA=$shortSha" >> $GITHUB_ENV
+        echo "COMMIT_SHORT_SHA=sha-$shortSha" >> $GITHUB_ENV
     
         
     - name: Confirm git commit SHA output
