@@ -1,4 +1,4 @@
-name: Publish Docker images used for releases
+name: Publish Docker Images from Main
 
 # Only run when pushed to main
 on:
@@ -8,12 +8,44 @@ on:
     paths:
       - "Backend/Backend/**"
       - "frontend/**"
+      - "Python/**"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "Backend/Backend/**"
+      - "frontend/**"
+      - "Python/**"
 
 jobs:
+
+  # Checks which images have to be build. Only images for which the source code was changed will be build.
+  check_changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.changes.backend }}
+      py_backend: ${{ steps.filter.outputs.py_backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          py_backend:
+            - 'Python/**'
+          backend:
+            - 'Backend/Backend/**'
+          frontend:
+            - 'frontend/**'
 
   # Push frontend container
   push_frontend_to_registry:
     name: Push Docker frontend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -61,9 +93,54 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   
+  # Push python container
+  push_python_to_registry:
+    name: Push Docker python backend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.py_backend == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+
+      # Checkout
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
+        # Login to Container registy
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+          # Extract Data to create the image name
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/py_backend
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # Build and push the image to Container Registry
+      - name: Build and push Docker images
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: Python/.
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   # Push backend container
   push_backend_to_registry:
     name: Push Docker backend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
