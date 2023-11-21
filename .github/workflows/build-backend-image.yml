@@ -8,6 +8,7 @@ on:
           type: string
         
 jobs:
+  
     # Push Backend Image to Registry
     push_backend_to_registry:
       name: Push Docker backend image to github container registry
@@ -16,6 +17,9 @@ jobs:
         packages: write
         contents: read
       steps:
+        - name: See name
+          run: |
+            echo ${{ github.event.inputs.package-suffix }}
 
         # Checkout
         - name: Check out the repo
