@@ -96,6 +96,7 @@ jobs:
   run_E2E_tests:
     permissions:
       contents: read
+      packages: write
     name: Run Cypress E2E Tests
     if: ${{ always() }}
     needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry]
