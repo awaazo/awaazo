@@ -1,4 +1,4 @@
-let filepath = 'images/display_picture.png';
+import * as paths from '../../fixtures/file_paths.json';
 
 describe('Register', () => {
     beforeEach(() => {
@@ -10,7 +10,7 @@ describe('Register', () => {
     // Test successful registration from the main page
     it('Should Successfully Register & setup new User', function () {
         cy.register_user('testRegister@email.com', 'TestUsername', 'password123', 'password123', '2000-01-01');
-        cy.setup_user(filepath, 'TestDisplayName', 'TestDisplayBio');
+        cy.setup_user(paths.profile_picture, 'TestDisplayName', 'TestDisplayBio');
         cy.url().should('include', '/');
         cy.visit('/profile/MyProfile');
         cy.contains('TestDisplayBio');
@@ -18,7 +18,7 @@ describe('Register', () => {
       
     it('Should Successfully Register & should fail setup by leaving fields blank', function () {
         cy.register_user('testRegister1@email.com', 'TestUsername1', 'password123', 'password123', '2000-01-01');
-        cy.setup_user(filepath, '{selectall}{backspace}', '{selectall}{backspace}');
+        cy.setup_user(paths.profile_picture, '{selectall}{backspace}', '{selectall}{backspace}');
         cy.url().should('include', '/Setup');
         cy.contains('Avatar, Display Name and Bio Required.').should('exist');
     });

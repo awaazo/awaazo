@@ -39,7 +39,9 @@
 import 'cypress-file-upload';
 
 
-  
+/*
+  -=-=-=-=Auth Commands
+*/
 Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
   cy.url().should('include', '/');
@@ -67,7 +69,9 @@ Cypress.Commands.add('logout', () => {
   cy.get('button').contains('Logout').click();
   cy.url().should('include', '/');
 });
-
+/*
+  -=-=-=-=End Auth Commands
+*/
 
 /*
   -=-=-=-=Registration Commands
@@ -98,6 +102,46 @@ Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   -=-=-=-=End Registration Commands
 */
 
+
+Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linkedInURL, githubURL) => {
+  cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+  cy.get('button[aria-label="loggedInMenu"]').click();
+  cy.wait(250);
+  cy.contains('button', 'My Account', {timeout: 5000}).then(($btn) => {
+    if ($btn) {
+      $btn.click();
+    }
+  }).then(($btn) => {
+    if (!$btn) {
+      cy.get('button[aria-label="loggedInMenu"]').click();
+    }
+  });
+  cy.get('button').contains('Edit Profile').click();
+  if (filepath) {
+    cy.get('input[type="file"]').attachFile(filepath);
+  }
+  if (username) {
+    cy.get('input#username').clear().type(username);
+  }
+  if (bio) {
+    cy.get('textarea#bio').clear().type(bio);
+  }
+  cy.get(':nth-child(16) > .chakra-button').click();
+  cy.get(':nth-child(7) > .chakra-button').click();
+  cy.get(':nth-child(10) > .chakra-button').click();
+  if (twitterURL) {
+    cy.get('input[placeholder="Twitter URL"]').clear().type(twitterURL);
+  }
+  if (linkedInURL) {
+    cy.get('input[placeholder="LinkedIn URL"]').clear().type(linkedInURL);
+  }
+  if (githubURL) {
+    cy.get('input[placeholder="GitHub URL"]').clear().type(githubURL);
+  }
+  cy.get('button').contains('Update Profile').click();
+  cy.wait(250);
+  
+});
 
 Cypress.Commands.add('console_error_hack', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {
