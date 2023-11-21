@@ -28,15 +28,15 @@ jobs:
       id: filter
       with:
         filters: |
-        py:
-          - 'Python/**'
-          - '.github/workflows/**'
-        backend:
-          - 'Backend/Backend/**'
-          - '.github/workflows/**'
-        frontend:
-          - 'frontend/**'
-          - '.github/workflows/**'
+          py:
+            - 'Python/**'
+            - '.github/workflows/**'
+          backend:
+            - 'Backend/Backend/**'
+            - '.github/workflows/**'
+          frontend:
+            - 'frontend/**'
+            - '.github/workflows/**'
 
     - name: Extract branch name
       shell: bash
