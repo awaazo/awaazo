@@ -46,7 +46,7 @@ jobs:
             images: ghcr.io/${{ github.repository_owner }}/backend
             tags: |
               type=ref,event=branch
-              type=raw,value=latest,prefix={{branch}}
+              type=raw,value={{branch}}
               type=raw,value=latest,enable={{is_default_branch}}
 
         # Build and push the image to Container Registry
