@@ -53,10 +53,11 @@ jobs:
             else
               echo "backend_tag=latest" >> $GITHUB_OUTPUT
             fi
+          id: extract_image
             
         - name: See Tag
           run: |
-            echo ${{ steps.extract_branch.outputs.backend_tag }}
+            echo ${{ steps.extract_image.outputs.backend_tag }}
 
         # Extract Data to create the image name
         - name: Extract metadata (tags, labels) for Docker
