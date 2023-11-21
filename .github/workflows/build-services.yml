@@ -32,7 +32,6 @@ jobs:
             - 'Python/**'
           backend:
             - 'Backend/Backend/**'
-            - '.github/workflows/**'
           frontend:
             - 'frontend/**'
 
