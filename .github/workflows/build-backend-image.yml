@@ -26,11 +26,6 @@ jobs:
           run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
           id: extract_branch
 
-
-        - name: Check if image exists
-          shell: bash
-          run: docker manifest inspect ghcr.io/awaazo/backend:Improvement-CI-CD
-
           # Add appsettings.json for secrets
         - name: Add Config Backend
           working-directory: Backend/Backend
@@ -48,6 +43,11 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
         
+        - name: Check if image exists
+          shell: bash
+          run: docker manifest inspect ghcr.io/awaazo/backend:Improvement-CI-CD
+
+
         # Extract Data to create the image name
         - name: Extract metadata (tags, labels) for Docker
           id: meta
