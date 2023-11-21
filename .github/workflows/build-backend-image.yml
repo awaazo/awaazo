@@ -48,7 +48,7 @@ jobs:
           run: |
             br=${{ steps.extract_branch.outputs.branch }}ss
             b=${br//\//-}
-            val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:$b > /dev/null)
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:$b 2> /dev/null)
             if [ $val ]; then
               echo "backend_tag=$b" >> $GITHUB_OUTPUT
             else
