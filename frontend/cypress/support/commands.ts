@@ -40,28 +40,30 @@ import 'cypress-file-upload';
 
 
   
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
   cy.url().should('include', '/');
-  cy.wait(500);
+  cy.wait(250);
   cy.get('button[aria-label="Menu"]').click();
   cy.get('button').contains('Login').click();
-  cy.wait(500);
-  cy.get('input[id="email"]').type("testRegister@email.com");
-  cy.get('input[id="password"]').type("password123");
+  if (email) {
+    cy.get('input[id="email"]').type(email);
+  }
+  if (username) {
+    cy.get('input[id="email"]').type(username);
+  }
+  cy.get('input[id="password"]').type(password);
   cy.get('button[id="loginBtn"]').click();
   cy.url().should('include', '/');
-  cy.wait(1000);
+  cy.wait(250);
 });
 
 Cypress.Commands.add('logout', () => {
   cy.visit('/');
   cy.url().should('include', '/');
-  cy.wait(500);
+  cy.wait(250);
   cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-  cy.wait(500);
   cy.get('button[aria-label="loggedInMenu"]').click();
-  cy.wait(500);
   cy.get('button').contains('Logout').click();
   cy.url().should('include', '/');
 });
@@ -79,6 +81,7 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
   cy.get('input[id="confirmPassword"]').type(confirmPassword);
   cy.get('input[id="date"]').click().type(birthdate);
   cy.get('button[type="submit"]').click();
+  cy.wait(250);
 });
 
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
