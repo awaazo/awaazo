@@ -9,6 +9,19 @@ on:
       - "Backend/Backend/**"
       - "frontend/**"
       - "Python/**"
+    paths-ignore:
+      - "frontend/__tests__/**"
+      - "frontend/cypress/**"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "Backend/Backend/**"
+      - "frontend/**"
+      - "Python/**"
+    paths-ignore:
+      - "frontend/__tests__/**"
+      - "frontend/cypress/**"
       
 jobs:
 
@@ -34,16 +47,6 @@ jobs:
             - 'Backend/Backend/**'
           frontend:
             - 'frontend/**'
-
-
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch
-
-    - name: See name
-      run: |
-        echo ${{ steps.extract_branch.outputs.branch }}
 
   # Push frontend Image to Registry
   push_frontend_to_registry:
