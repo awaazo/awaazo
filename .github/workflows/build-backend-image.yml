@@ -45,8 +45,18 @@ jobs:
         
         - name: Check if image exists
           shell: bash
-          run: docker manifest inspect ghcr.io/awaazo/backend:Improvement-CI-CD
-
+          run: |
+            val = $(docker manifest inspect ghcr.io/awaazo/backend:${{ steps.extract_branch.outputs.branch }} 2> /dev/null)
+            if [ $val ]
+            then
+              echo "backend_tag=${{ steps.extract_branch.outputs.branch }}" >> $GITHUB_OUTPUT
+            else
+              echo "backend_tag=latest" >> $GITHUB_OUTPUT
+            fi
+            
+        - name: See Tag
+          run: |
+            echo ${{ steps.extract_branch.outputs.backend_tag }}
 
         # Extract Data to create the image name
         - name: Extract metadata (tags, labels) for Docker
