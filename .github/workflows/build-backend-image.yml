@@ -44,7 +44,7 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
         
         - name: Check if image exists
-          shell: bash
+          shell: bash {0}
           run: |
             br=${{ steps.extract_branch.outputs.branch }}ss
             b=${br//\//-}
