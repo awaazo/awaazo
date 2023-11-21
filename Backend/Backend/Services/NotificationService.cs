@@ -41,7 +41,7 @@ namespace Backend.Services
 
        
         // Get All the Notifications
-        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user)
+        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user,string domainUrl)
         {         
             //Get the Notifications
             List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).ToListAsync();
@@ -51,9 +51,26 @@ namespace Backend.Services
           
             foreach (Notification notification in notifications)
             {
-                // Cast the Notification Object to Desired Output
-                response.Add((NotificationResponse)notification);
+                // Get Cover Art when Notification Regarding Podcast is being rendered
+                if (notification.Type == Notification.NotificationType.PodcastAlert)
+                {
+                    if(!await _db.Podcasts.AnyAsync(u => u.Id == Guid.Parse(notification.Link)))
+                    {
+                        response.Add(new NotificationResponse(notification));
+                    }
+                    else
+                    {
+                        response.Add(new PodcastNotificationResponse(notification, domainUrl));
+                    }
+                }
 
+                // When type is None then just get the saved Image
+                if(notification.Type == Notification.NotificationType.None)
+                {
+                    response.Add(new NotificationResponse(notification));
+
+                }
+                
                 // Update the IsRead Value
                 if(notification.IsRead == false)
                 {
@@ -77,14 +94,14 @@ namespace Backend.Services
             //Loop through all of them
             foreach (PodcastFollow follow in podcastFollow)
             {
-                // TODO Add an Apropriete Picture for the Notification
+                // Add Cover Art for Notification Media
                 Notification notification = new Notification()
                 {
                     UserId = follow.UserId,
                     Title = "Podcast : " + episode.Podcast.Name,
                     Message = "New Episode added : " + episode.EpisodeName,
-                    Link = episode.Id.ToString(),
-                    Media = "https://png.pngtree.com/png-vector/20211018/ourmid/pngtree-simple-podcast-logo-design-png-image_3991612.png",
+                    Link = episode.Podcast.Id.ToString(),
+                    Media = episode.Podcast.CoverArt,
                     Type = Notification.NotificationType.PodcastAlert,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now

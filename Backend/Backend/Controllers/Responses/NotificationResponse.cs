@@ -1,10 +1,28 @@
-﻿using Backend.Models;
+﻿using Backend.Infrastructure;
+using Backend.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Controllers.Responses
 {
+    public class PodcastNotificationResponse : NotificationResponse
+    {
+        public PodcastNotificationResponse(Notification notification,string domainUrl) : base(notification)
+        {
+            Media =  domainUrl + string.Format("podcast/{0}/getCoverArt", notification.Link);
+        }
+    }
+
     public class NotificationResponse
     {
+        public NotificationResponse(Notification notification) {
+            Id = notification.Id;
+            Title = notification.Title;
+            Message = notification.Message;
+            Link = notification.Link;
+            IsRead = notification.IsRead;
+            Type = notification.GetTypeString();
+            CreatedAt = notification.CreatedAt;
+        }
         [Required]
         public Guid Id { get; set; }
 
@@ -21,7 +39,7 @@ namespace Backend.Controllers.Responses
         public bool IsRead { get; set; } = false;
 
         [Required]
-        public string Media { get; set; } = "DefaultMedia";
+        public string Media { get; set; } = "https://png.pngtree.com/png-vector/20211018/ourmid/pngtree-simple-podcast-logo-design-png-image_3991612.png";
 
         [Required]
         public string Type { get; set; } = "None";
@@ -29,22 +47,7 @@ namespace Backend.Controllers.Responses
         [Required]
         public DateTime CreatedAt { get; set; }
 
-        public static explicit operator NotificationResponse(Notification v)
-        {
-            NotificationResponse response = new()
-            {
-                Id = v.Id,
-                Title = v.Title,
-                Message = v.Message,
-                Link = v.Link,
-                IsRead = v.IsRead,
-                Media = v.Media,
-                Type = v.GetTypeString(),
-                CreatedAt = v.CreatedAt,
-            };
-
-            return response;
-        }
+      
 
     }
 }

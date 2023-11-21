@@ -2,6 +2,8 @@
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.ControllerHelper;
+
 
 namespace Backend.Controllers
 {
@@ -33,7 +35,7 @@ namespace Backend.Controllers
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _notificationService.GetAllNotificationAsync(user));
+            return Ok(await _notificationService.GetAllNotificationAsync(user, GetDomainUrl(HttpContext)));
         }
 
         [HttpGet("count")]

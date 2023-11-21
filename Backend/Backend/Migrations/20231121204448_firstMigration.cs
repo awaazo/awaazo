@@ -343,6 +343,27 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EpisodeSections",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Start = table.Column<double>(type: "float", nullable: false),
+                    End = table.Column<double>(type: "float", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EpisodeSections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EpisodeSections_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sponsors",
                 columns: table => new
                 {
@@ -542,6 +563,11 @@ namespace Backend.Migrations
                 column: "PodcastId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EpisodeSections_EpisodeId",
+                table: "EpisodeSections",
+                column: "EpisodeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MediaLinks_AnnotationId",
                 table: "MediaLinks",
                 column: "AnnotationId",
@@ -613,6 +639,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "EpisodeLikes");
+
+            migrationBuilder.DropTable(
+                name: "EpisodeSections");
 
             migrationBuilder.DropTable(
                 name: "MediaLinks");
