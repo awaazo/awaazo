@@ -9,9 +9,8 @@ on:
       - "Backend/Backend/**"
       - "frontend/**"
       - "Python/**"
-    paths-ignore:
-      - "frontend/__tests__/**"
-      - "frontend/cypress/**"
+      - "!frontend/__tests__/**"
+      - "!frontend/cypress/**"
   push:
     branches:
       - "main"
@@ -19,9 +18,8 @@ on:
       - "Backend/Backend/**"
       - "frontend/**"
       - "Python/**"
-    paths-ignore:
-      - "frontend/__tests__/**"
-      - "frontend/cypress/**"
+      - "!frontend/__tests__/**"
+      - "!frontend/cypress/**"
       
 jobs:
 
