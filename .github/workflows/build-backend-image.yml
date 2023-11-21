@@ -26,6 +26,11 @@ jobs:
           run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
           id: extract_branch
 
+
+        - name: Check if image exists
+          shell: bash
+          run: docker manifest inspect ghcr.io/awaazo/backend:Improvement-CI-CD
+
           # Add appsettings.json for secrets
         - name: Add Config Backend
           working-directory: Backend/Backend
