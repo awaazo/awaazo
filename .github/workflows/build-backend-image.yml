@@ -46,7 +46,7 @@ jobs:
         - name: Check if image exists
           shell: bash
           run: |
-            val=$(docker manifest inspect ghcr.io/awaazo/backend:${{ steps.extract_branch.outputs.branch }} 2> /dev/null)
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:${{ steps.extract_branch.outputs.branch }} 2> /dev/null)
             if [ $val ]
             then
               echo "backend_tag=${{ steps.extract_branch.outputs.branch }}" >> $GITHUB_OUTPUT
