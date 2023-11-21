@@ -1,5 +1,11 @@
 on:
     workflow_call:
+      inputs: 
+        package-suffix:
+          description: 'A suffix to be appended to the package name'
+          default: ''
+          required: false
+          type: string
         
 jobs:
     # Push Backend Image to Registry
@@ -32,7 +38,7 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
         
-            # Extract Data to create the image name
+        # Extract Data to create the image name
         - name: Extract metadata (tags, labels) for Docker
           id: meta
           uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
@@ -40,7 +46,7 @@ jobs:
             images: ghcr.io/${{ github.repository_owner }}/backend
             tags: |
               type=ref,event=branch
-              type=sha
+              type=raw,value=latest,prefix={{branch}}
               type=raw,value=latest,enable={{is_default_branch}}
 
         # Build and push the image to Container Registry
