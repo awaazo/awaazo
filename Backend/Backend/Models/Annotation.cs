@@ -16,7 +16,9 @@ public class Annotation : BaseEntity
     public Guid EpisodeId { get; set; }
     
     public double Timestamp { get; set; }
+    
     public string Content { get; set; }
+
     public AnnotationType Type { get; set;}
     
     /// <summary>
@@ -28,7 +30,6 @@ public class Annotation : BaseEntity
     ///  Optional media lin details, present if type is 'media-link'
     /// </summary>
     public MediaLink? MediaLink { get; set; }
-    
     public enum AnnotationType
     {
         Link, Info, Sponsorship, MediaLink

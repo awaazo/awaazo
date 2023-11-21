@@ -2,52 +2,73 @@ name: E2E Cypress CI
 
 # Action Triggers
 on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "Backend/**"
-      - "frontend/**"
-      - ".github/workflows/e2e.yml"
-  pull_request:
-    branches:
-      - "main"
-    paths:
-      - "Backend/**"
-      - "frontend/**"
-      - ".github/workflows/e2e.yml"
+  workflow_call:
 
 jobs:
   cypress-run:
     name: End-to-End Testing
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
 
     steps:
       #Checkout Changes
       - name: Checkout
         uses: actions/checkout@v3
 
-        # Add appsettings.Development.json + appsettings.json for backend
-      - name: Add Config
-        working-directory: Backend/Backend
-        env:
-          settings: ${{ vars.APPSETTINGSBACKEND }}
-        run: |
-          touch appsettings.Development.json
-          touch appsettings.json
-          echo $settings > appsettings.Development.json
-          echo $settings > appsettings.json
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
 
-        # Add Env Variables
-      - name: Add .env.local
-        working-directory: frontend
-        env:
-          envSettings: ${{ vars.NEXT_ENV_FILE }}
-        run: |
-          touch .env.local
-          echo $envSettings > .env.local
+      # Login to Container registy
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Start/Run the Database, Backend API & Frontend Website
+      # Check wheter to pull from the latest image or the one created for this branch
+      - name: Get Backend, PY and Frontend Image Tags
+        shell: bash {0}
+        run: |
+            br=${{ steps.extract_branch.outputs.branch }}
+            b=${br//\//-}
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:$b 2> /dev/null)
+            if [ -n "$val" ] 
+            then
+              echo "backend_tag=$b" >> $GITHUB_OUTPUT
+            else
+              echo "backend_tag=latest" >> $GITHUB_OUTPUT
+            fi
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/py_backend:$b 2> /dev/null)
+            if [ -n "$val" ] 
+            then
+              echo "py_tag=$b" >> $GITHUB_OUTPUT
+            else
+              echo "py_tag=latest" >> $GITHUB_OUTPUT
+            fi
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/frontend:$b 2> /dev/null)
+            if [ -n "$val" ] 
+            then
+              echo "frontend_tag=$b" >> $GITHUB_OUTPUT
+            else
+              echo "frontend_tag=latest" >> $GITHUB_OUTPUT
+            fi
+        id: image_tags
+      
+      # Create a .env file for docker-compose environment variables
+      - name: Create the .env file
+        run: |
+          touch .env
+          echo "BACKEND_VER=${{ steps.image_tags.outputs.backend_tag }}" > .env
+          echo "PY_VER=${{ steps.image_tags.outputs.py_tag }}" >> .env
+          echo "FRONTEND_VER=${{ steps.image_tags.outputs.frontend_tag }}" >> .env 
+
+
+      # Start/Run the Database, Backend API, Backend Python Server & Frontend Website
       - name: Start Containers
         run: docker-compose -f "docker-compose.ci.yml" up -d --build
 
