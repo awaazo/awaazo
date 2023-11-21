@@ -46,7 +46,7 @@ jobs:
         - name: Check if image exists
           shell: bash {0}
           run: |
-            br=${{ steps.extract_branch.outputs.branch }}ss
+            br=${{ steps.extract_branch.outputs.branch }}
             b=${br//\//-}
             val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:$b 2> /dev/null)
             if [ $val ]; then
