@@ -38,7 +38,7 @@ jobs:
             - 'frontend/**'
             - '.github/workflows/**'
 
-            
+
     - name: Extract branch name
       shell: bash
       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
@@ -77,8 +77,6 @@ jobs:
     needs: check_changes
     if: ${{ needs.check_changes.outputs.backend == 'true' }}
     uses: ./.github/workflows/build-backend-image.yml
-    with: 
-      package-suffix: ${{needs.check_changes.outputs.branch_name}}
 
   run_backend_unit_tests:
     permissions:
