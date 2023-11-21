@@ -79,6 +79,7 @@ jobs:
   run_backend_unit_tests:
     permissions:
       contents: read
+      packages: write
     name: Run ASP.NET Unit Tests
     needs: push_backend_to_registry
     uses: ./.github/workflows/backend.yml
@@ -86,6 +87,7 @@ jobs:
   run_frontend_unit_tests:
     permissions:
       contents: read
+      packages: write
     name: Run Jest Unit Tests
     if: ${{ always() }}
     needs: [push_backend_to_registry,push_python_to_registry]
