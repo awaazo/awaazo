@@ -9,6 +9,7 @@ declare namespace Cypress {
       register_user(email: string, username: string, password: string, confirmPassword: string, birthdate: string): void;
       setup_user(filepath: string, displayName: string, bio: string): void;
       edit_profile(filepath: string, username: string, bio: string, twitterURL: string, linkedInURL: string, githubURL: string): void;
+      podcast_create(filepath: string, name: string, description:string): void;
       data_log(): Chainable<any>;
     }
   }

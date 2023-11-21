@@ -57,7 +57,7 @@ Cypress.Commands.add('login', (username, email, password) => {
   cy.get('input[id="password"]').type(password);
   cy.get('button[id="loginBtn"]').click();
   cy.url().should('include', '/');
-  cy.wait(250);
+  cy.wait(500);
 });
 
 Cypress.Commands.add('logout', () => {
@@ -142,6 +142,27 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
   cy.wait(250);
   
 });
+
+Cypress.Commands.add('podcast_create', (filepath, name, description) => {
+  cy.get('button[aria-label="Create"]').click();
+  cy.url().should('include', '/Create');
+  cy.get('[data-cy="create-podcast-box"]').click();
+  cy.url().should('include', '/NewPodcast');
+  cy.wait(250);
+  cy.get('input[type="file"]').attachFile(filepath);
+  cy.wait(250);
+  if (name) {
+    cy.get('input[id="podcastName"]').type(name);
+  }
+  if (description) {
+    cy.get('textarea[id="description"]').type(description);
+  }
+  cy.get(':nth-child(5) > .chakra-button').click();
+  cy.get(':nth-child(7) > .chakra-button').click();
+  cy.get(':nth-child(10) > .chakra-button').click();
+  cy.get('button[id=createBtn]').click(); 
+});
+
 
 Cypress.Commands.add('console_error_hack', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {

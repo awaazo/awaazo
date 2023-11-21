@@ -1,3 +1,7 @@
 {
-    "profile_picture" : "/images/display_picture.png"
+    "profile_picture" : "/images/display_picture.png",
+    "max_verstappen_cover": "/images/max_verstappen_cover.jpg",
+    "never_gonna_give_you_up": "/mp3_files/Never_Gonna_Give_You_Up.mp3",
+    "crazy_symbols": "/images/crazy_symbols.jpg",
+    "f2_car": "/images/f2_car.jpg"
 }

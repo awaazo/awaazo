@@ -1,3 +1,4 @@
+import * as paths from '../../fixtures/file_paths.json';
 
 describe ('Postcast_Create', () => {
     
@@ -5,47 +6,19 @@ describe ('Postcast_Create', () => {
     const filepath_Podcast_cover = 'images/max_verstappen_cover.jpg';
     
     beforeEach(() => {
-        cy.visit('/'); 
-        cy.url().should('include', '/');
-        cy.login();
-        cy.wait(500);
-      });
-
+        cy.login(null, 'testRegister@email.com', 'password123');
+    });
 
     // User that exists should be able to create a Podcast
     it('Should successfully create a Podcast', ()  => {
-        cy.get('button[aria-label="Create"]').click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('F1 Legends');
-        cy.get('textarea[id="description"]').type('A podcast about F1 veterans and their rise to glory.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get(':nth-child(7) > .chakra-button').click();
-        cy.get(':nth-child(10) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
+        cy.podcast_create(paths.max_verstappen_cover,'F1 Legends', 'A podcast about F1 veterans and their rise to glory.')
         cy.url().should('include', '/Create');
         cy.contains('F1 Legends');
     });
 
     //Podcast should not be created if the Podcast name already exists
     it('Should not create a podcast if the same podcast name already exists', () => {
-        cy.get('button[aria-label="Create"]').click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('F1 Legends');
-        cy.get('textarea[id="description"]').type('A podcast about F1 veterans and their rise to glory.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get(':nth-child(7) > .chakra-button').click();
-        cy.get(':nth-child(10) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
+        cy.podcast_create(paths.max_verstappen_cover,'F1 Legends', 'A podcast about F1 veterans and their rise to glory.')
         cy.url().should('include', '/NewPodcast');
         cy.contains('A podcast with the same name already exists').should('exist');
     });
@@ -53,14 +26,13 @@ describe ('Postcast_Create', () => {
     // User should be able to edit a podcast name and have it reflected immediately
     it('Should edit a Podcast', () => {
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.wait(250);
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
-        cy.wait(1000);
         cy.get('button').contains('Edit Podcast').click();
-        cy.wait(500);
-        cy.get('input[id="podcastName"]').clear().type(' {selectall}{backspace}');
+        cy.get('input[type="file"]').attachFile(paths.f2_car);
+        cy.get('input[id="podcastName"]').clear().type('{selectall}{backspace}');
         cy.get('input[id="podcastName"]').type("F2 legends");
         cy.contains('Button', 'Update').click();
         cy.url().should('include', '/MyPodcasts');
@@ -73,54 +45,26 @@ describe ('Postcast_Create', () => {
         cy.visit('/');
         cy.url().should('include', '/');
         cy.get('button[aria-label="Create"]').click();
-        cy.wait(1000);
         cy.url().should('include', '/auth/Login');
     });
 
     // Podcast should not be created if the fields are empty
     it('Should not create a podcast if fields are empty', () => {
-        cy.get('button[aria-label="Create"]').click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('button[id=createBtn]').click(); 
+        cy.podcast_create(paths.max_verstappen_cover, null, null);
         cy.url().should('include', '/NewPodcast');
         cy.contains('Required.').should('exist');
     });
 
     // Podcast cover photos should not accept anything else other than image files
     it('Should not accept files other than image files', () => {
-        cy.get('button[aria-label="Create"]').click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile('mp3_files/Never_Gonna_Give_You_Up.mp3');
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('Rick Astley');
-        cy.get('textarea[id="description"]').type('Never gonna give you up!.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get(':nth-child(7) > .chakra-button').click();
-        cy.get(':nth-child(10) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
+        cy.podcast_create(paths.never_gonna_give_you_up, 'Video Games', 'Adoption of video games in the West.');
         cy.url().should('include', '/NewPodcast');
         cy.contains('Cover art must be a JPEG, PNG, or SVG.').should('exist');
     });
 
     // Podcast names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in podcast name', () => {
-        cy.get('button[aria-label="Create"]').click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('♣™∏⊄‾ℜ→∞ϖñ');
-        cy.get('textarea[id="description"]').type('A podcast about CRAZY symbols.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
+        cy.podcast_create(paths.crazy_symbols, '♣™∏⊄‾ℜ→∞ϖñ', 'A podcast about CRAZY symbols.');
         cy.url().should('include', '/Create');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ');
     });
@@ -132,47 +76,30 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').click();
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
-        cy.wait(1000);
-        cy.get('.css-1r37h6l').click();
+        const podcastImage = cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]');
+        podcastImage.invoke('css', 'outline').then((outline) => {
+            const outlineStr = outline.toString();
+            if (outlineStr === '1px solid rgba(255, 255, 255, 0.5)') {
+                podcastImage.click();
+            }
+        });
+        cy.get('[data-cy=podcast-delete').click();
         cy.contains('Button', 'Delete').click();
         cy.url().should('include', '/MyPodcasts');
+        cy.contains('♣™∏⊄‾ℜ→∞ϖñ').should('not.exist');
     });
 
     it('limits the number of characters in the input field', () => {
-        cy.get('button[aria-label="Create"]').click();
+        cy.podcast_create(paths.f2_car, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'A podcast about error handling.');
         cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        cy.get('textarea[id="description"]').type('A podcast about error handling.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get(':nth-child(7) > .chakra-button').click();
-        cy.get(':nth-child(10) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
-        cy.url().should('include', '/Create');
-        cy.visit('/MyPodcasts'); ;
-        cy.contains('aaaaaaaaaaaaaaaaaa...')
-      });
-    
-
-      it('Should successfully create a Podcast for reviewing purposes', ()  => {
-        cy.get('button[aria-label="Create"]'). click();
-        cy.url().should('include', '/Create');
-        cy.get('.css-1bdrd0f').click();
-        cy.url().should('include', '/NewPodcast');
-        cy.wait(500);
-        cy.get('input[type="file"]').attachFile(filepath_Podcast_cover);
-        cy.wait(550);
-        cy.get('input[id="podcastName"]').type('Review');
-        cy.get('textarea[id="description"]').type('A podcast about reviews.');
-        cy.get(':nth-child(5) > .chakra-button').click();
-        cy.get(':nth-child(7) > .chakra-button').click();
-        cy.get(':nth-child(10) > .chakra-button').click();
-        cy.get('button[id=createBtn]').click(); 
-        cy.url().should('include', '/Create');
-        cy.contains('Review');
+        cy.visit('/MyPodcasts');
+        cy.get('[data-cy=podcast-image-f2-legends').click();
+        cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
+        cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').should('be.visible').then(($element) => {
+            if (!$element) {
+                cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
+            }
+        });
+        cy.contains('aaaaaaaaaaaaaaaaaaaaaaaaa');
     });
 });

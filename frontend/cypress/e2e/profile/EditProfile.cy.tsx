@@ -5,7 +5,7 @@ describe('EditProfile', () => {
     
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
-      });
+    });
     
     //User should be abble to edit profile and the changes should be reflected immediately
     it('Should successfully edit profile', function(){

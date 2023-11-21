@@ -236,6 +236,7 @@ const CreateEpisode = () => {
             display="flex"
             alignItems="center"
             justifyContent="center"
+            data-cy="create-podcast-box"
           >
             <AddIcon w={8} h={8} />
           </Box>
