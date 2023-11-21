@@ -18,6 +18,7 @@ public class Annotation : BaseEntity
     public double Timestamp { get; set; }
     
     public string Content { get; set; }
+    
     public AnnotationType Type { get; set;}
     
     /// <summary>
