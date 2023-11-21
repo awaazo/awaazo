@@ -72,9 +72,9 @@ jobs:
       - name: Create the .env file
         run: |
           touch .env
-          echo ${{ steps.image_tags.outputs.backend_tag }} > .env
-          echo ${{ steps.image_tags.outputs.py_tag }} >> .env
-          echo ${{ steps.image_tags.outputs.frontend_tag }} >> .env 
+          echo "BACKEND_VER=${{ steps.image_tags.outputs.backend_tag }}" > .env
+          echo "PY_VER=${{ steps.image_tags.outputs.py_tag }}" >> .env
+          echo "FRONTEND_VER=${{ steps.image_tags.outputs.frontend_tag }}" >> .env 
 
 
       # Start/Run the Database, Backend API, Backend Python Server & Frontend Website

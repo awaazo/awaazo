@@ -14,6 +14,11 @@ jobs:
         # Checkout
         - name: Check out the repo
           uses: actions/checkout@v4
+
+        - name: Extract branch name
+          shell: bash
+          run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          id: extract_branch
         
             # Login to Container registy
         - name: Log in to the Container registry
@@ -22,6 +27,20 @@ jobs:
             registry: ghcr.io
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Check if image exists
+          shell: bash {0}
+          run: |
+            br=${{ steps.extract_branch.outputs.branch }}
+            b=${br//\//-}
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/py_backend:$b 2> /dev/null)
+            if [ -n "$val" ] 
+            then
+              echo "py_tag=$b" >> $GITHUB_OUTPUT
+            else
+              echo "py_tag=latest" >> $GITHUB_OUTPUT
+            fi
+          id: extract_image
         
             # Extract Data to create the image name
         - name: Extract metadata (tags, labels) for Docker
@@ -31,7 +50,8 @@ jobs:
             images: ghcr.io/${{ github.repository_owner }}/py_backend
             tags: |
                 type=ref,event=branch
-                type=sha
+                type=sha,
+                type=raw,value=${{ steps.extract_branch.outputs.branch }}
                 type=raw,value=latest,enable={{is_default_branch}}
 
         # Build and push the image to Container Registry
