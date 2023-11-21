@@ -21,6 +21,11 @@ jobs:
         - name: Check out the repo
           uses: actions/checkout@v4
 
+        - name: Extract branch name
+          shell: bash
+          run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          id: extract_branch
+
           # Add appsettings.json for secrets
         - name: Add Config Backend
           working-directory: Backend/Backend
@@ -43,10 +48,11 @@ jobs:
           id: meta
           uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
           with:
-            images: ghcr.io/${{ github.repository_owner }}/backend_${{ github.base_ref }}
+            images: ghcr.io/${{ github.repository_owner }}/backend
             tags: |
               type=ref,event=branch
-              type=sha
+              type=sha,
+              type=raw,value=${{ steps.extract_branch.outputs.branch }}
               type=raw,value=latest,enable={{is_default_branch}}
 
         # Build and push the image to Container Registry
