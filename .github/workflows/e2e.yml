@@ -8,6 +8,9 @@ jobs:
   cypress-run:
     name: End-to-End Testing
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
 
     steps:
       #Checkout Changes

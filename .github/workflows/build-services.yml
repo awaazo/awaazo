@@ -30,13 +30,11 @@ jobs:
         filters: |
           py:
             - 'Python/**'
-            - '.github/workflows/**'
           backend:
             - 'Backend/Backend/**'
             - '.github/workflows/**'
           frontend:
             - 'frontend/**'
-            - '.github/workflows/**'
 
 
     - name: Extract branch name
