@@ -1,11 +1,5 @@
 on:
     workflow_call:
-      inputs: 
-        package-suffix:
-          description: 'A suffix to be appended to the package name'
-          default: ''
-          required: false
-          type: string
         
 jobs:
     # Push Backend Image to Registry
