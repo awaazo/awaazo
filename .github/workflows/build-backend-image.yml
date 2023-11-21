@@ -47,8 +47,7 @@ jobs:
           shell: bash
           run: |
             val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:${{ steps.extract_branch.outputs.branch }} 2> /dev/null)
-            if [ $val ]
-            then
+            if [ $val ]; then
               echo "backend_tag=${{ steps.extract_branch.outputs.branch }}" >> $GITHUB_OUTPUT
             else
               echo "backend_tag=latest" >> $GITHUB_OUTPUT
