@@ -404,6 +404,7 @@ const CreateEpisode = () => {
               p={4}
               textAlign="center"
               width="300px"
+              data-cy="podcast-file-dropzone"
             >
               <input {...getInputProps()} />
               {file ? (
@@ -411,6 +412,7 @@ const CreateEpisode = () => {
               ) : (
                 <p>Drag & drop a podcast file here, or click to select one</p>
               )}
+            
             </Box>
 
             {/* Upload Button */}

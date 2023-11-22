@@ -3,5 +3,10 @@
     "max_verstappen_cover": "/images/max_verstappen_cover.jpg",
     "never_gonna_give_you_up": "/mp3_files/Never_Gonna_Give_You_Up.mp3",
     "crazy_symbols": "/images/crazy_symbols.jpg",
-    "f2_car": "/images/f2_car.jpg"
+    "f2_car": "/images/f2_car.jpg",
+    "Episode_cover" : "images/charles_leclerc.jpg",
+    "Episode_cover_science" :"images/Has_science_gone_too_far.jpg",
+    "bunny" : "images/bunny.jpg",
+    "cat" : "images/cat.jpg",
+    "shiba" : "images/shiba.jpg"
 }

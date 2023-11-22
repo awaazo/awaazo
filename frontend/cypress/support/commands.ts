@@ -57,7 +57,6 @@ Cypress.Commands.add('login', (username, email, password) => {
   cy.get('input[id="password"]').type(password);
   cy.get('button[id="loginBtn"]').click();
   cy.url().should('include', '/');
-  cy.wait(500);
 });
 
 Cypress.Commands.add('logout', () => {
@@ -143,6 +142,9 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
   
 });
 
+/*
+-=-=-=-=-=-=-=Podcast create
+*/
 Cypress.Commands.add('podcast_create', (filepath, name, description) => {
   cy.get('button[aria-label="Create"]').click();
   cy.url().should('include', '/Create');
@@ -162,7 +164,31 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[id=createBtn]').click(); 
 });
+/*
+-=-=-=-=-=-=-=End Podcast create
+*/
 
+Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file, podcast) =>{
+  cy.visit('/Create');
+  cy.url().should('include', '/Create', { timeout: 5000 });
+  cy.get('input[type="file"]').attachFile(fjlepath);
+  if(name){
+    cy.get('input[placeholder="Enter episode name..."]').type(name);
+  }
+  if(description){
+    cy.get('textarea[placeholder="Enter episode description..."]').type(description);
+  }
+  cy.get('[data-cy="podcast-file-dropzone"]').should('be.visible').within(() => {
+    cy.get('input[type="file"]').attachFile(sound_file);
+  });
+  if(podcast === "f2"){
+    cy.get('[data-cy=podcast-image-f2-legends').click();
+  }
+  if(podcast === "pets"){
+    cy.get('[data-cy=podcast-image-cool-pets').click();
+  }
+  cy.get('button[id=createBtn]').click();
+});
 
 Cypress.Commands.add('console_error_hack', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {

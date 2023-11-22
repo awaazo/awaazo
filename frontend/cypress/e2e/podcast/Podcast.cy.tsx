@@ -2,11 +2,9 @@ import * as paths from '../../fixtures/file_paths.json';
 
 describe ('Postcast_Create', () => {
     
-    // Declare the filepath for the podcast cover image
-    const filepath_Podcast_cover = 'images/max_verstappen_cover.jpg';
-    
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
+        cy.get('button[aria-label="loggedInMenu"]').should('be.visible', { timeout: 5000 });
     });
 
     // User that exists should be able to create a Podcast
@@ -25,9 +23,9 @@ describe ('Postcast_Create', () => {
 
     // User should be able to edit a podcast name and have it reflected immediately
     it('Should edit a Podcast', () => {
+        cy.wait(250);
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').click();
-        cy.wait(250);
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
         cy.get('button').contains('Edit Podcast').click();
@@ -40,7 +38,7 @@ describe ('Postcast_Create', () => {
     });
 
     // User should be re-directed to Login if they try to create a Podcast without being logged in
-    it('Shold redirect you to login if a user is not logged in', () =>{
+    it('Should redirect you to login if a user is not logged in', () =>{
         cy.logout();
         cy.visit('/');
         cy.url().should('include', '/');
@@ -76,13 +74,8 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').click();
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
-        const podcastImage = cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]');
-        podcastImage.invoke('css', 'outline').then((outline) => {
-            const outlineStr = outline.toString();
-            if (outlineStr === '1px solid rgba(255, 255, 255, 0.5)') {
-                podcastImage.click();
-            }
-        });
+        cy.get('[data-cy=podcast-image-f2-legends').click();
+        cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]').click();
         cy.get('[data-cy=podcast-delete').click();
         cy.contains('Button', 'Delete').click();
         cy.url().should('include', '/MyPodcasts');
