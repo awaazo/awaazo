@@ -1,23 +1,26 @@
-import { useState } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import { Container, Box, Stack, useBreakpointValue } from "@chakra-ui/react";
 
 import Navbar from "../../components/shared/Navbar";
-import Header from "../../components/profile/MyProfile/MyHeader";
-import MyEpisodes from "../../components/profile/MyProfile/MyEpisodes";
-import Podcasts from "../../components/profile/MyProfile/MyPodcasts";
-import MyPlaylists from "../../components/profile/MyProfile/MyPlaylists";
+import Header from "../../components/profile/Header";
+import MyEpisodes from "../../components/profile/MyEpisodes";
+import Podcasts from "../../components/profile/Podcasts";
+import { UserProfile } from "../../utilities/Interfaces";
 
-//For later to subscribe to podcasts {session?.user?.subscribedPodcastsID}
-//const { data: session } = useSession();
+import { Router, useRouter } from "next/router";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
+
 
 const myProfile = () => {
+
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
+
   const isInline = useBreakpointValue({
     base: false,
     md: true,
-    default: true,
+    default: false,
   });
-
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [id, setPodcastId] = useState(1);
 
@@ -25,41 +28,43 @@ const myProfile = () => {
     setPodcastId(childdata);
   };
 
+  //Router
+  const router = useRouter();
+
+  useEffect(() => {
+
+  // Get the user profile
+  UserProfileHelper.profileGetRequest().then((response) => {
+    if (response.status == 200) {
+      setUserProfile(response.userProfile)
+    }
+    else {
+      router.push("/auth/Login");
+    }
+  })
+}, [router]);
+
+//If the user is logged in
+if(userProfile!==undefined) {
   return (
     <>
       <Navbar />
-      {isMobile ? (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          paddingTop="3em"
-        >
-          <Container width="100%" maxWidth="100%">
+      <Box display="flex" justifyContent="center" paddingTop="5em">
+        <Stack isInline={isInline} spacing="4" alignItems="flex-start">
+          <Container>
             <Header />
-            <Podcasts />
+            {/* Fetch the podcast ID from Podcasts */}
+            <Podcasts childToParent={childToParent} />
           </Container>
-          <Container width="100%" maxWidth="100%">
-            <MyEpisodes />
-            <MyPlaylists />
+          <Container>
+            {/* Pass the podcast ID to MyEpisodes */}
+            <MyEpisodes selectedPodcastId={id} />
           </Container>
-        </Box>
-      ) : (
-        <Box display="flex" justifyContent="center" paddingTop="2em">
-          <Stack isInline={isInline} spacing="4">
-            <Container>
-              <Header />
-              <Podcasts />
-            </Container>
-            <Container>
-              <MyEpisodes />
-              <MyPlaylists />
-            </Container>
-          </Stack>
-        </Box>
-      )}
+        </Stack>
+      </Box>
     </>
-  );
+    )
+  }
 };
 
 export default myProfile;
