@@ -45,7 +45,7 @@ export default function MyPodcast() {
         } else {
           setGetError("Podcasts cannot be fetched");
         }
-      }
+      },
     );
     UserProfileHelper.profileSearchProfilesGet(index3, index4, searchTerm)
       .then((res) => {
@@ -99,7 +99,7 @@ export default function MyPodcast() {
               emptyColor="transparent"
             />
           </Flex>
-        ) : podcasts.length > 0 ? (
+        ) : podcasts && podcasts.length > 0 ? (
           <>
             <Flex width="100%">
               <Box flex="1">
