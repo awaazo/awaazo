@@ -19,6 +19,7 @@ public class Comment : BaseEntity
     /// </summary>
     public Guid UserId { get; set; } = Guid.Empty;
 
+
     public User User {get;set;} = null!;
     
     /// <summary>
