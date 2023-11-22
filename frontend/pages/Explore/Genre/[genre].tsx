@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 
 import Navbar from "../../../components/shared/Navbar";
 import PodcastHelper from "../../../helpers/PodcastHelper";
-import PodcastCard from "../../../components/explore/PodcastCard";
+import PodcastCard from "../../../components/Cards/PodcastCard";
 import ExploreGenresSection from "../../../components/home/ExploreGenres";
 import PlayerBar from "../../../components/shared/PlayerBar";
 
