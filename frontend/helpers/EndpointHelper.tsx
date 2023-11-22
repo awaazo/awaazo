@@ -81,6 +81,14 @@ export default class EndpointHelper {
   };
 
   /**
+   * Returns the Profile Get endpoint.
+   * @returns The Profile Get Endpoint
+   */
+  static getProfileByIdEndpoint = (userId) => {
+    return this.getBackendAddress() + "/profile/" + userId + "/get";
+  };
+
+  /**
    * Returns the Profile search endpoint.
    * @returns The Profile search Endpoint
    */
@@ -108,8 +116,14 @@ export default class EndpointHelper {
    * Returns the Podcast myPodcasts endpoint.
    * @returns The Podcast myPodcasts Endpoint
    */
-  static getPodcastMyPodcastsEndpoint = () => {
-    return this.getBackendAddress() + "/podcast/myPodcasts";
+  static getPodcastMyPodcastsEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/myPodcasts?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
   };
 
   /**
@@ -140,6 +154,22 @@ export default class EndpointHelper {
    */
   static getPodcastEndpoint = (podcastId) => {
     return this.getBackendAddress() + "/podcast/" + podcastId;
+  };
+
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
+  static getPodcastByUserIdEndpoint = (userId, page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/userPodcasts?userId=" +
+      userId +
+      "&page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
   };
 
   /**
