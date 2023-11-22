@@ -131,6 +131,7 @@ public class PodcastTests
     {
         // Arrange
         var request = CreateEditPodcastRequest();
+        request.CoverImage = null;
         bool response = false;
         request.Id = _podcast.Object.First().Id;
 
@@ -166,7 +167,7 @@ public class PodcastTests
             Assert.Fail("Should not have thrown an error: " + e.Message);
         }
 
-        Assert.Equal(@"CoverArt|/|\|test/png", response);
+        Assert.Equal(_podcast.Object.First().Id.ToString()+@".png|/|\|test/png", response);
 
     }
 
@@ -498,6 +499,7 @@ public class PodcastTests
         // Arrange
         var request = CreateEditPodcastRequest();
         request.Id = _podcast.Object.First().Id;
+        request.CoverImage=null;
         OkObjectResult? response = null;
 
         // Act
@@ -928,7 +930,7 @@ public class PodcastTests
                 Tags = TAGS,
                 Name = "Sample Podcast Name",
                 Description = "Sample Podcast Description",
-                CoverArt = @"CoverArt|/|\|test/png",
+                CoverArt = podGuid+@".png|/|\|test/png",
                 PodcasterId = userGuid
             }
         }.AsQueryable().BuildMockDbSet();

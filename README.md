@@ -2,7 +2,7 @@
 
 
 
-# Awaazo 🎙️ [![.NET](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml/badge.svg?branch=main)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/backend.yml) [![Next.js Frontend CI](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/frontend.yml/badge.svg)](https://github.com/jonathan-githubofficial/awaazo/actions/workflows/frontend.yml) [![E2E Cypress CI](https://github.com/awaazo/awaazo/actions/workflows/e2e.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/e2e.yml)
+# Awaazo 🎙️ [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
 
 

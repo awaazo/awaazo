@@ -18,5 +18,5 @@ RUN dotnet publish "Backend.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN apt-get -y update && apt-get -y upgrade && apt-get install -y --no-install-recommends ffmpeg
+RUN apt-get -y update && apt-get install -y --no-install-recommends ffmpeg
 ENTRYPOINT ["dotnet", "Backend.dll"]
