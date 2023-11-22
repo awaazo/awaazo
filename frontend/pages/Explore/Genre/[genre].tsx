@@ -86,7 +86,7 @@ export default function MyPodcast() {
         {loading ? (
           // Show loading indicator or spinner
           <></>
-        ) : podcasts.length > 0 ? (
+        ) : podcasts && podcasts.length > 0 ? (
           <SimpleGrid columns={columns} spacing={7} marginTop={"2em"}>
             {podcasts.map((podcast, index) => (
               <PodcastCard key={index} podcast={podcast} />
