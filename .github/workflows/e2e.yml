@@ -42,22 +42,14 @@ jobs:
       - name: Add .env.local
         working-directory: frontend
         env:
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: $${{ secrets.GOOGLE_CLIENT_SECRET }}
-          BASE_URL: ${{ secrets.BASE_URL }}
-          NEXT_AUTH_URL: ${{ secrets.NEXTAUTH }}
-          NEXT_PUBLIC_NEXTAUTH_SECRET: ${{ secrets.NEXT_PUBLIC_NEXTAUTH_SECRET }}
+          envSettings: ${{ vars.NEXT_ENV_FILE }}
         run: |
           touch .env.local
-          echo $GOOGLE_CLIENT_ID > .env.local
-          echo $GOOGLE_CLIENT_SECRET >> .env.local
-          echo $BASE_URL >> .env.local
-          echo $NEXT_AUTH_URL >> .env.local
-          echo $NEXT_PUBLIC_NEXTAUTH_SECRET >> .env.local
+          echo $envSettings > .env.local
 
       # Start/Run the Database, Backend API & Frontend Website
       - name: Start Containers
-        run: docker-compose -f "docker-compose.yml" up -d --build
+        run: docker-compose -f "docker-compose.ci.yml" up -d --build
 
       # Install Node
       - name: Install node
@@ -85,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cypress-screenshots
-          path: frontend/cypress/screenshots
+          path: /home/runner/work/awaazo/awaazo/frontend/cypress/screenshots
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v3
         with:

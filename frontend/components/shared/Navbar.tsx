@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Profile } from "next-auth";
+import { DefaultSession } from "next-auth";
 import {
   Box,
   Flex,
@@ -19,23 +19,19 @@ import {
   Image,
   Input,
   useBreakpointValue,
-  Icon,
 } from "@chakra-ui/react";
-import {
-  MoonIcon,
-  SunIcon,
-  SearchIcon,
-  AddIcon,
-  HamburgerIcon,
-  BellIcon,
-} from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
-import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
-import Notifications from "../../pages/notification/Notifications";
+import { GoogleSSORequest } from "../../utilities/Requests";
+import NextLink from "next/link";
 
+/**
+ * The Navbar component displays the navigation bar at the top of the page.
+ * It includes functionality for user authentication, search, and menu options.
+ */
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
@@ -45,7 +41,12 @@ export default function Navbar() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
   const handleSearchChange = (event) => setSearchValue(event.target.value);
-  const handleSearchSubmit = () => console.log("Search Value:", searchValue);
+
+  const handleSearchSubmit = () => {
+    const searchlink = "/Explore/Search?searchTerm=" + searchValue;
+    window.location.href = searchlink;
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",
@@ -54,11 +55,17 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  const toggleNotifications = () => {
-    setIsNotificationsOpen(!isNotificationsOpen);
-  };
+  interface SessionExt extends DefaultSession {
+    token: {
+      email: string;
+      sub: string;
+      id_token: string;
+      name: string;
+      picture: string;
+    };
+  }
+
   useEffect(() => {
     // Custom User logged in
     if (!isUserSet) {
@@ -72,21 +79,30 @@ export default function Navbar() {
       });
     }
     // Google User logged in
-    else if (session && !isLoggedIn) {
-      AuthHelper.loginGoogleSSO(
-        session.user.email,
-        session.user.name,
-        (session as any).id,
-        session.user.image
-      ).then(() => {
-        AuthHelper.authMeRequest().then((response) => {
-          if (response.status == 200) {
-            setUser(response.userMenuInfo);
-            setIsUserLoggedIn(true); // Set login status to true
-            setIsUserSet(true);
-            setIsLoggedIn(true);
+    if (session !== null && session !== undefined && !isLoggedIn) {
+      // Get the session info
+      const currentSession = session as SessionExt;
+      const googleSSORequest: GoogleSSORequest = {
+        email: currentSession.token.email,
+        sub: currentSession.token.sub,
+        token: currentSession.token.id_token,
+        avatar: currentSession.token.picture,
+        name: currentSession.token.name,
+      };
+
+      AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
+        if (response.status == 200) {
+          if (!isUserSet) {
+            AuthHelper.authMeRequest().then((response) => {
+              if (response.status == 200) {
+                setUser(response.userMenuInfo);
+                setIsUserLoggedIn(true); // Set login status to true
+                setIsUserSet(true);
+                setIsLoggedIn(true);
+              }
+            });
           }
-        });
+        }
       });
     }
   }, [session, isLoggedIn]);
@@ -105,6 +121,10 @@ export default function Navbar() {
     window.location.href = indexPage;
   };
 
+  /**
+   * Shows the Basic info about the user currently logged in and gives access to btns.
+   * @returns User Profile Menu for the top-right corner
+   */
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton
@@ -134,21 +154,16 @@ export default function Navbar() {
       </MenuButton>
       <MenuList>
         <MenuGroup>
-          <MenuItem
-            onClick={() => (window.location.href = "/profile/MyProfile")}
-          >
-            👤 My Account
-          </MenuItem>
-          <MenuItem
-            onClick={() => (window.location.href = "/profile/MyPodcasts")}
-          >
-            🎙️ My Podcasts
-          </MenuItem>
+          <NextLink href="/profile/MyProfile" passHref>
+            <MenuItem>👤 My Account</MenuItem>
+          </NextLink>
+          <NextLink href="/MyPodcasts" passHref>
+            <MenuItem>🎙️ My Podcasts</MenuItem>
+          </NextLink>
           <MenuDivider />
-
-          <MenuItem onClick={() => (window.location.href = "/Settings")}>
-            ⚙️ Settings
-          </MenuItem>
+          <NextLink href="/Create" passHref>
+            <MenuItem>⚙️ Settings</MenuItem>
+          </NextLink>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -163,6 +178,10 @@ export default function Navbar() {
     </Menu>
   );
 
+  /**
+   * Shows login and register options for the user to eventually log in.
+   * @returns Logged Out Meny for the top-right corner
+   */
   const LoggedOutMenu = () => (
     <Menu>
       <MenuButton
@@ -188,14 +207,93 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
-  const NotificationsModal = () => {
-    return (
-      <Notifications
-        isOpen={isNotificationsOpen}
-        onClose={toggleNotifications}
+
+  /**
+   * @returns Top-right Menu adapted for Mobile View
+   */
+  const MobileMenu = () => (
+    <Flex alignItems={"center"}>
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
       />
-    );
-  };
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
+  /**
+   * @returns Top-right Menu adapted for Desktop View
+   */
+  const DesktopMenu = () => (
+    <Flex
+      alignItems={"center"}
+      as="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearchSubmit();
+      }}
+      color={colorMode === "dark" ? "white" : "black"}
+    >
+      <Input
+        placeholder="Search"
+        size="sm"
+        borderRadius="full"
+        mr={4}
+        value={searchValue}
+        onChange={handleSearchChange}
+        css={{
+          "::placeholder": {
+            opacity: 1, // increase placeholder opacity
+          },
+        }}
+      />
+      <Link href="/Create">
+        <IconButton
+          aria-label="Create"
+          icon={<AddIcon />}
+          variant="ghost"
+          size="md"
+          rounded={"full"}
+          opacity={0.7}
+          mr={3}
+          color={colorMode === "dark" ? "white" : "black"}
+        />
+      </Link>
+      <IconButton
+        aria-label="Toggle Dark Mode"
+        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+        size="md"
+        rounded={"full"}
+        opacity={0.7}
+        mr={4}
+        color={colorMode === "dark" ? "white" : "black"}
+      />
+      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+    </Flex>
+  );
+
   return (
     <>
       <Box
@@ -222,95 +320,8 @@ export default function Navbar() {
               />
             </Box>
           </Link>
-          {isMobile ? (
-            <Flex alignItems={"center"}>
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              <UserProfileMenu />
-            </Flex>
-          ) : (
-            <Flex
-              alignItems={"center"}
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearchSubmit();
-              }}
-            >
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-              />
-              <Link href="/Create">
-                <IconButton
-                  aria-label="Create"
-                  icon={<AddIcon />}
-                  variant="ghost"
-                  size="md"
-                  rounded={"full"}
-                  opacity={0.7}
-                  mr={3}
-                  color={colorMode === "dark" ? "white" : "black"}
-                />
-              </Link>
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-              <IconButton
-                aria-label="Notifications"
-                icon={<BellIcon />}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-                onClick={toggleNotifications} // Toggle function
-              />
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-            </Flex>
-          )}
+          {isMobile ? <MobileMenu /> : <DesktopMenu />}
         </Flex>
-        {isNotificationsOpen && <NotificationsModal />}
       </Box>
     </>
   );

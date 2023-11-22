@@ -4,16 +4,21 @@ using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
 
+/// <summary>
+/// Handles all profile related operations.
+/// </summary>
 public class ProfileService : IProfileService
-{
+{   
+    /// <summary>
+    /// Current DB instance.
+    /// </summary>
     private readonly AppDbContext _db;
-
+    
     public ProfileService(AppDbContext db)
     {
         _db = db;
@@ -49,6 +54,7 @@ public class ProfileService : IProfileService
 
         // Update the user's profile
         user.Avatar = userAvatarName;
+        user.DisplayName = request.DisplayName;
         user.Bio = request.Bio;
         user.Interests = request.Interests;
 
@@ -75,16 +81,26 @@ public class ProfileService : IProfileService
             RemoveUserAvatar(user.Avatar);
 
             // Save the new avatar to the server
-            user.Avatar = SaveUserAvatar(user.Id,request.Avatar);
+            user.Avatar = SaveUserAvatar(user.Id, request.Avatar);
+        }
+
+        // If username was changed, check if it is unique
+        if (request.Username != user.Username)
+        {
+            User? existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            if (existingUser is not null)
+                throw new Exception("Username already exists.");
         }
 
         // Update the user's profile
         user.Bio = request.Bio;
-        user.Interests = request.Interests;
         user.Username = request.Username;
+        user.Interests = request.Interests;
+        user.DisplayName = request.DisplayName;
         user.TwitterUrl = request.TwitterUrl;
         user.GitHubUrl = request.GitHubUrl;
         user.LinkedInUrl = request.LinkedInUrl;
+        user.WebsiteUrl = request.WebsiteUrl;
 
         // Update the UpdatedAt attribute
         user.UpdatedAt = DateTime.Now;
@@ -98,16 +114,70 @@ public class ProfileService : IProfileService
     /// Returns the profile of a user
     /// </summary>
     /// <param name="user">User for which the profile belongs</param>
-    /// <param name="httpContext">Current HttpContext</param>
+    /// <param name="domainUrl">Url of the current domain (top level)</param>
     /// <returns>UserProfileResponse</returns>
-    public UserProfileResponse GetProfile(User user, HttpContext httpContext)
+    public async Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl)
     {
-        UserProfileResponse profile = (UserProfileResponse)user;
-        string url = httpContext.Request.GetDisplayUrl().ToString();
-        url = url[..^3];
-        profile.AvatarUrl = url + "avatar";
-
-        return profile;
+        return new UserProfileResponse(user, domainUrl);
     }
 
+    /// <summary>
+    /// Gets the full user profile for a given user.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<FullUserProfileResponse> GetUserProfile(Guid userId, string domainUrl)
+    {
+        // Check if the user exists
+        User user = await _db.Users.
+        Include(u => u.Podcasts).ThenInclude(p => p.Episodes)
+        .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("No user was found for the given userId.");
+
+        // If the user exists, return the profile
+        return new FullUserProfileResponse(user, domainUrl);
+    }
+
+    /// <summary>
+    /// Get all user profiles that match the given searchterm by sound.
+    /// </summary>
+    /// <param name="searchTerm"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<List<UserProfileResponse>> SearchUserProfiles(string searchTerm, int page, int pageSize, string domainUrl)
+    {
+        // Get the searched user profiles
+        List<UserProfileResponse> userProfiles = await _db.Users
+        .Where
+        (
+            u =>
+            AppDbContext.Soundex(u.Username) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.DisplayName) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.Email) == AppDbContext.Soundex(searchTerm) ||
+            AppDbContext.Soundex(u.Bio) == AppDbContext.Soundex(searchTerm)
+        )
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(u => new UserProfileResponse(u, domainUrl))
+        .ToListAsync();
+
+        return userProfiles;
+    }
+
+    /// <summary>
+    /// Returns the Avatar name of the user.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<string> GetUserAvatarNameAsync(Guid userId)
+    {
+        // Check if the user exists
+        User user = await _db.Users
+        .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("No user was found for the given userId.");
+
+        // If the user exists, return the Avatar name
+        return user.Avatar;
+    }
 }

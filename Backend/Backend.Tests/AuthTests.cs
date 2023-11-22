@@ -1,15 +1,11 @@
 using AutoMapper;
-using AutoMapper.Configuration.Annotations;
-using Azure;
 using Backend.Controllers;
 using Backend.Controllers.Requests;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
@@ -25,10 +21,14 @@ namespace Backend.Tests;
 [Collection("Sequential")]
 public class AuthTests : IAsyncLifetime
 {
+    private Mock<Microsoft.Extensions.Logging.ILogger> _IloggerMock;
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
-    public AuthTests(){ }
+    public AuthTests()
+    { 
+        _IloggerMock = new ();
+    }
 
     public Task InitializeAsync()
 
@@ -391,7 +391,7 @@ public class AuthTests : IAsyncLifetime
         {
             Email = "XXXXXXXXXXXXXXXXX1",
             Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXXX",
             DateOfBirth = DateTime.Now,
             Gender = "NoValidGender"
         };
@@ -451,7 +451,7 @@ public class AuthTests : IAsyncLifetime
         {
             Email = "XXXXXXXXXXXXXXXXX1",
             Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Username = "XXXXXXXXXXXXXXXXX11",
             DateOfBirth = DateTime.Now,
             Gender = "Male"
         };
@@ -638,8 +638,9 @@ public class AuthTests : IAsyncLifetime
         {
             Email = "XXXXXXXXXXXXXXXXX",
             Sub = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
-            Avatar= "XXXXXXXXXXXXXXXXX"
+            Name = "XXXXXXXXXXXXXXXXX",
+            Avatar= "XXXXXXXXXXXXXXXXX",
+            Token = "XXXXXXXXXXXXXXXXXX"
         };
 
         // Service
@@ -673,11 +674,12 @@ public class AuthTests : IAsyncLifetime
 
                 Id = Guid.NewGuid(),
 
-                Email = "XXXXXXXXXXXXXXXXX",
+                Email = "XXXXXXXXXXXXXXXXXNewUser1",
                 Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
+                Username = "C",
                 DateOfBirth = DateTime.Now,
-
+                DisplayName= "XXXXXXXXXXXXXXXXXNew",
+                Avatar= "XXXXXXXXXXXXXXXXX",
                 Gender = User.GenderEnum.Other
 
             }
@@ -689,9 +691,9 @@ public class AuthTests : IAsyncLifetime
 
         GoogleRequest googleRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXXNewUser",
+            Email = "XXXXXXXXXXXXXXXXXNewUser@gmail",
             Sub = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXNew",
+            Name = "XXXXXXXXXXXXXXXXXNew",
             Avatar= "XXXXXXXXXXXXXXXXX"
         };
 
@@ -708,8 +710,8 @@ public class AuthTests : IAsyncLifetime
         Assert.IsType<User>(user);
         Assert.NotNull(user);
 
-        Assert.Equal("XXXXXXXXXXXXXXXXXNewUser", user!.Email);
-        Assert.Equal("XXXXXXNew", user.Username);
+        Assert.Equal("XXXXXXXXXXXXXXXXXNewUser@gmail", user!.Email);
+        Assert.Equal("XXXXXXXXXXXXXXXXXNewUser", user.Username);
     }
 
     #endregion
@@ -732,7 +734,7 @@ public class AuthTests : IAsyncLifetime
         
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -773,7 +775,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -811,7 +813,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -853,7 +855,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
         // Create the Request
 
@@ -894,7 +896,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object)
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -927,7 +929,7 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
         // ACT
         IActionResult actionResult = await authController.Me();
@@ -943,23 +945,31 @@ public class AuthTests : IAsyncLifetime
         // Mocks
         Mock<IAuthService> authServiceMock = new();
         Mock<IConfiguration> configurationMock = new();
+        var httpContext = new DefaultHttpContext();
 
         // Setup Mocks
         authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
-
+        authServiceMock.Setup(svc=> svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            }
+        };
 
         // Create the Request
 
         GoogleRequest googleRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Name= "XXXXXXXXXXXXXX",
             Sub = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX"
+            Avatar = "XXXXXXXXXXXXXXXXX",
+            Token = "XXXXXXXXXXXXXXXXXX"
         };
 
         // ACT
@@ -985,14 +995,14 @@ public class AuthTests : IAsyncLifetime
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object);
+        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
 
 
         // Create the Request
         GoogleRequest googleRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Name = "XXXXXXXXXXXXXXXXX",
             Sub = "XXXXXXXXXXXXXXXXX",
             Avatar = "XXXXXXXXXXXXXXXXX"
         };

@@ -14,6 +14,12 @@ public static class FileStorageHelper
     /// Seperator key for the file name and file type from the filename stored in the db.
     /// </summary>
     public const string FILE_SPLIT_KEY = "|/|\\|";
+    
+    /// <summary>
+    /// Identifies if the file is a thumbnail. I
+    /// </summary>
+    /// <returns></returns>
+    public const string THUMBNAIL_ID = "()thumbnail()";
 
     /// <summary>
     /// Base dir where all server files are stored.
@@ -29,6 +35,24 @@ public static class FileStorageHelper
     /// Dir where all podcast covers and episodes are stored. 
     /// </summary>
     public const string PODCASTS_DIR_NAME = "Podcasts";
+
+    /// <summary>
+    /// Identifies if the file is a transcription status file.
+    /// </summary>
+    public const string STATUS_ID = "_status.txt";
+
+    /// <summary>
+    /// Identifies the file type for transcript files.
+    /// </summary>
+    public const string TRANSCRIPT_FILE_TYPE = ".json";
+
+    public enum TranscriptStatus 
+    {
+        InProgress=0,
+        Failed=1,
+        Ready=2,
+        None=3
+    };
 
     #region User Profile
 
@@ -53,7 +77,7 @@ public static class FileStorageHelper
     {
         // Filename stored on the server filesystem
         string avatarFileName = string.Format("{0}.{1}", userId, avatarFile.ContentType.Split('/')[1]);
-        
+
         // Filename stored in the database
         string userAvatarName = string.Format("{0}{1}{2}", avatarFileName, FILE_SPLIT_KEY, avatarFile.ContentType);
 
@@ -61,7 +85,7 @@ public static class FileStorageHelper
         string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, AVATARS_DIR_NAME);
 
         // Make sure that the dir exists, otherwise create it
-        if(!Directory.Exists(dirPath))
+        if (!Directory.Exists(dirPath))
             CreateDirectory(dirPath);
 
         // Get the file path
@@ -85,7 +109,7 @@ public static class FileStorageHelper
         string userAvatarFilePath = GetUserAvatarPath(userAvatarName);
 
         // Check if the file exists
-        if(File.Exists(userAvatarFilePath))
+        if (File.Exists(userAvatarFilePath))
         {
             // Delete the file
             File.Delete(userAvatarFilePath);
@@ -127,15 +151,15 @@ public static class FileStorageHelper
     {
         // Filename stored on the server filesystem
         string coverArtFileName = string.Format("{0}.{1}", podcastId, coverArtFile.ContentType.Split('/')[1]);
-        
+
         // Filename stored in the database
         string coverArtName = string.Format("{0}{1}{2}", coverArtFileName, FILE_SPLIT_KEY, coverArtFile.ContentType);
 
         // Get the dir path
-        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME,podcastId);
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId);
 
         // Make sure that the dir exists, otherwise create it
-        if(!Directory.Exists(dirPath))
+        if (!Directory.Exists(dirPath))
             CreateDirectory(dirPath);
 
         // Get the file path
@@ -158,14 +182,24 @@ public static class FileStorageHelper
         // Get the file path
         string podcastCoverArt = GetPodcastCoverArtPath(coverArtName);
 
+        // Get the parent folder path
+        string podcastPath = GetPodcastPath(podcastCoverArt);
+
         // Check if the file exists
-        if(File.Exists(podcastCoverArt))
+        if (File.Exists(podcastCoverArt))
         {
             // Delete the file
             File.Delete(podcastCoverArt);
         }
+
+        // Check if the podcast dir is empty
+        if(Directory.GetFiles(podcastPath).Length==0)
+        {
+            // Delete the dir
+            Directory.Delete(podcastPath); 
+        }
     }
-    
+
     /// <summary>
     /// Gets the path to a podcast cover art.
     /// </summary>
@@ -173,19 +207,17 @@ public static class FileStorageHelper
     /// <returns></returns>
     public static string GetPodcastCoverArtPath(string coverArtName)
     {
-        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0],coverArtName.Split(FILE_SPLIT_KEY)[0]);
+        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0], coverArtName.Split(FILE_SPLIT_KEY)[0]);
     }
 
     /// <summary>
-    /// Saves a podcast episode audio and returns the filename stored in the database.
+    /// Gets the path to a podcast folder in which the coverArtName is saved.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <param name="podcastId"></param>
-    /// <param name="audioFile"></param>
+    /// <param name="coverArtName"></param>
     /// <returns></returns>
-    public static string SavePodcastEpisodeAudio(Guid episodeId, Guid podcastId, IFormFile audioFile)
+    public static string GetPodcastPath(string coverArtName)
     {
-        return SavePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString(), audioFile);
+        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0]);
     }
 
     /// <summary>
@@ -195,19 +227,31 @@ public static class FileStorageHelper
     /// <param name="podcastId"></param>
     /// <param name="audioFile"></param>
     /// <returns></returns>
-    public static string SavePodcastEpisodeAudio(string episodeId, string podcastId, IFormFile audioFile)
+    public static async Task<string> SavePodcastEpisodeAudio(Guid episodeId, Guid podcastId, IFormFile audioFile)
+    {
+        return await SavePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString(), audioFile);
+    }
+
+    /// <summary>
+    /// Saves a podcast episode audio and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <param name="audioFile"></param>
+    /// <returns></returns>
+    public static async Task<string> SavePodcastEpisodeAudio(string episodeId, string podcastId, IFormFile audioFile)
     {
         // Filename stored on the server filesystem
         string audioFileName = string.Format("{0}.{1}", episodeId, audioFile.ContentType.Split('/')[1]);
-        
+
         // Filename stored in the database
         string audioName = string.Format("{0}{1}{2}", audioFileName, FILE_SPLIT_KEY, audioFile.ContentType);
 
         // Get the dir path
-        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME,podcastId);
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId);
 
         // Make sure that the dir exists, otherwise create it
-        if(!Directory.Exists(dirPath))
+        if (!Directory.Exists(dirPath))
             CreateDirectory(dirPath);
 
         // Get the file path
@@ -215,7 +259,7 @@ public static class FileStorageHelper
 
         // Save the file
         using FileStream fileStream = Create(filePath);
-        audioFile.CopyTo(fileStream);
+        await audioFile.CopyToAsync(fileStream);
 
         // Return the filename stored in the database
         return audioName;
@@ -225,31 +269,30 @@ public static class FileStorageHelper
     /// <summary>
     /// Removes a podcast episode audio.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="audioName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeAudio(Guid episodeId, Guid podcastId)
+    public static void RemovePodcastEpisodeAudio(string audioName, Guid podcastId)
     {
-        RemovePodcastEpisodeAudio(episodeId.ToString(), podcastId.ToString());
+        RemovePodcastEpisodeAudio(audioName, podcastId.ToString());
     }
 
     /// <summary>
     /// Removes a podcast episode audio.
     /// </summary>
-    /// <param name="episodeId"></param>
+    /// <param name="audioName"></param>
     /// <param name="podcastId"></param>
-    public static void RemovePodcastEpisodeAudio(string episodeId, string podcastId)
+    public static void RemovePodcastEpisodeAudio(string audioName, string podcastId)
     {
         // Get the file path
-        string podcastEpisodeAudio = GetPodcastEpisodeAudioPath(episodeId, podcastId);
+        string podcastEpisodeAudio = GetPodcastEpisodeAudioPath(audioName, podcastId);
 
         // Check if the file exists
-        if(File.Exists(podcastEpisodeAudio))
+        if (File.Exists(podcastEpisodeAudio))
         {
             // Delete the file
             File.Delete(podcastEpisodeAudio);
         }
     }
-
 
     /// <summary>
     /// Gets the path to a podcast episode audio.
@@ -270,8 +313,170 @@ public static class FileStorageHelper
     /// <returns></returns>
     public static string GetPodcastEpisodeAudioPath(string audioName, string podcastId)
     {
-        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, audioName.Split(FILE_SPLIT_KEY)[0]);
+        return Combine(Directory.GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, audioName.Split(FILE_SPLIT_KEY)[0]);
     }
+
+    /// <summary>
+    /// Saves a podcast episode thumbnail and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <param name="thumbnailFile"></param>
+    /// <returns></returns>
+    public static string SavePodcastEpisodeThumbnail(Guid episodeId, Guid podcastId, IFormFile thumbnailFile)
+    {
+        return SavePodcastEpisodeThumbnail(episodeId.ToString(), podcastId.ToString(), thumbnailFile);
+    }
+
+    /// <summary>
+    /// Saves a podcast episode thumbnail and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <param name="thumbnailFile"></param>
+    /// <returns></returns>
+    public static string SavePodcastEpisodeThumbnail(string episodeId, string podcastId, IFormFile thumbnailFile)
+    {
+        // Filename stored on the server filesystem
+        string thumbnailFileName = string.Format("{0}{1}.{2}", episodeId, THUMBNAIL_ID, thumbnailFile.ContentType.Split('/')[1]);
+
+        // Filename stored in the database
+        string thumbnailName = string.Format("{0}{1}{2}", thumbnailFileName, FILE_SPLIT_KEY, thumbnailFile.ContentType);
+
+        // Get the dir path
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId);
+
+        // Make sure that the dir exists, otherwise create it
+        if (!Directory.Exists(dirPath))
+            CreateDirectory(dirPath);
+
+        // Get the file path
+        string filePath = Combine(dirPath, thumbnailFileName);
+
+        // Save the file
+        using FileStream fileStream = Create(filePath);
+        thumbnailFile.CopyTo(fileStream);
+
+        // Return the filename stored in the database
+        return thumbnailName;
+    }
+
+    /// <summary>
+    /// Removes a podcast episode thumbnail.
+    /// </summary>
+    /// <param name="thumbnailName"></param>
+    /// <param name="podcastId"></param>
+    public static void RemovePodcastEpisodeThumbnail(string thumbnailName, Guid podcastId)
+    {
+        RemovePodcastEpisodeThumbnail(thumbnailName, podcastId.ToString());
+    }
+
+    /// <summary>
+    /// Removes a podcast episode thumbnail.
+    /// </summary>
+    /// <param name="thumbnailName"></param>
+    /// <param name="podcastId"></param>
+    public static void RemovePodcastEpisodeThumbnail(string thumbnailName, string podcastId)
+    {
+        // Get the file path
+        string podcastEpisodeThumbnail = GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId);
+
+        // Check if the file exists
+        if (File.Exists(podcastEpisodeThumbnail))
+        {
+            // Delete the file
+            File.Delete(podcastEpisodeThumbnail);
+        }
+    }
+
+    /// <summary>
+    /// Gets the path to a podcast episode thumbnail.
+    /// </summary>
+    /// <param name="thumbnailName"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetPodcastEpisodeThumbnailPath(string thumbnailName, Guid podcastId)
+    {
+        return GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId.ToString());
+    }
+
+    /// <summary>
+    /// Gets the path to a podcast episode thumbnail.
+    /// </summary>
+    /// <param name="thumbnailName"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetPodcastEpisodeThumbnailPath(string thumbnailName, string podcastId)
+    {
+        return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, podcastId, thumbnailName.Split(FILE_SPLIT_KEY)[0]);
+    }
+
+    #region Transcript
+
+    /// <summary>
+    /// Deletes a transcript.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    public static void RemoveTranscript(Guid episodeId,Guid podcastId)
+    {
+        // Get the file path
+        string transcriptPath = GetTranscriptPath(episodeId, podcastId);
+
+        // Check if the file exists
+        if (File.Exists(transcriptPath))
+        {
+            // Delete the file
+            File.Delete(transcriptPath);
+        }
+    }
+
+    /// <summary>
+    /// Get the transcription status.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static TranscriptStatus GetTranscriptStatus(Guid episodeId, Guid podcastId)
+    {
+        if (File.Exists(GetTranscriptPath(episodeId, podcastId)))
+            return TranscriptStatus.Ready;
+        if(File.Exists(GetTranscriptStatusPath(episodeId,podcastId)))
+        {
+            string fileContent = ReadAllText(GetTranscriptStatusPath(episodeId, podcastId)).ToLower();
+
+            if(fileContent.Contains("progress"))
+                return TranscriptStatus.InProgress;
+            else
+                return TranscriptStatus.Failed;
+        }
+        return TranscriptStatus.None;
+    }
+
+    /// <summary>
+    /// Gets the transcript file path for the given episode id.
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetTranscriptPath(Guid episodeId, Guid podcastId)
+    {
+        return Combine(GetCurrentDirectory(),BASE_DIR,PODCASTS_DIR_NAME,podcastId.ToString(),episodeId.ToString()+TRANSCRIPT_FILE_TYPE);
+    }
+
+    /// <summary>
+    /// Get the transcript status file path
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="podcastId"></param>
+    /// <returns></returns>
+    public static string GetTranscriptStatusPath(Guid episodeId, Guid podcastId)
+    {
+        return Combine(GetCurrentDirectory(),BASE_DIR,PODCASTS_DIR_NAME,podcastId.ToString(),episodeId.ToString()+STATUS_ID);
+    }
+
+    #endregion
+
 
     #endregion
 
@@ -280,7 +485,7 @@ public static class FileStorageHelper
     /// </summary>
     /// <param name="filename"></param>
     /// <returns></returns>
-    public static string GetFileType(string filename) 
+    public static string GetFileType(string filename)
     {
         return filename.Split(FILE_SPLIT_KEY)[1];
     }
