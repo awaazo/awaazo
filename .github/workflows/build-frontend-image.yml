@@ -43,7 +43,7 @@ jobs:
               run: |
                 br=${{ steps.extract_branch.outputs.branch }}
                 b=${br//\//-}
-                b=${b//#//}
+                b=${b//#/}
                 val=$(docker buildx imagetools inspect ghcr.io/awaazo/frontend:$b 2> /dev/null)
                 if [ -n "$val" ] 
                 then
