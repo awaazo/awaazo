@@ -5,20 +5,8 @@ name: .NET Backend CI
 
 # Action Triggers
 on:
-  push:
-    branches: 
-      - "main"
-    paths:
-      - "Backend/**"
-      - ".github/workflows/backend.yml"
-  pull_request:
-    branches: 
-      - "main"
-    paths:
-      - "Backend/**"
-      - ".github/workflows/backend.yml"
+  workflow_call:
  
-
 jobs:
   build:
     name: Backend Test
@@ -29,21 +17,9 @@ jobs:
 
     # Checkout Changes
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-
-      # Add appsettings.Development.json + appsettings.json
-    - name: Add Config Backend
-      working-directory: Backend/Backend
-      env:
-        settings: ${{ vars.APPSETTINGSBACKEND }}
-      run: |
-        touch appsettings.Development.json
-        touch appsettings.json
-        echo $settings > appsettings.Development.json
-        echo $settings > appsettings.json
-
-    # Add appsettings.Development.json + appsettings.json fpr tests
+    # Add appsettings.Development.json + appsettings.json for tests
     - name: Add Config Backend Tests
       working-directory: Backend/Backend.Tests
       env:
@@ -89,7 +65,7 @@ jobs:
     
     # Upload the Test Results Report
     - name: Uploading Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: testrun-result
         path: Backend/Backend.Tests/TestResults
