@@ -190,6 +190,20 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
   cy.get('button[id=createBtn]').click();
 });
 
+
+Cypress.Commands.add('review_create', (review, stars) => {
+  cy.get('[data-cy="podcast-card-F2 legends"]').click();
+  cy.get('button').contains('Add Your Review').click();
+  if(review){
+    cy.get('textarea[placeholder="Write your review here..."]').type(review);
+  }
+  if(stars){
+    cy.get(`[data-cy="star-icon-${stars}"]`).click();
+  }
+  cy.contains('Submit Review').click()
+})
+
+
 Cypress.Commands.add('console_error_hack', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from

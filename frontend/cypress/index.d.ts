@@ -11,6 +11,7 @@ declare namespace Cypress {
       edit_profile(filepath: string, username: string, bio: string, twitterURL: string, linkedInURL: string, githubURL: string): void;
       podcast_create(filepath: string, name: string, description:string): void;
       episode_create(filepath: string, name: string, description:string, sound_file:string, podcast: string): void;
+      review_create(description: string, stars: number): void;
       data_log(): Chainable<any>;
     }
   }
