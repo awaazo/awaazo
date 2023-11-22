@@ -1,22 +1,8 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: Next.js Frontend CI
 
 # Action Triggers
 on:
-  push:
-    branches: 
-      - "main"
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
-  pull_request:
-    branches: 
-      - "main"
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
+  workflow_call:
  
 
 jobs:
@@ -30,24 +16,59 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
   
-    # Start/Run the Database 
-    - name: Start Database Container
-      run: docker-compose -f "docker-compose.ci.yml" up -d --build sql
-  
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
 
-      # Add appsettings.Development.json + appsettings.json for 
-    - name: Add Config
-      working-directory: Backend/Backend
-      env:
-        settings: ${{ vars.APPSETTINGSBACKEND }}
+    # Login to Container registy
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # Check wheter to pull from the latest image or the one created for this branch
+    - name: Get Backend, PY and Frontend Image Tags
+      shell: bash {0}
       run: |
-        touch appsettings.Development.json
-        touch appsettings.json
-        echo $settings > appsettings.Development.json
-        echo $settings > appsettings.json
+          br=${{ steps.extract_branch.outputs.branch }}
+          b=${br//\//-}
+          val=$(docker buildx imagetools inspect ghcr.io/awaazo/backend:$b 2> /dev/null)
+          if [ -n "$val" ] 
+          then
+            echo "backend_tag=$b" >> $GITHUB_OUTPUT
+          else
+            echo "backend_tag=latest" >> $GITHUB_OUTPUT
+          fi
+          val=$(docker buildx imagetools inspect ghcr.io/awaazo/py_backend:$b 2> /dev/null)
+          if [ -n "$val" ] 
+          then
+            echo "py_tag=$b" >> $GITHUB_OUTPUT
+          else
+            echo "py_tag=latest" >> $GITHUB_OUTPUT
+          fi
+          val=$(docker buildx imagetools inspect ghcr.io/awaazo/frontend:$b 2> /dev/null)
+          if [ -n "$val" ] 
+          then
+            echo "frontend_tag=$b" >> $GITHUB_OUTPUT
+          else
+            echo "frontend_tag=latest" >> $GITHUB_OUTPUT
+          fi
+      id: image_tags
+    
+    # Create a .env file for docker-compose environment variables
+    - name: Create the .env file
+      run: |
+        touch .env
+        echo "BACKEND_VER=${{ steps.image_tags.outputs.backend_tag }}" > .env
+        echo "PY_VER=${{ steps.image_tags.outputs.py_tag }}" >> .env
+        echo "FRONTEND_VER=${{ steps.image_tags.outputs.frontend_tag }}" >> .env 
 
-    # Start/Run the Backend
-    - name: Start Backend Container
+
+    # Start/Run the Database, Backend API, Backend Python Server & Frontend Website
+    - name: Start Containers
       run: docker-compose -f "docker-compose.ci.yml" up -d --build backend
 
     # Install Node
@@ -60,18 +81,10 @@ jobs:
     - name: Add .env.local
       working-directory: frontend
       env:
-        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-        GOOGLE_CLIENT_SECRET: $${{ secrets.GOOGLE_CLIENT_SECRET }}
-        BASE_URL: ${{ secrets.BASE_URL }}
-        NEXT_AUTH_URL: ${{ secrets.NEXTAUTH }}
-        NEXT_PUBLIC_NEXTAUTH_SECRET: ${{ secrets.NEXT_PUBLIC_NEXTAUTH_SECRET }}
+        FILE: ${{ vars.NEXT_ENV_FILE }}
       run: |
         touch .env.local
-        echo $GOOGLE_CLIENT_ID > .env.local
-        echo $GOOGLE_CLIENT_SECRET >> .env.local
-        echo $BASE_URL >> .env.local
-        echo $NEXT_AUTH_URL >> .env.local
-        echo $NEXT_PUBLIC_NEXTAUTH_SECRET >> .env.local
+        echo $FILE > .env.local
   
     # Install Frontend Deps
     - name: Install dependencies
