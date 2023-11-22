@@ -100,5 +100,6 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
+          name: cypress-videos
           path: /home/runner/work/awaazo/awaazo/frontend/cypress/videos
           if-no-files-found: ignore
