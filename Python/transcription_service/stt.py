@@ -2,6 +2,7 @@ import json
 import whisper
 import os
 
+
 # Function to create a transcript from an audio file
 def create_transcript(audio_path):
     try:        

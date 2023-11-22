@@ -183,7 +183,7 @@ public static class FileStorageHelper
         string podcastCoverArt = GetPodcastCoverArtPath(coverArtName);
 
         // Get the parent folder path
-        string podcastPath = GetPodcastPath(podcastCoverArt);
+        string podcastPath = GetPodcastPath(coverArtName);
 
         // Check if the file exists
         if (File.Exists(podcastCoverArt))
