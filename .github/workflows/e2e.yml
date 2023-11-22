@@ -93,16 +93,19 @@ jobs:
       #   with:
       #     working-directory: frontend
 
-      # Upload the Test Results
-      - name: Uploading Artifact
+      # Upload the Test Results Screenshots
+      - name: Uploading Screenshots Artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: cypress-screenshots
           path: /home/runner/work/awaazo/awaazo/frontend/cypress/screenshots
           if-no-files-found: ignore
-      - uses: actions/upload-artifact@v3
+
+      - name: Uploading Video Artifacs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
         with:
           name: cypress-videos
-          path: frontend/cypress/videos
+          path: /home/runner/work/awaazo/awaazo/frontend/cypress/videos
           if-no-files-found: ignore
