@@ -14,6 +14,7 @@ import {
 
 import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
+import Subscription from "../explore/Subscription";
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast }) {
@@ -61,9 +62,7 @@ export default function PodcastOverview({ podcast }) {
     },
   };
 
-  function handleSubscribe(id: any): void {
-    throw new Error("Function not implemented.");
-  }
+
 
   return (
     <>
@@ -121,14 +120,7 @@ export default function PodcastOverview({ podcast }) {
                   </WrapItem>
                 ))}
               </Wrap>
-              <Button
-                size="md"
-                colorScheme="teal"
-                mt={4}
-                onClick={() => handleSubscribe(podcast.id)} // Replace with actual subscribe function
-              >
-                Subscribe
-              </Button>
+
             </Text>
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm" position="relative">
@@ -219,6 +211,7 @@ export default function PodcastOverview({ podcast }) {
           </Box>
         ) : (
           <Flex justify="space-between" align="start">
+            <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} />
             {/* Sidebar on the left */}
             <Box
               p={4}

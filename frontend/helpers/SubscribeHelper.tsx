@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import EndpointHelper from '../helpers/EndpointHelper';
 import { BaseResponse } from '../utilities/Responses';
+import axios from 'axios';
 
 export default class SubscribeHelper{
     static getSubscribe(){
@@ -18,14 +19,28 @@ export default class SubscribeHelper{
             withCredentials: true, 
             cache: false,
         };
-
         try {
-            const response = await Axios(options);
-            return response.data;
-        } catch (error) {
-            console.log(error);
-            return error.response.data;
-        }
+            console.debug("Sending the following podcast Subscribe...");
+            console.debug(options);
+      
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+      
+            console.debug("Received the following podcast Subscribe...");
+            console.debug(requestResponse);
+      
+            // Return the response.
+            return {
+              status: requestResponse.status,
+              message: requestResponse.statusText,
+            };
+          } catch (error) {
+            return {
+              status: error.response?.status,
+              message: error.response?.statusText,
+            };
+          }
 
     };
 
@@ -42,16 +57,32 @@ export default class SubscribeHelper{
         };
 
         try {
-            const response = await Axios(options);
-            return response.data;
-        } catch (error) {
-            console.log(error);
-            return error.response.data;
-        }
+            console.debug("Sending the following podcast Unsubscribe...");
+            console.debug(options);
+      
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+            
+            console.debug("Received the following podcast Unsubscribe...");
+            console.debug(requestResponse);
+
+            // Return the response.
+            return {
+              status: requestResponse.status,
+              message: requestResponse.statusText,
+            };
+            } catch (error) {
+                return {
+                    status: error.response?.status,
+                    message: error.response?.statusText,
+                  };
+                }
+
 
     };
 
-    public static getIsSubscribed = async (PodcastId): Promise<BaseResponse> => {
+    public static getIsSubscribed = async (PodcastId): Promise<boolean> => {
         const options = {
             method: "GET",
             headers: {
