@@ -208,92 +208,6 @@ export default function Navbar() {
     </Menu>
   );
 
-  /**
-   * @returns Top-right Menu adapted for Mobile View
-   */
-  const MobileMenu = () => (
-    <Flex alignItems={"center"}>
-      <Input
-        placeholder="Search"
-        size="sm"
-        borderRadius="full"
-        mr={4}
-        value={searchValue}
-        onChange={handleSearchChange}
-        css={{
-          "::placeholder": {
-            opacity: 1, // increase placeholder opacity
-          },
-        }}
-      />
-      <IconButton
-        aria-label="Toggle Dark Mode"
-        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        onClick={toggleColorMode}
-        variant="ghost"
-        size="md"
-        rounded={"full"}
-        opacity={0.7}
-        mr={4}
-        color={colorMode === "dark" ? "white" : "black"}
-      />
-      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-    </Flex>
-  );
-
-  /**
-   * @returns Top-right Menu adapted for Desktop View
-   */
-  const DesktopMenu = () => (
-    <Flex
-      alignItems={"center"}
-      as="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSearchSubmit();
-      }}
-      color={colorMode === "dark" ? "white" : "black"}
-    >
-      <Input
-        placeholder="Search"
-        size="sm"
-        borderRadius="full"
-        mr={4}
-        value={searchValue}
-        onChange={handleSearchChange}
-        css={{
-          "::placeholder": {
-            opacity: 1, // increase placeholder opacity
-          },
-        }}
-      />
-      <Link href="/Create">
-        <IconButton
-          aria-label="Create"
-          icon={<AddIcon />}
-          variant="ghost"
-          size="md"
-          rounded={"full"}
-          opacity={0.7}
-          mr={3}
-          color={colorMode === "dark" ? "white" : "black"}
-        />
-      </Link>
-      <IconButton
-        aria-label="Toggle Dark Mode"
-        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        onClick={toggleColorMode}
-        variant="ghost"
-        size="md"
-        rounded={"full"}
-        opacity={0.7}
-        mr={4}
-        color={colorMode === "dark" ? "white" : "black"}
-      />
-      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-    </Flex>
-  );
-
   return (
     <>
       <Box
@@ -320,7 +234,83 @@ export default function Navbar() {
               />
             </Box>
           </Link>
-          {isMobile ? <MobileMenu /> : <DesktopMenu />}
+          {isMobile ? (
+            <Flex alignItems={"center"}>
+              <Input
+                placeholder="Search"
+                size="sm"
+                borderRadius="full"
+                mr={4}
+                value={searchValue}
+                onChange={handleSearchChange}
+                css={{
+                  "::placeholder": {
+                    opacity: 1, // increase placeholder opacity
+                  },
+                }}
+              />
+              <IconButton
+                aria-label="Toggle Dark Mode"
+                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+                onClick={toggleColorMode}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+              />
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
+          ) : (
+            <Flex
+              alignItems={"center"}
+              as="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchSubmit();
+              }}
+              color={colorMode === "dark" ? "white" : "black"}
+            >
+              <Input
+                placeholder="Search"
+                size="sm"
+                borderRadius="full"
+                mr={4}
+                value={searchValue}
+                onChange={handleSearchChange}
+                css={{
+                  "::placeholder": {
+                    opacity: 1, // increase placeholder opacity
+                  },
+                }}
+              />
+              <Link href="/Create">
+                <IconButton
+                  aria-label="Create"
+                  icon={<AddIcon />}
+                  variant="ghost"
+                  size="md"
+                  rounded={"full"}
+                  opacity={0.7}
+                  mr={3}
+                  color={colorMode === "dark" ? "white" : "black"}
+                />
+              </Link>
+              <IconButton
+                aria-label="Toggle Dark Mode"
+                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+                onClick={toggleColorMode}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+              />
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
+          )}
         </Flex>
       </Box>
     </>
