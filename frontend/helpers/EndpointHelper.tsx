@@ -259,7 +259,7 @@ export default class EndpointHelper {
   };
 
   static getCommentDeleteEndpoint = (commentId) => {
-    return this.getBackendAddress() + "/social/" + commentId + "/deleteComment";
+    return this.getBackendAddress() + "/social/" + commentId + "/delete";
   };
 
   static getLikeEndpoint = (episodeOrCommentId) => {

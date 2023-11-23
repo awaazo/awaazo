@@ -97,8 +97,8 @@ export default class SocialHelper {
       };
     } catch (error) {
       return {
-        status: error.response?.status,
-        message: error.response?.statusText,
+        status: error.response.status,
+        message: error.response.statusText,
       };
     }
   };
