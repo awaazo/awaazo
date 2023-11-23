@@ -1,0 +1,64 @@
+on:
+    workflow_call:
+        
+jobs:
+    # Push Python Image to Registry
+    push_python_to_registry:
+        name: Push Docker python backend image to github container registry
+        runs-on: ubuntu-latest
+        permissions:
+         packages: write
+         contents: read
+        steps:
+
+        # Checkout
+        - name: Check out the repo
+          uses: actions/checkout@v4
+
+        - name: Extract branch name
+          shell: bash
+          run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          id: extract_branch
+        
+            # Login to Container registy
+        - name: Log in to the Container registry
+          uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Check if image exists
+          shell: bash {0}
+          run: |
+            br=${{ steps.extract_branch.outputs.branch }}
+            b=${br//\//-}
+            val=$(docker buildx imagetools inspect ghcr.io/awaazo/py_backend:$b 2> /dev/null)
+            if [ -n "$val" ] 
+            then
+              echo "py_tag=$b" >> $GITHUB_OUTPUT
+            else
+              echo "py_tag=latest" >> $GITHUB_OUTPUT
+            fi
+          id: extract_image
+        
+            # Extract Data to create the image name
+        - name: Extract metadata (tags, labels) for Docker
+          id: meta
+          uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+          with:
+            images: ghcr.io/${{ github.repository_owner }}/py_backend
+            tags: |
+                type=ref,event=branch
+                type=sha,
+                type=raw,value=${{ steps.extract_branch.outputs.branch }}
+                type=raw,value=latest,enable={{is_default_branch}}
+
+        # Build and push the image to Container Registry
+        - name: Build and push Docker images
+          uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+          with:
+            context: Python/.
+            push: true
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}

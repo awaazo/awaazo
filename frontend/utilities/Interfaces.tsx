@@ -14,6 +14,7 @@ export interface Podcast {
   monthlyListeners: number;
 }
 
+
 export interface Episode {
   id: string;
   podcastId: string;

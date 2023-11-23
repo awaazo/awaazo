@@ -20,14 +20,13 @@ import {
   Input,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import NextLink from "next/link";
-import Notifications from "../../pages/notification/Notifications";
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
@@ -56,11 +55,6 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
-  const toggleNotifications = () => {
-    setIsNotificationsOpen(!isNotificationsOpen);
-  };
 
   interface SessionExt extends DefaultSession {
     token: {
@@ -214,112 +208,6 @@ export default function Navbar() {
     </Menu>
   );
 
-const NotificationsModal = () => {
-  return(
-    <Notifications
-      isOpen={isNotificationsOpen}
-      onClose={toggleNotifications} 
-    />
-  );
-  };
-
-  /**
-   * @returns Top-right Menu adapted for Mobile View
-   */
-  const MobileMenu = () => (
-    <Flex alignItems={"center"}>
-      <Input
-        placeholder="Search"
-        size="sm"
-        borderRadius="full"
-        mr={4}
-        value={searchValue}
-        onChange={handleSearchChange}
-        css={{
-          "::placeholder": {
-            opacity: 1, // increase placeholder opacity
-          },
-        }}
-      />
-      <IconButton
-        aria-label="Toggle Dark Mode"
-        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        onClick={toggleColorMode}
-        variant="ghost"
-        size="md"
-        rounded={"full"}
-        opacity={0.7}
-        mr={4}
-        color={colorMode === "dark" ? "white" : "black"}
-      />
-      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-    </Flex>
-  );
-
-  /**
-   * @returns Top-right Menu adapted for Desktop View
-   */
-  const DesktopMenu = () => (
-    <Flex
-      alignItems={"center"}
-      as="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSearchSubmit();
-      }}
-      color={colorMode === "dark" ? "white" : "black"}
-    >
-      <Input
-        placeholder="Search"
-        size="sm"
-        borderRadius="full"
-        mr={4}
-        value={searchValue}
-        onChange={handleSearchChange}
-        css={{
-          "::placeholder": {
-            opacity: 1, // increase placeholder opacity
-          },
-        }}
-      />
-      <Link href="/Create">
-        <IconButton
-          aria-label="Create"
-          icon={<AddIcon />}
-          variant="ghost"
-          size="md"
-          rounded={"full"}
-          opacity={0.7}
-          mr={3}
-          color={colorMode === "dark" ? "white" : "black"}
-        />
-      </Link>
-      <IconButton
-        aria-label="Toggle Dark Mode"
-        icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        onClick={toggleColorMode}
-        variant="ghost"
-        size="md"
-        rounded={"full"}
-        opacity={0.7}
-        mr={4}
-        color={colorMode === "dark" ? "white" : "black"}
-      />
-       <IconButton
-          aria-label="Notifications"
-          icon={<BellIcon />}
-          onClick={toggleNotifications}
-          variant="ghost"
-          size="md"
-          rounded={"full"}
-          opacity={0.7}
-          mr={4}
-          color={colorMode === "dark" ? "white" : "black"}
-        />
-      {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-    </Flex>
-  );
-
   return (
     <>
       <Box
@@ -346,9 +234,84 @@ const NotificationsModal = () => {
               />
             </Box>
           </Link>
-          {isMobile ? <MobileMenu /> : <DesktopMenu />}
+          {isMobile ? (
+            <Flex alignItems={"center"}>
+              <Input
+                placeholder="Search"
+                size="sm"
+                borderRadius="full"
+                mr={4}
+                value={searchValue}
+                onChange={handleSearchChange}
+                css={{
+                  "::placeholder": {
+                    opacity: 1, // increase placeholder opacity
+                  },
+                }}
+              />
+              <IconButton
+                aria-label="Toggle Dark Mode"
+                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+                onClick={toggleColorMode}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+              />
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
+          ) : (
+            <Flex
+              alignItems={"center"}
+              as="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchSubmit();
+              }}
+              color={colorMode === "dark" ? "white" : "black"}
+            >
+              <Input
+                placeholder="Search"
+                size="sm"
+                borderRadius="full"
+                mr={4}
+                value={searchValue}
+                onChange={handleSearchChange}
+                css={{
+                  "::placeholder": {
+                    opacity: 1, // increase placeholder opacity
+                  },
+                }}
+              />
+              <Link href="/Create">
+                <IconButton
+                  aria-label="Create"
+                  icon={<AddIcon />}
+                  variant="ghost"
+                  size="md"
+                  rounded={"full"}
+                  opacity={0.7}
+                  mr={3}
+                  color={colorMode === "dark" ? "white" : "black"}
+                />
+              </Link>
+              <IconButton
+                aria-label="Toggle Dark Mode"
+                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+                onClick={toggleColorMode}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+              />
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
+          )}
         </Flex>
-        {isNotificationsOpen && <NotificationsModal />}
       </Box>
     </>
   );

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNetCore.Http;
+using static Backend.Infrastructure.FileStorageHelper;
 using MockQueryable.Moq;
 using Moq;
 using Assert = Xunit.Assert;
@@ -25,9 +27,11 @@ namespace Backend.Tests
         private Mock<HttpContext> _httpContextMock;
         private Mock<DbSet<User>> _user;
         private Mock<ILogger> _loggerMock;
+        private Mock<HttpRequest> _httpRequestMock;
 
         private NotificationController _notificationController;
         private NotificationService _notificationService;
+        private const string DOMAIN = "TestDomain";
 
         public NotificationTests()
         {
@@ -35,6 +39,7 @@ namespace Backend.Tests
             _dbContextMock = new(new DbContextOptions<AppDbContext>());
             _authServiceMock = new();
             _httpContextMock = new();
+            _httpRequestMock = new();
             _loggerMock = new();
 
             // Configuration
@@ -108,7 +113,7 @@ namespace Backend.Tests
 
             try
             {
-                response = _notificationService.GetAllNotificationAsync(_user.Object.First()).Result;
+                response = _notificationService.GetAllNotificationAsync(_user.Object.First(),DOMAIN).Result;
             }
             catch (Exception e)
             {
@@ -128,7 +133,6 @@ namespace Backend.Tests
         {
             MockBasicUtilities();
             OkObjectResult? response = null;
-
             try
             {
                 response = _notificationController.GetAllNotification().Result as OkObjectResult;
@@ -181,7 +185,7 @@ namespace Backend.Tests
                     DateOfBirth = DateTime.Now,
                     Gender = Models.User.GenderEnum.Male
                 }
-            }.AsQueryable().BuildMockDbSet();            
+            }.AsQueryable().BuildMockDbSet();
             var notification = new[]
             {
                 new Notification()
@@ -190,6 +194,7 @@ namespace Backend.Tests
                     User = _user.Object.First(),
                     UserId = userGuid,
                     IsRead = false,
+                    Type = Notification.NotificationType.None
                 }
             }.AsQueryable().BuildMockDbSet();
 
@@ -201,6 +206,10 @@ namespace Backend.Tests
             _dbContextMock.SetupGet(db => db.Users).Returns(_user.Object);
             _dbContextMock.SetupGet(db => db.Notifications).Returns(notification.Object);
             _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
+
+            _httpContextMock.Setup(ctx => ctx.Request).Returns(_httpRequestMock.Object);
+            _httpRequestMock.Setup(t => t.IsHttps).Returns(true);
+            _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));
 
             _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(_user.Object.First()));
         }

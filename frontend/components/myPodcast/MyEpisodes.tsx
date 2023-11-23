@@ -139,6 +139,7 @@ const Episode = ({ episode }) => {
           <Tooltip label="Edit" aria-label="Edit Tooltip">
             <IconButton
               variant="ghost"
+              data-cy="edit-button"
               fontSize={isMobile ? "2xl" : "3xl"}
               mr={isMobile ? 1 : 5}
               rounded={"full"}
@@ -154,6 +155,7 @@ const Episode = ({ episode }) => {
           <Tooltip label="Delete" aria-label="Delete Tooltip">
             <IconButton
               variant="ghost"
+              data-cy="delete-button"
               fontSize={isMobile ? "2xl" : "3xl"}
               rounded={"full"}
               opacity={0.7}

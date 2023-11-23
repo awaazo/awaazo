@@ -1,0 +1,105 @@
+name: Build Docker Images and Run Tests
+
+# Only run when PR to main
+on:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "Backend/Backend/**"
+      - "frontend/**"
+      - "Python/**"
+      - "!frontend/__tests__/**"
+      - "!frontend/cypress/**"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "Backend/Backend/**"
+      - "frontend/**"
+      - "Python/**"
+      - "!frontend/__tests__/**"
+      - "!frontend/cypress/**"
+      
+jobs:
+
+  # Checks which images have to be build. Only images for which the source code was changed will be build.
+  check_changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      py: ${{ steps.filter.outputs.py }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      branch_name: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          py:
+            - 'Python/**'
+          backend:
+            - 'Backend/Backend/**'
+          frontend:
+            - 'frontend/**'
+
+  # Push frontend Image to Registry
+  push_frontend_to_registry:
+    permissions:
+      packages: write
+      contents: read
+    name: Push Docker frontend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.frontend == 'true' }}
+    uses: ./.github/workflows/build-frontend-image.yml
+  
+  # Push Python Image to Registry
+  push_python_to_registry:
+    permissions:
+      packages: write
+      contents: read
+    name: Push Docker python backend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.py == 'true' }}
+    uses: ./.github/workflows/build-py-image.yml
+
+  # Push Backend Image to Registry
+  push_backend_to_registry:
+    permissions:
+      packages: write
+      contents: read
+    name: Push Docker backend image to github container registry
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.backend == 'true' }}
+    uses: ./.github/workflows/build-backend-image.yml
+
+  run_backend_unit_tests:
+    permissions:
+      contents: read
+      packages: write
+    name: Run ASP.NET Unit Tests
+    if: ${{ !cancelled() }}
+    needs: push_backend_to_registry
+    uses: ./.github/workflows/backend.yml
+
+  run_frontend_unit_tests:
+    permissions:
+      contents: read
+      packages: write
+    name: Run Jest Unit Tests
+    if: ${{ !cancelled() }}
+    needs: [push_backend_to_registry,push_python_to_registry]
+    uses: ./.github/workflows/frontend.yml
+
+  run_E2E_tests:
+    permissions:
+      contents: read
+      packages: write
+    name: Run Cypress E2E Tests
+    if: ${{ !cancelled() }}
+    needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry]
+    uses: ./.github/workflows/e2e.yml
+

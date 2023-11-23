@@ -20,6 +20,7 @@ public interface ISocialService
     public Task<bool> AddLikeToEpisodeAsync(Guid episodeId, User user);
     public Task<bool> AddLikeToCommentAsync(Guid commentId, User user);
     public Task<bool> RemoveLikeAsync(Guid episodeOrCommentId, User user);
+    public Task<bool> IsLikedAsync(Guid episodeOrCommentId, User user);
 
     // RATINGS
 
