@@ -27,6 +27,7 @@ describe ('Episode_Create', () => {
 
     // User should be able to edit a episode name and have it reflected immediately
     it('Should successfully edit an episode', function () {
+        cy.wait(500);
         cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });;
         cy.get('button').contains('My Podcasts').click({ timeout: 5000 });
         cy.url().should('include', '/MyPodcasts');
