@@ -44,8 +44,8 @@ import 'cypress-file-upload';
 */
 Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
-  cy.url().should('include', '/');
-  cy.wait(250);
+  cy.wait(200);
+  cy.url().should('include', '/', { timeout: 5000 });
   cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
   cy.get('button').contains('Login').click({ timeout: 5000 });
   if (email) {
@@ -56,7 +56,7 @@ Cypress.Commands.add('login', (username, email, password) => {
   }
   cy.get('input[id="password"]').type(password);
   cy.get('button[id="loginBtn"]').click();
-  cy.url().should('include', '/');
+  cy.url().should('include', '/', { timeout: 5000 });
 });
 
 Cypress.Commands.add('logout', () => {
@@ -76,8 +76,9 @@ Cypress.Commands.add('logout', () => {
   -=-=-=-=Registration Commands
 */
 Cypress.Commands.add('register_user', (email, username, password, confirmPassword, birthdate) => {
+  cy.wait(200);
   cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
-  cy.get('button').contains('Register').click();
+  cy.get('button').contains('Register').click({ timeout: 5000 });
   cy.get('input[id="email"]').type(email);
   cy.get('input[id="username"]').type(username);
   cy.get('input[id="password"]').type(password)
