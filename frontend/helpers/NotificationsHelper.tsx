@@ -54,4 +54,5 @@ export default class NotificationHelper{
             return error.response.data;
         }
     };
+    
 }

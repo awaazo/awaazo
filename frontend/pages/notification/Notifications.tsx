@@ -128,7 +128,7 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                         <Avatar src={notification.media} />
                         <VStack align="start" spacing={1} flex="1">
                           <Link href={`/Explore/${notification.link}`}>  
-                              <Text color="blue.400" fontWeight="bold">
+                              <Text color="blue.400" fontWeight="bold" textDecoration="underline">
                                 {notification.title}
                               </Text>
                           </Link>
