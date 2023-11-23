@@ -44,7 +44,7 @@ import 'cypress-file-upload';
 */
 Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
-  cy.wait(200);
+  cy.wait(500);
   cy.url().should('include', '/', { timeout: 5000 });
   cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
   cy.get('button').contains('Login').click({ timeout: 5000 });
