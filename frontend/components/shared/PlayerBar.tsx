@@ -327,7 +327,7 @@ const PlayerBar = () => {
             />
             <CommentComponent
               episodeIdOrCommentId={episode.id}
-              initialLikes={episode.comments.length}
+              initialComments={episode.comments.length}
               initialIsLiked={false}
             />
           </Flex>

@@ -110,7 +110,7 @@ const Episode = ({ episode }) => {
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
         <CommentComponent
           episodeIdOrCommentId={episode.id}
-          initialLikes={episode.comments.length}
+          initialComments={episode.comments.length}
           initialIsLiked={false}
         />
         <div style={{ marginTop: "4px", marginLeft: "4px" }}>

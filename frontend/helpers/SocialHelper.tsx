@@ -34,7 +34,7 @@ export default class SocialHelper {
         "Content-Type": "application/json",
       },
       data: data,
-      url: EndpointHelper.getEpisodeCommentEndpoint(episodeOrCommentId),
+      url: EndpointHelper.getCommentEndpoint(episodeOrCommentId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
     };
@@ -63,11 +63,15 @@ export default class SocialHelper {
     }
   };
 
+  /**
+   * Deletes a comment from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
   public static deleteComment = async (commentId): Promise<BaseResponse> => {
     // Create the request options.
     const options = {
       method: "DELETE",
-      url: EndpointHelper.getEpisodeCommentDeleteEndpoint(commentId),
+      url: EndpointHelper.getCommentDeleteEndpoint(commentId),
       headers: {
         accept: "*/*",
       },
@@ -100,7 +104,7 @@ export default class SocialHelper {
   };
 
   // Post a new like
-  public static postEpisodeLike = async (
+  public static postLike = async (
     episodeOrCommentId,
   ): Promise<BaseResponse> => {
     const options = {
@@ -109,7 +113,7 @@ export default class SocialHelper {
         accept: "*/*",
         "Content-Type": "application/json",
       },
-      url: EndpointHelper.getEpisodeLikeEndpoint(episodeOrCommentId),
+      url: EndpointHelper.getLikeEndpoint(episodeOrCommentId),
       withCredentials: true,
       cache: false,
     };
@@ -144,7 +148,7 @@ export default class SocialHelper {
   ): Promise<BaseResponse> => {
     const options = {
       method: "DELETE",
-      url: EndpointHelper.getEpisodeUnlikeEndpoint(episodeOrCommentId),
+      url: EndpointHelper.getUnlikeEndpoint(episodeOrCommentId),
       headers: {
         accept: "*/*",
       },
