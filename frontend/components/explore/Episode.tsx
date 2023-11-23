@@ -111,7 +111,6 @@ const Episode = ({ episode }) => {
         <CommentComponent
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
-          initialIsLiked={false}
         />
         <div style={{ marginTop: "4px", marginLeft: "4px" }}>
           <LikeComponent

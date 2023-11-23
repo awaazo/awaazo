@@ -19,13 +19,14 @@ import {
   Box,
   Tooltip,
   Input,
+  useBreakpointValue,
   IconButton,
 } from "@chakra-ui/react";
 import {
   FaComments,
   FaClock,
   FaPaperPlane,
-  FaHeart,
+  FaTrash,
   FaReply,
 } from "react-icons/fa";
 import { Comment, User } from "../../utilities/Interfaces";
@@ -33,19 +34,18 @@ import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./likeComponent";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
-const CommentComponent = ({
-  episodeIdOrCommentId,
-  initialComments,
-  initialIsLiked,
-}) => {
+const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
+  // Component Values
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [repliesText, setRepliesText] = useState<String[]>([]);
   const [replyText, setReplyText] = useState("");
-  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [replyChange, setReplyChange] = useState(0);
   const [noOfComments, setNoOfComments] = useState(initialComments);
   const [user, setUser] = useState(null);
+  const [numRepliesToShow, setNumRepliesToShow] = useState(3);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   // Fetch episode details and transform comments when the modal is opened
   useEffect(() => {
@@ -81,7 +81,7 @@ const CommentComponent = ({
       };
       fetchEpisodeDetails();
     }
-  }, [isOpen, episodeIdOrCommentId]);
+  }, [isOpen, episodeIdOrCommentId, noOfComments, replyChange]);
 
   // Add a new comment
   const handleAddComment = async () => {
@@ -93,16 +93,6 @@ const CommentComponent = ({
       if (response.status === 200) {
         // Update the UI to reflect the new comment
         setNoOfComments((noOfComments) => noOfComments + 1);
-        const addedComment = {
-          id: null,
-          user: user,
-          episodeId: episodeIdOrCommentId,
-          text: newComment,
-          dateCreated: new Date(),
-          likes: [],
-          replies: [],
-        };
-        setComments((comments) => [...comments, addedComment]);
       } else {
         console.log("Error posting comment:", response.message);
       }
@@ -122,15 +112,7 @@ const CommentComponent = ({
     );
     if (response.status === 200) {
       // Update the UI to reflect the new reply
-      const addedReply = {
-        id: null,
-        user: user,
-        text: replyText,
-        dateCreated: new Date(),
-        likes: [],
-      };
-      updatedComments[index].replies.push(addedReply);
-      setComments(updatedComments);
+      setReplyChange((replyChange) => replyChange + 1);
     } else {
       console.log("Error posting comment:", response.message);
     }
@@ -138,16 +120,22 @@ const CommentComponent = ({
   };
 
   // Deletes the Comment
-  const handleDeleteComment = (commentId) => {
-    SocialHelper.deleteComment(commentId).then((response) => {
+  const handleDeleteComment = (commentOrReplyId, isComment) => {
+    SocialHelper.deleteComment(commentOrReplyId).then((response) => {
       if (response.status === 200) {
-        setComments((prevComments) =>
-          prevComments.filter((comment) => comment.id !== commentId),
-        );
+        if (isComment) {
+          setNoOfComments((noOfComments) => noOfComments - 1);
+        } else {
+          setReplyChange((replyChange) => replyChange - 1);
+        }
       } else {
-        console.error("Error deleting comment:", response.message);
+        console.log("Error deleting comment:", response.message);
       }
     });
+  };
+
+  const loadMoreReplies = () => {
+    setNumRepliesToShow((prevNum) => prevNum + 3);
   };
 
   return (
@@ -167,7 +155,6 @@ const CommentComponent = ({
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent
-          boxShadow="dark-lg"
           backdropFilter="blur(40px)"
           display="flex"
           flexDirection="column"
@@ -184,7 +171,13 @@ const CommentComponent = ({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <VStack spacing={5} align="start" height="300px" overflowY="auto">
+            <VStack
+              spacing={5}
+              align="start"
+              width={isMobile ? "350px" : "500px"}
+              height="400px"
+              overflowY="auto"
+            >
               {comments && comments.length > 0 ? (
                 comments.map((comment, index) => (
                   <Box
@@ -192,17 +185,41 @@ const CommentComponent = ({
                     p={3}
                     borderRadius="md"
                     boxShadow="sm"
-                    bg={index % 2 === 0 ? "gray.550" : "gray.600"}
-                    _hover={{ bg: "gray.400", transition: "0.3s" }}
+                    bg={"gray.550"}
+                    _hover={{ transition: "0.3s" }}
                     width="100%"
                   >
                     <HStack spacing={5}>
                       <Avatar src={comment.user.avatarUrl} />
                       <VStack align="start" spacing={1} flex="1">
-                        <Text fontWeight="bold" isTruncated>
-                          {comment.user.username}
-                        </Text>
-                        <Text isTruncated>{comment.text}</Text>
+                        <HStack justifyContent="space-between" w="100%">
+                          <VStack align="start" spacing={1} flex="1">
+                            <Text fontWeight="bold" isTruncated>
+                              {comment.user.username}:
+                            </Text>
+                            <Text isTruncated whiteSpace="pre-line">
+                              {comment.text.replace(/(.{40})/g, "$1\n")}
+                            </Text>
+                          </VStack>
+                          <HStack spacing={2}>
+                            <LikeComponent
+                              episodeOrCommentId={comment.id}
+                              initialLikes={comment.likes}
+                              initialIsLiked={false}
+                            />
+                            {user.id === comment.user.id ? (
+                              <IconButton
+                                icon={<Icon as={FaTrash} />}
+                                variant={"ghost"}
+                                aria-label="Delete Comment"
+                                onClick={() =>
+                                  handleDeleteComment(comment.id, true)
+                                }
+                                size="md"
+                              />
+                            ) : null}
+                          </HStack>
+                        </HStack>
                       </VStack>
                     </HStack>
                     <HStack spacing={1} p={2} borderRadius="md">
@@ -211,29 +228,51 @@ const CommentComponent = ({
                         {comment.dateCreated.toLocaleString()}
                       </Text>
                     </HStack>
-                    <HStack mt={3} spacing={2}>
-                      <LikeComponent
-                        episodeOrCommentId={comment.id}
-                        initialLikes={comment.likes}
-                        initialIsLiked={false}
-                      />
-                      <Text fontSize="sm">{comment.likes.length}</Text>
-                    </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
-                      {comment.replies.map((reply, index) => (
-                        <Box key={index} bg="gray.650" p={2} borderRadius="md">
-                          <Avatar src={reply.user.avatarUrl} />
-                          <Text fontWeight="bold">{reply.user.username}:</Text>
-                          <Text>{reply.text}</Text>
-                          <HStack spacing={1} p={2} borderRadius="md">
-                            <Icon as={FaClock} color="gray.500" />
-                            <Text fontSize="xs" color="gray.500">
-                              {new Date(reply.dateCreated).toLocaleString()}
-                            </Text>
-                          </HStack>
-                        </Box>
-                      ))}
-                      <Box mt={2}>
+                      {comment.replies
+                        .slice(0, numRepliesToShow)
+                        .map((reply, index) => (
+                          <Box
+                            key={index}
+                            bg="gray.650"
+                            p={2}
+                            borderRadius="md"
+                            width="100%"
+                          >
+                            <HStack spacing={5} flex={1}>
+                              <Avatar src={reply.user.avatarUrl} />
+                              <VStack align="start" spacing={1} flex="1">
+                                <Text fontWeight="bold">
+                                  {reply.user.username}:
+                                </Text>
+                                <Text whiteSpace="pre-line">
+                                  {reply.text.replace(/(.{40})/g, "$1\n")}
+                                </Text>
+                              </VStack>
+                              <HStack spacing={2}>
+                                {user.id === reply.user.id ? (
+                                  <IconButton
+                                    icon={<Icon as={FaTrash} />}
+                                    variant={"ghost"}
+                                    aria-label="Delete Reply"
+                                    onClick={() =>
+                                      handleDeleteComment(reply.id, false)
+                                    }
+                                    size="sm"
+                                  />
+                                ) : null}
+                              </HStack>
+                            </HStack>
+
+                            <HStack spacing={1} p={2} borderRadius="md">
+                              <Icon as={FaClock} color="gray.500" />
+                              <Text fontSize="xs" color="gray.500">
+                                {new Date(reply.dateCreated).toLocaleString()}
+                              </Text>
+                            </HStack>
+                          </Box>
+                        ))}
+                      <Box mt={2} width="100%">
                         <HStack spacing={2}>
                           <Input
                             flex="1"
