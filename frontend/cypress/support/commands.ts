@@ -46,8 +46,8 @@ Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
   cy.url().should('include', '/');
   cy.wait(250);
-  cy.get('button[aria-label="Menu"]').click();
-  cy.get('button').contains('Login').click();
+  cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
+  cy.get('button').contains('Login').click({ timeout: 5000 });
   if (email) {
     cy.get('input[id="email"]').type(email);
   }

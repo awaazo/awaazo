@@ -27,8 +27,7 @@ describe ('Episode_Create', () => {
 
     // User should be able to edit a episode name and have it reflected immediately
     it('Should successfully edit an episode', function () {
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.get('button[aria-label="loggedInMenu"]').click().click({ timeout: 5000 });;
+        cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });;
         cy.get('button').contains('My Podcasts').click({ timeout: 5000 });
         cy.url().should('include', '/MyPodcasts');
         cy.wait(250);
@@ -61,9 +60,8 @@ describe ('Episode_Create', () => {
 
     // Users should be allowed to delete their own episodes
     it('Should successfully delete an episode', function () {
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.get('button[aria-label="loggedInMenu"]').click();
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });
+        cy.get('button').contains('My Podcasts').click({ timeout: 5000 });
         cy.url().should('include', '/MyPodcasts');
         cy.wait(250);
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
@@ -87,9 +85,8 @@ describe ('Episode_Create', () => {
 
     //Should add an episode from the podcast interface
     it('Should add an episode from the Podcast interface', () => {
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.get('button[aria-label="loggedInMenu"]').click();
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });
+        cy.get('button').contains('My Podcasts').click({ timeout: 5000 });
         cy.get('button').contains('New Episode').click({ timeout: 5000 });
         cy.get('input[type="file"]').attachFile(paths.Episode_cover_science);
         cy.get('input[placeholder="Enter episode name..."]').type("Has science gone too far?");
