@@ -272,6 +272,32 @@ namespace Backend.Migrations
                     b.ToTable("EpisodeLikes");
                 });
 
+            modelBuilder.Entity("Backend.Models.EpisodeSections", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("End")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Start")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EpisodeId");
+
+                    b.ToTable("EpisodeSections");
+                });
+
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
                 {
                     b.Property<Guid>("Id")
@@ -789,6 +815,17 @@ namespace Backend.Migrations
                     b.Navigation("Episode");
                 });
 
+            modelBuilder.Entity("Backend.Models.EpisodeSections", b =>
+                {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany("episodeSections")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+                });
+
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
                 {
                     b.HasOne("Backend.Models.Annotation", "Annotation")
@@ -927,6 +964,8 @@ namespace Backend.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Sponsors");
+
+                    b.Navigation("episodeSections");
                 });
 
             modelBuilder.Entity("Backend.Models.Playlist", b =>

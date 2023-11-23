@@ -34,8 +34,10 @@ public class Program
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
         builder.Services.AddScoped<ISocialService, SocialService>();
+        builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<PlaylistService>();
         builder.Services.AddScoped<ValidateUser>();
+
         builder.Services.AddScoped<ILogger, FileLogger>();
 
 
