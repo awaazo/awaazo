@@ -28,53 +28,57 @@ import {
   FaHeart,
   FaReply,
 } from "react-icons/fa";
-import { Comment } from "../../utilities/Interfaces";
+import { Comment, User } from "../../utilities/Interfaces";
+import AuthHelper from "../../helpers/AuthHelper";
+import LikeComponent from "./likeComponent";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const CommentComponent = ({
   episodeIdOrCommentId,
-  initialLikes,
+  initialComments,
   initialIsLiked,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
+  const [repliesText, setRepliesText] = useState<String[]>([]);
   const [replyText, setReplyText] = useState("");
   const [isLiked, setIsLiked] = useState(initialIsLiked);
-  const [noOfComments, setNoOfComments] = useState(initialLikes);
+  const [noOfComments, setNoOfComments] = useState(initialComments);
+  const [user, setUser] = useState(null);
 
   // Fetch episode details and transform comments when the modal is opened
   useEffect(() => {
     if (isOpen) {
       const fetchEpisodeDetails = async () => {
-        try {
-          const response = await PodcastHelper.getEpisodeById(
-            episodeIdOrCommentId
-          );
-          if (response.status === 200) {
-            if (response.episode) {
-              // Transform the comments to match your expected format
-              const transformedComments = response.episode.comments.map(
-                (comment) => ({
-                  id: comment.id,
-                  episodeId: comment.episodeId,
-                  user: comment.user,
-                  dateCreated: new Date(comment.dateCreated),
-                  text: comment.text,
-                  likes: comment.likes,
-                  replies: comment.replies,
-                })
-              );
-              setComments(transformedComments);
-            }
-          } else {
-            console.error("Error fetching episode details:", response.message);
+        AuthHelper.authMeRequest().then((response) => {
+          if (response.status == 200) {
+            setUser(response.userMenuInfo);
           }
-        } catch (error) {
-          console.error("Error fetching episode details:", error.message);
+        });
+        const response = await PodcastHelper.getEpisodeById(
+          episodeIdOrCommentId,
+        );
+        if (response.status === 200) {
+          if (response.episode) {
+            // Transform the comments to match your expected format
+            const transformedComments = response.episode.comments.map(
+              (comment) => ({
+                id: comment.id,
+                episodeId: comment.episodeId,
+                user: comment.user,
+                dateCreated: new Date(comment.dateCreated),
+                text: comment.text,
+                likes: comment.likes,
+                replies: comment.replies,
+              }),
+            );
+            setComments(transformedComments);
+          }
+        } else {
+          console.error("Error fetching episode details:", response.message);
         }
       };
-
       fetchEpisodeDetails();
     }
   }, [isOpen, episodeIdOrCommentId]);
@@ -84,17 +88,23 @@ const CommentComponent = ({
     if (newComment.trim()) {
       const response = await SocialHelper.postEpisodeComment(
         newComment,
-        episodeIdOrCommentId
+        episodeIdOrCommentId,
       );
       if (response.status === 200) {
         // Update the UI to reflect the new comment
-        const request = {
+        setNoOfComments((noOfComments) => noOfComments + 1);
+        const addedComment = {
+          id: null,
+          user: user,
+          episodeId: episodeIdOrCommentId,
           text: newComment,
+          dateCreated: new Date(),
+          likes: [],
+          replies: [],
         };
-        //to fix
-        //setComments((comments) => [...comments, newComment]);
+        setComments((comments) => [...comments, addedComment]);
       } else {
-        console.error("Error posting comment:", response.message);
+        console.log("Error posting comment:", response.message);
       }
       setNewComment("");
     }
@@ -103,84 +113,46 @@ const CommentComponent = ({
   // Reply to a comment
   const handleReply = async (index: number) => {
     const comment = comments[index];
-    const commentId = comment.id; // Assuming each comment has a unique 'id' property
-
+    const commentId = comment.id;
     const updatedComments = [...comments];
-    //updatedComments[index].replies.push(replyText);
-    setComments(updatedComments);
+
     const response = await SocialHelper.postEpisodeComment(
       replyText,
-      commentId
+      commentId,
     );
     if (response.status === 200) {
-      // Update the UI to reflect the new comment
-      //to fix
-      //setComments((comments) => [...comments, newComment]);
+      // Update the UI to reflect the new reply
+      const addedReply = {
+        id: null,
+        user: user,
+        text: replyText,
+        dateCreated: new Date(),
+        likes: [],
+      };
+      updatedComments[index].replies.push(addedReply);
+      setComments(updatedComments);
     } else {
-      console.error("Error posting comment:", response.message);
+      console.log("Error posting comment:", response.message);
     }
     setReplyText("");
   };
 
-  // Like/unlike a comment
-  const handleLike = (index: number) => {
-    const comment = comments[index];
-    const commentId = comment.id; // Assuming each comment has a unique 'id' property
-
-    // Toggle the like status based on whether the comment is currently liked
-    if (isLiked) {
-      // Call unlikeComment because the comment is currently liked
-      SocialHelper.deleteEpisodeLike(commentId)
-        .then((response) => {
-          if (response.status === 200) {
-            // Update the UI to reflect the unlike
-            setNoOfComments(noOfComments - 1);
-            setIsLiked(false);
-          } else {
-            console.error("Error unliking comment:", response.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Exception when calling unlikeComment:", error.message);
-        });
-    } else {
-      // Call likeComment because the comment is currently not liked
-      SocialHelper.postEpisodeLike(commentId)
-        .then((response) => {
-          if (response.status === 200) {
-            // Update the UI to reflect the like
-            setNoOfComments(noOfComments + 1);
-            setIsLiked(true);
-          } else {
-            console.error("Error liking comment:", response.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Exception when calling likeComment:", error.message);
-        });
-    }
-  };
-
+  // Deletes the Comment
   const handleDeleteComment = (commentId) => {
-    SocialHelper.deleteComment(commentId)
-      .then((response) => {
-        if (response.status === 200) {
-          setComments((prevComments) =>
-            prevComments.filter((comment) => comment.id !== commentId)
-          );
-        } else {
-          console.error("Error deleting comment:", response.message);
-        }
-      })
-      .catch((error) => {
-        // Handle any errors that occur during the deletion process
-        console.error("Exception when calling deleteComment:", error.message);
-      });
+    SocialHelper.deleteComment(commentId).then((response) => {
+      if (response.status === 200) {
+        setComments((prevComments) =>
+          prevComments.filter((comment) => comment.id !== commentId),
+        );
+      } else {
+        console.error("Error deleting comment:", response.message);
+      }
+    });
   };
 
   return (
     <>
-      <Tooltip label="Post a comment" aria-label="Comment tooltip">
+      <Tooltip label="Comment" aria-label="Comment tooltip">
         <Button
           p={2}
           m={1}
@@ -213,7 +185,7 @@ const CommentComponent = ({
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={5} align="start" height="300px" overflowY="auto">
-              {comments.length > 0 ? (
+              {comments && comments.length > 0 ? (
                 comments.map((comment, index) => (
                   <Box
                     key={index}
@@ -240,27 +212,11 @@ const CommentComponent = ({
                       </Text>
                     </HStack>
                     <HStack mt={3} spacing={2}>
-                      <Tooltip
-                        label={
-                          comment.likes
-                            ? "Unlike this comment"
-                            : "Like this comment"
-                        }
-                        aria-label="Like tooltip"
-                      >
-                        <IconButton
-                          icon={
-                            <Icon
-                              as={FaHeart}
-                              color={comment.likes ? "red.500" : "gray.500"}
-                            />
-                          }
-                          onClick={() => handleLike(index)}
-                          aria-label="Like Comment"
-                          size="sm"
-                          backgroundColor={"transparent"}
-                        />
-                      </Tooltip>
+                      <LikeComponent
+                        episodeOrCommentId={comment.id}
+                        initialLikes={comment.likes}
+                        initialIsLiked={false}
+                      />
                       <Text fontSize="sm">{comment.likes.length}</Text>
                     </HStack>
                     <VStack align="start" spacing={2} mt={3} pl={8}>
@@ -326,7 +282,6 @@ const CommentComponent = ({
                 marginTop={"15px"}
                 marginBottom={"10px"}
                 padding={"20px"}
-                // semi transparent white outline
                 outline={"1px solid rgba(255, 255, 255, 0.6)"}
                 style={{
                   background:
