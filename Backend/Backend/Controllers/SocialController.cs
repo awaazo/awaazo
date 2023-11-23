@@ -121,6 +121,36 @@ public class SocialController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Checks if the user has liked the episode or comment.
+    /// </summary>
+    /// <param name="episodeOrCommentId">Episode or Comment ID</param>
+    /// <returns>True if liked, otherwise false</returns>
+    [HttpGet("{episodeOrCommentId}/isLiked")]
+    public async Task<ActionResult> IsLiked(Guid episodeOrCommentId)
+    {
+        _logger.LogDebug(@"Using the social\episodeOrCommentId\isLike Endpoint");
+
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _socialService.IsLikedAsync(episodeOrCommentId,user));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+    }
+
+
     #endregion
 
     #region Rating
