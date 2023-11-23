@@ -76,7 +76,7 @@ Cypress.Commands.add('logout', () => {
   -=-=-=-=Registration Commands
 */
 Cypress.Commands.add('register_user', (email, username, password, confirmPassword, birthdate) => {
-  cy.get('button[aria-label="Menu"]').click();
+  cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
   cy.get('button').contains('Register').click();
   cy.get('input[id="email"]').type(email);
   cy.get('input[id="username"]').type(username);
