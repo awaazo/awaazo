@@ -11,9 +11,27 @@ namespace Backend.Services
 {
     public class NotificationService : INotificationService
     {
+
+        /// <summary>
+        /// Pusher Instance
+        /// </summary>
         private readonly Pusher _pusher;
+        
+        /// <summary>
+        /// Database Context
+        /// </summary>
         private readonly AppDbContext _db;
+        
+        /// <summary>
+        /// Configuration Instance to access configuration
+        /// </summary>
         private readonly IConfiguration _configuration;
+        
+        /// <summary>
+        /// A DEFAULT Notification Picture
+        /// </summary>
+        private const string DEFAULT_NOTIFICATION_PICTURE = "https://png.pngtree.com/png-vector/20211018/ourmid/pngtree-simple-podcast-logo-design-png-image_3991612.png";
+        
 
         public NotificationService(IConfiguration configuration,AppDbContext db) {
             _configuration = configuration;
@@ -33,14 +51,23 @@ namespace Backend.Services
         }
 
 
-        // Gets Number of Unread Notifications
+        /// <summary>
+        /// Gets Count of Unread Notification
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<int> GetUnreadNoticationCountAsync(User user)
         {
             return await _db.Notifications!.Where(u => (u.UserId == user.Id) && u.IsRead == false).CountAsync();
         }
 
        
-        // Get All the Notifications
+        /// <summary>
+        /// Gets All the notification
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="domainUrl"></param>
+        /// <returns></returns>
         public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user,string domainUrl)
         {         
             //Get the Notifications
@@ -62,6 +89,7 @@ namespace Backend.Services
                     {
                         response.Add(new PodcastNotificationResponse(notification, domainUrl));
                     }
+
                 }
 
                 // When type is None then just get the saved Image
@@ -85,7 +113,13 @@ namespace Backend.Services
             return response;        
         }     
 
-        // HELPER FUNCTION - Will Send Notification to all the Subscribed User 
+        /// <summary>
+        /// Helper function to Send Notification to the subscribed Users
+        /// </summary>
+        /// <param name="PodcastId"></param>
+        /// <param name="episode"></param>
+        /// <param name="db"></param>
+        /// <returns></returns>
         public async Task<bool> AddEpisodeNotification(Guid PodcastId,Episode episode,AppDbContext db)
         {
             // Get All the followers
@@ -101,7 +135,7 @@ namespace Backend.Services
                     Title = "Podcast : " + episode.Podcast.Name,
                     Message = "New Episode added : " + episode.EpisodeName,
                     Link = episode.Podcast.Id.ToString(),
-                    Media = episode.Podcast.CoverArt,
+                    Media = DEFAULT_NOTIFICATION_PICTURE,
                     Type = Notification.NotificationType.PodcastAlert,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
@@ -113,7 +147,13 @@ namespace Backend.Services
 
         #region Private Methods
 
-        // Trigger Message and Save the Notification to the Database 
+        /// <summary>
+        /// Creates and trigger notification
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         private async Task<bool> CreateNotification(Notification notification, AppDbContext db)
         {
             // Check Whether the User Id is null or not
@@ -135,7 +175,13 @@ namespace Backend.Services
             return true;
         }
 
-        // Trigger Function
+        /// <summary>
+        /// Trigger any Kind of events
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="Event"></param>
+        /// <param name="notification"></param>
+        /// <returns></returns>
         private async Task<ITriggerResult> TriggerNotification(string channel, string Event, Notification notification)
         {
             return await _pusher.TriggerAsync(channel, Event, notification);

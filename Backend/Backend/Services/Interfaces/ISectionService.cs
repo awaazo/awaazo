@@ -5,8 +5,8 @@ namespace Backend.Services.Interfaces
 {
     public interface ISectionService
     {
-        public Task<bool> AddSection(Guid EpisodeId, Guid userId,SectionRequest sectionRequest);
-        public Task<List<EpisodeSections>> GetSections(Guid EpisodeId);
-        public Task<bool> DeleteSection(Guid sectionId, Guid userId);
+        public Task<bool> AddSectionAsync(Guid EpisodeId, Guid userId,SectionRequest sectionRequest);
+        public Task<List<EpisodeSections>> GetSectionsAsync(Guid EpisodeId);
+        public Task<bool> DeleteSectionAsync(Guid sectionId, Guid userId);
     }
 }

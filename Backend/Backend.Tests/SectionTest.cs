@@ -60,7 +60,7 @@ namespace Backend.Tests
         #region Service Tests
 
         [Fact]
-        public void Section_AddSection_ValidRequest_Success()
+        public void Section_AddSectionAsync_ValidRequest_Success()
         {
             bool response = false;
             try
@@ -73,7 +73,7 @@ namespace Backend.Tests
                     
                 };
 
-                response = _sectionService.AddSection(_episode.Object.First().Id, _user.Object.First().Id, sectionRequest).Result;
+                response = _sectionService.AddSectionAsync(_episode.Object.First().Id, _user.Object.First().Id, sectionRequest).Result;
                 
             }
             catch(Exception e)
@@ -91,7 +91,7 @@ namespace Backend.Tests
             List<EpisodeSections> episodeSections = null;
             try
             {
-                episodeSections = _sectionService.GetSections(_episode.Object.First().Id).Result;
+                episodeSections = _sectionService.GetSectionsAsync(_episode.Object.First().Id).Result;
 
 
 
@@ -111,7 +111,7 @@ namespace Backend.Tests
             bool response = false;
             try
             {
-                response = _sectionService.DeleteSection(_episodeSections.Object.First().Id, _user.Object.First().Id).Result;
+                response = _sectionService.DeleteSectionAsync(_episodeSections.Object.First().Id, _user.Object.First().Id).Result;
 
             }
             catch(Exception e)

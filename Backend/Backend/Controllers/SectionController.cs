@@ -35,7 +35,7 @@ namespace Backend.Controllers
                 if (user == null)
                     return NotFound("User does not exist.");
                 // Call the services Method
-                return await _SectionService.AddSection(episodeId,user.Id, request) ? Ok("Successfully Added Section") : BadRequest("Database Error Occured");
+                return await _SectionService.AddSectionAsync(episodeId,user.Id, request) ? Ok("Successfully Added Section") : BadRequest("Database Error Occured");
             }
             catch(Exception ex) { 
                 return BadRequest(ex.Message);
@@ -56,7 +56,7 @@ namespace Backend.Controllers
                     return NotFound("User does not exist.");
 
                 
-                return Ok(await _SectionService.GetSections(episodeId));
+                return Ok(await _SectionService.GetSectionsAsync(episodeId));
 
 
             }
@@ -80,7 +80,7 @@ namespace Backend.Controllers
                 if (user == null)
                     return NotFound("User does not exist.");
 
-                return await _SectionService.DeleteSection(sectionId,user.Id) ? Ok("Successfully Deleted") : BadRequest("Error occured while saving");
+                return await _SectionService.DeleteSectionAsync(sectionId,user.Id) ? Ok("Successfully Deleted") : BadRequest("Error occured while saving");
 
             }
             catch(Exception ex)

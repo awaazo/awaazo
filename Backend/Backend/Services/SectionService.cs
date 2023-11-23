@@ -16,8 +16,14 @@ namespace Backend.Services
            
         }
 
-        // Deletes Section 
-        public async Task<bool> DeleteSection(Guid sectionId,Guid userId)
+        /// <summary>
+        /// Deletes Section
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<bool> DeleteSectionAsync(Guid sectionId,Guid userId)
         {
             EpisodeSections? episodeSections = await _db.EpisodeSections.Include(u => u.Episode).ThenInclude(u => u.Podcast).FirstOrDefaultAsync(u => u.Id == sectionId);
             // Check If Section Exist
@@ -35,15 +41,26 @@ namespace Backend.Services
             return await _db.SaveChangesAsync() > 0;
 
         }
-        // Gets Section in Ascending Order
-        public async Task<List<EpisodeSections>> GetSections(Guid EpisodeId)
+        /// <summary>
+        /// Get Section in ascending Order
+        /// </summary>
+        /// <param name="EpisodeId"></param>
+        /// <returns></returns>
+        public async Task<List<EpisodeSections>> GetSectionsAsync(Guid EpisodeId)
         {
             return await _db.EpisodeSections.Where(u => u.EpisodeId == EpisodeId).OrderBy(u => u.Start).ToListAsync();   
         }
 
 
-        //Add Section 
-        public async Task<bool> AddSection(Guid EpisodeId,Guid userId,SectionRequest sectionRequest)
+        /// <summary>
+        /// Adds Section to an Episode
+        /// </summary>
+        /// <param name="EpisodeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="sectionRequest"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<bool> AddSectionAsync(Guid EpisodeId,Guid userId,SectionRequest sectionRequest)
         {
 
             Episode? episode = await _db.Episodes.Include(u => u.Podcast).FirstOrDefaultAsync(u => u.Id == EpisodeId);
