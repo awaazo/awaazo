@@ -9,7 +9,7 @@ import {
   Image,
   Wrap,
   WrapItem,
-  Button,
+  Button, // Add Button import
 } from "@chakra-ui/react";
 
 import Episode from "../explore/Episode";
@@ -60,6 +60,10 @@ export default function PodcastOverview({ podcast }) {
         "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))",
     },
   };
+
+  function handleSubscribe(id: any): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <>
@@ -117,6 +121,14 @@ export default function PodcastOverview({ podcast }) {
                   </WrapItem>
                 ))}
               </Wrap>
+              <Button
+                size="md"
+                colorScheme="teal"
+                mt={4}
+                onClick={() => handleSubscribe(podcast.id)} // Replace with actual subscribe function
+              >
+                Subscribe
+              </Button>
             </Text>
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm" position="relative">

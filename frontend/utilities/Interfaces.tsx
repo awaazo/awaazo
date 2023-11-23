@@ -174,3 +174,20 @@ export interface UserMenuInfo {
   username: string;
   avatarUrl: string;
 }
+
+
+/**
+ * User fields related to their Notifications.
+ * */
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  link: string;
+  "isRead": boolean;
+  media: string;
+  type: string;
+  createdAt: Date;
+}
+

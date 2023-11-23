@@ -91,3 +91,8 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 }
 
 //#endregion
+
+
+export interface NotificationResponse extends BaseResponse {
+  notifications: Notification[];
+}
