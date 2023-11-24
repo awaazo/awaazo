@@ -170,5 +170,112 @@ public class BookmarkTests : IAsyncLifetime
         dbContextMock.Verify(m => m.SaveChangesAsync(default), Times.Once());
     }
 
+    [Fact]
+    public async void Delete_ValidBookmarkGuid()
+    {
+        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
+        Mock<IMapper> mapperMock = new();
+
+        BookmarkService service = new(dbContextMock.Object);
+
+        User user = new User()
+        {
+            Id = Guid.NewGuid(),
+        };
+        
+        Mock<DbSet<User>> users = new[]
+        {
+            user
+        }.AsQueryable().BuildMockDbSet();
+        
+        Guid bookmarkId = Guid.NewGuid();
+        Mock<DbSet<Bookmark>> bookmarks = new Bookmark[]
+        {
+            new Bookmark()
+            {
+                Id = bookmarkId,
+                EpisodeId = Guid.NewGuid(),
+                UserId = user.Id
+            }
+        }.AsQueryable().BuildMockDbSet();
+        
+        
+        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Bookmarks).Returns(bookmarks.Object);
+
+        await service.Delete(user, bookmarkId);
+        bookmarks.Verify(m => m.Remove(It.IsAny<Bookmark>()), Times.Once());
+        dbContextMock.Verify(m => m.SaveChangesAsync(default), Times.Once());
+    }
+    
+    [Fact]
+    public async void Delete_InValidBookmarkGuid()
+    {
+        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
+        Mock<IMapper> mapperMock = new();
+
+        BookmarkService service = new(dbContextMock.Object);
+
+        User user = new User()
+        {
+            Id = Guid.NewGuid(),
+        };
+        
+        Mock<DbSet<User>> users = new[]
+        {
+            user
+        }.AsQueryable().BuildMockDbSet();
+        
+        Guid bookmarkId = Guid.NewGuid();
+        Mock<DbSet<Bookmark>> bookmarks = new Bookmark[]
+        {
+            new Bookmark()
+            {
+                Id = bookmarkId,
+                EpisodeId = Guid.NewGuid(),
+                UserId = user.Id
+            }
+        }.AsQueryable().BuildMockDbSet();
+        
+        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Bookmarks).Returns(bookmarks.Object);
+
+        await Assert.ThrowsAsync<Exception>(() => service.Delete(user, Guid.NewGuid()));
+    }
+    
+    [Fact]
+    public async void Delete_UnauthorizedUser()
+    {
+        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
+        Mock<IMapper> mapperMock = new();
+
+        BookmarkService service = new(dbContextMock.Object);
+
+        User user = new User()
+        {
+            Id = Guid.NewGuid(),
+        };
+        
+        Mock<DbSet<User>> users = new[]
+        {
+            user
+        }.AsQueryable().BuildMockDbSet();
+        
+        Guid bookmarkId = Guid.NewGuid();
+        Mock<DbSet<Bookmark>> bookmarks = new Bookmark[]
+        {
+            new Bookmark()
+            {
+                Id = bookmarkId,
+                EpisodeId = Guid.NewGuid(),
+                UserId = Guid.NewGuid()
+            }
+        }.AsQueryable().BuildMockDbSet();
+        
+        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Bookmarks).Returns(bookmarks.Object);
+
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.Delete(user, bookmarkId));
+    }
     #endregion
 }

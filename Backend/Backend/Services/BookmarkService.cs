@@ -48,5 +48,6 @@ public class BookmarkService
             throw new UnauthorizedAccessException();
 
         _db.Bookmarks.Remove(bookmark);
+        await _db.SaveChangesAsync();
     }
 }
