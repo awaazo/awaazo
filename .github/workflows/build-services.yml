@@ -81,6 +81,7 @@ jobs:
       contents: read
       packages: write
     name: Run ASP.NET Unit Tests
+    if: ${{ !cancelled() }}
     needs: push_backend_to_registry
     uses: ./.github/workflows/backend.yml
 
@@ -89,7 +90,7 @@ jobs:
       contents: read
       packages: write
     name: Run Jest Unit Tests
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs: [push_backend_to_registry,push_python_to_registry]
     uses: ./.github/workflows/frontend.yml
 
@@ -98,7 +99,7 @@ jobs:
       contents: read
       packages: write
     name: Run Cypress E2E Tests
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry]
     uses: ./.github/workflows/e2e.yml
 
