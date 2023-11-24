@@ -69,7 +69,8 @@ const subscribeComponent = ({
                     variant="ghost"
                     onClick={handleSubscribe}
                     fontWeight={"bold"}
-                    colorScheme={isSubscribed ? "gray" : "red"}
+                    
+                    bg={isSubscribed ? "gray.700" : "blue.500"}
                 >
                     {isSubscribed ? "Unsubscribe" : "Subscribe"}
                 </Button>
