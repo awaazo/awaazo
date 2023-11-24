@@ -266,7 +266,7 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookmark",
+                name: "Bookmarks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -280,19 +280,17 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bookmark", x => x.Id);
+                    table.PrimaryKey("PK_Bookmarks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookmark_Episodes_EpisodeId",
+                        name: "FK_Bookmarks_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
                         principalTable: "Episodes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Bookmark_Users_UserId",
+                        name: "FK_Bookmarks_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -492,13 +490,13 @@ namespace Backend.Migrations
                 column: "SponsorshipId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookmark_EpisodeId",
-                table: "Bookmark",
+                name: "IX_Bookmarks_EpisodeId",
+                table: "Bookmarks",
                 column: "EpisodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookmark_UserId",
-                table: "Bookmark",
+                name: "IX_Bookmarks_UserId",
+                table: "Bookmarks",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -603,7 +601,7 @@ namespace Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bookmark");
+                name: "Bookmarks");
 
             migrationBuilder.DropTable(
                 name: "CommentLikes");

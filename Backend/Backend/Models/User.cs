@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
+using Newtonsoft.Json;
 
 namespace Backend.Models;
 
@@ -169,8 +170,7 @@ public class User : BaseEntity
     /// <typeparam name="Notification"></typeparam>
     /// <returns></returns>
     public ICollection<Notification> Notifications {  get; } = new List<Notification>();
-
-
+    
     /// <summary>
     /// Gender enum.
     /// </summary>

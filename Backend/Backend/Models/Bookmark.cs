@@ -5,23 +5,21 @@ namespace Backend.Models;
 
 public class Bookmark : BaseEntity
 {
-    private readonly AppDbContext _db;
-
-    public Bookmark(AppDbContext db) 
+    public Bookmark() 
     {
         Title = string.Empty;
         Note = string.Empty;
-        _db = db;
+        Time = 0.0;
     }
 
     [Key]
     public Guid Id { get; set; }
 
-    public User? User => _db.Users.FirstOrDefault(u => u.Id == UserId);
+    public User User { get; set; } = null!;
     
     public Guid UserId { get; set; }
 
-    public Episode? Episode => _db.Episodes.FirstOrDefault(e => e.Id == EpisodeId);
+    public Episode Episode { get; set; } = null!;
     
     public Guid EpisodeId { get; set; }
     

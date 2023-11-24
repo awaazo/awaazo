@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Backend.Controllers.Requests;
 using Backend.Models;
 using Backend.Services;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +14,10 @@ namespace Backend.Controllers;
 [Authorize]
 public class BookmarkController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
     private readonly BookmarkService _bookmarkService;
     private readonly ILogger<BookmarkController> _logger;
-    public BookmarkController(AuthService auth, BookmarkService bookmark, ILogger<BookmarkController> logger)
+    public BookmarkController(IAuthService auth, BookmarkService bookmark, ILogger<BookmarkController> logger)
     {
         _authService = auth;
         _bookmarkService = bookmark;
@@ -32,25 +34,26 @@ public class BookmarkController : ControllerBase
     {
         try
         {
+            this.LogDebugControllerAPICall(_logger);
             // Identify User from JWT Token
             User user = (await _authService.IdentifyUserAsync(HttpContext))!;
-            return Ok(await _bookmarkService.GetBookmarks(user, episodeId));
+            var result = await _bookmarkService.GetBookmarks(user, episodeId);
+            return Ok(result);
         }
         catch (Exception e)
         {
-            _logger.LogDebug("Error occurred in {1}: {2}",
-                System.Reflection.MethodBase.GetCurrentMethod()?.Name,
-                e.Message);
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
-
-    [HttpPost]
-    [HttpGet("{episodeId}/add")]
+    
+    [HttpPost("{episodeId}/add")]
     public async Task<IActionResult> AddBookmark([Required] Guid episodeId, [FromBody] BookmarkAddRequest request)
     {
         try
         {
+            this.LogDebugControllerAPICall(_logger);
+            
             // Identify User from JWT Token
             User user = (await _authService.IdentifyUserAsync(HttpContext))!;
 
@@ -61,9 +64,7 @@ public class BookmarkController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogDebug("Error occurred in {1}: {2}",
-                System.Reflection.MethodBase.GetCurrentMethod()?.Name,
-                e.Message);
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
@@ -73,17 +74,16 @@ public class BookmarkController : ControllerBase
     {
         try
         {
+            this.LogDebugControllerAPICall(_logger);
+            
             User user = (await _authService.IdentifyUserAsync(HttpContext))!;
             await _bookmarkService.Delete(user, bookmarkId);
             return Ok();
         }
         catch (Exception e)
         {
-            _logger.LogDebug("Error occurred in {1}: {2}",
-                System.Reflection.MethodBase.GetCurrentMethod()?.Name,
-                e.Message);
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
-
 }

@@ -25,7 +25,7 @@ public class BookmarkService
         if (episode is null)
             throw new Exception("Invalid episode ID " + episodId);
 
-        Bookmark bookmark = new Bookmark(_db)
+        Bookmark bookmark = new Bookmark()
         {
             EpisodeId = episodId,
             UserId = user.Id,
