@@ -10,8 +10,8 @@ describe ('Episode_Create', () => {
     // User that exists should be able to create an Episode given that a Podcast exists
     it('Should Successfully create a new Episode', function () {
         cy.episode_create(paths.Episode_cover, "Charles Leclerc", "From his rise in f2 to his demise at Ferrari", paths.never_gonna_give_you_up, "f2");
-        cy.url().should('include', '/MyPodcasts')
-        cy.wait(500);
+        cy.wait('@podcasts', { timeout: 15000 });
+        cy.url().should('include', '/MyPodcasts');
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.contains('Charles Leclerc');
@@ -63,7 +63,7 @@ describe ('Episode_Create', () => {
     it('Should successfully delete an episode', function () {
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').click();
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button').contains('My Podcasts').should('be.visible').click({timeout: 5000});
         cy.url().should('include', '/MyPodcasts');
         cy.wait(250);
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
@@ -77,8 +77,8 @@ describe ('Episode_Create', () => {
     // Episode names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in episode name', () => {
         cy.episode_create(paths.crazy_symbols, "♣™∏⊄‾ℜ→∞ϖñ", "Episode about cool symbols", paths.never_gonna_give_you_up, "f2");
+        cy.wait('@podcasts', { timeout: 15000 });
         cy.url().should('include', '/MyPodcasts')
-        cy.wait(250);
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ');
@@ -89,7 +89,7 @@ describe ('Episode_Create', () => {
     it('Should add an episode from the Podcast interface', () => {
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').click();
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button').contains('My Podcasts').should('be.visible').click({timeout: 5000});
         cy.get('button').contains('New Episode').click({ timeout: 5000 });
         cy.get('input[type="file"]').attachFile(paths.Episode_cover_science);
         cy.get('input[placeholder="Enter episode name..."]').type("Has science gone too far?");
@@ -99,9 +99,9 @@ describe ('Episode_Create', () => {
         });
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('button[id=createBtn]').click();
-        cy.wait(250);
+        cy.intercept('GET', '/MyPodcasts').as('podcasts');
+        cy.wait('@podcasts', { timeout: 15000 });
         cy.url().should('include', '/MyPodcasts')
-        cy.wait(250);
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.contains('Has science gone too far?');
@@ -111,8 +111,8 @@ describe ('Episode_Create', () => {
     //There should be a 25 character limit for an episoode title
     it('limits the number of characters in the input field', () => {
         cy.episode_create(paths.profile_picture, "This is a very long episode title that should be cut off after 25 characters", "Testing so fun!!", paths.never_gonna_give_you_up, "f2");
-        cy.url().should('include', '/MyPodcasts')
-        cy.wait(250);
+        cy.wait('@podcasts', { timeout: 15000 });
+        cy.url().should('include', '/MyPodcasts');
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.contains('This is a very long episo');
@@ -124,8 +124,10 @@ describe ('Episode_Create', () => {
         cy.url().should('include', '/Create');
         cy.contains('Cool pets');
         cy.episode_create(paths.shiba, "Funny Shibas", "Silly dogs", paths.never_gonna_give_you_up, "pets");
+        cy.wait('@podcasts', { timeout: 15000 });
         cy.url().should('include', '/MyPodcasts')
         cy.episode_create(paths.cat, "Funny Cats", "Silly cats", paths.never_gonna_give_you_up, "pets");
+        cy.wait('@podcasts', { timeout: 15000 });
         cy.url().should('include', '/MyPodcasts')
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-cool-pets').click();
@@ -134,7 +136,6 @@ describe ('Episode_Create', () => {
         cy.get('[data-cy="podcast-delete"]').click();
         cy.contains('Button', 'Delete').click();
         cy.url().should('include', '/MyPodcasts');
-        cy.wait(250);
         cy.get('[data-cy="podcast-image-cool-pets"]').should('not.exist');
         cy.get('Funny cats').should('not.exist');
         cy.get('Funny Shibas').should('not.exist');

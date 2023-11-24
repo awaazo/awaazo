@@ -60,12 +60,9 @@ Cypress.Commands.add('login', (username, email, password) => {
 });
 
 Cypress.Commands.add('logout', () => {
-  cy.visit('/');
-  cy.url().should('include', '/');
-  cy.wait(250);
-  cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+  cy.get('button[aria-label="loggedInMenu"]').should('be.visible').parent().should('be.visible');
   cy.get('button[aria-label="loggedInMenu"]').click();
-  cy.get('button').contains('Logout').click();
+  cy.get('button').contains('Logout').should('be.visible').click({timeout: 5000});
   cy.url().should('include', '/');
 });
 /*
@@ -187,7 +184,8 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
   if(podcast === "pets"){
     cy.get('[data-cy=podcast-image-cool-pets').click();
   }
-  cy.get('button[id=createBtn]').click();
+  cy.get('button[id=createBtn]').click({ timeout: 10000 });
+  cy.intercept('GET', '/MyPodcasts').as('podcasts');
 });
 
 
