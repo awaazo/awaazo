@@ -36,14 +36,19 @@ const Subscriptions: FC = () => {
           _hover={{ borderColor: blue500, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)" }}
           bg={useColorModeValue("white", gray700)}
         >
-          <Link href={`/Explore/${subscription.id}`} passHref>
             <Flex as="a" alignItems="center" justifyContent="space-between" textDecoration="none">
               <Flex alignItems="center">
+              <Link href={`/Explore/${subscription.id}`} passHref>
+              <Flex direction="column" alignItems="flex-start">
                 <Avatar size="lg" src={subscription.coverArtUrl} mr={4} />
+                </Flex>
+              </Link>
                 <Flex direction="column" justifyContent="center">
-                  <Text fontWeight="bold" color={blue500}>{subscription.name}</Text>
+                <Link href={`/Explore/${subscription.id}`} passHref>
+                <Text fontWeight="bold" color={blue500}>{subscription.name}</Text>
                   <Text fontSize="sm" color={gray300} mt={1}>{subscription.description}</Text>
                   <Badge colorScheme={subscription.isExplicit ? "red" : "green"} mt={2}>{subscription.isExplicit ? "Explicit" : "Implicit"}</Badge>
+                </Link>
                 </Flex>
               </Flex>
               <Flex direction="column" alignItems="flex-end">
@@ -51,7 +56,6 @@ const Subscriptions: FC = () => {
                 <Text fontSize="sm" color={gray500}>Total Ratings: {subscription.totalRatings}</Text>
               </Flex>
             </Flex>
-          </Link>
         </Box>
       ))}
     </Stack>
