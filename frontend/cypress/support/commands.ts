@@ -73,8 +73,8 @@ Cypress.Commands.add('logout', () => {
   -=-=-=-=Registration Commands
 */
 Cypress.Commands.add('register_user', (email, username, password, confirmPassword, birthdate) => {
-  cy.get('button[aria-label="Menu"]').click();
-  cy.get('button').contains('Register').click();
+  cy.get('button[aria-label="Menu"]').should('be.visible').click();
+  cy.get('button').contains('Register').should('be.visible').click({timeout: 5000});
   cy.get('input[id="email"]').type(email);
   cy.get('input[id="username"]').type(username);
   cy.get('input[id="password"]').type(password)
@@ -89,7 +89,7 @@ Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   cy.get('input[type="file"]').attachFile(filepath);
   cy.get('input[id="displayName"]').type(displayName);
   cy.get('Textarea[id="bio"]').type(bio);
-  cy.get(':nth-child(16) > .chakra-button').click();
+  cy.get(':nth-child(5) > .chakra-button').click();
   cy.get(':nth-child(7) > .chakra-button').click();
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[type="submit"]').click();
