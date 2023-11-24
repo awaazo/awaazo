@@ -37,7 +37,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<Notification>? Notifications { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
-
+    public virtual DbSet<EpisodeSections> EpisodeSections { get; set; }
+ 
     /// <summary>
     /// Maps to the Soundex function in the database.
     /// No need to implement on server as it will be used in db.
@@ -214,6 +215,15 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        // Episode 1-to-many Com
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.episodeSections)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
     }
     

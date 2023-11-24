@@ -175,3 +175,34 @@ export interface UserMenuInfo {
   username: string;
   avatarUrl: string;
 }
+
+
+/**
+ * User fields related to their Notifications.
+ * */
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  link: string;
+  "isRead": boolean;
+  media: string;
+  type: string;
+  createdAt: Date;
+}
+
+export interface MySubscriptions {
+  id: string;
+  name: string;
+  description: string;
+  coverArtUrl: string;
+  podcasterId: string;
+  tags: string[];
+  isExplicit: boolean;
+  type: "real" | "ai-generated";
+  episodes: Episode[];
+  averageRating?: number;
+  totalRatings?: number;
+  ratings?: PodcastRating[];
+}

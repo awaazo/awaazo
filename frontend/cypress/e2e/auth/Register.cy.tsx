@@ -12,7 +12,7 @@ describe('Register', () => {
         cy.register_user('testRegister@email.com', 'TestUsername', 'password123', 'password123', '2000-01-01');
         cy.setup_user(paths.profile_picture, 'TestDisplayName', 'TestDisplayBio');
         cy.url().should('include', '/');
-        cy.visit('/profile/MyProfile');
+        cy.visit('/profile/MyProfile', { timeout: 5000 });
         cy.contains('TestDisplayBio');
       });
       
