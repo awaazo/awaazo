@@ -170,6 +170,23 @@ export interface UserProfile {
   gender: string;
 }
 
+export interface userProfileByID {
+  podcasts: Podcast[];
+  email: string;
+  displayName: string;
+  bio: string;
+  interests: string[];
+  twitterUrl?: string;
+  githubUrl?: string;
+  linkedInUrl?: string;
+  websiteUrl?: string;
+  dateOfBirth: string;
+  gender: string;
+  id: string;
+  avatarUrl: string;
+  username: string;
+}
+
 export interface UserMenuInfo {
   id: string;
   username: string;

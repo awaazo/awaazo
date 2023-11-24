@@ -18,9 +18,9 @@ import { useRouter } from "next/router";
 import Navbar from "../../components/shared/Navbar";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../../components/explore/PodcastCard";
+import PodcastCard from "../../components/Cards/PodcastCard";
 import ForYou from "../../components/home/ForYou";
-import UserCard from "../../components/explore/UserCard";
+import UserCard from "../../components/Cards/UserCard";
 import PlayerBar from "../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
@@ -103,6 +103,32 @@ export default function MyPodcast() {
               emptyColor="transparent"
             />
           </Flex>
+        ) : podcasts && podcasts.length > 0 ? (
+          <>
+            <Flex width="100%">
+              <Box flex="1">
+                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
+                  Podcasts:
+                </Text>
+                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+                  {podcasts.map((podcast) => (
+                    <PodcastCard podcast={podcast} key={podcast.id} />
+                  ))}
+                </SimpleGrid>
+              </Box>
+
+              <Box flex="1" ml={30}>
+                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
+                  Users:
+                </Text>
+                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+                  {users.map((user) => (
+                    <UserCard user={user} key={user.id} />
+                  ))}
+                </SimpleGrid>
+              </Box>
+            </Flex>
+          </>
         ) : (
           <Flex>
             <Box flex="1">

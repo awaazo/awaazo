@@ -8,7 +8,9 @@ import {
   BaseResponse,
   UserProfileResponse,
   SearchProfilesResponse,
+  UserProfileByIdResponse,
 } from "../utilities/Responses";
+import { data } from "cypress/types/jquery";
 
 export default class UserProfileHelper {
   static getUserProfile() {
@@ -156,6 +158,48 @@ export default class UserProfileHelper {
         status: error.response.status,
         message: error.response.statusText,
         userProfile: null,
+      };
+    }
+  };
+
+  /**
+   * Gets the user's profile from the server.
+   * @returns A UserProfileResponse object with the server's response.
+   */
+  public static profileGetByIdRequest = async (
+    userId,
+  ): Promise<UserProfileByIdResponse> => {
+    // Create the request options.
+    const options = {
+      method: "GET",
+      url: EndpointHelper.getProfileByIdEndpoint(userId),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+    };
+
+    try {
+      console.debug("Sending the following profileGetRequest...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following profileGetResponse...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        userProfileByID: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        userProfileByID: null,
       };
     }
   };
