@@ -18,12 +18,7 @@ import {
   Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {
-  UserEpisodeInteraction,
-  User,
-  Episode,
-} from "../../utilities/Interfaces";
-import { FaPlay, FaCheck, FaList, FaPlus } from "react-icons/fa";
+
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Notification} from "../../utilities/Interfaces";

@@ -16,6 +16,7 @@ import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
 
+
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast }) {
   const { colorMode } = useColorMode();
@@ -102,6 +103,7 @@ export default function PodcastOverview({ podcast }) {
             <Text fontSize="xl" fontWeight="bold">
               <Wrap align="center" spacing={4}>
                 <WrapItem>🎙️ {podcast.name}</WrapItem>
+                <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} />
                 {/* Display tags */}
                 {podcast.tags.map((tag, index) => (
                   <WrapItem key={index}>
@@ -211,7 +213,6 @@ export default function PodcastOverview({ podcast }) {
           </Box>
         ) : (
           <Flex justify="space-between" align="start">
-            <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} />
             {/* Sidebar on the left */}
             <Box
               p={4}

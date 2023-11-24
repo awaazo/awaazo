@@ -9,7 +9,6 @@ export default class NotificationHelper{
 
 
     public static getNotifications = async (): Promise<BaseResponse> => {
-        const url = EndpointHelper.getAllNotificationsEndpoint();
         const options = {
             method: "GET",
             headers: {

@@ -192,3 +192,17 @@ export interface Notification {
   createdAt: Date;
 }
 
+export interface MySubscriptions {
+  id: string;
+  name: string;
+  description: string;
+  coverArtUrl: string;
+  podcasterId: string;
+  tags: string[];
+  isExplicit: boolean;
+  type: "real" | "ai-generated";
+  episodes: Episode[];
+  averageRating?: number;
+  totalRatings?: number;
+  ratings?: PodcastRating[];
+}

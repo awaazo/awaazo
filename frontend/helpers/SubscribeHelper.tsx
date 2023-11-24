@@ -123,7 +123,6 @@ export default class SubscribeHelper{
             console.log(error);
             return error.response.data;
         }
-
     };
 
     public static getAllPodcastSubscriptions = async (PodcastId): Promise<BaseResponse> => {
