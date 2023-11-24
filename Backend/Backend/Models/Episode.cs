@@ -63,6 +63,9 @@ public class Episode : BaseEntity
 
     public ulong PlayCount { get; set; } = 0;
 
+
+    public ICollection<EpisodeSections> episodeSections = new List<EpisodeSections>();
+
     public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 
     public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
@@ -107,3 +110,24 @@ public class UserEpisodeInteraction : BaseEntity
     public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
 }
 
+public class EpisodeSections
+{
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public Episode Episode { get; set; } = null!;
+
+    [Required]
+    public Guid EpisodeId { get; set; }
+
+    [Required]
+    public double Start { get; set;}
+
+    [Required]
+    public double End { get; set;}
+
+    [Required]
+    public string Title { get; set;} = string.Empty;
+
+   
+}

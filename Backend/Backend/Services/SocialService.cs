@@ -1,6 +1,3 @@
-using System.Runtime.CompilerServices;
-using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
@@ -120,6 +117,23 @@ public class SocialService : ISocialService
 
         // Save changes to the DB and return the status
         return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Checks if the user has liked an episode or a comment.
+    /// </summary>
+    /// <param name="episodeOrCommentId">Comment Or Episode ID</param>
+    /// <param name="user">Current User</param>
+    /// <returns>True if the user liked the episode for the given ID, otherwise false.</returns>
+    public async Task<bool> IsLikedAsync(Guid episodeOrCommentId, User user)
+    {
+        // Check if the given user liked the comment, comment reply or episode for the given ID
+        return await _db.CommentLikes
+        .AnyAsync(c=>c.UserId==user.Id && c.CommentId==episodeOrCommentId) ||
+        await _db.CommentReplyLikes
+        .AnyAsync(c=>c.UserId==user.Id && c.CommentReplyId==episodeOrCommentId) ||
+        await _db.EpisodeLikes
+        .AnyAsync(e=>e.UserId==user.Id && e.EpisodeId==episodeOrCommentId);
     }
 
     /// <summary>

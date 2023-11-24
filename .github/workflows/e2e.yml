@@ -87,12 +87,6 @@ jobs:
         working-directory: frontend
         run: npx cypress run --headed
 
-      # # Run the E2E Testing
-      # - name: Cypress Run
-      #   uses: cypress-io/github-action@v6
-      #   with:
-      #     working-directory: frontend
-
       # Upload the Test Results Screenshots
       - name: Uploading Screenshots Artifact
         if: ${{ always() }}
@@ -101,7 +95,7 @@ jobs:
           name: cypress-screenshots
           path: /home/runner/work/awaazo/awaazo/frontend/cypress/screenshots
           if-no-files-found: ignore
-
+      
       - name: Uploading Video Artifacs
         if: ${{ always() }}
         uses: actions/upload-artifact@v3

@@ -4,6 +4,7 @@ import {
   UserProfile,
   Podcast,
   Episode,
+  userProfileByID,
   User,
 } from "./Interfaces";
 
@@ -42,6 +43,10 @@ export interface SearchProfilesResponse extends BaseResponse {
 
 export interface UserProfileResponse extends BaseResponse {
   userProfile: UserProfile;
+}
+
+export interface UserProfileByIdResponse extends BaseResponse {
+  userProfileByID: userProfileByID;
 }
 
 //#endregion
@@ -91,3 +96,16 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 }
 
 //#endregion
+
+
+export interface NotificationResponse extends BaseResponse {
+  notifications: Notification[];
+}
+
+//#region Social Responses
+export interface IsLikedResponse extends BaseResponse {
+  isLiked: boolean;
+}
+
+//#endregion
+
