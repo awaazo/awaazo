@@ -7,6 +7,7 @@ import Header from "../../components/profile/Header";
 import MyEpisodes from "../../components/profile/MyEpisodes";
 import Podcasts from "../../components/profile/Podcasts";
 import { UserProfile } from "../../utilities/Interfaces";
+import Subscriptions from "../../components/explore/MySubscriptions";
 
 import { Router, useRouter } from "next/router";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
@@ -59,7 +60,11 @@ if(userProfile!==undefined) {
           <Container>
             {/* Pass the podcast ID to MyEpisodes */}
             <MyEpisodes selectedPodcastId={id} />
+            <Subscriptions />
           </Container>
+         
+         
+          
         </Stack>
       </Box>
     </>

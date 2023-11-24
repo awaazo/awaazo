@@ -285,5 +285,44 @@ export default class EndpointHelper {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
+
+
+  // Notifications + Subscriptions Endpoints
+  static getAllNotificationsEndpoint = () => {
+      return this.getBackendAddress() + "/notification/all";
+  };
+
+  static getNotificationsCountEndpoint = () => {
+      return this.getBackendAddress() + "/notification/count";
+  };
+
+
+  // Subscriptions
+  static addSubscriptionEndpoint = (PodcastId) => {
+    return(
+      this.getBackendAddress() + "/subscription/" + PodcastId + "/subscribe"
+    );
+  };
+
+  static addUnsubscriptionEndpoint = (PodcastId) => {
+    return(
+      this.getBackendAddress() + "/subscription/" + PodcastId + "/unsubscribe"
+    );
+  };
+
+  static getIsSubscribedEndpoint = (PodcastId) => {
+    return(
+      this.getBackendAddress() + "/subscription/" + PodcastId + "/IsSubscribed"
+    );
+  }
+
+  static getMySubscriptionsEndpoint = () => {
+    return this.getBackendAddress() + "/subscription/MySubscriptions";
+  }
+  
+  static getAllPodcastSubscriptionsEndpoint = (PodcastId) => {
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/GetAllPodcastSubscriber";
+  }
+
   static profileGetRequest: any;
 }

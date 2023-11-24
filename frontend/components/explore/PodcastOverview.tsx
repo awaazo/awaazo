@@ -9,11 +9,13 @@ import {
   Image,
   Wrap,
   WrapItem,
-  Button,
+  Button, // Add Button import
 } from "@chakra-ui/react";
 
 import Episode from "../explore/Episode";
 import Reviews from "../explore/Reviews";
+import Subscription from "../explore/Subscription";
+
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast }) {
@@ -61,6 +63,8 @@ export default function PodcastOverview({ podcast }) {
     },
   };
 
+
+
   return (
     <>
       <Box
@@ -99,6 +103,7 @@ export default function PodcastOverview({ podcast }) {
             <Text fontSize="xl" fontWeight="bold">
               <Wrap align="center" spacing={4}>
                 <WrapItem>🎙️ {podcast.name}</WrapItem>
+                <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} />
                 {/* Display tags */}
                 {podcast.tags.map((tag, index) => (
                   <WrapItem key={index}>
@@ -117,6 +122,7 @@ export default function PodcastOverview({ podcast }) {
                   </WrapItem>
                 ))}
               </Wrap>
+
             </Text>
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm" position="relative">
