@@ -39,7 +39,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [replyText, setReplyText] = useState("");
+  const [replyTexts, setReplyTexts] = useState(Array(initialComments).fill(""));
   const [replyChange, setReplyChange] = useState(0);
   const [noOfComments, setNoOfComments] = useState(initialComments);
   const [user, setUser] = useState(null);
@@ -61,7 +61,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
         );
         if (response.status === 200) {
           if (response.episode) {
-            // Transform the comments to match your expected format
+            // Transform the comments to match our format
             const transformedComments = response.episode.comments.map(
               (comment) => ({
                 id: comment.id,
@@ -102,12 +102,15 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
 
   // Reply to a comment
   const handleReply = async (index: number) => {
+    if (replyTexts[index] == "") {
+      return;
+    }
     const comment = comments[index];
     const commentId = comment.id;
     const updatedComments = [...comments];
 
     const response = await SocialHelper.postEpisodeComment(
-      replyText,
+      replyTexts[index],
       commentId,
     );
     if (response.status === 200) {
@@ -116,7 +119,9 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
     } else {
       console.log("Error posting comment:", response.message);
     }
-    setReplyText("");
+    const updatedReplyTexts = [...replyTexts];
+    updatedReplyTexts[index] = "";
+    setReplyTexts(updatedReplyTexts);
   };
 
   // Deletes the Comment
@@ -276,8 +281,12 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
                           <Input
                             flex="1"
                             placeholder="Reply to this comment..."
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
+                            value={replyTexts[index]}
+                            onChange={(e) => {
+                              const updatedReplyTexts = [...replyTexts];
+                              updatedReplyTexts[index] = e.target.value;
+                              setReplyTexts(updatedReplyTexts);
+                            }}
                           />
                           <Tooltip
                             label="Reply to this comment"
