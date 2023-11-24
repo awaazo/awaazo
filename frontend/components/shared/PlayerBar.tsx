@@ -323,7 +323,6 @@ const PlayerBar = () => {
             <LikeComponent
               episodeOrCommentId={episode.id}
               initialLikes={episode.likes}
-              initialIsLiked={false}
             />
             <CommentComponent
               episodeIdOrCommentId={episode.id}

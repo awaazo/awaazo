@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import SocialHelper from "../../helpers/SocialHelper";
 
 // This component represents a like button for an episode or comment
-const LikeComponent = ({
-  episodeOrCommentId,
-  initialLikes,
-  initialIsLiked,
-}) => {
+const LikeComponent = ({ episodeOrCommentId, initialLikes }) => {
   // Component Values
   const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(initialIsLiked);
+
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const likeResponse = await SocialHelper.isLiked(episodeOrCommentId);
+        setIsLiked(likeResponse.isLiked);
+      } catch (error) {
+        console.error("Error fetching like status:", error);
+      }
+    };
+
+    fetchData();
+  }, [episodeOrCommentId]);
 
   // Function to handle the like/unlike action
   const handleLike = () => {

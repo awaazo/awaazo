@@ -205,7 +205,6 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
                             <LikeComponent
                               episodeOrCommentId={comment.id}
                               initialLikes={comment.likes}
-                              initialIsLiked={false}
                             />
                             {user.id === comment.user.id ? (
                               <IconButton

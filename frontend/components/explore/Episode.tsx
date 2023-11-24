@@ -116,7 +116,6 @@ const Episode = ({ episode }) => {
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
-            initialIsLiked={false}
           />
         </div>
       </Flex>
