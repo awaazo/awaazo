@@ -252,23 +252,29 @@ export default class EndpointHelper {
    * Returns the Podcast COMMENTS + LIKES endpoint.
    * @returns The Podcast COMMENTS + LIKES Endpoint
    * */
-  static getEpisodeCommentEndpoint = (episodeOrCommentId: string) => {
+  static getCommentEndpoint = (episodeOrCommentId: string) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/comment"
     );
   };
 
-  static getEpisodeCommentDeleteEndpoint = (commentId) => {
-    return this.getBackendAddress() + "/social/" + commentId + "/deleteComment";
+  static getCommentDeleteEndpoint = (commentId) => {
+    return this.getBackendAddress() + "/social/" + commentId + "/delete";
   };
 
-  static getEpisodeLikeEndpoint = (episodeOrCommentId) => {
+  static getLikeEndpoint = (episodeOrCommentId) => {
     return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/like";
   };
 
-  static getEpisodeUnlikeEndpoint = (episodeOrCommentId) => {
+  static getUnlikeEndpoint = (episodeOrCommentId) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/unLike"
+    );
+  };
+
+  static getIsLikedEndpoint = (episodeOrCommentId) => {
+    return (
+      this.getBackendAddress() + "/social/" + episodeOrCommentId + "/isLiked"
     );
   };
 
