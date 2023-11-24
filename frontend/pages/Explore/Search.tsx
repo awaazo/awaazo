@@ -18,9 +18,9 @@ import { useRouter } from "next/router";
 import Navbar from "../../components/shared/Navbar";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../../components/explore/PodcastCard";
+import PodcastCard from "../../components/Cards/PodcastCard";
 import ForYou from "../../components/home/ForYou";
-import UserCard from "../../components/explore/UserCard";
+import UserCard from "../../components/Cards/UserCard";
 import PlayerBar from "../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
@@ -45,7 +45,7 @@ export default function MyPodcast() {
         } else {
           setGetError("Podcasts cannot be fetched");
         }
-      }
+      },
     );
     UserProfileHelper.profileSearchProfilesGet(index3, index4, searchTerm)
       .then((res) => {
@@ -99,7 +99,7 @@ export default function MyPodcast() {
               emptyColor="transparent"
             />
           </Flex>
-        ) : podcasts.length > 0 ? (
+        ) : podcasts && podcasts.length > 0 ? (
           <>
             <Flex width="100%">
               <Box flex="1">

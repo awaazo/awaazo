@@ -80,7 +80,7 @@ const PodcastCard = ({ podcast }) => (
       />
       <Flex direction="column" align="center" p={4}>
         <Text
-          fontSize="xl"
+          fontSize="md"
           fontWeight="bold"
           mb={2}
           data-cy={`podcast-card-${podcast.name}`}

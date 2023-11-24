@@ -78,11 +78,60 @@ export default class PodcastHelper {
    * Gets all myPodcasts from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastMyPodcastsGet = async (): Promise<MyPodcastResponse> => {
+  public static podcastMyPodcastsGet = async (
+    page,
+    pageSize,
+  ): Promise<MyPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
-      url: EndpointHelper.getPodcastMyPodcastsEndpoint(),
+      url: EndpointHelper.getPodcastMyPodcastsEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastMyPodcastsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastMyPodcastsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        myPodcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        myPodcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all myPodcasts from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastUserPodcastsGet = async (
+    userId,
+    page,
+    pageSize,
+  ): Promise<MyPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getPodcastByUserIdEndpoint(userId, page, pageSize),
       headers: {
         accept: "*/*",
       },

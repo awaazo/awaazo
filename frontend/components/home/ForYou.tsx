@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SimpleGrid, Box, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../explore/PodcastCard";
+import PodcastCard from "../Cards/PodcastCard";
 
 // Component to display recommended podcasts
 const ForYou: React.FC = () => {

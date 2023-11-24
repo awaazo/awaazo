@@ -4,6 +4,7 @@ import {
   UserProfile,
   Podcast,
   Episode,
+  userProfileByID,
   User,
 } from "./Interfaces";
 
@@ -42,6 +43,10 @@ export interface SearchProfilesResponse extends BaseResponse {
 
 export interface UserProfileResponse extends BaseResponse {
   userProfile: UserProfile;
+}
+
+export interface UserProfileByIdResponse extends BaseResponse {
+  userProfileByID: userProfileByID;
 }
 
 //#endregion

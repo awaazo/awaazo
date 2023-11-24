@@ -64,7 +64,6 @@ const RecentlyUploaded: React.FC = () => {
       }
 
       setAllEpisodes(allEpisodesArray);
-      console.log(allEpisodes);
     };
 
     extractEpisodes();

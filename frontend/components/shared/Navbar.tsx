@@ -40,8 +40,8 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
   const [searchValue, setSearchValue] = useState("");
-  const handleSearchChange = (event) => setSearchValue(event.target.value);
 
   const handleSearchSubmit = () => {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
@@ -125,6 +125,10 @@ export default function Navbar() {
     setIsUserLoggedIn(false);
     setIsUserSet(false);
     window.location.href = indexPage;
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
   };
 
   /**

@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 
 import Navbar from "../../../components/shared/Navbar";
 import PodcastHelper from "../../../helpers/PodcastHelper";
-import PodcastCard from "../../../components/explore/PodcastCard";
+import PodcastCard from "../../../components/Cards/PodcastCard";
 import ExploreGenresSection from "../../../components/home/ExploreGenres";
 import PlayerBar from "../../../components/shared/PlayerBar";
 
@@ -86,7 +86,7 @@ export default function MyPodcast() {
         {loading ? (
           // Show loading indicator or spinner
           <></>
-        ) : podcasts.length > 0 ? (
+        ) : podcasts && podcasts.length > 0 ? (
           <SimpleGrid columns={columns} spacing={7} marginTop={"2em"}>
             {podcasts.map((podcast, index) => (
               <PodcastCard key={index} podcast={podcast} />
