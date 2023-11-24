@@ -33,7 +33,7 @@ public class BookmarkService
             Title = request.Title,
             Time = request.Time
         };
-        _db.Bookmarks.Add(bookmark);
+        await _db.Bookmarks.AddAsync(bookmark);
         await _db.SaveChangesAsync();
         return bookmark;
     }
