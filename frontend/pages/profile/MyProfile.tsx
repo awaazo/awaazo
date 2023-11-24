@@ -1,14 +1,17 @@
-import { useState } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import { Container, Box, Stack, useBreakpointValue } from "@chakra-ui/react";
 
 import Navbar from "../../components/shared/Navbar";
 import Header from "../../components/profile/MyProfile/MyHeader";
 import MyEpisodes from "../../components/profile/MyProfile/MyEpisodes";
 import Podcasts from "../../components/profile/MyProfile/MyPodcasts";
-import MyPlaylists from "../../components/profile/MyProfile/MyPlaylists";
+import { UserProfile } from "../../utilities/Interfaces";
+import Subscriptions from "../../components/explore/MySubscriptions";
 
-//For later to subscribe to podcasts {session?.user?.subscribedPodcastsID}
-//const { data: session } = useSession();
+import { Router, useRouter } from "next/router";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
+import MyPlaylists from "../../components/profile/MyProfile/MyPlaylists";
 
 const myProfile = () => {
   const isInline = useBreakpointValue({

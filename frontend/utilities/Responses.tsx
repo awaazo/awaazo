@@ -96,3 +96,16 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 }
 
 //#endregion
+
+
+export interface NotificationResponse extends BaseResponse {
+  notifications: Notification[];
+}
+
+//#region Social Responses
+export interface IsLikedResponse extends BaseResponse {
+  isLiked: boolean;
+}
+
+//#endregion
+

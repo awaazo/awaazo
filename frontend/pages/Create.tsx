@@ -239,6 +239,7 @@ const CreateEpisode = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
+              data-cy="create-podcast-box"
             >
               <AddIcon w={8} h={8} />
             </Box>
@@ -406,6 +407,7 @@ const CreateEpisode = () => {
                 p={4}
                 textAlign="center"
                 width="300px"
+                data-cy="podcast-file-dropzone"
               >
                 <input {...getInputProps()} />
                 {file ? (
