@@ -91,3 +91,10 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 }
 
 //#endregion
+
+//#region Social Responses
+export interface IsLikedResponse extends BaseResponse {
+  isLiked: boolean;
+}
+
+//#endregion

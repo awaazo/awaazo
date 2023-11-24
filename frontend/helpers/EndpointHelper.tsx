@@ -272,6 +272,12 @@ export default class EndpointHelper {
     );
   };
 
+  static getIsLikedEndpoint = (episodeOrCommentId) => {
+    return (
+      this.getBackendAddress() + "/social/" + episodeOrCommentId + "/isLiked"
+    );
+  };
+
   static getPodcastEpisodePlayEndpoint = (
     podcastId: string,
     episodeId: string,
