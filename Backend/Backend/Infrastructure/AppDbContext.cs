@@ -22,6 +22,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<Episode> Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }
     public virtual DbSet<Annotation>? Annotations { get; set; }
+    public virtual DbSet<Bookmark> Bookmarks { get; set; }
     public virtual DbSet<Podcast> Podcasts { get; set; }
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
     public virtual DbSet<Sponsor>? Sponsors { get; set; }
@@ -147,6 +148,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.Bookmarks)
+            .WithOne(b => b.User)
+            .HasForeignKey(b => b.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
         // Episode 1-to-many EpisodeLikes
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.Likes)
@@ -154,6 +162,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(l => l.EpisodeId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.Bookmarks)
+            .WithOne(b => b.Episode)
+            .HasForeignKey(b => b.EpisodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         // Comment 1-to-many CommentLikes
         modelBuilder.Entity<Comment>()
