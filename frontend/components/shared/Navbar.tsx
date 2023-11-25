@@ -267,6 +267,7 @@ export default function Navbar() {
                     opacity: 1, // increase placeholder opacity
                   },
                 }}
+                data-cy="search-input-mobile"
               />
               <IconButton
                 aria-label="Toggle Dark Mode"
@@ -303,6 +304,7 @@ export default function Navbar() {
                     opacity: 1, // increase placeholder opacity
                   },
                 }}
+                data-cy="search-input-web"
               />
               <Link href="/Create">
                 <IconButton
