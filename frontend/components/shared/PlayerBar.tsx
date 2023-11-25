@@ -27,6 +27,7 @@ import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import { Episode } from "../../utilities/Interfaces";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
+import BookmarkComponent from "../social/bookmarkComponent";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
@@ -320,6 +321,10 @@ const PlayerBar = () => {
         {/* Like and Comment - Hidden in mobile */}
         {!isMobile && (
           <Flex alignItems="center">
+            <BookmarkComponent
+              episodeId={episode.id}
+              selectedTimestamp={currentTime}
+            />
             <LikeComponent
               episodeOrCommentId={episode.id}
               initialLikes={episode.likes}
