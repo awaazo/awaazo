@@ -252,6 +252,7 @@ const PlayerBar = () => {
             size="sm"
             onClick={togglePlayPause}
             mr={2}
+            data-cy={`play-pause-button`}
           />
           <IconButton
             aria-label=" Skip Forward"
@@ -260,6 +261,7 @@ const PlayerBar = () => {
             size="sm"
             onClick={skipForward}
             mr={2}
+            data-cy={`skip-forward`}
           />
           <IconButton
             aria-label=" Next Episode"
@@ -273,7 +275,7 @@ const PlayerBar = () => {
         {/* Slider - Hidden in mobile */}
         {!isMobile && (
           <Flex width="50%" mx={4} alignItems="center">
-            <Text mr={3} fontSize="sm" fontWeight="bold">
+            <Text mr={3} fontSize="sm" fontWeight="bold" data-cy={`time-passed-${convertTime(position)}`}>
               {convertTime(position)}
             </Text>
             <Slider
@@ -311,7 +313,7 @@ const PlayerBar = () => {
               </Tooltip>*/}
             </Slider>
 
-            <Text ml={3} fontSize="sm" fontWeight="bold">
+            <Text ml={3} fontSize="sm" fontWeight="bold" data-cy={`time-left-${timeLeft}`}>
               {timeLeft}
             </Text>
           </Flex>
