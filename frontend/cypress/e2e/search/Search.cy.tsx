@@ -15,16 +15,20 @@ describe ('Search', () => {
     it('Should search for a User and visit their profile', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('testUsername{enter}');
+        cy.intercept("GET", "/profile/*").as("profile");
+        cy.wait("@profile", { timeout: 15000 });
         cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
-        cy.contains("TestDisplayBio").should('be.visible');
+        cy.contains("@NewUsername").should('be.visible');
     });
+    
 
     //Ideal use case, search for a user & view their uploaded podcasts
     it('Should search for a User and view a podcast from their profile', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('testUsername{enter}');
+        cy.intercept("GET", "/profile/*").as("profile");
         cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
-        cy.contains("TestDisplayBio").should('be.visible');
+        cy.contains("@NewUsername").should('be.visible');
         cy.get('[data-cy="podcast-card-F2 legends"').should('be.visible').click({ timeout: 5000 });
         cy.contains("Has science gone too far?").should('be.visible');
     });

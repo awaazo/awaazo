@@ -180,7 +180,7 @@ describe("Episode_Create", () => {
       "A podcast about pets and their coolness.",
     );
     cy.url().should("include", "/Create");
-    cy.contains("Cool pets");
+    cy.contains("Cool pets").should("be.visible");;
     cy.episode_create(
       paths.shiba,
       "Funny Shibas",
@@ -201,10 +201,10 @@ describe("Episode_Create", () => {
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-cool-pets").click();
-    cy.contains("Funny Cats");
-    cy.contains("Silly cats");
-    cy.get('[data-cy="podcast-delete"]').click();
-    cy.contains("Button", "Delete").click();
+    cy.contains("Funny Cats").should("be.visible");
+    cy.contains("Silly cats").should("be.visible");;
+    cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 5000});
+    cy.contains("Button", "Delete").should('exist').click( {timeout: 5000} );
     cy.url().should("include", "/MyPodcasts");
     cy.get('[data-cy="podcast-image-cool-pets"]').should("not.exist");
     cy.get("Funny cats").should("not.exist");

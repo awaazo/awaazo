@@ -112,7 +112,7 @@ const Episode = ({ episode }) => {
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
         />
-        <div style={{ marginTop: "4px", marginLeft: "4px" }}>
+        <div style={{ marginTop: "4px", marginLeft: "4px" }} data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
