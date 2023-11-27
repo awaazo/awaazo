@@ -152,6 +152,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
           leftIcon={<Icon as={FaComments} />}
           onClick={onOpen}
           variant={"ghost"}
+          data-cy={`playerbar-comment-button`}
         >
           {noOfComments}
         </Button>

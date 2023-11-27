@@ -105,7 +105,7 @@ const Episode = ({ episode }) => {
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
-        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
+        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
           {episode.episodeName}
           {episode.isExplicit && (
             <Tag
@@ -117,7 +117,8 @@ const Episode = ({ episode }) => {
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes}</Text>
+          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
+          
         </Text>
         {/* Episode Details */}
         <Flex

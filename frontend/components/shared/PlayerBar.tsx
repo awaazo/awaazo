@@ -244,6 +244,7 @@ const PlayerBar = () => {
             size="sm"
             onClick={skipBackward}
             mr={2}
+            data-cy={`skip-backward`}
           />
           <IconButton
             aria-label={isPlaying ? "Pause" : "Play"}
