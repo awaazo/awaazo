@@ -24,7 +24,7 @@ import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Notification, User} from "../../utilities/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
-
+import EndpointHelper from "../../helpers/EndpointHelper";
 
 interface NotificationsProps {
   isOpen: boolean;
@@ -37,12 +37,24 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
   const [filter, setFilter] = useState<"all" | "episode" | "user">("all");
   const [sortByDate, setSortByDate] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-  // Obtain the user object from localStorage
-  const user: User | null = JSON.parse(localStorage.getItem("user"));
-  const userId = user ? user.id : null; // Check if user exists before accessing its properties
+  const [userId, setUserId] = useState<string | null>(null);
 
-  console.log("User ID:", userId);
-  
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await EndpointHelper.getAuthMeEndpoint(); // Call the getAuthMeEndpoint
+        if (response && response.id) {
+          setUserId(response.id); // Set the user ID from the response
+          console.log("User ID:", response.id); // Log the user ID to the console
+        }
+      } catch (error) {
+        console.error("Failed to fetch user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []); // Run this effect only once to fetch the user ID
+
   useEffect(() => {
     if (userId) {
       const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
