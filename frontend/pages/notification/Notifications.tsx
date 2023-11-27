@@ -21,13 +21,15 @@ import {
 
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
-import { Notification} from "../../utilities/Interfaces";
+import { Notification, User} from "../../utilities/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
+
 
 interface NotificationsProps {
   isOpen: boolean;
   onClose: () => void;
+  notificationCount: number;
 }
 
 const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
@@ -35,26 +37,32 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
   const [filter, setFilter] = useState<"all" | "episode" | "user">("all");
   const [sortByDate, setSortByDate] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  // Obtain the user object from localStorage
+  const user: User | null = JSON.parse(localStorage.getItem("user"));
+  const userId = user ? user.id : null; // Check if user exists before accessing its properties
 
-  // Initialize Pusher and subscribe to the channel
+  console.log("User ID:", userId);
+  
   useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
-    });
+    if (userId) {
+      const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+        cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+      });
 
-    const channel = pusher.subscribe('490'); 
-    channel.bind('new-notification', function(data) {
-      // Handle the incoming notification data here
-      console.log('Received new notification:', data);
-      // You can update the notification state or take other actions based on the incoming data
-    });
+      const channel = pusher.subscribe('user-' + userId);
+      channel.bind('notification', function(data) {
+        // Handle the incoming notification data here
+        console.log('Received new notification:', data);
+        // You can update the notification state or take other actions based on the incoming data
+      });
 
-    return () => {
-      // Unsubscribe from the Pusher channel when the component unmounts
-      channel.unbind_all();
-      channel.unsubscribe();
-    };
-  }, []);
+      return () => {
+        // Unsubscribe from the Pusher channel when the component unmounts
+        channel.unbind_all();
+        channel.unsubscribe();
+      };
+    }
+  }, [userId]);
 
   // Fetch notifications from the API
   useEffect(() => {
