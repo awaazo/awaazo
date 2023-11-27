@@ -308,6 +308,36 @@ export default class EndpointHelper {
     );
   };
 
+  
+  /**
+   * Returns the Episode Bookmarks endpoint.
+   * @returns The Episode Bookmarks Endpoint
+   * */
+  static getBookmarksEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/bookmark/" + episodeId + "/allBookmarks";
+  };
+
+  /**
+   * Returns the Episode Add Bookmark endpoint.
+   * @returns The Episode Add Bookmark Endpoint
+   * */
+
+  static getBookmarkAddEndpoint = (episodeId) => {
+    return (
+      this.getBackendAddress() + "/bookmark/" + episodeId + "/add"
+    );
+  };
+
+  /**
+   * Returns the Episode Delete Bookmark endpoint.
+   * @returns The Episode Delete Bookmark Endpoint
+   * */
+  static getBookmarkDeleteEndpoint = (bookmarkId) => {
+    return (
+      this.getBackendAddress() + "/bookmark/" + bookmarkId + "/delete"
+    );
+  };
+
   static getPodcastEpisodePlayEndpoint = (
     podcastId: string,
     episodeId: string,
