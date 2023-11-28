@@ -213,4 +213,85 @@ export default class SocialHelper {
       };
     }
   };
-}
+
+  // Post a new bookmark
+  public static postBookmark = async (
+    timestamp,
+    episodeId,
+  ): Promise<BaseResponse> => {
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      data: timestamp,
+      url: EndpointHelper.getBookmarkAddEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following postEpisodeBookmark...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following postEpisodeBookmark...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+      };
+    }
+  };
+
+//   /**
+//    * Deletes a comment from the server.
+//    * @returns A BaseResponse object with the server's response.
+//    */
+//   public static deleteBookmark = async (bookmarkId): Promise<BaseResponse> => {
+//     // Create the request options.
+//     const options = {
+//       method: "DELETE",
+//       url: EndpointHelper.getDeleteBookmarkEndpoint(bookmarkId),
+//       headers: {
+//         accept: "*/*",
+//       },
+//       withCredentials: true, // This will send the session cookie with the request
+//       cache: false,
+//     };
+
+//     try {
+//       console.debug("Sending the following deleteComment...");
+//       console.debug(options);
+
+//       console.log(options);
+//       // Send the request and wait for the response.
+//       const requestResponse = await axios(options);
+
+//       console.debug("Received the following deleteComment...");
+//       console.debug(requestResponse);
+
+//       // Return the response.
+//       return {
+//         status: requestResponse.status,
+//         message: requestResponse.statusText,
+//       };
+//     } catch (error) {
+//       return {
+//         status: error.response.status,
+//         message: error.response.statusText,
+//       };
+//     }
+//   };
+  }
