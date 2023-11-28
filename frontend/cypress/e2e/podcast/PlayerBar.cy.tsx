@@ -106,8 +106,16 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
-        cy.get('[data-cy="playerbar-like-button"]').eq(3).should('be.visible').click({ timeout: 5000 });
+        cy.get('button[data-cy^="like-button-index:"]').each(($button, index) => {
+            const buttonId = $button.attr('data-cy').replace('like-button-index:', '');
+            const concatenatedId = buttonId + index;
+            if (concatenatedId === "3") {
+                cy.wrap($button).click();
+            }
+        });
         cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
+        cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
+        cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:1"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
             expect(likeCount).to.equal(numLikesBefore); 
@@ -115,8 +123,16 @@ describe("PlayerBar", () => {
         //Unliking
         cy.visit("/").url().should('include', '/');
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
-        cy.get('[data-cy="playerbar-like-button"]').eq(3).should('be.visible').click({ timeout: 5000 });
+        cy.get('button[data-cy^="like-button-index:"]').each(($button, index) => {
+            const buttonId = $button.attr('data-cy').replace('like-button-index:', '');
+            const concatenatedId = buttonId + index;
+            if (concatenatedId === "3") {
+                cy.wrap($button).click();
+            }
+        });
         cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
+        cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
+        cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:0"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
             expect(likeCount).to.equal(numLikesAfter); 

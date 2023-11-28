@@ -60,8 +60,8 @@ Cypress.Commands.add('login', (username, email, password) => {
 });
 
 Cypress.Commands.add('logout', () => {
-  cy.get('button[aria-label="loggedInMenu"]').should('be.visible').parent().should('be.visible');
-  cy.get('button[aria-label="loggedInMenu"]').click();
+  cy.wait(250);
+  cy.get('button[aria-label="loggedInMenu"]').should('be.visible').click();
   cy.get('button').contains('Logout').should('be.visible').click({timeout: 5000});
   cy.get('button[aria-label="Menu"]').should('be.visible');
   cy.url().should('include', '/');

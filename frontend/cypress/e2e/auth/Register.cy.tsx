@@ -22,6 +22,14 @@ describe("Register", () => {
     cy.contains("TestDisplayBio");
   });
 
+  it('Should create a dummy user to interact with other users', () => {
+    cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
+    cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
+    cy.url().should('include', '/');
+    cy.visit('/profile/MyProfile');
+    cy.contains('DummyDisplayBio');
+  });
+
   it("Should Successfully Register & should fail setup by leaving fields blank", function () {
     cy.register_user(
       "testRegister1@email.com",

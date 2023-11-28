@@ -217,6 +217,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
                                 icon={<Icon as={FaTrash} />}
                                 variant={"ghost"}
                                 aria-label="Delete Comment"
+                                data-cy={`delete-comment-id:`}
                                 onClick={() =>
                                   handleDeleteComment(comment.id, true)
                                 }
@@ -298,6 +299,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
                               onClick={() => handleReply(index)}
                               aria-label="Reply to Comment"
                               size="sm"
+                              data-cy={`reply-button`}
                             />
                           </Tooltip>
                         </HStack>

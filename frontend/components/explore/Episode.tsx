@@ -107,7 +107,8 @@ const Episode = ({ episode }) => {
       </Flex>
 
       {/* Edit and Delete Buttons */}
-      <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
+      <Flex alignItems="flex-start" style={{ marginRight: "15px" }} data-cy={`comments-on-${episode.episodeName}-${episode.comments.length}`}>
+        
         <CommentComponent
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
