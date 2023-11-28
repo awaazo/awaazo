@@ -5,38 +5,16 @@ import SocialHelper from "../../helpers/SocialHelper";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Bookmark } from "../../utilities/Interfaces";
+import { convertTime } from "../../utilities/commonUtils"; 
 
-// This component represents a like button for an episode or comment
+// This component represents a bookmark button for an episode
 const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
   // Component Values
-
-
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const bookmarkResponse = await SocialHelper.isBookmarked(episodeId, selectedTimestamp);
-//         setIsBookmarked(bookmarkResponse.isBookmarked);
-//       } catch (error) {
-//         console.error("Error fetching bookmark status:", error);
-//       }
-//     };
-
-//     fetchData();
-//   }, [episodeId]);
-
-
-  // Fetch episode details and transform comments when the modal is opened
+  // Fetch episode details and transform bookmarks
   useEffect(() => {
-
       const fetchEpisodeDetails = async () => {
-        // AuthHelper.authMeRequest().then((response) => {
-        //   if (response.status == 200) {
-        //     setUser(response.userMenuInfo);
-        //   }
-        // });
         const response = await PodcastHelper.getEpisodeById(
           episodeId,
         );
@@ -58,29 +36,58 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
         }
       };
       fetchEpisodeDetails();
-
   }, [episodeId]);
 
 
 
-// Add a new bookmark
-// const handleAddBookmark = async () => {
-//   if (newComment.trim()) {
-//     const response = await SocialHelper.postEpisodeComment(
-//       newComment,
-//       episodeIdOrCommentId,
-//     );
-//     if (response.status === 200) {
-//       // Update the UI to reflect the new bookmark
-//       setBookmark(selectedTimestamp);
-//     } else {
-//       console.log("Error posting bookmark:", response.message);
-//     }
-//   }
-// };
+ // Function to handle the bookmark/delete bookmark action
+ const handleBookmark = () => {
+
+  SocialHelper.postBookmark(episodeId, selectedTimestamp) // This method needs to be implemented in SocialHelper
+        .then((response) => {
+          if (response.status === 200) {
+            // Update the UI to reflect the bookmark
+            //setIsBookmarked(true, selectedTimestamp);
+          } else {
+            console.error("Error liking episode or comment:", response.message);
+          }
+        });
+
+
+
+  // // Toggle the like status based on whether the episode or comment is currently liked
+  // if (isBookmarked) {
+  //   // Call unlikeEpisode or unlikeComment because the episode or comment is currently liked
+  //   SocialHelper.deleteEpisodeBookmark(episodeOrCommentId) // This method needs to be implemented in SocialHelper
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         // Update the UI to reflect the unlike
+  //         setLikes(likes - 1);
+  //         setIsLiked(false);
+  //       } else {
+  //         console.error(
+  //           "Error unliking episode or comment:",
+  //           response.message,
+  //         );
+  //       }
+  //     });
+  // } else {
+  //   // Call likeEpisode or likeComment because the episode or comment is currently not liked
+  //   SocialHelper.postLike(episodeOrCommentId) // This method needs to be implemented in SocialHelper
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         // Update the UI to reflect the like
+  //         setLikes(likes + 1);
+  //         setIsLiked(true);
+  //       } else {
+  //         console.error("Error liking episode or comment:", response.message);
+  //       }
+  //     });
+  // }
+};
 
   // Function to handle the bookmark/remove bookmark action
-  const handleBookmark = () => {
+ // const handleBookmark = () => {
     // // Toggle the bookmark status based on whether the selected timestamp of the episode is currently bookmarked
     // if (isBookmarked) {
     //   // Call unlikeBookmak because the episode selected timestamp is currently bookmarked
@@ -110,10 +117,14 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
     //       }
     //     });
     // }
-  };
+  //};
 
   return (
+    // bookmarks.map((bookmark,currentTime) => (
+    //   <></>
+    // ))
     <>
+    
       {/* Tooltip to display the like/unlike action */}
       <Tooltip label={isBookmarked ? "Bookmark" : "Remove Bookmark"} aria-label="Bookmark tooltip">
         {/* Button to trigger the like/unlike action */}
@@ -122,6 +133,9 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
           p={2}
           leftIcon={
             <Icon as={CiBookmarkPlus} color="gray.500" />
+            //note:
+            //bookmarks.map(bookmark, currentTime)
+            //if bookmark.selectedTimestamp == currentTime then make the icon white, else make it grey
           }
           onClick={() => handleBookmark()}
         >
