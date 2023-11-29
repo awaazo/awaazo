@@ -54,7 +54,6 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
 
     fetchUserId();
   }, []); // Run this effect only once to fetch the user ID
-
   useEffect(() => {
     if (userId) {
       const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
