@@ -21,10 +21,11 @@ import {
 
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
+import AuthHelper from "../../helpers/AuthHelper";
 import { Notification, User} from "../../utilities/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
-import EndpointHelper from "../../helpers/EndpointHelper";
+
 
 interface NotificationsProps {
   isOpen: boolean;
@@ -39,41 +40,31 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
 
+
   useEffect(() => {
     const fetchUserId = async () => {
-      try {
-        const response = await EndpointHelper.getAuthMeEndpoint(); // Call the getAuthMeEndpoint
-        if (response && response.id) {
-          setUserId(response.id); // Set the user ID from the response
-          console.log("User ID:", response.id); // Log the user ID to the console
-        }
-      } catch (error) {
-        console.error("Failed to fetch user ID:", error);
+      const userResponse = await AuthHelper.authMeRequest();
+      if (userResponse && userResponse.userMenuInfo && userResponse.userMenuInfo.id) {
+        setUserId(userResponse.userMenuInfo.id);
+        console.log('User data fetched:', userResponse.userMenuInfo);
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+          cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+        });
+        const channel = pusher.subscribe('user-' + userResponse.userMenuInfo.id);
+        channel.bind('notification', function(data) {
+          // Handle the incoming notification data here
+          console.log('Received new notification:', data);
+          // You can update the notification state or take other actions based on the incoming data
+        });
+        return () => {
+          // Unsubscribe from the Pusher channel when the component unmounts
+          channel.unbind_all();
+          channel.unsubscribe();
+        };
       }
     };
-
     fetchUserId();
-  }, []); // Run this effect only once to fetch the user ID
-  useEffect(() => {
-    if (userId) {
-      const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
-        cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
-      });
-
-      const channel = pusher.subscribe('user-' + userId);
-      channel.bind('notification', function(data) {
-        // Handle the incoming notification data here
-        console.log('Received new notification:', data);
-        // You can update the notification state or take other actions based on the incoming data
-      });
-
-      return () => {
-        // Unsubscribe from the Pusher channel when the component unmounts
-        channel.unbind_all();
-        channel.unsubscribe();
-      };
-    }
-  }, [userId]);
+  }, []);
 
   // Fetch notifications from the API
   useEffect(() => {
