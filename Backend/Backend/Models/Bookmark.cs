@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Backend.Infrastructure;
 
 namespace Backend.Models;
 
 public class Bookmark : BaseEntity
 {
-
     public Bookmark() 
     {
         Title = string.Empty;
         Note = string.Empty;
+        Time = 0.0;
     }
 
     [Key]
