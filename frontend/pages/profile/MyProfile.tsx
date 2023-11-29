@@ -55,6 +55,7 @@ const myProfile = () => {
             <Container>
               <MyEpisodes />
               <MyPlaylists />
+              <Subscriptions />
             </Container>
           </Stack>
         </Box>
