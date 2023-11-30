@@ -28,6 +28,8 @@ import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import Notifications from "../../pages/notification/Notifications";
 import NextLink from "next/link";
+import NotificationHelper from "../../helpers/NotificationsHelper";
+
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
@@ -61,6 +63,21 @@ export default function Navbar() {
   const toggleNotifications = () => {
     setIsNotificationsOpen(!isNotificationsOpen);
   };
+
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      const response = await NotificationHelper.NotificationCount();
+      if (response !== null && response !== undefined && typeof response === 'number') {
+        setNotificationCount(response);
+      } else {
+        console.error("Failed to fetch notification count:", response.message || 'No error message available');
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
 
   interface SessionExt extends DefaultSession {
     token: {
@@ -223,6 +240,7 @@ export default function Navbar() {
       <Notifications
         isOpen={isNotificationsOpen}
         onClose={toggleNotifications} 
+        notificationCount={notificationCount}
       />
     );
     };
