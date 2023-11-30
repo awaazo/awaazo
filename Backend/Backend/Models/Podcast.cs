@@ -69,7 +69,6 @@ public class Podcast : BaseEntity
     /// <summary>
     /// Ratings received for this podcast
     /// </summary>
-    /// <typeparam name="PodcastRating"></typeparam>
     public List<PodcastRating> Ratings { get; set; } = new List<PodcastRating>();
 
     /// <summary>
