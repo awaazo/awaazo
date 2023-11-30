@@ -191,6 +191,7 @@ public class PodcastService : IPodcastService
     {
         // Check if the podcast exists, if it does retrieve it.
         PodcastResponse podcastResponse = await _db.Podcasts
+        .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -227,6 +228,7 @@ public class PodcastService : IPodcastService
     {
         // Check if the user has any podcasts, if they do retrieve them.
         List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -255,6 +257,7 @@ public class PodcastService : IPodcastService
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
         List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -282,6 +285,7 @@ public class PodcastService : IPodcastService
     {
         // Get the podcasts from the database
         List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -317,6 +321,7 @@ public class PodcastService : IPodcastService
         // Execute the query
         List<PodcastResponse> podcastResponses = await _db.Podcasts
             .FromSqlRaw($"SELECT * FROM dbo.Podcasts {query}")
+            .Include(p=>p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings)
             .Skip(page * pageSize)
