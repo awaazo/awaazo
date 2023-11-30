@@ -102,7 +102,6 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
         <LikeComponent
           episodeOrCommentId={episode.id}
           initialLikes={episode.likes}
-          initialIsLiked={false}
         />
       </VStack>
     </Flex>

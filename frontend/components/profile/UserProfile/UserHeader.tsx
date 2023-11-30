@@ -12,14 +12,15 @@ import {
   Box,
   HStack,
   useColorModeValue,
+  useBreakpointValue,
   Button,
 } from "@chakra-ui/react";
-import { UserProfile } from "../../utilities/Interfaces";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import router from "next/router";
-import UserProfileHelper from "../../helpers/UserProfileHelper";
+import UserProfileHelper from "../../../helpers/UserProfileHelper";
+import { userProfileByID } from "../../../utilities/Interfaces";
 
 const iconProps = {
   variant: "ghost",
@@ -49,23 +50,31 @@ const socials = [
   },
 ];
 
-export default function Header() {
+export default function Header({ userId }) {
+  // Form Values
+  const [user, setUser] = useState<userProfileByID | null>(null);
+  const [getError, setGetError] = useState("");
+
   const { data: session } = useSession();
-  const [profile, setProfile] = useState<UserProfile>(null);
+  const [profile, setProfile] = useState<userProfileByID>(null);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
 
   useEffect(() => {
-    UserProfileHelper.profileGetRequest()
-      .then((response) => {
-        if (response.status == 200) {
-          setProfile(response.userProfile);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-      });
-  }, [session, isUserLoggedIn]);
+    console.log(userId);
+
+    // Ensure userId is truthy before making the API call
+    UserProfileHelper.profileGetByIdRequest(userId).then((res) => {
+      // If logged in, set user, otherwise redirect to the login page
+      if (res.status === 200) {
+        setUser(res.userProfileByID);
+      } else {
+        setGetError("Podcasts cannot be fetched");
+      }
+    });
+  }, [userId]);
 
   return (
     <>
@@ -74,27 +83,32 @@ export default function Header() {
         px={2}
         alignItems={{ base: "center", sm: "flex-start" }}
         marginBottom={"2em"}
+        ml={isMobile ? "25px" : "0px"}
       >
-        <Stack>
-          <Avatar boxShadow="xl" size="xl" src={profile?.avatarUrl} />
-        </Stack>
-        <Heading
-          textAlign={{ base: "center", sm: "left" }}
-          margin="0 auto"
-          width={{ base: "23rem", sm: "auto" }}
-          fontSize={{ base: "2.5rem", sm: "3rem" }}
-        >
-          The Really Good Podcast
-          <br />
-          <Text fontSize="1.5rem">
-            <span style={{ color: useColorModeValue("pink", "pink") }}>
-              @{profile?.username}
-            </span>
-          </Text>
-        </Heading>
+        <HStack>
+          <Avatar
+            boxShadow="xl"
+            style={{ width: "150px", height: "150px" }}
+            src={user?.avatarUrl}
+          />
+          <VStack align="start" spacing={1}>
+            <Heading
+              textAlign={{ base: "center", sm: "left" }}
+              margin="0 auto"
+              fontSize={{ base: "2rem", sm: "2.5rem" }}
+            >
+              {user?.displayName}
+            </Heading>
+            <Text fontSize="1.5rem">
+              <span style={{ color: useColorModeValue("pink", "pink") }}>
+                @{user?.username}
+              </span>
+            </Text>
+          </VStack>
+        </HStack>
 
-        <Text textAlign="center">
-          <span>Bio: {profile?.bio}</span>
+        <Text textAlign="left">
+          <span>Bio: {user?.bio}</span>
         </Text>
         <HStack>
           <Button
@@ -104,16 +118,16 @@ export default function Header() {
               border: "solid 1px #CC748C",
             }}
           >
-            420 Followers
+            420 Subscriptions
           </Button>
           <Button
             rounded="7px"
             style={{
-              // styling for number of followers, and when clicked, goes to the followers page
+              // styling for the number of followers, and when clicked, goes to the followers page
               border: "solid 1px #CC748C",
             }}
           >
-            Following 69 Hosts
+            Subscribed to 69 Podcasts
           </Button>
         </HStack>
         <Divider />
@@ -132,7 +146,7 @@ export default function Header() {
             <IconButton
               as={Link}
               isExternal
-              href={profile?.twitterUrl}
+              href={user?.twitterUrl}
               aria-label={"Twitter Account"}
               colorScheme={"gray"}
               rounded="full"
@@ -142,7 +156,7 @@ export default function Header() {
             <IconButton
               as={Link}
               isExternal
-              href={profile?.linkedInUrl}
+              href={user?.linkedInUrl}
               aria-label={"Linkedin Account"}
               colorScheme={"gray"}
               rounded="full"
@@ -150,27 +164,8 @@ export default function Header() {
               {...iconProps}
             />
           </Box>
-          <Button rounded={"full"}>
-            {/* <Icon as={Follow} w={6} h={6} /> */}
-            <Text>Follow</Text>
-            {/*// this will be hidden if the current user is the one viewing his own profile*/}
-          </Button>
-          <Button
-            rounded={"full"}
-            style={{
-              marginLeft: "1em",
-            }}
-            onClick={() => {
-              router.push("/profile/EditProfile");
-            }}
-          >
-            {/* <Icon as={Follow} w={6} h={6} /> */}
-            <Text>Edit Profile</Text>
-            {/* this will also be hidden for viewing other users' profiles*/}
-          </Button>
         </Flex>
       </VStack>
     </>
   );
 }
-

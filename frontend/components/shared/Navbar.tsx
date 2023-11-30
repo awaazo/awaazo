@@ -20,13 +20,16 @@ import {
   Input,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
 import LogoWhite from "../../public/logo_white.svg";
 import LogoBlack from "../../public/logo_black.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
+import Notifications from "../../pages/notification/Notifications";
 import NextLink from "next/link";
+import NotificationHelper from "../../helpers/NotificationsHelper";
+
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
@@ -39,8 +42,8 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
   const [searchValue, setSearchValue] = useState("");
-  const handleSearchChange = (event) => setSearchValue(event.target.value);
 
   const handleSearchSubmit = () => {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
@@ -55,6 +58,26 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+  };
+
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      const response = await NotificationHelper.NotificationCount();
+      if (response !== null && response !== undefined && typeof response === 'number') {
+        setNotificationCount(response);
+      } else {
+        console.error("Failed to fetch notification count:", response.message || 'No error message available');
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
 
   interface SessionExt extends DefaultSession {
     token: {
@@ -119,6 +142,10 @@ export default function Navbar() {
     setIsUserLoggedIn(false);
     setIsUserSet(false);
     window.location.href = indexPage;
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
   };
 
   /**
@@ -207,6 +234,16 @@ export default function Navbar() {
       </MenuList>
     </Menu>
   );
+
+  const NotificationsModal = () => {
+    return(
+      <Notifications
+        isOpen={isNotificationsOpen}
+        onClose={toggleNotifications} 
+        notificationCount={notificationCount}
+      />
+    );
+    };
 
   return (
     <>
@@ -308,10 +345,22 @@ export default function Navbar() {
                 mr={4}
                 color={colorMode === "dark" ? "white" : "black"}
               />
+             <IconButton
+                aria-label="Notifications"
+                icon={<BellIcon />}
+                onClick={toggleNotifications}
+                variant="ghost"
+                size="md"
+                rounded={"full"}
+                opacity={0.7}
+                mr={4}
+                color={colorMode === "dark" ? "white" : "black"}
+              />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           )}
         </Flex>
+        {isNotificationsOpen && <NotificationsModal />}
       </Box>
     </>
   );
