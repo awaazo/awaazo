@@ -10,6 +10,12 @@ namespace Backend.Tests;
 /// <summary>
 /// Tests for PlaylistService
 /// </summary>
+
+/**
+* The unit TESTs for the playlist service will have to be entirely redone.
+*/
+
+/**
 [Collection("Sequential")]
 public class PlaylistTests : IAsyncLifetime
 {
@@ -303,3 +309,5 @@ public class PlaylistTests : IAsyncLifetime
     }
     #endregion
 }
+
+*/

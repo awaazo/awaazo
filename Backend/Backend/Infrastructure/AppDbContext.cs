@@ -33,8 +33,9 @@ public class AppDbContext : DbContext
     public virtual DbSet<EpisodeLike> EpisodeLikes  { get; set; }
     public virtual DbSet<CommentLike> CommentLikes {get;set;}
     public virtual DbSet<CommentReplyLike> CommentReplyLikes {get;set;}
-    public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
+    //public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
+    public virtual DbSet<PlaylistEpisode> PlaylistEpisodes {get;set;}
     public virtual DbSet<Notification>? Notifications { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
@@ -240,6 +241,36 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+
+
+
+
+
+        // PLAYLIST RELATIONSHIPS
+
+        // Playlist 1-to-many PlaylistEpisodes
+        modelBuilder.Entity<Playlist>()
+            .HasMany(e => e.PlaylistEpisodes)
+            .WithOne(pe => pe.Playlist)
+            .HasForeignKey(pe => pe.PlaylistId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        // Episode 1-to-many PlaylistEpisodes
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.PlaylistEpisodes)
+            .WithOne(pe=>pe.Episode)
+            .HasForeignKey(pe=>pe.EpisodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // User 1-to-many Playlist
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Playlists)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
     
     public override int SaveChanges()

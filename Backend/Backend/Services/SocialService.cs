@@ -51,9 +51,26 @@ public class SocialService : ISocialService
             CreatedAt = DateTime.Now
         };
 
+        // Also add episode to liked episodes
+        // Get the liked episodes playlist for the user
+        Playlist likedEpisodesPlaylist = await _db.Playlists
+            .FirstOrDefaultAsync(p => p.Name == "Liked Episodes" && p.UserId == user.Id)
+            ?? throw new Exception("Playlist does not exist.");
+
+        PlaylistEpisode playlistEpisode = new()
+        {
+            EpisodeId = episodeId,
+            PlaylistId = likedEpisodesPlaylist.Id,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        await _db.PlaylistEpisodes.AddAsync(playlistEpisode);
+
         // Add the Like to the DB and return the status
         await _db.EpisodeLikes.AddAsync(like);
         return await _db.SaveChangesAsync() > 0;
+
     }
 
     /// <summary>
@@ -129,11 +146,11 @@ public class SocialService : ISocialService
     {
         // Check if the given user liked the comment, comment reply or episode for the given ID
         return await _db.CommentLikes
-        .AnyAsync(c=>c.UserId==user.Id && c.CommentId==episodeOrCommentId) ||
+        .AnyAsync(c => c.UserId == user.Id && c.CommentId == episodeOrCommentId) ||
         await _db.CommentReplyLikes
-        .AnyAsync(c=>c.UserId==user.Id && c.CommentReplyId==episodeOrCommentId) ||
+        .AnyAsync(c => c.UserId == user.Id && c.CommentReplyId == episodeOrCommentId) ||
         await _db.EpisodeLikes
-        .AnyAsync(e=>e.UserId==user.Id && e.EpisodeId==episodeOrCommentId);
+        .AnyAsync(e => e.UserId == user.Id && e.EpisodeId == episodeOrCommentId);
     }
 
     /// <summary>
@@ -245,7 +262,7 @@ public class SocialService : ISocialService
                 throw new Exception("User is not the owner of the comment.");
 
             // Remove all replies and likes
-            foreach(CommentReply reply in comment.Comments)
+            foreach (CommentReply reply in comment.Comments)
                 _db.CommentReplyLikes.RemoveRange(reply.Likes);
 
             _db.CommentLikes.RemoveRange(comment.Likes);
@@ -294,7 +311,21 @@ public class SocialService : ISocialService
 
         // Remove the like
         if (episodeLike is not null)
+        {
             _db.EpisodeLikes.Remove(episodeLike);
+
+            // Get the liked episodes playlist for the user
+            Playlist likedEpisodesPlaylist = await _db.Playlists
+                .FirstOrDefaultAsync(p => p.Name == "Liked Episodes" && p.UserId == user.Id)
+                ?? throw new Exception("Playlist does not exist.");
+
+            // Also remove the episode from the liked playlist
+            PlaylistEpisode playlistEpisode = await _db.PlaylistEpisodes
+                .FirstOrDefaultAsync(pe => pe.EpisodeId == episodeLike.EpisodeId && pe.PlaylistId == likedEpisodesPlaylist.Id)
+                ?? throw new Exception("PlaylistEpisode does not exist for the given ID.");
+
+            _db.PlaylistEpisodes.Remove(playlistEpisode);
+        }
         else if (commentLike is not null)
             _db.CommentLikes.Remove(commentLike);
         else if (commentReplyLike is not null)
@@ -337,7 +368,7 @@ public class SocialService : ISocialService
                 UserId = user.Id,
                 PodcastId = podcastId,
                 Rating = rating
-            }; 
+            };
 
             // Add the Rating to the DB
             await _db.PodcastRatings.AddAsync(podcastRating);
@@ -409,7 +440,7 @@ public class SocialService : ISocialService
                 PodcastId = podcastId,
                 Review = review
             };
-            
+
             // Add the Rating to the DB
             await _db.PodcastRatings.AddAsync(podcastRating);
         }

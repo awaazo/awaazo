@@ -6,7 +6,7 @@ namespace Backend.Models;
 /// <summary>
 /// Represents a liked episode.
 /// </summary>
-[PrimaryKey(nameof(UserId),nameof(EpisodeId))]
+[PrimaryKey(nameof(UserId), nameof(EpisodeId))]
 public class EpisodeLike : BaseEntity
 {
     /// <summary>
@@ -16,11 +16,10 @@ public class EpisodeLike : BaseEntity
     [Required]
     public Guid UserId { get; set; } = Guid.Empty;
 
-    [Required]
     /// <summary>
     /// Id of the episode that was liked.
     /// </summary>
-    /// <value></value>
+    [Required]
     public Guid EpisodeId { get; set; } = Guid.Empty;
 
     /// <summary>
@@ -33,7 +32,7 @@ public class EpisodeLike : BaseEntity
 /// <summary>
 /// Represents a liked comment.
 /// </summary>
-[PrimaryKey(nameof(UserId),nameof(CommentId))]
+[PrimaryKey(nameof(UserId), nameof(CommentId))]
 public class CommentLike : BaseEntity
 {
     /// <summary>
@@ -42,13 +41,13 @@ public class CommentLike : BaseEntity
     /// <value></value>
     [Required]
     public Guid UserId { get; set; } = Guid.Empty;
-    
 
-    [Required]
+
     /// <summary>
     /// CommentId of the comment that was liked.
     /// </summary>
     /// <value></value>
+    [Required]
     public Guid CommentId { get; set; } = Guid.Empty;
 
     /// <summary>
@@ -59,7 +58,7 @@ public class CommentLike : BaseEntity
 
 }
 
-[PrimaryKey(nameof(UserId),nameof(CommentReplyId))]
+[PrimaryKey(nameof(UserId), nameof(CommentReplyId))]
 public class CommentReplyLike : BaseEntity
 {
     [Required]
