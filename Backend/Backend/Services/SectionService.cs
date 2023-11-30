@@ -78,7 +78,7 @@ namespace Backend.Services
             }
 
             //Check if start value is not greater then the End value
-            if (sectionRequest.Start > sectionRequest.End)
+            if (sectionRequest.Start >= sectionRequest.End)
             {
                 throw new Exception("Start Value Should always be greater then End value");
             }
