@@ -81,6 +81,11 @@ public class Episode : BaseEntity
     /// Episode likes for this episode
     /// </summary>
     public ICollection<EpisodeLike> Likes { get; } = new List<EpisodeLike>();
+
+    /// <summary>
+    /// Playlist Episodes for this episode
+    /// </summary>
+    public ICollection<PlaylistEpisode> PlaylistEpisodes { get; } = new List<PlaylistEpisode>();
 }
 
 public class UserEpisodeInteraction : BaseEntity

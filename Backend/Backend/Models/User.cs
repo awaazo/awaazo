@@ -113,50 +113,36 @@ public class User : BaseEntity
     /// <summary>
     /// User's podcasts.
     /// </summary>
-    /// <typeparam name="Podcast"></typeparam>
-    /// <returns></returns>
     public ICollection<Podcast> Podcasts { get; } = new List<Podcast>();
 
     /// <summary>
     /// User's bookmarks
     /// </summary>
-    /// <typeparam name="Bookmark"></typeparam>
-    /// <returns></returns>
     public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 
     /// <summary>
     /// Podcasts followed by the user.
     /// </summary>
-    /// <typeparam name="PodcastFollow"></typeparam>
-    /// <returns></returns>
     public ICollection<PodcastFollow> PodcastFollows { get; } = new List<PodcastFollow>();
 
     /// <summary>
     /// Users followed by the user.
     /// </summary>
-    /// <typeparam name="UserFollow"></typeparam>
-    /// <returns></returns>
     public ICollection<UserFollow> UserFollows { get; } = new List<UserFollow>();
 
     /// <summary>
     /// User's Subscriptions.
     /// </summary>
-    /// <typeparam name="Subscription"></typeparam>
-    /// <returns></returns>
     public ICollection<Subscription> Subscriptions { get; } = new List<Subscription>();
 
     /// <summary>
     /// User's ratings.
     /// </summary>
-    /// <typeparam name="PodcastRating"></typeparam>
-    /// <returns></returns>
     public ICollection<PodcastRating> Ratings { get; } = new List<PodcastRating>();
 
     /// <summary>
     /// User's Podcast Interactions.
     /// </summary>
-    /// <typeparam name="UserEpisodeInteraction"></typeparam>
-    /// <returns></returns>
     public ICollection<UserEpisodeInteraction> EpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
     public ICollection<Comment> Comments { get; } = new List<Comment>();
@@ -166,10 +152,9 @@ public class User : BaseEntity
     /// <summary>
     /// User Notification.
     /// </summary>
-    /// <typeparam name="Notification"></typeparam>
-    /// <returns></returns>
     public ICollection<Notification> Notifications {  get; } = new List<Notification>();
 
+    public ICollection<Playlist> Playlists { get; } = new List<Playlist>();
 
     /// <summary>
     /// Gender enum.
