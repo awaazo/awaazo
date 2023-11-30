@@ -1,9 +1,12 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Requests;
+using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers;
 
@@ -12,99 +15,335 @@ namespace Backend.Controllers;
 [Authorize]
 public class PlaylistController : ControllerBase
 {
-    private readonly PlaylistService _service;
+    private const int DEFAULT_PAGE_SIZE = 20;
+    private const int MIN_PAGE = 0;
+    private readonly IPlaylistService _playlistService;
     private readonly IAuthService _authService;
     private readonly ILogger _logger;
 
-    public PlaylistController(PlaylistService service, IAuthService authService, ILogger logger)
+    public PlaylistController(IPlaylistService playlistService, IAuthService authService, ILogger logger)
     {
         _logger = logger;
-        _service = service;
+        _playlistService = playlistService;
         _authService = authService;
     }
     
+
     /// <summary>
-    /// Creates a Playlist for the logged in user
+    /// Creates a playlist with the given Episodes.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns>The created playlist</returns>
+    /// <param name="request">Create Playlist Request.</param>
     [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] PlaylistCreateRequest request)
+    public async Task<ActionResult> CreatePlaylist([FromBody] CreatePlaylistRequest request)
     {
-        _logger.LogDebug(@"Using the playlist\create Endpoint");
-        return Ok(await _service.Create(
-                await _authService.IdentifyUserAsync(HttpContext)!, request.Name));
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\create Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Create the playlist.
+            return await _playlistService.CreatePlaylistAsync(request,user)? 
+                Ok("Playlist created."):
+                Ok("Failed to create playlist.");
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    } 
+
+    /// <summary>
+    /// Edits a playlist's information.
+    /// </summary>
+    /// <param name="playlistId">Id of the Playlist.</param>
+    /// <param name="request">Edit Playlist Request.</param>
+    [HttpPost("{playlistId}/edit")]
+    public async Task<ActionResult> EditPlaylist(Guid playlistId, [FromBody] EditPlaylistRequest request)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\playlistId\edit Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Edit the playlist.
+            return await _playlistService.EditPlaylistAsync(playlistId,request,user)? 
+                Ok("Playlist udpated."):
+                Ok("Failed to update playlist.");
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Adds new Episodes to the Playlist.
+    /// </summary>
+    /// <param name="playlistId">Id of the Playlist.</param>
+    /// <param name="episodeIds">Id of the Episode(s) to add.</param>
+    [HttpPost("{playlistId}/add")]
+    public async Task<ActionResult> AddEpisodesToPlaylist(Guid playlistId, [FromBody] Guid[] episodeIds)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\playlistId\add Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Add episodes to playlist
+            return await _playlistService.AddEpisodesToPlaylistAsync(playlistId,episodeIds,user)? 
+                Ok("Episode(s) added."):
+                Ok("Failed to add episode(s).");
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Removes the Episode(s) from the Playlist.
+    /// </summary>
+    /// <param name="playlistId">Id of the Playlist.</param>
+    /// <param name="episodeIds">Id of the Episode(s) to remove.</param>
+    [HttpDelete("{playlistId}/removeEpisodes")]
+    public async Task<ActionResult> RemoveEpisodesFromPlaylist(Guid playlistId, [FromBody] Guid[] episodeIds)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\playlistId\removeEpisodes Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Removes Episodes from playlist
+            return await _playlistService.RemoveEpisodesFromPlaylistAsync(playlistId,episodeIds,user)? 
+                Ok("Episode(s) Removed."):
+                Ok("Failed to remove episode(s).");
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Deletes the Playlist.
+    /// </summary>
+    /// <param name="playlistId">Id of the Playlist to delete.</param>
+    [HttpDelete("{playlistId}/delete")]
+    public async Task<ActionResult> DeletePlaylist(Guid playlistId)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\playlistId\delete Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Delete the playlist.
+            return await _playlistService.DeletePlaylistAsync(playlistId,user)? 
+                Ok("Playlist Removed."):
+                Ok("Failed to remove playlist.");
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets the Playlists of the current User.
+    /// </summary>
+    /// <param name="page">Index of the current page.</param>
+    /// <param name="pageSize">Size of the current page.</param>
+    [HttpGet("myPlaylists")]
+    public async Task<ActionResult> GetMyPlaylists(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Get the user playlists.
+            return Ok(await _playlistService.GetUserPlaylistsAsync(user.Id,user,page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets the public Playlists of the given user. 
+    /// </summary>
+    /// <param name="userId">Id of the User who owns the playlists.</param>
+    /// <param name="page">Index of the current page.</param>
+    /// <param name="pageSize">Size of the current page.</param>
+    [HttpGet("{userId}/getUserPlaylists")]
+    public async Task<ActionResult> GetUserPlaylists(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Get the user playlists.
+            return Ok(await _playlistService.GetUserPlaylistsAsync(userId,user,page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
     }
     
     /// <summary>
-    /// Adds an element (Episode) to the given playlist
+    /// Gets all public Playlists.
     /// </summary>
-    /// <returns>Operation successful or not</returns>
-    [HttpPut("append")]
-    public async Task<IActionResult> Append([FromBody] PlaylistAppendRequest request)
-    {
-        _logger.LogDebug(@"Using the playlist\append Endpoint");
-
-        bool result = await _service.Append(
-            await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistId, request.EpisodeId);
-
-        return result ? Ok() : BadRequest("Invalid Playlist ID or Episode ID");
-    }
-
-    /// <summary>
-    /// This function retreives all playlist of the logged in user
-    /// </summary>
-    /// <returns>Returns a list of Playlist</returns>
+    /// <param name="page">Index of the current page.</param>
+    /// <param name="pageSize">Size of the current page.</param>
     [HttpGet("all")]
-    public async Task<IActionResult> All()
+    public async Task<ActionResult> GetAllPlaylists(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
-        _logger.LogDebug(@"Using the playlist\all Endpoint");
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
 
-        return Ok(await _service.All(await _authService.IdentifyUserAsync(HttpContext)!));
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Get the user playlists.
+            return Ok(await _playlistService.GetAllPlaylistsAsync(user,page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
     }
 
     /// <summary>
-    /// This function retreives all the elements (episodes) added to a given playlist
+    /// Searches for public Playlists.
     /// </summary>
-    [HttpGet("elements")]
-    public async Task<IActionResult> Elements([FromBody] PlaylistElementsRequest request)
+    /// <param name="searchTerm">Search Term.</param>
+    /// <param name="page">Index of the current page.</param>
+    /// <param name="pageSize">Size of the current page.</param>
+    [HttpGet("search")]
+    public async Task<ActionResult> SearchPlaylists(string searchTerm, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
-        _logger.LogDebug(@"Using the playlist\elements Endpoint");
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
 
-        var elements =
-            await _service.PlaylistElements(await _authService.IdentifyUserAsync(HttpContext)!, request.PlayListId);
-        return elements is null ? BadRequest("Invalid Playlist ID") : Ok();
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Gets the searched Playlists
+            return Ok(await _playlistService.SearchPlaylistsAsync(searchTerm,user,page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }   
+    }
+
+
+    /// <summary>
+    /// Gets the Playlist Episodes for the given Playlist Id.
+    /// </summary>
+    /// <param name="playlistId">Id of the Playlist.</param>
+    [HttpGet("{playlistId}")]
+    public async Task<ActionResult> GetPlaylist(Guid playlistId)
+    {
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Get the user playlist episodes.
+            return Ok(await _playlistService.GetPlaylistEpisodesAsync(playlistId,user,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
+
+            return BadRequest(e.Message);
+        }
     }
 
     /// <summary>
-    /// Deletes a given playlist completely
+    /// Gets the Playlist of liked Episodes for the current user.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns>Operation success or failure</returns>
-    [HttpPut("delete")]
-    public async Task<IActionResult> Delete([FromBody] PlaylistDeleteRequest request)
+    [HttpGet("getLikedEpisodesPlaylist")]
+    public async Task<ActionResult> GetLikedEpisodesPlaylist()
     {
-        _logger.LogDebug(@"Using the playlist\delete Endpoint");
+        try
+        {
+            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
 
-        bool result = await _service.Delete(
-            await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistId);
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User does not exist.");
+            
+            // Get the user playlist of liked episodes.
+            return Ok(await _playlistService.GetLikedEpisodesPlaylist(user,GetDomainUrl(HttpContext)));
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e,e.Message);
 
-        return result ? Ok() : BadRequest("Invalid Playlist ID");
+            return BadRequest(e.Message);
+        }
     }
 
-    /// <summary>
-    /// Deletes an ELEMENT (Episode) from a given playlist
-    /// </summary>
-    /// <returns>Operation success or failure</returns>
-    [HttpPut("deleteElement")]
-    public async Task<IActionResult> DeleteElement([FromBody] PlaylistElementDeleteRequest request)
-    {
-        _logger.LogDebug(@"Using the playlist\deleteElement Endpoint");
-
-        bool result = await _service.DeleteElement(
-            await _authService.IdentifyUserAsync(HttpContext)!, request.PlaylistElementId);
-
-        return result ? Ok() : BadRequest("Invalid Playlist Element ID");        
-    }
 }
 

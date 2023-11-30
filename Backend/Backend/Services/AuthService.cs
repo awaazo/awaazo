@@ -13,6 +13,7 @@ using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Backend.Models.Playlist;
 
 
 namespace Backend.Services;
@@ -87,7 +88,7 @@ public class AuthService : IAuthService
     public async Task<User?> RegisterAsync(RegisterRequest request)
     {
         // Return NULL if the User exists (ie. has same email and/or username)
-        User? existingUser = await _db.Users!.FirstOrDefaultAsync(u => u.Email == request.Email || u.Username == request.Username);
+        User? existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email || u.Username == request.Username);
         if (existingUser is not null)
             return null;
 
@@ -105,7 +106,25 @@ public class AuthService : IAuthService
         newUser.Interests = Array.Empty<string>();
 
         // Add the User to the Database
-        await _db.Users!.AddAsync(newUser);
+        await _db.Users.AddAsync(newUser);
+
+        // Add the Liked Episodes playlist
+        // Create the playlist
+        Playlist playlist = new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Liked Episodes",
+            UserId = newUser.Id,
+            Description = "This playlist contains all episodes liked by you!",
+            Privacy = DEFAULT_PRIVACY,
+            IsHandledByUser = false,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        await _db.Playlists.AddAsync(playlist);
+
+
         await _db.SaveChangesAsync();
 
         return newUser;
@@ -184,6 +203,22 @@ public class AuthService : IAuthService
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
+
+        // Add the Liked Episodes playlist
+        // Create the playlist
+        Playlist playlist = new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Liked Episodes",
+            UserId = newUser.Id,
+            Description = "This playlist contains all episodes liked by you!",
+            Privacy = DEFAULT_PRIVACY,
+            IsHandledByUser = false,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        await _db.Playlists.AddAsync(playlist);
 
         // Add the User to the Database
         await _db.Users!.AddAsync(newUser);
