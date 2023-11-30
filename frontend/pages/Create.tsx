@@ -14,6 +14,7 @@ import {
   Text,
   Center,
   Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../helpers/PodcastHelper";
@@ -89,12 +90,15 @@ const CreateEpisode = () => {
     setSelectedPodcast(podcast);
   };
 
+  const [loading, setLoading] = useState(false);
+
   /**
    * Handles form submission
    * @param e Click event
    */
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true); 
 
     if (selectedPodcast == null) {
       setAddError("Please select the Podcast you wish to upload to");
@@ -125,6 +129,8 @@ const CreateEpisode = () => {
         selectedPodcast.id,
       );
       console.log(response);
+
+      setLoading(false);
 
       if (response.status === 200) {
         // Success, go to my podcasts page
@@ -431,13 +437,13 @@ const CreateEpisode = () => {
                 // semi transparent white outline
                 outline={"1px solid rgba(255, 255, 255, 0.6)"}
                 style={{
-                  background:
-                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                  background:"linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
                   backgroundSize: "300% 300%",
                   animation: "Gradient 10s infinite linear",
                 }}
+                disabled={loading}
               >
-                Upload
+              {loading ? <Spinner /> : "Upload"}
                 <style jsx>{`
                   @keyframes Gradient {
                     0% {
