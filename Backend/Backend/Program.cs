@@ -33,6 +33,7 @@ public class Program
         builder.Services.AddScoped<IProfileService, ProfileService>();
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<ISocialService, SocialService>();
 
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
