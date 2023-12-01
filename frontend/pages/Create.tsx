@@ -14,6 +14,14 @@ import {
   Text,
   Center,
   Heading,
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Progress,
   Spinner,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
@@ -24,6 +32,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import router from "next/router";
 import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
 import { EpisodeAddRequest } from "../utilities/Requests";
+import { AxiosProgressEvent } from "axios";
 
 const CreateEpisode = () => {
   // Page refs
@@ -57,6 +66,11 @@ const CreateEpisode = () => {
     setCoverImage(URL.createObjectURL((e.target as any).files[0]));
     e.preventDefault();
   };
+
+  // Modal state
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
+  const [serverError, setServerError] = useState(false);
 
   useEffect(() => {
     // Check to make sure the user has logged in
@@ -98,12 +112,11 @@ const CreateEpisode = () => {
    */
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     if (selectedPodcast == null) {
       setAddError("Please select the Podcast you wish to upload to");
     } else {
-      // Ensure all required fields are filled
       if (
         coverImageFile == null ||
         episodeName == "" ||
@@ -122,24 +135,36 @@ const CreateEpisode = () => {
         isExplicit: isExplicit,
         episodeName: episodeName,
       };
-
+      setServerError(false);
+      setUploadModalOpen(true);
       // Send the request
       const response = await PodcastHelper.episodeAddRequest(
         request,
         selectedPodcast.id,
+        onUploadProgress,
       );
       console.log(response);
 
       setLoading(false);
 
       if (response.status === 200) {
-        // Success, go to my podcasts page
-        window.location.href = myPodcastsPage;
+        // Ensure all required fields are filled
+        // Show modal with progress bar
       } else {
         // Handle error here
+        setServerError(true);
         setAddError(response.data);
       }
     }
+  };
+
+  // Define the progress callback
+  const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
+    const progress = Math.round(
+      (progressEvent.loaded / progressEvent.total) * 100,
+    );
+    setUploadProgress(progress);
+    console.log(progress);
   };
 
   // Ensures episode name is not longer than 25 characters
@@ -437,13 +462,14 @@ const CreateEpisode = () => {
                 // semi transparent white outline
                 outline={"1px solid rgba(255, 255, 255, 0.6)"}
                 style={{
-                  background:"linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                  background:
+                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
                   backgroundSize: "300% 300%",
                   animation: "Gradient 10s infinite linear",
                 }}
                 disabled={loading}
               >
-              {loading ? <Spinner /> : "Upload"}
+                {loading ? <Spinner /> : "Upload"}
                 <style jsx>{`
                   @keyframes Gradient {
                     0% {
@@ -462,6 +488,116 @@ const CreateEpisode = () => {
           </form>
         </VStack>
       </Box>
+      <Modal
+        isOpen={isUploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+      >
+        <ModalOverlay />
+
+        <ModalContent
+          borderRadius="xl"
+          backdropFilter="blur(50px)"
+          p={9}
+          maxW="800px"
+          width="95%"
+        >
+          <ModalCloseButton />
+
+          <Flex direction="column">
+            <Flex align="start">
+              {coverImage && (
+                <Image
+                  src={coverImage}
+                  alt="Uploaded Cover Photo"
+                  boxSize="120px"
+                  borderRadius="8px"
+                  objectFit="cover"
+                  boxShadow="lg"
+                />
+              )}
+              <Box ml={4}>
+                <Text fontSize="25px" fontWeight={"bold"}>
+                  Uploading: {episodeName}
+                </Text>
+                <Text fontSize="15px" mt={3} ml={1}>
+                  {description}
+                </Text>
+              </Box>
+            </Flex>
+            <Flex direction="column" align="center" mt={5}>
+              {serverError ? (
+                <Box textAlign="center">
+                  <Text fontSize="lg" textAlign="center" color="red" mb={2}>
+                    {addError}
+                  </Text>
+                </Box>
+              ) : (
+                <>
+                  <Box textAlign="center">
+                    {uploadProgress !== 100 && (
+                      <Text
+                        fontSize="xs"
+                        textAlign="center"
+                        color="white"
+                        mb={2}
+                      >
+                        Please wait while the file gets uploaded
+                      </Text>
+                    )}
+                  </Box>
+
+                  <Box
+                    w="100%"
+                    h="32px"
+                    borderRadius="full"
+                    mt={2}
+                    mb={2}
+                    position="relative"
+                    style={{
+                      background: "grey",
+                    }}
+                  >
+                    <Box
+                      h="100%"
+                      borderRadius="full"
+                      width={`${uploadProgress}%`}
+                      style={{
+                        background:
+                          "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                        backgroundSize: "300% 300%",
+                        animation: "Gradient 3s infinite linear",
+                      }}
+                      position="absolute"
+                      zIndex="1"
+                    />
+
+                    <Text
+                      position="absolute"
+                      width="100%"
+                      textAlign="center"
+                      color="white"
+                      fontWeight="bold"
+                      fontSize="xl"
+                      zIndex="2"
+                    >
+                      {uploadProgress}%
+                    </Text>
+                  </Box>
+                  {uploadProgress === 100 && (
+                    <Button
+                      onClick={() => router.push("/MyPodcasts")}
+                      alignSelf="center"
+                      bg="rgba(169, 169, 169, 0.2)"
+                    >
+                      Finish
+                    </Button>
+                  )}
+                </>
+              )}
+            </Flex>
+          </Flex>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

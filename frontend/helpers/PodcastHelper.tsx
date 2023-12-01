@@ -1,4 +1,8 @@
-import axios from "axios";
+import axios, {
+  AxiosProgressEvent,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import EndpointHelper from "./EndpointHelper";
 import {
   EpisodeAddRequest,
@@ -312,9 +316,10 @@ export default class PodcastHelper {
   public static episodeAddRequest = async (
     requestData: EpisodeAddRequest,
     podcastId,
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void, // Use AxiosProgressEvent here
   ): Promise<CreateEpisodeResponse> => {
     // Create the request options.
-    const options = {
+    const options: AxiosRequestConfig = {
       method: "POST",
       data: requestData,
       url: EndpointHelper.getEpisodeAddEndpoint(podcastId),
@@ -323,7 +328,7 @@ export default class PodcastHelper {
         "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
-      cache: false,
+      onUploadProgress,
     };
 
     try {
@@ -332,7 +337,7 @@ export default class PodcastHelper {
 
       console.log(options);
       // Send the request and wait for the response.
-      const requestResponse = await axios(options);
+      const requestResponse: AxiosResponse = await axios(options);
 
       console.debug("Received the following podcastCreateResponse...");
       console.debug(requestResponse);

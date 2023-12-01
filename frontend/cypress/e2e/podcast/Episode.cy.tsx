@@ -17,6 +17,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.wait(500);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
@@ -111,6 +112,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
@@ -137,6 +139,7 @@ describe("Episode_Create", () => {
       });
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("button[id=createBtn]").click();
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.wait(250);
     cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
@@ -155,6 +158,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
@@ -178,6 +182,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets",
     );
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.episode_create(
       paths.cat,
@@ -186,6 +191,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets",
     );
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-cool-pets").click();
