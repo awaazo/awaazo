@@ -24,7 +24,7 @@ import {
   FaStepBackward,
 } from "react-icons/fa";
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
-import { Episode } from "../../utilities/Interfaces";
+import { Bookmark, Episode } from "../../utilities/Interfaces";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
 import BookmarkComponent from "../social/bookmarkComponent";
@@ -32,6 +32,8 @@ import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
+import SocialHelper from "../../helpers/SocialHelper";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -49,7 +51,7 @@ const PlayerBar = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
-
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   // Fetch audio from backend using the episode and podcast Ids
   useEffect(() => {
     const fetchAudio = async () => {
@@ -175,6 +177,32 @@ const PlayerBar = () => {
         .find((section) => totalSeconds >= section.timestamp)?.title || ""
     );
   };*/
+
+  // Fetch episode details and transform bookmarks
+  useEffect(() => {
+    const fetchEpisodeDetails = async () => {
+      const response = await PodcastHelper.getEpisodeById(
+        episode.id,
+      );
+      if (response.status === 200) {
+        if (response.episode) {
+          // Transform the bookmarks to match our format
+          const transformedBookmarks = response.episode.bookmarks.map(
+            (bookmark) => ({
+              id: bookmark.id,
+              title: bookmark.title,
+              note: bookmark.note,
+              timestamp: bookmark.timestamp,
+            }),
+          );
+          setBookmarks(transformedBookmarks);
+        }
+      } else {
+        console.error("Error fetching episode details for bookmarks:", response.message);
+      }
+    };
+    fetchEpisodeDetails();
+}, [episode.id]);
 
   // Color mode and palette detection
   const likedColor = useColorModeValue("gray.900", "gray.100");
@@ -310,6 +338,19 @@ const PlayerBar = () => {
               >
                 <SliderThumb boxSize={2} />
               </Tooltip>*/}
+
+              {bookmarks.map((bookmark) => (
+                <Box
+                  position="absolute"
+                  left={`${(bookmark.timestamp / duration) * 100}%`}
+                  top="50%"
+                  transform="translate(-50%, -50%)"
+                  h="100%"
+                  w="2px"
+                  bg="red.500"
+                />
+              ))
+              }
             </Slider>
 
             <Text ml={3} fontSize="sm" fontWeight="bold">
@@ -319,11 +360,13 @@ const PlayerBar = () => {
         )}
 
         {/* Like and Comment - Hidden in mobile */}
+        
         {!isMobile && (
           <Flex alignItems="center">
             <BookmarkComponent
               episodeId={episode.id}
-              selectedTimestamp={currentTime}
+              selectedTimestamp={position}
+
             />
             <LikeComponent
               episodeOrCommentId={episode.id}
