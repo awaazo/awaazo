@@ -1,5 +1,6 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
+import { EpisodeBookmarkRequest } from "../utilities/Requests";
 import { BaseResponse, IsLikedResponse } from "../utilities/Responses";
 import { request } from "http";
 
@@ -216,8 +217,9 @@ export default class SocialHelper {
 
   // Post a new bookmark
   public static postBookmark = async (
-    timestamp,
     episodeId,
+    requestData: EpisodeBookmarkRequest,
+    
   ): Promise<BaseResponse> => {
     const options = {
       method: "POST",
@@ -225,7 +227,7 @@ export default class SocialHelper {
         accept: "*/*",
         "Content-Type": "application/json",
       },
-      data: timestamp,
+      data: requestData,
       url: EndpointHelper.getBookmarkAddEndpoint(episodeId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
@@ -254,6 +256,8 @@ export default class SocialHelper {
       };
     }
   };
+
+
 
 //   /**
 //    * Deletes a comment from the server.
