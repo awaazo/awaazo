@@ -26,8 +26,8 @@ public class AuthTests : IAsyncLifetime
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
     public AuthTests()
-    { 
-        _IloggerMock = new ();
+    {
+        _IloggerMock = new();
     }
 
     public Task InitializeAsync()
@@ -64,10 +64,11 @@ public class AuthTests : IAsyncLifetime
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
 
         // Exception
-        object exception = new ();
+        object exception = new();
 
         // ACT
-        try{
+        try
+        {
             string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
         }
         catch (Exception ex)
@@ -102,10 +103,11 @@ public class AuthTests : IAsyncLifetime
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
 
         // Exception
-        object exception = new ();
+        object exception = new();
 
         // ACT
-        try{
+        try
+        {
             string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
         }
         catch (Exception ex)
@@ -142,10 +144,11 @@ public class AuthTests : IAsyncLifetime
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
 
         // Exception
-        object exception = new ();
+        object exception = new();
 
         // ACT
-        try{
+        try
+        {
             string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
         }
         catch (Exception ex)
@@ -383,7 +386,12 @@ public class AuthTests : IAsyncLifetime
             }
         }.AsQueryable().BuildMockDbSet();
 
+        Mock<DbSet<Playlist>> playlists = new[]{
+            new Playlist(){}
+        }.AsQueryable().BuildMockDbSet();
+
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
 
         // Request
 
@@ -443,7 +451,12 @@ public class AuthTests : IAsyncLifetime
             }
         }.AsQueryable().BuildMockDbSet();
 
+        Mock<DbSet<Playlist>> playlists = new[]{
+            new Playlist(){}
+        }.AsQueryable().BuildMockDbSet();
+
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
 
         // Request
 
@@ -511,7 +524,7 @@ public class AuthTests : IAsyncLifetime
 
         // Request
         Mock<HttpContext> httpContextMock = new();
-        httpContextMock.SetupGet(hc=>hc.User.Identity).Returns(new ClaimsIdentity(claims));
+        httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
@@ -559,7 +572,7 @@ public class AuthTests : IAsyncLifetime
         // Request
 
         Mock<HttpContext> httpContextMock = new();
-        httpContextMock.SetupGet(hc=>hc.User.Identity).Returns(new ClaimsIdentity(claims));
+        httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
@@ -577,7 +590,7 @@ public class AuthTests : IAsyncLifetime
         // ARRANGE
 
         Guid guid = Guid.NewGuid();
-        Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()+"1234NotValid") };
+        Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString() + "1234NotValid") };
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -599,7 +612,7 @@ public class AuthTests : IAsyncLifetime
 
         // Request
         Mock<HttpContext> httpContextMock = new();
-        httpContextMock.SetupGet(hc=>hc.User.Identity).Returns(new ClaimsIdentity(claims));
+        httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
         AuthService authService = new(dbContextMock.Object, mapperMock.Object);
@@ -612,7 +625,8 @@ public class AuthTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void GoogleSSOAsync_ExistingUser_ReturnsUser(){
+    public async void GoogleSSOAsync_ExistingUser_ReturnsUser()
+    {
         // ARRANGE
 
         // Mock
@@ -639,7 +653,7 @@ public class AuthTests : IAsyncLifetime
             Email = "XXXXXXXXXXXXXXXXX",
             Sub = "XXXXXXXXXXXXXXXXX",
             Name = "XXXXXXXXXXXXXXXXX",
-            Avatar= "XXXXXXXXXXXXXXXXX",
+            Avatar = "XXXXXXXXXXXXXXXXX",
             Token = "XXXXXXXXXXXXXXXXXX"
         };
 
@@ -660,7 +674,8 @@ public class AuthTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void GoogleSSOAsync_NewUser_ReturnsUser(){
+    public async void GoogleSSOAsync_NewUser_ReturnsUser()
+    {
         // ARRANGE
 
 
@@ -684,8 +699,12 @@ public class AuthTests : IAsyncLifetime
 
             }
         }.AsQueryable().BuildMockDbSet();
+        Mock<DbSet<Playlist>> playlists = new[]{
+            new Playlist(){}
+        }.AsQueryable().BuildMockDbSet();
 
         dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
 
         // Request
 
@@ -694,7 +713,7 @@ public class AuthTests : IAsyncLifetime
             Email = "XXXXXXXXXXXXXXXXXNewUser@gmail",
             Sub = "XXXXXXXXXXXXXXXXX",
             Name = "XXXXXXXXXXXXXXXXXNew",
-            Avatar= "XXXXXXXXXXXXXXXXX"
+            Avatar = "XXXXXXXXXXXXXXXXX"
         };
 
 
@@ -731,17 +750,17 @@ public class AuthTests : IAsyncLifetime
         // Setup Mocks
         authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-        
+
 
         // Create Controller
         AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
-                HttpContext=httpContext
+                HttpContext = httpContext
             }
         };
-        
+
 
         // Create the Request
         LoginRequest loginRequest = new()
@@ -903,7 +922,7 @@ public class AuthTests : IAsyncLifetime
                 HttpContext = httpContext
             }
         };
-    
+
 
         // ACT
         IActionResult actionResult = await authController.Me();
@@ -939,7 +958,8 @@ public class AuthTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void GoogleSSO_ValidUser_ReturnsOkObjectResult(){
+    public async void GoogleSSO_ValidUser_ReturnsOkObjectResult()
+    {
         // ARRANGE
 
         // Mocks
@@ -949,7 +969,7 @@ public class AuthTests : IAsyncLifetime
 
         // Setup Mocks
         authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc=> svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
+        authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
         authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create Controller
@@ -966,7 +986,7 @@ public class AuthTests : IAsyncLifetime
         GoogleRequest googleRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXX",
-            Name= "XXXXXXXXXXXXXX",
+            Name = "XXXXXXXXXXXXXX",
             Sub = "XXXXXXXXXXXXXXXXX",
             Avatar = "XXXXXXXXXXXXXXXXX",
             Token = "XXXXXXXXXXXXXXXXXX"
@@ -980,7 +1000,8 @@ public class AuthTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void GoogleSSO_InvalidUser_ReturnsBadRequestObjectResult(){
+    public async void GoogleSSO_InvalidUser_ReturnsBadRequestObjectResult()
+    {
 
         // ARRANGE
 

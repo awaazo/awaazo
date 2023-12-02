@@ -17,7 +17,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -116,7 +116,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -147,8 +147,8 @@ describe("Episode_Create", () => {
       });
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("button[id=createBtn]").click();
-    cy.intercept("GET", "/MyPodcasts").as("podcasts");
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
+    cy.wait(250);
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -165,7 +165,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -188,7 +188,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets",
     );
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.episode_create(
       paths.cat,
@@ -197,7 +197,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets",
     );
-    cy.wait("@podcasts", { timeout: 15000 });
+    cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-cool-pets").click();
