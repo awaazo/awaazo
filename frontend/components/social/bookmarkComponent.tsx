@@ -6,6 +6,7 @@ import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Bookmark } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils"; 
+import { EpisodeBookmarkRequest } from "../../utilities/Requests";
 
 // This component represents a bookmark button for an episode
 const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
@@ -43,15 +44,47 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
  // Function to handle the bookmark/delete bookmark action
  const handleBookmark = () => {
 
-  SocialHelper.postBookmark(episodeId, selectedTimestamp) // This method needs to be implemented in SocialHelper
-        .then((response) => {
-          if (response.status === 200) {
-            // Update the UI to reflect the bookmark
-            //setIsBookmarked(true, selectedTimestamp);
-          } else {
-            console.error("Error liking episode or comment:", response.message);
-          }
-        });
+  console.log("Selected Timestamp:", selectedTimestamp);
+  console.log("Episode ID:", episodeId);
+
+  const request: EpisodeBookmarkRequest = {
+    title: 'New Bookmark', // Set the title for the new bookmark
+    note: 'Something Memorable...', // Set the note for the new bookmark
+    time: selectedTimestamp, // Set the timestamp for the new bookmark
+  };
+  // Send the request
+  SocialHelper.postBookmark(episodeId, request)
+  .then((response) => {
+    if (response.status === 200) {
+      // Update the UI to reflect the bookmark
+      //setIsBookmarked(true, selectedTimestamp);
+      console.log("Bookmarked Episode");
+    } else {
+      console.error("Error bookmarking episode:", response.message);
+    }
+  });
+
+
+  //   const newBookmark = {
+  //     id: (bookmarks.length + 1).toString(), // Generate a serial id for the new bookmark. doesnt work if bookmarks get deleted.
+  //     title: 'New Bookmark', // Set the title for the new bookmark
+  //     note: 'Something Memorable...', // Set the note for the new bookmark
+  //     timestamp: selectedTimestamp, // Set the timestamp for the new bookmark
+  //   };
+
+  //   setBookmarks([...bookmarks, newBookmark]);
+
+  // SocialHelper.postBookmark(episodeId, selectedTimestamp) // This method needs to be implemented in SocialHelper
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //           // Update the UI to reflect the bookmark
+  //           //setIsBookmarked(true, selectedTimestamp);
+  //         } else {
+  //           console.error("Error bookmarking episode:", response.message);
+  //         }
+  //       });
+
+    
 
 
 
@@ -126,7 +159,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
     <>
     
       {/* Tooltip to display the like/unlike action */}
-      <Tooltip label={isBookmarked ? "Bookmark" : "Remove Bookmark"} aria-label="Bookmark tooltip">
+      {/* <Tooltip label={isBookmarked ? "Bookmark" : "Remove Bookmark"} aria-label="Bookmark tooltip"> */}
         {/* Button to trigger the like/unlike action */}
         <Button
           variant={"ghost"}
@@ -140,7 +173,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
           onClick={() => handleBookmark()}
         >
         </Button>
-      </Tooltip>
+      {/* </Tooltip> */}
     </>
   );
 };
