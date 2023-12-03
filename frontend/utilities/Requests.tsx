@@ -107,3 +107,12 @@ export interface PodcastReviewRequest {
   review: string;
 }
 //#endregion
+
+//#region Section Requests
+export interface SectionAddRequest {
+  title: number;
+  start: number;
+  end: number;
+}
+
+//#endregion
