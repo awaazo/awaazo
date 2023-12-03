@@ -28,12 +28,12 @@ export default class PodcastHelper {
     // Create the request options.
     const options = {
       method: "POST",
-      data: requestData,
-      url: EndpointHelper.getSectionAddEndpoint(episodeId),
       headers: {
         accept: "*/*",
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
+      data: requestData,
+      url: EndpointHelper.getSectionAddEndpoint(episodeId),
       withCredentials: true,
       cache: false,
     };

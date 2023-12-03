@@ -110,7 +110,7 @@ export interface PodcastReviewRequest {
 
 //#region Section Requests
 export interface SectionAddRequest {
-  title: number;
+  title: string;
   start: number;
   end: number;
 }
