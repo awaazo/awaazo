@@ -22,10 +22,10 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { MdEdit, MdDelete } from "react-icons/md";
-
+import { MdEdit, MdPages, MdDelete } from "react-icons/md";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import ManageSections from "./ManageSections";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
@@ -55,6 +55,25 @@ const Episode = ({ episode }) => {
   // Function to close the edit episode modal
   const closeEditEpisodeModal = () => {
     setIsModalEpisodeOpen(false);
+    setCurrentEpisode(null);
+  };
+  //----------------------------------------------------------------------
+
+  // Sections Modal
+  //----------------------------------------------------------------------
+
+  // State for managing modal visibility and the current episode
+  const [isModalSectionsOpen, setIsModalSectionsOpen] = useState(false);
+
+  // Function to open the edit episode modal
+  const openSectionsModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalSectionsOpen(true);
+  };
+
+  // Function to close the edit episode modal
+  const closeSectionsModal = () => {
+    setIsModalSectionsOpen(false);
     setCurrentEpisode(null);
   };
   //----------------------------------------------------------------------
@@ -135,6 +154,22 @@ const Episode = ({ episode }) => {
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
+        <Box>
+          <Tooltip label="Sections" aria-label="Sections Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="sections-button"
+              fontSize={isMobile ? "2xl" : "3xl"}
+              mr={isMobile ? 1 : 5}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Sections"
+              icon={<Icon as={MdPages} />}
+              onClick={() => openSectionsModal(episode)}
+            />
+          </Tooltip>
+        </Box>
         <Box>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
             <IconButton
@@ -219,6 +254,35 @@ const Episode = ({ episode }) => {
                 <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
 
                 <EditEpisodeForm episode={episode} />
+              </VStack>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isModalSectionsOpen} onClose={closeSectionsModal}>
+        <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent
+          boxShadow="dark-lg"
+          backdropFilter="blur(40px)"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          minWidth={"40%"}
+          marginTop={"10%"}
+          padding={"2em"}
+        >
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <VStack align="center" backgroundColor={"transparent"}>
+                <Text>Manage Sections: {currentEpisode?.episodeName}</Text>
+
+                <ManageSections
+                  episodeId={episode.id}
+                  podcastId={episode.podcastId}
+                />
               </VStack>
             </Box>
           </ModalBody>
