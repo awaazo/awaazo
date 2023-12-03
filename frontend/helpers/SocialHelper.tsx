@@ -1,7 +1,7 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
 import { EpisodeBookmarkRequest } from "../utilities/Requests";
-import { BaseResponse, IsLikedResponse } from "../utilities/Responses";
+import { BaseResponse, GetBookmarksResponse, IsLikedResponse } from "../utilities/Responses";
 import { request } from "http";
 
 export default class SocialHelper {
@@ -215,7 +215,7 @@ export default class SocialHelper {
     }
   };
 
-  // Post a new bookmark
+  // Post a new episode bookmark
   public static postBookmark = async (
     episodeId,
     requestData: EpisodeBookmarkRequest,
@@ -257,45 +257,83 @@ export default class SocialHelper {
     }
   };
 
+  // Get all episode bookmarks
+public static getAllBookmarks = async (
+  episodeId,
+  ): Promise<GetBookmarksResponse> => {
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "*/*",
+      "Content-Type": "application/json",
+    },
+    url: EndpointHelper.getBookmarksEndpoint(episodeId),
+    withCredentials: true, // This will send the session cookie with the request
+    cache: false,
+  };
 
+  try {
+    console.debug("Sending the following getAllBookmarks...");
+    console.debug(options);
 
-//   /**
-//    * Deletes a comment from the server.
-//    * @returns A BaseResponse object with the server's response.
-//    */
-//   public static deleteBookmark = async (bookmarkId): Promise<BaseResponse> => {
-//     // Create the request options.
-//     const options = {
-//       method: "DELETE",
-//       url: EndpointHelper.getDeleteBookmarkEndpoint(bookmarkId),
-//       headers: {
-//         accept: "*/*",
-//       },
-//       withCredentials: true, // This will send the session cookie with the request
-//       cache: false,
-//     };
+    // Send the request and wait for the response.
+    const requestResponse = await axios(options);
 
-//     try {
-//       console.debug("Sending the following deleteComment...");
-//       console.debug(options);
+    console.debug("Received the following getAllBookmarks...");
+    console.debug(requestResponse);
 
-//       console.log(options);
-//       // Send the request and wait for the response.
-//       const requestResponse = await axios(options);
-
-//       console.debug("Received the following deleteComment...");
-//       console.debug(requestResponse);
-
-//       // Return the response.
-//       return {
-//         status: requestResponse.status,
-//         message: requestResponse.statusText,
-//       };
-//     } catch (error) {
-//       return {
-//         status: error.response.status,
-//         message: error.response.statusText,
-//       };
-//     }
-//   };
+    // Return the response.
+    return {
+      status: requestResponse.status,
+      message: requestResponse.statusText,
+      bookmarks: requestResponse.data,
+    };
+  } catch (error) {
+    return {
+      status: error.response?.status,
+      message: error.response?.statusText,
+      bookmarks: null,
+    };
   }
+};
+
+ // Delete an episode bookmark
+ public static deleteEpisodeBookmark = async (
+  bookmarkId,
+): Promise<BaseResponse> => {
+  const options = {
+    method: "DELETE",
+    url: EndpointHelper.getBookmarkDeleteEndpoint(bookmarkId),
+    headers: {
+      accept: "*/*",
+    },
+    withCredentials: true,
+    cache: false,
+  };
+
+  try {
+    console.debug("Sending the following deleteEpisodeBookmark...");
+    console.debug(options);
+
+    console.log(options);
+    // Send the request and wait for the response.
+    const requestResponse = await axios(options);
+
+    console.debug("Received the following deleteEpisodeBookmark...");
+    console.debug(requestResponse);
+
+    // Return the response.
+    return {
+      status: requestResponse.status,
+      message: requestResponse.statusText,
+    };
+  } catch (error) {
+    return {
+      status: error.response?.status,
+      message: error.response?.statusText,
+    };
+  }
+};
+
+
+}
