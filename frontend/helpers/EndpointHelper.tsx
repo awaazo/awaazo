@@ -315,9 +315,6 @@ export default class EndpointHelper {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
-  static getEpisodeEndpoint = (episodeId: string) => {
-    return `${this.getBackendAddress()}/podcast/episode/${episodeId}`;
-  };
 
 
   // Notifications + Subscriptions Endpoints

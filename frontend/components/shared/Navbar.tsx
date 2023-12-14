@@ -24,7 +24,6 @@ import AuthHelper from "../../helpers/AuthHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import Notifications from "../../pages/Notification/Notifications";
-import NextLink from "next/link";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 
 /**
@@ -162,16 +161,16 @@ export default function Navbar() {
       </MenuButton>
       <MenuList>
         <MenuGroup>
-          <NextLink href="/profile/MyProfile" passHref>
+          <Link href="/profile/MyProfile" passHref>
             <MenuItem>👤 My Account</MenuItem>
-          </NextLink>
-          <NextLink href="/MyPodcasts" passHref>
+          </Link>
+          <Link href="/MyPodcasts" passHref>
             <MenuItem>🎙️ My Podcasts</MenuItem>
-          </NextLink>
+          </Link>
           <MenuDivider />
-          <NextLink href="/AddEpisode" passHref>
+          <Link href="/AddEpisode" passHref>
             <MenuItem>⚙️ Settings</MenuItem>
-          </NextLink>
+          </Link>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>

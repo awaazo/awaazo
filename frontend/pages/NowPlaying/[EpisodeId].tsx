@@ -52,7 +52,7 @@ const NowPlaying = () => {
 
   useEffect(() => {
     if (EpisodeId) {
-      fetch(EndpointHelper.getEpisodeEndpoint(EpisodeId))
+      fetch(EndpointHelper.getPodcastEpisodeByIdEndpoint(EpisodeId))
         .then((response) => response.json())
         .then((data) => {
           setEpisode(data);
