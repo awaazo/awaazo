@@ -135,13 +135,13 @@ const PlayerBar = () => {
   return (
     <Box
       maxWidth="96%"
-      p={4}
+      p={2}
       borderRadius="1.1em"
       bg="rgba(0, 0, 0, 0.2)"
       shadow="md"
       style={{ backdropFilter: "blur(50px)" }}
-      border="3px solid rgba(255, 255, 255, 0.05)"
-      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+      border="2px solid rgba(255, 255, 255, 0.05)"
+      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.2)"
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
@@ -182,17 +182,17 @@ const PlayerBar = () => {
           {/* Slider */}
           {!isMobile && (
             <Flex width="100%" mx={4} alignItems="center">
-              <Text mr={3} fontSize="sm" fontWeight="bold">
+              <Text mr={3} fontSize="xs" fontWeight="medium">
                 {convertTime(position)}
               </Text>
               <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bgGradient={palette?.length >= 2 ? `linear(to-l, rgba(${palette[0].join(",")}, 0.5), rgba(${palette[1].join(",")}, 0.5))` : "black"} />
-                </SliderTrack>
+                  <SliderFilledTrack bg="purple.500"  />
+                </SliderTrack> 
               </Slider>
 
-              <Text ml={3} fontSize="sm" fontWeight="bold">
+              <Text ml={3} fontSize="xs" fontWeight="medium">
                 {timeLeft}
               </Text>
             </Flex>
@@ -224,10 +224,10 @@ const PlayerBar = () => {
                   mx={2}
                   width="5rem"
                 >
-                  <SliderTrack>
-                    <SliderFilledTrack />
+                  <SliderTrack bg="gray.500">
+                    <SliderFilledTrack bg="purple.500" />
                   </SliderTrack>
-                  <SliderThumb />
+                  <SliderThumb boxSize={2} bg="purple.500" /> 
                 </Slider>
               </Box>
             )}
