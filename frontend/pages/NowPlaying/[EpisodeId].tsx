@@ -16,16 +16,10 @@ import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 
-
 const currentEpisode = episodes[0];
 const componentsData = [
   {
-    component: (
-      <CoverArt
-        imageUrl={currentEpisode.thumbnailUrl}
-        description={currentEpisode.description}
-      />
-    ),
+    component: <CoverArt imageUrl={currentEpisode.thumbnailUrl} description={currentEpisode.description} />,
     inSlider: false,
   },
   { component: <ChatBot />, inSlider: false },
@@ -41,6 +35,8 @@ const componentsData = [
     component: <Sections sections={currentEpisode.sections} />,
     inSlider: true,
   },
+  
+  
 ];
 
 const NowPlaying = () => {
@@ -58,7 +54,7 @@ const NowPlaying = () => {
           setEpisode(data);
           setIsLoading(false);
         })
-        .catch((error) => console.error('Error fetching episode data:', error));
+        .catch((error) => console.error("Error fetching episode data:", error));
     }
   }, [EpisodeId]);
 
@@ -67,9 +63,7 @@ const NowPlaying = () => {
     quality: 10,
   }).data;
 
-  const [selectedComponent, setSelectedComponent] = useState<number | null>(
-    null,
-  );
+  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
   const [components] = useState(componentsData);
 
   const handleComponentClick = (index: number) => {
@@ -80,26 +74,12 @@ const NowPlaying = () => {
   const sliderComponents = components.filter((comp) => comp.inSlider);
 
   return (
-    <Box
-      w="100vw"
-      h="100vh"
-      display="flex"
-      flexDirection="column"
-      overflow="hidden"
-      bgColor={palette || null}
-    >
+    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || null}>
       <Navbar />
       {isMobile ? (
         <Slider {...sliderSettings}>
-          {componentsData.map((comp, index) => (
-            <Box
-              key={index}
-              w="full"
-              h="80vh"
-              p={4}
-              alignItems="stretch"
-              justifyContent="center"
-            >
+          {components.map((comp, index) => (
+            <Box key={index} w="full" h="80vh" p={4} alignItems="stretch" justifyContent="center">
               {comp.component}
             </Box>
           ))}
@@ -122,7 +102,6 @@ const NowPlaying = () => {
           p={4}
           overflow="hidden"
         >
-          
           <Box gridArea="chatbot" p={4} onClick={() => handleComponentClick(1)}>
             {components[1].component}
           </Box>

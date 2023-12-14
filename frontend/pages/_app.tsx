@@ -5,6 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
+import { useRouter } from 'next/router';
+
 
 const theme = extendTheme({
   colors: {
@@ -23,6 +25,13 @@ const theme = extendTheme({
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  const router = useRouter();
+  const path = router.pathname;
+
+  // Define the paths where you don't want to show the PlayerBar
+  const hidePlayerBarOnPaths = ['/auth/Login', '/auth/Signup' , '/AddEpisode' , '/AddEpisodeAI']; 
+  const showPlayerBar = !hidePlayerBarOnPaths.includes(path)
+
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
@@ -31,7 +40,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session}>
         <PlayerProvider>
           <Component {...pageProps} />
-          <PlayerBar />
+          {showPlayerBar && <PlayerBar />}
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>

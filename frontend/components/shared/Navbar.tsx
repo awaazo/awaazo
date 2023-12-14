@@ -33,7 +33,7 @@ import NotificationHelper from "../../helpers/NotificationsHelper";
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
-  const registerPage = "/auth/Signup";
+  const signupPage = "/auth/Signup";
   const { data: session, status } = useSession();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -183,7 +183,7 @@ export default function Navbar() {
   );
 
   /**
-   * Shows login and register options for the user to eventually log in.
+   * Shows login and signup options for the user to eventually log in.
    * @returns Logged Out Meny for the top-right corner
    */
   const LoggedOutMenu = () => (
@@ -196,7 +196,7 @@ export default function Navbar() {
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = registerPage)}>Register</MenuItem>
+        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
       </MenuList>
     </Menu>
   );
