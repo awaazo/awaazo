@@ -14,32 +14,63 @@ import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../utilities/commonUtils";
 
 const currentEpisode = episodes[0];
-const componentsData = [
-  {
-    component: (
-      <CoverArt
-        imageUrl={currentEpisode.thumbnailUrl}
-        description={currentEpisode.description}
-      />
-    ),
-    inSlider: false,
-  },
-  { component: <ChatBot />, inSlider: false },
-  {
-    component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
-    inSlider: true,
-  },
-  {
-    component: <Transcripts transcripts={currentEpisode.transcript} />,
-    inSlider: true,
-  },
-  {
-    component: <Sections sections={currentEpisode.sections} />,
-    inSlider: true,
-  },
-];
 
-const NowPlaying = () => {
+
+const NowPlaying = ({ episodeId }) => {
+
+  const currentEpisode = episodes.find(episode => episode.id === episodeId) || episodes[0];
+  const [componentsData, setComponentsData] = useState([
+    {
+      component: (
+        <CoverArt
+          imageUrl={currentEpisode.thumbnailUrl}
+          description={currentEpisode.description}
+        />
+      ),
+      inSlider: false,
+    },
+    { component: <ChatBot />, inSlider: false },
+    {
+      component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
+      inSlider: true,
+    },
+    {
+      component: <Transcripts transcripts={currentEpisode.transcript} />,
+      inSlider: true,
+    },
+    {
+      component: <Sections sections={currentEpisode.sections} />,
+      inSlider: true,
+    },
+  ]);
+
+  useEffect(() => {
+    setComponentsData([
+      {
+        component: (
+          <CoverArt
+            imageUrl={currentEpisode.thumbnailUrl}
+            description={currentEpisode.description}
+          />
+        ),
+        inSlider: false,
+      },
+      { component: <ChatBot />, inSlider: false },
+      {
+        component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
+        inSlider: true,
+      },
+      {
+        component: <Transcripts transcripts={currentEpisode.transcript} />,
+        inSlider: true,
+      },
+      {
+        component: <Sections sections={currentEpisode.sections} />,
+        inSlider: true,
+      },
+    ]);
+  }, [episodeId]);
+  
   const palette = usePalette(currentEpisode.thumbnailUrl, 2, "hex", {
     crossOrigin: "Anonymous",
     quality: 10,

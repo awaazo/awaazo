@@ -20,16 +20,14 @@ import {
   Input,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
-import LogoWhite from "../../public/logo_white.svg";
-import LogoBlack from "../../public/logo_black.svg";
+import { AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
+import Logo from "../../public/logo_white.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
-import Notifications from "../../pages/notification/Notifications";
+import Notifications from "../../pages/Notification/Notifications";
 import NextLink from "next/link";
 import NotificationHelper from "../../helpers/NotificationsHelper";
-
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
@@ -59,7 +57,7 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  
+
   const toggleNotifications = () => {
     setIsNotificationsOpen(!isNotificationsOpen);
   };
@@ -69,10 +67,10 @@ export default function Navbar() {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
-      if (response !== null && response !== undefined && typeof response === 'number') {
+      if (response !== null && response !== undefined && typeof response === "number") {
         setNotificationCount(response);
       } else {
-        console.error("Failed to fetch notification count:", response.message || 'No error message available');
+        console.error("Failed to fetch notification count:", response.message || "No error message available");
       }
     };
 
@@ -154,29 +152,15 @@ export default function Navbar() {
    */
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton
-        aria-label="loggedInMenu"
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
         {user.avatarUrl === "" ? (
           <Avatar
             size={"sm"}
-            src={
-              "https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-            }
+            src={"https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"}
             boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
           />
         ) : (
-          <Avatar
-            size={"sm"}
-            src={user.avatarUrl}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-            bg="rgba(255, 255, 255, 0.2)"
-            backdropFilter="blur(10px)"
-          />
+          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
       </MenuButton>
       <MenuList>
@@ -188,16 +172,13 @@ export default function Navbar() {
             <MenuItem>🎙️ My Podcasts</MenuItem>
           </NextLink>
           <MenuDivider />
-          <NextLink href="/Create" passHref>
+          <NextLink href="/AddEpisode" passHref>
             <MenuItem>⚙️ Settings</MenuItem>
           </NextLink>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem
-            onClick={handleLogOut}
-            style={{ color: "red", fontWeight: "normal" }}
-          >
+          <MenuItem onClick={handleLogOut} style={{ color: "red", fontWeight: "normal" }}>
             Logout
           </MenuItem>
         </MenuGroup>
@@ -211,39 +192,22 @@ export default function Navbar() {
    */
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton
-        menu-id="menuBtn"
-        aria-label="Menu"
-        as={Button}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton menu-id="menuBtn" aria-label="Menu" as={Button} variant={"link"} cursor={"pointer"}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem
-          id="loginBtn"
-          onClick={() => (window.location.href = loginPage)}
-        >
+        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = registerPage)}>
-          Register
-        </MenuItem>
+        <MenuItem onClick={() => (window.location.href = registerPage)}>Register</MenuItem>
       </MenuList>
     </Menu>
   );
 
   const NotificationsModal = () => {
-    return(
-      <Notifications
-        isOpen={isNotificationsOpen}
-        onClose={toggleNotifications} 
-        notificationCount={notificationCount}
-      />
-    );
-    };
+    return <Notifications isOpen={isNotificationsOpen} onClose={toggleNotifications} notificationCount={notificationCount} />;
+  };
 
   return (
     <>
@@ -265,10 +229,7 @@ export default function Navbar() {
         <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
           <Link href="/">
             <Box maxWidth={"1.5em"} ml={-2}>
-              <Image
-                src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src}
-                alt="logo"
-              />
+              <Image src={Logo.src} alt="logo" />
             </Box>
           </Link>
           {isMobile ? (
@@ -282,20 +243,9 @@ export default function Navbar() {
                 onChange={handleSearchChange}
                 css={{
                   "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
+                    opacity: 1,
                   },
                 }}
-              />
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
@@ -322,30 +272,10 @@ export default function Navbar() {
                   },
                 }}
               />
-              <Link href="/Create">
-                <IconButton
-                  aria-label="Create"
-                  icon={<AddIcon />}
-                  variant="ghost"
-                  size="md"
-                  rounded={"full"}
-                  opacity={0.7}
-                  mr={3}
-                  color={colorMode === "dark" ? "white" : "black"}
-                />
+              <Link href="/AddEpisode">
+                <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} color={colorMode === "dark" ? "white" : "black"} />
               </Link>
               <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-             <IconButton
                 aria-label="Notifications"
                 icon={<BellIcon />}
                 onClick={toggleNotifications}
