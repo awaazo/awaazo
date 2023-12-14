@@ -202,7 +202,7 @@ const PlayerBar = () => {
         {/* Like and Comment - Hidden in mobile */}
         
         {!isMobile && (
-          <Flex alignItems="center" ml={4} flex="0.25">
+          <Flex alignItems="center" ml={4} >
             <Flex alignItems="center" mr={4}>
               <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} />
               <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} />
