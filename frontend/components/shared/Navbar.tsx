@@ -14,8 +14,6 @@ import {
   MenuItem,
   MenuDivider,
   MenuGroup,
-  useColorModeValue,
-  useColorMode,
   Image,
   Input,
   useBreakpointValue,
@@ -38,7 +36,6 @@ export default function Navbar() {
   const indexPage = "/";
   const registerPage = "/auth/Signup";
   const { data: session, status } = useSession();
-  const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [searchValue, setSearchValue] = useState("");
@@ -212,7 +209,7 @@ export default function Navbar() {
   return (
     <>
       <Box
-        bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
+        bg={"rgba(0, 0, 0, 0.3)"}
         backdropFilter="blur(35px)"
         p={6}
         mr={"2em"}
@@ -257,7 +254,6 @@ export default function Navbar() {
                 e.preventDefault();
                 handleSearchSubmit();
               }}
-              color={colorMode === "dark" ? "white" : "black"}
             >
               <Input
                 placeholder="Search"
@@ -273,7 +269,7 @@ export default function Navbar() {
                 }}
               />
               <Link href="/AddEpisode">
-                <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} color={colorMode === "dark" ? "white" : "black"} />
+                <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} />
               </Link>
               <IconButton
                 aria-label="Notifications"
@@ -284,7 +280,6 @@ export default function Navbar() {
                 rounded={"full"}
                 opacity={0.7}
                 mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
