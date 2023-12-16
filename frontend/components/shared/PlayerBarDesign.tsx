@@ -68,7 +68,7 @@ const PlayerBar: React.FC<Episode> = ({
       sections
         .slice()
         .reverse()
-        .find((section) => totalSeconds >= section.timestamp)?.title || ""
+        .find((section) => totalSeconds >= section.start)?.title || ""
     );
   };
 
