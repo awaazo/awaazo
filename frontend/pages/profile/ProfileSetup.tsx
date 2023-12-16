@@ -2,7 +2,7 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import LogoWhite from "../public/logo_white.svg";
+import LogoWhite from "../../public/logo_white.svg";
 import { UserProfileSetupRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
