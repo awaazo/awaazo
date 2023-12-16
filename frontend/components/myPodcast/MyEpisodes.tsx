@@ -40,7 +40,7 @@ const Episode = ({ episode }) => {
   };
 
   // Edit Episode Modal
-  //----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
 
   // State for managing modal visibility and the current episode
   const [isModalEpisodeOpen, setIsModalEpisodeOpen] = useState(false);
@@ -57,7 +57,7 @@ const Episode = ({ episode }) => {
     setIsModalEpisodeOpen(false);
     setCurrentEpisode(null);
   };
-  //----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
 
   // Sections Modal
   //----------------------------------------------------------------------
