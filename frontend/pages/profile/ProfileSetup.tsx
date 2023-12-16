@@ -7,7 +7,7 @@ import { UserProfileSetupRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 
-const Setup: React.FC = () => {
+const ProfileSetup: React.FC = () => {
   // CONSTANTS
 
   // Page refs
@@ -326,4 +326,4 @@ const Setup: React.FC = () => {
   }
 };
 
-export default Setup;
+export default ProfileSetup;
