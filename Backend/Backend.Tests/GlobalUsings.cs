@@ -1,2 +1,14 @@
 global using Xunit;
 global using Backend.Infrastructure;
+global using Backend.Controllers;
+global using Backend.Controllers.Requests;
+global using Backend.Controllers.Responses;
+global using Backend.Models;
+global using Backend.Services.Interfaces;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Logging;
+global using Moq;
+global using Backend.Services;
+global using Microsoft.EntityFrameworkCore;
+global using MockQueryable.Moq;
