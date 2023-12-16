@@ -1,40 +1,14 @@
-import {
-  Box,
-  Flex,
-  Image,
-  Text,
-  IconButton,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Text, IconButton, useColorModeValue, VStack } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
 import LikeComponent from "../social/likeComponent";
 import { usePlayer } from "../../utilities/PlayerContext";
+import { convertTime } from "../../utilities/commonUtils";
 
-// Function to format the duration of an episode
-const formatDuration = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds - hours * 3600) / 60);
-  const remainingSeconds = seconds - hours * 3600 - minutes * 60;
 
-  const hoursString = hours > 0 ? String(hours) : "";
-  const minutesString = String(minutes).padStart(2, "0");
-  const formattedDuration = `${hoursString}${
-    hours > 0 ? "h " : ""
-  }${minutesString}m`;
-  return formattedDuration.trim();
-};
-
-// Component to display a podcast episode ticket
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
-  {
-    console.log(episode);
-  }
   const { thumbnailUrl, episodeName, podcaster, duration, likes } = episode;
-  const likedColor = likes?.isLiked
-    ? "red.500"
-    : useColorModeValue("gray.400", "gray.600");
+  const likedColor = likes?.isLiked ? "red.500" : useColorModeValue("gray.400", "gray.600");
 
   const { dispatch } = usePlayer();
 
@@ -91,7 +65,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           <VStack>
             <Text>
               {podcaster}
-              {formatDuration(duration)}
+              {convertTime(duration)}
             </Text>
           </VStack>
         </Flex>
@@ -99,10 +73,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       {/* Right: Like button */}
       <VStack>
-        <LikeComponent
-          episodeOrCommentId={episode.id}
-          initialLikes={episode.likes}
-        />
+        <LikeComponent episodeOrCommentId={episode.id} initialLikes={episode.likes} />
       </VStack>
     </Flex>
   );

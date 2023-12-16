@@ -7,7 +7,6 @@ import {
 import {
    BaseResponse,
    GetMyPodcastResponse,
-   MyPodcastResponse
 } from "../utilities/Responses";
 
 export default class ReviewsHelper {
