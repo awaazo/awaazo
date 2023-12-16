@@ -72,7 +72,7 @@ const NowPlaying = () => {
   const sliderComponents = components.filter((comp) => comp.inSlider);
 
   return (
-    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor= {null}> 
+     <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden">
     {/* //bgColor={palette || null} */}
       <Navbar />
       {isMobile ? (
@@ -89,7 +89,6 @@ const NowPlaying = () => {
         pl={3} 
         pr={3} 
         mx={5} 
-        mb={20} 
         overflow="hidden"
       >
      <Grid
@@ -102,7 +101,7 @@ const NowPlaying = () => {
           gridTemplateRows={{ md: "1fr 1fr" }}
           gridTemplateColumns={{ md: "1fr 1fr 1fr" }}
           gap={1}
-          h="calc(100% - 35px)" 
+          h="calc(100% - 400px)" 
         >
           <Box gridArea="AwaazoBirdBot" p={2} onClick={() => handleComponentClick(1)}>
             {components[1].component}
