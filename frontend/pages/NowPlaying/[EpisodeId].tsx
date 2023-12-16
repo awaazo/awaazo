@@ -10,59 +10,64 @@ import PodCue from "../../components/nowPlaying/PodCue";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import EndpointHelper from "../../helpers/EndpointHelper";
-import { episodes } from "../../utilities/SampleData";
+import PodcastHelper from "../../helpers/PodcastHelper";
 import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 
-const currentEpisode = episodes[0];
-const componentsData = [
-  {
-    component: <CoverArt imageUrl={currentEpisode.thumbnailUrl} description={currentEpisode.description} />,
-    inSlider: false,
-  },
-  { component: <AwaazoBirdBot />, inSlider: false },
-  {
-    component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
-    inSlider: true,
-  },
-  {
-    component: <Transcripts transcripts={currentEpisode.transcript} />,
-    inSlider: true,
-  },
-  {
-    component: <Sections sections={currentEpisode.sections} />,
-    inSlider: true,
-  },
-];
-
 const NowPlaying = () => {
   const router = useRouter();
   const { EpisodeId } = router.query;
-
   const [episode, setEpisode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [components, setComponents] = useState([]);
 
   useEffect(() => {
     if (EpisodeId) {
-      fetch(EndpointHelper.getPodcastEpisodeByIdEndpoint(EpisodeId))
-        .then((response) => response.json())
-        .then((data) => {
-          setEpisode(data);
-          setIsLoading(false);
+      PodcastHelper.getEpisodeById(EpisodeId)
+        .then((response) => {
+          if (response.status === 200) {
+            setEpisode(response.episode);
+            setIsLoading(false);
+          } else {
+            console.error("Error fetching episode data:", response.message);
+          }
         })
         .catch((error) => console.error("Error fetching episode data:", error));
     }
   }, [EpisodeId]);
 
-  const palette = usePalette(currentEpisode.thumbnailUrl, 2, "hex", {
-    crossOrigin: "Anonymous",
-    quality: 10,
-  }).data;
 
-  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
-  const [components] = useState(componentsData);
+  useEffect(() => {
+    if (episode) {
+      setComponents([
+        {
+          component: <CoverArt episodeId={episode.id} />,
+          inSlider: false,
+        },
+        // { component: <AwaazoBirdBot />, inSlider: false },
+        // {
+        //   component: <Bookmarks bookmarks={episode.bookmarks} />,
+        //   inSlider: true,
+        // },
+        // {
+        //   component: <Transcripts transcripts={episode.transcript} />,
+        //   inSlider: true,
+        // },
+        // {
+        //   component: <Sections sections={episode.sections} />,
+        //   inSlider: true,
+        // },
+      ]);
+    }
+  }, [episode]); 
+
+  // const palette = usePalette(episode.thumbnailUrl, 2, "hex", {
+  //   crossOrigin: "Anonymous",
+  //   quality: 10,
+  // }).data;
+
+
 
   const handleComponentClick = (index: number) => {
     setSelectedComponent(index === selectedComponent ? null : index);
@@ -91,7 +96,7 @@ const NowPlaying = () => {
         mx={5} 
         overflow="hidden"
       >
-     <Grid
+    <Grid
           templateAreas={{
             md: `
               "coverart transcripts AwaazoBirdBot"
@@ -103,21 +108,11 @@ const NowPlaying = () => {
           gap={1}
           h="calc(100% - 400px)" 
         >
-          <Box gridArea="AwaazoBirdBot" p={2} onClick={() => handleComponentClick(1)}>
-            {components[1].component}
-          </Box>
-          <Box gridArea="transcripts" p={2} onClick={() => handleComponentClick(3)}>
-            {components[3].component}
-          </Box>
-          <Box gridArea="bookmarks" p={2} onClick={() => handleComponentClick(2)}>
-            {components[2].component}
-          </Box>
-          <Box gridArea="sections" p={2} onClick={() => handleComponentClick(4)}>
-            {components[4].component}
-          </Box>
-          <Box gridArea="coverart" p={2} onClick={() => handleComponentClick(0)}>
-            {components[0].component}
-          </Box>
+          {components.map((comp, index) => (
+            <Box key={index} gridArea={comp.gridArea} p={2} onClick={() => handleComponentClick(index)}>
+              {comp.component}
+            </Box>
+          ))}
         </Grid>
         </Box>
       )}
