@@ -1,4 +1,3 @@
-// pages/_app.tsx
 import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
@@ -35,7 +34,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
-      <Box position="absolute" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" />
+      <Box position="absolute" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" backgroundColor="black" />
       <ColorModeScript initialColorMode="dark" />
       <SessionProvider session={session}>
         <PlayerProvider>
@@ -48,3 +47,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 }
 
 export default MyApp;
+
