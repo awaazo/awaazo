@@ -1,8 +1,20 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Textarea,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  Wrap,
+  WrapItem,
+  IconButton,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import LogoWhite from "../public/logo_white.svg";
+import LogoWhite from "../../public/logo_white.svg";
 import { UserProfileSetupRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
@@ -15,14 +27,32 @@ const ProfileSetup: React.FC = () => {
   const loginPage = "/auth/Login";
 
   // Genres
-  const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];
+  const PodcastGenres = [
+    "Technology",
+    "Comedy",
+    "Science",
+    "History",
+    "News",
+    "True Crime",
+    "Business",
+    "Health",
+    "Education",
+    "Travel",
+    "Music",
+    "Arts",
+    "Sports",
+    "Politics",
+    "Fiction",
+    "Food",
+  ];
 
   // Current User
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
 
   // Form Values
   const [displayName, setDisplayName] = useState("");
-  const [displayNameCharacterCount, setDisplayNameCharacterCount] = useState<number>(0);
+  const [displayNameCharacterCount, setDisplayNameCharacterCount] =
+    useState<number>(0);
   const [bio, setBio] = useState("");
   const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -146,7 +176,13 @@ const ProfileSetup: React.FC = () => {
    */
   const SetupPage = () => (
     <>
-      <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <img
           src={LogoWhite.src}
           alt="logo"
@@ -177,7 +213,10 @@ const ProfileSetup: React.FC = () => {
               }}
             >
               <img
-                src={avatar || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
+                src={
+                  avatar ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
                 alt="Avatar"
                 style={{
                   width: "150px",
@@ -198,7 +237,14 @@ const ProfileSetup: React.FC = () => {
               >
                 <IconButton
                   aria-label="Upload avatar"
-                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  icon={
+                    <img
+                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                      alt="Upload Icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  }
                   size="sm"
                   variant="outline"
                   borderRadius="full"
@@ -224,8 +270,20 @@ const ProfileSetup: React.FC = () => {
             {setupError && <Text color="red.500">{setupError}</Text>}
 
             <FormControl position="relative">
-              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} style={{ alignSelf: "center" }} />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Input
+                id="displayName"
+                placeholder="Display Name"
+                value={displayName}
+                onChange={handleDisplayNameChange}
+                style={{ alignSelf: "center" }}
+              />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {displayNameCharacterCount}/25
               </Text>
             </FormControl>
@@ -245,7 +303,13 @@ const ProfileSetup: React.FC = () => {
                 }}
                 resize="vertical"
               />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {bioCharacterCount}/250
               </Text>
             </FormControl>
@@ -264,14 +328,22 @@ const ProfileSetup: React.FC = () => {
                   <WrapItem key={genre}>
                     <Button
                       size="sm"
-                      variant={selectedInterests.includes(genre) ? "solid" : "outline"}
+                      variant={
+                        selectedInterests.includes(genre) ? "solid" : "outline"
+                      }
                       colorScheme="white"
-                      backgroundColor={selectedInterests.includes(genre) ? genreColors[genre] || getRandomGradient() : "transparent"}
+                      backgroundColor={
+                        selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "transparent"
+                      }
                       color="white"
                       borderColor="white"
                       borderRadius="full"
                       _hover={{
-                        backgroundColor: selectedInterests.includes(genre) ? genreColors[genre] || getRandomGradient() : "gray",
+                        backgroundColor: selectedInterests.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "gray",
                       }}
                       onClick={() => handleInterestClick(genre)}
                     >
@@ -294,7 +366,8 @@ const ProfileSetup: React.FC = () => {
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}
               style={{
-                background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                background:
+                  "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
                 backgroundSize: "300% 300%",
                 animation: "Gradient 10s infinite linear",
               }}
