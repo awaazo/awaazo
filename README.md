@@ -1,7 +1,3 @@
-
-
-
-
 # Awaazo 🎙️ [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
 <img src="frontend/public/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
@@ -11,20 +7,24 @@ A voice from the East meets a melody from the West. Drawing inspiration from Urd
 
 <br clear="left"/>
 
-<div style="border: 1px solid grey; padding: 10px; border-radius: 8px;">
+<br>
 
 
 
-[![Demo Video](frontend/public/logo_white.svg)](#latest-release-demo-video)
-[![Overview](frontend/public/logo_white.svg)](#overview)
-[![Why Awaazo](frontend/public/logo_white.svg)](#What-Sets-Awaazo-Apart)
-[![Core Features](frontend/public/logo_white.svg)](#core-features)
-[![Tech Stack](frontend/public/logo_white.svg)](#tech-stack)
-[![Team Members](frontend/public/logo_white.svg)](#team-members)
+<div align="center">
 
+[<img src="/docAssets/readme/toc/Overview.svg" alt="Overview" width="180"/>](#overview)
+[<img src="/docAssets/readme/toc/why_awaazo.svg" alt="Why Awaazo" width="180"/>](#what-sets-awaazo-apart)
+[<img src="/docAssets/readme/toc/Core_Features.svg" alt="Core Features" width="180"/>](#core-features)
 
+[<img src="/docAssets/readme/toc/Latest_Release.svg" alt="Demo Video" width="180"/>](#latest-release-demo)
+[<img src="/docAssets/readme/toc/Team_Members.svg" alt="Team Members" width="180"/>](#team-members)
+[<img src="/docAssets/readme/toc/tech_stack.svg" alt="Tech Stack" width="180"/>](#tech-stack)
 
 </div>
+
+
+
 
 
 
@@ -49,6 +49,18 @@ Awaazo redefines podcasting by fusing traditional streaming with innovative AI-p
 
 <br>
 
+## Latest Release Demo
+
+<div align="center">
+  <a href="https://youtu.be/SVZxZEOdr8Q">
+    <img src="docAssets/readme/relaseCover/R1.png" width="50%" alt="Latest Release Demo"/>
+  </a>
+  <p style="margin-top: 20px;">
+    <i>Check out our latest release demo video to see Awaazo in action. Click on the image above to watch the video on YouTube.</i>
+  </p>
+</div>
+
+<br>
 
 ## Core Features
 
@@ -71,7 +83,6 @@ Awaazo redefines podcasting by fusing traditional streaming with innovative AI-p
 - **Interactive Comments**: Engage in meaningful discussions with fellow listeners and creators.
 - **Community Feeds**: Explore shared bookmarks, trending discussions, and collective insights from the Awaazo community.
 
-
 <br>
 
 ## Tech Stack
@@ -81,133 +92,133 @@ Awaazo's architecture is crafted with Next.js for the frontend, ensuring fast re
 For complete details, refer to our [Tech Stack Wiki](https://github.com/awaazo/awaazo/wiki/Tech-Stack).
 
 
-## Latest Release Demo
-
+<br>
 
 ## Team Members
 
 
-<table>
+<table align="center" > 
   <tr>
     <td align="center" valign="top">
       <a href="https://github.com/jonathan-githubofficial">
-        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Jonathan Haddad"/>
+        <img src="docAssets/readme/pfp/J.haddad.png" width="100px; " alt="Jonathan Haddad"/>
         <br />
         <sub><b>Jonathan Haddad</b></sub>
       </a>
       <br />
-      <sub>📧 jonathan200023@gmail.com</sub>
+      <sub>jonathan200023@gmail.com</sub>
       <br />
-      <sub>🆔 40111053</sub>
+      <sub>40111053</sub>
     </td>
     <td align="center" valign="top">
       <a href="https://github.com/usamasaleem1">
-        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Usama Saleem"/>
+        <img src="docAssets/readme/pfp/Usama.jpg" width="100px;" alt="Usama Saleem"/>
         <br />
         <sub><b>Usama Saleem</b></sub>
       </a>
       <br />
-      <sub>📧 usama.saleem@hotmail.com</sub>
+      <sub>usama.saleem@hotmail.com</sub>
       <br />
-      <sub>🆔 40110036</sub>
+      <sub> 40110036</sub>
     </td>
     <td align="center" valign="top">
       <a href="https://github.com/sfranchetto">
-        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Steven Franchetto"/>
+        <img src="docAssets/readme/pfp/steven.png" width="100px;" alt="Steven Franchetto"/>
         <br />
         <sub><b>Steven Franchetto</b></sub>
       </a>
       <br />
-      <sub>📧 steven.franchetto@gmail.com</sub>
+      <sub> steven.franchetto@gmail.com</sub>
       <br />
-      <sub>🆔 40112243</sub>
+      <sub>40112243</sub>
     </td>
-    <!-- Additional team members in new <td> tags -->
-  </tr>
-<tr>
-  <td align="center" valign="top">
+      <td align="center" valign="top">
     <a href="https://github.com/BigSaladMan">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Jonathan Pauze"/>
+      <img src="docAssets/readme/pfp/J.Pauze.jpg" width="100px;" alt="Jonathan Pauze"/>
       <br />
       <sub><b>Jonathan Pauze</b></sub>
     </a>
     <br />
-    <sub>📧 jonathanpauze25@gmail.com</sub>
+    <sub>jonathanpauze25@gmail.com</sub>
     <br />
-    <sub>🆔 40177730</sub>
+    <sub>40177730</sub>
   </td>
-  <td align="center" valign="top">
+     <td align="center" valign="top">
     <a href="https://github.com/Ahed752">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Ahed Memas"/>
+      <img src="docAssets/readme/pfp/ahed.png" width="100px;" alt="Ahed Memas"/>
       <br />
       <sub><b>Ahed Memas</b></sub>
     </a>
     <br />
-    <sub>📧 ahed.mimas@gmail.com</sub>
+    <sub>ahed.mimas@gmail.com</sub>
     <br />
-    <sub>🆔 40112710</sub>
+    <sub>40112710</sub>
   </td>
-  <td align="center" valign="top">
+  </tr>
+
+
+<tr>
+      <td align="center" valign="top">
     <a href="https://github.com/shadijiha">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Shadi Jiha"/>
+      <img src="docAssets/readme/pfp/Shadi.jpg" width="100px;" alt="Shadi Jiha"/>
       <br />
       <sub><b>Shadi Jiha</b></sub>
     </a>
     <br />
-    <sub>📧 shadijiha@gmail.com</sub>
+    <sub>shadijiha@gmail.com</sub>
     <br />
-    <sub>🆔 40131284</sub>
+    <sub>40131284</sub>
   </td>
-</tr>
-<tr>
   <td align="center" valign="top">
     <a href="https://github.com/soni2261">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Sonia Rahal"/>
+      <img src="docAssets/readme/pfp/soni.png" width="100px;" alt="Sonia Rahal"/>
       <br />
       <sub><b>Sonia Rahal</b></sub>
     </a>
     <br />
-    <sub>📧 soniarahal20@gmail.com</sub>
+    <sub>soniarahal20@gmail.com</sub>
     <br />
-    <sub>🆔 40211893</sub>
+    <sub>40211893</sub>
   </td>
   <td align="center" valign="top">
     <a href="https://github.com/mathieutrudeau">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Mathieu Trudeau"/>
+      <img src="docAssets/readme/pfp/matt.jpg" width="100px;" alt="Mathieu Trudeau"/>
       <br />
       <sub><b>Mathieu Trudeau</b></sub>
     </a>
     <br />
-    <sub>📧 mathieutrudeau11@gmail.com</sub>
+    <sub>mathieutrudeau11@gmail.com</sub>
     <br />
-    <sub>🆔 40177075</sub>
+    <sub>40177075</sub>
   </td>
   <td align="center" valign="top">
     <a href="https://github.com/mubashir494">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Muhammad Mubashir"/>
+      <img src="docAssets/readme/pfp/mubashir.png" width="100px;" alt="Muhammad Mubashir"/>
       <br />
       <sub><b>Muhammad Mubashir</b></sub>
     </a>
     <br />
-    <sub>📧 mubashirqbl@gmail.com</sub>
+    <sub>mubashirqbl@gmail.com</sub>
     <br />
-    <sub>🆔 40152977</sub>
+    <sub>40152977</sub>
   </td>
-</tr>
-<tr>
-  <td align="center" valign="top">
+    <td align="center" valign="top">
     <a href="https://github.com/Radwanbaba13">
-      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Radwan Baba"/>
+      <img src="docAssets/readme/pfp/radwan.png" width="100px;" alt="Radwan Baba"/>
       <br />
       <sub><b>Radwan Baba</b></sub>
     </a>
     <br />
-    <sub>📧 radwangbaba@gmail.com</sub>
+    <sub>radwangbaba@gmail.com</sub>
     <br />
-    <sub>🆔 40167316</sub>
+    <sub>40167316</sub>
   </td>
 </tr>
-
 </table>
 
+<br>
+
+---
+<sup>This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.</sup>  
+<sup>© 2023 Awaazo. All Rights Reserved. Licensed under the MIT License.</sup>
 
