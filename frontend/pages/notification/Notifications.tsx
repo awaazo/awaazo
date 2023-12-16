@@ -22,10 +22,9 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-import { Notification, User} from "../../utilities/Interfaces";
+import { Notification, User } from "../../utilities/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
-
 
 interface NotificationsProps {
   isOpen: boolean;
@@ -40,20 +39,19 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
 
-
   useEffect(() => {
     const fetchUserId = async () => {
       const userResponse = await AuthHelper.authMeRequest();
       if (userResponse && userResponse.userMenuInfo && userResponse.userMenuInfo.id) {
         setUserId(userResponse.userMenuInfo.id);
-        console.log('User data fetched:', userResponse.userMenuInfo);
+        console.log("User data fetched:", userResponse.userMenuInfo);
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
           cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
         });
-        const channel = pusher.subscribe('user-' + userResponse.userMenuInfo.id);
-        channel.bind('notification', function(data) {
+        const channel = pusher.subscribe("user-" + userResponse.userMenuInfo.id);
+        channel.bind("notification", function (data) {
           // Handle the incoming notification data here
-          console.log('Received new notification:', data);
+          console.log("Received new notification:", data);
           // You can update the notification state or take other actions based on the incoming data
         });
         return () => {
@@ -73,10 +71,10 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
       if (Array.isArray(response)) {
         setNotifications(response);
       } else {
-        console.error("Failed to fetch notifications:", response.message || 'No error message available');
+        console.error("Failed to fetch notifications:", response.message || "No error message available");
       }
     };
-  
+
     fetchNotifications();
   }, []);
 
@@ -84,24 +82,19 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
       console.log(response);
-      if (response !== null && response !== undefined && typeof response === 'number') {
+      if (response !== null && response !== undefined && typeof response === "number") {
         setNotificationCount(response);
       } else {
-        console.error("Failed to fetch notification count:", response.message || 'No error message available');
+        console.error("Failed to fetch notification count:", response.message || "No error message available");
       }
     };
-  
+
     fetchNotificationCount();
   }, []);
 
   const markAsRead = (notificationId) => {
-    setNotifications(notifications.map(notification =>
-      notification.id === notificationId ? { ...notification, isRead: true } : notification
-    ));
+    setNotifications(notifications.map((notification) => (notification.id === notificationId ? { ...notification, isRead: true } : notification)));
   };
-
-  
-  
 
   return (
     <>
@@ -109,7 +102,7 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
         <ModalOverlay backdropFilter="blur(0px)" />
         <ModalContent
           width={"31vw"}
-          maxW={"100vw"} 
+          maxW={"100vw"}
           boxShadow="dark-lg"
           backdropFilter="blur(40px)"
           display="flex"
@@ -124,11 +117,8 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack spacing={5} align="center" >
-                <Select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value as "all" | "episode" | "user")}
-                >
+              <VStack spacing={5} align="center">
+                <Select value={filter} onChange={(e) => setFilter(e.target.value as "all" | "episode" | "user")}>
                   <option value="all">All Notifications</option>
                   <option value="episode">Episode Interactions</option>
                   <option value="user">User Notifications</option>
@@ -136,35 +126,24 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
                 {/* <Button onClick={() => setSortByDate(!sortByDate)}>
                   Sort by {sortByDate ? "Oldest" : "Newest"}
                 </Button> */}
-                <Box borderRadius="xl" position="absolute" top={2} left={2} backgroundColor="red"  padding={1}>
-                  <Text fontWeight="bold"   color="white" fontSize="lg">{notificationCount}</Text>
+                <Box borderRadius="xl" position="absolute" top={2} left={2} backgroundColor="red" padding={1}>
+                  <Text fontWeight="bold" color="white" fontSize="lg">
+                    {notificationCount}
+                  </Text>
                 </Box>
                 <List borderRadius="xl" spacing={4} width="134%" maxHeight="50vh" overflowY="auto">
                   {notifications.map((notification) => (
-                    <ListItem
-                      key={notification.id}
-                      bg={notification.isRead ? "gray.550" : "gray.600"}
-                      p={"6"}
-                      width={"100%"}
-                      boxShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"}
-                      borderRadius="xl"
-
-                    >
+                    <ListItem key={notification.id} bg={notification.isRead ? "gray.550" : "gray.600"} p={"6"} width={"100%"} boxShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"} borderRadius="xl">
                       <HStack spacing={4}>
                         <Avatar src={notification.media} />
                         <VStack align="start" spacing={1} flex="1">
-                          <Link href={`/Explore/${notification.link}`}>  
-                              <Text color="blue.400" fontWeight="bold" textDecoration="underline">
-                                {notification.title}
-                              </Text>
+                          <Link href={`/Explore/${notification.link}`}>
+                            <Text color="blue.400" fontWeight="bold" textDecoration="underline">
+                              {notification.title}
+                            </Text>
                           </Link>
                           <Text fontWeight="bold">{notification.message}</Text>
-                          <Text
-                            fontSize="sm"
-                            color="gray.400"
-                          >{`Created: ${formatDistanceToNow(
-                            new Date(notification.createdAt)
-                          )} ago`}</Text>
+                          <Text fontSize="sm" color="gray.400">{`Created: ${formatDistanceToNow(new Date(notification.createdAt))} ago`}</Text>
                         </VStack>
                       </HStack>
                     </ListItem>
@@ -178,6 +157,5 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
     </>
   );
 };
-
 
 export default Notifications;

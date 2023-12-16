@@ -21,6 +21,7 @@ const NowPlaying = () => {
   const [episode, setEpisode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [components, setComponents] = useState([]);
+  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
 
   useEffect(() => {
     if (EpisodeId) {
@@ -58,6 +59,8 @@ const NowPlaying = () => {
         //   component: <Sections sections={episode.sections} />,
         //   inSlider: true,
         // },
+
+        // DO NOT REMOVE
       ]);
     }
   }, [episode]); 
