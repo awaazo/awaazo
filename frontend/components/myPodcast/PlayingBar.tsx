@@ -13,6 +13,8 @@ import {
   MenuItem,
   Tooltip,
   Icon,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import PlayingHelper from "../../helpers/PlayingHelper";
@@ -65,9 +67,12 @@ const PlayComponent = ({
     const lastSectionStartTime = duration;
 
     setStartBookmarkPosition((lastSectionEndTime / duration) * 100);
+    onStartChange(lastSectionEndTime);
     setEndBookmarkPosition((lastSectionStartTime / duration) * 100);
-    handleBookmarkDrag(lastSectionEndTime, "start");
-    handleBookmarkDrag(lastSectionStartTime, "end");
+    onEndChange(duration - 1);
+
+    setCurrentTime(isAdding ? lastSectionEndTime : 0);
+    audioRef.current.currentTime = isAdding ? lastSectionEndTime : 0;
   }, [isAdding, sections]);
 
   useEffect(() => {
@@ -167,17 +172,16 @@ const PlayComponent = ({
     setShowSectionTitle(false);
   };
 
-  const handleBookmarkDrag = (value, type) => {
-    // Call the corresponding function (onStartChange or onEndChange) with the new time value
-    if (type === "start") {
-      console.log("start: " + value);
-      onStartChange(value);
-      setStartBookmarkPosition((value / duration) * 100);
-    } else if (type === "end") {
-      console.log("end: " + value);
-      onEndChange(value);
-      setEndBookmarkPosition((value / duration) * 100);
-    }
+  // Handles Start Changes
+  const handleStartChange = () => {
+    onStartChange(currentTime);
+    setStartBookmarkPosition((currentTime / duration) * 100);
+  };
+
+  // Handles End Changes
+  const handleEndChange = () => {
+    onEndChange(currentTime);
+    setEndBookmarkPosition((currentTime / duration) * 100);
   };
 
   if (isLoading) {
@@ -214,16 +218,16 @@ const PlayComponent = ({
             <Slider
               min={0}
               max={duration}
-              value={currentTime}
+              value={isAdding ? currentTime : currentTime}
               minWidth={"100px"}
               onChange={(value) => handleSeek(value)}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              isReadOnly={isAdding ? true : false}
             >
               <SliderTrack>
                 <SliderFilledTrack />
               </SliderTrack>
+              <SliderThumb boxSize={3} />
               <SliderThumb boxSize={3} />
               {/* Display marks for all sections */}
               {sections &&
@@ -269,7 +273,7 @@ const PlayComponent = ({
                       color="white"
                       fontWeight={"bold"}
                     >
-                      {key}
+                      {key + 1}
                     </Text>
                   </React.Fragment>
                 ))}
@@ -281,9 +285,6 @@ const PlayComponent = ({
                       position="absolute"
                       left={`${startBookmarkPosition}%`}
                       cursor={isAdding ? "grab" : "default"}
-                      onMouseDown={(e) =>
-                        handleBookmarkDrag(e.clientX, "start")
-                      }
                     >
                       <Icon
                         as={BiSolidBookmark}
@@ -301,8 +302,7 @@ const PlayComponent = ({
                     <Box
                       position="absolute"
                       left={`${endBookmarkPosition}%`}
-                      cursor={"grab"}
-                      onDrag={(e) => handleBookmarkDrag(e.clientX, "start")}
+                      cursor={isAdding ? "grab" : "default"}
                     >
                       <Icon
                         as={BiSolidBookmark}
@@ -356,6 +356,16 @@ const PlayComponent = ({
         <Box textAlign="center" p={3} color="red.500" borderRadius="lg">
           Unable to load audio
         </Box>
+      )}
+      {isAdding && (
+        <HStack spacing={4} justifyContent="center" mt={4}>
+          <Button onClick={handleStartChange} variant="ghost">
+            Set Start Time
+          </Button>
+          <Button onClick={handleEndChange} variant="ghost">
+            Set End Time
+          </Button>
+        </HStack>
       )}
     </Box>
   );
