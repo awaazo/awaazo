@@ -21,10 +21,11 @@ import {
 import { AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
 import Logo from "../../public/logo_white.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import Notifications from "../../pages/Notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import NotificationHelper from "../../helpers/NotificationsHelper";
-import Notifications from "../../pages/Notification/Notifications";
+
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
