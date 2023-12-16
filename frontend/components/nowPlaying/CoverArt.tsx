@@ -1,6 +1,6 @@
 import { Box, Image, Text, VStack } from "@chakra-ui/react";
 import { Episode } from "../../utilities/Interfaces";
-
+import { LuBookCopy } from "react-icons/lu";
 // Define the props for the CoverArt component
 interface CoverArtProps {
   imageUrl: Episode["thumbnailUrl"]; // The URL of the episode's thumbnail image

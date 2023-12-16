@@ -1,4 +1,4 @@
-import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex, useBreakpointValue, useColorModeValue } from "@chakra-ui/react";
+import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { BsArrowUpCircle } from "react-icons/bs";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ type MessageType = {
 };
 
 // Define the Chatbot component
-const Chatbot: React.FC = () => {
+const AwaazoBirdBot: React.FC = () => {
   const [messages, setMessages] = useState<MessageType[]>([]); // State for storing the messages
   const [inputValue, setInputValue] = useState<string>(""); // State for storing the input value
 
@@ -32,7 +32,7 @@ const Chatbot: React.FC = () => {
   const inputPadding = useBreakpointValue({ base: "1", md: "4" });
 
   return (
-    <Box p={4} width="100%" minH="100%" display="flex" flexDirection="column" boxSizing="border-box" position="sticky" borderRadius="2em" bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")} style={{ backdropFilter: "blur(50px)" }} border="3px solid rgba(255, 255, 255, 0.05)" boxShadow="0px 0px 15px rgba(0, 0, 0, 0.01)">
+    <Box p={4} width="100%" minH="100%" display="flex" flexDirection="column" boxSizing="border-box" position="sticky" borderRadius="2em" bg={"rgba(0, 0, 0, 0.2)"} style={{ backdropFilter: "blur(50px)" }} border="3px solid rgba(255, 255, 255, 0.05)" boxShadow="0px 0px 15px rgba(0, 0, 0, 0.01)">
       
       <Flex marginBottom={4} justifyContent="center">
         <Image src={awaazoBird} alt="Awaazo Bird AI Helper Logo" boxSize={boxSize} />
@@ -87,4 +87,4 @@ const Chatbot: React.FC = () => {
   );
 };
 
-export default Chatbot;
+export default AwaazoBirdBot;

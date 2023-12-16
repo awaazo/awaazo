@@ -210,15 +210,15 @@ export default function Navbar() {
       <Box
         bg={"rgba(0, 0, 0, 0.3)"}
         backdropFilter="blur(35px)"
-        p={6}
+        p={2}
         mr={"2em"}
         ml={"2em"}
         mb={"3em"}
         position="sticky"
-        top={5}
+        top={4}
         zIndex={999}
         borderRadius={"95px"}
-        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.3)"
         data-testid="navbar-component"
         border="3px solid rgba(255, 255, 255, 0.05)"
       >

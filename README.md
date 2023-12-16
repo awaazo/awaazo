@@ -4,26 +4,38 @@
 
 # Awaazo 🎙️ [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
-
+<img src="frontend/public/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
 
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
-<p align="center">
-  <img src="frontend/public/logo_white.svg" alt="Awaazo Logo" width="50px" />
-</p>
+
+<br clear="left"/>
+
+<div style="border: 1px solid grey; padding: 10px; border-radius: 8px;">
+
+
+
+[![Demo Video](frontend/public/logo_white.svg)](#latest-release-demo-video)
+[![Overview](frontend/public/logo_white.svg)](#overview)
+[![Why Awaazo](frontend/public/logo_white.svg)](#What-Sets-Awaazo-Apart)
+[![Core Features](frontend/public/logo_white.svg)](#core-features)
+[![Tech Stack](frontend/public/logo_white.svg)](#tech-stack)
+[![Team Members](frontend/public/logo_white.svg)](#team-members)
+
+
+
+</div>
+
+
 
 ## Overview
 
-Redefining podcasting. Combining traditional streaming with AI-powered content creation, Awaazo is your one-stop destination. Discover fresh content, craft your own episodes, and benefit from live transcripts. Plus, engage with an AI assistant that's versed in the content of every episode, further enhancing your listening journey. Dive into an elevated podcasting realm.
+Awaazo redefines podcasting by fusing traditional streaming with innovative AI-powered content creation. It's the hub for discovering new content, crafting your own episodes, and accessing live transcripts. Engage with our AI assistant, knowledgeable about every episode, for an enhanced listening experience. Dive into a diverse library of podcasts, utilize AI-enhanced tools for content creation, and join a community to share insights and connect with other creators. With Awaazo, immerse yourself in a podcasting experience that transcends the ordinary.
 
 <br>
 
-## Description
 
-Discover, create, and engage. Awaazo offers an extensive library of diverse podcasts, tools for AI-enhanced content creation, and a community platform to share, comment, and connect with creators.
-
-
-### What Sets Awaazo Apart
+## What Sets Awaazo Apart
 
 - **AI-Enhanced Podcast Creation**: Don't just listen—create. With our cutting-edge AI, turn scripts into captivating podcast episodes, complete with voice cloning for an authentic feel.
   
@@ -64,45 +76,138 @@ Discover, create, and engage. Awaazo offers an extensive library of diverse podc
 
 ## Tech Stack
 
-### Frontend:
-- **Next.js**: Leveraging its server-side rendering (SSR), SEO optimization, and file-system routing capabilities. Additionally, we'll be utilizing TypeScript for type safety and enhanced developer experience.
+Awaazo's architecture is crafted with Next.js for the frontend, ensuring fast rendering and SEO benefits. Our backend is built on ASP.NET Core and Python, enabling robust AI integration via LangChain. We harness the power of OpenAI and Eleven Labs APIs for advanced functionalities. Data is managed with the reliable MSSQL and the innovative Pinecone vector database. Deployment is streamlined using Docker containers.
 
-### Backend:
-- **C# with ASP.NET Core**: Our primary backend framework.
-- **Python with LangChain**: Used specifically for AI-related tasks. LangChain is a framework designed to simplify the creation of applications using large language models.
-### APIs:
-- **OpenAI APIs**
-- **Eleven Labs APIs**
-- Additional APIs will be integrated as required.
-
-### Database:
-- **MSSQL**: Chosen for its reliability, performance, and widespread adoption.
-- **Pinecone**: A vector database that equips AI with long-term memory, offering optimized storage and querying capabilities specifically for embeddings.
-
-### Hosting and Deployment:
-- Platforms under consideration include **Vercel**, **Netlify**, and **AWS**. However, given our choice of Next.js, Vercel would provide a seamless deployment experience.
-
-### Authentication:
-- **JWT (JSON Web Tokens)**: For secure, stateless authentication across services.
-
-### Additional Tools:
-- **Docker**: Ensuring consistent environments and streamlined deployments.
-
----
-
-## Members
+For complete details, refer to our [Tech Stack Wiki](https://github.com/awaazo/awaazo/wiki/Tech-Stack).
 
 
+## Latest Release Demo
 
-|   Name   | ID      | GitHub   | Email  
-| ------------- | ------------- | --------    | -------- |
-| `Jonathan Haddad`         | `40111053`         | ([GitHub/jonathan-githubofficial](https://github.com/jonathan-githubofficial))   | jonathan200023@gmail.com
-| `Usama Saleem`         | `40110036`         | ([GitHub/usamasaleem1](https://github.com/usamasaleem1))   | usama.saleem [at] hotmail.com
-| `Steven Franchetto`         | `40112243`         | ([GitHub.com/sfranchetto](https://github.com/sfranchetto))   | steven.franchetto@gmail.com
-| `Jonathan Pauze`         | `40177730`         | ([GitHub.com/BigSaladMan](https://github.com/BigSaladMan))   | jonathanpauze25@gmail.com
-| `Ahed Memas`         | `40112710`         | ([GitHub.com/Ahed752](https://github.com/Ahed752))   | ahed.mimas@gmail.com 
-| `Shadi Jiha`         | `40131284`         | ([GitHub.com/shadijiha](https://github.com/shadijiha))   | shadijiha@gmail.com
-| `Sonia Rahal`         | `40211893`         | ([GitHub.com/soni2261](https://github.com/soni2261))   | soniarahal20@gmail.com
-| `Mathieu Trudeau`         | `40177075`         | ([GitHub.com/mathieutrudeau](https://github.com/mathieutrudeau))   | mathieutrudeau11@gmail.com
-| `Muhammad Mubashir`         | `40152977`         | ([GitHub.com/mubashir494](https://github.com/mubashir494))   |  mubashirqbl@gmail.com
-| `Radwan Baba`         | `40167316`         | ([Github.com/Radwanbaba13](https://github.com/Radwanbaba13))   |  radwangbaba@gmail.com
+
+## Team Members
+
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <a href="https://github.com/jonathan-githubofficial">
+        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Jonathan Haddad"/>
+        <br />
+        <sub><b>Jonathan Haddad</b></sub>
+      </a>
+      <br />
+      <sub>📧 jonathan200023@gmail.com</sub>
+      <br />
+      <sub>🆔 40111053</sub>
+    </td>
+    <td align="center" valign="top">
+      <a href="https://github.com/usamasaleem1">
+        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Usama Saleem"/>
+        <br />
+        <sub><b>Usama Saleem</b></sub>
+      </a>
+      <br />
+      <sub>📧 usama.saleem@hotmail.com</sub>
+      <br />
+      <sub>🆔 40110036</sub>
+    </td>
+    <td align="center" valign="top">
+      <a href="https://github.com/sfranchetto">
+        <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Steven Franchetto"/>
+        <br />
+        <sub><b>Steven Franchetto</b></sub>
+      </a>
+      <br />
+      <sub>📧 steven.franchetto@gmail.com</sub>
+      <br />
+      <sub>🆔 40112243</sub>
+    </td>
+    <!-- Additional team members in new <td> tags -->
+  </tr>
+<tr>
+  <td align="center" valign="top">
+    <a href="https://github.com/BigSaladMan">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Jonathan Pauze"/>
+      <br />
+      <sub><b>Jonathan Pauze</b></sub>
+    </a>
+    <br />
+    <sub>📧 jonathanpauze25@gmail.com</sub>
+    <br />
+    <sub>🆔 40177730</sub>
+  </td>
+  <td align="center" valign="top">
+    <a href="https://github.com/Ahed752">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Ahed Memas"/>
+      <br />
+      <sub><b>Ahed Memas</b></sub>
+    </a>
+    <br />
+    <sub>📧 ahed.mimas@gmail.com</sub>
+    <br />
+    <sub>🆔 40112710</sub>
+  </td>
+  <td align="center" valign="top">
+    <a href="https://github.com/shadijiha">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Shadi Jiha"/>
+      <br />
+      <sub><b>Shadi Jiha</b></sub>
+    </a>
+    <br />
+    <sub>📧 shadijiha@gmail.com</sub>
+    <br />
+    <sub>🆔 40131284</sub>
+  </td>
+</tr>
+<tr>
+  <td align="center" valign="top">
+    <a href="https://github.com/soni2261">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Sonia Rahal"/>
+      <br />
+      <sub><b>Sonia Rahal</b></sub>
+    </a>
+    <br />
+    <sub>📧 soniarahal20@gmail.com</sub>
+    <br />
+    <sub>🆔 40211893</sub>
+  </td>
+  <td align="center" valign="top">
+    <a href="https://github.com/mathieutrudeau">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Mathieu Trudeau"/>
+      <br />
+      <sub><b>Mathieu Trudeau</b></sub>
+    </a>
+    <br />
+    <sub>📧 mathieutrudeau11@gmail.com</sub>
+    <br />
+    <sub>🆔 40177075</sub>
+  </td>
+  <td align="center" valign="top">
+    <a href="https://github.com/mubashir494">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Muhammad Mubashir"/>
+      <br />
+      <sub><b>Muhammad Mubashir</b></sub>
+    </a>
+    <br />
+    <sub>📧 mubashirqbl@gmail.com</sub>
+    <br />
+    <sub>🆔 40152977</sub>
+  </td>
+</tr>
+<tr>
+  <td align="center" valign="top">
+    <a href="https://github.com/Radwanbaba13">
+      <img src="GITHUB_PROFILE_PICTURE_URL" width="100px;" alt="Radwan Baba"/>
+      <br />
+      <sub><b>Radwan Baba</b></sub>
+    </a>
+    <br />
+    <sub>📧 radwangbaba@gmail.com</sub>
+    <br />
+    <sub>🆔 40167316</sub>
+  </td>
+</tr>
+
+</table>
+
+

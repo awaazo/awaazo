@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Grid, useBreakpointValue } from "@chakra-ui/react";
 import Navbar from "../../components/shared/Navbar";
-import ChatBot from "../../components/nowPlaying/ChatBot";
+import AwaazoBirdBot from "../../components/nowPlaying/AwaazoBirdBot";
 import Bookmarks from "../../components/nowPlaying/Bookmarks";
 import Transcripts from "../../components/nowPlaying/Transcripts";
 import CoverArt from "../../components/nowPlaying/CoverArt";
@@ -22,7 +22,7 @@ const componentsData = [
     component: <CoverArt imageUrl={currentEpisode.thumbnailUrl} description={currentEpisode.description} />,
     inSlider: false,
   },
-  { component: <ChatBot />, inSlider: false },
+  { component: <AwaazoBirdBot />, inSlider: false },
   {
     component: <Bookmarks bookmarks={currentEpisode.bookmarks} />,
     inSlider: true,
@@ -35,8 +35,6 @@ const componentsData = [
     component: <Sections sections={currentEpisode.sections} />,
     inSlider: true,
   },
-  
-  
 ];
 
 const NowPlaying = () => {
@@ -74,7 +72,8 @@ const NowPlaying = () => {
   const sliderComponents = components.filter((comp) => comp.inSlider);
 
   return (
-    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor={palette || null}>
+    <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden" bgColor= {null}> 
+    {/* //bgColor={palette || null} */}
       <Navbar />
       {isMobile ? (
         <Slider {...sliderSettings}>
@@ -85,39 +84,43 @@ const NowPlaying = () => {
           ))}
         </Slider>
       ) : (
-        <Grid
-          flexGrow={1}
+        <Box 
+        flexGrow={1} 
+        pl={3} 
+        pr={3} 
+        mx={5} 
+        mb={20} 
+        overflow="hidden"
+      >
+     <Grid
           templateAreas={{
             md: `
-              "coverart chatbot"
-              "transcripts bookmarks"
-              "sections sections"
+              "coverart transcripts AwaazoBirdBot"
+              "bookmarks sections AwaazoBirdBot"
             `,
           }}
-          gridTemplateRows={{ md: "1fr 1fr 1fr" }}
-          gridTemplateColumns={{ md: "1fr 3fr" }}
+          gridTemplateRows={{ md: "1fr 1fr" }}
+          gridTemplateColumns={{ md: "1fr 1fr 1fr" }}
           gap={1}
-          mt={1}
-          mx={0.5}
-          p={4}
-          overflow="hidden"
+          h="calc(100% - 35px)" 
         >
-          <Box gridArea="chatbot" p={4} onClick={() => handleComponentClick(1)}>
+          <Box gridArea="AwaazoBirdBot" p={2} onClick={() => handleComponentClick(1)}>
             {components[1].component}
           </Box>
-          <Box gridArea="transcripts" p={4} onClick={() => handleComponentClick(3)}>
+          <Box gridArea="transcripts" p={2} onClick={() => handleComponentClick(3)}>
             {components[3].component}
           </Box>
-          <Box gridArea="bookmarks" p={4} onClick={() => handleComponentClick(2)}>
+          <Box gridArea="bookmarks" p={2} onClick={() => handleComponentClick(2)}>
             {components[2].component}
           </Box>
-          <Box gridArea="sections" p={4} onClick={() => handleComponentClick(4)}>
+          <Box gridArea="sections" p={2} onClick={() => handleComponentClick(4)}>
             {components[4].component}
           </Box>
-          <Box gridArea="coverart" p={4} onClick={() => handleComponentClick(0)}>
+          <Box gridArea="coverart" p={2} onClick={() => handleComponentClick(0)}>
             {components[0].component}
           </Box>
         </Grid>
+        </Box>
       )}
     </Box>
   );

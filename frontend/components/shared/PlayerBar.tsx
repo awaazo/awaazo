@@ -136,7 +136,7 @@ const PlayerBar = () => {
     <Box
       maxWidth="96%"
       p={2}
-      borderRadius="1.1em"
+      borderRadius="1.5em"
       bg="rgba(0, 0, 0, 0.2)"
       shadow="md"
       style={{ backdropFilter: "blur(50px)" }}
@@ -151,7 +151,7 @@ const PlayerBar = () => {
     >
       <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
         {/* Episode Info */}
-        <Flex alignItems="center">
+        <Flex alignItems="center" ml={2}>
           {isEpisodeLoaded ? (
             <Link href={`/NowPlaying/${episode.id}`} shallow>
               <Image boxSize={isMobile ? "30px" : "40px"} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
@@ -202,8 +202,8 @@ const PlayerBar = () => {
         {/* Like and Comment - Hidden in mobile */}
         
         {!isMobile && (
-          <Flex alignItems="center" ml={4} >
-            <Flex alignItems="center" mr={4}>
+          <Flex alignItems="center" mr={2}>
+            <Flex alignItems="center" mr={2}>
               <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} />
               <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} />
             </Flex>
