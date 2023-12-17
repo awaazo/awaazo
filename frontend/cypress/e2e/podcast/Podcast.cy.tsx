@@ -105,7 +105,7 @@ describe("Postcast_Create", () => {
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "A podcast about error handling.",
     );
-    cy.url().should("include", "/CreatePodcast");
+    cy.url().should("include", "/AddEpisode");
     cy.visit("/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
