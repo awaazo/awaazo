@@ -15,7 +15,7 @@ describe("Postcast_Create", () => {
       "F1 Legends",
       "A podcast about F1 veterans and their rise to glory.",
     );
-    cy.url().should("include", "CreatorHub/AddEpisode");
+    cy.url().should("include", "/CreatorHub/AddEpisode");
     cy.contains("F1 Legends");
   });
 
@@ -26,7 +26,7 @@ describe("Postcast_Create", () => {
       "F1 Legends",
       "A podcast about F1 veterans and their rise to glory.",
     );
-    cy.url().should("include", "CreatorHub/CreatePodcast");
+    cy.url().should("include", "/CreatorHub/CreatePodcast");
     cy.contains("A podcast with the same name already exists").should("exist");
   });
 
@@ -36,13 +36,13 @@ describe("Postcast_Create", () => {
     cy.get('button[aria-label="loggedInMenu"]').should("be.visible");
     cy.get('button[aria-label="loggedInMenu"]').click();
     cy.get("button").contains("My Podcasts").click();
-    cy.url().should("include", "CreatorHub/MyPodcasts");
+    cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.get("button").contains("Edit Podcast").click();
     cy.get('input[type="file"]').attachFile(paths.f2_car);
     cy.get('input[id="podcastName"]').clear().type("{selectall}{backspace}");
     cy.get('input[id="podcastName"]').type("F2 legends");
     cy.contains("Button", "Update").click();
-    cy.url().should("include", "CreatorHub/MyPodcasts");
+    cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.contains("F2 legends");
   });
 
@@ -58,7 +58,7 @@ describe("Postcast_Create", () => {
   // Podcast should not be created if the fields are empty
   it("Should not create a podcast if fields are empty", () => {
     cy.podcast_create(paths.max_verstappen_cover, null, null);
-    cy.url().should("include", "CreatorHub/CreatePodcast");
+    cy.url().should("include", "/CreatorHub/CreatePodcast");
     cy.contains("Required.").should("exist");
   });
 
@@ -69,7 +69,7 @@ describe("Postcast_Create", () => {
       "Video Games",
       "Adoption of video games in the West.",
     );
-    cy.url().should("include", "CreatorHub/CreatePodcast");
+    cy.url().should("include", "/CreatorHub/CreatePodcast");
     cy.contains("Cover art must be a JPEG, PNG, or SVG.").should("exist");
   });
 
@@ -80,7 +80,7 @@ describe("Postcast_Create", () => {
       "♣™∏⊄‾ℜ→∞ϖñ",
       "A podcast about CRAZY symbols.",
     );
-    cy.url().should("include", "CreatorHub/AddEpisode");
+    cy.url().should("include", "/CreatorHub/AddEpisode");
     cy.contains("♣™∏⊄‾ℜ→∞ϖñ");
   });
 
@@ -90,12 +90,12 @@ describe("Postcast_Create", () => {
     cy.wait(500);
     cy.get('button[aria-label="loggedInMenu"]').click();
     cy.get("button").contains("My Podcasts").click();
-    cy.url().should("include", "CreatorHub/MyPodcasts");
+    cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]").click();
     cy.get("[data-cy=podcast-delete").click();
     cy.contains("Button", "Delete").click();
-    cy.url().should("include", "CreatorHub/MyPodcasts");
+    cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.contains("♣™∏⊄‾ℜ→∞ϖñ").should("not.exist");
   });
 
@@ -105,8 +105,8 @@ describe("Postcast_Create", () => {
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "A podcast about error handling.",
     );
-    cy.url().should("include", "CreatorHub/AddEpisode");
-    cy.visit("CreatorHub/MyPodcasts");
+    cy.url().should("include", "/CreatorHub/AddEpisode");
+    cy.visit("/CreatorHub/MyPodcasts");
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa")
