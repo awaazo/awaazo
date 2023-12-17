@@ -17,7 +17,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import PlayingHelper from "../../helpers/PlayingHelper";
+import EndpointHelper from "../../helpers/EndpointHelper";
 import { BiSolidBookmark } from "react-icons/bi";
 
 import { MdMoreVert } from "react-icons/md";
@@ -42,14 +42,16 @@ const PlayComponent = ({
   const [startBookmarkPosition, setStartBookmarkPosition] = useState(0);
   const [endBookmarkPosition, setEndBookmarkPosition] = useState(0);
 
+  // Function to fetch episode URL
+  const getEpisodePlaying = async (podcastId, episodeId) => {
+    return EndpointHelper.getPodcastEpisodePlayEndpoint(podcastId, episodeId);
+  };
+
   useEffect(() => {
     const fetchAudio = async () => {
       setIsLoading(true);
       try {
-        const audioUrl = await PlayingHelper.getEpisodePlaying(
-          podcastId,
-          episodeId,
-        );
+        const audioUrl = await getEpisodePlaying(podcastId, episodeId);
         setAudioUrl(audioUrl);
       } catch (error) {
         console.error("Error fetching episode:", error);

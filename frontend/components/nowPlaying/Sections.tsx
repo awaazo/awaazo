@@ -46,7 +46,7 @@ const Sections: React.FC<SectionsProps> = ({ sections }) => {
               <Text fontSize={fontSize} color="white">
                 {section.title}
               </Text>
-              <Text color="gray.400">{convertTime(section.timestamp)}</Text>
+              <Text color="gray.400">{convertTime(section.start)}</Text>
             </Flex>
           </Box>
         ))}
