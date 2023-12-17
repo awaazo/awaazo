@@ -11,7 +11,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import SectionHelper from "../../helpers/SectionHelper";
 import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
@@ -20,7 +19,6 @@ const NowPlaying = () => {
   const router = useRouter();
   const { EpisodeId } = router.query;
   const [episode, setEpisode] = useState(null);
-  const [sections, setSections] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [components, setComponents] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState<number | null>(
@@ -41,19 +39,7 @@ const NowPlaying = () => {
     }
   }, [EpisodeId]);
 
-  useEffect(() => {
-    if (EpisodeId) {
-      SectionHelper.sectionGetRequest(EpisodeId)
-        .then((res) => {
-          if (res.status === 200) {
-            setSections(res.sections);
-          } else {
-            console.error("Error fetching section data:", res.message);
-          }
-        })
-        .catch((error) => console.error("Error fetching section data:", error));
-    }
-  }, [EpisodeId]);
+
 
   useEffect(() => {
     if (episode) {
@@ -64,15 +50,15 @@ const NowPlaying = () => {
         },
         // { component: <AwaazoBirdBot />, inSlider: false },
         // {
-        //   component: <Bookmarks bookmarks={episode.bookmarks} />,
+        //   component: <Bookmarks episodeId={episode.id}  />,
         //   inSlider: true,
         // },
         // {
-        //   component: <Transcripts transcripts={episode.transcript} />,
+        //   component: <Transcripts episodeId={episode.id}  />,
         //   inSlider: true,
         // },
         {
-          component: <Sections sections={sections} />,
+          component: <Sections episodeId={episode.id} />,
           inSlider: true,
         },
 

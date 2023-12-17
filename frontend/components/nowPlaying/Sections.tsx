@@ -7,16 +7,33 @@ import {
   useBreakpointValue,
   Icon,
 } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import SectionHelper from "../../helpers/SectionHelper";
 import { Episode } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 
 interface SectionsProps {
-  sections: Episode["sections"];
+  episodeId: string;
 }
 
-const Sections: React.FC<SectionsProps> = ({ sections }) => {
+const Sections: React.FC<SectionsProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
+  const [sections, setSections] = useState(null);
+
+  useEffect(() => {
+    if (episodeId) {
+      SectionHelper.sectionGetRequest(episodeId)
+        .then((res) => {
+          if (res.status === 200) {
+            setSections(res.sections);
+          } else {
+            console.error("Error fetching section data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching section data:", error));
+    }
+  }, [episodeId]);
 
   return (
     <Box
