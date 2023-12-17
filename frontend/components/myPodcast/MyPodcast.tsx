@@ -48,7 +48,7 @@ export default function MyPodcast({ podcastId }) {
   }, [podcastId]);
   // Page refs
   const MyPodcastsPage = "/MyPodcasts";
-  const CreatePage = "/Create";
+  const CreatePage = "/AddEpisode";
   const { colorMode } = useColorMode();
 
   // Form Values

@@ -35,7 +35,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.url().should("include", "/Create");
+    cy.url().should("include", "/AddEpisode");
     cy.contains(
       "An episode with the same name already exists for this podcast.",
     ).should("exist");
@@ -74,7 +74,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.url().should("include", "/Create");
+    cy.url().should("include", "/AddEpisode");
     cy.contains("Required.").should("exist");
   });
 
@@ -87,7 +87,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       null,
     );
-    cy.url().should("include", "/Create");
+    cy.url().should("include", "/AddEpisode");
     cy.contains("Please select the Podcast you wish to upload to");
   });
 
@@ -173,7 +173,7 @@ describe("Episode_Create", () => {
       "Cool pets",
       "A podcast about pets and their coolness.",
     );
-    cy.url().should("include", "/Create");
+    cy.url().should("include", "/CreatePodcast");
     cy.contains("Cool pets");
     cy.episode_create(
       paths.shiba,

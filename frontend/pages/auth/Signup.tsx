@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { RegisterRequest } from "../../utilities/Requests";
 
 const SignUp: React.FC = () => {
-  const setupPage = "/Setup";
+  const setupPage = "/ProfileSetup";
 
   const [email, setEmail] = useState<string | null>("");
   const [username, setUsername] = useState<string | null>("");

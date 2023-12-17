@@ -25,7 +25,7 @@ import { useDropzone } from "react-dropzone";
 
 const NewPodcast: React.FC = () => {
   // Page refs
-  const createPage = "/Create";
+  const createPage = "/AddEpisode";
   const mainPage = "/Main";
   const loginPage = "/auth/Login";
 
@@ -380,7 +380,7 @@ const NewPodcast: React.FC = () => {
               minWidth={"200px"}
               color={"white"}
               marginTop={"15px"}
-              marginBottom={"10px"}
+              marginBottom={"200px"}
               padding={"20px"}
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}

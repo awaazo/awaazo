@@ -35,7 +35,7 @@ describe("Register", () => {
       "{selectall}{backspace}",
       "{selectall}{backspace}",
     );
-    cy.url().should("include", "/Setup");
+    cy.url().should("include", "/ProfileSetup");
     cy.contains("Avatar, Display Name and Bio Required.").should("exist");
   });
 
@@ -69,7 +69,7 @@ describe("Register", () => {
 
   it("limits the number of characters in the input field", () => {
     cy.get('button[aria-label="Menu"]').click();
-    cy.get("button").contains("Register").click();
+    cy.get("button").contains("Sign up").click();
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );

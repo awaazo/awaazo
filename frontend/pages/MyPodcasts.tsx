@@ -11,7 +11,6 @@ import {
   VStack,
   Image,
   Wrap,
-
 } from "@chakra-ui/react";
 
 import {
