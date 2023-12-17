@@ -5,7 +5,8 @@
         "dev": "next dev",
         "start": "next start",
         "lint": "next lint",
-        "test": "jest"
+        "test": "jest",
+        "cypress:open": "cypress open"
     },
     "dependencies": {
         "@chakra-ui/color-mode": "^2.2.0",
