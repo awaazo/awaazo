@@ -25,13 +25,13 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
-import PodcastHelper from "../helpers/PodcastHelper";
-import AuthHelper from "../helpers/AuthHelper";
-import Navbar from "../components/shared/Navbar";
+import PodcastHelper from "../../helpers/PodcastHelper";
+import AuthHelper from "../../helpers/AuthHelper";
+import Navbar from "../../components/shared/Navbar";
 import { AddIcon } from "@chakra-ui/icons";
 import router from "next/router";
-import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
-import { EpisodeAddRequest } from "../utilities/Requests";
+import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
+import { EpisodeAddRequest } from "../../utilities/Requests";
 import { AxiosProgressEvent } from "axios";
 
 const CreateEpisode = () => {

@@ -19,12 +19,12 @@ import {
   QuestionOutlineIcon,
 } from "@chakra-ui/icons";
 
-import Navbar from "../components/shared/Navbar";
-import MyPodcast from "../components/myPodcast/MyPodcast";
-import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
+import Navbar from "../../components/shared/Navbar";
+import MyPodcast from "../../components/myPodcast/MyPodcast";
+import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import router from "next/router";
-import AuthHelper from "../helpers/AuthHelper";
-import PodcastHelper from "../helpers/PodcastHelper";
+import AuthHelper from "../../helpers/AuthHelper";
+import PodcastHelper from "../../helpers/PodcastHelper";
 import NextLink from "next/link";
 
 const MyPodcasts = () => {

@@ -185,11 +185,11 @@ export default function Navbar() {
           <Link href="/profile/MyProfile" passHref>
             <MenuItem>👤 My Account</MenuItem>
           </Link>
-          <Link href="/MyPodcasts" passHref>
+          <Link href="CreatorHub/MyPodcasts" passHref>
             <MenuItem>🎙️ My Podcasts</MenuItem>
           </Link>
           <MenuDivider />
-          <Link href="/AddEpisode" passHref>
+          <Link href="CreatorHub/AddEpisode" passHref>
             <MenuItem>⚙️ Settings</MenuItem>
           </Link>
         </MenuGroup>
@@ -308,7 +308,7 @@ export default function Navbar() {
                   },
                 }}
               />
-              <Link href="/AddEpisode">
+              <Link href="CreatorHub/AddEpisode">
                 <IconButton
                   aria-label="Add Episode"
                   icon={<AddIcon />}

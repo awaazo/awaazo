@@ -15,12 +15,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import AuthHelper from "../helpers/AuthHelper";
-import Navbar from "../components/shared/Navbar";
-import { PodcastCreateRequest } from "../utilities/Requests";
-import PodcastHelper from "../helpers/PodcastHelper";
-import { UserMenuInfo } from "../utilities/Interfaces";
-import CreatePodcastHeader from "../components/CreatePodcastHeader";
+import AuthHelper from "../../helpers/AuthHelper";
+import Navbar from "../../components/shared/Navbar";
+import { PodcastCreateRequest } from "../../utilities/Requests";
+import PodcastHelper from "../../helpers/PodcastHelper";
+import { UserMenuInfo } from "../../utilities/Interfaces";
+import CreatePodcastHeader from "../../components/CreatePodcastHeader";
 import { useDropzone } from "react-dropzone";
 
 const NewPodcast: React.FC = () => {
