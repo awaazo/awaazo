@@ -13,8 +13,8 @@ export default NextAuth({
     ],
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
-        console.log("Profile Object:", profile); // Add this line
-        console.log("Account Object:", account); // Add this line
+        console.log("Profile Object:", profile);
+        console.log("Account Object:", account); 
 
         if (account.provider === 'google') {
           const uniqueID = profile.sub;
@@ -26,10 +26,9 @@ export default NextAuth({
       },
         async redirect({ url, baseUrl }) {
           console.log("callback redirect url "+baseUrl)
-          return baseUrl; // Always redirect to the homepage
+          return baseUrl; 
         },
         async session({ session, token, user }) {
-          //console.log("Token Object:", token); // Add this line
           return {
             ...session,
             token: token,
@@ -49,7 +48,6 @@ export default NextAuth({
 });
 
 async function saveToDatabase(profile: Profile, token:string) {
-    // Connect to a database, insert/update a user record, etc.
     console.log("Profile Object:", profile)
     const googleSSORequest: GoogleSSORequest = {
        email: profile.email,
