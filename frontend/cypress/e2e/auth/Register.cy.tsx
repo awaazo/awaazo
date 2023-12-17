@@ -35,7 +35,7 @@ describe("Register", () => {
       "{selectall}{backspace}",
       "{selectall}{backspace}",
     );
-    cy.url().should("include", "/ProfileSetup");
+    cy.url().should("include", "/profile/ProfileSetup");
     cy.contains("Avatar, Display Name and Bio Required.").should("exist");
   });
 

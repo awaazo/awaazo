@@ -89,7 +89,7 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
 });
 
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
-  cy.url().should('include', '/ProfileSetup');
+  cy.url().should('include', '/profile/ProfileSetup');
   cy.get('input[type="file"]').attachFile(filepath);
   cy.get('input[id="displayName"]').type(displayName);
   cy.get('Textarea[id="bio"]').type(bio);
