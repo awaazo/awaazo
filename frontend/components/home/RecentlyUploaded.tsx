@@ -93,7 +93,6 @@ const RecentlyUploaded: React.FC = () => {
   return (
     <>
       <Box
-        bgGradient="linear(to-r, #146f99, transparent)"
         w={{ base: "70%", md: "20%" }}
         top={0}
         left={0}

@@ -14,22 +14,17 @@ import {
   MenuItem,
   MenuDivider,
   MenuGroup,
-  useColorModeValue,
-  useColorMode,
   Image,
   Input,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
-import LogoWhite from "../../public/logo_white.svg";
-import LogoBlack from "../../public/logo_black.svg";
+import { AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
+import Logo from "../../public/logo_white.svg";
 import AuthHelper from "../../helpers/AuthHelper";
+import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
-import Notifications from "../../pages/notification/Notifications";
-import NextLink from "next/link";
 import NotificationHelper from "../../helpers/NotificationsHelper";
-
 
 /**
  * The Navbar component displays the navigation bar at the top of the page.
@@ -38,9 +33,8 @@ import NotificationHelper from "../../helpers/NotificationsHelper";
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
-  const registerPage = "/auth/Signup";
+  const signupPage = "/auth/Signup";
   const { data: session, status } = useSession();
-  const { colorMode, toggleColorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [searchValue, setSearchValue] = useState("");
@@ -59,7 +53,7 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
   const [isUserSet, setIsUserSet] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  
+
   const toggleNotifications = () => {
     setIsNotificationsOpen(!isNotificationsOpen);
   };
@@ -69,10 +63,17 @@ export default function Navbar() {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
-      if (response !== null && response !== undefined && typeof response === 'number') {
+      if (
+        response !== null &&
+        response !== undefined &&
+        typeof response === "number"
+      ) {
         setNotificationCount(response);
       } else {
-        console.error("Failed to fetch notification count:", response.message || 'No error message available');
+        console.error(
+          "Failed to fetch notification count:",
+          response.message || "No error message available",
+        );
       }
     };
 
@@ -181,16 +182,16 @@ export default function Navbar() {
       </MenuButton>
       <MenuList>
         <MenuGroup>
-          <NextLink href="/profile/MyProfile" passHref>
+          <Link href="/profile/MyProfile" passHref>
             <MenuItem>👤 My Account</MenuItem>
-          </NextLink>
-          <NextLink href="/MyPodcasts" passHref>
+          </Link>
+          <Link href="/MyPodcasts" passHref>
             <MenuItem>🎙️ My Podcasts</MenuItem>
-          </NextLink>
+          </Link>
           <MenuDivider />
-          <NextLink href="/Create" passHref>
+          <Link href="/AddEpisode" passHref>
             <MenuItem>⚙️ Settings</MenuItem>
-          </NextLink>
+          </Link>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -206,7 +207,7 @@ export default function Navbar() {
   );
 
   /**
-   * Shows login and register options for the user to eventually log in.
+   * Shows login and signup options for the user to eventually log in.
    * @returns Logged Out Meny for the top-right corner
    */
   const LoggedOutMenu = () => (
@@ -228,47 +229,44 @@ export default function Navbar() {
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = registerPage)}>
-          Register
+        <MenuItem onClick={() => (window.location.href = signupPage)}>
+          Sign up
         </MenuItem>
       </MenuList>
     </Menu>
   );
 
   const NotificationsModal = () => {
-    return(
+    return (
       <Notifications
         isOpen={isNotificationsOpen}
-        onClose={toggleNotifications} 
+        onClose={toggleNotifications}
         notificationCount={notificationCount}
       />
     );
-    };
+  };
 
   return (
     <>
       <Box
-        bg={useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)")}
+        bg={"rgba(0, 0, 0, 0.3)"}
         backdropFilter="blur(35px)"
-        p={6}
+        p={2}
         mr={"2em"}
         ml={"2em"}
         mb={"3em"}
         position="sticky"
-        top={5}
+        top={4}
         zIndex={999}
         borderRadius={"95px"}
-        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.4)"
+        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.3)"
         data-testid="navbar-component"
         border="3px solid rgba(255, 255, 255, 0.05)"
       >
         <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
           <Link href="/">
             <Box maxWidth={"1.5em"} ml={-2}>
-              <Image
-                src={colorMode === "dark" ? LogoWhite.src : LogoBlack.src}
-                alt="logo"
-              />
+              <Image src={Logo.src} alt="logo" />
             </Box>
           </Link>
           {isMobile ? (
@@ -282,21 +280,10 @@ export default function Navbar() {
                 onChange={handleSearchChange}
                 css={{
                   "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
+                    opacity: 1,
                   },
                 }}
                 data-cy="search-input-mobile"
-              />
-              <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
@@ -308,7 +295,6 @@ export default function Navbar() {
                 e.preventDefault();
                 handleSearchSubmit();
               }}
-              color={colorMode === "dark" ? "white" : "black"}
             >
               <Input
                 placeholder="Search"
@@ -324,30 +310,18 @@ export default function Navbar() {
                 }}
                 data-cy="search-input-web"
               />
-              <Link href="/Create">
+              <Link href="/AddEpisode">
                 <IconButton
-                  aria-label="Create"
+                  aria-label="Add Episode"
                   icon={<AddIcon />}
                   variant="ghost"
                   size="md"
                   rounded={"full"}
                   opacity={0.7}
                   mr={3}
-                  color={colorMode === "dark" ? "white" : "black"}
                 />
               </Link>
               <IconButton
-                aria-label="Toggle Dark Mode"
-                icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
-              />
-             <IconButton
                 aria-label="Notifications"
                 icon={<BellIcon />}
                 onClick={toggleNotifications}
@@ -356,7 +330,6 @@ export default function Navbar() {
                 rounded={"full"}
                 opacity={0.7}
                 mr={4}
-                color={colorMode === "dark" ? "white" : "black"}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
