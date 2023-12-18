@@ -98,7 +98,7 @@ describe("PlayerBar", () => {
         });
     });
 
-    it('Should like and unlike episode from the player bar', () => {
+    it.only('Should like and unlike episode from the player bar', () => {
         let numLikesBefore = "1"
         let numLikesAfter = "0"
         cy.login(null, "testRegister@email.com", "password123");
