@@ -196,7 +196,7 @@ describe("Episode_Create", () => {
       "Funny Cats",
       "Silly cats",
       paths.never_gonna_give_you_up,
-      "pets",
+      "pets", //s
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
