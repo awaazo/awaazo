@@ -26,7 +26,7 @@ describe("Register", () => {
     cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
     cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
     cy.url().should('include', '/');
-    cy.visit('/profile/MyProfile');
+    cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains('DummyDisplayBio');
   });
 

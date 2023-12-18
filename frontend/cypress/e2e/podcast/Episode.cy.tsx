@@ -18,6 +18,7 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
+    cy.wait(1000);
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -199,8 +200,9 @@ describe("Episode_Create", () => {
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/MyPodcasts");
-    cy.get("[data-cy=podcast-image-f2-legends").click();
-    cy.get("[data-cy=podcast-image-cool-pets").click();
+    cy.get("[data-cy=podcast-image-f2-legends").click({timeout: 5000});
+    cy.wait(150);
+    cy.get("[data-cy=podcast-image-cool-pets").click({timeout: 5000});
     cy.contains("Funny Cats").should("be.visible");
     cy.contains("Silly cats").should("be.visible");;
     cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 5000});
