@@ -89,7 +89,7 @@ const MyPodcasts = () => {
 
   // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push("/CreatePodcast");
+    router.push("/CreatorHub/CreatePodcast");
   };
 
   return (
@@ -169,7 +169,7 @@ const MyPodcasts = () => {
                 </Text>
               </VStack>
             ))}
-            <NextLink href="/CreatePodcast" passHref>
+            <NextLink href="/CreatorHub/CreatePodcast" passHref>
               <Flex
                 direction="column"
                 alignItems="center"

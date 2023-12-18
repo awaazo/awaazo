@@ -37,7 +37,7 @@ import { AxiosProgressEvent } from "axios";
 const CreateEpisode = () => {
   // Page refs
   const loginPage = "/auth/Login";
-  const myPodcastsPage = "/MyPodcasts";
+  const myPodcastsPage = "/CreatorHub/MyPodcasts";
 
   // Current User
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);

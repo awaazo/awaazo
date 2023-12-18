@@ -25,8 +25,7 @@ import { useDropzone } from "react-dropzone";
 
 const NewPodcast: React.FC = () => {
   // Page refs
-  const createPage = "/AddEpisode";
-  const mainPage = "/Main";
+  const createPage = "/CreatorHub/AddEpisode";
   const loginPage = "/auth/Login";
 
   // Genres

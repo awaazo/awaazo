@@ -26,18 +26,12 @@ import { MdEdit, MdPages, MdDelete } from "react-icons/md";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
+import { convertTime } from "../../utilities/commonUtils";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  // Function to format the duration of the episode
-  const formatDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
 
   // Edit Episode Modal
   //-----------------------------------------------------------------------
@@ -147,7 +141,7 @@ const Episode = ({ episode }) => {
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {formatDuration(episode.duration)}
+            Duration: {convertTime(episode.duration)}
           </Text>
         </Flex>
       </Flex>
