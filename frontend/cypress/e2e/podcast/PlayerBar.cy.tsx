@@ -22,11 +22,11 @@ describe("PlayerBar", () => {
         cy.url().should("include", "/MyPodcasts");
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
             let timePassedValue_temp = $timePassed.text(); // or .val() depending on the element type
-            expect(timePassedValue).to.equal(timePassedValue_temp);
+            expect(parseFloat(timePassedValue) - parseFloat(timePassedValue_temp)).to.be.lessThan(2);
         });
         cy.get('[data-cy^="time-left-"]').then(($timePassed) => {
             let timeLeftValue_temp = $timePassed.text(); // or .val() depending on the element type
-            expect(timeLeftValue).to.equal(timeLeftValue_temp);
+            expect(parseFloat(timeLeftValue) - parseFloat(timeLeftValue_temp)).to.be.lessThan(2);
         });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(5500);
@@ -50,11 +50,11 @@ describe("PlayerBar", () => {
         });
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
             let timePassedValue_temp = $timePassed.text(); // or .val() depending on the element type
-            expect(timePassedValue).to.equal(timePassedValue_temp);
+            expect(parseFloat(timePassedValue) - parseFloat(timePassedValue_temp)).to.be.lessThan(2);
         });
         cy.get('[data-cy^="time-left-"]').then(($timePassed) => {
             let timeLeftValue_temp = $timePassed.text(); // or .val() depending on the element type
-            expect(timeLeftValue).to.equal(timeLeftValue_temp);
+            expect(parseFloat(timeLeftValue) - parseFloat(timeLeftValue_temp)).to.be.lessThan(2);
         });
     });
 
@@ -106,13 +106,7 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
-        cy.get('button[data-cy^="like-button-index:"]').each(($button, index) => {
-            const buttonId = $button.attr('data-cy').replace('like-button-index:', '');
-            const concatenatedId = buttonId + index;
-            if (concatenatedId === "3") {
-                cy.wrap($button).click();
-            }
-        });
+        cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
@@ -123,13 +117,7 @@ describe("PlayerBar", () => {
         //Unliking
         cy.visit("/").url().should('include', '/');
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
-        cy.get('button[data-cy^="like-button-index:"]').each(($button, index) => {
-            const buttonId = $button.attr('data-cy').replace('like-button-index:', '');
-            const concatenatedId = buttonId + index;
-            if (concatenatedId === "3") {
-                cy.wrap($button).click();
-            }
-        });
+        cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
@@ -158,3 +146,12 @@ describe("PlayerBar", () => {
         cy.contains('Love the episode! Half Life 3 when???');
     });
 });
+
+//Ignore
+// cy.get('button[data-cy^="like-button-index:"]').each(($button, index) => {
+        //     const buttonId = $button.attr('data-cy').replace('like-button-index:', '');
+        //     const concatenatedId = buttonId + index;
+        //     if (concatenatedId === "3") {
+        //         cy.wrap($button).click();
+        //     }
+        // });

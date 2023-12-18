@@ -167,6 +167,7 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
+    cy.wait(1000);
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();

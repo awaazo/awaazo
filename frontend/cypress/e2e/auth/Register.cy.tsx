@@ -18,6 +18,7 @@ describe("Register", () => {
     );
     cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
     cy.url().should("include", "/");
+    cy.wait(250);
     cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains("TestDisplayBio");
   });
@@ -26,6 +27,7 @@ describe("Register", () => {
     cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
     cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
     cy.url().should('include', '/');
+    cy.wait(250);
     cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains('DummyDisplayBio');
   });
@@ -76,8 +78,8 @@ describe("Register", () => {
   });
 
   it("limits the number of characters in the input field", () => {
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get("button").contains("Register").click();
+    cy.get('button[aria-label="Menu"]').should('be.visible').click({ timeout: 5000 });
+    cy.get("button").contains("Register").should('be.visible').click({ timeout: 5000 });
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );
