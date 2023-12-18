@@ -1,28 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Flex,
-  Text,
-  IconButton,
-  Input,
-  Tooltip,
-  HStack,
-  FormControl,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Button, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Flex, Text, IconButton, Input, Tooltip, HStack, FormControl, Textarea } from "@chakra-ui/react";
 import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import PlayingBar from "./PlayingBar";
+import SectionsPlayingBar from "./SectionsPlayingBar";
 import SectionHelper from "../../helpers/SectionHelper";
 import { Section } from "../../utilities/Interfaces";
 import { SectionAddRequest } from "../../utilities/Requests";
+import { convertTime } from "../../utilities/commonUtils";
 
 const ManageSections = ({ episodeId, podcastId }) => {
-  // Form values
   const [sections, setSections] = useState<Section[]>(null);
   const [sectionCount, setSectionsCount] = useState<number>(0);
   const [newSection, setNewSection] = useState({
@@ -31,11 +16,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
     end: 0,
   });
   const [sectionCharacterCount, setSectionCharacterCount] = useState<number>(0);
-
-  // Form errors
   const [sectionError, setSectionError] = useState("");
-
-  // Form visibility
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isAdding, setIsAdding] = useState<Boolean>(isFormVisible);
 
@@ -46,6 +27,12 @@ const ManageSections = ({ episodeId, podcastId }) => {
         if (res.status === 200) {
           setSections(res.sections);
           setSectionsCount(res.sections.length);
+          const lastSectionEnd = res.sections.length > 0 ? res.sections[res.sections.length - 1].end : 0;
+          setNewSection((prevSection) => ({
+            ...prevSection,
+            start: lastSectionEnd,
+            end: lastSectionEnd,
+          }));
         } else {
           setSectionError("Sections cannot be fetched");
         }
@@ -56,43 +43,48 @@ const ManageSections = ({ episodeId, podcastId }) => {
 
   // Function that hand;es the addition of a section to an episode
   const handleAddSection = async () => {
-    if (newSection.title == "") {
+    if (newSection.title === "") {
       setSectionError("You must add a title");
     } else {
       setSectionError("");
 
-      const title = newSection.title;
-      const start = newSection.start;
-      const end = newSection.end;
+      try {
+        const res = await SectionHelper.sectionGetRequest(episodeId);
+        if (res.status === 200) {
+          const sections = res.sections;
+          const lastSectionEnd = sections.length > 0 ? sections[sections.length - 1].end : 0;
 
-      const sectionRequest: SectionAddRequest = {
-        title: title,
-        start: start,
-        end: end,
-      };
-      // Send the request to add the review
-      const res = await SectionHelper.sectionCreateRequest(
-        sectionRequest,
-        episodeId,
-      );
-      console.log(res);
+          const sectionRequest: SectionAddRequest = {
+            title: newSection.title,
+            start: lastSectionEnd,
+            end: newSection.end,
+          };
 
-      if (res.status === 200) {
-        setSectionsCount((sectionCount) => sectionCount + 1);
-        setIsFormVisible(false);
-        setIsAdding(false);
-      } else {
-        // Handle error here
-        setSectionError(res.data);
+          // Send the request to add the review
+          const addRes = await SectionHelper.sectionCreateRequest(sectionRequest, episodeId);
+          console.log(addRes);
+
+          if (addRes.status === 200) {
+            setSectionsCount((sectionCount) => sectionCount + 1);
+            setIsFormVisible(false);
+            setIsAdding(false);
+            setNewSection({
+              title: "",
+              start: lastSectionEnd,
+              end: lastSectionEnd,
+            });
+          } else {
+            // Handle error here
+            setSectionError(addRes.data);
+          }
+        } else {
+          setSectionError("Error fetching sections");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setSectionError("Error fetching sections");
       }
     }
-
-    // Reset the newSection state
-    setNewSection({
-      title: "",
-      start: 0,
-      end: 0,
-    });
   };
 
   // Function that deletes section from the episode
@@ -106,60 +98,42 @@ const ManageSections = ({ episodeId, podcastId }) => {
     }
   };
 
-  const formatTime = (seconds) => {
-    let minutes = Math.floor(seconds / 60);
-    let remainingSeconds = Math.ceil(seconds % 60);
+  const handleEndChange = async (newTime) => {
+    try {
+      const res = await SectionHelper.sectionGetRequest(episodeId);
+      if (res.status === 200) {
+        const sections = res.sections;
+        const lastSectionEnd = sections.length > 0 ? sections[sections.length - 1].end : 0;
 
-    if (remainingSeconds === 60) {
-      minutes += 1;
-      remainingSeconds = 0;
+        if (newTime > lastSectionEnd) {
+          setNewSection((prevSection) => ({
+            ...prevSection,
+            end: newTime,
+          }));
+        } else {
+          setSectionError("End time must be after the end of the last section");
+        }
+      } else {
+        setSectionError("Error fetching sections");
+      }
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+      setSectionError("Error fetching sections");
     }
-
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(remainingSeconds).padStart(2, "0");
-
-    return `${formattedMinutes}:${formattedSeconds}`;
   };
 
-  const handleStartChange = (newTime) => {
-    const newStartTime = newTime;
-    setNewSection((prevSection) => ({
-      ...prevSection,
-      start: newStartTime,
-    }));
-  };
-
-  const handleEndChange = (newTime) => {
-    const newEndTime = newTime;
-    setNewSection((prevSection) => ({
-      ...prevSection,
-      end: newEndTime,
-    }));
-  };
   return (
     <>
+    
       <Flex direction="column" alignItems={"center"} width="100%">
-        <PlayingBar
-          episodeId={episodeId}
-          podcastId={podcastId}
-          sections={sections}
-          onStartChange={handleStartChange}
-          onEndChange={handleEndChange}
-          isAdding={isAdding}
-        />
+        <SectionsPlayingBar episodeId={episodeId} podcastId={podcastId} sections={sections} onEndChange={handleEndChange} isAdding={isAdding} />
 
         <Box mt={4} width="100%" alignItems={"center"}>
           {/* Add Section Form */}
           {isFormVisible ? (
             <Box width="100%" alignItems={"center"}>
               <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
-                <Text
-                  fontSize="xl"
-                  fontWeight="bold"
-                  mb={6}
-                  mt={1}
-                  textAlign={"center"}
-                >
+                <Text fontSize="xl" fontWeight="bold" mb={6} mt={1} textAlign={"center"}>
                   Add a Section
                 </Text>
                 <FormControl position="relative">
@@ -175,33 +149,22 @@ const ManageSections = ({ episodeId, podcastId }) => {
                       });
                     }}
                   />
-                  <Text
-                    position="absolute"
-                    right="8px"
-                    bottom="20px"
-                    fontSize="sm"
-                    color="gray.500"
-                  >
+                  <Text position="absolute" right="8px" bottom="20px" fontSize="sm" color="gray.500">
                     {sectionCharacterCount}/25
                   </Text>
                 </FormControl>
                 <Box textAlign="center">
                   <HStack spacing={4} justifyContent="center">
                     <Text fontSize="md" fontWeight={"bold"}>
-                      Start: {formatTime(newSection.start)}
+                      Start: {convertTime(newSection.start)}
                     </Text>
                     <Text fontSize="md" fontWeight={"bold"}>
-                      End: {formatTime(newSection.end)}
+                      End: {convertTime(newSection.end)}
                     </Text>
                   </HStack>
                 </Box>
                 <HStack justifyContent="space-between" mt={"5"}>
-                  <Button
-                    onClick={handleAddSection}
-                    width="50%"
-                    borderRadius="7px"
-                    colorScheme="blue"
-                  >
+                  <Button onClick={handleAddSection} width="50%" borderRadius="7px" colorScheme="blue">
                     Add Section
                   </Button>
                   <Button
@@ -243,38 +206,12 @@ const ManageSections = ({ episodeId, podcastId }) => {
           {sectionError && <Text color="red.500">{sectionError}</Text>}
           {sections && sections.length > 0 ? (
             sections.map((section, key) => (
-              <Flex
-                key={section.id}
-                align="center"
-                justify="space-between"
-                p={2}
-                border="1px"
-                borderColor="gray.200"
-                borderRadius="md"
-                mt={2}
-                width="100%"
-                bg="rgba(0, 0, 0, 0.1)"
-              >
+              <Flex key={section.id} align="center" justify="space-between" p={2} border="1px" borderColor="gray.200" borderRadius="md" mt={2} width="100%" bg="rgba(0, 0, 0, 0.1)">
                 <Box>
-                  <Text fontWeight="bold">
-                    {key + 1 + ": " + section.title}
-                  </Text>
-                  <Text fontSize="sm">
-                    Start:{" "}
-                    {`${formatTime(
-                      section.start,
-                    )} \u00A0\u00A0\u00A0\u00A0 End: ${formatTime(
-                      section.end,
-                    )}`}
-                  </Text>
+                  <Text fontWeight="bold">{key + 1 + ": " + section.title}</Text>
+                  <Text fontSize="sm">Start: {`${convertTime(section.start)} \u00A0\u00A0\u00A0\u00A0 End: ${convertTime(section.end)}`}</Text>
                 </Box>
-                <IconButton
-                  variant="ghost"
-                  borderRadius="50%"
-                  onClick={() => handleDeleteSection(section.id)}
-                  aria-label="Delete Section"
-                  icon={<DeleteIcon />}
-                />
+                <IconButton variant="ghost" borderRadius="50%" onClick={() => handleDeleteSection(section.id)} aria-label="Delete Section" icon={<DeleteIcon />} />
               </Flex>
             ))
           ) : (
