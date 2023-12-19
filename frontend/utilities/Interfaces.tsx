@@ -14,7 +14,6 @@ export interface Podcast {
   monthlyListeners: number;
 }
 
-
 export interface Episode {
   id: string;
   podcastId: string;
@@ -36,6 +35,19 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?: TranscriptLine[];
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  user: User;
+  description: string;
+  privacy: string;
+  isHandledByUser: boolean;
+  numberOfEpisodes: number;
+  duration: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Section {
@@ -193,7 +205,6 @@ export interface UserMenuInfo {
   avatarUrl: string;
 }
 
-
 /**
  * User fields related to their Notifications.
  * */
@@ -203,7 +214,7 @@ export interface Notification {
   title: string;
   message: string;
   link: string;
-  "isRead": boolean;
+  isRead: boolean;
   media: string;
   type: string;
   createdAt: Date;
