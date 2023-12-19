@@ -6,7 +6,7 @@ import Navbar from "../../components/shared/Navbar";
 import Header from "../../components/profile/MyProfile/MyHeader";
 import MyEpisodes from "../../components/profile/MyProfile/MyEpisodes";
 import Podcasts from "../../components/profile/MyProfile/MyPodcasts";
-import Subscriptions from "../../components/explore/MySubscriptions";
+import Subscriptions from "../../components/profile/MySubscriptions";
 
 import { Router, useRouter } from "next/router";
 import MyPlaylists from "../../components/profile/MyProfile/MyPlaylists";
