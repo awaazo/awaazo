@@ -9,6 +9,10 @@ import { useRouter } from "next/router";
 
 const theme = extendTheme({
   colors: {
+    brand: {
+      100: "#ffcd00",
+      200: "#1a202c",
+    },
     primary: {
       1: "#90cdf4",
       2: "#236D73",
