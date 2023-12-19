@@ -196,7 +196,6 @@ const ProfileSetup: React.FC = () => {
             fontSize: "1.5rem",
             textAlign: "center",
             marginTop: "1rem",
-            fontFamily: "Avenir Next",
           }}
         >
           Hey, @{user.username}! Let's get you set up.
