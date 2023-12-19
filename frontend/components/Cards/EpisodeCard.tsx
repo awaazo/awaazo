@@ -16,7 +16,7 @@ import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 
 // Component to display an episode
-const Episode = ({ episode }) => {
+const EpisodeCard = ({ episode }) => {
   const { dispatch } = usePlayer();
 
   // Handle click on episode
@@ -123,4 +123,4 @@ const Episode = ({ episode }) => {
   );
 };
 
-export default Episode;
+export default EpisodeCard;
