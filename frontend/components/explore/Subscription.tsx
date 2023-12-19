@@ -70,11 +70,12 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed }) => {
         aria-label="Subscribe tooltip"
       >
         <Button
-          p={2}
+          p={5}
           variant="ghost"
           onClick={handleSubscribe}
           fontWeight={"bold"}
           bg={isSubscribed ? "gray.700" : "blue.500"}
+          borderRadius={"50px"}
         >
           {isSubscribed ? "Unsubscribe" : "Subscribe"}
         </Button>

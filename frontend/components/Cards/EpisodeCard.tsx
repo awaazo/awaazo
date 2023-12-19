@@ -17,6 +17,7 @@ import {
   MenuList,
   Button,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 
 import { FaPlay } from "react-icons/fa";
@@ -83,6 +84,23 @@ const EpisodeCard = ({ episode }) => {
         isClosable: true,
       });
     }
+  };
+
+  const [isAddToPlaylistMenuOpen, setIsAddToPlaylistMenuOpen] = useState(false);
+
+  const handleAddToPlaylistMenuToggle = () => {
+    setIsAddToPlaylistMenuOpen(!isAddToPlaylistMenuOpen);
+  };
+
+  const handleAddToPlaylistItemClick = (action) => {
+    // Implement logic based on the selected action
+    if (action === "createPlaylist") {
+      // Add logic for creating a new playlist
+    } else if (action === "selectPlaylist") {
+      // Add logic for selecting an existing playlist
+    }
+    // Close the menu after handling the action
+    setIsAddToPlaylistMenuOpen(false);
   };
 
   return (

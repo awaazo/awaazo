@@ -100,10 +100,7 @@ export default function PodcastOverview({ podcast }) {
             <Text fontSize="xl" fontWeight="bold">
               <Wrap align="center" spacing={4}>
                 <WrapItem>🎙️ {podcast.name}</WrapItem>
-                <Subscription
-                  PodcastId={podcast.id}
-                  initialIsSubscribed={Boolean}
-                />
+
                 {/* Display tags */}
                 {podcast.tags.map((tag, index) => (
                   <WrapItem key={index}>
@@ -121,8 +118,17 @@ export default function PodcastOverview({ podcast }) {
                     </Box>
                   </WrapItem>
                 ))}
+
+                {/* Move the subscription button to the right with ml utility */}
+                <WrapItem ml="auto">
+                  <Subscription
+                    PodcastId={podcast.id}
+                    initialIsSubscribed={Boolean}
+                  />
+                </WrapItem>
               </Wrap>
             </Text>
+
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm" position="relative">
               {renderDescription()}
