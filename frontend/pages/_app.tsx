@@ -1,11 +1,11 @@
-import { Box, ChakraProvider} from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import { Box, ChakraProvider } from "@chakra-ui/react";
 import bg from "../styles/images/bgOld.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
-import { useRouter } from 'next/router';
-
+import { useRouter } from "next/router";
 
 const theme = extendTheme({
   colors: {
@@ -25,12 +25,19 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
-  const path = router.pathname;
+  const [showPlayerBar, setShowPlayerBar] = useState(true);
 
-  // Define the paths where you don't want to show the PlayerBar
-  const hidePlayerBarOnPaths = ['/auth/Login', '/auth/Signup' , '/AddEpisode' , '/AddEpisodeAI']; 
-  const showPlayerBar = !hidePlayerBarOnPaths.includes(path)
 
+  useEffect(() => {
+    const path = router.pathname;
+    const hidePlayerBarOnPaths = [
+      "/auth/", "/AddEpisode", "/AddEpisodeAI", 
+      "/profile/ProfileSetup", "/CreatorHub/"
+    ];
+
+    const shouldHidePlayerBar = hidePlayerBarOnPaths.some((p) => path.startsWith(p));
+    setShowPlayerBar(!shouldHidePlayerBar);
+  }, [router.pathname]); 
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
@@ -46,4 +53,3 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 }
 
 export default MyApp;
-
