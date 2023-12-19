@@ -185,7 +185,7 @@ const CreateEpisode = () => {
 
   // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push("/CreatePodcast");
+    router.push("/CreatorHub/CreatePodcast");
   };
 
   return (
