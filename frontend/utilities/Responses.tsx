@@ -6,6 +6,7 @@ import {
   Episode,
   userProfileByID,
   User,
+  Playlist,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -97,7 +98,6 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 
 //#endregion
 
-
 export interface NotificationResponse extends BaseResponse {
   notifications: Notification[];
 }
@@ -109,3 +109,9 @@ export interface IsLikedResponse extends BaseResponse {
 
 //#endregion
 
+//#region Playlist Responses
+export interface GetMyPlaylistsResponse extends BaseResponse {
+  playlists: Playlist[];
+}
+
+//#endregion

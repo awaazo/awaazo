@@ -315,44 +315,60 @@ export default class EndpointHelper {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
-
-
   // Notifications + Subscriptions Endpoints
   static getAllNotificationsEndpoint = () => {
-      return this.getBackendAddress() + "/notification/all";
+    return this.getBackendAddress() + "/notification/all";
   };
 
   static getNotificationsCountEndpoint = () => {
-      return this.getBackendAddress() + "/notification/count";
+    return this.getBackendAddress() + "/notification/count";
   };
-
 
   // Subscriptions
   static addSubscriptionEndpoint = (PodcastId) => {
-    return(
+    return (
       this.getBackendAddress() + "/subscription/" + PodcastId + "/subscribe"
     );
   };
 
   static addUnsubscriptionEndpoint = (PodcastId) => {
-    return(
+    return (
       this.getBackendAddress() + "/subscription/" + PodcastId + "/unsubscribe"
     );
   };
 
   static getIsSubscribedEndpoint = (PodcastId) => {
-    return(
+    return (
       this.getBackendAddress() + "/subscription/" + PodcastId + "/IsSubscribed"
     );
-  }
+  };
 
   static getMySubscriptionsEndpoint = () => {
     return this.getBackendAddress() + "/subscription/MySubscriptions";
-  }
-  
+  };
+
   static getAllPodcastSubscriptionsEndpoint = (PodcastId) => {
-    return this.getBackendAddress() + "/subscription/" + PodcastId + "/GetAllPodcastSubscriber";
-  }
+    return (
+      this.getBackendAddress() +
+      "/subscription/" +
+      PodcastId +
+      "/GetAllPodcastSubscriber"
+    );
+  };
+
+  /**
+   * Returns the get myPlaylists endpoint.
+   * @returns The get myPlaylists Endpoint
+   * */
+  static getMyPlaylistsEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/playlist/myPlaylists?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
 
   static profileGetRequest: any;
 }

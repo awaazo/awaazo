@@ -26,8 +26,6 @@ import { usePlayer } from "../../../utilities/PlayerContext";
 
 // Define the MyEpisodes component
 export default function MyEpisodes() {
-  const { dispatch } = usePlayer();
-
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [page, setPage] = useState(0);
   const pageSize = 12;
@@ -37,8 +35,6 @@ export default function MyEpisodes() {
   const [range, setRange] = useState(0);
 
   useEffect(() => {
-    // Check to make sure the user has logged in
-
     PodcastHelper.podcastMyPodcastsGet(page, pageSize).then((res2) => {
       // If logged in, set user, otherwise redirect to login page
       if (res2.status == 200) {
