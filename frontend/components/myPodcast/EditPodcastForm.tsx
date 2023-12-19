@@ -20,7 +20,7 @@ export default function EditPodcastForm({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const myPodcastsPage = "/MyPodcasts";
+  const myPodcastsPage = "/CreatorHub/MyPodcasts";
 
   // Genres
   const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];

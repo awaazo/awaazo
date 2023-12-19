@@ -18,8 +18,8 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.url().should("include", "/MyPodcasts");
-    cy.wait(500);
+    cy.wait(1000);
+    cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("Charles Leclerc");
@@ -35,7 +35,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.url().should("include", "/CreatorHub/AddEpisode");
+    cy.url().should("include", "/Create");
     cy.contains(
       "An episode with the same name already exists for this podcast.",
     ).should("exist");
@@ -46,7 +46,7 @@ describe("Episode_Create", () => {
     cy.wait(500);
     cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });
     cy.get("button").contains("My Podcasts").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -58,7 +58,7 @@ describe("Episode_Create", () => {
       "Romain Grosjean",
     );
     cy.contains("Button", "Update").click();
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
@@ -74,7 +74,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    cy.url().should("include", "/CreatorHub/AddEpisode");
+    cy.url().should("include", "/Create");
     cy.contains("Required.").should("exist");
   });
 
@@ -87,20 +87,25 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       null,
     );
-    cy.url().should("include", "/CreatorHub/AddEpisode");
+    cy.url().should("include", "/Create");
     cy.contains("Please select the Podcast you wish to upload to");
   });
 
   // Users should be allowed to delete their own episodes
   it("Should successfully delete an episode", function () {
-    cy.visit("/CreatorHub/MyPodcasts"); //Fix this when navbar gets more stable
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.get('button[aria-label="loggedInMenu"]').should("be.visible");
+    cy.get('button[aria-label="loggedInMenu"]').click();
+    cy.get("button")
+      .contains("My Podcasts")
+      .should("be.visible")
+      .click({ timeout: 5000 });
+    cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=delete-button]").first().click();
     cy.contains("Button", "Delete").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.url().should("include", "/MyPodcasts");
   });
 
   // Episode names should be able to include special symbols not bound to ASCII characters
@@ -113,8 +118,7 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(250);
+    cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("♣™∏⊄‾ℜ→∞ϖñ");
@@ -123,7 +127,12 @@ describe("Episode_Create", () => {
 
   //Should add an episode from the podcast interface
   it("Should add an episode from the Podcast interface", () => {
-    cy.visit("/CreatorHub/MyPodcasts"); //Fix this when navbar gets more stable
+    cy.get('button[aria-label="loggedInMenu"]').should("be.visible");
+    cy.get('button[aria-label="loggedInMenu"]').click();
+    cy.get("button")
+      .contains("My Podcasts")
+      .should("be.visible")
+      .click({ timeout: 5000 });
     cy.get("button").contains("New Episode").click({ timeout: 5000 });
     cy.get('input[type="file"]').attachFile(paths.Episode_cover_science);
     cy.get('input[placeholder="Enter episode name..."]').type(
@@ -141,8 +150,7 @@ describe("Episode_Create", () => {
     cy.get("button[id=createBtn]").click();
     cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.wait(250);
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(250);
+    cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("Has science gone too far?");
@@ -159,8 +167,8 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(250);
+    cy.wait(1000);
+    cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("This is a very long episo");
@@ -173,8 +181,8 @@ describe("Episode_Create", () => {
       "Cool pets",
       "A podcast about pets and their coolness.",
     );
-    cy.url().should("include", "/CreatorHub/CreatePodcast");
-    cy.contains("Cool pets");
+    cy.url().should("include", "/Create");
+    cy.contains("Cool pets").should("be.visible");;
     cy.episode_create(
       paths.shiba,
       "Funny Shibas",
@@ -183,24 +191,24 @@ describe("Episode_Create", () => {
       "pets",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.url().should("include", "/MyPodcasts");
     cy.episode_create(
       paths.cat,
       "Funny Cats",
       "Silly cats",
       paths.never_gonna_give_you_up,
-      "pets",
+      "pets", //s
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.get("[data-cy=podcast-image-f2-legends").click();
-    cy.get("[data-cy=podcast-image-cool-pets").click();
-    cy.contains("Funny Cats");
-    cy.contains("Silly cats");
-    cy.get('[data-cy="podcast-delete"]').click();
-    cy.contains("Button", "Delete").click();
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(250);
+    cy.url().should("include", "/MyPodcasts");
+    cy.get("[data-cy=podcast-image-f2-legends").click({timeout: 5000});
+    cy.wait(150);
+    cy.get("[data-cy=podcast-image-cool-pets").click({timeout: 5000});
+    cy.contains("Funny Cats").should("be.visible");
+    cy.contains("Silly cats").should("be.visible");;
+    cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 5000});
+    cy.contains("Button", "Delete").should('exist').click( {timeout: 5000} );
+    cy.url().should("include", "/MyPodcasts");
     cy.get('[data-cy="podcast-image-cool-pets"]').should("not.exist");
     cy.get("Funny cats").should("not.exist");
     cy.get("Funny Shibas").should("not.exist");
