@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -8,9 +9,27 @@ import {
   useBreakpointValue,
   Text,
   Image,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 
 import { FaPlay } from "react-icons/fa";
+import {
+  BsExplicitFill,
+  BsFillSkipForwardFill,
+  BsPlayFill,
+} from "react-icons/bs";
+import { IoIosMore } from "react-icons/io";
+import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
+import { GrCaretNext } from "react-icons/gr";
+import { TbPlayerTrackNextFilled } from "react-icons/tb";
+import { MdIosShare } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
@@ -18,6 +37,7 @@ import CommentComponent from "../social/commentComponent";
 // Component to display an episode
 const EpisodeCard = ({ episode }) => {
   const { dispatch } = usePlayer();
+  const toast = useToast();
 
   // Handle click on episode
   const handleEpisodeClick = () => {
@@ -34,6 +54,37 @@ const EpisodeCard = ({ episode }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  // State to track whether the menu is open or not
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Handle menu open and close
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Handle menu item click and show toast notification
+  const handleMenuItemClick = (action) => {
+    if (action === "playNext") {
+      // Add logic for "Play Next"
+      toast({
+        title: "Episode added to queue",
+        status: "info",
+        position: "bottom-right",
+        duration: 3000, // in milliseconds
+        isClosable: true,
+      });
+    } else if (action === "playLater") {
+      // Add logic for "Play Later"
+      toast({
+        title: "Episode added to queue",
+        status: "info",
+        position: "bottom-right",
+        duration: 3000, // in milliseconds
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Flex
       className="hoverEffect"
@@ -46,17 +97,23 @@ const EpisodeCard = ({ episode }) => {
       backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
-      onClick={() => handleEpisodeClick()}
       onMouseOver={(e) => {
-        e.currentTarget.style.transform = "scale(1.05)";
+        // Check if the menu is open before applying the transform
+        if (!isMenuOpen) {
+          e.currentTarget.style.transform = "scale(1.05)";
+        }
       }}
       onMouseOut={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
+        // Check if the menu is open before applying the transform
+        if (!isMenuOpen) {
+          e.currentTarget.style.transform = "scale(1)";
+        }
       }}
+      onDoubleClick={handleEpisodeClick}
     >
-      <Box position="relative" mr={5}>
+      <Box position="relative" mr={5} onClick={() => handleEpisodeClick()}>
         <Image
-          boxSize={isMobile ? "0px" : "125px"}
+          boxSize={isMobile ? "0px" : "110px"}
           src={episode.thumbnailUrl}
           borderRadius="10%"
           marginLeft={isMobile ? "0px" : "20px"}
@@ -82,13 +139,11 @@ const EpisodeCard = ({ episode }) => {
         <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
           {episode.episodeName}
           {episode.isExplicit && (
-            <Tag
-              size="sm"
-              colorScheme="red"
-              fontSize={isMobile ? "10px" : "sm"}
-            >
-              Explicit
-            </Tag>
+            <Icon
+              as={BsExplicitFill}
+              boxSize={isMobile ? "10px" : "16px"}
+              ml={4}
+            />
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
         </Text>
@@ -118,6 +173,107 @@ const EpisodeCard = ({ episode }) => {
             initialLikes={episode.likes}
           />
         </div>
+        {/* Episode Options Menu */}
+        <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
+          <MenuButton
+            as={IconButton}
+            aria-label="Options"
+            icon={<IoIosMore />}
+            variant="ghost"
+            fontSize="20px"
+            ml={1}
+            mt={1}
+            _hover={{ boxShadow: "lg" }}
+            onClick={handleMenuToggle}
+          />
+          <MenuList
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <MenuItem
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Add to Playlist{" "}
+              <CgPlayList
+                size={24}
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              onClick={() => handleMenuItemClick("playNow")}
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Play "{episode.episodeName}"{" "}
+              <BsPlayFill
+                size="20px"
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleMenuItemClick("playNext")}
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Play Next{" "}
+              <TbPlayerTrackNextFilled
+                size="18px"
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleMenuItemClick("playLater")}
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Play Later{" "}
+              <BsFillSkipForwardFill
+                size="18px"
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Share{" "}
+              <MdIosShare
+                size="20px"
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
     </Flex>
   );
