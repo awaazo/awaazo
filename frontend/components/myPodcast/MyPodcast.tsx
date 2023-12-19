@@ -47,8 +47,8 @@ export default function MyPodcast({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const MyPodcastsPage = "/MyPodcasts";
-  const CreatePage = "/AddEpisode";
+  const MyPodcastsPage = "/CreatorHub/MyPodcasts";
+  const CreatePage = "/CreatorHub/AddEpisode";
   const { colorMode } = useColorMode();
 
   // Form Values
