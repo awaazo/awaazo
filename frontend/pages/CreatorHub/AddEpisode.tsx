@@ -585,7 +585,7 @@ const CreateEpisode = () => {
                   </Box>
                   {uploadProgress === 100 && (
                     <Button
-                      onClick={() => router.push("/MyPodcasts")}
+                      onClick={() => router.push("/CreatorHub/MyPodcasts")}
                       alignSelf="center"
                       bg="rgba(169, 169, 169, 0.2)"
                     >

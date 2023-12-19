@@ -283,6 +283,7 @@ export default function Navbar() {
                     opacity: 1,
                   },
                 }}
+                data-cy={`search-input-web`}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
@@ -307,6 +308,7 @@ export default function Navbar() {
                     opacity: 1, // increase placeholder opacity
                   },
                 }}
+                data-cy={`search-input-web`}
               />
               <Link href="/CreatorHub/AddEpisode">
                 <IconButton
