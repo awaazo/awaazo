@@ -12,7 +12,6 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
   const audioRef = useRef(new Audio());
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [endBookmarkPosition, setEndBookmarkPosition] = useState(0);
 
   // Function to fetch episode URL
@@ -94,9 +93,6 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
     };
   }, []);
 
-  useEffect(() => {
-    audioRef.current.playbackRate = playbackSpeed;
-  }, [playbackSpeed]);
 
   const handleSeek = (value) => {
     audioRef.current.currentTime = value;
@@ -130,7 +126,7 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
   }
 
   return (
-    <Box p={2} m={3} bg="gray.500" borderRadius="lg" boxShadow="md" width="130%" position="relative">
+    <Box p={2} m={3} borderRadius="2xl" boxShadow="md" width="150%" position="relative">
       {audioUrl ? (
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
           <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} size="md" variant="ghost" mr={2} borderRadius="full" />
@@ -145,16 +141,14 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
               onMouseLeave={handleMouseLeave}
             >
               <SliderTrack>
-                <SliderFilledTrack />
+                <SliderFilledTrack bg="brand.100" />
               </SliderTrack>
-              
+
               <SliderThumb boxSize={2} />
               {/* Display marks for all sections */}
               {sections &&
                 sections.map((section, key) => (
                   <React.Fragment key={key}>
-                    {/* Mark for section start */}
-                    <Icon as={TbKeyframeFilled} position="absolute" left={`${(section.start / duration) * 100 - 3.5}%`} top="-3px" boxSize={5} opacity={0.7} />
                     <Tooltip
                       label={section?.title}
                       placement="top"
@@ -168,7 +162,7 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
                       fontSize="xs"
                       boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
                     >
-                      <Icon as={TbKeyframeFilled} position="absolute" left={`${(section.end / duration) * 100 - 3.5}%`} top="-3px" boxSize={5} opacity={0.7} />
+                      <Icon as={TbKeyframeFilled} position="absolute" left={`${(section.end / duration) * 100 - 3.5}%`} top="-4px" boxSize={4} />
                     </Tooltip>
 
                     <Text position="absolute" left={`${(section.end / duration) * 100 - 1}%`} top="12px" fontSize="xs" color="white" fontWeight={"bold"}>
@@ -180,7 +174,7 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
               {isAdding && (
                 <Tooltip label="Set End Time" placement="top">
                   <Box position="absolute" left={`${endBookmarkPosition}%`} cursor="pointer">
-                    <Icon as={TbKeyframeFilled} position="absolute" top="-10px" left="-10px" boxSize={6} color={"#445670"} opacity={1} />
+                    <Icon as={TbKeyframeFilled} position="absolute" top="-8px" boxSize={4} color={"#445670"} opacity={1} />
                   </Box>
                 </Tooltip>
               )}

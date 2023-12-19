@@ -1,11 +1,12 @@
-import { useState, useRef, useEffect } from "react";
-import { Box, Button, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Flex, Text, IconButton, Input, Tooltip, HStack, FormControl, Textarea } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Box, Button, Flex, Text, IconButton, Input, Tooltip, HStack, FormControl } from "@chakra-ui/react";
 import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import SectionsPlayingBar from "./SectionsPlayingBar";
 import SectionHelper from "../../helpers/SectionHelper";
 import { Section } from "../../utilities/Interfaces";
 import { SectionAddRequest } from "../../utilities/Requests";
 import { convertTime } from "../../utilities/commonUtils";
+import { FaLinesLeaning } from "react-icons/fa6";
 
 const ManageSections = ({ episodeId, podcastId }) => {
   const [sections, setSections] = useState<Section[]>(null);
@@ -124,7 +125,6 @@ const ManageSections = ({ episodeId, podcastId }) => {
 
   return (
     <>
-    
       <Flex direction="column" alignItems={"center"} width="100%">
         <SectionsPlayingBar episodeId={episodeId} podcastId={podcastId} sections={sections} onEndChange={handleEndChange} isAdding={isAdding} />
 
@@ -164,7 +164,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                   </HStack>
                 </Box>
                 <HStack justifyContent="space-between" mt={"5"}>
-                  <Button onClick={handleAddSection} width="50%" borderRadius="7px" colorScheme="blue">
+                  <Button onClick={handleAddSection} width="50%" borderRadius="7px" bg="brand.100">
                     Add Section
                   </Button>
                   <Button
@@ -174,7 +174,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                     }}
                     width="50%"
                     borderRadius="7px"
-                    colorScheme="red"
+                    bg="red"
                   >
                     Cancel
                   </Button>
