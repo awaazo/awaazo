@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
-import SubscribeHelper from "../../helpers/SubscribeHelper";
-import { MySubscriptions } from "../../utilities/Interfaces";
+import SubscribeHelper from "../../../helpers/SubscribeHelper";
+import { MySubscriptions } from "../../../utilities/Interfaces";
 import Link from "next/link";
 import {
   Stack,
@@ -57,18 +57,16 @@ const Subscriptions: FC = () => {
   };
 
   return (
-    <Stack
-      spacing={4}
-      alignItems="center"
-      m={14}
-      borderRadius="md"
-      border="1px"
-      borderColor="gray.200"
-      p={3}
-      w="650px"
-    >
-      <Button onClick={handleOpenModal} colorScheme="blue">
-        Subscribed to {subscriptions.length} podcasts
+    <>
+      <Button
+        onClick={handleOpenModal}
+        rounded="7px"
+        style={{
+          // styling for number of followers, and when clicked, goes to the followers page
+          border: "solid 1px #CC748C",
+        }}
+      >
+        Subscribed to {subscriptions.length} Podcasts
       </Button>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
@@ -127,7 +125,7 @@ const Subscriptions: FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Stack>
+    </>
   );
 };
 
