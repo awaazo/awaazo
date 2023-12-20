@@ -425,6 +425,9 @@ export default class EndpointHelper {
     );
   };
 
+  // --------------------------------
+  // PLAYLIST ENDPOINTS
+  // --------------------------------
   /**
    * Returns the get myPlaylists endpoint.
    * @returns The get myPlaylists Endpoint
