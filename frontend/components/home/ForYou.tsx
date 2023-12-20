@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import { SimpleGrid, Box, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../Cards/PodcastCard";
+import PodcastCard from "../cards/PodcastCard";
 
 // Component to display recommended podcasts
 const ForYou: React.FC = () => {
   useEffect(() => {
-    // Fetch recommended podcasts from the server
     PodcastHelper.podcastAllPodcastsGet(0, 12).then((res) => {
-      // If the request is successful, set the podcasts state
       if (res.status == 200) {
         setPodcasts(res.podcasts);
       } else {
@@ -17,21 +15,17 @@ const ForYou: React.FC = () => {
       }
     });
   }, []);
-
-  // Determine the number of columns based on the screen size
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
 
   return (
     <>
-      {/* Background gradient */}
       <Box
         w={{ base: "70%", md: "20%" }}
         top={0}
         left={0}
         zIndex={-99}
         borderRadius={"0.5em"}
-        boxShadow={"lg"}
       >
         {/* Title */}
         <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>

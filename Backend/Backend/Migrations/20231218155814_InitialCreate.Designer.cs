@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231130201447_xMigration")]
-    partial class xMigration
+    [Migration("20231218155814_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -384,9 +384,19 @@ namespace Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsHandledByUser")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Privacy")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -396,29 +406,30 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Playlists");
                 });
 
-            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+            modelBuilder.Entity("Backend.Models.PlaylistEpisode", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("PlaylistId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PlayerlistId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PlaylistId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("PlaylistId", "EpisodeId");
 
-                    b.HasIndex("PlaylistId");
+                    b.HasIndex("EpisodeId");
 
-                    b.ToTable("PlaylistElements");
+                    b.ToTable("PlaylistEpisodes");
                 });
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
@@ -851,11 +862,34 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Models.PlaylistElement", b =>
+            modelBuilder.Entity("Backend.Models.Playlist", b =>
                 {
-                    b.HasOne("Backend.Models.Playlist", null)
-                        .WithMany("Elements")
-                        .HasForeignKey("PlaylistId");
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Playlists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.PlaylistEpisode", b =>
+                {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany("PlaylistEpisodes")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Playlist", "Playlist")
+                        .WithMany("PlaylistEpisodes")
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+
+                    b.Navigation("Playlist");
                 });
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
@@ -966,6 +1000,8 @@ namespace Backend.Migrations
 
                     b.Navigation("Likes");
 
+                    b.Navigation("PlaylistEpisodes");
+
                     b.Navigation("Sponsors");
 
                     b.Navigation("episodeSections");
@@ -973,7 +1009,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Playlist", b =>
                 {
-                    b.Navigation("Elements");
+                    b.Navigation("PlaylistEpisodes");
                 });
 
             modelBuilder.Entity("Backend.Models.Podcast", b =>
@@ -994,6 +1030,8 @@ namespace Backend.Migrations
                     b.Navigation("EpisodeInteractions");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("Playlists");
 
                     b.Navigation("PodcastFollows");
 

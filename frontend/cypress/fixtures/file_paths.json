@@ -8,5 +8,6 @@
     "Episode_cover_science" :"images/Has_science_gone_too_far.jpg",
     "bunny" : "images/bunny.jpg",
     "cat" : "images/cat.jpg",
-    "shiba" : "images/shiba.jpg"
+    "shiba" : "images/shiba.jpg",
+    "dummy" : "images/dummy.png"
 }

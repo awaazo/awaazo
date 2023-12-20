@@ -34,7 +34,7 @@ const UserCard = ({ user }) => {
           mb={4}
         />
         <Box>
-          <Text fontWeight="bold">{user.displayName}</Text>
+          <Text fontWeight="bold" data-cy={`user-card-${user.displayName}`}>{user.displayName}</Text>
           <Text>@{user.username}</Text>
         </Box>
       </Flex>
