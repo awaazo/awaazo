@@ -49,40 +49,6 @@ export const bookmarks: Bookmark[] = [
     title: "Cool point they mentioned",
     timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
-  },{
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
-  },{
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
-  },{
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
-  },
-  {
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
-  },
-  {
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
-  },
-
-  {
-    id: "sfsfd",
-    title: "Cool point they mentioned",
-    timestamp: 2332,
-    note: "Lorem ipsum dolor sit amet...",
   },
 ];
 
@@ -143,10 +109,6 @@ const episodeTemplate: Episode = {
       title: "Part 1: Why bears are cool?",
     },
     { id: "3er", episodeId: "EP001", timestamp: 300, title: "Part 2: part 2" },
-    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
-    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
-    { id: "3er", episodeId: "EP001", timestamp: 300, title: "Part 2: part 2" },
-    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
     { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
     {
       id: "3eerr",

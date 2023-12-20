@@ -11,7 +11,6 @@ import {
   VStack,
   Image,
   Wrap,
-
 } from "@chakra-ui/react";
 
 import {
@@ -90,7 +89,7 @@ const MyPodcasts = () => {
 
   // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push("/CreatePodcast");
+    router.push("/NewPodcast");
   };
 
   return (
@@ -170,7 +169,7 @@ const MyPodcasts = () => {
                 </Text>
               </VStack>
             ))}
-            <NextLink href="/CreatePodcast" passHref>
+            <NextLink href="/NewPodcast" passHref>
               <Flex
                 direction="column"
                 alignItems="center"

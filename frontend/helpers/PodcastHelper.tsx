@@ -1,6 +1,16 @@
-import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosProgressEvent,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeAddRequest, PodcastCreateRequest, PodcastEditRequest, PodcastByTagsRequest, EpisodeEditRequest } from "../utilities/Requests";
+import {
+  EpisodeAddRequest,
+  PodcastCreateRequest,
+  PodcastEditRequest,
+  PodcastByTagsRequest,
+  EpisodeEditRequest,
+} from "../utilities/Requests";
 import {
   BaseResponse,
   CreatePodcastResponse,
@@ -25,7 +35,9 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastCreateRequest = async (requestData: PodcastCreateRequest): Promise<CreatePodcastResponse> => {
+  public static podcastCreateRequest = async (
+    requestData: PodcastCreateRequest,
+  ): Promise<CreatePodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -70,7 +82,10 @@ export default class PodcastHelper {
    * Gets all myPodcasts from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastMyPodcastsGet = async (page, pageSize): Promise<MyPodcastResponse> => {
+  public static podcastMyPodcastsGet = async (
+    page,
+    pageSize,
+  ): Promise<MyPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -112,7 +127,11 @@ export default class PodcastHelper {
    * Gets all myPodcasts from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastUserPodcastsGet = async (userId, page, pageSize): Promise<MyPodcastResponse> => {
+  public static podcastUserPodcastsGet = async (
+    userId,
+    page,
+    pageSize,
+  ): Promise<MyPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -154,7 +173,10 @@ export default class PodcastHelper {
    * Gets all podcasts from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastAllPodcastsGet = async (page, pageSize): Promise<AllPodcastResponse> => {
+  public static podcastAllPodcastsGet = async (
+    page,
+    pageSize,
+  ): Promise<AllPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -196,7 +218,11 @@ export default class PodcastHelper {
    * Gets all podcasts by genre from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastByTagsPodcastsGet = async (page, pageSize, requestHeader: PodcastByTagsRequest): Promise<ByTagsPodcastResponse> => {
+  public static podcastByTagsPodcastsGet = async (
+    page,
+    pageSize,
+    requestHeader: PodcastByTagsRequest,
+  ): Promise<ByTagsPodcastResponse> => {
     // Create the request options.
 
     const options = {
@@ -240,7 +266,11 @@ export default class PodcastHelper {
    * Gets all podcasts by genre from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastSearchPodcastsGet = async (page, pageSize, searchTerm): Promise<SearchPodcastResponse> => {
+  public static podcastSearchPodcastsGet = async (
+    page,
+    pageSize,
+    searchTerm,
+  ): Promise<SearchPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -286,7 +316,7 @@ export default class PodcastHelper {
   public static episodeAddRequest = async (
     requestData: EpisodeAddRequest,
     podcastId,
-    onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void, // Use AxiosProgressEvent here
   ): Promise<CreateEpisodeResponse> => {
     // Create the request options.
     const options: AxiosRequestConfig = {
@@ -332,7 +362,9 @@ export default class PodcastHelper {
    * Gets a podcast by podcastId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static getPodcastById = async (podcastId): Promise<GetMyPodcastResponse> => {
+  public static getPodcastById = async (
+    podcastId,
+  ): Promise<GetMyPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -416,7 +448,9 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastEditRequest = async (requestData: PodcastEditRequest): Promise<EditPodcastResponse> => {
+  public static podcastEditRequest = async (
+    requestData: PodcastEditRequest,
+  ): Promise<EditPodcastResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -460,7 +494,9 @@ export default class PodcastHelper {
    * Gets a episode by episodeId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static getEpisodeById = async (episodeId): Promise<GetMyEpisodeResponse> => {
+  public static getEpisodeById = async (
+    episodeId,
+  ): Promise<GetMyEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -544,7 +580,10 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static podcastEpisodeEditRequest = async (requestData: EpisodeEditRequest, episodeId): Promise<EditEpisodeResponse> => {
+  public static podcastEpisodeEditRequest = async (
+    requestData: EpisodeEditRequest,
+    episodeId,
+  ): Promise<EditEpisodeResponse> => {
     // Create the request options.
     const options = {
       method: "POST",

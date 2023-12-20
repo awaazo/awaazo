@@ -1,4 +1,6 @@
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from 'axios'
+// api.ts
 const URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://localhost:7126';
 
 

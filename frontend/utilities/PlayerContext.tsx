@@ -1,4 +1,12 @@
-import { createContext, useContext, useReducer, useEffect, useRef, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+  ReactNode,
+} from "react";
+
 import { Episode } from "./Interfaces";
 
 interface PlayerState {
@@ -40,7 +48,9 @@ interface PlayerProviderProps {
 
 export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(playerReducer, initialState);
-  const audioRef = useRef<HTMLAudioElement | null>(typeof window !== "undefined" ? new Audio() : null);
+  const audioRef = useRef<HTMLAudioElement | null>(
+    typeof window !== "undefined" ? new Audio() : null,
+  );
 
   useEffect(() => {
     return () => {
@@ -51,7 +61,11 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
     };
   }, [state.episode]);
 
-  return <PlayerContext.Provider value={{ state, dispatch, audioRef }}>{children}</PlayerContext.Provider>;
+  return (
+    <PlayerContext.Provider value={{ state, dispatch, audioRef }}>
+      {children}
+    </PlayerContext.Provider>
+  );
 };
 
 export const usePlayer = () => {
