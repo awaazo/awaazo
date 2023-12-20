@@ -67,15 +67,16 @@ export default function MyPodcast() {
     <>
       <Navbar />
       <Box
-        display="flex"
-        flexDirection="column"
+        display="grid"
+        gridTemplateColumns="1fr 1fr"
+        gridTemplateRows="auto"
         px={["1em", "2em", "4em"]}
         height="calc(100vh - 60px - 80px)"
       >
         {loading ? null : (
           <Box
             bgGradient="linear(to-r, #ad602d, transparent)"
-            w={{ base: "70%", md: "30%" }}
+            gridColumn="span 2"
             borderRadius="0.5em"
             boxShadow="lg"
             p="8px"
@@ -89,8 +90,7 @@ export default function MyPodcast() {
         )}
 
         {loading ? (
-          // Show loading indicator or spinner
-          <Flex justify="center" align="center" height="100%">
+          <Flex justify="center" align="center" gridColumn="span 2">
             <Spinner
               size="xl"
               color="blue.200"
@@ -99,43 +99,66 @@ export default function MyPodcast() {
               emptyColor="transparent"
             />
           </Flex>
-        ) : podcasts && podcasts.length > 0 ? (
+        ) : (
           <>
-            <Flex width="100%">
-              <Box flex="1">
-                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                  Podcasts:
-                </Text>
-                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+            <Box gridColumn="1">
+              <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
+                Podcasts:
+              </Text>
+              {podcasts && podcasts.length > 0 ? (
+                <SimpleGrid
+                  columns={columns}
+                  spacing={7}
+                  marginTop={"1em"}
+                  gridColumn="1"
+                >
                   {podcasts.map((podcast) => (
                     <PodcastCard podcast={podcast} key={podcast.id} />
                   ))}
                 </SimpleGrid>
-              </Box>
-
-              <Box flex="1" ml={30}>
-                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                  Users:
+              ) : (
+                <Text
+                  style={{ marginTop: "50px" }}
+                  fontWeight="bold"
+                  fontSize=""
+                  gridColumn="1"
+                  textAlign="center"
+                >
+                  (No podcasts have been found)
                 </Text>
-                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+              )}
+            </Box>
+            <Box gridColumn="2">
+              <Text fontSize="xl" ml={4} fontWeight="bold" marginTop="1em">
+                Users:
+              </Text>
+              {users && users.length > 0 ? (
+                <SimpleGrid
+                  columns={columns}
+                  spacing={7}
+                  marginTop={"1em"}
+                  gridColumn="2"
+                >
                   {users.map((user) => (
                     <UserCard user={user} key={user.id} />
                   ))}
                 </SimpleGrid>
-              </Box>
-            </Flex>
+              ) : (
+                <Text
+                  style={{ marginTop: "50px" }}
+                  fontWeight="bold"
+                  fontSize="xl"
+                  gridColumn="2"
+                  textAlign="center"
+                >
+                  (No users have been found)
+                </Text>
+              )}
+            </Box>
           </>
-        ) : (
-          // Show error message
-          <Text
-            style={{ marginTop: "50px", marginLeft: "30px" }}
-            fontWeight="bold"
-            fontSize="xl"
-          >
-            (No results have been found)
-          </Text>
         )}
-        <Box flex="1" borderRadius="35px" marginTop={"2em"}>
+
+        <Box flex="1" borderRadius="35px" marginTop={"2em"} gridColumn="span 2">
           <ForYou />
         </Box>
       </Box>
