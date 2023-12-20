@@ -1,5 +1,5 @@
-import React, { FormEvent, useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img } from "@chakra-ui/react";
+import React, {useState } from "react";
+import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { RegisterRequest } from "../../utilities/Requests";
 import { FaGoogle } from "react-icons/fa";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { isEmail } from "validator";
 
 const SignUp: React.FC = () => {
   const setupPage = "/profile/ProfileSetup";
@@ -36,18 +36,32 @@ const SignUp: React.FC = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!(password === confirmPassword)) {
+    setSignUpError(null);
+    if (!email || !isEmail(email)) {
+      setSignUpError("Please enter a valid email address.");
+      return;
+    }
+    if (!password || password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+      setSignUpError("Password must be at least 8 characters long and include both letters and numbers.");
+      return;
+    }
+    if (!username || !/^[A-Za-z0-9_]+$/.test(username)) {
+      setSignUpError("Username can only contain letters, numbers, and underscores.");
+      return;
+    }
+    if (password !== confirmPassword) {
       setSignUpError("Passwords do not match.");
-      console.debug(signUpError);
-    } else {
-      const registerRequest: RegisterRequest = {
-        email: email,
-        password: password,
-        username: username,
-        dateOfBirth: dateOfBirth,
-        gender: "None",
-      };
+      return;
+    }
+    const registerRequest: RegisterRequest = {
+      email: email,
+      password: password,
+      username: username,
+      dateOfBirth: dateOfBirth,
+      gender: "None",
+    };
 
+    try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
 
       if (response.status === 200) {
@@ -55,6 +69,8 @@ const SignUp: React.FC = () => {
       } else {
         setSignUpError(response.data);
       }
+    } catch (error) {
+      setSignUpError("An error occurred during sign up.");
     }
   };
 
@@ -81,7 +97,15 @@ const SignUp: React.FC = () => {
           Join Awaazo and transform podcasting with AI brilliance Create, Connect, Captivate!
         </Text>
 
-        {signUpError && <Text color="red.500">{signUpError}</Text>}
+        {signUpError && (
+          <Alert status="error" borderRadius="xl" mb={4} p={2}>
+            <Box flex="1">
+              <AlertDescription display="block" fontSize="sm">
+                {signUpError}
+              </AlertDescription>
+            </Box>
+          </Alert>
+        )}
         <form onSubmit={handleSignUp}>
           <Stack spacing={3}>
             <FormControl>
