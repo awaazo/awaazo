@@ -1,8 +1,17 @@
-import { createContext, useContext, useReducer, useEffect, useRef, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+  ReactNode,
+} from "react";
 import { Episode } from "./Interfaces";
 
 interface PlayerState {
-  episode: null | Episode;
+  episode: Episode;
+  currentEpisodeIndex: number | null;
+  playlist: Episode[] | null;
 }
 
 interface PlayerContextProps {
@@ -15,15 +24,54 @@ const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
 
 const initialState: PlayerState = {
   episode: null,
+  currentEpisodeIndex: null,
+  playlist: null,
 };
+
+interface PlayerProviderProps {
+  children: ReactNode;
+}
 
 const playerReducer = (state: PlayerState, action: any) => {
   switch (action.type) {
-    case "SET_EPISODE":
+    case "PLAY_NOW_QUEUE":
       return {
         ...state,
         episode: action.payload,
+        currentEpisodeIndex: 0,
+        playlist: [action.payload],
       };
+    case "ADD_NEXT_QUEUE":
+      return {
+        ...state,
+        playlist: [
+          ...state.playlist.slice(0, state.currentEpisodeIndex + 1),
+          action.payload,
+          ...state.playlist.slice(state.currentEpisodeIndex + 1),
+        ],
+      };
+    case "ADD_LATER_QUEUE":
+      return {
+        ...state,
+        playlist: [...state.playlist, action.payload],
+      };
+    case "PLAY_NEXT":
+      const nextIndex = state.currentEpisodeIndex + 1;
+      const nextEpisode = state.playlist[nextIndex];
+      return {
+        ...state,
+        episode: nextEpisode || state.episode, // Use current episode if next episode is null
+        currentEpisodeIndex: nextIndex,
+      };
+    case "PLAY_PREVIOUS":
+      const prevIndex = state.currentEpisodeIndex - 1;
+      const prevEpisode = state.playlist[prevIndex];
+      return {
+        ...state,
+        episode: prevEpisode || state.episode, // Use current episode if previous episode is null
+        currentEpisodeIndex: prevIndex,
+      };
+
     case "SET_CT":
       return {
         ...state,
@@ -34,13 +82,11 @@ const playerReducer = (state: PlayerState, action: any) => {
   }
 };
 
-interface PlayerProviderProps {
-  children: ReactNode;
-}
-
 export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(playerReducer, initialState);
-  const audioRef = useRef<HTMLAudioElement | null>(typeof window !== "undefined" ? new Audio() : null);
+  const audioRef = useRef<HTMLAudioElement | null>(
+    typeof window !== "undefined" ? new Audio() : null,
+  );
 
   useEffect(() => {
     return () => {
@@ -51,7 +97,11 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
     };
   }, [state.episode]);
 
-  return <PlayerContext.Provider value={{ state, dispatch, audioRef }}>{children}</PlayerContext.Provider>;
+  return (
+    <PlayerContext.Provider value={{ state, dispatch, audioRef }}>
+      {children}
+    </PlayerContext.Provider>
+  );
 };
 
 export const usePlayer = () => {
