@@ -113,7 +113,7 @@ const Episode = ({ episode }) => {
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
-        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
+        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
           {episode.episodeName}
           {episode.isExplicit && (
             <Tag size="sm" colorScheme="red" fontSize={isMobile ? "10px" : "sm"}>

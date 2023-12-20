@@ -68,6 +68,7 @@ const LikeComponent = ({ episodeOrCommentId, initialLikes }) => {
             <Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />
           }
           onClick={() => handleLike()}
+          data-cy={`like-button-index:`}
         >
           {likes}
         </Button>

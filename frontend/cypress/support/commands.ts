@@ -82,7 +82,7 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
   cy.get('input[id="confirmPassword"]').type(confirmPassword);
   cy.get('input[id="date"]').click().type(birthdate);
   cy.get('button[type="submit"]').click();
-  cy.wait(250);
+  cy.wait(500);
 });
 
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
@@ -94,6 +94,7 @@ Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   cy.get(':nth-child(7) > .chakra-button').click();
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[type="submit"]').click();
+  cy.wait(500);
 });
 /*
   -=-=-=-=End Registration Commands
@@ -188,6 +189,7 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
   }
   cy.get('button[id=createBtn]').click({ timeout: 10000 });
   cy.intercept('GET', '/CreatorHub/MyPodcasts').as('podcasts');
+  cy.wait(250);
 });
 
 

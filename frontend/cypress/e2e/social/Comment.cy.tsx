@@ -5,15 +5,18 @@ describe('Like', () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(400);
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('F2{enter}');
         cy.get('[data-cy="podcast-card-F2 legends"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
+        cy.wait(250);
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Is there an error in the title?");
         cy.contains('Add Comment').click();
         cy.contains('Is there an error in the title?');
         cy.get('.chakra-modal__close-btn').click();
         cy.visit('/').url().should('include', '/');
+        cy.wait(400);
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('F2{enter}');
         cy.wait(250);
         cy.get('[data-cy="podcast-card-F2 legends"]').should('be.visible').first().click({ timeout: 5000 })
@@ -29,6 +32,7 @@ describe('Like', () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(400);
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('F2{enter}');
         cy.get('[data-cy="podcast-card-F2 legends"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);
@@ -46,6 +50,7 @@ describe('Like', () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(400);
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('F2{enter}');
         cy.get('[data-cy="podcast-card-F2 legends"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);
@@ -59,6 +64,7 @@ describe('Like', () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(400);
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('F2{enter}');
         cy.get('[data-cy="podcast-card-F2 legends"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);

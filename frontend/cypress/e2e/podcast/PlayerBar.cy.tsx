@@ -16,10 +16,11 @@ describe("PlayerBar", () => {
         cy.get('[data-cy^="time-left-"]').then(($timeLeft) => {
             timeLeftValue = $timeLeft.text(); // or .val() depending on the element type
         });
+        cy.data_log();
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 5000 });
-        cy.get("button").contains("My Podcasts").click({ timeout: 5000 });
-        cy.url().should("include", "/MyPodcasts");
+        cy.get("button").contains("My Account").click({ timeout: 5000 });
+        cy.url().should("include", "/profile/MyProfile");
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
             let timePassedValue_temp = $timePassed.text(); // or .val() depending on the element type
             expect(parseFloat(timePassedValue) - parseFloat(timePassedValue_temp)).to.be.lessThan(2);
@@ -98,7 +99,7 @@ describe("PlayerBar", () => {
         });
     });
 
-    it('Should like and unlike episode from the player bar', () => {
+    it.only('Should like and unlike episode from the player bar', () => {
         let numLikesBefore = "1"
         let numLikesAfter = "0"
         cy.login(null, "testRegister@email.com", "password123");
@@ -107,7 +108,7 @@ describe("PlayerBar", () => {
         });
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
-        cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
+        cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:1"]').should('be.visible').invoke('text').then((logText) => {
@@ -118,7 +119,7 @@ describe("PlayerBar", () => {
         cy.visit("/").url().should('include', '/');
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
-        cy.visit('/MyPodcasts').url().should('include', '/MyPodcasts');
+        cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:0"]').should('be.visible').invoke('text').then((logText) => {

@@ -9,6 +9,7 @@ describe ('Search', () => {
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('testUsername{enter}');
         cy.intercept("GET", "/profile/*").as("profile");
         cy.wait("@profile", { timeout: 15000 });
+        cy.data_log();
         cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
         cy.contains("@NewUsername").should('be.visible');
     });
@@ -37,13 +38,13 @@ describe ('Search', () => {
     it('Should return nothing if no input is given', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('{enter}');
-        cy.contains("No results have been found").should('be.visible');
+        cy.contains("No podcasts have been found").should('be.visible');
     });
 
     //Should not return anything is the written input doesn't match anything
     it('Should return nothing if search does not match any user and/or podcast', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[data-cy="search-input-web"]').should('be.visible').type('This doesnt exist{enter}');
-        cy.contains("No results have been found").should('be.visible');
+        cy.contains("No podcasts have been found").should('be.visible');
     });
 });

@@ -136,6 +136,7 @@ const RecentlyUploaded: React.FC = () => {
                   py={2}
                   display="flex"
                   justifyContent="center"
+                  data-cy={`episode-card-${episode.episodeName}`}
                 >
                   {/* Assuming PodcastTicket is a valid component */}
                   <PodcastTicket episode={episode} />
