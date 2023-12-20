@@ -211,106 +211,106 @@ const EpisodeCard = ({ episode }) => {
           />
         </div>
         {/* Episode Options Menu */}
-        <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<IoIosMore />}
-            variant="ghost"
-            fontSize="20px"
-            ml={1}
-            mt={1}
-            _hover={{ boxShadow: "lg" }}
-            onClick={handleMenuToggle}
-          />
-          <MenuList
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <MenuItem
-              _hover={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                fontWeight: "bold",
-              }}
+        <Box style={{ position: "relative", zIndex: 1000 }}>
+          <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<IoIosMore />}
+              variant="ghost"
+              fontSize="20px"
+              ml={1}
+              mt={1}
+              _hover={{ boxShadow: "lg" }}
+              onClick={handleMenuToggle}
+            />
+            <MenuList
               style={{
-                backgroundColor: "transparent",
+                backgroundColor: "rgba(50, 50, 50, 0.8)",
+                backdropFilter: "blur(4px)",
               }}
             >
-              Add to Playlist{" "}
-              <CgPlayList
-                size={24}
-                style={{ marginLeft: "auto", color: "white" }}
-              />
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              onClick={() => handleEpisodeClick()}
-              _hover={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                fontWeight: "bold",
-              }}
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              Play "{episode.episodeName}"{" "}
-              <BsPlayFill
-                size="20px"
-                style={{ marginLeft: "auto", color: "white" }}
-              />
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleMenuItemClick("playNext")}
-              _hover={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                fontWeight: "bold",
-              }}
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              Play Next{" "}
-              <TbPlayerTrackNextFilled
-                size="18px"
-                style={{ marginLeft: "auto", color: "white" }}
-              />
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleMenuItemClick("playLater")}
-              _hover={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                fontWeight: "bold",
-              }}
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              Play Later{" "}
-              <BsFillSkipForwardFill
-                size="18px"
-                style={{ marginLeft: "auto", color: "white" }}
-              />
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              _hover={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                fontWeight: "bold",
-              }}
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              Share{" "}
-              <MdIosShare
-                size="20px"
-                style={{ marginLeft: "auto", color: "white" }}
-              />
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuItem
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  fontWeight: "bold",
+                }}
+                style={{ backgroundColor: "transparent" }}
+              >
+                Add to Playlist{" "}
+                <CgPlayList
+                  size={24}
+                  style={{ marginLeft: "auto", color: "white" }}
+                />
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                onClick={() => handleEpisodeClick()}
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  fontWeight: "bold",
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                }}
+              >
+                Play "{episode.episodeName}"{" "}
+                <BsPlayFill
+                  size="20px"
+                  style={{ marginLeft: "auto", color: "white" }}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemClick("playNext")}
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  fontWeight: "bold",
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                }}
+              >
+                Play Next{" "}
+                <TbPlayerTrackNextFilled
+                  size="18px"
+                  style={{ marginLeft: "auto", color: "white" }}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemClick("playLater")}
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  fontWeight: "bold",
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                }}
+              >
+                Play Later{" "}
+                <BsFillSkipForwardFill
+                  size="18px"
+                  style={{ marginLeft: "auto", color: "white" }}
+                />
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  fontWeight: "bold",
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                }}
+              >
+                Share{" "}
+                <MdIosShare
+                  size="20px"
+                  style={{ marginLeft: "auto", color: "white" }}
+                />
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
       </Flex>
     </Flex>
   );

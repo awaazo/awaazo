@@ -31,7 +31,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
-  const { episode, currentEpisodeIndex, playlist } = state;
+  const { episode, currentEpisodeIndex } = state;
   const [currentIndex, setCurrentIndex] = useState(currentEpisodeIndex);
   const isEpisodeLoaded = !!episode;
   const [isPlaying, setIsPlaying] = useState(false);

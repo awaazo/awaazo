@@ -25,7 +25,7 @@ const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
 const initialState: PlayerState = {
   episode: null,
   currentEpisodeIndex: null,
-  playlist: null,
+  playlist: [],
 };
 
 interface PlayerProviderProps {
@@ -55,27 +55,48 @@ const playerReducer = (state: PlayerState, action: any) => {
         ...state,
         playlist: [...state.playlist, action.payload],
       };
+    case "PLAY_PLAYLIST_NOW":
+      return {
+        ...state,
+        episode: action.payload,
+        currentEpisodeIndex: 0,
+        playlist: [action.payload],
+      };
+    case "ADD_PLAYLIST_NEXT":
+      return {
+        ...state,
+        playlist: [
+          ...state.playlist.slice(0, state.currentEpisodeIndex + 1),
+          ...action.payload,
+          ...state.playlist.slice(state.currentEpisodeIndex + 1),
+        ],
+      };
+    case "ADD_PLAYLIST_LATER":
+      return {
+        ...state,
+        playlist: [...state.playlist, ...action.payload],
+      };
     case "PLAY_NEXT":
       const nextIndex = state.currentEpisodeIndex + 1;
       const nextEpisode = state.playlist[nextIndex];
       return {
         ...state,
-        episode: nextEpisode || state.episode, // Use current episode if next episode is null
-        currentEpisodeIndex: nextIndex,
+        episode: nextEpisode !== undefined ? nextEpisode : state.episode,
+        currentEpisodeIndex:
+          nextEpisode !== undefined ? nextIndex : state.currentEpisodeIndex,
       };
     case "PLAY_PREVIOUS":
       const prevIndex = state.currentEpisodeIndex - 1;
       const prevEpisode = state.playlist[prevIndex];
       return {
         ...state,
-        episode: prevEpisode || state.episode, // Use current episode if previous episode is null
-        currentEpisodeIndex: prevIndex,
+        episode: prevEpisode !== undefined ? prevEpisode : state.episode,
+        currentEpisodeIndex:
+          prevEpisode !== undefined ? prevIndex : state.currentEpisodeIndex,
       };
-
-    case "SET_CT":
+    case "GET_QUEUE":
       return {
         ...state,
-        currentTime: action.payload,
       };
     default:
       return state;
