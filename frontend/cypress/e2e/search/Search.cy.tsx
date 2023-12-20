@@ -22,6 +22,7 @@ describe ('Search', () => {
         cy.intercept("GET", "/profile/*").as("profile");
         cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
         cy.contains("@NewUsername").should('be.visible');
+        cy.wait(400);
         cy.get('[data-cy="podcast-card-F2 legends"').should('be.visible').click({ timeout: 5000 });
         cy.contains("Has science gone too far?").should('be.visible');
     });

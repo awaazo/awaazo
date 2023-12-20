@@ -50,6 +50,7 @@ describe("Episode_Create", () => {
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=edit-button]").first().click();
+    cy.wait(250);
     cy.get('input[placeholder="Enter episode name..."]')
       .clear()
       .type("{selectall}{backspace}");
@@ -118,6 +119,7 @@ describe("Episode_Create", () => {
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("♣™∏⊄‾ℜ→∞ϖñ");
