@@ -102,7 +102,7 @@ export default function MyPodcast() {
         ) : (
           <>
             <Box gridColumn="1">
-              <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={8}>
+              <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
                 Podcasts:
               </Text>
               {podcasts && podcasts.length > 0 ? (
@@ -129,7 +129,7 @@ export default function MyPodcast() {
               )}
             </Box>
             <Box gridColumn="2">
-              <Text fontSize="xl" ml={8} fontWeight="bold" marginTop="1em">
+              <Text fontSize="xl" ml={4} fontWeight="bold" marginTop="1em">
                 Users:
               </Text>
               {users && users.length > 0 ? (
