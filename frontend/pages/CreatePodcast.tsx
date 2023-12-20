@@ -15,17 +15,18 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import AuthHelper from "../../helpers/AuthHelper";
-import Navbar from "../../components/shared/Navbar";
-import { PodcastCreateRequest } from "../../utilities/Requests";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import { UserMenuInfo } from "../../utilities/Interfaces";
-import CreatePodcastHeader from "../../components/CreatePodcastHeader";
+import AuthHelper from "../helpers/AuthHelper";
+import Navbar from "../components/shared/Navbar";
+import { PodcastCreateRequest } from "../utilities/Requests";
+import PodcastHelper from "../helpers/PodcastHelper";
+import { UserMenuInfo } from "../utilities/Interfaces";
+import CreatePodcastHeader from "../components/CreatePodcastHeader";
 import { useDropzone } from "react-dropzone";
 
 const NewPodcast: React.FC = () => {
   // Page refs
-  const createPage = "/CreatorHub/AddEpisode";
+  const createPage = "/Create";
+  const mainPage = "/Main";
   const loginPage = "/auth/Login";
 
   // Genres
@@ -379,7 +380,7 @@ const NewPodcast: React.FC = () => {
               minWidth={"200px"}
               color={"white"}
               marginTop={"15px"}
-              marginBottom={"200px"}
+              marginBottom={"10px"}
               padding={"20px"}
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}

@@ -6,7 +6,6 @@ import {
   Episode,
   userProfileByID,
   User,
-  Section,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -98,6 +97,7 @@ export interface GetMyEpisodeResponse extends BaseResponse {
 
 //#endregion
 
+
 export interface NotificationResponse extends BaseResponse {
   notifications: Notification[];
 }
@@ -109,13 +109,3 @@ export interface IsLikedResponse extends BaseResponse {
 
 //#endregion
 
-//#region Social Responses
-export interface AddSectionResponse extends BaseResponse {
-  data: string;
-}
-
-export interface getSectionResponse extends BaseResponse {
-  sections: Section[];
-}
-
-//#endregion

@@ -16,10 +16,6 @@ export default class EndpointHelper {
     else return process.env.NEXT_PUBLIC_BASE_URL;
   };
 
-  // --------------------------------
-  // AUTH ENDPOINTS
-  // --------------------------------
-
   /**
    * Returns the backend login endpoint.
    * @returns The Login API Endpoint
@@ -59,10 +55,6 @@ export default class EndpointHelper {
   static getGoogleSSOEndpoint = () => {
     return this.getBackendAddress() + "/auth/googleSSO";
   };
-
-  // --------------------------------
-  // PROFILE ENDPOINTS
-  // --------------------------------
 
   /**
    * Returns the Profile Setup endpoint.
@@ -111,10 +103,6 @@ export default class EndpointHelper {
       pageSize
     );
   };
-
-  // --------------------------------
-  // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
-  // --------------------------------
 
   /**
    * Returns the Podcast Create endpoint.
@@ -253,14 +241,10 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/edit";
   };
 
-  // --------------------------------
-  // SOCIAL ENDPOINTS
-  // --------------------------------
-
   /**
    * Returns the Podcast rating endpoint.
    * @returns The Podcast rating Endpoint
-   */
+   * */
 
   static getPodcastRatingEndpoint = () => {
     return this.getBackendAddress() + "/social/rating";
@@ -268,7 +252,7 @@ export default class EndpointHelper {
   /**
    * Returns the Podcast rating endpoint.
    * @returns The Podcast rating Endpoint
-   */
+   * */
 
   static getPodcastRatingDeleteEndpoint = (podcastId) => {
     return (
@@ -278,7 +262,7 @@ export default class EndpointHelper {
   /**
    * Returns the Podcast rating endpoint.
    * @returns The Podcast rating Endpoint
-   */
+   * */
 
   static getPodcastReviewEndpoint = () => {
     return this.getBackendAddress() + "/social/review";
@@ -286,7 +270,7 @@ export default class EndpointHelper {
   /**
    * Returns the Podcast rating endpoint.
    * @returns The Podcast rating Endpoint
-   */
+   * */
 
   static getPodcastReviewDeleteEndpoint = (podcastId) => {
     return (
@@ -297,53 +281,33 @@ export default class EndpointHelper {
   /**
    * Returns the Podcast COMMENTS + LIKES endpoint.
    * @returns The Podcast COMMENTS + LIKES Endpoint
-   */
+   * */
   static getCommentEndpoint = (episodeOrCommentId: string) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/comment"
     );
   };
 
-  /**
-   * Returns the Podcast COMMENTS Delete endpoint.
-   * @returns The Podcast COMMENTS Delete Endpoint
-   */
   static getCommentDeleteEndpoint = (commentId) => {
     return this.getBackendAddress() + "/social/" + commentId + "/delete";
   };
 
-  /**
-   * Returns the Podcast like endpoint.
-   * @returns The Podcast like Endpoint
-   */
   static getLikeEndpoint = (episodeOrCommentId) => {
     return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/like";
   };
 
-  /**
-   * Returns the Podcast unlike endpoint.
-   * @returns The Podcast unlike Endpoint
-   */
   static getUnlikeEndpoint = (episodeOrCommentId) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/unLike"
     );
   };
 
-  /**
-   * Returns the Podcast isLiked endpoint.
-   * @returns The Podcast isLiked Endpoint
-   */
   static getIsLikedEndpoint = (episodeOrCommentId) => {
     return (
       this.getBackendAddress() + "/social/" + episodeOrCommentId + "/isLiked"
     );
   };
 
-  /**
-   * Returns the Episode Play endpoint.
-   * @returns The Episode Play Endpoint
-   */
   static getPodcastEpisodePlayEndpoint = (
     podcastId: string,
     episodeId: string,
@@ -351,105 +315,44 @@ export default class EndpointHelper {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
-  // --------------------------------
-  // NOTIFICATION ENDPOINTS
-  // --------------------------------
-  /**
-   * Returns the Notification endpoint.
-   * @returns The Notification Endpoint
-   */
+
+
+  // Notifications + Subscriptions Endpoints
   static getAllNotificationsEndpoint = () => {
-    return this.getBackendAddress() + "/notification/all";
+      return this.getBackendAddress() + "/notification/all";
   };
 
-  /**
-   * Returns the Notification Count endpoint.
-   * @returns The Notification Count Endpoint
-   */
   static getNotificationsCountEndpoint = () => {
-    return this.getBackendAddress() + "/notification/count";
+      return this.getBackendAddress() + "/notification/count";
   };
 
-  // --------------------------------
-  // SUBSCRIPTION ENDPOINTS
-  // --------------------------------
 
-  /**
-   * Returns the Subscribe endpoint.
-   * @returns The Subscribe Endpoint
-   */
+  // Subscriptions
   static addSubscriptionEndpoint = (PodcastId) => {
-    return (
+    return(
       this.getBackendAddress() + "/subscription/" + PodcastId + "/subscribe"
     );
   };
 
-  /**
-   * Returns the Unsubscribe endpoint.
-   * @returns The Unsubscribe Endpoint
-   */
   static addUnsubscriptionEndpoint = (PodcastId) => {
-    return (
+    return(
       this.getBackendAddress() + "/subscription/" + PodcastId + "/unsubscribe"
     );
   };
 
-  /**
-   * Returns the isSubscribed endpoint.
-   * @returns The isSubscribed Endpoint
-   */
   static getIsSubscribedEndpoint = (PodcastId) => {
-    return (
+    return(
       this.getBackendAddress() + "/subscription/" + PodcastId + "/IsSubscribed"
     );
-  };
+  }
 
-  /**
-   * Returns the MySubscriptions endpoint.
-   * @returns The MySubscriptions Endpoint
-   */
   static getMySubscriptionsEndpoint = () => {
     return this.getBackendAddress() + "/subscription/MySubscriptions";
-  };
-
-  /**
-   * Returns the Podcast Subscriptions endpoint.
-   * @returns The Podcast Subscriptions Endpoint
-   */
+  }
+  
   static getAllPodcastSubscriptionsEndpoint = (PodcastId) => {
-    return (
-      this.getBackendAddress() +
-      "/subscription/" +
-      PodcastId +
-      "/GetAllPodcastSubscriber"
-    );
-  };
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/GetAllPodcastSubscriber";
+  }
 
-  // --------------------------------
-  // SECTION ENDPOINTS
-  // --------------------------------
-
-  /**
-   * Returns the Section add endpoint.
-   * @returns The Section add Endpoint
-   * */
-  static getSectionAddEndpoint = (episodeId: string) => {
-    return this.getBackendAddress() + "/section/" + episodeId + "/add";
-  };
-
-  /**
-   * Returns the Section get endpoint.
-   * @returns The Section get Endpoint
-   * */
-  static getSectionGetEndpoint = (episodeId: string) => {
-    return this.getBackendAddress() + "/section/" + episodeId + "/get";
-  };
-
-  /**
-   * Returns the Section delete endpoint.
-   * @returns The Section delete Endpoint
-   * */
-  static getSectionDeleteEndpoint = (sectionId: string) => {
-    return this.getBackendAddress() + "/section/" + sectionId + "/delete";
-  };
+  static profileGetRequest: any;
 }

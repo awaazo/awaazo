@@ -1,5 +1,17 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
-import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Textarea,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  Wrap,
+  WrapItem,
+  IconButton,
+} from "@chakra-ui/react";
 import { PodcastEditRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
@@ -20,17 +32,36 @@ export default function EditPodcastForm({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const myPodcastsPage = "/CreatorHub/MyPodcasts";
+  const myPodcastsPage = "/MyPodcasts";
 
   // Genres
-  const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];
+  const PodcastGenres = [
+    "Technology",
+    "Comedy",
+    "Science",
+    "History",
+    "News",
+    "True Crime",
+    "Business",
+    "Health",
+    "Education",
+    "Travel",
+    "Music",
+    "Arts",
+    "Sports",
+    "Politics",
+    "Fiction",
+    "Food",
+  ];
 
   // Form Values
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [podcastName, setPodcastName] = useState("");
-  const [podcastNameCharacterCount, setPodcastNameCharacterCount] = useState<number>(0);
+  const [podcastNameCharacterCount, setPodcastNameCharacterCount] =
+    useState<number>(0);
   const [tags, setTags] = useState([]);
-  const [descriptionCharacterCount, setDescriptionCharacterCount] = useState<number>(0);
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
 
   // Form errors
@@ -129,7 +160,9 @@ export default function EditPodcastForm({ podcastId }) {
   };
 
   // Ensures episode description is not longer than 250 characters
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
     setDescriptionCharacterCount(newDesc.length);
@@ -141,7 +174,13 @@ export default function EditPodcastForm({ podcastId }) {
    */
   return (
     <>
-      <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <form onSubmit={handleCreate}>
           <Stack spacing={6} align={"center"}>
             <div
@@ -153,7 +192,10 @@ export default function EditPodcastForm({ podcastId }) {
               }}
             >
               <img
-                src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
+                src={
+                  coverImage ||
+                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
+                }
                 alt="Cover Photo"
                 style={{
                   width: "150px",
@@ -174,7 +216,14 @@ export default function EditPodcastForm({ podcastId }) {
               >
                 <IconButton
                   aria-label="Upload Cover Photo"
-                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
+                  icon={
+                    <img
+                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
+                      alt="Upload Icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  }
                   size="sm"
                   variant="outline"
                   borderRadius="full"
@@ -200,8 +249,21 @@ export default function EditPodcastForm({ podcastId }) {
             {editError && <Text color="red.500">{editError}</Text>}
 
             <FormControl position="relative">
-              <Input id="podcastName" placeholder="Podcast Name" value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: "center", borderRadius: "0.8em" }} pr="50px" />{" "}
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Input
+                id="podcastName"
+                placeholder="Podcast Name"
+                value={podcastName}
+                onChange={handlePodcastNameChange}
+                style={{ alignSelf: "center", borderRadius: "0.8em" }}
+                pr="50px"
+              />{" "}
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {podcastNameCharacterCount}/25
               </Text>
             </FormControl>
@@ -221,7 +283,13 @@ export default function EditPodcastForm({ podcastId }) {
                 }}
                 resize="vertical" // Made the bio textarea resizable
               />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {descriptionCharacterCount}/250
               </Text>
             </FormControl>
@@ -242,12 +310,18 @@ export default function EditPodcastForm({ podcastId }) {
                       size="sm"
                       variant={tags.includes(genre) ? "solid" : "outline"}
                       colorScheme="white"
-                      backgroundColor={tags.includes(genre) ? genreColors[genre] || getRandomGradient() : "transparent"}
+                      backgroundColor={
+                        tags.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "transparent"
+                      }
                       color="white"
                       borderColor="white"
                       borderRadius="full"
                       _hover={{
-                        backgroundColor: tags.includes(genre) ? genreColors[genre] || getRandomGradient() : "gray",
+                        backgroundColor: tags.includes(genre)
+                          ? genreColors[genre] || getRandomGradient()
+                          : "gray",
                       }}
                       onClick={() => handleInterestClick(genre)}
                     >
@@ -270,7 +344,8 @@ export default function EditPodcastForm({ podcastId }) {
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}
               style={{
-                background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                background:
+                  "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
                 backgroundSize: "300% 300%",
                 animation: "Gradient 10s infinite linear",
               }}

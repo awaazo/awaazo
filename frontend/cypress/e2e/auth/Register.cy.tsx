@@ -22,15 +22,6 @@ describe("Register", () => {
     cy.contains("TestDisplayBio");
   });
 
-  it('Should create a dummy user to interact with other users', () => {
-    cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
-    cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
-    cy.url().should('include', '/');
-    cy.wait(250);
-    cy.visit("/profile/MyProfile", { timeout: 5000 });
-    cy.contains('DummyDisplayBio');
-  });
-
   it("Should Successfully Register & should fail setup by leaving fields blank", function () {
     cy.register_user(
       "testRegister1@email.com",
@@ -44,7 +35,7 @@ describe("Register", () => {
       "{selectall}{backspace}",
       "{selectall}{backspace}",
     );
-    cy.url().should("include", "/profile/ProfileSetup");
+    cy.url().should("include", "/Setup");
     cy.contains("Avatar, Display Name and Bio Required.").should("exist");
   });
 
@@ -78,7 +69,7 @@ describe("Register", () => {
 
   it("limits the number of characters in the input field", () => {
     cy.get('button[aria-label="Menu"]').click();
-    cy.get("button").contains("Sign up").click();
+    cy.get("button").contains("Register").click();
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );

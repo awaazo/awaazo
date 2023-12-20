@@ -25,19 +25,19 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import AuthHelper from "../../helpers/AuthHelper";
-import Navbar from "../../components/shared/Navbar";
+import PodcastHelper from "../helpers/PodcastHelper";
+import AuthHelper from "../helpers/AuthHelper";
+import Navbar from "../components/shared/Navbar";
 import { AddIcon } from "@chakra-ui/icons";
 import router from "next/router";
-import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
-import { EpisodeAddRequest } from "../../utilities/Requests";
+import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
+import { EpisodeAddRequest } from "../utilities/Requests";
 import { AxiosProgressEvent } from "axios";
 
 const CreateEpisode = () => {
   // Page refs
   const loginPage = "/auth/Login";
-  const myPodcastsPage = "/CreatorHub/MyPodcasts";
+  const myPodcastsPage = "/MyPodcasts";
 
   // Current User
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
@@ -185,7 +185,7 @@ const CreateEpisode = () => {
 
   // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push("/CreatorHub/CreatePodcast");
+    router.push("/NewPodcast");
   };
 
   return (
@@ -193,7 +193,7 @@ const CreateEpisode = () => {
       <Navbar />
       <Center>
         <VStack mt={"1em"}>
-          <Heading fontWeight={"normal"}>
+          <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
             Upload Episode
           </Heading>
           <Text mb={"1em"}>Choose a Podcast</Text>
@@ -585,7 +585,7 @@ const CreateEpisode = () => {
                   </Box>
                   {uploadProgress === 100 && (
                     <Button
-                      onClick={() => router.push("/CreatorHub/MyPodcasts")}
+                      onClick={() => router.push("/MyPodcasts")}
                       alignSelf="center"
                       bg="rgba(169, 169, 169, 0.2)"
                     >

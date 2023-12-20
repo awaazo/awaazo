@@ -11,6 +11,7 @@ import {
   VStack,
   Image,
   Wrap,
+
 } from "@chakra-ui/react";
 
 import {
@@ -19,14 +20,13 @@ import {
   QuestionOutlineIcon,
 } from "@chakra-ui/icons";
 
-import Navbar from "../../components/shared/Navbar";
-import MyPodcast from "../../components/myPodcast/MyPodcast";
-import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
+import Navbar from "../components/shared/Navbar";
+import MyPodcast from "../components/myPodcast/MyPodcast";
+import { UserMenuInfo, Podcast } from "../utilities/Interfaces";
 import router from "next/router";
-import AuthHelper from "../../helpers/AuthHelper";
-import PodcastHelper from "../../helpers/PodcastHelper";
+import AuthHelper from "../helpers/AuthHelper";
+import PodcastHelper from "../helpers/PodcastHelper";
 import NextLink from "next/link";
-
 
 const MyPodcasts = () => {
   // Page refs
@@ -90,7 +90,7 @@ const MyPodcasts = () => {
 
   // Function to navigate to create podcast page
   const navigateToCreatePodcast = () => {
-    router.push("/CreatorHub/CreatePodcast");
+    router.push("/CreatePodcast");
   };
 
   return (
@@ -170,7 +170,7 @@ const MyPodcasts = () => {
                 </Text>
               </VStack>
             ))}
-            <NextLink href="/CreatorHub/CreatePodcast" passHref>
+            <NextLink href="/CreatePodcast" passHref>
               <Flex
                 direction="column"
                 alignItems="center"

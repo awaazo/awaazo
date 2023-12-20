@@ -5,8 +5,7 @@
         "dev": "next dev",
         "start": "next start",
         "lint": "next lint",
-        "test": "jest",
-        "cypress:open": "cypress open"
+        "test": "jest"
     },
     "dependencies": {
         "@chakra-ui/color-mode": "^2.2.0",
@@ -47,8 +46,7 @@
         "react-slick": "^0.29.0",
         "redux": "^4.2.1",
         "slick-carousel": "^1.8.1",
-        "universal-cookie": "^6.1.1",
-        "validator": "^13.11.0"
+        "universal-cookie": "^6.1.1"
     },
     "engines": {
         "node": ">=18"

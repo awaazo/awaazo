@@ -196,6 +196,7 @@ const ProfileSetup: React.FC = () => {
             fontSize: "1.5rem",
             textAlign: "center",
             marginTop: "1rem",
+            fontFamily: "Avenir Next",
           }}
         >
           Hey, @{user.username}! Let's get you set up.
@@ -360,7 +361,7 @@ const ProfileSetup: React.FC = () => {
               minWidth={"200px"}
               color={"white"}
               marginTop={"15px"}
-              marginBottom={"200px"}
+              marginBottom={"10px"}
               padding={"20px"}
               // semi transparent white outline
               outline={"1px solid rgba(255, 255, 255, 0.6)"}

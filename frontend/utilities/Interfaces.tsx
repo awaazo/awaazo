@@ -14,6 +14,7 @@ export interface Podcast {
   monthlyListeners: number;
 }
 
+
 export interface Episode {
   id: string;
   podcastId: string;
@@ -40,9 +41,8 @@ export interface Episode {
 export interface Section {
   id: string;
   episodeId: string;
-  title: string;
-  start: number;
-  end: number;
+  title?: string;
+  timestamp?: number;
 }
 
 export interface Comment {
@@ -193,6 +193,7 @@ export interface UserMenuInfo {
   avatarUrl: string;
 }
 
+
 /**
  * User fields related to their Notifications.
  * */
@@ -202,7 +203,7 @@ export interface Notification {
   title: string;
   message: string;
   link: string;
-  isRead: boolean;
+  "isRead": boolean;
   media: string;
   type: string;
   createdAt: Date;

@@ -23,13 +23,13 @@ import {
 } from "@chakra-ui/react";
 
 import { DeleteIcon } from "@chakra-ui/icons";
+
 import { MdEdit } from "react-icons/md";
 
 import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode } from "../../utilities/Interfaces";
-
 
 export default function MyPodcast({ podcastId }) {
   useEffect(() => {
@@ -47,8 +47,8 @@ export default function MyPodcast({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const MyPodcastsPage = "/CreatorHub/MyPodcasts";
-  const CreatePage = "/CreatorHub/AddEpisode";
+  const MyPodcastsPage = "/MyPodcasts";
+  const CreatePage = "/Create";
   const { colorMode } = useColorMode();
 
   // Form Values

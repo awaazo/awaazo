@@ -37,7 +37,7 @@ export default function EditEpisodeForm({ episode }) {
   }, [episode.id]);
 
   // Page refs
-  const myPodcastsPage = "/CreatorHub/MyPodcasts";
+  const myPodcastsPage = "/MyPodcasts";
 
   // Form errors
   const [editError, setEditError] = useState("");

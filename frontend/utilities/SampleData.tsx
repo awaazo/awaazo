@@ -49,20 +49,17 @@ export const bookmarks: Bookmark[] = [
     title: "Cool point they mentioned",
     timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
-  },
-  {
+  },{
     id: "sfsfd",
     title: "Cool point they mentioned",
     timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
-  },
-  {
+  },{
     id: "sfsfd",
     title: "Cool point they mentioned",
     timestamp: 2332,
     note: "Lorem ipsum dolor sit amet...",
-  },
-  {
+  },{
     id: "sfsfd",
     title: "Cool point they mentioned",
     timestamp: 2332,
@@ -137,13 +134,25 @@ const episodeTemplate: Episode = {
   ],
   bookmarks: bookmarks,
   sections: [
-    { id: "r1", episodeId: "EP001", start: 0, end: 72, title: "Sponsors" },
+    { id: "r1", episodeId: "EP001", timestamp: 0, title: "Sponsors" },
+    { id: "2E", episodeId: "EP001", timestamp: 72, title: "Introduction" },
     {
-      id: "2E",
+      id: "3r",
       episodeId: "EP001",
-      start: 72,
-      end: 240,
-      title: "Introduction",
+      timestamp: 200,
+      title: "Part 1: Why bears are cool?",
+    },
+    { id: "3er", episodeId: "EP001", timestamp: 300, title: "Part 2: part 2" },
+    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
+    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
+    { id: "3er", episodeId: "EP001", timestamp: 300, title: "Part 2: part 2" },
+    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
+    { id: "3eer", episodeId: "EP001", timestamp: 600, title: "Part 3: part 3" },
+    {
+      id: "3eerr",
+      episodeId: "EP001",
+      timestamp: 1000,
+      title: "Part 4: part 4",
     },
   ],
   annotations: [],

@@ -1,4 +1,5 @@
-﻿using Backend.Controllers.Requests;
+﻿using AutoMapper;
+using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
@@ -8,16 +9,15 @@ using static Backend.Models.Playlist;
 
 namespace Backend.Services;
 
-/// <summary>
-/// Service for managing playlists. Handles all CRUD operations for playlists.
-/// </summary>
 public class PlaylistService : IPlaylistService
 {
     private readonly AppDbContext _db;
-    
-    public PlaylistService(AppDbContext db)
+    private readonly IMapper _mapper;
+
+    public PlaylistService(AppDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public class PlaylistService : IPlaylistService
     {
         // Get the liked episodes playlist for the user
         return await _db.Playlists
-            .Where(p=>p.Name == "Liked Episodes" && p.UserId == user.Id && !p.IsHandledByUser)
+            .Where(p=>p.Name == "Liked Episodes" && p.UserId == user.Id)
             .Include(p => p.User)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Likes)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
