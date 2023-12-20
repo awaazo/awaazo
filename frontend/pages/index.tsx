@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import Navbar from "../components/shared/Navbar";
 import Home from "../components/home/Home";
 

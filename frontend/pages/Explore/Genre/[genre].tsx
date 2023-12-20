@@ -70,10 +70,8 @@ export default function MyPodcast() {
       >
         <ExploreGenresSection />
         <Box
-          bgGradient="linear(to-r, #6a39c4, transparent)"
           w={{ base: "70%", md: "30%" }}
           borderRadius="0.5em"
-          boxShadow="lg"
           p="8px"
         >
           {!loading && (
