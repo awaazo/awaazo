@@ -42,7 +42,26 @@ const EpisodeCard = ({ episode }) => {
 
   // Handle click on episode
   const handleEpisodeClick = () => {
-    dispatch({ type: "SET_EPISODE", payload: episode });
+    dispatch({
+      type: "PLAY_NOW_QUEUE",
+      payload: episode,
+    });
+  };
+
+  // Handle click play next on episode
+  const handleEpisodeNextClick = () => {
+    dispatch({
+      type: "ADD_NEXT_QUEUE",
+      payload: episode,
+    });
+  };
+
+  // Handle click play later on episode
+  const handleEpisodeLaterClick = () => {
+    dispatch({
+      type: "ADD_LATER_QUEUE",
+      payload: episode,
+    });
   };
 
   const { colorMode } = useColorMode();
@@ -66,21 +85,21 @@ const EpisodeCard = ({ episode }) => {
   // Handle menu item click and show toast notification
   const handleMenuItemClick = (action) => {
     if (action === "playNext") {
-      // Add logic for "Play Next"
+      handleEpisodeNextClick();
       toast({
         title: "Episode added to queue",
         status: "info",
         position: "bottom-right",
-        duration: 3000, // in milliseconds
+        duration: 3000,
         isClosable: true,
       });
     } else if (action === "playLater") {
-      // Add logic for "Play Later"
+      handleEpisodeLaterClick();
       toast({
         title: "Episode added to queue",
         status: "info",
         position: "bottom-right",
-        duration: 3000, // in milliseconds
+        duration: 3000,
         isClosable: true,
       });
     }
@@ -227,7 +246,7 @@ const EpisodeCard = ({ episode }) => {
             </MenuItem>
             <MenuDivider />
             <MenuItem
-              onClick={() => handleMenuItemClick("playNow")}
+              onClick={() => handleEpisodeClick()}
               _hover={{
                 backgroundColor: "rgba(255, 255, 255, 0.8)",
                 fontWeight: "bold",
