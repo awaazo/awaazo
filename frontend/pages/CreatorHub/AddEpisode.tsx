@@ -193,7 +193,7 @@ const CreateEpisode = () => {
       <Navbar />
       <Center>
         <VStack mt={"1em"}>
-          <Heading fontWeight={"normal"} fontFamily={"Avenir Next"}>
+          <Heading fontWeight={"normal"}>
             Upload Episode
           </Heading>
           <Text mb={"1em"}>Choose a Podcast</Text>
