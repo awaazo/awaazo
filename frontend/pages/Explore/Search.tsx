@@ -18,9 +18,9 @@ import { useRouter } from "next/router";
 import Navbar from "../../components/shared/Navbar";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastCard from "../../components/Cards/PodcastCard";
+import PodcastCard from "../../components/cards/PodcastCard";
 import ForYou from "../../components/home/ForYou";
-import UserCard from "../../components/Cards/UserCard";
+import UserCard from "../../components/cards/UserCard";
 import PlayerBar from "../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
@@ -47,14 +47,10 @@ export default function MyPodcast() {
         }
       },
     );
-  }, [index1, index2, searchTerm]);
-
-  useEffect(() => {
     UserProfileHelper.profileSearchProfilesGet(index3, index4, searchTerm)
       .then((res) => {
         if (res.status == 200) {
           setUsers(res.users);
-          console.log(res.users);
         } else {
           setGetError("Users cannot be fetched");
         }
@@ -63,7 +59,7 @@ export default function MyPodcast() {
         // Set loading to false once the data is fetched (or an error occurred)
         setLoading(false);
       });
-  }, [index3, index4, searchTerm]);
+  }, [index1, index2, index3, index4, searchTerm]);
 
   const columns = useBreakpointValue({ base: 1, md: 2, lg: 3 });
 
@@ -71,15 +67,16 @@ export default function MyPodcast() {
     <>
       <Navbar />
       <Box
-        display="flex"
-        flexDirection="column"
+        display="grid"
+        gridTemplateColumns="1fr 1fr"
+        gridTemplateRows="auto"
         px={["1em", "2em", "4em"]}
         height="calc(100vh - 60px - 80px)"
       >
         {loading ? null : (
           <Box
             bgGradient="linear(to-r, #ad602d, transparent)"
-            w={{ base: "70%", md: "30%" }}
+            gridColumn="span 2"
             borderRadius="0.5em"
             boxShadow="lg"
             p="8px"
@@ -93,8 +90,7 @@ export default function MyPodcast() {
         )}
 
         {loading ? (
-          // Show loading indicator or spinner
-          <Flex justify="center" align="center" height="100%">
+          <Flex justify="center" align="center" gridColumn="span 2">
             <Spinner
               size="xl"
               color="blue.200"
@@ -103,100 +99,69 @@ export default function MyPodcast() {
               emptyColor="transparent"
             />
           </Flex>
-        ) : podcasts && podcasts.length > 0 ? (
+        ) : (
           <>
-            <Flex width="100%">
-              <Box flex="1">
-                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                  Podcasts:
-                </Text>
-                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+            <Box gridColumn="1">
+              <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
+                Podcasts:
+              </Text>
+              {podcasts && podcasts.length > 0 ? (
+                <SimpleGrid
+                  columns={columns}
+                  spacing={7}
+                  marginTop={"1em"}
+                  gridColumn="1"
+                >
                   {podcasts.map((podcast) => (
                     <PodcastCard podcast={podcast} key={podcast.id} />
                   ))}
                 </SimpleGrid>
-              </Box>
-
-              <Box flex="1" ml={30}>
-                <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                  Users:
+              ) : (
+                <Text
+                  style={{ marginTop: "50px" }}
+                  fontWeight="bold"
+                  fontSize=""
+                  gridColumn="1"
+                  textAlign="center"
+                >
+                  (No podcasts have been found)
                 </Text>
-                <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
+              )}
+            </Box>
+            <Box gridColumn="2">
+              <Text fontSize="xl" ml={4} fontWeight="bold" marginTop="1em">
+                Users:
+              </Text>
+              {users && users.length > 0 ? (
+                <SimpleGrid
+                  columns={columns}
+                  spacing={7}
+                  marginTop={"1em"}
+                  gridColumn="2"
+                >
                   {users.map((user) => (
                     <UserCard user={user} key={user.id} />
                   ))}
                 </SimpleGrid>
-              </Box>
-            </Flex>
+              ) : (
+                <Text
+                  style={{ marginTop: "50px" }}
+                  fontWeight="bold"
+                  fontSize="xl"
+                  gridColumn="2"
+                  textAlign="center"
+                >
+                  (No users have been found)
+                </Text>
+              )}
+            </Box>
           </>
-        ) : (
-          <Flex>
-            <Box flex="1">
-              {podcasts && podcasts.length > 0 && (
-                <>
-                  <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                    Podcasts:
-                  </Text>
-                  <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
-                    {podcasts.map((podcast) => (
-                      <PodcastCard podcast={podcast} key={podcast.id} />
-                    ))}
-                  </SimpleGrid>
-                </>
-              )}
-
-              {podcasts && podcasts.length === 0 && (
-                <>
-                  <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                    Podcasts:
-                  </Text>
-                  <Text
-                    style={{ marginTop: "4em", textAlign: "center" }}
-                    fontWeight="bold"
-                    fontSize="xl"
-                  >
-                    No podcasts have been found
-                  </Text>
-                </>
-              )}
-            </Box>
-
-            <Box flex="1" ml={30}>
-              {users && users.length === 0 && (
-                <>
-                  <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                    Users:
-                  </Text>
-                  <Text
-                    style={{ marginTop: "4em", textAlign: "center" }}
-                    fontWeight="bold"
-                    fontSize="xl"
-                  >
-                    No users have been found
-                  </Text>
-                </>
-              )}
-
-              {users && users.length > 0 && (
-                <>
-                  <Text fontSize="xl" fontWeight="bold" marginTop="1em" ml={4}>
-                    Users:
-                  </Text>
-                  <SimpleGrid columns={columns} spacing={7} marginTop={"1em"}>
-                    {users.map((user) => (
-                      <UserCard user={user} key={user.id} />
-                    ))}
-                  </SimpleGrid>
-                </>
-              )}
-            </Box>
-          </Flex>
         )}
-        <Box flex="1" borderRadius="35px" marginTop={"2em"}>
+
+        <Box flex="1" borderRadius="35px" marginTop={"2em"} gridColumn="span 2">
           <ForYou />
         </Box>
       </Box>
-      ;
     </>
   );
 }

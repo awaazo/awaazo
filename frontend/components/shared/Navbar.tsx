@@ -2,22 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { DefaultSession } from "next-auth";
-import {
-  Box,
-  Flex,
-  Avatar,
-  IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  MenuGroup,
-  Image,
-  Input,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, Image, Input, useBreakpointValue } from "@chakra-ui/react";
 import { AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
 import Logo from "../../public/logo_white.svg";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -26,10 +11,6 @@ import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 
-/**
- * The Navbar component displays the navigation bar at the top of the page.
- * It includes functionality for user authentication, search, and menu options.
- */
 export default function Navbar() {
   const loginPage = "/auth/Login";
   const indexPage = "/";
@@ -63,17 +44,10 @@ export default function Navbar() {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
-      if (
-        response !== null &&
-        response !== undefined &&
-        typeof response === "number"
-      ) {
+      if (response !== null && response !== undefined && typeof response === "number") {
         setNotificationCount(response);
       } else {
-        console.error(
-          "Failed to fetch notification count:",
-          response.message || "No error message available",
-        );
+        console.error("Failed to fetch notification count:", response.message || "No error message available");
       }
     };
 
@@ -155,29 +129,15 @@ export default function Navbar() {
    */
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton
-        aria-label="loggedInMenu"
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
         {user.avatarUrl === "" ? (
           <Avatar
             size={"sm"}
-            src={
-              "https://images.unsplash.com/photo-1495462911434-be47104d70fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-            }
+            src={""}
             boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
           />
         ) : (
-          <Avatar
-            size={"sm"}
-            src={user.avatarUrl}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-            bg="rgba(255, 255, 255, 0.2)"
-            backdropFilter="blur(10px)"
-          />
+          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
       </MenuButton>
       <MenuList>
@@ -185,20 +145,17 @@ export default function Navbar() {
           <Link href="/profile/MyProfile" passHref>
             <MenuItem>👤 My Account</MenuItem>
           </Link>
-          <Link href="/MyPodcasts" passHref>
+          <Link href="/CreatorHub/MyPodcasts" passHref>
             <MenuItem>🎙️ My Podcasts</MenuItem>
           </Link>
           <MenuDivider />
-          <Link href="/AddEpisode" passHref>
+          <Link href="/CreatorHub/AddEpisode" passHref>
             <MenuItem>⚙️ Settings</MenuItem>
           </Link>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem
-            onClick={handleLogOut}
-            style={{ color: "red", fontWeight: "normal" }}
-          >
+          <MenuItem onClick={handleLogOut} style={{ color: "red", fontWeight: "normal" }}>
             Logout
           </MenuItem>
         </MenuGroup>
@@ -212,57 +169,26 @@ export default function Navbar() {
    */
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton
-        menu-id="menuBtn"
-        aria-label="Menu"
-        as={Button}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton menu-id="menuBtn" aria-label="Menu" as={Button} variant={"link"} cursor={"pointer"}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem
-          id="loginBtn"
-          onClick={() => (window.location.href = loginPage)}
-        >
+        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = signupPage)}>
-          Sign up
-        </MenuItem>
+        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
       </MenuList>
     </Menu>
   );
 
   const NotificationsModal = () => {
-    return (
-      <Notifications
-        isOpen={isNotificationsOpen}
-        onClose={toggleNotifications}
-        notificationCount={notificationCount}
-      />
-    );
+    return <Notifications isOpen={isNotificationsOpen} onClose={toggleNotifications} notificationCount={notificationCount} />;
   };
 
   return (
     <>
-      <Box
-        bg={"rgba(0, 0, 0, 0.3)"}
-        backdropFilter="blur(35px)"
-        p={2}
-        mr={"2em"}
-        ml={"2em"}
-        mb={"3em"}
-        position="sticky"
-        top={4}
-        zIndex={999}
-        borderRadius={"95px"}
-        boxShadow="0px 0px 15px rgba(0, 0, 0, 0.3)"
-        data-testid="navbar-component"
-        border="3px solid rgba(255, 255, 255, 0.05)"
-      >
+      <Box className="transparent-box" p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
         <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
           <Link href="/">
             <Box maxWidth={"1.5em"} ml={-2}>
@@ -283,7 +209,7 @@ export default function Navbar() {
                     opacity: 1,
                   },
                 }}
-                data-cy="search-input-mobile"
+                data-cy={`search-input-web`}
               />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
@@ -308,29 +234,12 @@ export default function Navbar() {
                     opacity: 1, // increase placeholder opacity
                   },
                 }}
-                data-cy="search-input-web"
+                data-cy={`search-input-web`}
               />
-              <Link href="/AddEpisode">
-                <IconButton
-                  aria-label="Add Episode"
-                  icon={<AddIcon />}
-                  variant="ghost"
-                  size="md"
-                  rounded={"full"}
-                  opacity={0.7}
-                  mr={3}
-                />
+              <Link href="/CreatorHub/AddEpisode">
+                <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} />
               </Link>
-              <IconButton
-                aria-label="Notifications"
-                icon={<BellIcon />}
-                onClick={toggleNotifications}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={4}
-              />
+              <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           )}

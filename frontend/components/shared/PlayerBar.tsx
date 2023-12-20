@@ -173,26 +173,26 @@ const PlayerBar = () => {
           {/* Player Controls */}
           <Flex alignItems="center" mb="5px">
             <IconButton aria-label="Previous Episode" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={() => {}} mr={2} />
-            <IconButton aria-label="Skip Backward" icon={<FaArrowRotateLeft />} variant="ghost" size="sm" onClick={skipBackward} mr={2} />
-            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="ghost" size="sm" onClick={togglePlayPause} mr={2} />
-            <IconButton aria-label=" Skip Forward" icon={<FaArrowRotateRight />} variant="ghost" size="sm" onClick={skipForward} mr={2} />
+            <IconButton aria-label="Skip Backward" icon={<FaArrowRotateLeft />} variant="ghost" size="sm" onClick={skipBackward} mr={2} data-cy={`skip-backward`}/>
+            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="ghost" size="sm" onClick={togglePlayPause} mr={2} data-cy={`play-pause-button`}/>
+            <IconButton aria-label=" Skip Forward" icon={<FaArrowRotateRight />} variant="ghost" size="sm" onClick={skipForward} mr={2} data-cy={`skip-forward`}/>
             <IconButton aria-label=" Next Episode" icon={<FaStepForward />} variant="ghost" size="sm" onClick={() => {}} />
           </Flex>
 
           {/* Slider */}
           {!isMobile && (
             <Flex width="100%" mx={4} alignItems="center">
-              <Text mr={3} fontSize="xs" fontWeight="medium">
+              <Text data-cy={`time-passed-${convertTime(position)}`} mr={3} fontSize="xs" fontWeight="medium">
                 {convertTime(position)}
               </Text>
               <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bg="purple.500"  />
+                  <SliderFilledTrack bg="brand.100"  />
                 </SliderTrack> 
               </Slider>
 
-              <Text ml={3} fontSize="xs" fontWeight="medium">
+              <Text data-cy={`time-left-${timeLeft}`} ml={3} fontSize="xs" fontWeight="medium">
                 {timeLeft}
               </Text>
             </Flex>
@@ -225,9 +225,9 @@ const PlayerBar = () => {
                   width="5rem"
                 >
                   <SliderTrack bg="gray.500">
-                    <SliderFilledTrack bg="purple.500" />
+                    <SliderFilledTrack bg="brand.100" />
                   </SliderTrack>
-                  <SliderThumb boxSize={2} bg="purple.500" /> 
+                  <SliderThumb boxSize={2} bg="brand.100" /> 
                 </Slider>
               </Box>
             )}

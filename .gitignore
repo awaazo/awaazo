@@ -298,6 +298,3 @@ backend/.env
 docker-compose.release.yml
 Backend/Backend/Logs
 python/*ServerFiles
-
-frontend/cypress/videos/**
-frontend/cypress/screenshots/**

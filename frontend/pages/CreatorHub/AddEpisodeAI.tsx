@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { FormControl, FormLabel, Button, Textarea, Select, Box, VStack, Image, Text, Input } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import { useSession } from "next-auth/react";
-import Navbar from "../components/shared/Navbar";
+import Navbar from "../../components/shared/Navbar";
 import { useRouter } from "next/router";
 
 const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];

@@ -18,7 +18,6 @@ describe("Register", () => {
     );
     cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
     cy.url().should("include", "/");
-    cy.wait(250);
     cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains("TestDisplayBio");
   });
@@ -45,7 +44,7 @@ describe("Register", () => {
       "{selectall}{backspace}",
       "{selectall}{backspace}",
     );
-    cy.url().should("include", "/Setup");
+    cy.url().should("include", "/profile/ProfileSetup");
     cy.contains("Avatar, Display Name and Bio Required.").should("exist");
   });
 
@@ -78,8 +77,8 @@ describe("Register", () => {
   });
 
   it("limits the number of characters in the input field", () => {
-    cy.get('button[aria-label="Menu"]').should('be.visible').click({ timeout: 5000 });
-    cy.get("button").contains("Register").should('be.visible').click({ timeout: 5000 });
+    cy.get('button[aria-label="Menu"]').click();
+    cy.get("button").contains("Sign up").click();
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );

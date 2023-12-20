@@ -62,16 +62,15 @@ const LikeComponent = ({ episodeOrCommentId, initialLikes }) => {
       <Tooltip label={isLiked ? "Unlike" : "Like"} aria-label="Like tooltip">
         {/* Button to trigger the like/unlike action */}
         <Button
-            variant={"ghost"}
-            p={2}
-            leftIcon={
-              <Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />
-            }
-            onClick={() => handleLike()}
-            data-cy={`like-button-index:`}
-          >
+          variant={"ghost"}
+          p={2}
+          leftIcon={
+            <Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />
+          }
+          onClick={() => handleLike()}
+          data-cy={`like-button-index:`}
+        >
           {likes}
-          
         </Button>
       </Tooltip>
     </>

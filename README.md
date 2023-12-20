@@ -117,7 +117,7 @@ For complete details, refer to our [Tech Stack Wiki](https://github.com/awaazo/a
         <sub><b>Usama Saleem</b></sub>
       </a>
       <br />
-      <sub>usama.saleem@hotmail.com</sub>
+      <sub>usama.saleem [at] hotmail dot com</sub>
       <br />
       <sub> 40110036</sub>
     </td>

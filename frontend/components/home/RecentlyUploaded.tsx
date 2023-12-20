@@ -98,7 +98,6 @@ const RecentlyUploaded: React.FC = () => {
         left={0}
         zIndex={-99}
         borderRadius={"0.5em"}
-        boxShadow={"lg"}
       >
         <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
           Recently Uploaded

@@ -82,11 +82,11 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
   cy.get('input[id="confirmPassword"]').type(confirmPassword);
   cy.get('input[id="date"]').click().type(birthdate);
   cy.get('button[type="submit"]').click();
-  cy.wait(250);
+  cy.wait(500);
 });
 
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
-  cy.url().should('include', '/Setup');
+  cy.url().should('include', '/profile/ProfileSetup');
   cy.get('input[type="file"]').attachFile(filepath);
   cy.get('input[id="displayName"]').type(displayName);
   cy.get('Textarea[id="bio"]').type(bio);
@@ -94,6 +94,7 @@ Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   cy.get(':nth-child(7) > .chakra-button').click();
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[type="submit"]').click();
+  cy.wait(500);
 });
 /*
   -=-=-=-=End Registration Commands
@@ -144,10 +145,10 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
 -=-=-=-=-=-=-=Podcast create
 */
 Cypress.Commands.add('podcast_create', (filepath, name, description) => {
-  cy.get('button[aria-label="Create"]').click();
-  cy.url().should('include', '/Create');
+  cy.get('button[aria-label="Add Episode"]').click();
+  cy.url().should('include', '/CreatorHub/AddEpisode');
   cy.get('[data-cy="create-podcast-box"]').click();
-  cy.url().should('include', '/NewPodcast');
+  cy.url().should('include', '/CreatorHub/CreatePodcast');
   cy.wait(250);
   cy.get('input[type="file"]').attachFile(filepath);
   cy.wait(250);
@@ -161,14 +162,15 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
   cy.get(':nth-child(7) > .chakra-button').click();
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[id=createBtn]').click(); 
+  cy.wait(200);
 });
 /*
 -=-=-=-=-=-=-=End Podcast create
 */
 
 Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file, podcast) =>{
-  cy.visit('/Create');
-  cy.url().should('include', '/Create', { timeout: 5000 });
+  cy.visit('/CreatorHub/AddEpisode');
+  cy.url().should('include', '/CreatorHub/AddEpisode', { timeout: 5000 });
   cy.get('input[type="file"]').attachFile(fjlepath);
   if(name){
     cy.get('input[placeholder="Enter episode name..."]').type(name);
@@ -186,7 +188,8 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
     cy.get('[data-cy=podcast-image-cool-pets').click();
   }
   cy.get('button[id=createBtn]').click({ timeout: 10000 });
-  cy.intercept('GET', '/MyPodcasts').as('podcasts');
+  cy.intercept('GET', '/CreatorHub/MyPodcasts').as('podcasts');
+  cy.wait(250);
 });
 
 

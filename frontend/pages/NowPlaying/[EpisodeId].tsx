@@ -21,7 +21,9 @@ const NowPlaying = () => {
   const [episode, setEpisode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [components, setComponents] = useState([]);
-  const [selectedComponent, setSelectedComponent] = useState<number | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     if (EpisodeId) {
@@ -29,7 +31,6 @@ const NowPlaying = () => {
         .then((response) => {
           if (response.status === 200) {
             setEpisode(response.episode);
-            setIsLoading(false);
           } else {
             console.error("Error fetching episode data:", response.message);
           }
@@ -37,6 +38,7 @@ const NowPlaying = () => {
         .catch((error) => console.error("Error fetching episode data:", error));
     }
   }, [EpisodeId]);
+
 
 
   useEffect(() => {
@@ -48,29 +50,27 @@ const NowPlaying = () => {
         },
         // { component: <AwaazoBirdBot />, inSlider: false },
         // {
-        //   component: <Bookmarks bookmarks={episode.bookmarks} />,
+        //   component: <Bookmarks episodeId={episode.id}  />,
         //   inSlider: true,
         // },
         // {
-        //   component: <Transcripts transcripts={episode.transcript} />,
+        //   component: <Transcripts episodeId={episode.id}  />,
         //   inSlider: true,
         // },
-        // {
-        //   component: <Sections sections={episode.sections} />,
-        //   inSlider: true,
-        // },
+        {
+          component: <Sections episodeId={episode.id} />,
+          inSlider: true,
+        },
 
         // DO NOT REMOVE
       ]);
     }
-  }, [episode]); 
+  }, [episode]);
 
   // const palette = usePalette(episode.thumbnailUrl, 2, "hex", {
   //   crossOrigin: "Anonymous",
   //   quality: 10,
   // }).data;
-
-
 
   const handleComponentClick = (index: number) => {
     setSelectedComponent(index === selectedComponent ? null : index);
@@ -80,43 +80,55 @@ const NowPlaying = () => {
   const sliderComponents = components.filter((comp) => comp.inSlider);
 
   return (
-     <Box w="100vw" h="100vh" display="flex" flexDirection="column" overflow="hidden">
-    {/* //bgColor={palette || null} */}
+    <Box
+      w="100vw"
+      h="100vh"
+      display="flex"
+      flexDirection="column"
+      overflow="hidden"
+    >
+      {/* //bgColor={palette || null} */}
       <Navbar />
       {isMobile ? (
         <Slider {...sliderSettings}>
           {components.map((comp, index) => (
-            <Box key={index} w="full" h="80vh" p={4} alignItems="stretch" justifyContent="center">
+            <Box
+              key={index}
+              w="full"
+              h="80vh"
+              p={4}
+              alignItems="stretch"
+              justifyContent="center"
+            >
               {comp.component}
             </Box>
           ))}
         </Slider>
       ) : (
-        <Box 
-        flexGrow={1} 
-        pl={3} 
-        pr={3} 
-        mx={5} 
-        overflow="hidden"
-      >
-    <Grid
-          templateAreas={{
-            md: `
+        <Box flexGrow={1} pl={3} pr={3} mx={5} overflow="hidden">
+          <Grid
+            templateAreas={{
+              md: `
               "coverart transcripts AwaazoBirdBot"
               "bookmarks sections AwaazoBirdBot"
             `,
-          }}
-          gridTemplateRows={{ md: "1fr 1fr" }}
-          gridTemplateColumns={{ md: "1fr 1fr 1fr" }}
-          gap={1}
-          h="calc(100% - 400px)" 
-        >
-          {components.map((comp, index) => (
-            <Box key={index} gridArea={comp.gridArea} p={2} onClick={() => handleComponentClick(index)}>
-              {comp.component}
-            </Box>
-          ))}
-        </Grid>
+            }}
+            gridTemplateRows={{ md: "1fr 1fr" }}
+            gridTemplateColumns={{ md: "1fr 1fr 1fr" }}
+            gap={1}
+            h="calc(100% - 400px)"
+          >
+            {components.map((comp, index) => (
+              <Box
+                key={index}
+                gridArea={comp.gridArea}
+                p={2}
+                onClick={() => handleComponentClick(index)}
+              >
+                {comp.component}
+              </Box>
+            ))}
+          </Grid>
         </Box>
       )}
     </Box>
