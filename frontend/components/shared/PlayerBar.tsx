@@ -188,7 +188,7 @@ const PlayerBar = () => {
               <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bg="purple.500"  />
+                  <SliderFilledTrack bg="brand.100"  />
                 </SliderTrack> 
               </Slider>
 
@@ -225,9 +225,9 @@ const PlayerBar = () => {
                   width="5rem"
                 >
                   <SliderTrack bg="gray.500">
-                    <SliderFilledTrack bg="purple.500" />
+                    <SliderFilledTrack bg="brand.100" />
                   </SliderTrack>
-                  <SliderThumb boxSize={2} bg="purple.500" /> 
+                  <SliderThumb boxSize={2} bg="brand.100" /> 
                 </Slider>
               </Box>
             )}

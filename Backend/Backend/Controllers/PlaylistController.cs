@@ -1,8 +1,5 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Models;
-using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +74,7 @@ public class PlaylistController : ControllerBase
             
             // Edit the playlist.
             return await _playlistService.EditPlaylistAsync(playlistId,request,user)? 
-                Ok("Playlist udpated."):
+                Ok("Playlist updated."):
                 Ok("Failed to update playlist.");
         }
         catch(Exception e)
