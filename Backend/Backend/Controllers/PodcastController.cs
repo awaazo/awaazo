@@ -491,7 +491,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.GetWatchHistory(user, episodeId, GetDomainUrl(HttpContext));
+            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
             return Ok(interaction);
         }
         catch (Exception e)
@@ -502,9 +502,10 @@ public class PodcastController : ControllerBase
     }
     
     [HttpGet("{episodeId}/watchHistory")]
-    public async Task<IActionResult> GetWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
+    public async Task<IActionResult> GetWatchHistory(Guid episodeId)
     {
-        _logger.LogDebug(@"Using the podcast\episodeId\saveWatchHistory Endpoint");
+        
+        this.LogDebugControllerAPICall(_logger);
 
         try
         {
@@ -512,7 +513,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
+            var interaction = await _podcastService.GetWatchHistory(user, episodeId, GetDomainUrl(HttpContext));
             return Ok(interaction);
         }
         catch (Exception e)
