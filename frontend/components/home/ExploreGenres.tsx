@@ -75,7 +75,6 @@ const ExploreGenres = () => {
   return (
     <Box marginBottom="3em">
       <Box
-        bgGradient="linear(to-r, #ad602d, transparent)"
         w={{ base: "70%", md: "20%" }}
         top={0}
         left={0}
