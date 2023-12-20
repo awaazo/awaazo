@@ -6,6 +6,7 @@ import {
   Episode,
   userProfileByID,
   User,
+  Section,
   Playlist,
 } from "./Interfaces";
 
@@ -109,6 +110,16 @@ export interface IsLikedResponse extends BaseResponse {
 
 //#endregion
 
+//#region Social Responses
+export interface AddSectionResponse extends BaseResponse {
+  data: string;
+}
+
+export interface getSectionResponse extends BaseResponse {
+  sections: Section[];
+}
+
+//#endregion
 //#region Playlist Responses
 export interface GetMyPlaylistsResponse extends BaseResponse {
   playlists: Playlist[];

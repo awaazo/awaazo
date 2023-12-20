@@ -268,7 +268,12 @@ const PlayerBar = () => {
           {/* Slider */}
           {!isMobile && (
             <Flex width="100%" mx={4} alignItems="center">
-              <Text mr={3} fontSize="xs" fontWeight="medium">
+              <Text
+                data-cy={`time-passed-${convertTime(position)}`}
+                mr={3}
+                fontSize="xs"
+                fontWeight="medium"
+              >
                 {convertTime(position)}
               </Text>
               <Slider
@@ -279,11 +284,16 @@ const PlayerBar = () => {
               >
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bg="purple.500" />
+                  <SliderFilledTrack bg="brand.100" />
                 </SliderTrack>
               </Slider>
 
-              <Text ml={3} fontSize="xs" fontWeight="medium">
+              <Text
+                data-cy={`time-left-${timeLeft}`}
+                ml={3}
+                fontSize="xs"
+                fontWeight="medium"
+              >
                 {timeLeft}
               </Text>
             </Flex>
@@ -330,9 +340,9 @@ const PlayerBar = () => {
                   width="5rem"
                 >
                   <SliderTrack bg="gray.500">
-                    <SliderFilledTrack bg="purple.500" />
+                    <SliderFilledTrack bg="brand.100" />
                   </SliderTrack>
-                  <SliderThumb boxSize={2} bg="purple.500" />
+                  <SliderThumb boxSize={2} bg="brand.100" />
                 </Slider>
               </Box>
             )}

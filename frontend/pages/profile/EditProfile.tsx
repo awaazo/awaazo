@@ -431,7 +431,7 @@ const EditProfile: React.FC = () => {
               minWidth={"200px"}
               color={"white"}
               marginTop={"15px"}
-              marginBottom={"10px"}
+              marginBottom={"150px"}
               padding={"20px"}
               outline={"1px solid rgba(255, 255, 255, 0.6)"}
               style={{

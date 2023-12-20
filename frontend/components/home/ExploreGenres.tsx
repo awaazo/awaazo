@@ -18,7 +18,6 @@ const genres = [
   { name: "Other", image: otherImage, link: "Other" },
 ];
 
-// Define the GenreCard component
 const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   const scale = isHovered ? "scale(1.1)" : "scale(0.95)";
 
@@ -68,7 +67,6 @@ const GenreCard = ({ genre, isHovered, onMouseEnter, onMouseLeave }) => {
   );
 };
 
-// Define the ExploreGenres component
 const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
@@ -80,7 +78,6 @@ const ExploreGenres = () => {
         left={0}
         zIndex={-99}
         borderRadius={"0.5em"}
-        boxShadow={"lg"}
       >
         <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
           Explore Genres

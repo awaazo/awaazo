@@ -53,8 +53,9 @@ export interface Playlist {
 export interface Section {
   id: string;
   episodeId: string;
-  title?: string;
-  timestamp?: number;
+  title: string;
+  start: number;
+  end: number;
 }
 
 export interface Comment {
