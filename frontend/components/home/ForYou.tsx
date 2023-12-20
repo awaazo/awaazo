@@ -26,6 +26,7 @@ const ForYou: React.FC = () => {
     <>
       {/* Background gradient */}
       <Box
+        bgGradient="linear(to-r, #6a39c4, transparent)"
         w={{ base: "70%", md: "20%" }}
         top={0}
         left={0}

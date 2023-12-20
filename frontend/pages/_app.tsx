@@ -1,11 +1,10 @@
-import { Box, ChakraProvider} from "@chakra-ui/react";
+// pages/_app.tsx
+import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
-import { useRouter } from 'next/router';
-
 
 const theme = extendTheme({
   colors: {
@@ -24,21 +23,33 @@ const theme = extendTheme({
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  const router = useRouter();
-  const path = router.pathname;
-
-  // Define the paths where you don't want to show the PlayerBar
-  const hidePlayerBarOnPaths = ['/auth/Login', '/auth/Signup' , '/AddEpisode' , '/AddEpisodeAI']; 
-  const showPlayerBar = !hidePlayerBarOnPaths.includes(path)
-
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
-      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" backgroundColor="black" />
+      <Box
+        position="fixed"
+        top="0"
+        left="0"
+        width="100%"
+        height="100vh"
+        backgroundImage={bg.src}
+        backgroundSize="cover"
+        zIndex="-1"
+      />
+      <ColorModeScript initialColorMode="dark" />
       <SessionProvider session={session}>
         <PlayerProvider>
           <Component {...pageProps} />
-          {showPlayerBar && <PlayerBar />}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <PlayerBar />
+          </div>
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
@@ -46,4 +57,3 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 }
 
 export default MyApp;
-
