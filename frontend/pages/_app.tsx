@@ -6,6 +6,7 @@ import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
 import { useRouter } from "next/router";
+import '../styles/globals.css';
 
 const theme = extendTheme({
   colors: {
