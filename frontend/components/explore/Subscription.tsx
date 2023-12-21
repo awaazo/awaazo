@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import SubscribeHelper from "../../helpers/SubscribeHelper";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
-import { FaCheck, FaPlus } from "react-icons/fa";
 import { BaseResponse } from "../../utilities/Responses";
 
-const subscribeComponent = ({ PodcastId, initialIsSubscribed }) => {
+const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, currentUserID }) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
 
   useEffect(() => {
@@ -23,12 +22,12 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed }) => {
     if (isSubscribed) {
       // Call unsubscribePodcast because the podcast is currently subscribed
       SubscribeHelper.addUnsubscription(PodcastId)
-        .then((response) => {
-          if (response.status === 200) {
-            // Update the UI to reflect the unsubscribe
-            setIsSubscribed(false);
-          } else {
-            console.error("Error unsubscribing podcast:", response.message);
+      .then((response) => {
+        if (response.status === 200) {
+          // Update the UI to reflect the unsubscribe
+          setIsSubscribed(false);
+        } else {
+          console.error("Error unsubscribing podcast:", response.message);
           }
         })
         .catch((error) => {
@@ -60,25 +59,31 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed }) => {
             error.message,
           );
         });
-    }
-  };
+      }
+    };
 
+    console.log(`podcasterId: ${podcasterId}`); // Debugging line
+    console.log(`currentUserID: ${currentUserID}`); // Debugging line
+    
+    if (podcasterId === currentUserID) {
+      return null;
+    }
   return (
     <>
-      <Tooltip
-        label={isSubscribed ? "Unsubscribe" : "Subscribe"}
-        aria-label="Subscribe tooltip"
+    <Tooltip
+      label={isSubscribed ? "Unsubscribe" : "Subscribe"}
+      aria-label="Subscribe tooltip"
+    >
+      <Button
+        p={2}
+        variant="ghost"
+        onClick={handleSubscribe}
+        fontWeight={"bold"}
+        bg={isSubscribed ? "gray.700" : "blue.500"}
       >
-        <Button
-          p={2}
-          variant="ghost"
-          onClick={handleSubscribe}
-          fontWeight={"bold"}
-          bg={isSubscribed ? "gray.700" : "blue.500"}
-        >
-          {isSubscribed ? "Unsubscribe" : "Subscribe"}
-        </Button>
-      </Tooltip>
+        {isSubscribed ? "Unsubscribe" : "Subscribe"}
+      </Button>
+    </Tooltip>
     </>
   );
 };

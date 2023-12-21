@@ -20,7 +20,7 @@ import {
 } from "../../utilities/Requests";
 
 // Component for displaying and adding reviews
-const Reviews = ({ podcast }) => {
+const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [isAddingReview, setIsAddingReview] = useState(false);
@@ -28,6 +28,7 @@ const Reviews = ({ podcast }) => {
   const [newReviewText, setNewReviewText] = useState("");
   const [reviewCharacterCount, setReviewCharacterCount] = useState<number>(0);
   const [reviewError, setReviewError] = useState("");
+  const [reviews, setReviews] = useState(podcast.ratings);
 
   // Function to handle adding a review
   const handleAddReview = async () => {
@@ -44,9 +45,12 @@ const Reviews = ({ podcast }) => {
       console.log(res1);
 
       if (res1.status === 200) {
-        console.log("Review: " + newReviewText);
+        setReviews([...reviews, reviewRequest]);
+              // Update parent state
+      const updatedPodcast = { ...podcast, ratings: [...podcast.ratings, res1] };
+      updatePodcastData(updatedPodcast);
+        setIsAddingReview(false);
       } else {
-        // Handle error here
         setReviewError("Cannot add review");
       }
 
@@ -59,7 +63,6 @@ const Reviews = ({ podcast }) => {
       const res2 = await ReviewsHelper.postPodcastRating(ratingRequest);
       if (res2.status === 200) {
         setIsAddingReview(false);
-        window.location.href = window.location.href;
       } else {
         // Handle error here
         setReviewError("Cannot add rating");
@@ -77,7 +80,7 @@ const Reviews = ({ podcast }) => {
   return (
     <VStack align="start" spacing={4} marginTop={4}>
       <Flex justify="space-between" w="100%" alignItems="center">
-        {!isAddingReview && (
+        {!isAddingReview && podcast.podcasterId !== currentUserID && (
           <>
             <Text
               ml={3}
@@ -155,35 +158,37 @@ const Reviews = ({ podcast }) => {
       )}
       {podcast.ratings && podcast.ratings.length > 0 ? (
         podcast.ratings.map((rating) => (
-          <Box
-            key={rating.id}
-            w="100%"
-            p={4}
-            borderWidth="1px"
-            borderRadius="lg"
-          >
-            <Flex justify="space-between" align="center">
-              <Flex align="center">
-                <Avatar
-                  size="md"
-                  name={rating.user.username}
-                  src={rating.user.avatarUrl}
-                />
-                <Text ml={2}>{rating.user.username}</Text>
+          rating && rating.user && (
+            <Box
+              key={rating.id}
+              w="100%"
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+            >
+              <Flex justify="space-between" align="center">
+                <Flex align="center">
+                  <Avatar
+                    size="md"
+                    name={rating.user.username}
+                    src={rating.user.avatarUrl}
+                  />
+                  <Text ml={2}>{rating.user.username}</Text>
+                </Flex>
+                <Box>
+                  {Array.from({ length: rating.rating }, (_, index) => (
+                    <StarIcon key={index} color="yellow.400" />
+                  ))}
+                </Box>
               </Flex>
-              <Box>
-                {Array.from({ length: rating.rating }, (_, index) => (
-                  <StarIcon key={index} color="yellow.400" />
-                ))}
+              <Flex justify="flex-start" align="center" mt={2}>
+                <Text color="gray.300">{rating.review}</Text>
+              </Flex>
+              <Box mt={2}>
+                <Text>{rating.text}</Text>
               </Box>
-            </Flex>
-            <Flex justify="flex-start" align="center" mt={2}>
-              <Text color="gray.300">{rating.review}</Text>
-            </Flex>
-            <Box mt={2}>
-              <Text>{rating.text}</Text>
             </Box>
-          </Box>
+          )
         ))
       ) : (
         <Flex justify="center" align="center" mt={8} width="100%">
