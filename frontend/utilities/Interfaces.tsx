@@ -48,6 +48,7 @@ export interface Playlist {
   duration: number;
   createdAt: Date;
   updatedAt: Date;
+  playlistEpisodes: Episode[];
 }
 
 export interface Section {

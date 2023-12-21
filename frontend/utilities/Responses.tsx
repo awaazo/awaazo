@@ -122,12 +122,16 @@ export interface getSectionResponse extends BaseResponse {
 //#endregion
 
 //#region Playlist Responses
+export interface PlaylistDataResponse extends BaseResponse {
+  data: string;
+}
+
 export interface GetPlaylistsResponse extends BaseResponse {
   playlists: Playlist[];
 }
 
 export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  episodes: Episode[];
+  playlist: Playlist;
 }
 
 //#endregion
