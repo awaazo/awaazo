@@ -36,8 +36,6 @@ export default function MyPlaylists() {
 
   useEffect(() => {
     PlaylistHelper.playlistMyPlaylistsGet(page, pageSize).then((res2) => {
-      // If logged in, set user, otherwise redirect to login page
-      console.log("HERE");
       if (res2.status == 200) {
         setPlaylists((prevPlaylists) => [...prevPlaylists, ...res2.playlists]);
       } else {
@@ -65,7 +63,7 @@ export default function MyPlaylists() {
         }}
       >
         My Playlists
-        <NextLink href="/MyPlaylists" passHref>
+        <NextLink href="/Playlist/MyPlaylists" passHref>
           <Button
             style={{
               fontWeight: "bold",

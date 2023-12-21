@@ -8,6 +8,7 @@ import {
   BaseResponse,
   GetPlaylistEpisodesResponse,
   GetPlaylistsResponse,
+  PlaylistDataResponse,
 } from "../utilities/Responses";
 import {
   PlaylistAddEpisodeRequest,
@@ -28,7 +29,7 @@ export default class PlaylistHelper {
    */
   public static playlistCreateRequest = async (
     requestData: PlaylistCreateRequest,
-  ): Promise<BaseResponse> => {
+  ): Promise<PlaylistDataResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -57,12 +58,15 @@ export default class PlaylistHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
+      console.log(error);
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -75,7 +79,7 @@ export default class PlaylistHelper {
   public static playlistEditRequest = async (
     requestData: PlaylistEditRequest,
     playlistId,
-  ): Promise<BaseResponse> => {
+  ): Promise<PlaylistDataResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -104,12 +108,14 @@ export default class PlaylistHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -122,7 +128,7 @@ export default class PlaylistHelper {
   public static playlistAddEpisodeRequest = async (
     requestData: PlaylistAddEpisodeRequest,
     playlistId,
-  ): Promise<BaseResponse> => {
+  ): Promise<PlaylistDataResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -151,12 +157,14 @@ export default class PlaylistHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
+        data: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
+        data: error.response.data,
       };
     }
   };
@@ -376,14 +384,14 @@ export default class PlaylistHelper {
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
-        episodes: requestResponse.data,
+        playlist: requestResponse.data,
       };
     } catch (error) {
       // Return the error.
       return {
         status: error.response.status,
         message: error.response.statusText,
-        episodes: null,
+        playlist: null,
       };
     }
   };
@@ -419,14 +427,14 @@ export default class PlaylistHelper {
         return {
           status: requestResponse.status,
           message: requestResponse.statusText,
-          episodes: requestResponse.data,
+          playlist: requestResponse.data,
         };
       } catch (error) {
         // Return the error.
         return {
           status: error.response.status,
           message: error.response.statusText,
-          episodes: null,
+          playlist: null,
         };
       }
     };

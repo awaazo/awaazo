@@ -28,7 +28,6 @@ import {
 } from "react-icons/bs";
 import { IoIosMore } from "react-icons/io";
 import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
-import { GrCaretNext } from "react-icons/gr";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { MdIosShare } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
@@ -124,7 +123,6 @@ const EpisodeCard = ({ episode }) => {
 
   return (
     <Flex
-      className="hoverEffect"
       paddingTop={5}
       paddingBottom={5}
       mt={3}

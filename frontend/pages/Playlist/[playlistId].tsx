@@ -1,15 +1,28 @@
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
 import Navbar from "../../components/shared/Navbar";
+import PlaylistSidebar from "../../components/playlist/PlaylistSidebar";
+import { useRouter } from "next/router";
+import PlaylistOverview from "../../components/playlist/PlaylistOverview";
 
 export default function Playlist() {
+  const router = useRouter();
+  const { playlistId } = router.query;
+
   return (
     <>
       <Navbar />
-      <Center h="100vh">
-        <Box>
-          <Box p={4}>Explore Page</Box>
+      <Flex>
+        <Box w="20%" position="fixed">
+          {" "}
+          {/* Adjust the width of the sidebar as needed */}
+          <PlaylistSidebar />
         </Box>
-      </Center>
+        <Box flex="1" p="8" ml={"20%"}>
+          {" "}
+          {/* The remaining space */}
+          <PlaylistOverview playlistId={playlistId as string} />
+        </Box>
+      </Flex>
     </>
   );
 }

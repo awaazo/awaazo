@@ -32,6 +32,16 @@ interface PlayerProviderProps {
   children: ReactNode;
 }
 
+// Function to shuffle an array using Durstenfeld shuffle
+const shuffleArray = (array) => {
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray;
+};
+
 const playerReducer = (state: PlayerState, action: any) => {
   switch (action.type) {
     case "PLAY_NOW_QUEUE":
@@ -58,23 +68,33 @@ const playerReducer = (state: PlayerState, action: any) => {
     case "PLAY_PLAYLIST_NOW":
       return {
         ...state,
-        episode: action.payload,
         currentEpisodeIndex: 0,
-        playlist: [action.payload],
+        playlist: action.payload.playlistEpisodes,
+        episode: action.payload.playlistEpisodes[0],
       };
+    case "SHUFFLE_PLAYLIST_NOW":
+      const shuffledPlaylist = shuffleArray(action.payload.playlistEpisodes);
+      return {
+        ...state,
+        currentEpisodeIndex: 0,
+        playlist: shuffledPlaylist,
+        episode: shuffledPlaylist[0],
+      };
+
     case "ADD_PLAYLIST_NEXT":
+      const newPlaylist = action.payload.playlistEpisodes;
       return {
         ...state,
         playlist: [
           ...state.playlist.slice(0, state.currentEpisodeIndex + 1),
-          ...action.payload,
+          ...action.payload.playlistEpisodes,
           ...state.playlist.slice(state.currentEpisodeIndex + 1),
         ],
       };
     case "ADD_PLAYLIST_LATER":
       return {
         ...state,
-        playlist: [...state.playlist, ...action.payload],
+        playlist: [...state.playlist, ...action.payload.playlistEpisodes],
       };
     case "PLAY_NEXT":
       const nextIndex = state.currentEpisodeIndex + 1;
