@@ -131,12 +131,4 @@ export interface PlaylistEditRequest {
   privacy: string;
 }
 
-export interface PlaylistAddEpisodeRequest {
-  id: string[];
-}
-
-export interface PlaylistRemoveEpisodeRequest {
-  id: string[];
-}
-
 //#endregion

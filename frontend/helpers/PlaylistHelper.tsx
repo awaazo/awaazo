@@ -11,10 +11,8 @@ import {
   PlaylistDataResponse,
 } from "../utilities/Responses";
 import {
-  PlaylistAddEpisodeRequest,
   PlaylistCreateRequest,
   PlaylistEditRequest,
-  PlaylistRemoveEpisodeRequest,
 } from "../utilities/Requests";
 
 export default class PlaylistHelper {
@@ -126,7 +124,7 @@ export default class PlaylistHelper {
    * @returns A BaseResponse object with the server's response.
    */
   public static playlistAddEpisodeRequest = async (
-    requestData: PlaylistAddEpisodeRequest,
+    requestData,
     playlistId,
   ): Promise<PlaylistDataResponse> => {
     // Create the request options.
@@ -175,7 +173,7 @@ export default class PlaylistHelper {
    * @returns A BaseResponse object with the server's response.
    */
   public static playlistRemoveEpisodeRequest = async (
-    requestData: PlaylistRemoveEpisodeRequest,
+    requestData,
     playlistId,
   ): Promise<BaseResponse> => {
     // Create the request options.

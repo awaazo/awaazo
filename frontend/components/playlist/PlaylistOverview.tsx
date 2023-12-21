@@ -499,7 +499,13 @@ const PlaylistOverview = ({ playlistId }) => {
               Episodes:
             </Text>
             {episodes && episodes.length > 0 ? (
-              episodes.map((episode: any) => <EpisodeCard episode={episode} />)
+              episodes.map((episode: any) => (
+                <EpisodeCard
+                  episode={episode}
+                  inPlaylist={true}
+                  playlistId={playlist.id}
+                />
+              ))
             ) : (
               <Text textAlign={"center"} mt={"5%"} fontWeight={"bold"}>
                 No episodes in this playlist yet

@@ -200,7 +200,11 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <EpisodeCard key={index} episode={episode} />
+                  <EpisodeCard
+                    key={index}
+                    episode={episode}
+                    inPlaylist={false}
+                  />
                 ))
               )}
             </>
@@ -257,7 +261,12 @@ export default function PodcastOverview({ podcast }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <EpisodeCard key={index} episode={episode} />
+                  <EpisodeCard
+                    key={index}
+                    episode={episode}
+                    inPlaylist={false}
+                    playlistId={null}
+                  />
                 ))
               )}
             </div>

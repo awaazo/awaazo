@@ -29,13 +29,15 @@ import {
 import { IoIosMore } from "react-icons/io";
 import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import { MdIosShare } from "react-icons/md";
+import { MdDelete, MdIosShare } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
+import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
+import PlaylistHelper from "../../helpers/PlaylistHelper";
 
 // Component to display an episode
-const EpisodeCard = ({ episode }) => {
+const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
 
@@ -104,21 +106,28 @@ const EpisodeCard = ({ episode }) => {
     }
   };
 
-  const [isAddToPlaylistMenuOpen, setIsAddToPlaylistMenuOpen] = useState(false);
+  // Add to Playlist implementation
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+    useState(false);
 
+  // Handlers to open/close the modal:
   const handleAddToPlaylistMenuToggle = () => {
-    setIsAddToPlaylistMenuOpen(!isAddToPlaylistMenuOpen);
+    setIsAddToPlaylistModalOpen(!isAddToPlaylistModalOpen);
   };
 
-  const handleAddToPlaylistItemClick = (action) => {
-    // Implement logic based on the selected action
-    if (action === "createPlaylist") {
-      // Add logic for creating a new playlist
-    } else if (action === "selectPlaylist") {
-      // Add logic for selecting an existing playlist
+  // handles Remove from Playlist
+  const handleRemovePlaylistMenuToggle = async () => {
+    const request = [episode.id];
+    const response = await PlaylistHelper.playlistRemoveEpisodeRequest(
+      request,
+      playlistId,
+    );
+    console.log(response);
+    if (response.status == 200) {
+      window.location.reload();
+    } else {
+      console.log("Playlist cannot be deleted");
     }
-    // Close the menu after handling the action
-    setIsAddToPlaylistMenuOpen(false);
   };
 
   return (
@@ -234,6 +243,7 @@ const EpisodeCard = ({ episode }) => {
                   fontWeight: "bold",
                 }}
                 style={{ backgroundColor: "transparent" }}
+                onClick={handleAddToPlaylistMenuToggle}
               >
                 Add to Playlist{" "}
                 <CgPlayList
@@ -241,6 +251,22 @@ const EpisodeCard = ({ episode }) => {
                   style={{ marginLeft: "auto", color: "white" }}
                 />
               </MenuItem>
+              {inPlaylist && (
+                <MenuItem
+                  _hover={{
+                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                    fontWeight: "bold",
+                  }}
+                  style={{ backgroundColor: "transparent", color: "red" }}
+                  onClick={() => handleRemovePlaylistMenuToggle()}
+                >
+                  Remove from Playlist{" "}
+                  <MdDelete
+                    size={24}
+                    style={{ marginLeft: "auto", color: "red" }}
+                  />
+                </MenuItem>
+              )}
               <MenuDivider />
               <MenuItem
                 onClick={() => handleEpisodeClick()}
@@ -310,6 +336,11 @@ const EpisodeCard = ({ episode }) => {
           </Menu>
         </Box>
       </Flex>
+      <AddToPlaylistModal
+        isOpen={isAddToPlaylistModalOpen}
+        onClose={() => setIsAddToPlaylistModalOpen(false)}
+        episode={episode}
+      />
     </Flex>
   );
 };

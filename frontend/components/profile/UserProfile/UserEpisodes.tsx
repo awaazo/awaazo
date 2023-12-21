@@ -105,7 +105,11 @@ export default function UserEpisodes({ userId }) {
           {/* Render the list of selected episodes */}
           <VStack spacing={6} w={{ base: "auto", md: "lg" }}>
             {rangeEpisodes.map((episode, index) => (
-              <EpisodeCard episode={episode} />
+              <EpisodeCard
+                episode={episode}
+                inPlaylist={false}
+                playlistId={null}
+              />
             ))}
           </VStack>
           {rangeEpisodes.length < allEpisodes.length && (

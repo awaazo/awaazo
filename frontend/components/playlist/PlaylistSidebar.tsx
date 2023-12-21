@@ -86,7 +86,7 @@ const PlaylistSidebar = () => {
     e.preventDefault();
     // Ensure all required fields are filled
     if (playlistName == "" || playlistDescription == "") {
-      setPlaylistError("Playlist Name and Description");
+      setPlaylistError("Playlist Name and Description are Both Required");
       return;
     }
     // Create request object
