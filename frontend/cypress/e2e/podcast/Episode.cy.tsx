@@ -118,8 +118,9 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
-    cy.wait(250);
+    cy.wait(750);
     cy.url().should("include", "/CreatorHub/MyPodcasts");
+    cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("♣™∏⊄‾ℜ→∞ϖñ");
