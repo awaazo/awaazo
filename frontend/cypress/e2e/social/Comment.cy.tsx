@@ -1,4 +1,4 @@
-describe('Like', () => {
+describe('Comment', () => {
 
     it('Should comment a Podcast', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
