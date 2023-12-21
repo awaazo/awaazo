@@ -190,6 +190,14 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
           placeholder="Add a title..."
           borderRadius={"1em"}
         />
+        <VStack
+        spacing={1}
+        align="start"
+        width={isMobile ? "150px" : "200px"}
+        height="100px"
+        overflowY="auto"
+      >
+      </VStack>
         <Textarea
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
