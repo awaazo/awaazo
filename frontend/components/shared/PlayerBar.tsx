@@ -27,12 +27,11 @@ import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import { Bookmark, Episode } from "../../utilities/Interfaces";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
-import BookmarkComponent from "../social/bookmarkComponent";
+import BookmarkComponent from "../bookmarks/bookmarkComponent";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import PlayingHelper from "../../helpers/PlayingHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
-import SocialHelper from "../../helpers/SocialHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
 const PlayerBar = () => {
@@ -178,32 +177,6 @@ const PlayerBar = () => {
     );
   };*/
 
-  // Fetch episode details and transform bookmarks
-  useEffect(() => {
-    const fetchEpisodeDetails = async () => {
-      const response = await PodcastHelper.getEpisodeById(
-        episode.id,
-      );
-      if (response.status === 200) {
-        if (response.episode) {
-          // Transform the bookmarks to match our format
-          const transformedBookmarks = response.episode.bookmarks.map(
-            (bookmark) => ({
-              id: bookmark.id,
-              title: bookmark.title,
-              note: bookmark.note,
-              timestamp: bookmark.timestamp,
-            }),
-          );
-          setBookmarks(transformedBookmarks);
-        }
-      } else {
-        console.error("Error fetching episode details for bookmarks:", response.message);
-      }
-    };
-    fetchEpisodeDetails();
-}, [episode.id]);
-
   // Color mode and palette detection
   const likedColor = useColorModeValue("gray.900", "gray.100");
   const commentedColor = useColorModeValue("gray.900", "gray.100");
@@ -339,18 +312,6 @@ const PlayerBar = () => {
                 <SliderThumb boxSize={2} />
               </Tooltip>*/}
 
-              {bookmarks.map((bookmark) => (
-                <Box
-                  position="absolute"
-                  left={`${(bookmark.timestamp / duration) * 100}%`}
-                  top="50%"
-                  transform="translate(-50%, -50%)"
-                  h="100%"
-                  w="2px"
-                  bg="red.500"
-                />
-              ))
-              }
             </Slider>
 
             <Text ml={3} fontSize="sm" fontWeight="bold">
