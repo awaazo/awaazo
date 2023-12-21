@@ -746,6 +746,14 @@ public class PodcastService : IPodcastService
         return transcript;
     }
 
+    public async Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl) {
+        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+
+        // Check if user had episode interaction before
+        var interaction = await GetUserEpisodeInteraction(user, episodeId);
+        return interaction;
+    }
+
     #endregion Episode
 
     #region Private Method
