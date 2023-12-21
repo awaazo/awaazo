@@ -204,6 +204,7 @@ export default function PodcastOverview({ podcast }) {
                     key={index}
                     episode={episode}
                     inPlaylist={false}
+                    playlistId={null}
                   />
                 ))
               )}
