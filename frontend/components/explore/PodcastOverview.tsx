@@ -12,7 +12,7 @@ import {
   Button, // Add Button import
 } from "@chakra-ui/react";
 
-import EpisodeCard from "../Cards/EpisodeCard";
+import EpisodeCard from "../cards/EpisodeCard";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
 

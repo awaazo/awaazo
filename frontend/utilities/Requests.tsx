@@ -116,3 +116,27 @@ export interface SectionAddRequest {
 }
 
 //#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+export interface PlaylistAddEpisodeRequest {
+  id: string[];
+}
+
+export interface PlaylistRemoveEpisodeRequest {
+  id: string[];
+}
+
+//#endregion

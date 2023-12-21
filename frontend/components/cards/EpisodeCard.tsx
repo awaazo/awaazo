@@ -150,7 +150,7 @@ const EpisodeCard = ({ episode }) => {
     >
       <Box position="relative" mr={5} onClick={() => handleEpisodeClick()}>
         <Image
-          boxSize={isMobile ? "0px" : "110px"}
+          boxSize={isMobile ? "0px" : "125px"}
           src={episode.thumbnailUrl}
           borderRadius="10%"
           marginLeft={isMobile ? "0px" : "20px"}

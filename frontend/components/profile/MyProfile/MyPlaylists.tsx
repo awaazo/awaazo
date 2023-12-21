@@ -23,7 +23,7 @@ import { FaPlay } from "react-icons/fa";
 import { Playlist } from "../../../utilities/Interfaces";
 import PlaylistHelper from "../../../helpers/PlaylistHelper";
 import { usePlayer } from "../../../utilities/PlayerContext";
-import PlaylistCard from "../../Cards/PlaylistCard";
+import PlaylistCard from "../../cards/PlaylistCard";
 
 // Define the MyEpisodes component
 export default function MyPlaylists() {
