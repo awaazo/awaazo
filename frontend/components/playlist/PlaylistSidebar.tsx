@@ -15,6 +15,7 @@ import {
   ModalCloseButton,
   Input,
   Button,
+  Image,
   Center,
   Switch,
   FormControl,
@@ -25,8 +26,10 @@ import NexLink from "next/link";
 import { FaHeart, FaPlus } from "react-icons/fa";
 import { RiPlayList2Fill } from "react-icons/ri";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { Playlist } from "../../utilities/Interfaces";
+import { Episode, Playlist } from "../../utilities/Interfaces";
 import { PlaylistCreateRequest } from "../../utilities/Requests";
+import { PiQueueFill } from "react-icons/pi";
+import { usePlayer } from "../../utilities/PlayerContext";
 
 const PlaylistSidebar = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -48,6 +51,15 @@ const PlaylistSidebar = () => {
     setPlaylistDescriptionCharacterCount,
   ] = useState<number>(0);
   const [isPrivate, setIsPrivate] = useState(false);
+
+  // Queue values
+  const { state } = usePlayer();
+  const { dispatch } = usePlayer();
+  const [isQueueModalOpen, setQueueModalOpen] = useState(false);
+  const [queueEpisodes, setQueueEpisodes] = useState<Episode[]>(state.playlist);
+  const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState<Number>(
+    state.currentEpisodeIndex,
+  );
 
   useEffect(() => {
     PlaylistHelper.playlistMyPlaylistsGet(page, pageSize).then((res2) => {
@@ -116,6 +128,19 @@ const PlaylistSidebar = () => {
     const newDesc = e.target.value.slice(0, 250);
     setPlaylistDescription(newDesc);
     setPlaylistDescriptionCharacterCount(newDesc.length);
+  };
+
+  const handleViewQueue = async () => {
+    setQueueEpisodes(state.playlist);
+    setCurrentEpisodeIndex(state.currentEpisodeIndex);
+    setQueueModalOpen(true);
+  };
+
+  const handleQueueSelect = async (index: Number) => {
+    dispatch({
+      type: "SET_CURRENT_INDEX",
+      payload: index,
+    });
   };
 
   return (
@@ -191,6 +216,18 @@ const PlaylistSidebar = () => {
             </NexLink>
           ))
         )}
+        <Divider mt="4" mb="4" />
+        <Flex
+          align="center"
+          padding={1}
+          pl={2}
+          borderRadius={"5px"}
+          _hover={{ bg: "rgba(255, 255, 255, 0.3)", cursor: "pointer" }}
+          onClick={() => handleViewQueue()}
+        >
+          <Icon as={PiQueueFill} mr="2" />
+          <Text>View Queue</Text>
+        </Flex>
       </Flex>
 
       {/* Modal for Adding Playlist */}
@@ -263,6 +300,62 @@ const PlaylistSidebar = () => {
               Add Playlist
             </Button>
           </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isQueueModalOpen} onClose={() => setQueueModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Queue</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {queueEpisodes && queueEpisodes.length > 0 ? (
+              queueEpisodes.map((episode, index) => (
+                <Flex
+                  key={index}
+                  alignItems="center"
+                  mb={2}
+                  bg={
+                    index === state.currentEpisodeIndex
+                      ? "rgba(255, 255, 255, 0.15)"
+                      : "rgba(255, 255, 255, 0.3)"
+                  }
+                  p={3}
+                  borderRadius={"50px"}
+                  onClick={() => handleQueueSelect(index)}
+                  _hover={{ cursor: "pointer" }}
+                >
+                  <Box
+                    w="40px"
+                    h="40px"
+                    borderRadius="50%"
+                    overflow="hidden"
+                    marginRight="10px"
+                  >
+                    <Image
+                      as="img"
+                      src={episode.thumbnailUrl}
+                      alt={episode.episodeName}
+                      w="100%"
+                      h="100%"
+                    />
+                  </Box>
+                  <Text
+                    fontWeight={
+                      state.currentEpisodeIndex === index ? "bold" : "normal"
+                    }
+                  >
+                    {state.currentEpisodeIndex === index
+                      ? `${episode.episodeName} - Now Playing`
+                      : episode.episodeName}
+                  </Text>
+                </Flex>
+              ))
+            ) : (
+              <Text textAlign="center" mt={5} fontWeight="bold">
+                You have no episodes in your queue.
+              </Text>
+            )}
+          </ModalBody>
         </ModalContent>
       </Modal>
     </Box>

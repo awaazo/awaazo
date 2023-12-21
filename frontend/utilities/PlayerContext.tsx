@@ -114,10 +114,14 @@ const playerReducer = (state: PlayerState, action: any) => {
         currentEpisodeIndex:
           prevEpisode !== undefined ? prevIndex : state.currentEpisodeIndex,
       };
-    case "GET_QUEUE":
+    case "SET_CURRENT_INDEX":
+      const newEpisode = state.playlist[action.payload];
       return {
         ...state,
+        episode: newEpisode,
+        currentEpisodeIndex: action.payload,
       };
+
     default:
       return state;
   }

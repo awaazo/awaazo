@@ -1,15 +1,14 @@
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
 import Navbar from "../../components/shared/Navbar";
+import PlaylistSidebar from "../../components/playlist/PlaylistSidebar";
 
-export default function MyPlaylists() {
+export default function MyPlaylistsPage() {
   return (
     <>
       <Navbar />
-      <Center h="100vh">
-        <Box>
-          <Box p={4}>Explore Page</Box>
-        </Box>
-      </Center>
+      <Flex>
+        <PlaylistSidebar />
+      </Flex>
     </>
   );
 }

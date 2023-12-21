@@ -123,7 +123,7 @@ const PlaylistOverview = ({ playlistId }) => {
   // Handle shffule on playlist
   const handlePlaylistShuffleClick = () => {
     dispatch({
-      type: "PLAY_PLAYLIST_NOW",
+      type: "SHUFFLE_PLAYLIST_NOW",
       payload: playlist,
     });
   };
