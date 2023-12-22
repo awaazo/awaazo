@@ -1,5 +1,6 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
+import { EpisodeBookmarkRequest } from "../utilities/Requests";
 import { BaseResponse, IsLikedResponse } from "../utilities/Responses";
 import { request } from "http";
 
@@ -213,4 +214,5 @@ export default class SocialHelper {
       };
     }
   };
+
 }
