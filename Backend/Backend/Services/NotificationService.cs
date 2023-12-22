@@ -81,16 +81,15 @@ namespace Backend.Services
                 // Get Cover Art when Notification Regarding Podcast is being rendered
                 if (notification.Type == Notification.NotificationType.PodcastAlert)
                 {
-                    if(!await _db.Podcasts.AnyAsync(u => u.Id == Guid.Parse(notification.Link)))
+                    // Dont show notification if podcast have been deleted
+                    if(await _db.Podcasts.AnyAsync(u => u.Id == Guid.Parse(notification.Link)))
                     {
-                        response.Add(new NotificationResponse(notification));
-                    }
-                    else
-                    {
-                        response.Add(new PodcastNotificationResponse(notification, domainUrl));
+                        response.Add(new PodcastNotificationResponse(notification, domainUrl));  
                     }
 
                 }
+
+
 
                 // When type is None then just get the saved Image
                 if(notification.Type == Notification.NotificationType.None)
