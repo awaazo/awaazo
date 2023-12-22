@@ -7,6 +7,7 @@ import {
   userProfileByID,
   User,
   Section,
+  Bookmark,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -119,3 +120,10 @@ export interface getSectionResponse extends BaseResponse {
 }
 
 //#endregion
+//#region Episode Bookmark Responses
+export interface GetBookmarksResponse extends BaseResponse {
+  bookmarks: Bookmark[];
+}
+
+//#endregion
+
