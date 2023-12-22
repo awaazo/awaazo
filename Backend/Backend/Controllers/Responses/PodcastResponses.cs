@@ -115,3 +115,11 @@ public class EpisodeTranscriptResponse
 
     public List<TranscriptLineResponse> Lines { get; set; } = new List<TranscriptLineResponse>();
 }
+
+[BindProperties]
+public class AdjecentEpisodeResponse
+{
+    public Guid? Next { get; set; }
+    public Guid? Previous { get; set; }
+
+}

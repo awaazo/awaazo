@@ -754,6 +754,43 @@ public class PodcastService : IPodcastService
         return interaction;
     }
 
+    /// <summary>
+    /// Checks for previous and next uploaded Episodes
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId)
+    {
+        // Check if Episode Exist
+        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+
+        // Check For Next Episode
+        AdjecentEpisodeResponse adjecentEpisode = new AdjecentEpisodeResponse();
+
+        // Order the list by Release Date
+        List<Episode> EpisodeList = await _db.Episodes!.OrderBy(e =>e.ReleaseDate).ToListAsync();
+
+        var index = EpisodeList.IndexOf(episode);
+
+
+        if(index - 1 >= 0)
+        {
+            adjecentEpisode.Previous = EpisodeList[index - 1].Id;
+
+        }
+
+        if(index + 1 < EpisodeList.Count)
+        {
+            adjecentEpisode.Next = EpisodeList[index + 1].Id;
+        }
+
+
+        return adjecentEpisode;
+
+
+    }
+
     #endregion Episode
 
     #region Private Method

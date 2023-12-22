@@ -63,15 +63,17 @@ namespace Backend.Services
 
        
         /// <summary>
-        /// Gets All the notification
+        /// Gets all the notifications
         /// </summary>
         /// <param name="user"></param>
         /// <param name="domainUrl"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user,string domainUrl)
+        public async Task<List<NotificationResponse>> GetAllNotificationAsync(User user,string domainUrl,int page,int pageSize)
         {         
             //Get the Notifications
-            List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).ToListAsync();
+            List<Notification> notifications = await _db.Notifications!.Where(u => u.UserId == user.Id).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
             // Update the IsRead Bool value to True
             List<NotificationResponse> response = new List<NotificationResponse>();
@@ -88,9 +90,6 @@ namespace Backend.Services
                     }
 
                 }
-
-
-
                 // When type is None then just get the saved Image
                 if(notification.Type == Notification.NotificationType.None)
                 {

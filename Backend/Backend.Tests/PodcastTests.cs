@@ -487,6 +487,28 @@ public class PodcastTests
         Assert.NotNull(response);
     }
 
+    [Fact]
+    public void Episode_AdjecentEpisode_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        AdjecentEpisodeResponse? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetAdjecentEpisodeAsync(_episode.Object.First().Id).Result;
+
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
+
+
 
     #endregion
 

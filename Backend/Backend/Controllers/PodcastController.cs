@@ -547,6 +547,31 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    /// <summary>
+    /// Gets Adjecent Episodes
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpGet("{episodeId}/adjecentEpisode")]
+    public async Task<IActionResult> GetAdjecentEpisode(Guid episodeId)
+    {
+        _logger.LogDebug(@"Using the podcast\episodeId\adjecentEpisode Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+            return Ok(await _podcastService.GetAdjecentEpisodeAsync(episodeId));
+
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+
+    }
 
     #endregion
 }
