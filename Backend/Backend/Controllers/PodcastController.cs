@@ -278,6 +278,25 @@ public class PodcastController : ControllerBase
         }
     }
 
+    [HttpGet("{podcastId}/metrics")]
+    public async Task<ActionResult> GetMetrics(Guid podcastId) {
+        this.LogDebugControllerAPICall(_logger);
+
+        try {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetMetrics(user, podcastId));
+        }
+        catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+    
     #endregion 
 
     #region Episode
