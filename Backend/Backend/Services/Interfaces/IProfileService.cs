@@ -23,4 +23,5 @@ public interface IProfileService
     public Task<List<UserProfileResponse>> SearchUserProfiles(string searchTerm, int page, int pageSize, string domainUrl);
     public Task<string> GetUserAvatarNameAsync(Guid userId);
 
+    public Task ChangePassword(User user, ChangePasswordRequest request);
 }
