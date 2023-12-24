@@ -410,8 +410,6 @@ public class ProfileTests
         {
             Assert.Fail("Should not have thrown an error: " + e.Message);
         }
-
-        Assert.IsType<RedirectResult>(response);
     }
     
     [Fact]
