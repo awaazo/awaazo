@@ -3,15 +3,12 @@ import Link from "next/link";
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Tooltip, useBreakpointValue } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from "react-icons/fa";
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
-import { Bookmark, Episode } from "../../utilities/Interfaces";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
-import BookmarkComponent from "../bookmarks/bookmarkComponent";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
-import PodcastHelper from "../../helpers/PodcastHelper";
 
 const PlayerBar = () => {
   // State and Context Hooks
@@ -39,8 +36,6 @@ const PlayerBar = () => {
 
   // Effect Hooks
   // Fetch and load audio URL
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  // Fetch audio from backend using the episode and podcast Ids
   useEffect(() => {
     const fetchAudio = async () => {
       if (isPlaying) togglePlayPause();
@@ -212,73 +207,6 @@ const PlayerBar = () => {
               <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} />
               <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} />
             </Flex>
-        {/* Slider - Hidden in mobile */}
-        {!isMobile && (
-          <Flex width="50%" mx={4} alignItems="center">
-            <Text mr={3} fontSize="sm" fontWeight="bold">
-              {convertTime(position)}
-            </Text>
-            <Slider
-              aria-label="Track Timeline"
-              value={position}
-              max={duration}
-              onChange={(val) => handleSeek(val)}
-            >
-              <SliderTrack bg="transparent"></SliderTrack>
-              <SliderTrack>
-                <SliderFilledTrack
-                  bgGradient={
-                    palette?.length >= 2
-                      ? `linear(to-l, rgba(${palette[0].join(
-                          ",",
-                        )}, 0.5), rgba(${palette[1].join(",")}, 0.5))`
-                      : "black"
-                  }
-                />
-              </SliderTrack>
-              {/* MAKES SEARCH UNFUCNTIONAL
-              <Tooltip
-                // label={getCurrentSectionName()}
-                placement="top"
-                openDelay={900}
-                bg="transparent"
-                color="white"
-                px={2}
-                py={1}
-                borderRadius="xl"
-                fontSize="xs"
-                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-              >
-                <SliderThumb boxSize={2} />
-              </Tooltip>*/}
-
-            </Slider>
-
-            <Text ml={3} fontSize="sm" fontWeight="bold">
-              {timeLeft}
-            </Text>
-          </Flex>
-        )}
-
-        {/* Like and Comment - Hidden in mobile */}
-        
-        {!isMobile && (
-          <Flex alignItems="center">
-            <BookmarkComponent
-              episodeId={episode.id}
-              selectedTimestamp={position}
-
-            />
-            <LikeComponent
-              episodeOrCommentId={episode.id}
-              initialLikes={episode.likes}
-            />
-            <CommentComponent
-              episodeIdOrCommentId={episode.id}
-              initialComments={episode.comments.length}
-            />
-          </Flex>
-        )}
 
             {/* Volume Control Section */}
             {!isTablet && (
