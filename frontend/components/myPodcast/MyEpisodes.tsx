@@ -121,7 +121,8 @@ const Episode = ({ episode }) => {
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes}</Text>
+          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
+          
         </Text>
         {/* Episode Details */}
         <Flex direction="column" fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
