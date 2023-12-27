@@ -17,10 +17,21 @@ export default defineConfig({
       "cypress/e2e/**/Search.cy.tsx",
       "cypress/e2e/**/PlayerBar.cy.tsx",
       "cypress/e2e/**/Like.cy.tsx",
-      "cypress/e2e/**/Comment.cy.tsx"
+      "cypress/e2e/**/Comment.cy.tsx",
+      "cypress/e2e/**/Section.cy.tsx",
+      "cypress/e2e/**/Notification.cy.tsx"
+
     ],
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
+    retries: {
+      // Configure retry attempts for `cypress run`
+      // Default is 0
+      runMode: 3,
+      // Configure retry attempts for `cypress open`
+      // Default is 0
+      openMode: 0
+    }
   },
 });
