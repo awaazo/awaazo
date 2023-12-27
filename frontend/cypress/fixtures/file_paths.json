@@ -9,5 +9,6 @@
     "bunny" : "images/bunny.jpg",
     "cat" : "images/cat.jpg",
     "shiba" : "images/shiba.jpg",
-    "dummy" : "images/dummy.png"
+    "dummy" : "images/dummy.png",
+    "angry": "images/angry_person.jpg"
 }
