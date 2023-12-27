@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
@@ -63,7 +63,6 @@ const SignUp: React.FC = () => {
 
     try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
-
       if (response.status === 200) {
         window.location.href = setupPage;
       } else {
@@ -162,3 +161,4 @@ const SignUp: React.FC = () => {
 };
 
 export default SignUp;
+
