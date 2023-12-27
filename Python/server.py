@@ -75,7 +75,7 @@ async def handle_text_to_speech_request(request):
         # Check if the text file exists
         if not os.path.isfile(episode_text_path):
             raise Exception(f'No Text exists for the given podcastID and episode ID.')
-        else
+        else:
             with open(episode_text_path, 'r') as f:
                 text = f.read()
                 f.close()
@@ -96,7 +96,7 @@ async def handle_text_to_speech_request(request):
                 raise Exception(f'Text to speech is already in progress for the given episode.')
 
         # Launch the thread to create the audio file (DO NOT AWAIT as it could take a long time depending on the text size)
-        threading.Thread(target=text_to_speech_service.tts, args=(text,"en","elon.wav",episode_audio_path)).start()
+        threading.Thread(target=text_to_speech_service.tts.create_audio, args=(text,"en","elon.wav",episode_audio_path)).start()
 
         status = "Text to speech process has been initiated."
 
