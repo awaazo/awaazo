@@ -148,6 +148,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                         title: e.target.value.slice(0, 25),
                       });
                     }}
+                    data-cy={`section-title-input`}
                   />
                   <Text position="absolute" right="8px" bottom="20px" fontSize="sm" color="gray.500">
                     {sectionCharacterCount}/25
@@ -164,7 +165,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                   </HStack>
                 </Box>
                 <HStack justifyContent="space-between" mt={"5"}>
-                  <Button onClick={handleAddSection} width="50%" borderRadius="7px" bg="brand.100">
+                  <Button onClick={handleAddSection} width="50%" borderRadius="7px" bg="brand.100" data-cy={`add-section-button-form`}>
                     Add Section
                   </Button>
                   <Button
@@ -175,6 +176,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                     width="50%"
                     borderRadius="7px"
                     bg="red"
+                    data-cy={`cancel-button`}
                   >
                     Cancel
                   </Button>
@@ -199,6 +201,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                     setIsFormVisible(true);
                     setIsAdding(true);
                   }}
+                  data-cy={`add-sections-button`}
                 />
               </Tooltip>
             </Flex>
@@ -211,7 +214,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
                   <Text fontWeight="bold">{key + 1 + ": " + section.title}</Text>
                   <Text fontSize="sm">Start: {`${convertTime(section.start)} \u00A0\u00A0\u00A0\u00A0 End: ${convertTime(section.end)}`}</Text>
                 </Box>
-                <IconButton variant="ghost" borderRadius="50%" onClick={() => handleDeleteSection(section.id)} aria-label="Delete Section" icon={<DeleteIcon />} />
+                <IconButton variant="ghost" borderRadius="50%" onClick={() => handleDeleteSection(section.id)} aria-label="Delete Section" icon={<DeleteIcon />} data-cy={`section-delete-btn`}/>
               </Flex>
             ))
           ) : (

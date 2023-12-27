@@ -118,6 +118,7 @@ describe("Episode_Create", () => {
       "f2",
     );
     cy.get("button").contains("Finish").click({ timeout: 5000 });
+    cy.wait(750);
     cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.wait(250);
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
@@ -154,8 +155,8 @@ describe("Episode_Create", () => {
     cy.url().should("include", "/CreatorHub/MyPodcasts");
     cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
     cy.get("[data-cy=podcast-image-f2-legends").click();
-    cy.contains("Has science gone too far?");
-    cy.contains("Is AI the future?!");
+    cy.contains("Has science gone too far?").should("be.visible", { timeout: 5000 });
+    cy.contains("Is AI the future?!").should("be.visible", { timeout: 5000 });
   });
 
   //There should be a 25 character limit for an episoode title
