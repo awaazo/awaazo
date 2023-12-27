@@ -129,7 +129,7 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
     <Box p={2} m={3} borderRadius="2xl" boxShadow="md" width="150%" position="relative">
       {audioUrl ? (
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-          <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} size="md" variant="ghost" mr={2} borderRadius="full" />
+          <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} size="md" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-play-pause`}/>
           <Box flex="1" mx={5} mt={1} textAlign="center">
             <Slider
               min={0}
@@ -193,7 +193,7 @@ const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdd
       )}
       {isAdding && (
         <HStack spacing={4} justifyContent="center" mt={4}>
-          <Button onClick={handleEndChange} variant="ghost">
+          <Button onClick={handleEndChange} variant="ghost" data-cy={`set-end-time-button`}>
             Set End Time
           </Button>
         </HStack>
