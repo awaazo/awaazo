@@ -639,6 +639,7 @@ public class PodcastService : IPodcastService
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes
+            .Include(e => e.Podcast)
             .Include(e => e.Likes)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.User)

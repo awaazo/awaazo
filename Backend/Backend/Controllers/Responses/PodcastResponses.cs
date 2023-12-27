@@ -1,4 +1,5 @@
 using System.Data;
+using Backend.Infrastructure;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -9,7 +10,7 @@ namespace Backend.Controllers.Responses;
 public class EpisodeResponse
 {
 
-    public EpisodeResponse(Episode e, string domainUrl)
+    public EpisodeResponse(Episode e,string domainUrl)
     {
         //Episode = e;
         Id = e.Id;
@@ -24,6 +25,8 @@ public class EpisodeResponse
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
         Likes = e.Likes.Count;
         Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
+        PodcastName = e.Podcast.Name;
+        
     }
 
     public Guid Id { get; set; } = Guid.Empty;
@@ -37,6 +40,7 @@ public class EpisodeResponse
     public string AudioUrl { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
     public int Likes { get; set; } = 0;
+    public string PodcastName { get; set; } = string.Empty; 
     public List<CommentResponse> Comments { get; set; } = new();
 }
 
