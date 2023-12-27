@@ -1004,7 +1004,9 @@ public class PodcastTests
                 EpisodeName = "Sample Episode Name",
                 PodcastId = podGuid,
                 Thumbnail = @"Thumbnail|/|\|test/png",
-                Audio = @"Audio|/|\|test/mp3"
+                Audio = @"Audio|/|\|test/mp3",
+                Podcast = _podcast.Object.First()
+
             }
         }.AsQueryable().BuildMockDbSet();
         _userEpisodeInteraction = new[]
