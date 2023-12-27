@@ -635,7 +635,7 @@ public class PodcastService : IPodcastService
     /// <param name="domainUrl"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl)
+    public async Task<EpisodeResponse2> GetEpisodeByIdAsync(Guid episodeId, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes
@@ -648,7 +648,7 @@ public class PodcastService : IPodcastService
             .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
         // Return the episode response
-        return new EpisodeResponse(episode, domainUrl);
+        return new EpisodeResponse2(episode, domainUrl);
     }
 
     /// <summary>
