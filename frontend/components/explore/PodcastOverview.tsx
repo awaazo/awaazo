@@ -23,7 +23,6 @@ export default function PodcastOverview({ podcast, User }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [showMore, setShowMore] = useState(false);
-
   const [podcastData, setPodcastData] = useState(podcast);
 
 const updatePodcastData = (newData) => {

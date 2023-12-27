@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -30,8 +30,23 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
   const [reviewError, setReviewError] = useState("");
   const [reviews, setReviews] = useState(podcast.ratings);
 
+
+  const fetchAndUpdateReviews = async () => {
+    try {
+      const response = await ReviewsHelper.getPodcastById(podcast.id);
+      if (response.status === 200 && response.podcast) {
+        updatePodcastData(response.podcast);
+      } else {
+        // Handle errors or unexpected response
+        console.error("Failed to fetch or parse reviews:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
   // Function to handle adding a review
-  const handleAddReview = async () => {
+  const handleAddReview = async (event) => {
+    event.preventDefault();
     if (newRating == 0) {
       setReviewError("You must submit a rating");
     } else {
@@ -42,11 +57,10 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
       };
       // Send the request to add the review
       const res1 = await ReviewsHelper.postPodcastReview(reviewRequest);
-      console.log(res1);
 
       if (res1.status === 200) {
-        setReviews([...reviews, reviewRequest]);
-              // Update parent state
+        fetchAndUpdateReviews();
+     
       const updatedPodcast = { ...podcast, ratings: [...podcast.ratings, res1] };
       updatePodcastData(updatedPodcast);
         setIsAddingReview(false);
@@ -62,15 +76,20 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
       // Send the request to add the rating
       const res2 = await ReviewsHelper.postPodcastRating(ratingRequest);
       if (res2.status === 200) {
+        fetchAndUpdateReviews();
         setIsAddingReview(false);
       } else {
-        // Handle error here
         setReviewError("Cannot add rating");
       }
     }
+    await fetchAndUpdateReviews();
   };
 
-  // Function to handle changes in the review text
+  useEffect(() => {
+    fetchAndUpdateReviews();
+  }, []);
+
+  //  handle changes in the review text
   const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDesc = e.target.value.slice(0, 150);
     setNewReviewText(newDesc);
