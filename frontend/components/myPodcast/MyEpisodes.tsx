@@ -23,24 +23,19 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
-
+import { FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import ManageSections from "./ManageSections";
+import { convertTime } from "../../utilities/commonUtils";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // Function to format the duration of the episode
-  const formatDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
   // Edit Episode Modal
-  //----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
 
   // State for managing modal visibility and the current episode
   const [isModalEpisodeOpen, setIsModalEpisodeOpen] = useState(false);
@@ -55,6 +50,25 @@ const Episode = ({ episode }) => {
   // Function to close the edit episode modal
   const closeEditEpisodeModal = () => {
     setIsModalEpisodeOpen(false);
+    setCurrentEpisode(null);
+  };
+  //-----------------------------------------------------------------------
+
+  // Sections Modal
+  //----------------------------------------------------------------------
+
+  // State for managing modal visibility and the current episode
+  const [isModalSectionsOpen, setIsModalSectionsOpen] = useState(false);
+
+  // Function to open the edit episode modal
+  const openSectionsModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalSectionsOpen(true);
+  };
+
+  // Function to close the edit episode modal
+  const closeSectionsModal = () => {
+    setIsModalSectionsOpen(false);
     setCurrentEpisode(null);
   };
   //----------------------------------------------------------------------
@@ -95,40 +109,27 @@ const Episode = ({ episode }) => {
       onClick={() => console.log(episode.id, episode.name)}
     >
       <Box position="relative" mr={5}>
-        <Image
-          boxSize={isMobile ? "0px" : "125px"}
-          src={episode.thumbnailUrl}
-          borderRadius="10%"
-          marginLeft={isMobile ? "0px" : "20px"}
-          mt={1}
-        />
+        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
-        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
+        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
           {episode.episodeName}
           {episode.isExplicit && (
-            <Tag
-              size="sm"
-              colorScheme="red"
-              fontSize={isMobile ? "10px" : "sm"}
-            >
+            <Tag size="sm" colorScheme="red" fontSize={isMobile ? "10px" : "sm"}>
               Explicit
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes}</Text>
+          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
+          
         </Text>
         {/* Episode Details */}
-        <Flex
-          direction="column"
-          fontSize="sm"
-          color={useColorModeValue("gray.500", "gray.400")}
-        >
+        <Flex direction="column" fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {formatDuration(episode.duration)}
+            Duration: {convertTime(episode.duration)}
           </Text>
         </Flex>
       </Flex>
@@ -136,12 +137,26 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
+          <Tooltip label="Sections" aria-label="Sections Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="sections-button"
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Sections"
+              icon={<Icon as={FaLinesLeaning} />}
+              onClick={() => openSectionsModal(episode)}
+            />
+          </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
             <IconButton
               variant="ghost"
               data-cy="edit-button"
-              fontSize={isMobile ? "2xl" : "3xl"}
-              mr={isMobile ? 1 : 5}
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
               rounded={"full"}
               opacity={0.7}
               color={colorMode === "dark" ? "white" : "black"}
@@ -150,13 +165,11 @@ const Episode = ({ episode }) => {
               onClick={() => openEditEpisodeModal(episode)}
             />
           </Tooltip>
-        </Box>
-        <Box>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
             <IconButton
               variant="ghost"
               data-cy="delete-button"
-              fontSize={isMobile ? "2xl" : "3xl"}
+              fontSize={isMobile ? "md" : "lg"}
               rounded={"full"}
               opacity={0.7}
               marginRight={5}
@@ -176,19 +189,14 @@ const Episode = ({ episode }) => {
           <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Are you sure you want to delete the episode "{episode.episodeName}".{" "}
-            <br />
+            Are you sure you want to delete the episode "{episode.episodeName}". <br />
             This action cannot be undone
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              colorScheme="red"
-              ml={3}
-              onClick={() => handleDelete(episode.episodeId)}
-            >
+            <Button colorScheme="red" ml={3} onClick={() => handleDelete(episode.episodeId)}>
               Delete
             </Button>
           </ModalFooter>
@@ -198,27 +206,44 @@ const Episode = ({ episode }) => {
       {/* Edit Episode Modal */}
       <Modal isOpen={isModalEpisodeOpen} onClose={closeEditEpisodeModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent boxShadow="dark-lg" backdropFilter="blur(40px)" display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={"10%"} padding={"2em"}>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <VStack spacing={5} align="center" backgroundColor={"transparent"}>
+                <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
+
+                <EditEpisodeForm episode={episode} />
+              </VStack>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isModalSectionsOpen} onClose={closeSectionsModal}>
+        <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent
-          boxShadow="dark-lg"
-          backdropFilter="blur(40px)"
+          boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)"
+          bg={"rgba(0, 0, 0, 0.3)"}
+          backdropFilter="blur(10px)"
           display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
+          minWidth={"40%"}
           marginTop={"10%"}
           padding={"2em"}
+          border="3px solid rgba(255, 255, 255, 0.05)"
+          borderRadius="3xl"
+
         >
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack
-                spacing={5}
-                align="center"
-                backgroundColor={"transparent"}
-              >
-                <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
+              <VStack align="center" backgroundColor={"transparent"}>
+                <Text>Manage Sections: {currentEpisode?.episodeName}</Text>
 
-                <EditEpisodeForm episode={episode} />
+                <ManageSections episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
             </Box>
           </ModalBody>

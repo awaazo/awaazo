@@ -107,12 +107,12 @@ const Episode = ({ episode }) => {
       </Flex>
 
       {/* Edit and Delete Buttons */}
-      <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
+      <Flex alignItems="flex-start" style={{ marginRight: "15px" }} data-cy={`comments-on-${episode.episodeName}-${episode.comments.length}`}>
         <CommentComponent
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
         />
-        <div style={{ marginTop: "4px", marginLeft: "4px" }}>
+        <div style={{ marginTop: "4px", marginLeft: "4px" }} data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}

@@ -1,13 +1,19 @@
-// pages/_app.tsx
-import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import { Box, ChakraProvider } from "@chakra-ui/react";
 import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
+import { useRouter } from "next/router";
+import '../styles/globals.css';
 
 const theme = extendTheme({
   colors: {
+    brand: {
+      100: "#ffcd00",
+      200: "#1a202c",
+    },
     primary: {
       1: "#90cdf4",
       2: "#236D73",
@@ -23,33 +29,28 @@ const theme = extendTheme({
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  const router = useRouter();
+  const [showPlayerBar, setShowPlayerBar] = useState(true);
+
+
+  useEffect(() => {
+    const path = router.pathname;
+    const hidePlayerBarOnPaths = [
+      "/auth/", "/AddEpisode", "/AddEpisodeAI", 
+      "/profile/ProfileSetup", "/CreatorHub/"
+    ];
+
+    const shouldHidePlayerBar = hidePlayerBarOnPaths.some((p) => path.startsWith(p));
+    setShowPlayerBar(!shouldHidePlayerBar);
+  }, [router.pathname]); 
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
-      <Box
-        position="fixed"
-        top="0"
-        left="0"
-        width="100%"
-        height="100vh"
-        backgroundImage={bg.src}
-        backgroundSize="cover"
-        zIndex="-1"
-      />
-      <ColorModeScript initialColorMode="dark" />
+      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" backgroundColor="black" />
       <SessionProvider session={session}>
         <PlayerProvider>
           <Component {...pageProps} />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-            }}
-          >
-            <PlayerBar />
-          </div>
+          {showPlayerBar && <PlayerBar />}
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>

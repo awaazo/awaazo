@@ -277,6 +277,10 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Cypress directories
+frontend/cypress/screenshots/
+frontend/cypress/videos/
+
 # Cake - Uncomment if you are using it
 # tools/
 

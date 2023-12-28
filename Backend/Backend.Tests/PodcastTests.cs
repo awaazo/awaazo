@@ -32,7 +32,7 @@ public class PodcastTests
     private Mock<DbSet<Podcast>> _podcast;
     private Mock<DbSet<Episode>> _episode;
     private Mock<DbSet<UserEpisodeInteraction>> _userEpisodeInteraction;
-    private Mock<ILogger> _loggerMock;
+    private Mock<ILogger<PodcastController>> _loggerMock;
 
 
     private PodcastService _podcastService;
@@ -466,6 +466,48 @@ public class PodcastTests
 
         Assert.NotNull(response);
     }
+    
+    [Fact]
+    public void Episode_GetWatchHistory_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        UserEpisodeInteraction? response = null;
+
+        // Act
+        try
+        {
+            response = _podcastService.GetWatchHistory(_user.Object.First(), _episode.Object.First().Id, DOMAIN).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public void Episode_AdjecentEpisode_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        AdjecentEpisodeResponse? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetAdjecentEpisodeAsync(_episode.Object.First().Id).Result;
+
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
+
 
 
     #endregion
@@ -830,6 +872,25 @@ public class PodcastTests
         Assert.NotNull(response);
     }
 
+    [Fact]
+    public void Episode_GetWatchHistory_ValidRequest_ReturnsOK() {
+        // Arrange
+        OkObjectResult? response = null;
+
+        // Act
+        try
+        {
+            response = _podcastController.GetWatchHistory(_episode.Object.First().Id).Result as OkObjectResult;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);        
+    }
+    
     #endregion
 
     #region Private Method
@@ -943,7 +1004,9 @@ public class PodcastTests
                 EpisodeName = "Sample Episode Name",
                 PodcastId = podGuid,
                 Thumbnail = @"Thumbnail|/|\|test/png",
-                Audio = @"Audio|/|\|test/mp3"
+                Audio = @"Audio|/|\|test/mp3",
+                Podcast = _podcast.Object.First()
+
             }
         }.AsQueryable().BuildMockDbSet();
         _userEpisodeInteraction = new[]

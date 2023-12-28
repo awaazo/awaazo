@@ -21,9 +21,9 @@ public class PodcastController : ControllerBase
 
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
-    private readonly ILogger _logger;
+    private readonly ILogger<PodcastController> _logger;
 
-    public PodcastController(IPodcastService podcastService, IAuthService authService, ILogger logger)
+    public PodcastController(IPodcastService podcastService, IAuthService authService, ILogger<PodcastController> logger)
     {
         _logger = logger;
         _podcastService = podcastService;
@@ -278,6 +278,25 @@ public class PodcastController : ControllerBase
         }
     }
 
+    [HttpGet("{podcastId}/metrics")]
+    public async Task<ActionResult> GetMetrics(Guid podcastId) {
+        this.LogDebugControllerAPICall(_logger);
+
+        try {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetMetrics(user, podcastId));
+        }
+        catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+    
     #endregion 
 
     #region Episode
@@ -482,9 +501,8 @@ public class PodcastController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
-    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
-    {
-        _logger.LogDebug(@"Using the podcast\episodeId\saveWatchHistory Endpoint");
+    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
+        this.LogDebugControllerAPICall(_logger);
 
         try
         {
@@ -501,6 +519,28 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpGet("{episodeId}/watchHistory")]
+    public async Task<IActionResult> GetWatchHistory(Guid episodeId)
+    {
+        
+        this.LogDebugControllerAPICall(_logger);
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var interaction = await _podcastService.GetWatchHistory(user, episodeId, GetDomainUrl(HttpContext));
+            return Ok(interaction);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+    }   
     
     /// <summary>
     /// Gets the transcript of an episode.
@@ -525,6 +565,31 @@ public class PodcastController : ControllerBase
              _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
+    }
+    /// <summary>
+    /// Gets Adjecent Episodes
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpGet("{episodeId}/adjecentEpisode")]
+    public async Task<IActionResult> GetAdjecentEpisode(Guid episodeId)
+    {
+        _logger.LogDebug(@"Using the podcast\episodeId\adjecentEpisode Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+            return Ok(await _podcastService.GetAdjecentEpisodeAsync(episodeId));
+
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+
     }
 
     #endregion

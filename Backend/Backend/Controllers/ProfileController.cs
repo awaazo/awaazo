@@ -22,9 +22,9 @@ public class ProfileController : ControllerBase
 
     private readonly IAuthService _authService;
     private readonly IProfileService _profileService;
-    private readonly ILogger _logger;
+    private readonly ILogger<ProfileController> _logger;
 
-    public ProfileController(IAuthService authService, IProfileService profileService, ILogger logger)
+    public ProfileController(IAuthService authService, IProfileService profileService, ILogger<ProfileController> logger)
     {
         _authService = authService;
         _profileService = profileService;
@@ -135,6 +135,25 @@ public class ProfileController : ControllerBase
         return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
     }
 
+    [HttpPost("changePassword")]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request) {
+        this.LogDebugControllerAPICall(_logger);
+        
+        // Identify User from JWT Token
+        User? user = await _authService.IdentifyUserAsync(HttpContext);
+        // If User is not found, return 404
+        if (user is null)
+            return NotFound("User does not exist.");
+
+        try {
+            await _profileService.ChangePassword(user, request);
+            return Ok();
+        }
+        catch (Exception e) {
+            return BadRequest(e.Message);
+        }
+    }
+    
     #endregion 
 
     #region Other Users

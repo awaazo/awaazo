@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 
 import Navbar from "../../../components/shared/Navbar";
 import PodcastHelper from "../../../helpers/PodcastHelper";
-import PodcastCard from "../../../components/Cards/PodcastCard";
+import PodcastCard from "../../../components/cards/PodcastCard";
 import ExploreGenresSection from "../../../components/home/ExploreGenres";
 import PlayerBar from "../../../components/shared/PlayerBar";
 
@@ -70,10 +70,8 @@ export default function MyPodcast() {
       >
         <ExploreGenresSection />
         <Box
-          bgGradient="linear(to-r, #6a39c4, transparent)"
           w={{ base: "70%", md: "30%" }}
           borderRadius="0.5em"
-          boxShadow="lg"
           p="8px"
         >
           {!loading && (
