@@ -1,7 +1,3 @@
-in compnents>bookmarks
-
-bookmarkComponent.tsx
-
 import { useEffect, useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { CiBookmarkPlus } from "react-icons/ci";
