@@ -113,7 +113,7 @@ namespace Backend.Tests
 
             try
             {
-                response = _notificationService.GetAllNotificationAsync(_user.Object.First(),DOMAIN).Result;
+                response = _notificationService.GetAllNotificationAsync(_user.Object.First(),DOMAIN,0,5).Result;
             }
             catch (Exception e)
             {
