@@ -335,7 +335,44 @@ public class PodcastService : IPodcastService
 
         return podcastResponses;
     }
+    
+    public async Task<object> GetMetrics(User user, Guid podcastId) {
+        // Check that user owns podcast
+        Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId);
+        if (podcast is null)
+            throw new Exception("Invalid podcast Id " + podcast);
 
+        if (podcast.PodcasterId != user.Id)
+            throw new UnauthorizedAccessException($"User {user.Email} does not own podcast {podcast.Name} ({podcast.Id})");
+
+        // Otherwise all good, get all needed metrics
+        int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
+        Episode? mostLikes = podcast.Episodes.OrderByDescending(e => e.Likes.Count()).FirstOrDefault();
+        double totalWatched = await _db.UserEpisodeInteractions
+            .Where(interaction => interaction.Episode.PodcastId == podcast.Id)
+            .Select(interaction => interaction.LastListenPosition)
+            .SumAsync();
+        long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
+        Episode? mostPlayed = podcast.Episodes.OrderByDescending(e => e.PlayCount).FirstOrDefault();
+        
+        int totalComments = podcast.Episodes.Select(ep => ep.Comments.Count()).Sum();
+        Episode? mostCommented = podcast.Episodes.OrderByDescending(ep => ep.Comments.Count).FirstOrDefault();
+
+        Comment? mostLikedComment =
+            podcast.Episodes.Select(ep => ep.Comments.OrderByDescending(comment => comment.Likes.Count()).FirstOrDefault())
+                            .FirstOrDefault();
+        return new {
+            TotalEpisodesLikes = totalLikes,
+            MostLikedEpisode = mostLikes,
+            TotalTimeWatched = totalWatched,
+            TotalPlayCount = totalPlayCount,
+            MostPlayedEpisode = mostPlayed,
+            TotalCommentsCount = totalComments,
+            MostCommentedOnEpisode = mostCommented,
+            MostLikedComment = mostLikedComment
+        };
+    }
+    
     #endregion Podcast
 
     #region Episode
