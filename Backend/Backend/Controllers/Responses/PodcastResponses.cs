@@ -25,7 +25,8 @@ public class EpisodeResponse
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
         Likes = e.Likes.Count;
         Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
-        
+        PodcastName = e.Podcast.Name;
+
     }
 
     public Guid Id { get; set; } = Guid.Empty;
@@ -41,18 +42,10 @@ public class EpisodeResponse
     public int Likes { get; set; } = 0;
     
     public List<CommentResponse> Comments { get; set; } = new();
-}
 
-[BindProperties]
-public class EpisodeResponse2 : EpisodeResponse
-{
-    public EpisodeResponse2(Episode e, string domainUrl) : base(e, domainUrl)
-    {
-        PodcastName = e.Podcast.Name;
-
-    }
     public string PodcastName { get; set; } = string.Empty;
 }
+
 
 [BindProperties]
 public class PodcastResponse
