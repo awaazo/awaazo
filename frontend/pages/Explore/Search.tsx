@@ -21,7 +21,7 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../../components/cards/PodcastCard";
 import ForYou from "../../components/home/ForYou";
 import UserCard from "../../components/cards/UserCard";
-import PlayerBar from "../../components/shared/PlayerBar";
+
 
 export default function MyPodcast() {
   const router = useRouter();

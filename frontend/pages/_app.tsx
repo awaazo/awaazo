@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, ChakraProvider } from "@chakra-ui/react";
-import bg from "../styles/images/bg.png";
+import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
+import bg from "../styles/images/bgOLd.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
+import Sidebar from '../components/shared/Sidebar'; 
+
 import { useRouter } from "next/router";
 import '../styles/globals.css';
 
@@ -49,8 +51,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" backgroundColor="black" />
       <SessionProvider session={session}>
         <PlayerProvider>
-          <Component {...pageProps} />
-          {showPlayerBar && <PlayerBar />}
+        <Flex>
+            <Sidebar /> 
+            <Box flex="1">
+              <Component {...pageProps} />
+              {showPlayerBar && <PlayerBar />}
+            </Box>
+          </Flex>
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
