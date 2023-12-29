@@ -12,6 +12,9 @@ namespace Backend.Controllers
     [Authorize]
     public class NotificationController : ControllerBase
     {
+        private const int MIN_PAGE = 0;
+        private const int DEFAULT_PAGE_SIZE = 5;
+
         private readonly IAuthService _authService;
         private readonly INotificationService _notificationService;
         private readonly ILogger _logger;
@@ -25,7 +28,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllNotification()
+        public async Task<IActionResult> GetAllNotification(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
         {
             _logger.LogDebug(@"Using the notification\all Endpoint");
             // Identify User from JWT Token
@@ -35,7 +38,7 @@ namespace Backend.Controllers
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _notificationService.GetAllNotificationAsync(user, GetDomainUrl(HttpContext)));
+            return Ok(await _notificationService.GetAllNotificationAsync(user, GetDomainUrl(HttpContext),page,pageSize));
         }
 
         [HttpGet("count")]

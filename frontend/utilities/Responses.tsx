@@ -6,6 +6,7 @@ import {
   Episode,
   userProfileByID,
   User,
+  Bookmark,
   Section,
   Playlist,
 } from "./Interfaces";
@@ -106,6 +107,13 @@ export interface NotificationResponse extends BaseResponse {
 //#region Social Responses
 export interface IsLikedResponse extends BaseResponse {
   isLiked: boolean;
+}
+
+//#endregion
+
+//#region Episode Bookmark Responses
+export interface GetBookmarksResponse extends BaseResponse {
+  bookmarks: Bookmark[];
 }
 
 //#endregion

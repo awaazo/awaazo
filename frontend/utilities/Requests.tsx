@@ -96,6 +96,15 @@ export interface EpisodeEditRequest {
 
 //#endregion
 
+//#region Episode Bookmark Requests
+export interface EpisodeBookmarkRequest {
+  title: string;
+  note: string;
+  time: number;
+}
+
+//#endregion
+
 //#region Podcast Rating Requests
 export interface PodcastRatingRequest {
   podcastId: string;

@@ -180,4 +180,18 @@ public class ProfileService : IProfileService
         // If the user exists, return the Avatar name
         return user.Avatar;
     }
+
+    public async Task ChangePassword(User user, ChangePasswordRequest request) {
+        // Check if old password is ok
+        if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user!.Password)) {
+            throw new Exception("Invalid Credentials");
+        }
+
+        if (request.NewPassword != request.ConfirmNewPassword)
+            throw new Exception("Passwords much match");
+
+        user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync();
+    }
 }

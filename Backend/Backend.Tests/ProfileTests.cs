@@ -29,7 +29,7 @@ public class ProfileTests
     private ProfileController _profileController;
     private const string DOMAIN = "TestDomain";
     private Mock<HttpRequest> _httpRequestMock;
-    private Mock<ILogger> _loggerMock;
+    private Mock<ILogger<ProfileController>> _loggerMock;
 
     public ProfileTests()
     {
@@ -388,6 +388,72 @@ public class ProfileTests
         Assert.IsType<RedirectResult>(response);
     }
 
+    [Fact]
+    public void Profile_ChangePassword_ValidInput_ReturnsTrue()
+    {
+        // Arrange
+        MockBasicUtilities(out var podcast, out var user, out var episode);
+        var request = new ChangePasswordRequest() {
+            OldPassword = "XXXXXXXXXXXXXXXXX",
+            NewPassword = "hehe",
+            ConfirmNewPassword = "hehe"
+        };
+        IActionResult response = null;
+
+        // Act
+        try
+        {
+            response = _profileController.ChangePassword(request).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+    }
+    
+    [Fact]
+    public void Profile_ChangePassword_InvalidOldPassword_ThrowsException()
+    {
+        // Arrange
+        MockBasicUtilities(out var podcast, out var user, out var episode);
+        var request = new ChangePasswordRequest() {
+            OldPassword = "efaefafeafefaef",
+            NewPassword = "hehe",
+            ConfirmNewPassword = "hehe"
+        };
+        IActionResult response = null;
+
+        // Act
+        try {
+            response = _profileController.ChangePassword(request).Result;
+            Assert.Fail("Should have thrown an error: ");
+        }
+        // Assert
+        catch (Exception e) {}
+    }
+    
+    [Fact]
+    public void Profile_ChangePassword_InvalidPasswordConfirmation_ThrowsException()
+    {
+        // Arrange
+        MockBasicUtilities(out var podcast, out var user, out var episode);
+        var request = new ChangePasswordRequest() {
+            OldPassword = "XXXXXXXXXXXXXXXXX",
+            NewPassword = "hehe",
+            ConfirmNewPassword = "lllll"
+        };
+        IActionResult response = null;
+
+        // Act
+        try {
+            response = _profileController.ChangePassword(request).Result;
+            Assert.Fail("Should have thrown an error: ");
+        }
+        // Assert
+        catch (Exception e) {}
+    }
+    
     #endregion
 
     #region Private Methods
