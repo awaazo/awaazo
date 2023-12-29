@@ -8,6 +8,8 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.wait(2500);
+        cy.reload();
+        cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(10500);
@@ -67,6 +69,8 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.wait(2500);
+        cy.reload();
+        cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(5500);
@@ -87,6 +91,8 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(2500);
+        cy.reload();
         cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
@@ -109,6 +115,8 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(2500);
+        cy.reload();
         cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
@@ -137,6 +145,8 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(2500);
+        cy.reload();
         cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
