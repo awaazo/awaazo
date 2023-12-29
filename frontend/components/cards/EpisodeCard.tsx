@@ -211,14 +211,15 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
         />
-        <div style={{ marginTop: "4px", marginLeft: "4px" }}>
+        <div style={{ marginTop: "4px", marginLeft: "4px" }} data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
+            
           />
         </div>
         {/* Episode Options Menu */}
-        <Box style={{ position: "relative", zIndex: 1000 }}>
+        <Box style={{ position: "relative", zIndex: 1000 }} >
           <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
             <MenuButton
               as={IconButton}
@@ -230,6 +231,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
               mt={1}
               _hover={{ boxShadow: "lg" }}
               onClick={handleMenuToggle}
+              data-cy={`2-dots-episode-card`}
             />
             <MenuList
               style={{

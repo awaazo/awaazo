@@ -7,7 +7,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(10500);
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
@@ -65,7 +65,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(5500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
@@ -85,7 +85,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(15500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
@@ -106,7 +106,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
@@ -117,7 +117,7 @@ describe("PlayerBar", () => {
         });
         //Unliking
         cy.visit("/").url().should('include', '/');
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
@@ -133,7 +133,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Love the episode! Half Life 3 when???");
         cy.contains('Add Comment').click();
@@ -141,7 +141,7 @@ describe("PlayerBar", () => {
         cy.get('.chakra-modal__close-btn').click();
         cy.logout();
         cy.login(null, "testRegister@email.com", "password123");
-        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
         cy.contains('DummyUsername:');
         cy.contains('Love the episode! Half Life 3 when???');

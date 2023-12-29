@@ -233,6 +233,7 @@ const PlayerBar = () => {
               size="sm"
               onClick={playPrevious}
               mr={2}
+              data-cy={`play-previous`}
             />
             <IconButton
               aria-label="Skip Backward"
@@ -241,6 +242,7 @@ const PlayerBar = () => {
               size="sm"
               onClick={skipBackward}
               mr={2}
+              data-cy={`skip-backward`}
             />
             <IconButton
               aria-label={isPlaying ? "Pause" : "Play"}
@@ -249,6 +251,7 @@ const PlayerBar = () => {
               size="sm"
               onClick={togglePlayPause}
               mr={2}
+              data-cy={`play-pause-button`}
             />
             <IconButton
               aria-label=" Skip Forward"
@@ -257,6 +260,7 @@ const PlayerBar = () => {
               size="sm"
               onClick={skipForward}
               mr={2}
+              data-cy={`skip-forward`}
             />
             <IconButton
               aria-label=" Next Episode"
@@ -264,6 +268,7 @@ const PlayerBar = () => {
               variant="ghost"
               size="sm"
               onClick={playNext}
+              data-cy={`play-next`}
             />
           </Flex>
 

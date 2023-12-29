@@ -34,6 +34,7 @@ describe("Notification", () => {
             "f2",
           );
         cy.get("button").contains("Finish").click({ timeout: 5000 });
+        cy.wait(750);
         cy.logout();
         cy.login(null, "dummyRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {

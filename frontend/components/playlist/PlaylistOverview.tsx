@@ -244,9 +244,10 @@ const PlaylistOverview = ({ playlistId }) => {
             setIsEditing(true);
             handleMenuToggle();
           }}
+          
         >
           Edit "{playlist.name}"{" "}
-          <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} />
+          <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} data-cy={`edit-button`} />
         </MenuItem>
         <MenuItem
           _hover={{
@@ -260,7 +261,7 @@ const PlaylistOverview = ({ playlistId }) => {
           onClick={onOpen}
         >
           Delete "{playlist.name}"{" "}
-          <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} />
+          <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`}/>
         </MenuItem>
       </>
     );
@@ -404,7 +405,7 @@ const PlaylistOverview = ({ playlistId }) => {
                     Shuffle
                   </Button>
                   <Spacer />
-                  <Box style={{ position: "relative", zIndex: 1000 }}>
+                  <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
                     <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
                       <MenuButton
                         as={IconButton}

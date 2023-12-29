@@ -193,6 +193,7 @@ const PlaylistSidebar = () => {
             aria-label="Add Playlist"
             fontSize={"20px"}
             onClick={() => setModalOpen(true)}
+            data-cy={`add-playlist-button`}
           />
         </Flex>
         {userPlaylists && userPlaylists.length === 0 ? (
@@ -211,7 +212,7 @@ const PlaylistSidebar = () => {
                 _hover={{ bg: "rgba(255, 255, 255, 0.3)" }}
               >
                 <Icon as={RiPlayList2Fill} mr="2" />
-                <Text>{playlist.name}</Text>
+                <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>
               </Flex>
             </NexLink>
           ))
@@ -226,7 +227,7 @@ const PlaylistSidebar = () => {
           onClick={() => handleViewQueue()}
         >
           <Icon as={PiQueueFill} mr="2" />
-          <Text>View Queue</Text>
+          <Text data-cy={`queue-button`}>View Queue</Text>
         </Flex>
       </Flex>
 
