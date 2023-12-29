@@ -488,4 +488,95 @@ export default class EndpointHelper {
   static getSectionDeleteEndpoint = (sectionId: string) => {
     return this.getBackendAddress() + "/section/" + sectionId + "/delete";
   };
+
+  // --------------------------------
+  // PLAYLIST ENDPOINTS
+  // --------------------------------
+  /**
+   * Returns the get createPlaylist endpoint.
+   * @returns The get createPlaylist Endpoint
+   * */
+  static getCreatePlaylistEndpoint = () => {
+    return this.getBackendAddress() + "/playlist/create";
+  };
+
+  /**
+   * Returns the get editPlaylist endpoint.
+   * @returns The get editPlaylist Endpoint
+   * */
+  static getEditPlaylistEndpoint = (playlistID) => {
+    return this.getBackendAddress() + "/playlist/" + playlistID + "/edit";
+  };
+
+  /**
+   * Returns the get AddToPlaylist endpoint.
+   * @returns The get AddToPlaylist Endpoint
+   * */
+  static getAddToPlaylistEndpoint = (playlistID) => {
+    return this.getBackendAddress() + "/playlist/" + playlistID + "/add";
+  };
+
+  /**
+   * Returns the get RemoveFromPlaylist endpoint.
+   * @returns The get RemoveFromPlaylist Endpoint
+   * */
+  static getRemoveFromPlaylistEndpoint = (playlistID) => {
+    return (
+      this.getBackendAddress() + "/playlist/" + playlistID + "/removeEpisodes"
+    );
+  };
+
+  /**
+   * Returns the get DeletePlaylist endpoint.
+   * @returns The get DeletePlaylist Endpoint
+   * */
+  static getDeletePlaylistEndpoint = (playlistID) => {
+    return this.getBackendAddress() + "/playlist/" + playlistID + "/delete";
+  };
+
+  /**
+   * Returns the get myPlaylists endpoint.
+   * @returns The get myPlaylists Endpoint
+   * */
+  static getMyPlaylistsEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/playlist/myPlaylists?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
+   * Returns the get UserPlaylists endpoint.
+   * @returns The get UserPlaylists Endpoint
+   * */
+  static getUserPlaylistsEndpoint = (userId, page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/playlist/" +
+      userId +
+      "/getUserPlaylists?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
+   * Returns the get PlaylistEpsiodes endpoint.
+   * @returns The get PlaylistEpsiodes Endpoint
+   * */
+  static getPlaylistEpisodesEndpoint = (playlistID) => {
+    return this.getBackendAddress() + "/playlist/" + playlistID;
+  };
+
+  /**
+   * Returns the get PlaylistEpsiodes endpoint.
+   * @returns The get PlaylistEpsiodes Endpoint
+   * */
+  static getLikedEpisodesPlaylistEndpoint = () => {
+    return this.getBackendAddress() + "/playlist/getLikedEpisodesPlaylist";
+  };
 }

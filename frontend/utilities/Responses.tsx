@@ -8,6 +8,7 @@ import {
   User,
   Bookmark,
   Section,
+  Playlist,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -125,5 +126,37 @@ export interface AddSectionResponse extends BaseResponse {
 export interface getSectionResponse extends BaseResponse {
   sections: Section[];
 }
+
+//#endregion
+
+//#region Playlist Responses
+export interface PlaylistDataResponse extends BaseResponse {
+  data: string;
+}
+
+export interface GetPlaylistsResponse extends BaseResponse {
+  playlists: Playlist[];
+}
+
+export interface GetPlaylistEpisodesResponse extends BaseResponse {
+  playlist: Playlist;
+}
+
+//#endregion
+
+//#region Playlist Responses
+export interface PlaylistDataResponse extends BaseResponse {
+  data: string;
+}
+
+export interface GetPlaylistsResponse extends BaseResponse {
+  playlists: Playlist[];
+}
+
+export interface GetPlaylistEpisodesResponse extends BaseResponse {
+  playlist: Playlist;
+}
+
+//#endregion
 
 //#endregion

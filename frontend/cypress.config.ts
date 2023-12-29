@@ -19,8 +19,8 @@ export default defineConfig({
       "cypress/e2e/**/Like.cy.tsx",
       "cypress/e2e/**/Comment.cy.tsx",
       "cypress/e2e/**/Section.cy.tsx",
-      "cypress/e2e/**/Notification.cy.tsx"
-
+      "cypress/e2e/**/Notification.cy.tsx",
+      "cypress/e2e/**/Playlists.cy.tsx"
     ],
     setupNodeEvents(on, config) {
       // implement node event listeners here

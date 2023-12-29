@@ -69,11 +69,7 @@ export default function MyPodcast() {
         height="calc(100vh - 60px - 80px)"
       >
         <ExploreGenresSection />
-        <Box
-          w={{ base: "70%", md: "30%" }}
-          borderRadius="0.5em"
-          p="8px"
-        >
+        <Box w={{ base: "70%", md: "30%" }} borderRadius="0.5em" p="8px">
           {!loading && (
             <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
               Podcasts labeled "{genreName}"

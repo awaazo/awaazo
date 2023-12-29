@@ -81,9 +81,17 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
         fontWeight={"bold"}
         bg={isSubscribed ? "gray.700" : "blue.500"}
       >
-        {isSubscribed ? "Unsubscribe" : "Subscribe"}
-      </Button>
-    </Tooltip>
+        <Button
+          p={5}
+          variant="ghost"
+          onClick={handleSubscribe}
+          fontWeight={"bold"}
+          bg={isSubscribed ? "gray.700" : "blue.500"}
+          borderRadius={"50px"}
+        >
+          {isSubscribed ? "Unsubscribe" : "Subscribe"}
+        </Button>
+      </Tooltip>
     </>
   );
 };

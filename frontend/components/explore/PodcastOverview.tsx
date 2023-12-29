@@ -12,11 +12,10 @@ import {
   Button, // Add Button import
 } from "@chakra-ui/react";
 
-import Episode from "../explore/Episode";
+import EpisodeCard from "../cards/EpisodeCard";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
 import AuthHelper from "../../helpers/AuthHelper";
-
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast, User }) {
@@ -83,8 +82,6 @@ const updatePodcastData = (newData) => {
     },
   };
 
-
-
   return (
     <>
       <Box
@@ -123,12 +120,6 @@ const updatePodcastData = (newData) => {
             <Text fontSize="xl" fontWeight="bold">
               <Wrap align="center" spacing={4}>
                 <WrapItem>🎙️ {podcast.name}</WrapItem>
-                <Subscription 
-                  PodcastId={podcast.id} 
-                  initialIsSubscribed={Boolean} 
-                  podcasterId={podcast.podcasterId} 
-                  currentUserID={currentUserID} 
-                />
                 {/* Display tags */}
                 {podcast.tags.map((tag, index) => (
                   <WrapItem key={index}>
@@ -146,9 +137,17 @@ const updatePodcastData = (newData) => {
                     </Box>
                   </WrapItem>
                 ))}
-              </Wrap>
 
+                {/* Move the subscription button to the right with ml utility */}
+                <WrapItem ml="auto">
+                  <Subscription
+                    PodcastId={podcast.id}
+                    initialIsSubscribed={Boolean}
+                  />
+                </WrapItem>
+              </Wrap>
             </Text>
+
             {/* Episode Details */}
             <Flex direction="column" fontSize="sm" position="relative">
               {renderDescription()}
@@ -220,7 +219,12 @@ const updatePodcastData = (newData) => {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode key={index} episode={episode} />
+                  <EpisodeCard
+                    key={index}
+                    episode={episode}
+                    inPlaylist={false}
+                    playlistId={null}
+                  />
                 ))
               )}
             </>
@@ -277,7 +281,12 @@ const updatePodcastData = (newData) => {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <Episode key={index} episode={episode} />
+                  <EpisodeCard
+                    key={index}
+                    episode={episode}
+                    inPlaylist={false}
+                    playlistId={null}
+                  />
                 ))
               )}
             </div>

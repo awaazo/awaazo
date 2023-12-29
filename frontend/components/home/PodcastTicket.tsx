@@ -1,20 +1,29 @@
-import { Box, Flex, Image, Text, IconButton, useColorModeValue, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Text,
+  IconButton,
+  useColorModeValue,
+  VStack,
+} from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { Episode } from "../../utilities/Interfaces";
 import LikeComponent from "../social/likeComponent";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { convertTime } from "../../utilities/commonUtils";
 
-
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
   const { thumbnailUrl, episodeName, podcaster, duration, likes } = episode;
-  const likedColor = likes?.isLiked ? "red.500" : useColorModeValue("gray.400", "gray.600");
+  const likedColor = likes?.isLiked
+    ? "red.500"
+    : useColorModeValue("gray.400", "gray.600");
 
   const { dispatch } = usePlayer();
 
   // Function to handle episode click
   const handleEpisodeClick = () => {
-    dispatch({ type: "SET_EPISODE", payload: episode });
+    dispatch({ type: "PLAY_NOW_QUEUE", payload: episode });
   };
 
   return (
@@ -73,7 +82,10 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       {/* Right: Like button */}
       <VStack>
-        <LikeComponent episodeOrCommentId={episode.id} initialLikes={episode.likes} />
+        <LikeComponent
+          episodeOrCommentId={episode.id}
+          initialLikes={episode.likes}
+        />
       </VStack>
     </Flex>
   );
