@@ -140,10 +140,12 @@ const updatePodcastData = (newData) => {
 
                 {/* Move the subscription button to the right with ml utility */}
                 <WrapItem ml="auto">
-                  <Subscription
-                    PodcastId={podcast.id}
-                    initialIsSubscribed={Boolean}
-                  />
+                <Subscription
+                  PodcastId={podcast.id}
+                  initialIsSubscribed={Boolean}
+                  podcasterId={podcast.podcasterId}
+                  currentUserID={currentUserID}
+                />
                 </WrapItem>
               </Wrap>
             </Text>
