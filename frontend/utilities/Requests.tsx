@@ -125,3 +125,67 @@ export interface SectionAddRequest {
 }
 
 //#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
