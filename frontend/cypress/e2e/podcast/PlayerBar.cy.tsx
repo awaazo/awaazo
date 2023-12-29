@@ -7,6 +7,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(1000);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(10500);
@@ -65,6 +66,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(1000);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(5500);
@@ -85,6 +87,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(1000);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(15500);
@@ -106,6 +109,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
+        cy.wait(1000);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
@@ -133,6 +137,7 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
             timeout: 5000,
         });
+        cy.wait(1000);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Love the episode! Half Life 3 when???");
