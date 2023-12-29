@@ -1,4 +1,4 @@
-describe('Like', () => {
+describe('Comment', () => {
 
     it('Should comment a Podcast', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
@@ -12,6 +12,7 @@ describe('Like', () => {
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Is there an error in the title?");
+        cy.wait(250);
         cy.contains('Add Comment').click();
         cy.contains('Is there an error in the title?');
         cy.get('.chakra-modal__close-btn').click();

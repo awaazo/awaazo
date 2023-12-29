@@ -37,6 +37,20 @@ export interface Episode {
   transcript?: TranscriptLine[];
 }
 
+export interface Playlist {
+  id: string;
+  name: string;
+  user: User;
+  description: string;
+  privacy: string;
+  isHandledByUser: boolean;
+  numberOfEpisodes: number;
+  duration: number;
+  createdAt: Date;
+  updatedAt: Date;
+  playlistEpisodes: Episode[];
+}
+
 export interface Section {
   id: string;
   episodeId: string;

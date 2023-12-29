@@ -454,6 +454,12 @@ public class PlaylistServiceTests
         {
             Id = Guid.NewGuid()
         };
+        var podcastGuid = Guid.NewGuid();
+        var podcast = new Podcast
+        {
+            Id = podcastGuid,
+            Name = "test",
+        };
 
         var domainUrl = "https://example.com";
 
@@ -461,7 +467,10 @@ public class PlaylistServiceTests
 
         var episode = new Episode
         {
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            Podcast = podcast,
+            PodcastId = podcastGuid
+            
         };
 
         var playlist = new Playlist
@@ -512,6 +521,14 @@ public class PlaylistServiceTests
 
         var domainUrl = "https://example.com";
 
+        var podcastGuid = Guid.NewGuid();
+        var podcast = new Podcast
+        {
+            Id = podcastGuid,
+            Name = "test",
+        };
+
+
         var playlist = new Playlist
         {
             Id = playlistId,
@@ -524,6 +541,12 @@ public class PlaylistServiceTests
             {
                 PlaylistId = playlistId,
                 Episode = new Episode()
+                {
+                    Podcast = podcast,
+                    PodcastId = podcastGuid
+                },
+                
+                
             }
         }
         };

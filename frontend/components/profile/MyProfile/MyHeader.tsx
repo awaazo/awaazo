@@ -21,6 +21,7 @@ import { useSession } from "next-auth/react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import router from "next/router";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
+import Subscriptions from "./MySubscriptions";
 
 const iconProps = {
   variant: "ghost",
@@ -105,24 +106,7 @@ export default function Header() {
           <span>Bio: {profile?.bio}</span>
         </Text>
         <HStack>
-          <Button
-            rounded="7px"
-            style={{
-              // styling for number of followers, and when clicked, goes to the followers page
-              border: "solid 1px #CC748C",
-            }}
-          >
-            420 Subscriptions
-          </Button>
-          <Button
-            rounded="7px"
-            style={{
-              // styling for the number of followers, and when clicked, goes to the followers page
-              border: "solid 1px #CC748C",
-            }}
-          >
-            Subscribed to 69 Podcasts
-          </Button>
+          <Subscriptions />
         </HStack>
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">

@@ -239,7 +239,7 @@ export default function Navbar() {
               <Link href="/CreatorHub/AddEpisode">
                 <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} />
               </Link>
-              <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} />
+              <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} data-cy={`notifications-button`}/>
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           )}

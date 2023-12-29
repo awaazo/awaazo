@@ -90,7 +90,7 @@ const SignUp: React.FC = () => {
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
         <Text fontSize="lg" fontWeight="bold" color="white" mb={1} align={"left"} textColor={"brand.100"}>
-          Sign Up to Amazon
+          Sign Up to Awaazo
         </Text>
         <Text fontSize="sm" color="gray.400" mb={6} align={"left"}>
           Join Awaazo and transform podcasting with AI brilliance Create, Connect, Captivate!

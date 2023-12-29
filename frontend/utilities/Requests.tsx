@@ -96,6 +96,15 @@ export interface EpisodeEditRequest {
 
 //#endregion
 
+//#region Episode Bookmark Requests
+export interface EpisodeBookmarkRequest {
+  title: string;
+  note: string;
+  time: number;
+}
+
+//#endregion
+
 //#region Podcast Rating Requests
 export interface PodcastRatingRequest {
   podcastId: string;
@@ -113,6 +122,70 @@ export interface SectionAddRequest {
   title: string;
   start: number;
   end: number;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
 }
 
 //#endregion
