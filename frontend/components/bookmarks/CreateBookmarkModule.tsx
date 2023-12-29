@@ -36,34 +36,6 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
   const [newTitle, setNewTitle] = useState("");
   const [newNote, setNewNote] = useState("");
 
-  // Fetch episode details and transform bookmarks
-  // useEffect(() => {
-  //     const fetchEpisodeDetails = async () => {
-  //       const response = await PodcastHelper.getEpisodeById(
-  //         episodeId,
-  //       );
-  //       if (response.status === 200) {
-  //         if (response.episode) {
-  //           // Transform the bookmarks to match our format
-  //           const transformedBookmarks = response.episode.bookmarks.map(
-  //             (bookmark) => ({
-  //               id: bookmark.id,
-  //               title: bookmark.title,
-  //               note: bookmark.note,
-  //               timestamp: bookmark.timestamp,
-  //             }),
-  //           );
-  //           setBookmarks(transformedBookmarks);
-  //         }
-  //       } else {
-  //         console.error("Error fetching episode details:", response.message);
-  //       }
-  //     };
-  //     fetchEpisodeDetails();
-  // }, [episodeId]);
-
-
-
  // Function to handle the bookmark/delete bookmark action
  const handleBookmark = () => {
 
@@ -95,63 +67,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
 
 };
 
-  // Function to handle the bookmark/remove bookmark action
- // const handleBookmark = () => {
-    // // Toggle the bookmark status based on whether the selected timestamp of the episode is currently bookmarked
-    // if (isBookmarked) {
-    //   // Call unlikeBookmak because the episode selected timestamp is currently bookmarked
-    //   SocialHelper.deleteEpisodeBookmark(episodeId, selectedTimestamp) // This method needs to be implemented in SocialHelper
-    //     .then((response) => {
-    //       if (response.status === 200) {
-    //         // Update the UI to reflect the unlike
-    //         setBookmarks(bookmarks, selectedTimestamp)
-    //         setIsBookmarked(false);
-    //       } else {
-    //         console.error(
-    //           "Error removing bookmark for the selected timestamp",
-    //           response.message,
-    //         );
-    //       }
-    //     });
-    // } else {
-    //   // Call likeEpisode or likeComment because the episode or comment is currently not liked
-    //   SocialHelper.postBookmark(episodeId, selectedTimestamp) // This method needs to be implemented in SocialHelper
-    //     .then((response) => {
-    //       if (response.status === 200) {
-    //         // Update the UI to reflect the like
-    //         setBookmarks(bookmarks, selectedTimestamp);
-    //         setIsBookmarked(true);
-    //       } else {
-    //         console.error("Error bokmarking episode selected timestamp", response.message);
-    //       }
-    //     });
-    // }
-  //};
-
   return (
-    // // bookmarks.map((bookmark,currentTime) => (
-    // //   <></>
-    // // ))
-    // <>
-    
-    //   {/* Tooltip to display the like/unlike action */}
-    //   {/* <Tooltip label={isBookmarked ? "Bookmark" : "Remove Bookmark"} aria-label="Bookmark tooltip"> */}
-    //     {/* Button to trigger the like/unlike action */}
-    //     <Button
-    //       variant={"ghost"}
-    //       p={2}
-    //       leftIcon={
-    //         <Icon as={CiBookmarkPlus} color="gray.500" />
-    //         //note:
-    //         //bookmarks.map(bookmark, currentTime)
-    //         //if bookmark.selectedTimestamp == currentTime then make the icon white, else make it grey
-    //       }
-    //       onClick={() => handleBookmark()}
-    //     >
-    //     </Button>
-    //   {/* </Tooltip> */}
-    // </>
-
 <>
 <Tooltip label="Bookmark" aria-label="Bookmark tooltip">
   <Button
