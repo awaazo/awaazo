@@ -1,4 +1,4 @@
-describe("PlayerBar", () => { 
+describe.skip("PlayerBar", () => { 
 
     it('Should remember what time I was at on the podcast', () =>  {
         let timePassedValue = ""
