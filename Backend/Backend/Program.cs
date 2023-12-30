@@ -42,7 +42,7 @@ public class Program
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
-
+        builder.Services.AddSingleton<EmailService>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
