@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import Navbar from "../../components/shared/Navbar";
 import { PodcastCreateRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
@@ -193,7 +192,6 @@ const NewPodcast: React.FC = () => {
    */
   const NewPodcastPage = () => (
     <>
-      <Navbar />
       <Center paddingBottom={"1em"}>
         <VStack mt={"3em"}>
           <Heading

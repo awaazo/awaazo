@@ -18,8 +18,6 @@ import {
   ChevronDownIcon,
   QuestionOutlineIcon,
 } from "@chakra-ui/icons";
-
-import Navbar from "../../components/shared/Navbar";
 import MyPodcast from "../../components/myPodcast/MyPodcast";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import router from "next/router";
@@ -95,8 +93,6 @@ const MyPodcasts = () => {
 
   return (
     <>
-      <Navbar />
-
       <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
         <Flex align="center" justify="space-between" p={4}>
           <Text fontSize="30px" fontWeight={"light"}>

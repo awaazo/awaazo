@@ -9,16 +9,12 @@ import {
   useColorMode,
   useBreakpointValue,
 } from "@chakra-ui/react";
-
 import { PodcastByTagsRequest } from "../../../utilities/Requests";
 import { Podcast } from "../../../utilities/Interfaces";
 import { useRouter } from "next/router";
-
-import Navbar from "../../../components/shared/Navbar";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../../components/cards/PodcastCard";
 import ExploreGenresSection from "../../../components/home/ExploreGenres";
-import PlayerBar from "../../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
   const router = useRouter();
@@ -61,7 +57,6 @@ export default function MyPodcast() {
 
   return (
     <>
-      <Navbar />
       <Box
         display="flex"
         flexDirection="column"
@@ -92,8 +87,6 @@ export default function MyPodcast() {
             (No podcasts available)
           </Text>
         )}
-
-        {/* Player Bar */}
       </Box>
     </>
   );
