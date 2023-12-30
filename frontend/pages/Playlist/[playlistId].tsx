@@ -14,12 +14,10 @@ export default function Playlist() {
       <Flex>
         <Box w="20%" position="fixed">
           {" "}
-          {/* Adjust the width of the sidebar as needed */}
           <PlaylistSidebar />
         </Box>
         <Box flex="1" p="8" ml={"20%"}>
           {" "}
-          {/* The remaining space */}
           <PlaylistOverview playlistId={playlistId as string} />
         </Box>
       </Flex>

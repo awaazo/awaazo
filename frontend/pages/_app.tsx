@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
-import bg from "../styles/images/bgOLd.png";
+import bg from "../styles/images/bgOld.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
@@ -13,7 +13,7 @@ import '../styles/globals.css';
 const theme = extendTheme({
   colors: {
     brand: {
-      100: "#ffcd00",
+      100: "#564AF7",
       200: "#1a202c",
     },
     primary: {
