@@ -154,7 +154,7 @@ public class ProfileController : ControllerBase
         }
     }
 
-
+    [AllowAnonymous]
     [HttpPost("sentForgotPasswordEmail")]
     public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request) {
         try {
@@ -165,7 +165,7 @@ public class ProfileController : ControllerBase
             }
 
             await _profileService.SentForgotPasswordEmail(request.Email);
-            return Ok();
+            return Ok($"Email sent to {request.Email}");
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e);
