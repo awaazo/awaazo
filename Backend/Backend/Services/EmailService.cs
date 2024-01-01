@@ -6,13 +6,15 @@ namespace Backend.Services;
 public class EmailService : IDisposable
 {
     private readonly SmtpClient _client;
+    private readonly IConfiguration _config;
 
     public EmailService(IConfiguration config) {
         _client = new SmtpClient() {
             Port = int.Parse(config["Smtp:Port"]!),
-            Credentials = new NetworkCredential(config["Smtp:Username"], config["Smtp:Password"]),
+            Credentials = new NetworkCredential(config["Smtp:Username"], config["Smtp:Password"], config["Smtp:Domain"]),
             EnableSsl = true
         };
+        _config = config;
     }
 
     /// <summary>
@@ -20,7 +22,7 @@ public class EmailService : IDisposable
     /// </summary>
     /// <param name="message"></param>
     /// <exception cref="">Throws exception if Smtp server is not reachable</exception>
-    public void Send(MailMessage message) {
+    public void Send(MailMessage message) { ;
         _client.Send(message);
         message.Dispose();
     }
