@@ -9,10 +9,7 @@ using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using static Backend.Models.User;
-using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using static Backend.Models.Playlist;
 
 
@@ -23,6 +20,9 @@ public class AuthService : IAuthService
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Represents a service for handling authentication-related operations.
+    /// </summary>
     public AuthService(AppDbContext db, IMapper mapper)
     {
         _db = db;
@@ -30,12 +30,12 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Generates a JWT token and returns it as a string.
+    /// Generates a JWT token for the specified user.
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="configuration"></param>
-    /// <param name="tokenLifeTime"></param>
-    /// <returns></returns>
+    /// <param name="userId">The unique identifier of the user.</param>
+    /// <param name="configuration">The configuration object containing JWT settings.</param>
+    /// <param name="tokenLifeTime">The lifetime of the token.</param>
+    /// <returns>The generated JWT token as a string.</returns>
     public string GenerateToken(Guid userId, IConfiguration configuration, TimeSpan tokenLifeTime)
     {
         // Check if key is null
@@ -70,6 +70,11 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    /// <summary>
+    /// Logs in a user by checking the provided credentials against the database.
+    /// </summary>
+    /// <param name="request">The login request containing the user's email/username and password.</param>
+    /// <returns>The logged-in user if the credentials are valid, otherwise null.</returns>
     public async Task<User?> LoginAsync(LoginRequest request)
     {
         // Return NULL if the User does not exists or if the password is incorrect
@@ -81,10 +86,10 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Registers a new User in the Database. Returns NULL if the User already exists.
+    /// Registers a new user asynchronously.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="request">The registration request containing user information.</param>
+    /// <returns>The newly registered user if registration is successful, otherwise null.</returns>
     public async Task<User?> RegisterAsync(RegisterRequest request)
     {
         // Return NULL if the User exists (ie. has same email and/or username)
@@ -124,17 +129,16 @@ public class AuthService : IAuthService
 
         await _db.Playlists.AddAsync(playlist);
 
-
         await _db.SaveChangesAsync();
 
         return newUser;
     }
 
     /// <summary>
-    /// Identifies the User from the HttpContext. Returns NULL if the User is not identified.
+    /// Identifies the user based on the provided HttpContext.
     /// </summary>
-    /// <param name="httpContext"></param>
-    /// <returns></returns>
+    /// <param name="httpContext">The HttpContext containing user information.</param>
+    /// <returns>The identified User object, or null if the user is not identified.</returns>
     public async Task<User?> IdentifyUserAsync(HttpContext httpContext)
     {
         // Return NULL if the User is not identified
@@ -150,6 +154,11 @@ public class AuthService : IAuthService
         return await _db.Users!.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
+    /// <summary>
+    /// Authenticates the user using Google credentials.
+    /// </summary>
+    /// <param name="configuration">The configuration object.</param>
+    /// <param name="request">The Google request object.</param>
     public void AuthGoogle(IConfiguration configuration, GoogleRequest request)
     {
         GoogleJsonWebSignature.ValidationSettings settings = new()
@@ -161,10 +170,10 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Retrieves or Creates the Google SSO user.
+    /// Authenticates a user using Google Single Sign-On (SSO).
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns>The Google SSO User, otherwise null</returns>
+    /// <param name="request">The GoogleRequest object containing the user's information.</param>
+    /// <returns>The authenticated User object if successful, otherwise null.</returns>
     public async Task<User?> GoogleSSOAsync(GoogleRequest request)
     {
         // Get the user from the Database if he exists already.
@@ -228,10 +237,10 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Validates the Google Token.
+    /// Validates a Google token asynchronously.
     /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <param name="token">The Google token to validate.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a boolean value indicating whether the token is valid.</returns>
     public async Task<bool> ValidateGoogleTokenAsync(string token)
     {
         return await GoogleJsonWebSignature.ValidateAsync(token) is not null;

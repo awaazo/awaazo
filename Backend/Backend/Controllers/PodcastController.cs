@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
-using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
@@ -18,11 +17,13 @@ public class PodcastController : ControllerBase
 {
     private const int MIN_PAGE=0;
     private const int DEFAULT_PAGE_SIZE=20;
-
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
     private readonly ILogger<PodcastController> _logger;
 
+    /// <summary>
+    /// Represents a controller for managing podcasts.
+    /// </summary>
     public PodcastController(IPodcastService podcastService, IAuthService authService, ILogger<PodcastController> logger)
     {
         _logger = logger;
@@ -33,6 +34,11 @@ public class PodcastController : ControllerBase
 
     #region Podcast
 
+    /// <summary>
+    /// Creates a new podcast.
+    /// </summary>
+    /// <param name="request">The request object containing the podcast details.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpPost("create")]
     public async Task<IActionResult> CreatePodcast([FromForm] CreatePodcastRequest request)
     {
@@ -57,6 +63,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Edits a podcast.
+    /// </summary>
+    /// <param name="request">The request containing the podcast data to be edited.</param>
+    /// <returns>An IActionResult representing the result of the edit operation.</returns>
     [HttpPost("edit")]
     public async Task<IActionResult> EditPodcast([FromForm] EditPodcastRequest request)
     {
@@ -81,6 +92,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Deletes a podcast.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast to delete.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpDelete("delete")]
     public async Task<IActionResult> DeletePodcast(Guid podcastId)
     {
@@ -105,6 +121,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves the podcasts owned by the authenticated user.
+    /// </summary>
+    /// <param name="page">The page number of the results (optional, default is MIN_PAGE).</param>
+    /// <param name="pageSize">The number of podcasts per page (optional, default is DEFAULT_PAGE_SIZE).</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpGet("myPodcasts")]
     public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
@@ -129,6 +151,13 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves the podcasts of a specific user.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="page">The page number of the results (optional, default is MIN_PAGE).</param>
+    /// <param name="pageSize">The number of results per page (optional, default is DEFAULT_PAGE_SIZE).</param>
+    /// <returns>An IActionResult containing the user's podcasts.</returns>
     [HttpGet("userPodcasts")]
     public async Task<IActionResult> GetUserPodcasts(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
@@ -153,6 +182,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves all podcasts with pagination.
+    /// </summary>
+    /// <param name="page">The page number to retrieve.</param>
+    /// <param name="pageSize">The number of podcasts per page.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpGet("all")]
     public async Task<IActionResult> GetAllPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
@@ -177,6 +212,13 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Searches for podcasts based on the provided search term.
+    /// </summary>
+    /// <param name="searchTerm">The term to search for.</param>
+    /// <param name="page">The page number of the search results (optional, default is MIN_PAGE).</param>
+    /// <param name="pageSize">The number of results per page (optional, default is DEFAULT_PAGE_SIZE).</param>
+    /// <returns>An IActionResult representing the search results.</returns>
     [HttpGet("search")]
     public async Task<IActionResult> SearchPodcast(string searchTerm, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
@@ -201,6 +243,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves a podcast by its ID.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast to retrieve.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpGet("{podcastId}")]
     public async Task<IActionResult> GetPodcastById(Guid podcastId)
     {
@@ -225,7 +272,11 @@ public class PodcastController : ControllerBase
         }
     }
 
-
+    /// <summary>
+    /// Retrieves the cover art file for a podcast.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <returns>An <see cref="ActionResult"/> containing the cover art file.</returns>
     [HttpGet("{podcastId}/getCoverArt")]
     public async Task<ActionResult> GetPodcastCoverArt(Guid podcastId)
     {
@@ -254,6 +305,13 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves podcasts based on the specified tags.
+    /// </summary>
+    /// <param name="tags">An array of tags to filter the podcasts.</param>
+    /// <param name="page">The page number of the results (optional, default is MIN_PAGE).</param>
+    /// <param name="pageSize">The number of podcasts per page (optional, default is DEFAULT_PAGE_SIZE).</param>
+    /// <returns>An ActionResult containing the podcasts that match the given tags.</returns>
     [HttpGet("byTags")]
     public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
@@ -278,6 +336,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves the metrics for a specific podcast.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <returns>An ActionResult representing the metrics of the podcast.</returns>
     [HttpGet("{podcastId}/metrics")]
     public async Task<ActionResult> GetMetrics(Guid podcastId) {
         this.LogDebugControllerAPICall(_logger);
@@ -300,13 +363,13 @@ public class PodcastController : ControllerBase
     #endregion 
 
     #region Episode
-
+    
     /// <summary>
     /// Adds an episode to a podcast.
     /// </summary>
-    /// <param name="podcastId"></param>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="request">The request containing the episode details.</param>
+    /// <returns>An <see cref="IActionResult"/> representing the result of the operation.</returns>
     [HttpPost("{podcastId}/add")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
@@ -332,13 +395,13 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
+    
     /// <summary>
-    /// Edits an episode of a podcast by Id.
+    /// Edits an episode of a podcast.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="episodeId">The ID of the episode to edit.</param>
+    /// <param name="request">The request containing the updated episode information.</param>
+    /// <returns>An IActionResult representing the result of the edit operation.</returns>
     [HttpPost("{episodeId}/edit")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
@@ -366,10 +429,10 @@ public class PodcastController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes an episode of a podcast by Id.
+    /// Deletes an episode from the podcast.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
+    /// <param name="episodeId">The ID of the episode to delete.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpDelete("{episodeId}/delete")]
     public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
@@ -395,10 +458,10 @@ public class PodcastController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an episode of a podcast by Id.
+    /// Retrieves an episode by its ID.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
+    /// <param name="episodeId">The ID of the episode to retrieve.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpGet("episode/{episodeId}")]
     public async Task<IActionResult> GetEpisode(Guid episodeId)
     {
@@ -422,13 +485,13 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
+ 
     /// <summary>
-    /// Gets the audio of an episode.
+    /// Retrieves the audio file for a specific episode of a podcast.
     /// </summary>
-    /// <param name="podcastId"></param>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="episodeId">The ID of the episode.</param>
+    /// <returns>An ActionResult representing the audio file.</returns>
     [HttpGet("{podcastId}/{episodeId}/getAudio")]
     public async Task<ActionResult> GetEpisodeAudio(Guid podcastId, Guid episodeId)
     {
@@ -458,11 +521,11 @@ public class PodcastController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the thumbnail of an episode.
+    /// Retrieves the thumbnail for a specific episode of a podcast.
     /// </summary>
-    /// <param name="podcastId"></param>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="episodeId">The ID of the episode.</param>
+    /// <returns>An ActionResult containing the thumbnail file.</returns>
     [HttpGet("{podcastId}/{episodeId}/getThumbnail")]
     public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId, Guid episodeId)
     {
@@ -492,14 +555,15 @@ public class PodcastController : ControllerBase
     }
 
     /// <summary>
+    /// Saves the watch history for a specific episode.
     /// This function saves the last watched position on a specific episode
     /// On the frontend:
     ///     - You need to add a onBeforeUnload  hook to the episode webpage and this hook should
     ///       send request to this route.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="episodeId">The ID of the episode.</param>
+    /// <param name="request">The request containing the episode history data.</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
         this.LogDebugControllerAPICall(_logger);
@@ -520,6 +584,11 @@ public class PodcastController : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Retrieves the watch history for a specific episode.
+    /// </summary>
+    /// <param name="episodeId">The ID of the episode.</param>
+    /// <returns>An IActionResult representing the watch history.</returns>
     [HttpGet("{episodeId}/watchHistory")]
     public async Task<IActionResult> GetWatchHistory(Guid episodeId)
     {
@@ -543,10 +612,10 @@ public class PodcastController : ControllerBase
     }   
     
     /// <summary>
-    /// Gets the transcript of an episode.
+    /// Retrieves the transcript for a specific episode.
     /// </summary>
-    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
-    /// <returns>The transcript or null if its not ready.</returns>
+    /// <param name="episodeId">The ID of the episode.</param>
+    /// <returns>The transcript of the episode.</returns>
     [HttpGet("{episodeId}/getTranscript")]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
     {
@@ -566,11 +635,12 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
     /// <summary>
-    /// Gets Adjecent Episodes
+    /// Retrieves the adjacent episode based on the given episode ID.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
+    /// <param name="episodeId">The ID of the current episode.</param>
+    /// <returns>An IActionResult representing the adjacent episode.</returns>
     [HttpGet("{episodeId}/adjecentEpisode")]
     public async Task<IActionResult> GetAdjecentEpisode(Guid episodeId)
     {

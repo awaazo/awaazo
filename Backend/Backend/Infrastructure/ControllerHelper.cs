@@ -8,8 +8,8 @@ public static class ControllerHelper
     /// <summary>
     /// Returns the domain url of the server.
     /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
+    /// <param name="context">The HttpContext object representing the current HTTP request.</param>
+    /// <returns>The domain URL of the server.</returns>
     public static string GetDomainUrl(HttpContext context)
     {
         string domain = "";

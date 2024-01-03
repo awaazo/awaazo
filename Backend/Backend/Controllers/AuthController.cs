@@ -19,6 +19,12 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly ILogger _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthController"/> class.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="authService">The authentication service.</param>
+    /// <param name="logger">The logger.</param>
     public AuthController(IConfiguration configuration, IAuthService authService, ILogger logger)
     {
         _logger = logger;
@@ -26,6 +32,11 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    /// <summary>
+    /// Handles the login request.
+    /// </summary>
+    /// <param name="request">The login request.</param>
+    /// <returns>The login result.</returns>
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -46,6 +57,11 @@ public class AuthController : ControllerBase
         return Ok("Logged in.");
     }
 
+    /// <summary>
+    /// Handles the registration request.
+    /// </summary>
+    /// <param name="request">The registration request.</param>
+    /// <returns>The registration result.</returns>
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -66,6 +82,10 @@ public class AuthController : ControllerBase
         return Ok("Registered.");
     }
 
+    /// <summary>
+    /// Retrieves the user information.
+    /// </summary>
+    /// <returns>The user information.</returns>
     [HttpGet("me")]
     public async Task<IActionResult> Me()
     {
@@ -80,12 +100,11 @@ public class AuthController : ControllerBase
         else return Ok(new UserMenuInfoResponse(user, GetDomainUrl(HttpContext)));
     }
 
-
     /// <summary>
-    /// Google SSO Login/Register.
+    /// Handles the Google SSO login/register request.
     /// </summary>
-    /// <param name="request">GoogleSSO Request.</param>
-    /// <returns></returns>
+    /// <param name="request">The Google SSO request.</param>
+    /// <returns>The login/register result.</returns>
     [HttpPost("googleSSO")]
     [AllowAnonymous]
     public async Task<IActionResult> GoogleSSO([FromBody] GoogleRequest request)
@@ -117,6 +136,10 @@ public class AuthController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Handles the logout request.
+    /// </summary>
+    /// <returns>The logout result.</returns>
     [HttpGet("logout")]
     public ActionResult Logout()
     {
