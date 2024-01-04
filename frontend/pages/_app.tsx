@@ -35,15 +35,21 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
   const [showPlayerBar, setShowPlayerBar] = useState(true);
   const [showNavbar, setShowNavbar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(true);
 
   useEffect(() => {
     const path = router.pathname;
     const hidePlayerBarOnPaths = ["/auth/", "/profile/ProfileSetup", "/CreatorHub/"];
-    const hideNavbarOnPaths = ["/auth/",];
+    const hideNavbarOnPaths = ["/auth/"];
+    const hideSidebarOnPaths = ["/auth/", "/profile/ProfileSetup"];
+
     const shouldHidePlayerBar = hidePlayerBarOnPaths.some((p) => path.startsWith(p));
-    const shouldHideNavbar = hideNavbarOnPaths.some(p => path.startsWith(p));
+    const shouldHideNavbar = hideNavbarOnPaths.some((p) => path.startsWith(p));
+    const shouldHideSidebar = hideSidebarOnPaths.some((p) => path.startsWith(p));
+
     setShowPlayerBar(!shouldHidePlayerBar);
-    setShowNavbar(!shouldHideNavbar); 
+    setShowNavbar(!shouldHideNavbar);
+    setShowSidebar(!shouldHideSidebar);
   }, [router.pathname]);
 
   return (
@@ -53,9 +59,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session}>
         <PlayerProvider>
           <Flex>
-            <Sidebar />
+            {showSidebar && <Sidebar />}
             <Box flex="1">
-                {showNavbar && <Navbar />}
+              {showNavbar && <Navbar />}
               <Component {...pageProps} />
               {showPlayerBar && <PlayerBar />}
             </Box>
