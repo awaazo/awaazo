@@ -166,7 +166,8 @@ const PlayerBar = () => {
   return (
     <Box
       maxWidth="100%"
-      p={3}
+      p={1}
+      pt={3}
       pb={5}
       bg="rgba(0, 0, 0, 0.2)"
       style={{ backdropFilter: "blur(50px)" }}
