@@ -1,15 +1,12 @@
-describe.skip("PlayerBar", () => { 
+describe("PlayerBar", () => { 
 
     it('Should remember what time I was at on the podcast', () =>  {
+        cy.login(null, "testRegister@email.com", "password123");
         let timePassedValue = ""
         let timeLeftValue = ""
-        cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
         timeout: 5000,
         });
-        cy.wait(2500);
-        cy.reload();
-        cy.wait(2500);
         cy.get('[data-cy="episode-card-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(10500);
