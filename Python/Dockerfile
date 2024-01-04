@@ -9,12 +9,24 @@ WORKDIR /app
 ADD . /app
 
 # Install Python3.11 & ffmpeg
-RUN apt-get -y update && apt-get install -y python3.11 \
+RUN apt-get -y update && apt-get install -y python3.10 \
 ffmpeg \
 python3-pip
 
+# Install the python3-venv package
+RUN apt-get install -y python3.10-venv
+
+# Create a virtual environment
+RUN python3 -m venv venv
+
+# Activate the virtual environment
+RUN . venv/bin/activate
+
 # Install all dependencies
 RUN pip3 install -r requirements.txt
+
+# Install rvc dependencies
+RUN pip3 install -r rvc/requirements.txt
 
 # Expose port 8000
 EXPOSE 8000
