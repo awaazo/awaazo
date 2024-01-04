@@ -15,7 +15,7 @@ from langchain.document_loaders import DirectoryLoader
 episode_id = "kanye_west_joe_rogan"
 
 # Load the JSON data from the file
-with open('./transcripts/transcript.json', 'r') as file:
+with open(f'./transcripts/{episode_id}.json', 'r') as file:
     data = json.load(file)
 
 # Extract the 'text' values from each dictionary in the list
