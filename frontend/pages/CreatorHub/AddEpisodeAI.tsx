@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];
 
-const CreatePodcast = () => {
+const AddEpisodeAI= () => {
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedPodcast, setSelectedPodcast] = useState("");
@@ -94,4 +94,4 @@ const CreatePodcast = () => {
   );
 };
 
-export default CreatePodcast;
+export default AddEpisodeAI;

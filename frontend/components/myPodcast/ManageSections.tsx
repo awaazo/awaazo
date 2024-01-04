@@ -6,7 +6,6 @@ import SectionHelper from "../../helpers/SectionHelper";
 import { Section } from "../../utilities/Interfaces";
 import { SectionAddRequest } from "../../utilities/Requests";
 import { convertTime } from "../../utilities/commonUtils";
-import { FaLinesLeaning } from "react-icons/fa6";
 
 const ManageSections = ({ episodeId, podcastId }) => {
   const [sections, setSections] = useState<Section[]>(null);

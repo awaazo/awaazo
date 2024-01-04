@@ -22,7 +22,7 @@ import { UserMenuInfo } from "../../utilities/Interfaces";
 import CreatePodcastHeader from "../../components/CreatePodcastHeader";
 import { useDropzone } from "react-dropzone";
 
-const NewPodcast: React.FC = () => {
+const CreatePodcast: React.FC = () => {
   // Page refs
   const createPage = "/CreatorHub/AddEpisode";
   const loginPage = "/auth/Login";
@@ -409,10 +409,9 @@ const NewPodcast: React.FC = () => {
     </>
   );
 
-  // If user is logged in, return setup page, otherwise redirect to login page
   if (user !== undefined) {
     return NewPodcastPage();
   }
 };
 
-export default NewPodcast;
+export default CreatePodcast;
