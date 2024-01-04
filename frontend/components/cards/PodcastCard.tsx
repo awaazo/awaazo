@@ -1,110 +1,70 @@
-import { Image, Text, Card, Flex } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Box, Image, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/react";
+import Link from "next/link";
+import React from "react";
+import { Podcast } from "../../utilities/Interfaces";
+import Logo from "../../public/logo_white.svg";
+import { FaPlay, FaStar } from "react-icons/fa";
 
-// Function to navigate to explore podcast page
-// const navigateToExplorePodcast = (podcastId) => {
-//   const podcastPage = "/Explore/" + podcastId;
-//   window.location.href = podcastPage;
-// };
 
-// Component to display a podcast card
-const PodcastCard = ({ podcast }) => (
-  <NextLink href={`/Explore/${podcast.id}`} passHref>
-    <Card
-      boxShadow="lg"
-      rounded="md"
-      overflow="hidden"
-      background={"transparent"}
-      _hover={{
-        transform: "scale(1.07)",
-        textDecoration: "none",
-      }}
-      height={"100%"}
-      position="relative" // Ensure the card has a relative position for absolute child positioning
-      style={{
-        outline: "solid 3px rgba(255, 255, 255, 0.15)",
-        borderRadius: "1.5em",
-        transition: "all 0.4s ease-in-out",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
-      }}
-    >
-      {/* Background layer */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          zIndex: -1,
-          borderRadius: "1.2em", // Make sure this matches the borderRadius of the card
-        }}
-      >
-        {/* Dark opacity layer */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            zIndex: 99,
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            borderRadius: "inherit",
+interface PodcastCardProps {
+  podcast: Podcast;
+}
+
+const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
+  const size = useBreakpointValue({ base: "150px", md: "200px", lg: "220px" });
+  return (
+    <Box width={size} height={size} position="relative" m="2">
+      <Link href={`/Explore/${podcast.id}`} passHref>
+        <Flex
+          direction="column"
+          align="center"
+          rounded="xl"
+          overflow="hidden"
+          _hover={{
+            bg: "blackAlpha.800",
+            textDecoration: "none",
           }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            background: `url(${podcast.coverArtUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            filter: "blur(20px)",
-            borderRadius: "inherit", // Inherit the border radius from the parent
-          }}
-        />
-      </div>
-      <Image
-        src={podcast.coverArtUrl}
-        alt={podcast.title}
-        height={{
-          base: "150px",
-          md: "200px",
-          lg: "200px",
-        }}
-        objectFit={"cover"}
-      />
-      <Flex direction="column" align="center" p={4}>
-        <Text
-          fontSize="md"
-          fontWeight="bold"
-          mb={2}
-          data-cy={`podcast-card-${podcast.name}`}
+          pb="100%"
+          position="absolute"
+          role="group"
+          cursor="pointer"
+          bg="black"
+          transition="transform 0.2s ease-in-out"
+          width="full"
+          height="full"
         >
-          {podcast.name}
-        </Text>
-        <Text fontSize="sm" textAlign="center" opacity={"0.6"}>
-          {podcast.description.length <= 50
-            ? podcast.description
-            : podcast.description.slice(0, 50) + "..."}
-        </Text>
-      </Flex>
-      {/* button */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%", // Center vertically
-          left: "50%", // Center horizontally
-          transform: "translate(-50%, 50%)", // This ensures the center of the button is exactly in the middle
-          zIndex: 999,
-        }}
-      ></div>
-    </Card>
-  </NextLink>
-);
+          <Image src={podcast.coverArtUrl} alt={podcast.name} objectFit="cover" position="absolute" top={0} w="full" h="full" transition="opacity 0.2s ease-in-out" _groupHover={{ opacity: 0.4 }} />
+          <Box position="absolute" bottom="0" left="0" right="0" height="50%" bgGradient="linear(to-t, brand.100, transparent )" zIndex="0" />
+          <Flex position="absolute" top="2" left="2" align="center" zIndex="2">
+            <Image src={Logo.src} alt="Logo" w={5} />
+          </Flex>
+          <Flex position="absolute" top="2" right="2" align="center" opacity="0" _groupHover={{ opacity: 1 }}>
+            <Icon as={FaStar} color="brand.100" w={4} h={4} />
+            <Text fontSize="sm" color="white" ml="2">
+              {podcast.averageRating}
+            </Text>
+          </Flex>
+          <Box position="absolute" top={0} right={0} bottom={0} left={0} bgGradient="linear(to-t, blackAlpha.600, transparent)" />
+          <Flex position="absolute" justifyContent="center" alignItems="center" top={0} bottom={0} left={0} right={0}>
+            <Icon as={FaPlay} color="brand.100" w={8} h={6} opacity="0" _groupHover={{ opacity: 1 }} />
+          </Flex>
+          <Flex position="absolute" bottom="4" left={0} right={0} px="4" justifyContent="space-between" alignItems="center">
+            <Box>
+              <Text fontSize="md" fontWeight="bold" color="white">
+                {podcast.name}
+              </Text>
+              <Text fontSize="xs" color="gray.200" noOfLines={1}>
+                {podcast.description}
+              </Text>
+            </Box>
+            <Text fontSize="xs" color="gray.400">
+              {podcast.type}
+            </Text>
+          </Flex>
+        </Flex>
+      </Link>
+    </Box>
+  );
+};
 
 export default PodcastCard;
