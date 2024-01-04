@@ -1,73 +1,59 @@
 import React from "react";
+import { useBreakpointValue, Box, VStack, Flex, Icon, Image, useMediaQuery } from "@chakra-ui/react";
+import { FaHome, FaSearch } from "react-icons/fa";
 import Logo from "../../public/logo_white.svg";
-import MyShelf from "./MyShelf";
-import { useBreakpointValue, Box, VStack, Text, Icon, Flex, Image } from "@chakra-ui/react";
-import { FaHome, FaSearch, FaHeart, FaMusic, FaUserFriends } from "react-icons/fa";
+import MyShelf from "../playlist/PlaylistSidebar";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Sidebar = () => {
-  const sidebarWidth = useBreakpointValue({ base: "100%", md: "60px", lg: "250px" });
-  const isMobile = useBreakpointValue({ base: true, md: false, lg: false });
-  const isTablet = useBreakpointValue({ base: false, md: true, lg: false });
+  const router = useRouter();
+  const [isLargerThanTablet] = useMediaQuery("(min-width: 48em)");
 
-  const SidebarItem = ({ icon, label, isActive }) => (
-    <Flex align="center" p="2" mb="1" borderRadius="md" bg={isActive ? "orange.500" : "transparent"} color="white">
-      <Icon as={icon} fontSize="lg" mr={3} />
-      {(!isMobile && !isTablet) && <Text flex="1">{label}</Text>}
-    </Flex>
-  );
+  const sidebarWidth = useBreakpointValue({ base: "100%", md: "60px", lg: "300px" });
+  const menuItems = [
+    { icon: FaHome, label: "Home", href: "/" },
+    { icon: FaSearch, label: "Explore", href: "/Explore/Search" },
+  ];
+
+  const SidebarItem = ({ icon, label, href }) => {
+    const isActive = router.pathname === href;
+    const displayLabel = isLargerThanTablet ? label : '';
+
+    return (
+      <Link href={href} passHref>
+        <Flex as="a" align="center" p="2" mb="1" borderRadius="md" color={isActive ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: 'none', color: 'brand.100' }}>
+          <Icon as={icon} fontSize="xl" mr={3} />
+          <Box flex="1">{displayLabel}</Box>
+        </Flex>
+      </Link>
+    );
+  };
 
   return (
     <Box
       bg="rgba(0, 0, 0, 0.3)"
       backdropFilter="blur(35px)"
-      borderRightRadius={isMobile ? 0 : 20}
       w={sidebarWidth}
-      h={isMobile ? "60px" : "100vh"}
-      py={5} px={isMobile || isTablet ? 1 : 4}
-      position={isMobile ? "fixed" : "static"}
-      bottom={0}
-      left={0}
-      right={0}
+      h="100vh"
+      py={8} px={5}
+      position="static"
       zIndex={10}
-      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.3)"
-      border="3px solid rgba(255, 255, 255, 0.05)"
       data-testid="navbar-component"
     >
       <Flex mb={10} justify="start" align="center">
         <Image src={Logo.src} alt="Logo" mr={1} w="30px" />
       </Flex>
-  
+
       <VStack align="start" spacing={1}>
-        {/* Tablet Layout: Display all icons without labels */}
-        {isTablet && (
-          <>
-            <SidebarItem icon={FaHome} label="" isActive />
-            <SidebarItem icon={FaSearch} label="" isActive={false} />
-            <MyShelf />
-          </>
-        )}
-  
-        {/* Mobile Layout: Limited icons for bottom bar */}
-        {isMobile && (
-          <>
-            <SidebarItem icon={FaHome} label="" isActive />
-            <SidebarItem icon={FaSearch} label="" isActive={false} />
-            <SidebarItem icon={FaMusic} label="" isActive={false} />
-          </>
-        )}
-  
-        {/* Desktop Layout: Full sidebar with labels */}
-        {!isMobile && !isTablet && (
-          <>
-            <SidebarItem icon={FaHome} label="Home" isActive />
-            <SidebarItem icon={FaSearch} label="Search" isActive={false} />
-            <MyShelf /> 
-          </>
-        )}
+        {menuItems.map(item => (
+          <SidebarItem key={item.label} {...item} />
+        ))}
+
+        {isLargerThanTablet && <MyShelf />}
       </VStack>
     </Box>
   );
-  
 };
 
 export default Sidebar;
