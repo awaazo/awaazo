@@ -28,7 +28,11 @@ messages = [
 ]
 qa_prompt = ChatPromptTemplate.from_messages( messages )
 
-qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0.1), vectorstore.as_retriever(), combine_docs_chain_kwargs={"prompt": qa_prompt})
+qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0.1, streaming=True), vectorstore.as_retriever(), combine_docs_chain_kwargs={"prompt": qa_prompt})
 
-response = qa({"question": "What is this podcast transcript about?", "chat_history": []})
-print("\nQuestion: " + response.get("question") + "\n\n" + response.get("answer"))
+while True:
+    user_question = input("\nAsk a question or type 'exit' to quit: ")
+    if user_question.lower() == 'exit':
+        break
+    response = qa({"question": user_question, "chat_history": []})
+    print("\nQuestion: " + response.get("question") + "\n\n" + response.get("answer"))
