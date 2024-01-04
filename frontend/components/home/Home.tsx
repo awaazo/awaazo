@@ -1,21 +1,32 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
 import ExploreGenresSection from "./ExploreGenres";
 import ForYou from "./ForYou";
 
 const Home = () => {
   return (
-    <>
-      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]} height="calc(100vh - 60px - 80px)">
-        <ExploreGenresSection />
-        <Box flex="1" borderRadius="35px">
-          <Box overflowY="hidden" overflowX="hidden" className="no-scrollbar">
-            <RecentlyUploaded />
-          </Box>
-          <ForYou />
-        </Box>
+    <Box px={["1em", "2em", "4em"]} minH="100vh">
+      <Box mb={4}>
+        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
+          Podcasts For You
+        </Text>
+        <ForYou />
       </Box>
-    </>
+
+      <Box mb={4}>
+        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
+          Recently Uploaded
+        </Text>
+          <RecentlyUploaded />
+      </Box>
+
+      <Box mb={4}>
+        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
+          Explore Genres
+        </Text>
+        <ExploreGenresSection />
+      </Box>
+    </Box>
   );
 };
 
