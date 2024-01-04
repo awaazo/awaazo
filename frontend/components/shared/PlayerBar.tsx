@@ -165,20 +165,17 @@ const PlayerBar = () => {
 
   return (
     <Box
-      maxWidth="96%"
-      p={2}
-      borderRadius="1.5em"
+      maxWidth="100%"
+      p={3}
+      pb={5}
       bg="rgba(0, 0, 0, 0.2)"
-      shadow="md"
       style={{ backdropFilter: "blur(50px)" }}
-      border="2px solid rgba(255, 255, 255, 0.05)"
-      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.2)"
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
-      bottom={"1em"}
+      bottom={"0em"}
     >
       <Flex
         flexDirection="row"
