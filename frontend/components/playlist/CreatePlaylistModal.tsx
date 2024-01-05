@@ -5,7 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistCreateRequest } from "../../utilities/Requests";
 
-const CreatePlaylistModal = ({ onPlaylistAdded }) => {
+const CreatePlaylistModal = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [playlistError, setPlaylistError] = useState("");
   const [playlistName, setPlaylistName] = useState("");
