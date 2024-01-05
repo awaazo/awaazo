@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <Box bg="rgba(0, 0, 0, 0.3)" backdropFilter="blur(35px)" w={collapsed ? "60px" : "340px"} h="100vh" py={8} px={collapsed ? 2 : 3} position="sticky" top="0" zIndex={10} display={{ base: "none", md: "block" }} transition="width 0.4s ease-in-out">
       <Flex justify="center" align="center" mb={5}>
-        <Image src={Logo.src} alt="Logo" w="30px" />
+        <Image src={Logo.src} alt="Logo" w="28px" />
       </Flex>
 
       <VStack align="left" spacing={1}>
@@ -73,8 +73,8 @@ const Sidebar = () => {
           </Link>
         </Box>
 
+        {/* My Shelf */}
         <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
-          {/* My Shelf */}
           <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }} onClick={toggleCollapsed}>
             <Icon as={VscLibrary} fontSize="xl" mr={3} />
             {!collapsed && (
@@ -99,15 +99,14 @@ const Sidebar = () => {
           </Flex>
 
           {/* User Playlists */}
-
-{userPlaylists.length > 0 && (
-          <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 400px)" overflowY="auto">
-            {userPlaylists.map((playlist) => (
-              <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
-                <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
-                  <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
-                  {!collapsed && <Text>{playlist.name}</Text>}
-                </Flex>
+          {userPlaylists.length > 0 && (
+            <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 400px)" overflowY="auto">
+              {userPlaylists.map((playlist) => (
+                <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
+                  <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
+                    <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
+                    {!collapsed && <Text>{playlist.name}</Text>}
+                  </Flex>
                 </Link>
               ))}
             </VStack>

@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <ChakraProvider theme={theme}>
       <meta name="referrer" content="no-referrer" />
-      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" />
+      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh"  bgColor={"black"}/>
       <SessionProvider session={session}>
         <PlayerProvider>
           <Flex>

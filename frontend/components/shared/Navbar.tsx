@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { DefaultSession } from "next-auth";
-import { Box, Flex, Input, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, Image, useBreakpointValue } from "@chakra-ui/react";
-import { HamburgerIcon, BellIcon } from "@chakra-ui/icons";
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { Box, Flex, Input, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from "@chakra-ui/react";
+import { HamburgerIcon, BellIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import AuthHelper from "../../helpers/AuthHelper";
 import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
@@ -32,7 +31,7 @@ export default function Navbar() {
     username: "",
     avatarUrl: "",
   });
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); 
   const [isUserSet, setIsUserSet] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -71,7 +70,7 @@ export default function Navbar() {
       AuthHelper.authMeRequest().then((response) => {
         if (response.status == 200) {
           setUser(response.userMenuInfo);
-          setIsUserLoggedIn(true); // Set login status to true
+          setIsUserLoggedIn(true); 
           setIsUserSet(true);
           setIsLoggedIn(true);
         }
@@ -95,7 +94,7 @@ export default function Navbar() {
             AuthHelper.authMeRequest().then((response) => {
               if (response.status == 200) {
                 setUser(response.userMenuInfo);
-                setIsUserLoggedIn(true); // Set login status to true
+                setIsUserLoggedIn(true); 
                 setIsUserSet(true);
                 setIsLoggedIn(true);
               }
@@ -177,37 +176,15 @@ export default function Navbar() {
           <Flex align="center">
             <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
             <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
-            {currentPath === "/Explore/Search" && (
-              <Flex
-                alignItems={"center"}
-                as="form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSearchSubmit();
-                }}
-                ml={5}
-                width="20vh"
-              >
-                <Input
-                  placeholder="Search"
-                  size="sm"
-                  borderRadius="full"
-                  mr={4}
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                  css={{
-                    "::placeholder": {
-                      opacity: 1,
-                    },
-                  }}
-                  data-cy={`search-input-web`}
-                />
+            {!isMobile && currentPath === "/Explore/Search" && (
+              <Flex alignItems="center" as="form" onSubmit={handleSearchSubmit} ml={5} width="20vh">
+                <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} onChange={handleSearchChange} />
               </Flex>
             )}
           </Flex>
-
+          <Spacer />
           <Flex align="center">
-            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} data-cy={`notifications-button`} />
+            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} />
             {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
           </Flex>
         </Flex>

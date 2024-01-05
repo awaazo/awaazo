@@ -12,8 +12,6 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
     dispatch({ type: "PLAY_NOW_QUEUE", payload: episode });
   };
 
-  const bg = useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)");
-  const hoverBg = useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)");
 
   return (
     <VStack
@@ -21,11 +19,11 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       spacing={2}
       alignItems="center"
       borderRadius="15px"
-      bg={bg}
+      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(10px)"
       boxShadow="md"
       _hover={{
-        bg: hoverBg,
+        bg: useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)"),
         boxShadow: "lg",
       }}
       transition="all 0.3s ease-in-out"
@@ -33,13 +31,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       cursor="pointer"
       role="group"
     >
-      <Box
-        position="relative"
-        width="120px"
-        height="120px"
-        borderRadius="md"
-        overflow="hidden"
-      >
+      <Box position="relative" width="120px" height="120px" borderRadius="md" overflow="hidden">
         <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" boxSize="full" />
         <Box position="absolute" top="0" left="0" w="full" h="full">
           <IconButton
@@ -64,22 +56,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
             }}
             transition="all 0.3s ease-in-out"
           />
-          <Box
-            display="flex"
-            alignItems="center"
-            mt={2}
-            
-            bg="brand.100"
-            p={1}
-            rounded="lg"
-            position="absolute"
-            top={-6}
-            left="50%"
-            transform="translateX(-50%)"
-            opacity={0}
-            _groupHover={{ top: 0, opacity: 1 }}
-            transition="all 0.3s ease-in-out"
-          >
+          <Box display="flex" alignItems="center" mt={2} bg="brand.100" p={1} rounded="lg" position="absolute" top={-6} left="50%" transform="translateX(-50%)" opacity={0} _groupHover={{ top: 0, opacity: 1 }} transition="all 0.3s ease-in-out">
             <Icon as={FaClock} color="white" mr={1} size="md" />
             <Text color="white" fontSize="small">
               {convertTime(duration)}
@@ -94,9 +71,8 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           {episodeName}
         </Text>
         <Text fontSize="sm" color="gray.500" noOfLines={1} textAlign="left">
-          {podcaster}vv
+          {podcaster}podcaster
         </Text>
-       
       </VStack>
     </VStack>
   );

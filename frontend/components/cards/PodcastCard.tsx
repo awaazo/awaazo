@@ -1,10 +1,10 @@
+//podcastCard.tsx
 import { Box, Image, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import { Podcast } from "../../utilities/Interfaces";
 import Logo from "../../public/logo_white.svg";
 import { FaPlay, FaStar } from "react-icons/fa";
-
 
 interface PodcastCardProps {
   podcast: Podcast;
