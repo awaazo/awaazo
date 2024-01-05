@@ -1,4 +1,4 @@
-# This Dockerfile sets up an Ubuntu 22.04 environment with Python 3.11 and ffmpeg.
+# This Dockerfile sets up an Ubuntu 22.04 environment with Python 3.10 and ffmpeg.
 # It installs all the dependencies specified in the requirements.txt file and exposes port 8000.
 # Finally, it runs the server.py script with the command "echo y | python3 server.py".
 
@@ -26,7 +26,7 @@ RUN . venv/bin/activate
 RUN pip3 install -r requirements.txt
 
 # Install rvc dependencies
-RUN pip3 install -r rvc/requirements.txt
+RUN pip3 install -r rvc_service/requirements.txt
 
 # Expose port 8000
 EXPOSE 8000
