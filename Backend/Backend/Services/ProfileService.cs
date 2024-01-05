@@ -213,7 +213,7 @@ public class ProfileService : IProfileService
         await _db.SaveChangesAsync();
 
         string url = $"{_config["Jwt:Audience"]}/resetpassword?token={token.Token}&email={requestEmail}";
-        string awazoEmail = "noreply@awazo.com";
+        string awazoEmail = _config["Smtp:Username"]!; //"noreply@awazo.com";
         MailMessage message = new MailMessage() {
             From = new MailAddress(awazoEmail),
             Subject = $"Password Reset for {requestEmail}",
