@@ -10,6 +10,7 @@ import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import NotificationHelper from "../../helpers/NotificationsHelper";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -18,6 +19,8 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchValue, setSearchValue] = useState("");
+  const router = useRouter();
+  const currentPath = router.pathname;
 
   const handleSearchSubmit = () => {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
@@ -103,14 +106,10 @@ export default function Navbar() {
     }
   }, [session, isLoggedIn]);
 
-  /**
-   * Logs the user out of the application.
-   */
   const handleLogOut = async () => {
     AuthHelper.authLogoutRequest();
     // User logged in via Google, so use next-auth's signOut
     if (session) await signOut();
-
     // Set Logged In Status to false and redirect to index page
     setIsUserLoggedIn(false);
     setIsUserSet(false);
@@ -120,7 +119,6 @@ export default function Navbar() {
     setSearchValue(event.target.value);
   };
 
-  
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
@@ -172,64 +170,49 @@ export default function Navbar() {
     return <Notifications isOpen={isNotificationsOpen} onClose={toggleNotifications} notificationCount={notificationCount} />;
   };
 
-  
   return (
-<>
-  <Box p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
-    <Flex justifyContent="space-between">
-      <Flex align="center">
-        <IconButton
-          aria-label="Back"
-          icon={<ArrowBackIcon />}
-          onClick={() => window.history.back()}
-          variant="ghost"
-          size="md"
-          mr={2}
-          rounded="full"
-        />
-        <IconButton
-          aria-label="Forward"
-          icon={<ArrowForwardIcon />}
-          onClick={() => window.history.forward()}
-          variant="ghost"
-          size="md"
-          rounded="full"
-        />
-           <Flex
-              alignItems={"center"}
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearchSubmit();
-              }}
-              ml={5}
-              width="20vh"
-            >
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
+    <>
+      <Box p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
+        <Flex justifyContent="space-between">
+          <Flex align="center">
+            <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
+            <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
+            {currentPath === "/Explore/Search" && (
+              <Flex
+                alignItems={"center"}
+                as="form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearchSubmit();
                 }}
-                data-cy={`search-input-web`}
-              />
-            </Flex>
-      </Flex>
+                ml={5}
+                width="20vh"
+              >
+                <Input
+                  placeholder="Search"
+                  size="sm"
+                  borderRadius="full"
+                  mr={4}
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  css={{
+                    "::placeholder": {
+                      opacity: 1,
+                    },
+                  }}
+                  data-cy={`search-input-web`}
+                />
+              </Flex>
+            )}
+          </Flex>
 
-      <Flex align="center">
-        <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} data-cy={`notifications-button`} />
-        {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-      </Flex>
-    </Flex>
-    {isNotificationsOpen && <NotificationsModal />}
-  </Box>
-</>
-
+          <Flex align="center">
+            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} data-cy={`notifications-button`} />
+            {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+          </Flex>
+        </Flex>
+        {isNotificationsOpen && <NotificationsModal />}
+      </Box>
+    </>
   );
 }
