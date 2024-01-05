@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PodcastOverview from "../../components/explore/PodcastOverview";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import type { Podcast } from "../../utilities/Interfaces";
+import type { Podcast, UserMenuInfo } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
 
 
@@ -23,10 +23,11 @@ export default function Podcast() {
 
   const [podcast, setPodcast] = useState<Podcast | null>(null);
   const [getError, setGetError] = useState("");
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
 
   return (
     <>
-      {podcast && <PodcastOverview podcast={podcast} />}
+      {podcast  && <PodcastOverview podcast={podcast}  User={user}/>}
     </>
   );
 }
