@@ -110,7 +110,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
         spacing={1}
         align="start"
         width={isMobile ? "150px" : "200px"}
-        height="100px"
+        height="15px"
         overflowY="auto"
       >
       </VStack>
