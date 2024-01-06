@@ -43,10 +43,17 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
+import ShareComponent from "../social/shareComponent";
 
-const PlaylistOverview = ({ playlistId }) => {
+const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
+
+     // State to manage the visibility of the ShareComponent in a Modal
+     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+     const onShareModalClose = () => setIsShareModalOpen(false);
+     const onShareModalOpen = () => setIsShareModalOpen(true);
 
   const [playlist, setPlaylist] = useState<Playlist>(null);
   const [episodes, setEpisodes] = useState<Episode[]>(null);
@@ -63,6 +70,10 @@ const PlaylistOverview = ({ playlistId }) => {
   const [isPrivate, setIsPrivate] = useState(false);
 
   const [reload, setReload] = useState(false);
+
+  const handleSharePlaylist = () => {
+    onShareModalOpen();
+  };
 
   // Form errors
   const [playlistError, setPlaylistError] = useState("");
@@ -474,6 +485,7 @@ const PlaylistOverview = ({ playlistId }) => {
                         {playlist.isHandledByUser && <OptionsMenu />}{" "}
                         <MenuDivider />
                         <MenuItem
+                          onClick={handleSharePlaylist}
                           _hover={{
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
@@ -491,6 +503,16 @@ const PlaylistOverview = ({ playlistId }) => {
                       </MenuList>
                     </Menu>
                   </Box>
+                  <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
+                  <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Share this Episode</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <ShareComponent episode={episodes} />
+                      </ModalBody>
+                  </ModalContent>
+              </Modal>
                 </Flex>
               </>
             )}
