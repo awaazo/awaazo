@@ -551,7 +551,6 @@ public static class FileStorageHelper
     }
 
     public static string GetPlaylistCoverArtPathFile(string playlistCoverArtName)
-
     {
         
         return Combine(GetCurrentDirectory(), BASE_DIR, PLAYLIST_DIR_NAME, playlistCoverArtName.Split(FILE_SPLIT_KEY)[0].Split(".")[0], playlistCoverArtName.Split(FILE_SPLIT_KEY)[0]);

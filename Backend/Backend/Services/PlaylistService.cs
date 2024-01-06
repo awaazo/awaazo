@@ -160,8 +160,16 @@ public class PlaylistService : IPlaylistService
             .FirstOrDefaultAsync(p => p.Id == playlistId && p.UserId == user.Id && p.IsHandledByUser)
             ?? throw new Exception("Playlist does not exist for the given ID.");
 
-        // Delete the Image from the file system
-        RemovePlaylistCoverArt(playlist.CoverArt);
+        try
+        {
+            // Delete the Image from the file system
+            RemovePlaylistCoverArt(playlist.CoverArt);
+        }
+        catch(Exception ex)
+        {
+            // log Error
+
+        }
 
         // Delete the playlist
         _db.Playlists.Remove(playlist);
