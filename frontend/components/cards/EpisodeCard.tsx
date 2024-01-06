@@ -355,7 +355,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                 <ModalHeader>Share this Episode</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  <ShareComponent episode={episode} />
+                <ShareComponent content={episode} contentType="episode" />
                 </ModalBody>
             </ModalContent>
         </Modal>

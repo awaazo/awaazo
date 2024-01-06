@@ -509,7 +509,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                       <ModalHeader>Share this Episode</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
-                        <ShareComponent episode={episodes} />
+                        <ShareComponent content={playlist} contentType="playlist" />
                       </ModalBody>
                   </ModalContent>
               </Modal>
