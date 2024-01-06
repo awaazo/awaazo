@@ -37,6 +37,11 @@ public static class FileStorageHelper
     public const string PODCASTS_DIR_NAME = "Podcasts";
 
     /// <summary>
+    /// Dir where all the covers are saved for playlisty
+    /// </summary>
+    public const string PLAYLIST_DIR_NAME = "Playlist";
+
+    /// <summary>
     /// Identifies if the file is a transcription status file.
     /// </summary>
     public const string STATUS_ID = "_status.txt";
@@ -476,6 +481,82 @@ public static class FileStorageHelper
     }
 
     #endregion
+
+
+    #endregion
+
+
+    #region Playlist
+
+    public static string SavePlaylistCoverArt(string playlistId, IFormFile coverArtFile)
+    {
+        // Filename stored on the server filesystem
+        string coverArtFileName = string.Format("{0}.{1}", playlistId, coverArtFile.ContentType.Split('/')[1]);
+
+        // Filename stored in the database
+        string coverArtName = string.Format("{0}{1}{2}", coverArtFileName, FILE_SPLIT_KEY, coverArtFile.ContentType);
+
+        // Get the dir path
+        string dirPath = Combine(GetCurrentDirectory(), BASE_DIR, PLAYLIST_DIR_NAME, playlistId);
+
+        // Make sure that the dir exists, otherwise create it
+        if (!Directory.Exists(dirPath))
+            CreateDirectory(dirPath);
+
+        // Get the file path
+        string filePath = Combine(dirPath, coverArtFileName);
+
+        // Save the file
+        using FileStream fileStream = Create(filePath);
+        coverArtFile.CopyTo(fileStream);
+
+        // Return the filename stored in the database
+        return coverArtName;
+    }
+
+    public static string SavePlaylistCoverArt(Guid playlistId, IFormFile coverArtFile)
+    {
+        return SavePlaylistCoverArt(playlistId.ToString(), coverArtFile);
+    }
+
+
+    public static void RemovePlaylistCoverArt(string coverArtName)
+    {
+        // Get the file path
+        string playlistCoverFilePath = GetPlaylistCoverArtPathFile(coverArtName);
+
+        // Get Directory Path
+        string playlistCoverDirectoryPath = GetPlaylistCoverArtPath(coverArtName);
+
+
+        // Check if the file exists
+        if (File.Exists(playlistCoverFilePath))
+        {
+            // Delete the file
+            File.Delete(playlistCoverFilePath);
+        }
+
+        if (Directory.GetFiles(playlistCoverDirectoryPath).Length == 0)
+        {
+            // Delete the dir
+            Directory.Delete(playlistCoverDirectoryPath);
+        }
+
+
+    }
+
+    public static string GetPlaylistCoverArtPath(string playlistCoverArtName)
+    {
+        return Combine(GetCurrentDirectory(), BASE_DIR, PLAYLIST_DIR_NAME, playlistCoverArtName.Split(FILE_SPLIT_KEY)[0].Split(".")[0]);
+    }
+
+    public static string GetPlaylistCoverArtPathFile(string playlistCoverArtName)
+
+    {
+        
+        return Combine(GetCurrentDirectory(), BASE_DIR, PLAYLIST_DIR_NAME, playlistCoverArtName.Split(FILE_SPLIT_KEY)[0].Split(".")[0], playlistCoverArtName.Split(FILE_SPLIT_KEY)[0]);
+
+    }
 
 
     #endregion
