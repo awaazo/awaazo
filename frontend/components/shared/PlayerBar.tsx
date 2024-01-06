@@ -24,6 +24,7 @@ import {
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
+import BookmarkComponent from "../bookmarks/CreateBookmarkModule";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
@@ -312,6 +313,10 @@ const PlayerBar = () => {
         {!isMobile && (
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
+              <BookmarkComponent
+                episodeId={isEpisodeLoaded ? episode.id : "default-id"}
+                selectedTimestamp={isEpisodeLoaded ? position : 0}
+              />
               <LikeComponent
                 episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
                 initialLikes={isEpisodeLoaded ? episode.likes : 0}

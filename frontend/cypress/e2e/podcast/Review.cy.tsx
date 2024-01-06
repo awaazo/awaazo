@@ -3,7 +3,7 @@ import * as paths from '../../fixtures/file_paths.json';
 describe('Review', () => {
     
     beforeEach(() => {
-        cy.login(null, 'testRegister@email.com', 'password123');
+        cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').should('be.visible', { timeout: 5000 });
     });
 
