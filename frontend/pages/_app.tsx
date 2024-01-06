@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
-import bg from "../styles/images/bgOld.png";
+import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { extendTheme } from "@chakra-ui/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
