@@ -22,10 +22,11 @@ def get_speaker_model_path(speaker_name,base_path):
     """
     try:
         # Define the speaker's model path
-        speaker_model_path = f'{base_path}\\{speaker_name}\\{speaker_name}.pth'
+        speaker_model_path = f'{base_path}/{speaker_name}/{speaker_name}.pth'
 
         # Check if the speaker's model exists
         if not os.path.isfile(speaker_model_path):
+            print(f"speaker_model_path: {speaker_model_path} \n")
             raise Exception(f'No model exists for the given speaker name.')
 
         return speaker_model_path
@@ -51,10 +52,11 @@ def get_speaker_index_path(speaker_name,base_path):
     """
     try:
         # Define the speaker's index path
-        speaker_index_path = f'{base_path}\\{speaker_name}\\{speaker_name}.index'
+        speaker_index_path = f'{base_path}/{speaker_name}/{speaker_name}.index'
 
         # Check if the speaker's index exists
         if not os.path.isfile(speaker_index_path):
+            print(f"speaker_index_path: {speaker_index_path} \n")
             raise Exception(f'No index exists for the given speaker name.')
 
         return speaker_index_path

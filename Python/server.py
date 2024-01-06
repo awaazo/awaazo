@@ -18,7 +18,6 @@ PORT = 8000
 CREATE_TRANSCRIPT = "/create_transcript"
 PODCASTS_FOLDER_PATH = "/ServerFiles/Podcasts"
 SPEAKERS_FOLDER_PATH = "/ServerFiles/Speakers"
-SPEAKERS_FOLDER_PATH_1 = "\\ServerFiles\\Speakers"
 
 # Handles the transcription request
 async def handle_transcription_request(request):
@@ -221,7 +220,7 @@ async def handle_realistic_voice_cloning_request(request):
         status_file_path = episode_audio_path.split('.')[0]+'_rvc_status.txt'
 
         # Get the base path
-        base_path = f'{os.getcwd()}{SPEAKERS_FOLDER_PATH_1}'
+        base_path = f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}'
 
         # Check if the audio file does not exists
         if os.path.isfile(episode_audio_path) == False:
