@@ -5,7 +5,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import { convertTime } from "../../utilities/commonUtils";
 
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
-  const { thumbnailUrl, episodeName, podcaster, duration, likes } = episode;
+  const { thumbnailUrl, episodeName, podcastName, duration, likes } = episode;
   const { dispatch } = usePlayer();
 
   const handleEpisodeClick = () => {
@@ -71,7 +71,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
           {episodeName}
         </Text>
         <Text fontSize="sm" color="gray.500" noOfLines={1} textAlign="left">
-          {podcaster}podcaster
+          {podcastName}
         </Text>
       </VStack>
     </VStack>

@@ -17,7 +17,7 @@ export interface Podcast {
 export interface Episode {
   id: string;
   podcastId: string;
-  podcaster: string;
+  podcastName: string;
   thumbnailUrl: string;
   episodeName: string;
   description: string;

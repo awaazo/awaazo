@@ -210,8 +210,7 @@ const PlayerBar = () => {
               {isEpisodeLoaded ? episode.episodeName : "Unknown Episode"}
             </Text>
             <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
-              {isEpisodeLoaded ? episode.description : "Unknown Podcaster"}{" "}
-              {/* change to podcast's name */}
+              {isEpisodeLoaded ? episode.podcastName : "Unknown Podcaster"}{" "}
             </Text>
           </Box>
         </Flex>
