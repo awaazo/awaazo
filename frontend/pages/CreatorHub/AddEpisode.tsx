@@ -3,16 +3,17 @@ import { FormControl, Button, Textarea, Box, VStack, Image, Input, IconButton, F
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-
 import { AddIcon } from "@chakra-ui/icons";
 import router from "next/router";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import { EpisodeAddRequest } from "../../utilities/Requests";
 import { AxiosProgressEvent } from "axios";
+import ImageAdder from "../../components/tools/ImageAdder";
 
 const AddEpisode = () => {
   const loginPage = "/auth/Login";
   const myPodcastsPage = "/CreatorHub/MyPodcasts";
+
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [addError, setAddError] = useState("");
@@ -23,14 +24,8 @@ const AddEpisode = () => {
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
-
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const handleCoverImageUpload = (e: FormEvent) => {
-    setCoverImageFile((e.target as any).files[0]);
-    setCoverImage(URL.createObjectURL((e.target as any).files[0]));
-    e.preventDefault();
-  };
 
   // Modal state
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -38,13 +33,10 @@ const AddEpisode = () => {
   const [serverError, setServerError] = useState(false);
 
   useEffect(() => {
-    // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
-      // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {
         setUser(res.userMenuInfo);
         PodcastHelper.podcastMyPodcastsGet(0, 12).then((res2) => {
-          // If logged in, set user, otherwise redirect to login page
           if (res2.status == 200) {
             setPodcasts(res2.myPodcasts);
           } else {
@@ -69,11 +61,19 @@ const AddEpisode = () => {
 
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Handles form submission
-   * @param e Click event
-   */
-  const handleAdd = async (e: FormEvent) => {
+  const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+    try {
+      const response = await fetch(addedImageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "cover-image.jpg", { type: "image/jpeg" });
+      setCoverImageFile(file);
+      setCoverImage(addedImageUrl);
+    } catch (error) {
+      console.error("Error converting image URL to File:", error);
+    }
+  }, []);
+
+  const handleAddEpisode = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -93,6 +93,7 @@ const AddEpisode = () => {
         isExplicit: isExplicit,
         episodeName: episodeName,
       };
+
       setServerError(false);
       setUploadModalOpen(true);
       // Send the request
@@ -151,24 +152,15 @@ const AddEpisode = () => {
               key={podcast.id}
               direction="column"
               alignItems="center"
-              bg={selectedPodcast && selectedPodcast.id === podcast.id ? "transparent" : ""}
+              bg={selectedPodcast && selectedPodcast.id === podcast.id ? "brand.100" : "transparent"}
               borderRadius="1em"
               cursor="pointer"
-              outline={selectedPodcast && selectedPodcast.id === podcast.id ? "2px solid #3182CE" : "none"}
+              outline={selectedPodcast && selectedPodcast.id === podcast.id ? "1px solid brand.100" : "none"}
               onClick={() => handlePodcastSelect(podcast)}
               p={2}
               m={2}
             >
-              <Image
-                src={podcast.coverArtUrl}
-                alt={podcast.name}
-                boxSize="100px"
-                borderRadius="2em"
-                objectFit="cover"
-                boxShadow="lg"
-                outline="2px solid #FFFFFF80"
-                data-cy={`podcast-image-${podcast.name.replace(/\s+/g, "-").toLowerCase()}`} // Adding a data-cy attribute to the Image component
-              />
+              <Image src={podcast.coverArtUrl} alt={podcast.name} boxSize="100px" borderRadius="2em" objectFit="cover" boxShadow="lg" outline="2px solid #FFFFFF80" data-cy={`podcast-image-${podcast.name.replace(/\s+/g, "-").toLowerCase()}`} />
               <Text mt={2}> {podcast.name.length > 18 ? `${podcast.name.substring(0, 18)}...` : podcast.name}</Text>
             </Flex>
           ))}
@@ -184,69 +176,12 @@ const AddEpisode = () => {
       </Box>
 
       {/* Form Container */}
-      <Box display="flex" justifyContent="center">
+      <Center>
         <VStack spacing={5} align="center" p={5}>
-          {selectedPodcast && (
-            <Text fontSize="xl" fontWeight="normal" bg={"rgba(255, 255, 255, 0.1)"} pl={5} pr={5} pt={2} pb={2} mb={5} borderRadius="5em" outline={"1px solid #FFFFFF"} fontFamily={"Avenir Next"}>
-              {`${selectedPodcast.name}`}
-            </Text>
-          )}
-          <form onSubmit={handleAdd}>
-            <div
-              style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
-                alt="Cover Photo"
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "50%",
-                  padding: "15px",
-                  position: "relative",
-                }}
-              />
-              <label
-                htmlFor="Cover Photo"
-                style={{
-                  position: "absolute",
-                  cursor: "pointer",
-                  bottom: "15px",
-                  right: "5px",
-                }}
-              >
-                <IconButton
-                  aria-label="Upload Cover Photo"
-                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
-                  size="sm"
-                  variant="outline"
-                  borderRadius="full"
-                  border="1px solid grey"
-                  padding={3}
-                  style={{
-                    backdropFilter: "blur(5px)",
-                    backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  }}
-                  zIndex={-999}
-                />
-                <input
-                  type="file"
-                  id="Cover Photo"
-                  accept="image/*"
-                  onChange={(e) => handleCoverImageUpload(e)}
-                  style={{
-                    display: "none",
-                  }}
-                />
-              </label>
-            </div>
+          <form onSubmit={handleAddEpisode}>
             {addError && <Text color="red.500">{addError}</Text>}
             <VStack spacing={5} align="center" p={5}>
+            <ImageAdder onImageAdded={handleImageAdded} />
               {/* Episode Name Input */}
               <FormControl position="relative">
                 <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." rounded="lg" pr="50px" />
@@ -265,68 +200,29 @@ const AddEpisode = () => {
 
               {/* Genre Selection */}
               <FormControl display="flex" alignItems="center" justifyContent="center">
-                <Switch
-                  id="explicitToggle"
-                  colorScheme="purple"
-                  isChecked={isExplicit}
-                  onChange={() => setIsExplicit(!isExplicit)}
-                  opacity={0.9} // Setting the opacity to 0.7 to make it slightly faded
-                >
+                <Switch id="explicitToggle" colorScheme="purple" isChecked={isExplicit} onChange={() => setIsExplicit(!isExplicit)} opacity={0.9}>
                   Explicit
                 </Switch>
               </FormControl>
 
               {/* File Upload */}
-              <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" width="300px" data-cy="podcast-file-dropzone">
+              <Box {...getRootProps()} border="2px dotted gray" borderRadius="md" p={4} textAlign="center" width="300px" data-cy="podcast-file-dropzone">
                 <input {...getInputProps()} />
                 {file ? <p>{file.name}</p> : <p>Drag & drop a podcast file here, or click to select one</p>}
               </Box>
 
               {/* Upload Button */}
-              <Button
-                id="createBtn"
-                type="submit"
-                fontSize="md"
-                borderRadius={"full"}
-                minWidth={"200px"}
-                color={"white"}
-                marginTop={"15px"}
-                marginBottom={"10px"}
-                padding={"20px"}
-                // semi transparent white outline
-                outline={"1px solid rgba(255, 255, 255, 0.6)"}
-                style={{
-                  background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-                  backgroundSize: "300% 300%",
-                  animation: "Gradient 10s infinite linear",
-                }}
-                disabled={loading}
-              >
+              <Button id="createBtn" type="submit" variant={"gradient"} disabled={loading} w={"12rem"}>
                 {loading ? <Spinner /> : "Upload"}
-                <style jsx>{`
-                  @keyframes Gradient {
-                    0% {
-                      background-position: 100% 0%;
-                    }
-                    50% {
-                      background-position: 0% 100%;
-                    }
-                    100% {
-                      background-position: 100% 0%;
-                    }
-                  }
-                `}</style>
               </Button>
             </VStack>
           </form>
         </VStack>
-      </Box>
+      </Center>
       <Modal isOpen={isUploadModalOpen} onClose={() => setUploadModalOpen(false)}>
         <ModalOverlay />
 
         <ModalContent borderRadius="xl" backdropFilter="blur(50px)" p={9} maxW="800px" width="95%">
-          <ModalCloseButton />
-
           <Flex direction="column">
             <Flex align="start">
               {coverImage && <Image src={coverImage} alt="Uploaded Cover Photo" boxSize="120px" borderRadius="8px" objectFit="cover" boxShadow="lg" />}
@@ -385,7 +281,7 @@ const AddEpisode = () => {
                     </Text>
                   </Box>
                   {uploadProgress === 100 && (
-                    <Button onClick={() => router.push("/CreatorHub/MyPodcasts")} alignSelf="center" bg="rgba(169, 169, 169, 0.2)">
+                    <Button onClick={() => router.push(myPodcastsPage)} alignSelf="center" bg="rgba(169, 169, 169, 0.2)" >
                       Finish
                     </Button>
                   )}
