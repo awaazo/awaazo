@@ -33,7 +33,8 @@ const SignUp: React.FC = () => {
     }
     return age;
   };
-
+  const age = calculateAge(dateOfBirth);
+  
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
@@ -48,6 +49,7 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignUpError(null);
+    
     if (!email || !isEmail(email)) {
       setSignUpError("Please enter a valid email address.");
       return;
@@ -64,7 +66,16 @@ const SignUp: React.FC = () => {
       setSignUpError("Passwords do not match.");
       return;
     }
-
+    
+    if (age < 8) {
+      setSignUpError("You're too young to be on Awaazo, come back in a couple of years!");
+      return;
+    }
+    if (age > 100) {
+      setSignUpError("Centenarian? Impressive! But Awaazo is for the young at heart.");
+      return;
+    }
+    
     const registerRequest: RegisterRequest = {
       email: email,
       password: password,
@@ -73,11 +84,7 @@ const SignUp: React.FC = () => {
       gender: "None",
     };
 
-    const age = calculateAge(dateOfBirth);
-    if (age < 8 || age > 100) {
-      setSignUpError("Age must be between 8 and 100 years.");
-      return;
-    }
+    
 
     try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
