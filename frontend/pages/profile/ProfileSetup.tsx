@@ -132,7 +132,7 @@ const ProfileSetup: React.FC = () => {
             <FormControl position="relative">
               <Textarea
                 id="bio"
-                placeholder="What's your story? (Optional)"
+                placeholder="What's your story?"
                 value={bio}
                 onChange={handleBioChange}
                 style={{
