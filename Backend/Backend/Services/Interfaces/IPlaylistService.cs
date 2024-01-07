@@ -20,4 +20,5 @@ public interface IPlaylistService
     public Task<List<PlaylistInfoResponse>> GetUserPlaylistsAsync(Guid userId, User user, int page, int pageSize, string domainUrl);
     public Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User user, int page, int pageSize, string domainUrl);
     public Task<List<PlaylistInfoResponse>> SearchPlaylistsAsync(string searchTerm, User user, int page, int pageSize, string domainUrl);
+    public Task<string> GetPlaylistCoverArtNameAsync(Guid playlistId);
 }

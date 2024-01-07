@@ -31,13 +31,17 @@ public class PlaylistServiceTests
     [Fact]
     public async Task CreatePlaylistAsync_PlaylistDoesNotExist_CreatesPlaylistAndEpisodes()
     {
+        var coverImage = new Mock<IFormFile>();
+        coverImage.Setup(file => file.ContentType).Returns("image/png");
         // Arrange
         var request = new CreatePlaylistRequest
         {
             Name = "New Playlist Name",
             Description = "New Playlist Description",
             Privacy = "Public",
-            EpisodeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }.ToArray()
+            EpisodeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }.ToArray(),
+            CoverArt = coverImage.Object
+
         };
         var user = new User
         {
@@ -92,13 +96,16 @@ public class PlaylistServiceTests
     [Fact]
     public async Task CreatePlaylistAsync_EpisodeDoesNotExist_ThrowsException()
     {
+        var coverImage = new Mock<IFormFile>();
+        coverImage.Setup(file => file.ContentType).Returns("image/png");
         // Arrange
         var request = new CreatePlaylistRequest
         {
             Name = "New Playlist Name",
             Description = "New Playlist Description",
             Privacy = "Public",
-            EpisodeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }.ToArray()
+            EpisodeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }.ToArray(),
+            CoverArt = coverImage.Object
         };
         var user = new User
         {
@@ -194,7 +201,8 @@ public class PlaylistServiceTests
         {
             Id = playlistId,
             UserId = user.Id,
-            IsHandledByUser = true
+            IsHandledByUser = true,
+            CoverArt = playlistId + @".png|/|\|test/png"
         };
 
         _dbContextMock.Setup(db => db.Playlists)

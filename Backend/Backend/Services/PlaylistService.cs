@@ -5,7 +5,7 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using static Backend.Models.Playlist;
-
+using static Backend.Infrastructure.FileStorageHelper;
 namespace Backend.Services;
 
 /// <summary>
@@ -14,7 +14,18 @@ namespace Backend.Services;
 public class PlaylistService : IPlaylistService
 {
     private readonly AppDbContext _db;
-    
+
+    /// <summary>
+    /// Accepted file types for cover art and thumbnail
+    /// </summary>
+    private static readonly string[] ALLOWED_IMG_FILES = { "image/jpeg", "image/png", "image/svg+xml" };
+
+
+    /// <summary>
+    /// Maximum image file is 5MB
+    /// </summary>
+    private const int MAX_IMG_SIZE = 5242880;
+
     public PlaylistService(AppDbContext db)
     {
         _db = db;
@@ -32,6 +43,18 @@ public class PlaylistService : IPlaylistService
         if (await _db.Playlists.AnyAsync(p => p.Name == request.Name && p.UserId == user.Id))
             throw new Exception("Playlist with the same name already exists.");
 
+        // Check if the playlist Cover Art was provided
+        if (request.CoverArt == null)
+            throw new Exception("Cover Art is required.");
+
+        // Check if the Playlist Cover Art is an image
+        if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
+            throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
+
+        // Check if the Playlist Cover Art is smaller than 5MB
+        if (request.CoverArt.Length > MAX_IMG_SIZE)
+            throw new Exception("Cover Art must be smaller than 5MB.");
+
         // Check if all request episodes exist in the database
         foreach (Guid episodeId in request.EpisodeIds)
         {
@@ -41,11 +64,14 @@ public class PlaylistService : IPlaylistService
 
         // Make sure that there are no duplicate episodes
         request.EpisodeIds = request.EpisodeIds.Distinct().ToArray();
+        
+        // Generate new Guid
+        Guid playlistGuid = Guid.NewGuid();
 
         // Create the playlist
         Playlist playlist = new()
         {
-            Id = Guid.NewGuid(),
+            Id = playlistGuid,
             Name = request.Name,
             UserId = user.Id,
             Description = request.Description,
@@ -54,6 +80,9 @@ public class PlaylistService : IPlaylistService
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
+
+        // Save cover Art to the file system
+        playlist.CoverArt = SavePlaylistCoverArt(playlistGuid, request.CoverArt);
 
         await _db.Playlists.AddAsync(playlist);
 
@@ -74,7 +103,7 @@ public class PlaylistService : IPlaylistService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    /// <summary>
+    /// <summaryD
     /// Edits a playlist for the given user.
     /// </summary>
     /// <param name="playlistId">Id of the playlist to edit</param>
@@ -94,6 +123,24 @@ public class PlaylistService : IPlaylistService
         playlist.Privacy = GetPrivacyEnum(request.Privacy);
         playlist.UpdatedAt = DateTime.Now;
 
+        if(request.CoverArt != null)
+        {
+            // Check if the Playlist Cover Art is an image
+            if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
+                throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
+
+            // Check if the Playlist Cover Art is smaller than 5MB
+            if (request.CoverArt.Length > MAX_IMG_SIZE)
+                throw new Exception("Cover Art must be smaller than 5MB.");
+
+            // Remove the old Cover Art
+            RemovePlaylistCoverArt(playlist.CoverArt);
+
+            // Save the new cover Art
+            playlist.CoverArt = SavePlaylistCoverArt(playlistId.ToString(), request.CoverArt);
+
+        }
+
         _db.Playlists.Update(playlist);
 
         // Return true if the playlist was updated successfully
@@ -112,6 +159,17 @@ public class PlaylistService : IPlaylistService
         Playlist playlist = await _db.Playlists
             .FirstOrDefaultAsync(p => p.Id == playlistId && p.UserId == user.Id && p.IsHandledByUser)
             ?? throw new Exception("Playlist does not exist for the given ID.");
+
+        try
+        {
+            // Delete the Image from the file system
+            RemovePlaylistCoverArt(playlist.CoverArt);
+        }
+        catch(Exception ex)
+        {
+            // log Error
+
+        }
 
         // Delete the playlist
         _db.Playlists.Remove(playlist);
@@ -318,5 +376,19 @@ public class PlaylistService : IPlaylistService
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
             .Select(p => new PlaylistInfoResponse(p, domainUrl))
             .ToListAsync();
+    }
+
+    /// <summary>
+    ///  Gets pl
+    /// </summary>
+    /// <param name="playlistId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+
+    public async Task<string> GetPlaylistCoverArtNameAsync(Guid playlistId)
+    {
+        Playlist playlist = await _db.Playlists.FirstOrDefaultAsync(e => e.Id == playlistId) ?? throw new Exception("Playlist Does not Exist") ;
+        return playlist.CoverArt;
+
     }
 }
