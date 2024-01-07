@@ -1,4 +1,4 @@
-# This Dockerfile sets up an Ubuntu 22.04 environment with Python 3.11 and ffmpeg.
+# This Dockerfile sets up an Ubuntu 22.04 environment with Python 3.10 and ffmpeg.
 # It installs all the dependencies specified in the requirements.txt file and exposes port 8000.
 # Finally, it runs the server.py script with the command "echo y | python3 server.py".
 
@@ -9,12 +9,24 @@ WORKDIR /app
 ADD . /app
 
 # Install Python3.11 & ffmpeg
-RUN apt-get -y update && apt-get install -y python3.11 \
+RUN apt-get -y update && apt-get install -y python3.10 \
 ffmpeg \
 python3-pip
 
+# Install the python3-venv package
+RUN apt-get install -y python3.10-venv
+
+# Create a virtual environment
+RUN python3 -m venv venv
+
+# Activate the virtual environment
+RUN . venv/bin/activate
+
 # Install all dependencies
 RUN pip3 install -r requirements.txt
+
+# Install rvc dependencies
+RUN pip3 install -r rvc_service/requirements.txt
 
 # Expose port 8000
 EXPOSE 8000
