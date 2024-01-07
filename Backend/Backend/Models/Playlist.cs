@@ -42,6 +42,11 @@ public class Playlist : BaseEntity
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// Cover Art, Contains the File name + MIME Type
+    /// </summary>
+    public string CoverArt { get; set; } = string.Empty;
+
+    /// <summary>
     /// Playlist episodes
     /// </summary>
     public ICollection<PlaylistEpisode> PlaylistEpisodes {get;} = new List<PlaylistEpisode>(); 

@@ -1,10 +1,11 @@
 ﻿using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.ControllerHelper;
-
+using static Backend.Infrastructure.FileStorageHelper;
 namespace Backend.Controllers;
 
 [ApiController]
@@ -31,7 +32,7 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="request">Create Playlist Request.</param>
     [HttpPost("create")]
-    public async Task<ActionResult> CreatePlaylist([FromBody] CreatePlaylistRequest request)
+    public async Task<ActionResult> CreatePlaylist([FromForm] CreatePlaylistRequest request)
     {
         try
         {
@@ -61,7 +62,7 @@ public class PlaylistController : ControllerBase
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <param name="request">Edit Playlist Request.</param>
     [HttpPost("{playlistId}/edit")]
-    public async Task<ActionResult> EditPlaylist(Guid playlistId, [FromBody] EditPlaylistRequest request)
+    public async Task<ActionResult> EditPlaylist(Guid playlistId, [FromForm] EditPlaylistRequest request)
     {
         try
         {
@@ -338,6 +339,38 @@ public class PlaylistController : ControllerBase
         {
             _logger.LogError(e,e.Message);
 
+            return BadRequest(e.Message);
+        }
+    }
+    /// <summary>
+    /// Gets Playlists Cover Art
+    /// </summary>
+    /// <param name="playlistId"></param>
+    /// <returns></returns>
+    [HttpGet("{playlistId}/getCoverArt")]
+    public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
+    {
+        _logger.LogDebug(@"Using the playlist\playlistId\getCoverArt Endpoint");
+
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            // Get the name of the cover art file
+            string coverArtName = await _playlistService.GetPlaylistCoverArtNameAsync(playlistId);
+
+            // Return the cover art file from the server
+            return PhysicalFile(GetPlaylistCoverArtPathFile(coverArtName), GetFileType(coverArtName), enableRangeProcessing: false);
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            _logger.LogError(e, "");
             return BadRequest(e.Message);
         }
     }

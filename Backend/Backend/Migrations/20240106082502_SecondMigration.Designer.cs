@@ -4,6 +4,7 @@ using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240106082502_SecondMigration")]
+    partial class SecondMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,9 @@ namespace Backend.Migrations
                     b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("SponsorshipId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("Timestamp")
                         .HasColumnType("float");
 
@@ -50,6 +56,8 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EpisodeId");
+
+                    b.HasIndex("SponsorshipId");
 
                     b.ToTable("Annotations");
                 });
@@ -537,9 +545,6 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AnnotationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -554,13 +559,9 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Website")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnnotationId")
-                        .IsUnique();
 
                     b.HasIndex("EpisodeId");
 
@@ -722,7 +723,13 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.Sponsor", "Sponsorship")
+                        .WithMany()
+                        .HasForeignKey("SponsorshipId");
+
                     b.Navigation("Episode");
+
+                    b.Navigation("Sponsorship");
                 });
 
             modelBuilder.Entity("Backend.Models.Bookmark", b =>
@@ -932,17 +939,9 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Sponsor", b =>
                 {
-                    b.HasOne("Backend.Models.Annotation", "Annotation")
-                        .WithOne("Sponsorship")
-                        .HasForeignKey("Backend.Models.Sponsor", "AnnotationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Episode", null)
                         .WithMany("Sponsors")
                         .HasForeignKey("EpisodeId");
-
-                    b.Navigation("Annotation");
                 });
 
             modelBuilder.Entity("Backend.Models.Subscription", b =>
@@ -981,8 +980,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Annotation", b =>
                 {
                     b.Navigation("MediaLink");
-
-                    b.Navigation("Sponsorship");
                 });
 
             modelBuilder.Entity("Backend.Models.Comment", b =>

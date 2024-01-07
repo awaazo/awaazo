@@ -5,16 +5,14 @@ namespace Backend.Models;
 public class Sponsor : BaseEntity
 {
 
-    public Sponsor() 
-    {
-        Name = string.Empty;
-        Website = string.Empty;
-    }
-
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public Annotation Annotation { get; set; } = null!;
+
+    public Guid AnnotationId { get; set; } = Guid.Empty;
+
+    public string Name { get; set; } = string.Empty;
     
-    public string Name { get; set; }
-    
-    public string? Website { get; set; }
+    public string Website { get; set; } = string.Empty;
 }

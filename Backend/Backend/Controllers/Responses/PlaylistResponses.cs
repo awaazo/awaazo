@@ -16,7 +16,10 @@ public class PlaylistInfoResponse
         Privacy = p.GetPrivacyString();
         IsHandledByUser = p.IsHandledByUser;
         NumberOfEpisodes = p.PlaylistEpisodes.Count;
-        
+
+        CoverArt = domainUrl + string.Format("playlist/{0}/getCoverArt", p.Id);
+
+
         Duration = p.PlaylistEpisodes
             .Sum(e=>e.Episode.Duration);
         
@@ -42,6 +45,8 @@ public class PlaylistInfoResponse
     public DateTime CreatedAt {get;set;} = DateTime.Now;
 
     public DateTime UpdatedAt {get;set;} = DateTime.Now;
+
+    public string CoverArt { get;set;} = string.Empty;
 }
 
 [BindProperties]
