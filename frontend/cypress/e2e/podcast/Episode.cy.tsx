@@ -3,7 +3,7 @@ import * as paths from "../../fixtures/file_paths.json";
 describe("Episode_Create", () => {
   beforeEach(() => {
     cy.login(null, "testRegister@email.com", "password123");
-    cy.get('button[aria-label="loggedInMenu"]').should("be.visible", {
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
       timeout: 12000,
     });
   });
@@ -52,7 +52,7 @@ describe("Episode_Create", () => {
   // User should be able to edit a episode name and have it reflected immediately
   it("Should successfully edit an episode", function () {
     cy.wait(500);
-    cy.get('button[aria-label="loggedInMenu"]').click({ timeout: 12000 });
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 12000 });
     cy.get("button").contains("My Podcasts").click({ timeout: 12000 });
     cy.url().should("include", "/MyPodcasts");
     cy.wait(250);
@@ -102,8 +102,8 @@ describe("Episode_Create", () => {
 
   // Users should be allowed to delete their own episodes
   it("Should successfully delete an episode", function () {
-    cy.get('button[aria-label="loggedInMenu"]').should("be.visible");
-    cy.get('button[aria-label="loggedInMenu"]').click();
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     cy.get("button")
       .contains("My Podcasts")
       .should("be.visible")
@@ -144,14 +144,15 @@ describe("Episode_Create", () => {
 
   //Should add an episode from the podcast interface
   it("Should add an episode from the Podcast interface", () => {
-    cy.get('button[aria-label="loggedInMenu"]').should("be.visible");
-    cy.get('button[aria-label="loggedInMenu"]').click();
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     cy.get("button")
       .contains("My Podcasts")
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.get("button").contains("New Episode").click({ timeout: 12000 });
     cy.get('input[type="file"]').attachFile(paths.Episode_cover_science);
+    cy.get('button').contains('Done').click();
     cy.get('input[placeholder="Enter episode name..."]').type(
       "Has science gone too far?",
     );
@@ -227,7 +228,7 @@ describe("Episode_Create", () => {
     cy.url().should("include", "/CreatorHub/AddEpisode", { timeout: 10000 });
     cy.contains("Cool pets").should("be.visible");;
     cy.episode_create(
-      paths.shiba,
+      paths.Episode_cover,
       "Funny Shibas",
       "Silly dogs",
       paths.never_gonna_give_you_up,
@@ -237,7 +238,7 @@ describe("Episode_Create", () => {
     cy.get("button").contains("Finish").click({ timeout: 12000 });
     cy.url().should("include", "/MyPodcasts");
     cy.episode_create(
-      paths.cat,
+      paths.Episode_cover,
       "Funny Cats",
       "Silly cats",
       paths.never_gonna_give_you_up,
@@ -246,7 +247,7 @@ describe("Episode_Create", () => {
     cy.wait(2000);
     cy.get("button").contains("Finish").click({ timeout: 12000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(15000);
+    cy.wait(2500);
     cy.get("[data-cy=podcast-image-f2-legends").click({timeout: 12000});
     cy.get("[data-cy=podcast-image-cool-pets").click({timeout: 12000});
     cy.contains("Funny Cats").should("be.visible", { timeout: 12000 });

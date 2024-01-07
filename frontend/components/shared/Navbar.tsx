@@ -152,7 +152,7 @@ export default function Navbar() {
 
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton menu-id="menuBtn" aria-label="Menu" as={Button} variant={"link"} cursor={"pointer"}>
+      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={"link"} cursor={"pointer"}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
@@ -178,13 +178,13 @@ export default function Navbar() {
             <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
             {!isMobile && currentPath === "/Explore/Search" && (
               <Flex alignItems="center" as="form" onSubmit={handleSearchSubmit} ml={5} width="20vh">
-                <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} onChange={handleSearchChange} />
+                <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} data-cy={`search-input`} onChange={handleSearchChange} />
               </Flex>
             )}
           </Flex>
           <Spacer />
           <Flex align="center">
-            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} />
+            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} data-cy={`notifications-button`} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} />
             {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
           </Flex>
         </Flex>

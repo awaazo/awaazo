@@ -50,7 +50,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           </Flex>
           <Flex position="absolute" bottom="4" left={0} right={0} px="4" justifyContent="space-between" alignItems="center">
             <Box>
-              <Text fontSize="md" fontWeight="bold" color="white">
+              <Text fontSize="md" fontWeight="bold" color="white" data-cy={`podcast-name:${podcast.name}`}>
                 {podcast.name}
               </Text>
               <Text fontSize="xs" color="gray.200" noOfLines={1}>
