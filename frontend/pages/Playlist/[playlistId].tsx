@@ -1,15 +1,14 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import { Box, Button, Flex, FormControl, Input, Spacer, Switch, Text, Textarea, VStack, useDisclosure } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Container, Flex, Spacer, Text, VStack } from "@chakra-ui/react";
 import type { Episode } from "../../utilities/Interfaces";
 import type { Playlist } from "../../utilities/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../../components/cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
-import { convertTime } from "../../utilities/commonUtils";
+import { formatSecToDurationString } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
-
 import { useRouter } from "next/router";
 import PlaylistMenu from "../../components/playlist/PlaylistMenu";
 
@@ -54,7 +53,7 @@ export default function Playlist() {
   };
 
   return (
-    <>
+
       <VStack spacing="4" align="stretch" width="95%" justify="center" mx="auto">
         {playlist && (
           <>
@@ -78,13 +77,13 @@ export default function Playlist() {
                 <Box flex={1}>
                   <Text color="white">
                     <Text>
-                      <b>Number of Episodes:</b> {playlist.numberOfEpisodes}
+                    {playlist.numberOfEpisodes} Episodes
                     </Text>{" "}
                   </Text>
                   <Text color="white">
                     <Text>
                       {" "}
-                      <b>Duration:</b> {convertTime(playlist.duration)}
+                      <b>Duration:</b> {formatSecToDurationString(playlist.duration)}
                     </Text>{" "}
                   </Text>
                 </Box>
@@ -105,7 +104,6 @@ export default function Playlist() {
                   Shuffle
                 </Button>
                 <Spacer />
-                {/* Playlist Menu */}
                 <PlaylistMenu playlist={playlist} onUpdate={updatePlaylistData} />
               </Flex>
             </Box>
@@ -124,6 +122,6 @@ export default function Playlist() {
           </>
         )}
       </VStack>
-    </>
+
   );
 }

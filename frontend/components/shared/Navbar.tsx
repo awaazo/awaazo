@@ -124,7 +124,7 @@ export default function Navbar() {
         {user.avatarUrl === "" ? (
           <Avatar size={"sm"} src={""} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
-          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
+          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)"  />
         )}
       </MenuButton>
       <MenuList>
