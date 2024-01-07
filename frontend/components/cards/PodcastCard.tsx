@@ -34,7 +34,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           height="full"
         >
           <Image src={podcast.coverArtUrl} alt={podcast.name} objectFit="cover" position="absolute" top={0} w="full" h="full" transition="opacity 0.2s ease-in-out" _groupHover={{ opacity: 0.4 }} />
-          <Box position="absolute" bottom="0" left="0" right="0" height="50%" bgGradient="linear(to-t, brand.100, transparent )" zIndex="0" />
+          <Box position="absolute" bottom="0" left="0" right="0" height="50%" bgGradient="linear(to-t, black, transparent )" zIndex="0" />
           <Flex position="absolute" top="2" left="2" align="center" zIndex="2">
             <Image src={Logo.src} alt="Logo" w={5} />
           </Flex>
@@ -54,7 +54,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
                 {podcast.name}
               </Text>
               <Text fontSize="xs" color="gray.200" noOfLines={1}>
-                {podcast.description}
+                {podcast.tags}
               </Text>
             </Box>
             <Text fontSize="xs" color="gray.400">

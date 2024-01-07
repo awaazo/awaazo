@@ -42,10 +42,11 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isDeleting, setDeleting] = useState(false);
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description);
+//   const [CoverImage, setCoverImage] = useState(playlist.coverimg);
   const router = useRouter();
 
   // Function to handle deletion of the playlist
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     setDeleting(true);
     const response = await PlaylistHelper.playlistDeleteRequest(playlist.id);
     if (response.status === 200) {
@@ -242,6 +243,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
         </MenuList>
+
       </Menu>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -278,7 +280,10 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               <FormLabel>Description</FormLabel>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
             </FormControl>
-            {/* Additional fields for cover image etc. can be added here */}
+            <FormControl mt={4}>
+              <FormLabel>Cover Image</FormLabel>
+              {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
+            </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>
