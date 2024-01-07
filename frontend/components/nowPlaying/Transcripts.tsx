@@ -3,18 +3,38 @@ import { Box, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/react";
 import { IoMicOutline } from "react-icons/io5";
 import { TranscriptLine } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
+import { useState, useEffect } from "react";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
 // Define the props for the Transcripts component
 interface TranscriptsProps {
+  episodeId: string;
   transcripts: TranscriptLine[]; // The array of transcript lines
 }
 
 // Transcripts component
-const Transcripts: React.FC<TranscriptsProps> = ({ transcripts }) => {
+const Transcripts: React.FC<TranscriptsProps> = ({ episodeId, transcripts }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" }); // Font size based on breakpoint
   const iconSize = useBreakpointValue({ base: "16px", md: "24px" }); // Icon size based on breakpoint
 
   const opacityLevels = [1, 0.4, 0.1]; // Opacity levels for different transcript lines
+
+  const [transcript, setTranscript] = useState(null);
+
+  useEffect(() => {
+    if (episodeId) {
+      PodcastHelper.getTranscript(episodeId)
+        .then((res) => {
+          if (res.status === 200) {
+            setTranscript(res.transcript);
+          } else {
+            console.error("Error fetching section data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching section data:", error));
+    }
+  }, [episodeId]);
+
 
   return (
     <Box
