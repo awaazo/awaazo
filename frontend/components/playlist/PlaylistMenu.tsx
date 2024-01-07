@@ -245,7 +245,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         </MenuList>
 
       </Menu>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
@@ -266,7 +266,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       </Modal>
 
       {/* Edit Modal */}
-      <Modal isOpen={editModalOpen} onClose={closeEditModal}>
+      <Modal isOpen={editModalOpen} onClose={closeEditModal} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Edit Playlist</ModalHeader>
@@ -274,11 +274,11 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalBody>
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <Input value={name} onChange={(e) => setName(e.target.value)}  focusBorderColor="brand.100"/>
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Cover Image</FormLabel>
@@ -286,7 +286,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>
+            <Button bg="black.100" _hover={{ bg: "brand.100" }} mr={3} onClick={handleSaveEdit}>
               Save
             </Button>
             <Button variant="ghost" onClick={closeEditModal}>

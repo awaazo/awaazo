@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import { Box, Text , Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, HStack, IconButton, useDisclosure, VStack, Img } from "@chakra-ui/react";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-
+import { Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, HStack, IconButton, useDisclosure, VStack, Img } from "@chakra-ui/react";
+import { AddIcon, MinusIcon, CheckIcon } from "@chakra-ui/icons";
 import { useDropzone } from "react-dropzone";
 
 interface ImageAdderProps {
@@ -61,7 +60,7 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
     if (croppedAreaPixels) {
       const croppedImage = await getCroppedImg();
       onImageAdded(croppedImage);
-      setImageSrc(croppedImage);  
+      setImageSrc(croppedImage);
       onClose();
     }
   };
@@ -96,11 +95,13 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
 
   return (
     <>
-       <Box {...getRootProps()} border="2px dotted gray" borderRadius="2em" textAlign="center" width="15rem" height="15rem" padding="1em" marginBottom="1em">
+      <Box {...getRootProps()} border="2px dotted gray" borderRadius="2em" textAlign="center" width="15rem" height="15rem" padding="1em" marginBottom="1em">
         <input {...getInputProps()} style={{ display: "none" }} />
         {!imageSrc ? (
           <VStack justifyContent="center" alignItems="center" height="100%" spacing={4}>
-            <Text fontSize="1em" textAlign="center">Drag & drop a cover image here, or click to select one</Text>
+            <Text fontSize="1em" textAlign="center">
+              Drag & drop a cover image here, or click to select one
+            </Text>
             <Text fontSize="3em" role="img" aria-label="upload emoji">
               🏔️
             </Text>
@@ -110,7 +111,7 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
         )}
       </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent maxW="70vw" maxH="70vh">
           <ModalHeader>Crop your image</ModalHeader>
@@ -127,7 +128,9 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
             )}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleDone}>Done</Button>
+            <Button bg="black.100" _hover={{ bg: "brand.100" }} rightIcon={<CheckIcon />} onClick={handleDone}>
+              Done
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
