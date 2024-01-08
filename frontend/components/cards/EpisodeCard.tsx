@@ -109,13 +109,13 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
       onMouseOver={(e) => {
         // Check if the menu is open before applying the transform
         if (!isMenuOpen) {
-          e.currentTarget.style.transform = "scale(1.05)";
+          e.currentTarget.style.opacity = "0.8";
         }
       }}
       onMouseOut={(e) => {
         // Check if the menu is open before applying the transform
         if (!isMenuOpen) {
-          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.opacity = "1";
         }
       }}
       onDoubleClick={handleEpisodeClick}
