@@ -67,7 +67,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       {/* Bottom: Episode Info */}
       <VStack spacing={0} align="stretch" w="full">
-        <Text fontWeight="bold" noOfLines={1} textAlign="left">
+        <Text fontWeight="bold" noOfLines={1} textAlign="left" data-cy={`ticket-episode-${episode.episodeName}`}>
           {episodeName}
         </Text>
         <Text fontSize="sm" color="gray.500" noOfLines={1} textAlign="left">

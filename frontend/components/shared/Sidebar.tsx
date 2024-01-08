@@ -65,7 +65,7 @@ const Sidebar = () => {
             <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }}>
               <Icon as={FaSearch} fontSize="xl" mr={3} />
               {!collapsed && (
-                <Box flex="1" fontWeight="bold">
+                <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
                   Explore
                 </Box>
               )}
