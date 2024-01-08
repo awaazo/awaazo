@@ -13,17 +13,20 @@ describe("Playlists", () => {
 
     it("Should create a playlist", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
-        cy.get('.css-vybnum').click();
+        cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy=add-playlist-button").click();
         cy.get('input[placeholder="Enter Playlist Name"]').type("Temp name");
         cy.get('textarea[placeholder="Description"]').type("Temp Description");
         cy.get('button').contains('Add Playlist').click();
+        cy.reload();
+        cy.get("[data-cy='playlist-icon'").click();
+        cy.get("[data-cy='playlist-Temp name']").click();
         cy.get('body').contains('Temp name');
     });
 
     it("Should not create a playlist if the playlist name already exists", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
-        cy.get('.css-vybnum').click();
+        cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy=add-playlist-button").click();
         cy.get('input[placeholder="Enter Playlist Name"]').type("Temp name");
         cy.get('textarea[placeholder="Description"]').type("Temp Description");
@@ -51,46 +54,42 @@ describe("Playlists", () => {
         cy.get('body').contains('Temp name (EDIT)');
     });
 
-    it.skip("Should delete a playlist", function () {
+    it("Should delete a playlist", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
-        cy.get('.css-vybnum').click();
+        cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy=add-playlist-button").click();
         cy.get('input[placeholder="Enter Playlist Name"]').type("Deleted Playlist");
         cy.get('textarea[placeholder="Description"]').type("Im gonna delete this!!!");
         cy.get('button').contains('Add Playlist').click();
-        cy.reload()
+        cy.wait(250);
+        cy.reload();
+        cy.get("[data-cy='playlist-icon'").click();
+        cy.get("[data-cy='playlist-Deleted Playlist'").click();
         cy.get('body').contains('Deleted Playlist');
         cy.get('[data-cy="playlist-Deleted Playlist"]').click();
         cy.get('[data-cy="3-dots"]').as('btn').click();
         cy.get('button').contains('Delete "Deleted Playlist"').should('be.visible').click({timeout: 5000});
-        cy.get('.css-18zw69y').click();
-        cy.reload();
+        cy.get('.css-18zw69y').click( {force:true });
         cy.get('body').should('not.contain', 'Deleted Playlist');
     });
 
-    it.skip("Should add one or more episodes to a playlist", function (){
+    it("Should add one or more episodes to a playlist", function (){
         cy.visit('profile/MyProfile').url().should('include', 'profile/MyProfile');
-        cy.get("[data-cy='2-dots-episode-card']").first().click({timeout: 5000});
+        cy.get("[data-cy='2-dots-episode-card']").first().click({timeout: 5000, force: true});
         cy.get('button').contains('Add to Playlist').click({timeout: 5000, force: true});
         cy.get('select').select('Temp name (EDIT)');
         cy.get('.css-f2hjvb').should('be.visible').click({timeout: 5000});
         cy.reload();
         cy.get('body').contains('Number of Episodes: 1').should('be.visible');
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
+        cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy='playlist-Temp name (EDIT)']").click();
-        cy.wait(1000);
-        cy.get('body').then(($body) => {
-            if ($body.text().includes('This is a very long episo')) {
-                cy.contains('This is a very long episo').should('be.visible');
-                expect(true).to.be.true;
-            } else {
-                expect(true).to.be.true;
-            }
-        });
+        cy.get('body').should('not.contain', 'No episodes in this playlist yet', { timeout: 5000 });
     });
 
-    it.skip("Should remove an episode from a playlist", function () {
+    it("Should remove an episode from a playlist", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
+        cy.get("[data-cy='playlist-icon'").click();
         cy.get('[data-cy="playlist-Temp name (EDIT)"]').click();
         cy.get('[data-cy="2-dots-episode-card"]').click( {timeout: 5000} );
         cy.get('button').contains('Remove from Playlist').click( {timeout: 5000} );

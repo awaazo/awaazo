@@ -2,6 +2,7 @@ import * as paths from "../../fixtures/file_paths.json";
 
 describe("Episode_Create", () => {
   beforeEach(() => {
+    cy.console_error_hack();
     cy.login(null, "testRegister@email.com", "password123");
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
       timeout: 12000,
@@ -22,7 +23,6 @@ describe("Episode_Create", () => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;
       }else{
-          cy.wait(2000);
           cy.get("button").contains("Finish").click({ timeout: 12000 });
           cy.url().should("include", "/CreatorHub/MyPodcasts");
           cy.reload();
@@ -131,7 +131,6 @@ describe("Episode_Create", () => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;
       }else{
-        cy.wait(2000);
         cy.get("button").contains("Finish").click({ timeout: 12000 });
         cy.url().should("include", "/CreatorHub/MyPodcasts");
         cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
@@ -151,6 +150,7 @@ describe("Episode_Create", () => {
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.get("button").contains("New Episode").click({ timeout: 12000 });
+    cy.wait(500);
     cy.get('input[type="file"]').attachFile(paths.Episode_cover_science);
     cy.get('button').contains('Done').click();
     cy.get('input[placeholder="Enter episode name..."]').type(
@@ -172,7 +172,6 @@ describe("Episode_Create", () => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;
       }else{
-          cy.wait(2000);
           cy.get("button").contains("Finish").click({ timeout: 12000 });
           cy.wait(250);
           cy.url().should("include", "/CreatorHub/MyPodcasts");
@@ -207,7 +206,6 @@ describe("Episode_Create", () => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;
       }else{
-        cy.wait(2000);
         cy.get("button").contains("Finish").click({ timeout: 12000 });
         cy.wait(1000);
         cy.url().should("include", "/MyPodcasts");
@@ -221,7 +219,7 @@ describe("Episode_Create", () => {
   //If a podcast is deleted, all episdoes associated to that podcast should be too
   it("Should delete all episodes if a podcast is deleted", () => {
     cy.podcast_create(
-      paths.bunny,
+      paths.f2_car,
       "Cool pets",
       "A podcast about pets and their coolness.",
     );
@@ -234,7 +232,6 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets",
     );
-    cy.wait(2000);
     cy.get("button").contains("Finish").click({ timeout: 12000 });
     cy.url().should("include", "/MyPodcasts");
     cy.episode_create(
@@ -244,10 +241,8 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "pets", //s
     );
-    cy.wait(2000);
     cy.get("button").contains("Finish").click({ timeout: 12000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(2500);
     cy.get("[data-cy=podcast-image-f2-legends").click({timeout: 12000});
     cy.get("[data-cy=podcast-image-cool-pets").click({timeout: 12000});
     cy.contains("Funny Cats").should("be.visible", { timeout: 12000 });

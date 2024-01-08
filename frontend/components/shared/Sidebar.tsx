@@ -76,7 +76,7 @@ const Sidebar = () => {
         {/* My Shelf */}
         <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
           <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }} onClick={toggleCollapsed}>
-            <Icon as={VscLibrary} fontSize="xl" mr={3} />
+            <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`}/>
             {!collapsed && (
               <Box flex="1" fontWeight="bold">
                 My Shelf
@@ -105,7 +105,7 @@ const Sidebar = () => {
                 <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                   <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
                     <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
-                    {!collapsed && <Text>{playlist.name}</Text>}
+                    {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
                   </Flex>
                 </Link>
               ))}

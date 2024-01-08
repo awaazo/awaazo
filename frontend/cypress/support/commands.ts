@@ -180,6 +180,7 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
 Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file, podcast) =>{
   cy.visit('/CreatorHub/AddEpisode');
   cy.url().should('include', '/CreatorHub/AddEpisode', { timeout: 5000 });
+  cy.wait(500);
   cy.get('input[type="file"]').attachFile(fjlepath);
   cy.wait(500)
   cy.get('button').contains('Done').scrollIntoView().click();
