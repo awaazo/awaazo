@@ -17,9 +17,9 @@ describe("Playlists", () => {
         cy.get("[data-cy=add-playlist-button").click();
         cy.get('input[placeholder="Enter Playlist Name"]').type("Temp name");
         cy.get('textarea[placeholder="Description"]').type("Temp Description");
-        cy.wait(1000)
+        cy.wait(1000);
         cy.get('button').contains('Add Playlist').click();
-        cy.wait(1000)
+        cy.wait(5000);
         cy.reload();
         cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy='playlist-Temp name']").click();
@@ -34,7 +34,7 @@ describe("Playlists", () => {
         cy.get('textarea[placeholder="Description"]').type("Temp Description");
         cy.wait(1000)
         cy.get('button').contains('Add Playlist').click();
-        cy.wait(1000)
+        cy.wait(5000);
         cy.contains('Playlist with the same name already exists.').should('be.visible');
     });
 
@@ -66,7 +66,7 @@ describe("Playlists", () => {
         cy.get('textarea[placeholder="Description"]').type("Im gonna delete this!!!");
         cy.wait(1000)
         cy.get('button').contains('Add Playlist').click();
-        cy.wait(1000)
+        cy.wait(5000);
         cy.reload();
         cy.get("[data-cy='playlist-icon'").click();
         cy.get("[data-cy='playlist-Deleted Playlist'").click();
