@@ -5,7 +5,7 @@ describe("Playlists", () => {
         timeout: 12000,
       });
     });
-
+ 
     it("Should not show any playlists if none are present", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
         cy.get('body').contains('No episodes in this playlist yet');
