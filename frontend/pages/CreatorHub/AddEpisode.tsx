@@ -53,7 +53,19 @@ const AddEpisode = () => {
     setFile(acceptedFiles[0]);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'audio/mp3': ['.mp3'],
+      'audio/wav': ['.wav'],
+      'audio/aac': ['.aac'],
+      'audio/ogg': ['.ogg'],
+      'audio/flac': ['.flac'],
+      'audio/m4a': ['.m4a'],
+    },
+    maxFiles: 1,
+  });
+  
 
   const handlePodcastSelect = (podcast) => {
     setSelectedPodcast(podcast);
@@ -181,7 +193,7 @@ const AddEpisode = () => {
           <form onSubmit={handleAddEpisode}>
             {addError && <Text color="red.500">{addError}</Text>}
             <VStack spacing={5} align="center" p={5}>
-            <ImageAdder onImageAdded={handleImageAdded} />
+              <ImageAdder onImageAdded={handleImageAdded} />
               {/* Episode Name Input */}
               <FormControl position="relative">
                 <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." rounded="lg" pr="50px" />
@@ -206,9 +218,19 @@ const AddEpisode = () => {
               </FormControl>
 
               {/* File Upload */}
-              <Box {...getRootProps()} border="2px dotted gray" borderRadius="md" p={4} textAlign="center" width="300px" data-cy="podcast-file-dropzone">
+              <Box {...getRootProps()} border="2px dotted gray" borderRadius="3xl" p={4} textAlign="center" width="300px" data-cy="podcast-file-dropzone">
                 <input {...getInputProps()} />
-                {file ? <p>{file.name}</p> : <p>Drag & drop a podcast file here, or click to select one</p>}
+                {file ? (
+                  <Text>{file.name}</Text>
+                ) : (
+                  <Text>
+                    Drag & drop an audio file here, or click to select one
+                    <Text role="img" aria-label="audio emoji">
+                      {" "}
+                      🎙️
+                    </Text>
+                  </Text>
+                )}
               </Box>
 
               {/* Upload Button */}
@@ -219,7 +241,7 @@ const AddEpisode = () => {
           </form>
         </VStack>
       </Center>
-      <Modal isOpen={isUploadModalOpen} onClose={() => setUploadModalOpen(false)}>
+      <Modal isOpen={isUploadModalOpen} onClose={() => setUploadModalOpen(false)} isCentered>
         <ModalOverlay />
 
         <ModalContent borderRadius="xl" backdropFilter="blur(50px)" p={9} maxW="800px" width="95%">
@@ -281,7 +303,7 @@ const AddEpisode = () => {
                     </Text>
                   </Box>
                   {uploadProgress === 100 && (
-                    <Button onClick={() => router.push(myPodcastsPage)} alignSelf="center" bg="rgba(169, 169, 169, 0.2)" >
+                    <Button onClick={() => (window.location.href = myPodcastsPage)} alignSelf="center" bg="rgba(169, 169, 169, 0.2)">
                       Finish
                     </Button>
                   )}
