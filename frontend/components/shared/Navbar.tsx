@@ -25,13 +25,14 @@ export default function Navbar() {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
     window.location.href = searchlink;
   };
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",
     username: "",
     avatarUrl: "",
   });
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); 
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isUserSet, setIsUserSet] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -70,7 +71,7 @@ export default function Navbar() {
       AuthHelper.authMeRequest().then((response) => {
         if (response.status == 200) {
           setUser(response.userMenuInfo);
-          setIsUserLoggedIn(true); 
+          setIsUserLoggedIn(true);
           setIsUserSet(true);
           setIsLoggedIn(true);
         }
@@ -94,7 +95,7 @@ export default function Navbar() {
             AuthHelper.authMeRequest().then((response) => {
               if (response.status == 200) {
                 setUser(response.userMenuInfo);
-                setIsUserLoggedIn(true); 
+                setIsUserLoggedIn(true);
                 setIsUserSet(true);
                 setIsLoggedIn(true);
               }
@@ -124,7 +125,7 @@ export default function Navbar() {
         {user.avatarUrl === "" ? (
           <Avatar size={"sm"} src={""} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
-          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)"  />
+          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
       </MenuButton>
       <MenuList>
@@ -177,7 +178,16 @@ export default function Navbar() {
             <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
             <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
             {!isMobile && currentPath === "/Explore/Search" && (
-              <Flex alignItems="center" as="form" onSubmit={handleSearchSubmit} ml={5} width="20vh">
+              <Flex
+                alignItems="center"
+                as="form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearchSubmit();
+                }}
+                ml={5}
+                width="20vh"
+              >
                 <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} data-cy={`search-input`} onChange={handleSearchChange} />
               </Flex>
             )}
