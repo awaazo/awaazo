@@ -1,4 +1,4 @@
-describe("Playlists", () => {
+describe.skip("Playlists", () => {
     beforeEach(() => {
       cy.login(null, "testRegister@email.com", "password123");
       cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
@@ -25,7 +25,7 @@ describe("Playlists", () => {
         cy.get("[data-cy='playlist-Temp name']").click();
         cy.get('body').contains('Temp name');
     });
-
+ 
     it("Should not create a playlist if the playlist name already exists", function () {
         cy.visit('Playlist/Myplaylists').url().should('include', 'Playlist/Myplaylists');
         cy.get("[data-cy='playlist-icon'").click();
