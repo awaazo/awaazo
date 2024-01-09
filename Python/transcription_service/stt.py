@@ -5,6 +5,45 @@ import whisperx
 import torch
 import datetime
 
+def process_transcript(transcript):
+    """
+    Process a transcript by adding a seek time and an id to each line.
+    The seek time is calculated by adding a constant interval to the start time of the line.
+
+    Parameters:
+        transcript (list): The transcript to process.
+
+    Returns:
+        list: The processed transcript.
+    """
+    try:
+        # Define the Seek Interval, in seconds
+        SEEK_INTERVAL = 30
+        next_seek_time = 0
+        current_seek_time = 0
+
+        current_id = 0
+
+        # Go through each line in the transcript
+        for line in transcript:
+
+            # Set the line id
+            line['id'] = current_id
+            current_id += 1
+
+            # Set the seek time
+            if line['end'] > next_seek_time:
+                next_seek_time = next_seek_time + SEEK_INTERVAL
+                current_seek_time = line['start']
+
+            line['seek'] = current_seek_time
+
+        return transcript
+
+    except Exception as e:
+        raise Exception(f"Error processing transcript: {e}")
+
+
 def create_transcript(audio_path):
     """
     Transcribe an audio file using Whisper and save the transcript to a JSON file.
@@ -99,7 +138,6 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         # Check for CUDA, otherwise use CPU
         if torch.cuda.is_available():
             device = "cuda"
-            batch_size = 16
             compute_type = "float16"
 
         print(f"Device: {device}\n Batch Size: {batch_size}\n Compute Type: {compute_type}\n")
@@ -116,7 +154,7 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         result = whisperx.align(result["segments"], model_a, metadata, audio, device, return_char_alignments=False)
 
         # Save the transcript to a json file
-        json.dump(result["segments"], open(transcript_file_path, 'w'))
+        json.dump(process_transcript(result["segments"]), open(transcript_file_path, 'w'))
 
         # Once the transcript is created, delete the status file
         os.remove(status_file_path)
