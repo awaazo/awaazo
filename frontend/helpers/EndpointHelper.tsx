@@ -579,4 +579,17 @@ export default class EndpointHelper {
   static getLikedEpisodesPlaylistEndpoint = () => {
     return this.getBackendAddress() + "/playlist/getLikedEpisodesPlaylist";
   };
+
+  // --------------------------------
+  // TRANSCRIPT ENDPOINT
+  // --------------------------------
+  /**
+   * Returns the Episode Transcript endpoint.
+   * @returns The Episode Transcript Endpoint
+   * */
+  static getTranscriptEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript";
+  };
+
 }
+
