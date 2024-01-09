@@ -72,6 +72,7 @@ namespace Backend.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverArt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Privacy = table.Column<int>(type: "int", nullable: false),
                     IsHandledByUser = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -256,6 +257,29 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Annotations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Timestamp = table.Column<double>(type: "float", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Annotations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Annotations_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookmarks",
                 columns: table => new
                 {
@@ -377,12 +401,35 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MediaLinks",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AnnotationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Platform = table.Column<int>(type: "int", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MediaLinks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MediaLinks_Annotations_AnnotationId",
+                        column: x => x.AnnotationId,
+                        principalTable: "Annotations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sponsors",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AnnotationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Website = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Website = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -390,6 +437,12 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sponsors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sponsors_Annotations_AnnotationId",
+                        column: x => x.AnnotationId,
+                        principalTable: "Annotations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sponsors_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
@@ -445,35 +498,6 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Annotations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Timestamp = table.Column<double>(type: "float", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    SponsorshipId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Annotations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Annotations_Episodes_EpisodeId",
-                        column: x => x.EpisodeId,
-                        principalTable: "Episodes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Annotations_Sponsors_SponsorshipId",
-                        column: x => x.SponsorshipId,
-                        principalTable: "Sponsors",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CommentReplyLikes",
                 columns: table => new
                 {
@@ -493,37 +517,10 @@ namespace Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "MediaLinks",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AnnotationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Platform = table.Column<int>(type: "int", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MediaLinks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MediaLinks_Annotations_AnnotationId",
-                        column: x => x.AnnotationId,
-                        principalTable: "Annotations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Annotations_EpisodeId",
                 table: "Annotations",
                 column: "EpisodeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Annotations_SponsorshipId",
-                table: "Annotations",
-                column: "SponsorshipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookmarks_EpisodeId",
@@ -622,6 +619,12 @@ namespace Backend.Migrations
                 column: "PodcasterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sponsors_AnnotationId",
+                table: "Sponsors",
+                column: "AnnotationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sponsors_EpisodeId",
                 table: "Sponsors",
                 column: "EpisodeId");
@@ -677,6 +680,9 @@ namespace Backend.Migrations
                 name: "PodcastRatings");
 
             migrationBuilder.DropTable(
+                name: "Sponsors");
+
+            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
@@ -689,16 +695,13 @@ namespace Backend.Migrations
                 name: "CommentReplies");
 
             migrationBuilder.DropTable(
-                name: "Annotations");
-
-            migrationBuilder.DropTable(
                 name: "Playlists");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Annotations");
 
             migrationBuilder.DropTable(
-                name: "Sponsors");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Episodes");
