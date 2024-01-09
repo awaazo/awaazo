@@ -302,3 +302,4 @@ python/env/**
 python/rvc_service/logs/**
 python/rvc_service/env
 python/env
+python/.venv

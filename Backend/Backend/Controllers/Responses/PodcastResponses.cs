@@ -82,44 +82,98 @@ public class PodcastResponse
 }
 
 /// <summary>
-/// Response for Transcript Line.
+/// Response for a transcript word.
+/// </summary>
+[BindProperties]
+public class TranscriptWordResponse
+{
+    /// <summary>
+    /// Gets or sets the start time of the transcript word.
+    /// </summary>
+    public float Start { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets the end time of the transcript word.
+    /// </summary>
+    public float End { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets the word in the transcript.
+    /// </summary>
+    public string Word { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the score of the transcript word.
+    /// </summary>
+    public float Score { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets the speaker of the transcript word.
+    /// </summary>
+    public string Speaker { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Response for a transcript line.
 /// </summary>
 [BindProperties]
 public class TranscriptLineResponse
 {
     /// <summary>
-    /// Line Id.
+    /// Gets or sets the ID of the transcript line.
     /// </summary>
-    public int Id {get;set;} = 0;
+    public int Id { get; set; } = 0;
 
     /// <summary>
-    /// Seek Position in milliseconds.
+    /// Gets or sets the seek value of the transcript line.
     /// </summary>
-    public int Seek {get;set;}= 0;
+    public float Seek { get; set; } = 0;
 
     /// <summary>
-    /// Start Position in seconds.
+    /// Gets or sets the start time of the transcript line.
     /// </summary>
-    public float Start {get;set;} = 0;
-    
+    public float Start { get; set; } = 0;
+
     /// <summary>
-    /// End Position in seconds.
+    /// Gets or sets the end time of the transcript line.
     /// </summary>
-    public float End {get;set;} = 0;
-    
+    public float End { get; set; } = 0;
+
     /// <summary>
-    /// Transcript Text.
+    /// Gets or sets the text of the transcript line.
     /// </summary>
-    public string Text {get;set;} = string.Empty;
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the list of words in the transcript line.
+    /// </summary>
+    public List<TranscriptWordResponse> Words { get; set; } = new List<TranscriptWordResponse>();
+
+    /// <summary>
+    /// Gets or sets the speaker of the transcript line.
+    /// </summary>
+    public string Speaker { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// Response for a transcript.
+/// </summary>
 [BindProperties]
 public class EpisodeTranscriptResponse
 {
+    /// <summary>
+    /// Gets or sets the ID of the episode.
+    /// </summary>
     public Guid EpisodeId { get; set; } = Guid.Empty;
 
-    public string Status {get;set;} = "Ready";
+    /// <summary>
+    /// Gets or sets the status of the transcript.
+    /// </summary>
+    public string Status { get; set; } = "Ready";
 
+    /// <summary>
+    /// Gets or sets the list of transcript lines.
+    /// </summary>
     public List<TranscriptLineResponse> Lines { get; set; } = new List<TranscriptLineResponse>();
 }
 

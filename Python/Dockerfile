@@ -11,7 +11,8 @@ ADD . /app
 # Install Python3.11 & ffmpeg
 RUN apt-get -y update && apt-get install -y python3.10 \
 ffmpeg \
-python3-pip
+python3-pip \
+git
 
 # Install the python3-venv package
 RUN apt-get install -y python3.10-venv

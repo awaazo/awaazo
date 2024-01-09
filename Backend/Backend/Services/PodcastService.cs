@@ -38,7 +38,7 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Accepted file types for audio files
     /// </summary>
-    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4" };
+    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4","audio/wav" };
 
     /// <summary>
     /// Maximum image file is 5MB
