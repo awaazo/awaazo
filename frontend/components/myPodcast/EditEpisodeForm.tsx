@@ -8,7 +8,6 @@ import {
   Input,
   IconButton,
   Switch,
-  useColorMode,
   Text,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
@@ -71,8 +70,6 @@ export default function EditEpisodeForm({ episode }) {
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
-
-  const { colorMode } = useColorMode();
 
   /**
    * Handles form submission

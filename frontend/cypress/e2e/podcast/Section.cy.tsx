@@ -2,13 +2,13 @@ describe('Section', () => {
     
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible', { timeout: 5000 });
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
 
     it('Should delete a Podcast', () => {
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
         cy.wait(500);
-        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
         cy.data_log();

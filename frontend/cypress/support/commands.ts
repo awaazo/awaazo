@@ -61,9 +61,9 @@ Cypress.Commands.add('login', (username, email, password) => {
 
 Cypress.Commands.add('logout', () => {
   cy.wait(250);
-  cy.get('button[aria-label="loggedInMenu"]').should('be.visible').click();
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible').click();
   cy.get('button').contains('Logout').should('be.visible').click({timeout: 5000});
-  cy.get('button[aria-label="Menu"]').should('be.visible');
+  cy.get('button[aria-label="Menu"]').scrollIntoView().should('be.visible');
   cy.url().should('include', '/');
 });
 /*
@@ -74,7 +74,7 @@ Cypress.Commands.add('logout', () => {
   -=-=-=-=Registration Commands
 */
 Cypress.Commands.add('register_user', (email, username, password, confirmPassword, birthdate) => {
-  cy.get('button[aria-label="Menu"]').should('be.visible').click();
+  cy.get('[data-cy="navbar-hamburger"]').scrollIntoView().should('be.visible').click();
   cy.get('button').contains('Sign up').should('be.visible').click({timeout: 5000});
   cy.get('input[id="email"]').type(email);
   cy.get('input[id="username"]').type(username);
@@ -88,6 +88,7 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   cy.url().should('include', '/profile/ProfileSetup');
   cy.get('input[type="file"]').attachFile(filepath);
+  cy.get('button').contains('Done').click();
   cy.get('input[id="displayName"]').type(displayName);
   cy.get('Textarea[id="bio"]').type(bio);
   cy.get(':nth-child(5) > .chakra-button').click();
@@ -102,8 +103,8 @@ Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
 
 
 Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linkedInURL, githubURL) => {
-  cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-  cy.get('button[aria-label="loggedInMenu"]').click();
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
   cy.wait(250);
   cy.contains('button', 'My Account', {timeout: 5000}).then(($btn) => {
     if ($btn) {
@@ -111,7 +112,7 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
     }
   }).then(($btn) => {
     if (!$btn) {
-      cy.get('button[aria-label="loggedInMenu"]').click();
+      cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     }
   });
   cy.get('button').contains('Edit Profile').click();
@@ -145,13 +146,21 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
 -=-=-=-=-=-=-=Podcast create
 */
 Cypress.Commands.add('podcast_create', (filepath, name, description) => {
-  cy.get('button[aria-label="Add Episode"]').click();
-  cy.url().should('include', '/CreatorHub/AddEpisode');
-  cy.get('[data-cy="create-podcast-box"]').click();
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
+  cy.wait(250);
+  cy.get('button').contains('My Podcasts').click();
+  cy.url().should('include', '/CreatorHub/MyPodcasts');
+  cy.get('.css-1bdrd0f').click();
   cy.url().should('include', '/CreatorHub/CreatePodcast');
   cy.wait(250);
   cy.get('input[type="file"]').attachFile(filepath);
   cy.wait(250);
+  cy.get('body').then(($body) => {
+    if ($body.text().includes('Done')) {
+      cy.wait(500);
+      cy.get('button').contains('Done').click();
+    }else{}})
   if (name) {
     cy.get('input[id="podcastName"]').type(name);
   }
@@ -171,9 +180,12 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
 Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file, podcast) =>{
   cy.visit('/CreatorHub/AddEpisode');
   cy.url().should('include', '/CreatorHub/AddEpisode', { timeout: 5000 });
+  cy.wait(500);
   cy.get('input[type="file"]').attachFile(fjlepath);
+  cy.wait(500)
+  cy.get('button').contains('Done').scrollIntoView().click();
   if(name){
-    cy.get('input[placeholder="Enter episode name..."]').type(name);
+    cy.get('input[placeholder="Enter episode name..."]', { timeout: 10000 }).type(name);
   }
   if(description){
     cy.get('textarea[placeholder="Enter episode description..."]').type(description);
@@ -194,7 +206,7 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
 
 
 Cypress.Commands.add('review_create', (review, stars) => {
-  cy.get('[data-cy="podcast-card-F2 legends"]').click();
+  cy.get('[data-cy="podcast-name:F2 legends"]').scrollIntoView().click({force: true});
   cy.get('button').contains('Add Your Review').click();
   if(review){
     cy.get('textarea[placeholder="Write your review here..."]').type(review);

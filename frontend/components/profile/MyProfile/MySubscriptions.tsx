@@ -2,24 +2,7 @@ import React, { useState, useEffect, FC } from "react";
 import SubscribeHelper from "../../../helpers/SubscribeHelper";
 import { MySubscriptions } from "../../../utilities/Interfaces";
 import Link from "next/link";
-import {
-  Stack,
-  Flex,
-  Avatar,
-  Text,
-  Box,
-  useColorModeValue,
-  Badge,
-  useToken,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-} from "@chakra-ui/react";
+import { Stack, Flex, Avatar, Text, Box, useColorModeValue, useToken, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
 
 const Subscriptions: FC = () => {
   const [subscriptions, setSubscriptions] = useState<MySubscriptions[]>([]);
@@ -31,22 +14,14 @@ const Subscriptions: FC = () => {
       if (Array.isArray(response)) {
         setSubscriptions(response);
       } else {
-        console.error(
-          "Failed to fetch subscriptions:",
-          response.message || "No error message available",
-        );
+        console.error("Failed to fetch subscriptions:", response.message || "No error message available");
       }
     };
 
     fetchSubscriptions();
   }, []);
 
-  const [blue500, gray300, gray500, gray700] = useToken("colors", [
-    "blue.500",
-    "gray.300",
-    "gray.500",
-    "gray.700",
-  ]);
+  const [blue500, gray300, gray500, gray700] = useToken("colors", ["blue.500", "gray.300", "gray.500", "gray.700"]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -89,18 +64,10 @@ const Subscriptions: FC = () => {
                   }}
                   bg={useColorModeValue("white", gray700)}
                 >
-                  <Flex
-                    direction={{ base: "column", md: "row" }}
-                    alignItems={{ base: "center", md: "flex-start" }}
-                    justifyContent="space-between"
-                  >
+                  <Flex direction={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "flex-start" }} justifyContent="space-between">
                     <Flex alignItems="center" mb={{ base: 4, md: 0 }}>
                       <Link href={`/Explore/${subscription.id}`} passHref>
-                        <Avatar
-                          size="lg"
-                          src={subscription.coverArtUrl}
-                          mr={4}
-                        />
+                        <Avatar size="lg" src={subscription.coverArtUrl} mr={4} />
                       </Link>
                       <Flex direction="column" justifyContent="center">
                         <Link href={`/Explore/${subscription.id}`} passHref>

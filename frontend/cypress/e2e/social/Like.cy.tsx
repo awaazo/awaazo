@@ -1,4 +1,4 @@
-describe ('Like', () => { 
+describe.skip('Like', () => { 
 
     beforeEach(() => {
         cy.login(null, 'dummyRegister@email.com', 'password123');

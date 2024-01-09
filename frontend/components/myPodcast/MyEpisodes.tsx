@@ -1,27 +1,5 @@
 import { useState } from "react";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Tag,
-  Tooltip,
-  useColorModeValue,
-  useColorMode,
-  useDisclosure,
-  useBreakpointValue,
-  Text,
-  Icon,
-  Button,
-  VStack,
-  Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { Box, Flex, IconButton, Tag, Tooltip, useDisclosure, useBreakpointValue, Text, Icon, Button, VStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
@@ -31,7 +9,6 @@ import { convertTime } from "../../utilities/commonUtils";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
-  const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   // Edit Episode Modal
@@ -96,18 +73,7 @@ const Episode = ({ episode }) => {
   };
 
   return (
-    <Flex
-      paddingTop={5}
-      paddingBottom={5}
-      mt={3}
-      width="100%"
-      borderRadius="15px"
-      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
-      backdropFilter="blur(4px)"
-      boxShadow="sm"
-      style={{ cursor: "pointer" }}
-      onClick={() => console.log(episode.id, episode.name)}
-    >
+    <Flex paddingTop={5} paddingBottom={5} mt={3} width="100%" borderRadius="15px" bg="rgba(255, 255, 255, 0.1)" backdropFilter="blur(4px)" boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
       <Box position="relative" mr={5}>
         <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
       </Box>
@@ -122,10 +88,9 @@ const Episode = ({ episode }) => {
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
           <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
-          
         </Text>
         {/* Episode Details */}
-        <Flex direction="column" fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
+        <Flex direction="column" fontSize="sm" color="gray.500">
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
@@ -152,32 +117,10 @@ const Episode = ({ episode }) => {
             />
           </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
-            <IconButton
-              variant="ghost"
-              data-cy="edit-button"
-              fontSize={isMobile ? "md" : "lg"}
-              mr={1}
-              rounded={"full"}
-              opacity={0.7}
-              color={colorMode === "dark" ? "white" : "black"}
-              aria-label="Edit Episode"
-              icon={<Icon as={MdEdit} />}
-              onClick={() => openEditEpisodeModal(episode)}
-            />
+            <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
-            <IconButton
-              variant="ghost"
-              data-cy="delete-button"
-              fontSize={isMobile ? "md" : "lg"}
-              rounded={"full"}
-              opacity={0.7}
-              marginRight={5}
-              color={colorMode === "dark" ? "white" : "black"}
-              aria-label="Delete Episode"
-              icon={<Icon as={MdDelete} />}
-              onClick={onOpen}
-            />
+            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} marginRight={5} color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpen} />
           </Tooltip>
         </Box>
       </Flex>
@@ -235,7 +178,6 @@ const Episode = ({ episode }) => {
           padding={"2em"}
           border="3px solid rgba(255, 255, 255, 0.05)"
           borderRadius="3xl"
-
         >
           <ModalCloseButton />
           <ModalBody>

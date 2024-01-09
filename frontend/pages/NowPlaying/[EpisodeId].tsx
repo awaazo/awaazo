@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Box, Grid, useBreakpointValue } from "@chakra-ui/react";
-import Navbar from "../../components/shared/Navbar";
 import AwaazoBirdBot from "../../components/nowPlaying/AwaazoBirdBot";
 import Bookmarks from "../../components/nowPlaying/Bookmarks";
 import Transcripts from "../../components/nowPlaying/Transcripts";
@@ -88,7 +87,6 @@ const NowPlaying = () => {
       overflow="hidden"
     >
       {/* //bgColor={palette || null} */}
-      <Navbar />
       {isMobile ? (
         <Slider {...sliderSettings}>
           {components.map((comp, index) => (
