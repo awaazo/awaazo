@@ -9,6 +9,7 @@ import {
   Bookmark,
   Section,
   Playlist,
+  TranscriptLine
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -158,5 +159,10 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 }
 
 //#endregion
+
+//#region Transcript Responses
+export interface GetTranscriptResponse extends BaseResponse {
+  transcript: TranscriptLine;
+}
 
 //#endregion

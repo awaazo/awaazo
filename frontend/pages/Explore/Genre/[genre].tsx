@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Box,
-  SimpleGrid,
-  Flex,
-  Text,
-  VStack,
-  useColorMode,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-
+import { Box, SimpleGrid, Flex, Text, VStack, useColorMode, useBreakpointValue } from "@chakra-ui/react";
 import { PodcastByTagsRequest } from "../../../utilities/Requests";
 import { Podcast } from "../../../utilities/Interfaces";
 import { useRouter } from "next/router";
-
-import Navbar from "../../../components/shared/Navbar";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../../components/cards/PodcastCard";
 import ExploreGenresSection from "../../../components/home/ExploreGenres";
-import PlayerBar from "../../../components/shared/PlayerBar";
 
 export default function MyPodcast() {
   const router = useRouter();
@@ -61,13 +49,7 @@ export default function MyPodcast() {
 
   return (
     <>
-      <Navbar />
-      <Box
-        display="flex"
-        flexDirection="column"
-        px={["1em", "2em", "4em"]}
-        height="calc(100vh - 60px - 80px)"
-      >
+      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]} height="calc(100vh - 60px - 80px)">
         <ExploreGenresSection />
         <Box w={{ base: "70%", md: "30%" }} borderRadius="0.5em" p="8px">
           {!loading && (
@@ -88,12 +70,8 @@ export default function MyPodcast() {
           </SimpleGrid>
         ) : (
           // Show error message
-          <Text style={{ marginTop: "50px", marginLeft: "30px" }}>
-            (No podcasts available)
-          </Text>
+          <Text style={{ marginTop: "50px", marginLeft: "30px" }}>(No podcasts available)</Text>
         )}
-
-        {/* Player Bar */}
       </Box>
     </>
   );

@@ -21,12 +21,12 @@ public class AppDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Episode> Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }
-    public virtual DbSet<Annotation>? Annotations { get; set; }
+    public virtual DbSet<Annotation> Annotations { get; set; }
     public virtual DbSet<Bookmark> Bookmarks { get; set; }
     public virtual DbSet<Podcast> Podcasts { get; set; }
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
-    public virtual DbSet<Sponsor>? Sponsors { get; set; }
-    public virtual DbSet<MediaLink>? MediaLinks { get; set; }
+    public virtual DbSet<Sponsor> Sponsors { get; set; }
+    public virtual DbSet<MediaLink> MediaLinks { get; set; }
     public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }

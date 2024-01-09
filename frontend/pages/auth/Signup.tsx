@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
@@ -23,6 +23,18 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {}, [session, googleSignUpClicked]);
 
+  const calculateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  const age = calculateAge(dateOfBirth);
+  
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
@@ -37,6 +49,7 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignUpError(null);
+    
     if (!email || !isEmail(email)) {
       setSignUpError("Please enter a valid email address.");
       return;
@@ -53,6 +66,16 @@ const SignUp: React.FC = () => {
       setSignUpError("Passwords do not match.");
       return;
     }
+    
+    if (age < 8) {
+      setSignUpError("You're too young to be on Awaazo, come back in a couple of years!");
+      return;
+    }
+    if (age > 100) {
+      setSignUpError("Centenarian? Impressive! But Awaazo is for the young at heart.");
+      return;
+    }
+    
     const registerRequest: RegisterRequest = {
       email: email,
       password: password,
@@ -61,9 +84,10 @@ const SignUp: React.FC = () => {
       gender: "None",
     };
 
+    
+
     try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
-
       if (response.status === 200) {
         window.location.href = setupPage;
       } else {
@@ -76,17 +100,7 @@ const SignUp: React.FC = () => {
 
   return (
     <Flex minHeight="100vh" align="center" justify="center">
-      <Box
-        p={6}
-        bg={"rgba(0, 0, 0, 0.3)"}
-        border="3px solid rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(10px)"
-        boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)"
-        borderRadius="3xl"
-        maxW="400px"
-        w="full"
-        textAlign="center"
-      >
+      <Box p={6} bg={"rgba(0, 0, 0, 0.3)"} border="3px solid rgba(255, 255, 255, 0.05)" backdropFilter="blur(10px)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)" borderRadius="3xl" maxW="400px" w="full" textAlign="center">
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>

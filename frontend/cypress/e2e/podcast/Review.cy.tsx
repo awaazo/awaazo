@@ -3,8 +3,8 @@ import * as paths from '../../fixtures/file_paths.json';
 describe('Review', () => {
     
     beforeEach(() => {
-        cy.login(null, 'testRegister@email.com', 'password123');
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible', { timeout: 5000 });
+        cy.login(null, 'dummyRegister@email.com', 'password123');
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
 
     it('Should successfully add a review', function(){
@@ -24,7 +24,7 @@ describe('Review', () => {
     });
 
     it('Should successfully cancel writing a review', function(){
-        cy.get('[data-cy="podcast-card-F2 legends"]').click();
+        cy.get('[data-cy="podcast-name:F2 legends"]').scrollIntoView().click({force: true});
         cy.get('button').contains('Add Your Review').click();
         cy.contains('Cancel').click();
         cy.get('[data-cy="star-icon-2"]').should('not.exist');

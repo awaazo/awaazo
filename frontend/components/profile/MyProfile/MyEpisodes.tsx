@@ -1,28 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Tag,
-  Avatar,
-  HStack,
-  Flex,
-  Tooltip,
-  Text,
-  Icon,
-  Link,
-  IconButton,
-  useColorModeValue,
-  Stack,
-  Button,
-  VStack,
-} from "@chakra-ui/react";
-
-import NextLink from "next/link";
+import { Flex, Tooltip, Text, IconButton, Container,  Button, VStack } from "@chakra-ui/react";
+import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
 import { Podcast, Episode } from "../../../utilities/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import EpisodeCard from "../../cards/EpisodeCard";
-import { usePlayer } from "../../../utilities/PlayerContext";
 
 // Define the MyEpisodes component
 export default function MyEpisodes() {
@@ -77,18 +59,16 @@ export default function MyEpisodes() {
   return (
     <>
       {/* Render the heading */}
-      <div
-        style={{
-          marginBottom: "1em",
-          fontSize: "1.5em",
-          fontWeight: "bold",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+      <Container
+        marginBottom="1em"
+        fontSize="1.5em"
+        fontWeight="bold"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
       >
         My Episodes
-        <NextLink href="/MyPodcasts" passHref>
+        <Link href="/CreatorHub/MyPodcasts" passHref>
           <Button
             style={{
               fontWeight: "bold",
@@ -99,8 +79,8 @@ export default function MyEpisodes() {
           >
             Manage Episodes
           </Button>
-        </NextLink>
-      </div>
+        </Link>
+      </Container>
       {rangeEpisodes && rangeEpisodes.length == 0 ? (
         <Text mt={"50px"} mb={"50px"} fontSize={"18px"} textAlign={"center"}>
           You have not uploaded any Episodes yet
@@ -110,23 +90,13 @@ export default function MyEpisodes() {
           {/* Render the list of selected episodes */}
           <VStack spacing={6} w={{ base: "auto", md: "lg" }}>
             {rangeEpisodes.map((episode, index) => (
-              <EpisodeCard
-                episode={episode}
-                inPlaylist={false}
-                playlistId={null}
-              />
+              <EpisodeCard episode={episode} inPlaylist={false} playlistId={null} />
             ))}
           </VStack>
           {rangeEpisodes.length < allEpisodes.length && (
             <Flex justify="center" mt={4}>
               <Tooltip label="Load More" placement="top">
-                <IconButton
-                  aria-label="Load More"
-                  icon={<ChevronDownIcon />}
-                  onClick={handleLoadMoreClick}
-                  size="lg"
-                  variant="outline"
-                />
+                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
               </Tooltip>
             </Flex>
           )}

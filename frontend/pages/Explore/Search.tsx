@@ -6,7 +6,6 @@ import {
   Flex,
   Text,
   VStack,
-  useColorMode,
   useBreakpointValue,
   Spinner,
 } from "@chakra-ui/react";
@@ -21,7 +20,7 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../../components/cards/PodcastCard";
 import ForYou from "../../components/home/ForYou";
 import UserCard from "../../components/cards/UserCard";
-import PlayerBar from "../../components/shared/PlayerBar";
+
 
 export default function MyPodcast() {
   const router = useRouter();
@@ -65,24 +64,21 @@ export default function MyPodcast() {
 
   return (
     <>
-      <Navbar />
       <Box
         display="grid"
         gridTemplateColumns="1fr 1fr"
         gridTemplateRows="auto"
         px={["1em", "2em", "4em"]}
-        height="calc(100vh - 60px - 80px)"
       >
         {loading ? null : (
           <Box
-            bgGradient="linear(to-r, #ad602d, transparent)"
             gridColumn="span 2"
             borderRadius="0.5em"
-            boxShadow="lg"
             p="8px"
+            mb={5}
           >
             {!loading && (
-              <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
+              <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold">
                 Searching for: "{searchTerm}"
               </Text>
             )}

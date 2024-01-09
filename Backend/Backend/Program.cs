@@ -37,6 +37,9 @@ public class Program
 
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
+        builder.Services.AddScoped<IAnnotationService, AnnotationService>();
+
+
 
         builder.Services.AddScoped<ValidateUser>();
         builder.Services.AddScoped<BookmarkService>();

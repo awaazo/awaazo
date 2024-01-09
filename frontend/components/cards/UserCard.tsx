@@ -1,10 +1,10 @@
 import { Box, Image, Flex, useColorModeValue, Text } from "@chakra-ui/react";
-import NextLink from "next/link";
+import Link from "next/link";
 
 // Define the UserCard component
 const UserCard = ({ user }) => {
   return (
-    <NextLink href={`/profile/${user.id}`} passHref>
+    <Link href={`/profile/${user.id}`} passHref>
       <Flex
         className="hoverEffect"
         flexDirection="column"
@@ -38,7 +38,7 @@ const UserCard = ({ user }) => {
           <Text>@{user.username}</Text>
         </Box>
       </Flex>
-    </NextLink>
+    </Link>
   );
 };
 

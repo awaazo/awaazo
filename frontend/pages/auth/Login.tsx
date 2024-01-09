@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import { Box, Button, Input, Stack, Text, Flex, ButtonGroup, Img, InputGroup, InputRightElement, FormControl, IconButton } from "@chakra-ui/react";
+import { Box, Button, Input, Stack, Text, Flex, ButtonGroup, Img, InputGroup, InputRightElement, FormControl, IconButton, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import AuthHelper from "../../helpers/AuthHelper";
 import { LoginRequest } from "../../utilities/Requests";
@@ -66,7 +66,15 @@ const Login: React.FC = () => {
           Rediscover Awaazo: Your gateway to an extraordinary, AI-enhanced podcast universe!
         </Text>
 
-        {loginError && <Text color="red.500">{loginError}</Text>}
+        {loginError && (
+          <Alert status="error" borderRadius="xl" mb={4} p={2}>
+            <Box flex="1">
+              <AlertDescription display="block" fontSize="sm">
+                {loginError}
+              </AlertDescription>
+            </Box>
+          </Alert>
+        )}
 
         <form onSubmit={handleLogin}>
           <Stack spacing={4}>

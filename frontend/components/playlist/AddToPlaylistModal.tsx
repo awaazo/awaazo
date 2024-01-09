@@ -1,20 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  VStack,
-  FormControl,
-  Input,
-  Button,
-  Text,
-  Select,
-  Box,
-} from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, VStack, Button, Text, Select } from "@chakra-ui/react";
 import NexLink from "next/link";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../utilities/Interfaces";
@@ -39,9 +24,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
     });
   }, [page]);
 
-  const userPlaylists = playlists.filter(
-    (playlist) => playlist.isHandledByUser,
-  );
+  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
 
   const handleAddToExistingPlaylist = async () => {
     // Ensure all required fields are filled
@@ -53,10 +36,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
     const request = [episode.id];
 
     // Send the request
-    const response = await PlaylistHelper.playlistAddEpisodeRequest(
-      request,
-      targetPlaylistId,
-    );
+    const response = await PlaylistHelper.playlistAddEpisodeRequest(request, targetPlaylistId);
 
     if (response.status === 200) {
       onClose();
@@ -81,10 +61,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
             <Text>OR</Text>
             {playlistError && <Text color="red.500">{playlistError}</Text>}
             {/* Dropdown to select an existing playlist */}
-            <Select
-              placeholder="Select an Existing Playlist"
-              onChange={(e) => setTargetPlaylistId(e.target.value)}
-            >
+            <Select placeholder="Select an Existing Playlist" onChange={(e) => setTargetPlaylistId(e.target.value)}>
               {userPlaylists.map((playlist) => (
                 <option key={playlist.id} value={playlist.id}>
                   {playlist.name}
@@ -98,11 +75,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
           <Button colorScheme="red" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => handleAddToExistingPlaylist()}
-          >
+          <Button colorScheme="blue" mr={3} onClick={() => handleAddToExistingPlaylist()}>
             Add to Playlist
           </Button>
         </ModalFooter>
