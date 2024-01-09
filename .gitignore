@@ -298,6 +298,7 @@ backend/.env
 docker-compose.release.yml
 Backend/Backend/Logs
 python/*ServerFiles
+python/.venv
 python/env/**
 python/rvc_service/logs/**
 python/rvc_service/env

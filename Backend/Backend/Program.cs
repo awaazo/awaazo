@@ -45,7 +45,7 @@ public class Program
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
-
+        builder.Services.AddScoped<EmailService>(serviceProvider => new EmailService(builder.Configuration));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
