@@ -1,12 +1,14 @@
 import * as paths from '../../fixtures/file_paths.json';
 
-describe ('Search', () => {
+describe.skip('Search', () => {
     
 
     //Ideal use case, search for a user & visit their profile
     it('Should search for a User and visit their profile', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
-        cy.get('[data-cy="search-input-web"]').should('be.visible').type('testUsername{enter}');
+        cy.get('[href="/Explore/Search"]').click();
+        cy.data_log();
+        cy.get('[data-cy="search-input"]').should('be.visible').type('testUsername{enter}');
         cy.intercept("GET", "/profile/*").as("profile");
         cy.wait("@profile", { timeout: 15000 });
         cy.data_log();

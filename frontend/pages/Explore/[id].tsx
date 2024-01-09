@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PodcastOverview from "../../components/explore/PodcastOverview";
-import Navbar from "../../components/shared/Navbar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import type { Podcast, UserMenuInfo } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
 
 
 export default function Podcast() {
-
   const router = useRouter();
   const path = router.asPath;
   const podcastId = path.split("/").pop();
@@ -27,10 +25,8 @@ export default function Podcast() {
   const [getError, setGetError] = useState("");
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
 
-
   return (
     <>
-      <Navbar />
       {podcast  && <PodcastOverview podcast={podcast}  User={user}/>}
     </>
   );

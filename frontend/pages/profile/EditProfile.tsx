@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { useState, FormEvent, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-import Navbar from "../../components/shared/Navbar";
 import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserProfile } from "../../utilities/Interfaces";
@@ -186,8 +185,6 @@ const EditProfile: React.FC = () => {
 
   const editPage = () => (
     <>
-      <Navbar />
-
       <Box
         p={6}
         display="flex"
