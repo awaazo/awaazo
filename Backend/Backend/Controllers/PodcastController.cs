@@ -550,7 +550,7 @@ public class PodcastController : ControllerBase
     [HttpGet("{episodeId}/getTranscript")]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
     {
-        _logger.LogDebug(@"Using the podcast\episodeId\getTranscript Endpoint");
+        this.LogDebugControllerAPICall(_logger);
 
         try
         {
