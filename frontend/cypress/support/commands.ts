@@ -74,7 +74,9 @@ Cypress.Commands.add('logout', () => {
   -=-=-=-=Registration Commands
 */
 Cypress.Commands.add('register_user', (email, username, password, confirmPassword, birthdate) => {
-  cy.get('[data-cy="navbar-hamburger"]').scrollIntoView().should('be.visible').click({ timeout: 5000 });
+  cy.get('[data-cy="navbar-hamburger"]').scrollIntoView().should('be.visible');
+  cy.wait(250); // Wait for 1 second
+  cy.get('[data-cy="navbar-hamburger"]').click({ timeout: 5000 });
   cy.get('button').contains('Sign up').should('be.visible').click({timeout: 5000});
   cy.get('input[id="email"]').type(email);
   cy.get('input[id="username"]').type(username);
@@ -180,6 +182,7 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
   cy.get('input[type="file"]').attachFile(fjlepath);
   cy.wait(500);
   cy.get('button').contains('Done').scrollIntoView().click({ timeout: 5000 });
+  cy.wait(500);
   if(name){
     cy.get('input[placeholder="Enter episode name..."]', { timeout: 10000 }).type(name);
   }
@@ -190,7 +193,7 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
     cy.get('input[type="file"]').attachFile(sound_file);
   });
   if(podcast === "f2"){
-    cy.get('[data-cy=podcast-image-f2-legends').click();
+    cy.get('[data-cy=podcast-image-f2-legends').first().click();
   }
   if(podcast === "pets"){
     cy.get('[data-cy=podcast-image-cool-pets').click();

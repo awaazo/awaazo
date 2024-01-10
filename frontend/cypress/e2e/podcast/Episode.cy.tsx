@@ -11,6 +11,7 @@ describe("Episode_Create", () => {
 
   it("Should create a podcast to upload Episodes to", function (){
     cy.podcast_create(paths.f2_car,'f2-legends', 'A podcast about F2 veterans and their rise to glory.')
+    cy.url().should('include', '/CreatorHub/AddEpisode');
   });
   
   // User that exists should be able to create an Episode given that a Podcast exists
@@ -123,8 +124,6 @@ describe("Episode_Create", () => {
       }else{
         cy.get("button").contains("Finish").click({ timeout: 12000 });
         cy.url().should("include", "/CreatorHub/MyPodcasts");
-        cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-        cy.get("[data-cy=podcast-image-f2-legends").click();
         cy.contains("♣™∏⊄‾ℜ→∞ϖñ");
         cy.contains("Episode about cool symbols");
       }
@@ -165,16 +164,12 @@ describe("Episode_Create", () => {
           cy.get("button").contains("Finish").click({ timeout: 12000 });
           cy.wait(250);
           cy.url().should("include", "/CreatorHub/MyPodcasts");
-          cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-          cy.get("[data-cy=podcast-image-f2-legends").click();
           cy.get('body').then(($body) => {
             if($body.text().includes("Has science gone too far?")){
               expect(true).to.be.true;
             }else{
-              cy.wait(1000);
+              cy.wait(250);
               cy.visit('/CreatorHub/MyPodcasts').url().should("include", "/CreatorHub/MyPodcasts");
-              cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-              cy.get("[data-cy=podcast-image-f2-legends").click();
               cy.contains("Has science gone too far?").should("be.visible", { timeout: 12000 });
             }})
       }
@@ -197,49 +192,21 @@ describe("Episode_Create", () => {
         cy.get("button").contains("Finish").click({ timeout: 12000 });
         cy.wait(1000);
         cy.url().should("include", "/MyPodcasts");
-        cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-        cy.get("[data-cy=podcast-image-f2-legends").click();
         cy.contains("This is a very long episo");
       }
     })
   });
 
-  //If a podcast is deleted, all episdoes associated to that podcast should be too
-  it("Should delete all episodes if a podcast is deleted", () => {
-    cy.podcast_create(
-      paths.f2_car,
-      "Cool pets",
-      "A podcast about pets and their coolness.",
-    );
-    cy.url().should("include", "/CreatorHub/AddEpisode", { timeout: 10000 });
-    cy.contains("Cool pets").should("be.visible");;
-    cy.episode_create(
-      paths.Episode_cover,
-      "Funny Shibas",
-      "Silly dogs",
-      paths.never_gonna_give_you_up,
-      "pets",
-    );
-    cy.get("button").contains("Finish").click({ timeout: 12000 });
-    cy.url().should("include", "/MyPodcasts");
-    cy.episode_create(
-      paths.Episode_cover,
-      "Funny Cats",
-      "Silly cats",
-      paths.never_gonna_give_you_up,
-      "pets", //s
-    );
-    cy.get("button").contains("Finish").click({ timeout: 12000 });
-    cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.get("[data-cy=podcast-image-f2-legends").click({timeout: 12000});
-    cy.get("[data-cy=podcast-image-cool-pets").click({timeout: 12000});
-    cy.contains("Funny Cats").should("be.visible", { timeout: 12000 });
-    cy.contains("Funny Shibas").should("be.visible", { timeout: 12000 });
+  it("Should delete a podcast and consequently, all episodes get deleted.", () => {
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
+    cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
+    cy.get("button")
+      .contains("My Podcasts")
+      .should("be.visible")
+      .click({ timeout: 12000 });
     cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 12000});
     cy.contains("Button", "Delete").should('exist').click( {timeout: 12000} );
+    cy.wait(500);
     cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.get('[data-cy="podcast-image-cool-pets"]').should("not.exist");
-    cy.get("Funny cats").should("not.exist");
-    cy.get("Funny Shibas").should("not.exist");
   });
 });

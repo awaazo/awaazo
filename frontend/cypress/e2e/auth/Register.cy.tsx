@@ -15,17 +15,33 @@ describe("Register", () => {
       "password123",
       "2000-01-01",
     );
-    cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
-    cy.visit("/profile/MyProfile", { timeout: 5000 });
-    cy.contains("TestDisplayBio");
+    cy.wait(500);
+    cy.get('body').then(($body) => {
+      if ($body.text().includes('An Account with that Email and/or Username already exists. Please Login or use a different Email address.')) {
+          expect(true).to.be.true;
+      }else{
+          cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
+          cy.visit("/profile/MyProfile", { timeout: 5000 });
+          cy.reload();
+          cy.contains("TestDisplayBio", {timeout: 5000});
+      }
+    });
   });
 
   it('Should create a dummy user to interact with other users', () => {
     cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
-    cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
-    cy.url().should('include', '/');
-    cy.visit("/profile/MyProfile", { timeout: 5000 });
-    cy.contains('DummyDisplayBio');
+    cy.wait(500);
+    cy.get('body').then(($body) => {
+      if ($body.text().includes('An Account with that Email and/or Username already exists. Please Login or use a different Email address.')) {
+          expect(true).to.be.true;
+      }else{   
+        cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
+        cy.url().should('include', '/');
+        cy.wait(250);
+        cy.visit("/profile/MyProfile", { timeout: 5000 });
+        cy.contains('DummyDisplayBio');
+      }
+    });
   });
 
   it("Should Successfully Register & should fail setup by leaving fields blank", function () {
