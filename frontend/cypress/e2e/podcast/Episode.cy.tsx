@@ -9,6 +9,10 @@ describe("Episode_Create", () => {
     });
   });
 
+  it("Should create a podcast to upload Episodes to", function (){
+    cy.podcast_create(paths.f2_car,'f2-legends', 'A podcast about F2 veterans and their rise to glory.')
+  });
+  
   // User that exists should be able to create an Episode given that a Podcast exists
   it("Should Successfully create a new Episode", function () {
     cy.episode_create(
@@ -25,9 +29,6 @@ describe("Episode_Create", () => {
       }else{
           cy.get("button").contains("Finish").click({ timeout: 12000 });
           cy.url().should("include", "/CreatorHub/MyPodcasts");
-          cy.reload();
-          cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-          cy.get("[data-cy=podcast-image-f2-legends").click();
           cy.contains("Charles Leclerc");
           cy.contains("From his rise in f2 to his demise at Ferrari");
       }
@@ -51,15 +52,10 @@ describe("Episode_Create", () => {
 
   // User should be able to edit a episode name and have it reflected immediately
   it("Should successfully edit an episode", function () {
-    cy.wait(500);
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 12000 });
     cy.get("button").contains("My Podcasts").click({ timeout: 12000 });
     cy.url().should("include", "/MyPodcasts");
-    cy.wait(250);
-    cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-    cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=edit-button]").first().click();
-    cy.wait(250);
     cy.get('input[placeholder="Enter episode name..."]')
       .clear()
       .type("{selectall}{backspace}");
@@ -68,9 +64,6 @@ describe("Episode_Create", () => {
     );
     cy.contains("Button", "Update").click();
     cy.url().should("include", "/MyPodcasts");
-    cy.wait(250);
-    cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-    cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.contains("Romain Grosjean");
   });
 
@@ -109,9 +102,6 @@ describe("Episode_Create", () => {
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
-    cy.wait(250);
-    cy.get("[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa").click();
-    cy.get("[data-cy=podcast-image-f2-legends").click();
     cy.get("[data-cy=delete-button]").first().click();
     cy.contains("Button", "Delete").click({ timeout: 12000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
@@ -187,8 +177,6 @@ describe("Episode_Create", () => {
               cy.get("[data-cy=podcast-image-f2-legends").click();
               cy.contains("Has science gone too far?").should("be.visible", { timeout: 12000 });
             }})
-          // cy.contains("Has science gone too far?").should("be.visible", { timeout: 12000 });
-          // cy.contains("Is AI the future?!").should("be.visible", { timeout: 12000 });
       }
     });
   });

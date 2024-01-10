@@ -3,8 +3,7 @@ import * as paths from "../../fixtures/file_paths.json";
 describe("Register", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.url().should("include", "/");
-    cy.wait(250);
+    cy.url().should("include", "/", { timeout: 5000 }); 
   });
 
   // Test successful registration from the main page
@@ -17,7 +16,6 @@ describe("Register", () => {
       "2000-01-01",
     );
     cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
-    cy.url().should("include", "/");
     cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains("TestDisplayBio");
   });
@@ -26,7 +24,6 @@ describe("Register", () => {
     cy.register_user('dummyRegister@email.com', 'DummyUsername', 'password123', 'password123', '2000-01-01');
     cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
     cy.url().should('include', '/');
-    cy.wait(250);
     cy.visit("/profile/MyProfile", { timeout: 5000 });
     cy.contains('DummyDisplayBio');
   });
