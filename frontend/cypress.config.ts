@@ -16,10 +16,10 @@ export default defineConfig({
       "cypress/e2e/**/PlayerBar.cy.tsx",
       //"cypress/e2e/**/Review.cy.tsx",
       "cypress/e2e/**/Search.cy.tsx",
-      // "cypress/e2e/**/Like.cy.tsx",
-      // "cypress/e2e/**/Comment.cy.tsx",
-      // "cypress/e2e/**/Section.cy.tsx",
-      // "cypress/e2e/**/Notification.cy.tsx",
+      "cypress/e2e/**/Like.cy.tsx",
+      "cypress/e2e/**/Comment.cy.tsx",
+      "cypress/e2e/**/Section.cy.tsx",
+      "cypress/e2e/**/Notification.cy.tsx",
       // "cypress/e2e/**/Playlists.cy.tsx"
     ],
     setupNodeEvents(on, config) {

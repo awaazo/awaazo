@@ -10,7 +10,7 @@ describe("Episode_Create", () => {
   });
 
   it("Should create a podcast to upload Episodes to", function (){
-    cy.podcast_create(paths.f2_car,'f2-legends', 'A podcast about F2 veterans and their rise to glory.')
+    cy.podcast_create(paths.f2_car,'F2 Legends', 'A podcast about F2 veterans and their rise to glory.')
     cy.url().should('include', '/CreatorHub/AddEpisode');
   });
   
@@ -153,7 +153,7 @@ describe("Episode_Create", () => {
       .within(() => {
         cy.get('input[type="file"]').attachFile(paths.never_gonna_give_you_up);
       });
-    cy.get("[data-cy=podcast-image-f2-legends").click();
+    cy.get('[data-cy="podcast-image-f2-legends"]').click();
     cy.get('button[id=createBtn]').click({ timeout: 10000 });
     cy.intercept('GET', '/CreatorHub/MyPodcasts').as('podcasts');
     cy.wait(250);
