@@ -160,16 +160,7 @@ describe("PlayerBar", () => {
     });
     
     it('Should delete a podcast to revert to a clean state', () => {
-        cy.login(null, "testRegister@email.com", "password123");
-        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
-        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
-        cy.get("button")
-        .contains("My Podcasts")
-        .should("be.visible")
-        .click({ timeout: 12000 });
-        cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 12000});
-        cy.contains("Button", "Delete").should('exist').click( {timeout: 12000} );
-        cy.url().should("include", "/CreatorHub/MyPodcasts");
+        cy.cleanup();
     });
 });
 

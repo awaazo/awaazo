@@ -21,8 +21,9 @@ describe("Register", () => {
           expect(true).to.be.true;
       }else{
           cy.setup_user(paths.profile_picture, "TestDisplayName", "TestDisplayBio");
+          cy.url().should('include', '/');
+          cy.wait(250);
           cy.visit("/profile/MyProfile", { timeout: 5000 });
-          cy.reload();
           cy.contains("TestDisplayBio", {timeout: 5000});
       }
     });

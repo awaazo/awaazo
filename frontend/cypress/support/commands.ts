@@ -204,7 +204,7 @@ Cypress.Commands.add('episode_create', (fjlepath, name, description, sound_file,
 
 
 Cypress.Commands.add('review_create', (review, stars) => {
-  cy.get('[data-cy="podcast-name:F2 legends"]').scrollIntoView().click({force: true});
+  cy.get('[data-cy="podcast-name:F2 Legends"]').scrollIntoView().click({force: true});
   cy.get('button').contains('Add Your Review').click();
   if(review){
     cy.get('textarea[placeholder="Write your review here..."]').type(review);
@@ -214,6 +214,19 @@ Cypress.Commands.add('review_create', (review, stars) => {
   }
   cy.contains('Submit Review').click()
 })
+
+Cypress.Commands.add('cleanup', () => {
+  cy.login(null, "testRegister@email.com", "password123");
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
+  cy.get("button")
+    .contains("My Podcasts")
+    .should("be.visible")
+    .click({ timeout: 12000 });
+  cy.get('[data-cy="podcast-delete"]').should('exist').click({ timeout: 12000 });
+  cy.contains("Button", "Delete").should('exist').click({ timeout: 12000 });
+  cy.url().should("include", "/CreatorHub/MyPodcasts");
+});
 
 
 Cypress.Commands.add('console_error_hack', () => {

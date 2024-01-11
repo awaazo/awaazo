@@ -23,7 +23,7 @@ describe("Episode_Create", () => {
       paths.never_gonna_give_you_up,
       "f2",
     );
-    
+    cy.wait(500);
     cy.get('body').then(($body) => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;
@@ -206,7 +206,6 @@ describe("Episode_Create", () => {
       .click({ timeout: 12000 });
     cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 12000});
     cy.contains("Button", "Delete").should('exist').click( {timeout: 12000} );
-    cy.wait(500);
     cy.url().should("include", "/CreatorHub/MyPodcasts");
   });
 });
