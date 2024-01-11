@@ -1,93 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Collapse, Image, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Link, Image, AspectRatio, Text } from '@chakra-ui/react';
 import { usePlayer } from '../../utilities/PlayerContext';
-import { FaPlay } from 'react-icons/fa';
 
-// Update the CueInfo type to include the new fields
-type CueInfo = {
+interface Annotation {
+  id: string;
   timestamp: number;
   content: string;
-  type: 'Info' | 'Media Link' | 'Sponsorship';
+  type: 'Media Link' | 'Info' | 'Sponsership' | 'media-link';
+  sponsorship?: {
+    name: string;
+    website: string;
+  };
   mediaLink?: {
     url: string;
     platform: string;
   };
-  sponsor?: {
-    name: string;
-    website: string;
-  };
-};
+}
 
-type PodCueProps = {
-  cues: CueInfo[];
-};
+interface PodCueProps {
+  cues: Annotation[];
+}
 
 const PodCue: React.FC<PodCueProps> = ({ cues }) => {
+  // console.log("Check Cues",cues);
   const { state: { episode }, audioRef } = usePlayer();
-  const [activeCue, setActiveCue] = useState<CueInfo | null>(null);
-  const { isOpen, onToggle } = useDisclosure();
+  const [currentAnnotation, setCurrentAnnotation] = useState<Annotation | null>(null);
 
   useEffect(() => {
-    const checkForActiveCue = () => {
-      const currentTime = audioRef.current?.currentTime || 0;
-      const active = cues.find(cue => currentTime >= cue.timestamp);
-      setActiveCue(active || null);
+    const checkAnnotations = () => {
+      const currentTime = audioRef.current?.currentTime ?? 0;
+      // console.log('Current Time:', currentTime);
+      const annotationToShow = cues.find(ann => currentTime >= ann.timestamp && currentTime < ann.timestamp + 10);
+      // console.log('Cue to Show:', annotationToShow); 
+      setCurrentAnnotation(annotationToShow);
     };
 
-    const interval = setInterval(checkForActiveCue, 1000);
-    return () => clearInterval(interval);
+    // Set up interval to check for annotations every second
+    const intervalId = setInterval(checkAnnotations, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [cues, audioRef]);
 
-  useEffect(() => {
-    if (activeCue && !isOpen) {
-      onToggle();
-    } else if (!activeCue && isOpen) {
-      onToggle();
-    }
-  }, [activeCue, isOpen, onToggle]);
-
-  const renderCueContent = (cue: CueInfo) => {
-    switch (cue.type) {
-      case 'Info':
-        return (
-          <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
-            <Text fontSize="sm">{cue.content}</Text>
-          </Box>
-        );
+  const renderAnnotationContent = (annotation: Annotation) => {
+    switch (annotation.type) {
       case 'Media Link':
-        return (
-          <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
-            {cue.mediaLink?.url && (
-              <>
-                <Image src={cue.mediaLink.url} alt="Media thumbnail" />
-                <Text fontSize="sm">{cue.content}</Text>
-                <Button as="a" href={cue.mediaLink.url} leftIcon={<FaPlay />} variant="solid">
-                  Watch
-                </Button>
-              </>
-            )}
-          </Box>
-        );
-      case 'Sponsorship':
-        return (
-          <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
-            <Text fontSize="sm">{cue.content}</Text>
-            {cue.sponsor?.website && (
-              <Button as="a" href={cue.sponsor.website} variant="outline" colorScheme="teal">
-                Visit Sponsor
-              </Button>
-            )}
-          </Box>
-        );
+        return <Link href={annotation.sponsorship?.website} isExternal>{annotation.content}</Link>;
+      case 'Info':
+        return <Text>{annotation.content}</Text>;
+      case 'Sponsership':
+        return annotation.sponsorship ? (
+          <Link href={annotation.sponsorship.website} isExternal>
+            <Image src={annotation.content} alt={annotation.sponsorship.name} />
+          </Link>
+        ) : null;
+      case 'Media Link':
+        return annotation.mediaLink ? (
+          <AspectRatio ratio={16 / 9}>
+            <iframe
+              title='Media Content'
+              src={annotation.mediaLink.url}
+              allowFullScreen
+            />
+          </AspectRatio>
+        ) : null;
       default:
         return null;
     }
   };
 
+  if (!currentAnnotation) return null;
+
   return (
-    <Collapse in={isOpen} animateOpacity>
-      {activeCue && renderCueContent(activeCue)}
-    </Collapse>
+    <Box position='absolute' bottom='0' left='0' right='0' p='4' bg='gray.900' color='white'>
+      {renderAnnotationContent(currentAnnotation)}
+    </Box>
   );
 };
 

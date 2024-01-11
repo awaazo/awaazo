@@ -72,7 +72,6 @@ const NowPlaying = () => {
 
   
   useEffect(() => {
-    console.log("EpisodeId:", EpisodeId);
     if (EpisodeId) {
       PodcastHelper.getEpisodeById(EpisodeId)
       .then((response) => {
@@ -87,7 +86,6 @@ const NowPlaying = () => {
     fetchAnnotations();
   }, [EpisodeId]);
   
- 
 
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
     
@@ -130,14 +128,14 @@ const NowPlaying = () => {
           inSlider: true,
         },
         {
-          component: <PodCue cues={[]} />,
-          inSlider: false, // Adjust based on your design
+          component: <PodCue cues={annotations} />, 
+          inSlider: false, 
         },
 
         // DO NOT REMOVE
       ]);
     }
-  }, [episode]);
+  }, [episode, annotations]);
 
   // const palette = usePalette(episode.thumbnailUrl, 2, "hex", {
   //   crossOrigin: "Anonymous",
@@ -239,6 +237,7 @@ const NowPlaying = () => {
               episodeId={EpisodeId}
               fetchAnnotations={fetchAnnotations}
               />
+              
               </TabPanel> 
             </TabPanels>
           </Tabs>
