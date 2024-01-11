@@ -3,14 +3,19 @@ import { Box, Button, Collapse, Image, Text, useDisclosure } from '@chakra-ui/re
 import { usePlayer } from '../../utilities/PlayerContext';
 import { FaPlay } from 'react-icons/fa';
 
-// Update the CueInfo type to include the 'content' property
+// Update the CueInfo type to include the new fields
 type CueInfo = {
   timestamp: number;
-  content: string; // Add content property
-  type: 'general' | 'mediaLink' | 'sponsor';
-  referenceUrl?: string;
-  imageUrl?: string;
-  videoUrl?: string;
+  content: string;
+  type: 'Info' | 'Media Link' | 'Sponsorship';
+  mediaLink?: {
+    url: string;
+    platform: string;
+  };
+  sponsor?: {
+    name: string;
+    website: string;
+  };
 };
 
 type PodCueProps = {
@@ -43,29 +48,35 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
 
   const renderCueContent = (cue: CueInfo) => {
     switch (cue.type) {
-      case 'general':
+      case 'Info':
         return (
           <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
             <Text fontSize="sm">{cue.content}</Text>
           </Box>
         );
-      case 'mediaLink':
+      case 'Media Link':
         return (
           <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
-            <Image src={cue.imageUrl} alt="Media thumbnail" />
-            <Text fontSize="sm">{cue.content}</Text>
-            <Button as="a" href={cue.videoUrl} leftIcon={<FaPlay />} variant="solid">
-              Watch
-            </Button>
+            {cue.mediaLink?.url && (
+              <>
+                <Image src={cue.mediaLink.url} alt="Media thumbnail" />
+                <Text fontSize="sm">{cue.content}</Text>
+                <Button as="a" href={cue.mediaLink.url} leftIcon={<FaPlay />} variant="solid">
+                  Watch
+                </Button>
+              </>
+            )}
           </Box>
         );
-      case 'sponsor':
+      case 'Sponsorship':
         return (
           <Box p={4} bg="gray.700" color="white" rounded="md" shadow="md">
             <Text fontSize="sm">{cue.content}</Text>
-            <Button as="a" href={cue.referenceUrl} variant="outline" colorScheme="teal">
-              Visit Sponsor
-            </Button>
+            {cue.sponsor?.website && (
+              <Button as="a" href={cue.sponsor.website} variant="outline" colorScheme="teal">
+                Visit Sponsor
+              </Button>
+            )}
           </Box>
         );
       default:

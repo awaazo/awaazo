@@ -601,7 +601,7 @@ export default class EndpointHelper {
    * @returns The Episode Annotations Endpoint
    * */
   static addAnnotationsEndpoint = (episodeId) => {
-    return this.getBackendAddress() + "/annotation/" +   + "/createAnnotation";
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createAnnotation";
   };
 
   static addMediaAnnotationsEndpoint = (episodeId) => {
@@ -609,7 +609,7 @@ export default class EndpointHelper {
   };
 
   static addSponsorAnnotationsEndpoint = (episodeId) => {
-    return this.getBackendAddress() + "/annotation/" + episodeId + "/createSponsorAnnotation";
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createSponserAnnotation";
   };
 
   static getAnnotationsEndpoint = (episodeId) => {

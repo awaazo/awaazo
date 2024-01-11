@@ -11,8 +11,7 @@ export default class AnnotationHelper {
     public static annotationCreateRequest = async (
         requestData: AnnotationAddRequest,
         episodeId,
-    ): Promise<AddAnnotationResponse> => {
-        // Create the request options.
+    ): Promise<BaseResponse> => {
         const options = {
             method: "POST",
             headers: {
@@ -24,33 +23,39 @@ export default class AnnotationHelper {
             withCredentials: true,
             cache: false,
         };
-
+    
         try {
-            console.debug("Sending the following annotationCreateRequest...");
-            console.debug(options);
-
-            console.log(options);
-            // Send the request and wait for the response.
+            console.debug("Sending annotationCreateRequest with the following data:");
+            console.debug("URL:", options.url);
+            console.debug("Data:", options.data);
+    
             const requestResponse = await Axios(options);
-
-            console.debug("Received the following annotationCreateResponse...");
+    
+            console.debug("Received the following annotationCreateResponse:");
             console.debug(requestResponse);
-
-            // Return the response.
+    
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
-                data: requestResponse.data,
             };
         } catch (error) {
-            // Return the error.
+            console.error("Error in annotationCreateRequest:");
+            console.error("Request URL:", options.url);
+            console.error("Request Data:", options.data);
+            if (error.response) {
+                console.error("Error Status:", error.response.status);
+                console.error("Error Response:", error.response.data);
+            } else {
+                console.error("Error Details:", error);
+            }
+    
             return {
-                status: error.response.status,
-                message: error.response.statusText,
-                data: error.response.data,
+                status: error.response ? error.response.status : 500,
+                message: error.response ? error.response.statusText : "Unknown Error",
             };
         }
     };
+    
 
     public static mediaLinkAnnotationCreateRequest = async (
         requestData: AnnotationAddRequest,
@@ -108,7 +113,7 @@ export default class AnnotationHelper {
                 "Content-Type": "application/json",
             },
             data: requestData,
-            url: EndpointHelper.addSponsorAnnotationsEndpoint(episodeId),
+            url: `http://localhost:32773/annotation/${episodeId}/createSponserAnnotation`,
             withCredentials: true,
             cache: false,
         };

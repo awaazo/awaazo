@@ -1,13 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  useDisclosure,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
+import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody,
   Tabs,
   TabList,
   TabPanels,
@@ -35,6 +27,7 @@ import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
+import { Annotation } from "../../utilities/Interfaces";
 
 const NowPlaying = () => {
   const router = useRouter();
@@ -45,17 +38,10 @@ const NowPlaying = () => {
   const [selectedComponent, setSelectedComponent] = useState<number | null>(
     null,
   );
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [annotations, setAnnotations] = useState([]);
   const [tabIndex, setTabIndex] = useState(0);
 
-
-    // Function to open drawer to the list of annotations
-    const handleOpenList = () => {
-      setTabIndex(0);
-      onOpen();
-    };
   
     // Function to open drawer to the add/edit form
     const handleOpenForm = (index = null) => {
@@ -86,6 +72,7 @@ const NowPlaying = () => {
 
   
   useEffect(() => {
+    console.log("EpisodeId:", EpisodeId);
     if (EpisodeId) {
       PodcastHelper.getEpisodeById(EpisodeId)
       .then((response) => {
@@ -100,39 +87,10 @@ const NowPlaying = () => {
     fetchAnnotations();
   }, [EpisodeId]);
   
-  let dynamicType = "sponsorship"; // Imagine this is set dynamically somehow
  
 
-  
-  
-  const [annotations, setAnnotations] = useState();
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
-  
-
-
-
-  const handleSaveAnnotation = async (annotationData) => {
-    // Determine which helper method to use based on the annotation type
-    try {
-      let response;
-      if (annotationData.type === 'mediaLink') {
-        response = await AnnotationHelper.mediaLinkAnnotationCreateRequest(annotationData, EpisodeId);
-      } else if (annotationData.type === 'sponsor') {
-        response = await AnnotationHelper.sponsorAnnotationCreateRequest(annotationData, EpisodeId);
-      } else {
-        response = await AnnotationHelper.annotationCreateRequest(annotationData, EpisodeId);
-      }
-
-      if (response.status === 200) {
-        fetchAnnotations(); // Refresh the annotations list
-        onClose(); // Close the form
-      } else {
-        console.error('Failed to save annotation:', response.message);
-      }
-    } catch (error) {
-      console.error('Error saving annotation:', error);
-    }
-  };
+    
 
   const handleDeleteAnnotation = async (annotationId) => {
     try {
@@ -147,6 +105,7 @@ const NowPlaying = () => {
     } catch (error) {
       console.error('Error deleting annotation:', error);
     }
+    setAnnotations(prevAnnotations => prevAnnotations.filter(ann => ann.id !== annotationId));
   };
 
 
@@ -190,14 +149,8 @@ const NowPlaying = () => {
   };
 
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const sliderComponents = components.filter((comp) => comp.inSlider);
-  const [isAnnotationListOpen, setIsAnnotationListOpen] = useState(false);
 
 
-
-  function handleToggleList(): void {
-    setIsAnnotationListOpen(!isAnnotationListOpen);
-  }
 
   return (
     <Box
@@ -252,47 +205,45 @@ const NowPlaying = () => {
         </Box>
       )}
       
-      <IconButton
-        icon={<FaList />}
-        isRound
-        size="lg"
-        colorScheme="teal"
-        position="fixed"
-        bottom="160px"
-        right="25px"
-        zIndex="overlay"
-        onClick={handleOpenList}
-        aria-label="List annotations"
-      />
+    <IconButton
+      icon={<FaPlus />}
+      isRound
+      size="lg"
+      colorScheme="teal"
+      position="fixed"
+      bottom="100px"
+      right="25px"
+      zIndex="overlay"
+      onClick={() => handleOpenForm()}
+      aria-label="Add annotation"
+    />
 
-      <IconButton
-        icon={<FaPlus />}
-        isRound
-        size="lg"
-        colorScheme="teal"
-        position="fixed"
-        bottom="100px"
-        right="25px"
-        zIndex="overlay"
-        onClick={() => handleOpenForm()}
-        aria-label="Add annotation"
-      />
-
-      {/* Unified Drawer for Annotations */}
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
-      {/* Drawer contents */}
-      <DrawerBody>
-        <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
-          <TabPanels>
-            <TabPanel>
-              <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
-            </TabPanel>
-            <TabPanel>
-              <AnnotationForm annotation={selectedAnnotation} saveAnnotation={handleSaveAnnotation} episodeId={EpisodeId} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </DrawerBody>
+    {/* Unified Drawer for Annotations */}
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerHeader>Manage Annotations</DrawerHeader>
+        <DrawerCloseButton />
+        <DrawerBody>
+          <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
+            <TabList>
+              <Tab>List</Tab>
+              <Tab>{selectedAnnotation ? 'Edit' : 'Add'} Annotation</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
+              </TabPanel>
+              <TabPanel>
+              <AnnotationForm
+              episodeId={EpisodeId}
+              fetchAnnotations={fetchAnnotations}
+              />
+              </TabPanel> 
+            </TabPanels>
+          </Tabs>
+        </DrawerBody>
+      </DrawerContent>
     </Drawer>
   </Box>
 );

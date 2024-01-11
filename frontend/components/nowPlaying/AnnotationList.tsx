@@ -27,9 +27,9 @@ const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
         <Tbody>
           {annotations.map((annotation, index) => (
             <Tr key={index}>
-              <Td>{annotation.timestamp}</Td>
-              <Td>{annotation.content}</Td>
-              <Td>{annotation.type}</Td>
+              <Td>{annotation?.timestamp}</Td>
+              <Td>{annotation?.content}</Td>
+              <Td>{annotation?.annotationType}</Td>
               <Td>
                 <Tooltip label="Edit Annotation" hasArrow>
                   <IconButton
