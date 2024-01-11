@@ -8,13 +8,17 @@ import Sidebar from "../components/shared/Sidebar";
 import Navbar from "../components/shared/Navbar";
 import AppTheme from "../styles/AppTheme"; 
 import { useRouter } from "next/router";
+import ColorModeFix from '../styles/ColorModeFix';
 
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  ColorModeFix();
   const router = useRouter();
   const [showPlayerBar, setShowPlayerBar] = useState(true);
   const [showNavbar, setShowNavbar] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
+
+
 
   useEffect(() => {
     const path = router.pathname;
