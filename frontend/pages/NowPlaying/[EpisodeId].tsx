@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody,
   Tabs,
   TabList,
@@ -11,6 +12,7 @@ import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, D
 } from "@chakra-ui/react";
 import { FaPlus, FaList } from 'react-icons/fa';
 import Navbar from "../../components/shared/Navbar";
+
 import AwaazoBirdBot from "../../components/nowPlaying/AwaazoBirdBot";
 import Bookmarks from "../../components/nowPlaying/Bookmarks";
 import Transcripts from "../../components/nowPlaying/Transcripts";
@@ -159,7 +161,6 @@ const NowPlaying = () => {
       overflow="hidden"
     >
       {/* //bgColor={palette || null} */}
-      <Navbar />
       {isMobile ? (
         <Slider {...sliderSettings}>
           {components.map((comp, index) => (

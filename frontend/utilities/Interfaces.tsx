@@ -3,7 +3,7 @@ export interface Podcast {
   coverArtUrl: string;
   name: string;
   podcasterId: string;
-  podcaster: string; // redundant, remove later
+  podcaster: string; 
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -17,7 +17,7 @@ export interface Podcast {
 export interface Episode {
   id: string;
   podcastId: string;
-  podcaster: string;
+  podcastName: string;
   thumbnailUrl: string;
   episodeName: string;
   description: string;

@@ -1,32 +1,11 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Tag,
-  useColorModeValue,
-  useColorMode,
-  useBreakpointValue,
-  Text,
-  Image,
-  Icon,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Button,
-  useToast,
-  Select,
-} from "@chakra-ui/react";
-
+import { Box, Flex, IconButton, useBreakpointValue, Text, Image, Icon, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useToast } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
-import {
-  BsExplicitFill,
-  BsFillSkipForwardFill,
-  BsPlayFill,
-} from "react-icons/bs";
+
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/react";
+
+import { BsExplicitFill, BsFillSkipForwardFill, BsPlayFill } from "react-icons/bs";
+
 import { IoIosMore } from "react-icons/io";
 import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
@@ -36,7 +15,10 @@ import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
+
 import ShareComponent from "../social/shareComponent";
+import { convertTime } from "../../utilities/commonUtils";
+
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
@@ -71,15 +53,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
     });
   };
 
-  const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  // Format duration in minutes and seconds
-  const formatDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -113,8 +87,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
   };
 
   // Add to Playlist implementation
-  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
-    useState(false);
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] = useState(false);
 
   // Handlers to open/close the modal:
   const handleAddToPlaylistMenuToggle = () => {
@@ -124,10 +97,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
   // handles Remove from Playlist
   const handleRemovePlaylistMenuToggle = async () => {
     const request = [episode.id];
-    const response = await PlaylistHelper.playlistRemoveEpisodeRequest(
-      request,
-      playlistId,
-    );
+    const response = await PlaylistHelper.playlistRemoveEpisodeRequest(request, playlistId);
     console.log(response);
     if (response.status == 200) {
       window.location.reload();
@@ -138,107 +108,60 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
 
   return (
     <Flex
-      paddingTop={5}
-      paddingBottom={5}
+      paddingTop={3}
+      paddingBottom={3}
       mt={3}
       width="100%"
       borderRadius="15px"
-      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
+      bg={"rgba(0, 0, 0, 0.2)"}
       backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer", transition: "transform 0.3s" }}
       onMouseOver={(e) => {
         // Check if the menu is open before applying the transform
         if (!isMenuOpen) {
-          e.currentTarget.style.transform = "scale(1.05)";
+          e.currentTarget.style.opacity = "0.8";
         }
       }}
       onMouseOut={(e) => {
         // Check if the menu is open before applying the transform
         if (!isMenuOpen) {
-          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.opacity = "1";
         }
       }}
       onDoubleClick={handleEpisodeClick}
     >
       <Box position="relative" mr={5} onClick={() => handleEpisodeClick()}>
-        <Image
-          boxSize={isMobile ? "0px" : "125px"}
-          src={episode.thumbnailUrl}
-          borderRadius="10%"
-          marginLeft={isMobile ? "0px" : "20px"}
-          mt={1}
-        />
-        {!isMobile && (
-          <IconButton
-            aria-label="Play"
-            icon={<FaPlay />}
-            position="absolute"
-            left="60%"
-            top="50%"
-            transform="translate(-50%, -50%)"
-            variant="ghost"
-            fontSize="25px"
-            shadow={"md"}
-            _hover={{ boxShadow: "lg" }}
-          />
-        )}
+        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
+        {!isMobile && <IconButton aria-label="Play" icon={<FaPlay />} position="absolute" left="60%" top="50%" transform="translate(-50%, -50%)" variant="ghost" fontSize="25px" shadow={"md"} _hover={{ boxShadow: "lg" }} />}
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
         <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
           {episode.episodeName}
-          {episode.isExplicit && (
-            <Icon
-              as={BsExplicitFill}
-              boxSize={isMobile ? "10px" : "16px"}
-              ml={4}
-            />
-          )}
+          {episode.isExplicit && <Icon as={BsExplicitFill} boxSize={isMobile ? "10px" : "16px"} ml={4} />}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
         </Text>
         {/* Episode Details */}
-        <Flex
-          direction="column"
-          fontSize="sm"
-          color={useColorModeValue("gray.500", "gray.400")}
-        >
+        <Flex direction="column" fontSize="sm" color={"gray.500"}>
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {formatDuration(episode.duration)}
+            Duration: {convertTime(episode.duration)}
           </Text>
         </Flex>
       </Flex>
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
-        <CommentComponent
-          episodeIdOrCommentId={episode.id}
-          initialComments={episode.comments.length}
-        />
-        <div style={{ marginTop: "4px", marginLeft: "4px" }} data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
-          <LikeComponent
-            episodeOrCommentId={episode.id}
-            initialLikes={episode.likes}
-            
-          />
-        </div>
+        <CommentComponent episodeIdOrCommentId={episode.id} initialComments={episode.comments.length} />
+        <Box marginTop="4px" marginLeft="4px" data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
+          <LikeComponent episodeOrCommentId={episode.id} initialLikes={episode.likes} />
+        </Box>
         {/* Episode Options Menu */}
-        <Box style={{ position: "relative", zIndex: 1000 }} >
+        <Box style={{ position: "relative", zIndex: 1000 }}>
           <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<IoIosMore />}
-              variant="ghost"
-              fontSize="20px"
-              ml={1}
-              mt={1}
-              _hover={{ boxShadow: "lg" }}
-              onClick={handleMenuToggle}
-              data-cy={`2-dots-episode-card`}
-            />
+            <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} mt={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} data-cy={`2-dots-episode-card`} />
             <MenuList
               style={{
                 backgroundColor: "rgba(50, 50, 50, 0.8)",
@@ -253,11 +176,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                 style={{ backgroundColor: "transparent" }}
                 onClick={handleAddToPlaylistMenuToggle}
               >
-                Add to Playlist{" "}
-                <CgPlayList
-                  size={24}
-                  style={{ marginLeft: "auto", color: "white" }}
-                />
+                Add to Playlist <CgPlayList size={24} style={{ marginLeft: "auto", color: "white" }} />
               </MenuItem>
               {inPlaylist && (
                 <MenuItem
@@ -268,11 +187,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                   style={{ backgroundColor: "transparent", color: "red" }}
                   onClick={() => handleRemovePlaylistMenuToggle()}
                 >
-                  Remove from Playlist{" "}
-                  <MdDelete
-                    size={24}
-                    style={{ marginLeft: "auto", color: "red" }}
-                  />
+                  Remove from Playlist <MdDelete size={24} style={{ marginLeft: "auto", color: "red" }} />
                 </MenuItem>
               )}
               <MenuDivider />
@@ -286,11 +201,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                   backgroundColor: "transparent",
                 }}
               >
-                Play "{episode.episodeName}"{" "}
-                <BsPlayFill
-                  size="20px"
-                  style={{ marginLeft: "auto", color: "white" }}
-                />
+                Play "{episode.episodeName}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
               </MenuItem>
               <MenuItem
                 onClick={() => handleMenuItemClick("playNext")}
@@ -302,11 +213,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                   backgroundColor: "transparent",
                 }}
               >
-                Play Next{" "}
-                <TbPlayerTrackNextFilled
-                  size="18px"
-                  style={{ marginLeft: "auto", color: "white" }}
-                />
+                Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
               </MenuItem>
               <MenuItem
                 onClick={() => handleMenuItemClick("playLater")}
@@ -318,11 +225,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                   backgroundColor: "transparent",
                 }}
               >
-                Play Later{" "}
-                <BsFillSkipForwardFill
-                  size="18px"
-                  style={{ marginLeft: "auto", color: "white" }}
-                />
+                Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
               </MenuItem>
               <MenuDivider />
               <MenuItem
@@ -335,11 +238,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                   backgroundColor: "transparent",
                 }}
               >
-                Share{" "}
-                <MdIosShare
-                  size="20px"
-                  style={{ marginLeft: "auto", color: "white" }}
-                />
+                Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
               </MenuItem>
             </MenuList>
           </Menu>
@@ -355,11 +254,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
             </ModalContent>
         </Modal>
       </Flex>
-      <AddToPlaylistModal
-        isOpen={isAddToPlaylistModalOpen}
-        onClose={() => setIsAddToPlaylistModalOpen(false)}
-        episode={episode}
-      />
+      <AddToPlaylistModal isOpen={isAddToPlaylistModalOpen} onClose={() => setIsAddToPlaylistModalOpen(false)} episode={episode} />
     </Flex>
   );
 };

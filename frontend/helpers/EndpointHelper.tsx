@@ -57,7 +57,7 @@ export default class EndpointHelper {
    * @returns The Google SSO Endpoint
    */
   static getGoogleSSOEndpoint = () => {
-    return this.getBackendAddress() + "/auth/googleSSO";
+    return this .getBackendAddress() + "/auth/googleSSO";
   };
 
   // --------------------------------
