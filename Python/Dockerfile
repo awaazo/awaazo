@@ -22,6 +22,12 @@ RUN python3 -m venv venv
 # Activate the virtual environment
 RUN . venv/bin/activate
 
+# Install PyTorch dependencies for GPU
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Install text_to_speech dependencies
+RUN pip3 install -r text_to_speech_service/requirements.txt
+
 # Install all dependencies
 RUN pip3 install -r requirements.txt
 
