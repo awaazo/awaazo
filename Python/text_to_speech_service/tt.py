@@ -7,15 +7,21 @@ from tortoise.utils.text import split_and_recombine_text
 from tortoise.utils.audio import load_audio, load_voice, get_voice_dir
 
 
-def tts(text,speaker,delimiter=''):
+def create_audio(text,speaker,result_file_path,delimiter=''):
     try:
-        print("TTS")
-        print(text)
-        print(speaker)
+
+        # Get the file name
+        file_name = result_file_path.split('.')[0]
+
+        # Define the status file path
+        status_file_path = f'{file_name}_tts_status.txt'
+
+        print("Tortoise TTS started...")
 
         output_volume = 1
-        autoregressive_model_path = "./models/tortoise/autoregressive.pth"
-        tokenizer_json_path = "./modules/tortoise-tts/tortoise/data/tokenizer.json"
+        #autoregressive_model_path = f"../ServerFiles/Speakers/{speaker}/{speaker}.pth"
+        autoregressive_model_path = f"../ServerFiles/Speakers/autoregressive.pth"
+        tokenizer_json_path = "./tortoise/tokenizer.json"
         use_deepspeed = False
         
         # Load the TTS model (Tortoise TTS with HiFi-GAN vocoder)
@@ -55,15 +61,15 @@ def tts(text,speaker,delimiter=''):
             'half_p': False,
             'cond_free': True,
             'cvvp_amount': 0,
-            'autoregressive_model': './models/tortoise/autoregressive.pth',
+            'autoregressive_model': f'./ServerFiles/Speakers/{speaker}/{speaker}.pth',
             'diffusion_model': './models/tortoise/diffusion_decoder.pth',
-            'tokenizer_json': './modules/tortoise-tts/tortoise/data/tokenizer.json',
+            'tokenizer_json': './tortoise/tokenizer.json',
         }
 
         # Gotta load voice samples and conditioning latents
         cache_key = f'{speaker}:{tts.autoregressive_model_hash[:8]}'
         print(f"Loading voice: {speaker} with model {tts.autoregressive_model_hash[:8]}")
-        voice_samples, conditioning_latents = load_voice(voice=speaker,extra_voice_dirs=["./voices"], model_hash=tts.autoregressive_model_hash)
+        voice_samples, conditioning_latents = load_voice(voice=speaker,extra_voice_dirs=["../ServerFiles/Speakers"], model_hash=tts.autoregressive_model_hash)
 
         settings['voice_samples'] = voice_samples
         settings['conditioning_latents'] = conditioning_latents
@@ -110,4 +116,4 @@ def tts(text,speaker,delimiter=''):
 
 
 
-tts("Hello World. This is cool!\\n No worries! I am not angry!.\\n This is a test!","Drinker",delimiter='\\n')
+#tts(" I mean, the thing that really got me, and I think it's going to get a lot of other people, is that there were just so many false torments with self-driving, where you think you've got the problem, you have a handle, the problem, and then it, nope, turns out,","Drinker",delimiter='\\n')

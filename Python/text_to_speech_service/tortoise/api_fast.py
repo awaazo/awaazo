@@ -333,7 +333,10 @@ class TextToSpeech:
         upsample_kernel_sizes = [16, 16, 4, 4], upsample_initial_channel = 512, upsample_factors = [8, 8, 2, 2],
         cond_channels=1024).to(self.device).eval()
 
-        mode = "C:\\Users\\mathi\\OneDrive\\Bureau\\ai-voice-cloning\\models\\tortoise\\hifidecoder.pth"
+        path = self.autoregressive_model_path.split("/autoregressive.pth")[0]
+        path = str(path) + "/hifidecoder.pth"
+
+        mode = path
         print(f"Loading hifi model: {mode}")
         hifi_model = torch.load(mode)
 
@@ -394,9 +397,6 @@ class TextToSpeech:
             }
 
         self.autoregressive = UnifiedVoice(**dimensionality).cpu().eval()
-
-        print("here")
-        print(f"Loading autoregressive model: {self.autoregressive_model_path}")
 
         self.autoregressive.load_state_dict(torch.load(self.autoregressive_model_path))
         self.autoregressive.post_init_gpt2_config(use_deepspeed=self.use_deepspeed, kv_cache=self.use_kv_cache)

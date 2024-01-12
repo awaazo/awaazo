@@ -2,6 +2,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 from aiohttp import web
+from huggingface_hub import snapshot_download
 import os
 import threading
 
@@ -18,6 +19,7 @@ PORT = 8000
 CREATE_TRANSCRIPT = "/create_transcript"
 PODCASTS_FOLDER_PATH = "/ServerFiles/Podcasts"
 SPEAKERS_FOLDER_PATH = "/ServerFiles/Speakers"
+REPO_ID = "Awaazo/Speakers"
 
 # Handles the transcription request
 async def handle_transcription_request(request):
@@ -253,6 +255,10 @@ app = web.Application()
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
 app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
+
+# Download the Speakers
+print("Downloading Speaker Models...")
+snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}')
 
 # Start the server
 web.run_app(app, port=PORT)
