@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Link, Image, AspectRatio, Text } from '@chakra-ui/react';
+import { Box, Link, Image, AspectRatio, Text, Flex, Heading, Spacer, IconButton } from '@chakra-ui/react';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 import { usePlayer } from '../../utilities/PlayerContext';
 
 interface Annotation {
   id: string;
   timestamp: number;
   content: string;
-  type: 'Media Link' | 'Info' | 'Sponsership' | 'media-link';
+  annotationType: 'Media Link' | 'Info' | 'Sponsership' | 'media-link'; // Adjusted type name
   sponsorship?: {
     name: string;
     website: string;
@@ -22,20 +23,18 @@ interface PodCueProps {
 }
 
 const PodCue: React.FC<PodCueProps> = ({ cues }) => {
-  // console.log("Check Cues",cues);
   const { state: { episode }, audioRef } = usePlayer();
-  const [currentAnnotation, setCurrentAnnotation] = useState<Annotation | null>(null);
+  const [currentAnnotations, setCurrentAnnotations] = useState<Annotation[]>([]);
 
   useEffect(() => {
     const checkAnnotations = () => {
       const currentTime = audioRef.current?.currentTime ?? 0;
-      // console.log('Current Time:', currentTime);
-      const annotationToShow = cues.find(ann => currentTime >= ann.timestamp && currentTime < ann.timestamp + 10);
-      // console.log('Cue to Show:', annotationToShow); 
-      setCurrentAnnotation(annotationToShow);
+      console.log('Current Time:', currentTime);
+      const annotationsToShow = cues.filter(ann => currentTime >= ann.timestamp && currentTime < ann.timestamp + 10);
+      console.log('Cues to Show:', annotationsToShow);
+      setCurrentAnnotations(annotationsToShow);
     };
 
-    // Set up interval to check for annotations every second
     const intervalId = setInterval(checkAnnotations, 1000);
 
     return () => {
@@ -44,38 +43,92 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
   }, [cues, audioRef]);
 
   const renderAnnotationContent = (annotation: Annotation) => {
-    switch (annotation.type) {
+    let annotationContent;
+    let title;
+    let icon;
+
+    switch (annotation.annotationType) {
       case 'Media Link':
-        return <Link href={annotation.sponsorship?.website} isExternal>{annotation.content}</Link>;
-      case 'Info':
-        return <Text>{annotation.content}</Text>;
-      case 'Sponsership':
-        return annotation.sponsorship ? (
-          <Link href={annotation.sponsorship.website} isExternal>
-            <Image src={annotation.content} alt={annotation.sponsorship.name} />
-          </Link>
-        ) : null;
-      case 'Media Link':
-        return annotation.mediaLink ? (
-          <AspectRatio ratio={16 / 9}>
+        title = "Watch Video";
+        icon = <FaExternalLinkAlt />;
+        annotationContent = (
+          <AspectRatio ratio={16 / 9} width="full">
             <iframe
               title='Media Content'
-              src={annotation.mediaLink.url}
+              src={annotation.mediaLink?.url}
               allowFullScreen
             />
           </AspectRatio>
-        ) : null;
+        );
+        break;
+      case 'Info':
+        title = "Learn More";
+        icon = <FaExternalLinkAlt />;
+        annotationContent = <Text>{annotation.content}</Text>;
+        break;
+      case 'Sponsership':
+        title = "Sponsored";
+        icon = <FaExternalLinkAlt />;
+        annotationContent = (
+          <Image
+            src={annotation.content}
+            alt={annotation.sponsorship?.name}
+            objectFit="contain"
+            htmlWidth="100%"
+          />
+        );
+        break;
       default:
-        return null;
+        annotationContent = null;
     }
+
+    return annotationContent && (
+      <Flex
+        direction="column"
+        align="start"
+        p={5}
+        m={4}
+        bg="gray.700"
+        borderRadius="2xl"
+        boxShadow="2xl"
+        width={["95%", "sm"]}
+        maxW="sm"
+        transition="transform 0.3s ease-in-out"
+        _hover={{ transform: "scale(1.05)" }}
+      >
+        <Flex direction="row" align="center" mb={3}>
+          <Heading as="h3" size="md" fontWeight="bold" mr={2} isTruncated>
+            {title}
+          </Heading>
+          <Spacer />
+          {annotation.mediaLink && (
+            <Link href={annotation.mediaLink.url} isExternal>
+              <IconButton
+                aria-label="External Link"
+                icon={icon}
+                size="md"
+                variant="outline"
+                colorScheme="teal"
+                _hover={{ bg: 'teal.600', color: 'white' }}
+              />
+            </Link>
+          )}
+        </Flex>
+        <Box>
+          {annotationContent}
+        </Box>
+      </Flex>
+    );
   };
 
-  if (!currentAnnotation) return null;
+  if (!currentAnnotations.length) {
+    return null;
+  }
 
   return (
-    <Box position='absolute' bottom='0' left='0' right='0' p='4' bg='gray.900' color='white'>
-      {renderAnnotationContent(currentAnnotation)}
-    </Box>
+    <Flex position="absolute" right="4" p="4" zIndex="10" justifyContent="center" flexDirection="column">
+      {currentAnnotations.map(annotation => renderAnnotationContent(annotation))}
+    </Flex>
   );
 };
 
