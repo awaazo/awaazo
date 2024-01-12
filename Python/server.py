@@ -21,10 +21,23 @@ PODCASTS_FOLDER_PATH = "/ServerFiles/Podcasts"
 SPEAKERS_FOLDER_PATH = "/ServerFiles/Speakers"
 REPO_ID = "Awaazo/Speakers"
 
-# Handles the transcription request
 async def handle_transcription_request(request):
     '''
     Handles the transcription request
+
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to transcribe. Required. 
+            episode_file_name (str): The name of the episode file to transcribe. Required.
+    
+    Returns:
+        A web response with the status of the transcription process.
+        It should contain the following data:
+            status (str): The status of the transcription process.
+
+    Raises:
+        Exception: If an error occurs during the transcription process.
     '''
     try:
         status = ""
@@ -35,7 +48,7 @@ async def handle_transcription_request(request):
 
         # Get the path to the audio file
         episode_audio_path = f'{os.getcwd()}{PODCASTS_FOLDER_PATH}/{podcast_id}/{episode_file_name}'
-        
+
         # Check if the audio file exists
         if not os.path.isfile(episode_audio_path):
             raise Exception(f'No Audio exists for the given podcastID and episode file name.')
@@ -55,9 +68,8 @@ async def handle_transcription_request(request):
             if status == 'In progress':
                 raise Exception(f'Transcription is already in progress for the given episode.')
     
-    
         # Launch the thread to create the transcript (DO NOT AWAIT as it could take a long time depending on the audio size)
-        threading.Thread(target=transcription_service.stt.create_transcript, args=(episode_audio_path,)).start()
+        threading.Thread(target=transcription_service.stt.create_transcript_whisperx, args=(episode_audio_path,)).start()
 
         status = "Transcription process has been initiated."
 

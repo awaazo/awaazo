@@ -1,15 +1,4 @@
-import {
-  Box,
-  Flex,
-  IconButton,
-  Tag,
-  useColorModeValue,
-  useColorMode,
-  useBreakpointValue,
-  Text,
-  Image,
-} from "@chakra-ui/react";
-
+import { Box, Flex, IconButton, Tag, useColorModeValue, useColorMode, useBreakpointValue, Text, Image } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
@@ -55,49 +44,22 @@ const Episode = ({ episode }) => {
       }}
     >
       <Box position="relative" mr={5}>
-        <Image
-          boxSize={isMobile ? "0px" : "125px"}
-          src={episode.thumbnailUrl}
-          borderRadius="10%"
-          marginLeft={isMobile ? "0px" : "20px"}
-          mt={1}
-        />
-        {!isMobile && (
-          <IconButton
-            aria-label="Play"
-            icon={<FaPlay />}
-            position="absolute"
-            left="60%"
-            top="50%"
-            transform="translate(-50%, -50%)"
-            variant="ghost"
-            fontSize="25px"
-            shadow={"md"}
-            _hover={{ boxShadow: "lg" }}
-          />
-        )}
+        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
+        {!isMobile && <IconButton aria-label="Play" icon={<FaPlay />} position="absolute" left="60%" top="50%" transform="translate(-50%, -50%)" variant="ghost" fontSize="25px" shadow={"md"} _hover={{ boxShadow: "lg" }} />}
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
         <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
           {episode.episodeName}
           {episode.isExplicit && (
-            <Tag
-              size="sm"
-              colorScheme="red"
-              fontSize={isMobile ? "10px" : "sm"}
-            >
+            <Tag size="sm" colorScheme="red" fontSize={isMobile ? "10px" : "sm"}>
               Explicit
             </Tag>
           )}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
         </Text>
         {/* Episode Details */}
-        <Flex
-          direction="column"
-          fontSize="sm"
-          color={useColorModeValue("gray.500", "gray.400")}
-        >
+        <Flex direction="column" fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
@@ -108,15 +70,9 @@ const Episode = ({ episode }) => {
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }} data-cy={`comments-on-${episode.episodeName}-${episode.comments.length}`}>
-        <CommentComponent
-          episodeIdOrCommentId={episode.id}
-          initialComments={episode.comments.length}
-        />
+        <CommentComponent episodeIdOrCommentId={episode.id} initialComments={episode.comments.length} />
         <div style={{ marginTop: "4px", marginLeft: "4px" }} data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
-          <LikeComponent
-            episodeOrCommentId={episode.id}
-            initialLikes={episode.likes}
-          />
+          <LikeComponent episodeOrCommentId={episode.id} initialLikes={episode.likes} />
         </div>
       </Flex>
     </Flex>
