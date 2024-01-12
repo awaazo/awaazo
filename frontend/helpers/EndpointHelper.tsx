@@ -591,5 +591,35 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript";
   };
 
+
+  // --------------------------------
+  // ANNOTATIONS ENDPOINT
+  // --------------------------------
+
+  /**
+   * Returns the Episode Annotations endpoint.
+   * @returns The Episode Annotations Endpoint
+   * */
+  static addAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createAnnotation";
+  };
+
+  static addMediaAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createMediaLinkAnnotation";
+  };
+
+  static addSponsorAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createSponserAnnotation";
+  };
+
+  static getAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/getAnnotation";
+  };
+
+  static deleteAnnotationEndpoint = (annotationId) => {
+    return this.getBackendAddress() + "/annotation/" + annotationId + "/delete";
+  };
+
+
 }
 
