@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import tortoise.utils.torch_intermediary as ml
+import text_to_speech_service.tortoise.utils.torch_intermediary as ml
 
 def fused_leaky_relu(input, bias=None, negative_slope=0.2, scale=2 ** 0.5):
     if bias is not None:

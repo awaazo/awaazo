@@ -7,8 +7,8 @@ from progressbar import progressbar
 import torch
 import torch.nn.functional as F
 import torchaudio
-from tortoise.models.classifier import AudioMiniEncoderWithClassifierHead
-from tortoise.models.autoregressive import UnifiedVoice
+from text_to_speech_service.tortoise.models.classifier import AudioMiniEncoderWithClassifierHead
+from text_to_speech_service.tortoise.models.autoregressive import UnifiedVoice
 from tqdm import tqdm
 from tortoise.models.arch_util import TorchMelSpectrogram
 from tortoise.models.hifigan_decoder import HifiganGenerator
@@ -19,7 +19,7 @@ from tortoise.utils.tokenizer import VoiceBpeTokenizer
 from tortoise.utils.wav2vec_alignment import Wav2VecAlignment
 # from tortoise.models.stream_generator import init_stream_support
 
-from tortoise.utils.device import get_device_name, do_gc
+from text_to_speech_service.tortoise.utils.device import get_device_name, do_gc
 
 pbar = None
 # init_stream_support()
@@ -316,6 +316,7 @@ class TextToSpeech:
             if not autoregressive_model_path or not os.path.exists(autoregressive_model_path):
                 autoregressive_model_path = get_model_path('autoregressive.pth', models_dir)
 
+
             self.load_autoregressive_model(autoregressive_model_path)
 
             # self.autoregressive = UnifiedVoice(max_mel_tokens=604, max_text_tokens=402, max_conditioning_inputs=2, layers=30,
@@ -397,6 +398,8 @@ class TextToSpeech:
             }
 
         self.autoregressive = UnifiedVoice(**dimensionality).cpu().eval()
+
+        print(self.autoregressive_model_path)
 
         self.autoregressive.load_state_dict(torch.load(self.autoregressive_model_path))
         self.autoregressive.post_init_gpt2_config(use_deepspeed=self.use_deepspeed, kv_cache=self.use_kv_cache)

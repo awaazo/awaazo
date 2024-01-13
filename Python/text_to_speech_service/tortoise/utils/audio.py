@@ -6,7 +6,7 @@ import soundfile as sf
 import torch
 import torchaudio
 
-from tortoise.utils.stft import STFT
+from text_to_speech_service.tortoise.utils.stft import STFT
 
 def get_voice_dir():
     target = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../voices')
@@ -18,6 +18,7 @@ def get_voice_dir():
     return target
 
 def load_audio(audiopath, sampling_rate):
+
     if audiopath[-4:] == '.wav':
         audio, lsr = torchaudio.load(audiopath)
     elif audiopath[-4:] == '.mp3':
@@ -176,15 +177,15 @@ def load_voice(voice, extra_voice_dirs=[], load_latents=True, sample_rate=22050,
                 latent = path
             elif model_hash and filename == f"cond_latents_{model_hash[:8]}.pth":
                 latent = path
-        else:
+        elif filename[-4:] != ".pth":
             voices.append(path)
             mtime = max(mtime, os.path.getmtime(path))
 
-    if load_latents and latent is not None:
-        if os.path.getmtime(latent) > mtime:
-            print(f"Reading from latent: {latent}")
-            return None, torch.load(latent, map_location=device)
-        print(f"Latent file out of date: {latent}")
+    # if load_latents and latent is not None:
+    #     if os.path.getmtime(latent) > mtime:
+    #         print(f"Reading from latent: {latent}")
+    #         return None, torch.load(latent, map_location=device)
+    #     print(f"Latent file out of date: {latent}")
     
     samples = []
     for path in voices:

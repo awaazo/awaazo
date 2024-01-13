@@ -7,10 +7,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import autocast
 
-from tortoise.models.arch_util import normalization, AttentionBlock
-from tortoise.utils.device import get_device_name
+from text_to_speech_service.tortoise.models.arch_util import normalization, AttentionBlock
+from text_to_speech_service.tortoise.utils.device import get_device_name
 
-import tortoise.utils.torch_intermediary as ml
+import text_to_speech_service.tortoise.utils.torch_intermediary as ml
 
 def is_latent(t):
     return t.dtype == torch.float

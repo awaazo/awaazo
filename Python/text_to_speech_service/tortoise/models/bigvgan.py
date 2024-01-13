@@ -10,7 +10,7 @@ import torch, torch.utils.data
 import tortoise.models.activations as activations
 from torch.nn import Conv1d, ConvTranspose1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
-from tortoise.models.alias_free_torch import *
+from text_to_speech_service.tortoise.models.alias_free_torch import *
 from librosa.filters import mel as librosa_mel_fn
 
 LRELU_SLOPE = 0.1

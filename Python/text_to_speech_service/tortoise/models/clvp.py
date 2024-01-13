@@ -3,13 +3,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import einsum
 
-from tortoise.models.arch_util import CheckpointedXTransformerEncoder
-from tortoise.models.transformer import Transformer
-from tortoise.models.xtransformers import Encoder
+from text_to_speech_service.tortoise.models.arch_util import CheckpointedXTransformerEncoder
+from text_to_speech_service.tortoise.models.transformer import Transformer
+from text_to_speech_service.tortoise.models.xtransformers import Encoder
 
-import tortoise.utils.torch_intermediary as ml
+import text_to_speech_service.tortoise.utils.torch_intermediary as ml
 
-from tortoise.utils.device import print_stats, do_gc
+from text_to_speech_service.tortoise.utils.device import print_stats, do_gc
 
 def exists(val):
     return val is not None

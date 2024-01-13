@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from aiohttp import web
 from huggingface_hub import snapshot_download
 import os
+import torch
 import threading
 
 # Import Custom Libraries
@@ -90,7 +91,7 @@ async def handle_text_to_speech_request(request):
             speaker_name (str): The name of the speaker to convert the text to speech. Default is 'Default'.
             podcast_id (str): The ID of the podcast to convert the text to speech. Required. 
             episode_id (str): The ID of the episode to convert the text to speech. Required.
-
+            delimiter (str): The delimiter to use for the text to speech process. Default is ''.
     Returns:
         A web response with the status of the text-to-speech process.
         It should contain the following data:
@@ -113,6 +114,9 @@ async def handle_text_to_speech_request(request):
         language = data.get('language','en')
         # Get the speaker's name to convert to speech
         speaker_name = data.get('speaker_name', 'Default')
+
+        # Get the delimiter to use for the text to speech process
+        delimiter = data.get('delimiter','')
 
         # Get the podcast and episode IDs to convert to speech
         podcast_id = data.get('podcast_id')
@@ -144,6 +148,9 @@ async def handle_text_to_speech_request(request):
         # Check if the audio file already exists
         if os.path.isfile(episode_audio_path):
             raise Exception(f'Audio already exists for the given episode.')
+        
+        if not os.path.isdir(f'{os.getcwd()}{PODCASTS_FOLDER_PATH}/{podcast_id}'):
+            raise Exception(f'Podcast folder does not exist for the given podcast ID.')
 
         # Check if the text to speech is already in progress
         if os.path.isfile(status_file_path):
@@ -153,8 +160,12 @@ async def handle_text_to_speech_request(request):
             if status == 'In progress':
                 raise Exception(f'Text to speech is already in progress for the given episode.')
 
-        # Launch the thread to create the audio file (DO NOT AWAIT as it could take a long time depending on the text size)
-        threading.Thread(target=text_to_speech_service.tts.create_audio, args=(text,language,speaker_file_path,episode_audio_path)).start()
+        # If GPU is available, launch the text to speech process using Tortoise TTS
+        if torch.cuda.is_available():
+            threading.Thread(target=text_to_speech_service.tts.create_audio_tortoise, args=(text,speaker_name,episode_audio_path,delimiter)).start()
+        else:
+            # Launch the thread to create the audio file (DO NOT AWAIT as it could take a long time depending on the text size)
+            threading.Thread(target=text_to_speech_service.tts.create_audio_coqui, args=(text,language,speaker_file_path,episode_audio_path)).start()
 
         status = "Text to speech process has been initiated."
 
@@ -270,7 +281,7 @@ app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")
-snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}')
+snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}',local_dir_use_symlinks=False)
 
 # Start the server
 web.run_app(app, port=PORT)

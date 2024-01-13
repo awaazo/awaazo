@@ -6,7 +6,7 @@ from einops import rearrange
 from rotary_embedding_torch import RotaryEmbedding
 from torch import nn
 
-import tortoise.utils.torch_intermediary as ml
+import text_to_speech_service.tortoise.utils.torch_intermediary as ml
 
 # helpers
 
