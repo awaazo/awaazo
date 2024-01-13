@@ -10,13 +10,13 @@ import torchaudio
 from text_to_speech_service.tortoise.models.classifier import AudioMiniEncoderWithClassifierHead
 from text_to_speech_service.tortoise.models.autoregressive import UnifiedVoice
 from tqdm import tqdm
-from tortoise.models.arch_util import TorchMelSpectrogram
-from tortoise.models.hifigan_decoder import HifiganGenerator
-from tortoise.models.random_latent_generator import RandomLatentConverter
-from tortoise.utils.audio import denormalize_tacotron_mel
-from tortoise.utils.diffusion import SpacedDiffusion, space_timesteps, get_named_beta_schedule
-from tortoise.utils.tokenizer import VoiceBpeTokenizer
-from tortoise.utils.wav2vec_alignment import Wav2VecAlignment
+from text_to_speech_service.tortoise.models.arch_util import TorchMelSpectrogram
+from text_to_speech_service.tortoise.models.hifigan_decoder import HifiganGenerator
+from text_to_speech_service.tortoise.models.random_latent_generator import RandomLatentConverter
+from text_to_speech_service.tortoise.utils.audio import denormalize_tacotron_mel
+from text_to_speech_service.tortoise.utils.diffusion import SpacedDiffusion, space_timesteps, get_named_beta_schedule
+from text_to_speech_service.tortoise.utils.tokenizer import VoiceBpeTokenizer
+from text_to_speech_service.tortoise.utils.wav2vec_alignment import Wav2VecAlignment
 # from tortoise.models.stream_generator import init_stream_support
 
 from text_to_speech_service.tortoise.utils.device import get_device_name, do_gc
