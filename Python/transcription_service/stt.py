@@ -162,7 +162,7 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         time1 = datetime.datetime.now()
 
         # Assign the Speaker labels
-        diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
+        diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
         diarize_segments = diarize_model(audio)
         result = whisperx.assign_word_speakers(diarize_segments,result)
 

@@ -20,7 +20,7 @@
 #    This should display the CUDA version information.
 #
 # Note: Make sure to carefully follow the installation instructions provided by NVIDIA to ensure a successful installation.
-
+# Command to clear cache and dangling images and containers: docker system prune -a  
 
 version: '3.8'
 
