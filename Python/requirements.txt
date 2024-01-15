@@ -1,6 +1,6 @@
 openai-whisper==20231117
 aiohttp==3.8.6
 tts==0.22.0
-
+huggingface-hub==0.20.2
 # WhisperX install
 git+https://github.com/m-bain/whisperx.git

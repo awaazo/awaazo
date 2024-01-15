@@ -126,6 +126,18 @@ export interface SectionAddRequest {
 
 //#endregion
 
+//#region Annotation Requests
+export interface AnnotationAddRequest {
+  timestamp: number;
+  content: string;
+  type: string;
+  referenceUrl?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+}
+
+//#endregion
+
 //#region Playlist Requests
 export interface PlaylistCreateRequest {
   name: string;
