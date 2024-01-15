@@ -2,13 +2,30 @@ import { Box, Text, VStack, Flex, Icon, useBreakpointValue } from "@chakra-ui/re
 import { FiBookmark } from "react-icons/fi";
 import { Bookmark } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils"; 
+import { useState, useEffect } from "react";
+import BookmarksHelper from "../../helpers/BookmarksHelper";
 
 interface BookmarkProps {
-  bookmarks: Bookmark[];
+  episodeId: string;
 }
 
-const Bookmarks: React.FC<BookmarkProps> = ({ bookmarks }) => {
+const Bookmarks: React.FC<BookmarkProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
+  const [bookmarks, setBookmarks] = useState(null);
+
+  useEffect(() => {
+    if (episodeId) {
+      BookmarksHelper.getAllBookmarks(episodeId)
+        .then((res) => {
+          if (res.status === 200) {
+            setBookmarks(res.bookmarks);
+          } else {
+            console.error("Error fetching bookmarks data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching bookmarks data:", error));
+    }
+  }, [episodeId]);
 
   return (
     <Box border="3px solid rgba(255, 255, 255, 0.05)" width="full" height="full" p={2} borderRadius="1.1em">
@@ -21,9 +38,9 @@ const Bookmarks: React.FC<BookmarkProps> = ({ bookmarks }) => {
       </Flex>
       {/* Render each bookmark */}
       <VStack spacing={3} align="start" overflowY="auto" maxH="100vh">
-        {bookmarks.map((bookmark, idx) => (
+        {bookmarks.map((bookmark, index) => (
           <Box 
-            key={idx} 
+            key={index} 
             bg="rgba(255, 255, 255, 0.02)" 
             borderRadius="2xl"
             p={4}

@@ -9,24 +9,23 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 // Define the props for the Transcripts component
 interface TranscriptsProps {
   episodeId: string;
-  transcripts: TranscriptLine[]; // The array of transcript lines
 }
 
 // Transcripts component
-const Transcripts: React.FC<TranscriptsProps> = ({ episodeId, transcripts }) => {
+const Transcripts: React.FC<TranscriptsProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" }); // Font size based on breakpoint
   const iconSize = useBreakpointValue({ base: "16px", md: "24px" }); // Icon size based on breakpoint
-
   const opacityLevels = [1, 0.4, 0.1]; // Opacity levels for different transcript lines
+  const [transcripts, setTranscripts] = useState(null);
 
-  const [transcript, setTranscript] = useState(null);
+
 
   useEffect(() => {
     if (episodeId) {
       PodcastHelper.getTranscript(episodeId)
         .then((res) => {
           if (res.status === 200) {
-            setTranscript(res.transcript);
+            setTranscripts(res.transcript);
           } else {
             console.error("Error fetching section data:", res.message);
           }
