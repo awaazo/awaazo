@@ -8,8 +8,6 @@ import React, {
 } from "react";
 import { Episode } from "./Interfaces";
 import PodcastHelper from "../helpers/PodcastHelper";
-import { WatchHistory } from "../utilities/Interfaces";
-import { convertTime } from "../utilities/commonUtils"; 
 import { SaveWatchHistoryRequest } from "../utilities/Requests";
 
 interface PlayerState {
@@ -162,10 +160,10 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
           if (res.status === 200) {
             audioRef.current.currentTime = res.watchHistory.timestamp;
           } else {
-            console.error("Error fetching section data:", res.message);
+            console.error("Error fetching watch history data:", res.message);
           }
         })
-        .catch((error) => console.error("Error fetching section data:", error));
+        .catch((error) => console.error("Error fetching watch history data:", error));
       }
     };
 
