@@ -11,6 +11,7 @@ import {
   Playlist,
   TranscriptLine,
   Annotation,
+  WatchHistory,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -172,9 +173,16 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 
 //#endregion
 
-//#region Transcript Responses
+//#region Transcript Response
 export interface GetTranscriptResponse extends BaseResponse {
   transcript: TranscriptLine;
+}
+
+//#endregion
+
+//#region Watch History Response
+export interface GetWatchHistoryResponse extends BaseResponse {
+  watchHistory: WatchHistory;
 }
 
 //#endregion

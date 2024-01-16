@@ -1,6 +1,6 @@
 import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeAddRequest, PodcastCreateRequest, PodcastEditRequest, PodcastByTagsRequest, EpisodeEditRequest } from "../utilities/Requests";
+import { EpisodeAddRequest, PodcastCreateRequest, PodcastEditRequest, PodcastByTagsRequest, EpisodeEditRequest, SaveWatchHistoryRequest } from "../utilities/Requests";
 import {
   BaseResponse,
   CreatePodcastResponse,
@@ -14,6 +14,7 @@ import {
   GetMyEpisodeResponse,
   EditPodcastResponse,
   GetTranscriptResponse,
+  GetWatchHistoryResponse,
 } from "../utilities/Responses";
 
 export default class PodcastHelper {
@@ -628,5 +629,95 @@ export default class PodcastHelper {
       };
     }
   };
+
+  /**
+   * Creates a swave watch history request to the server.
+   * @param requestData Request data to be sent to the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static saveWatchHistory = async (
+    episodeId,
+    requestData: SaveWatchHistoryRequest,
+    
+  ): Promise<BaseResponse> => {
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      data: requestData,
+      url: EndpointHelper.saveWatchHistoryEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following saveWatchHistory...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following saveWatchHistory...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+      };
+    }
+  };
+
+   /**
+  * Gets an episode watch history by episodeId from the server.
+  * @returns A BaseResponse object with the server's response.
+  */
+   public static getWatchHistory = async (
+    episodeId,
+    ): Promise<GetWatchHistoryResponse> => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      url: EndpointHelper.getWatchHistoryEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getWatchHistory...");
+      console.debug(options);
+
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getWatchHistory...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        watchHistory: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        watchHistory: null,
+      };
+    }
+  };
+  
   
 }

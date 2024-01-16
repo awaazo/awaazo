@@ -201,3 +201,10 @@ export interface PlaylistEditRequest {
 }
 
 //#endregion
+
+//#region Episode SaveWatchHistory Request
+export interface SaveWatchHistoryRequest {
+  timestamp: number;
+}
+
+//#endregion
