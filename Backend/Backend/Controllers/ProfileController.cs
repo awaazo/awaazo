@@ -173,6 +173,7 @@ public class ProfileController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpPost("resetPassword")]
     public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request) {
         try {
