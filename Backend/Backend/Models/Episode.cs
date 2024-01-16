@@ -113,6 +113,7 @@ public class UserEpisodeInteraction : BaseEntity
     }
 
     public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
+    public Episode EpisodeInclude { get; set; } = null!;
 }
 
 public class EpisodeSections

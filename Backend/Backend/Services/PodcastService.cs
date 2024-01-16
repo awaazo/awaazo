@@ -5,6 +5,7 @@ using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using FFMpegCore.Arguments;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Backend.Infrastructure.FileStorageHelper;
@@ -348,10 +349,15 @@ public class PodcastService : IPodcastService
         // Otherwise all good, get all needed metrics
         int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
         Episode? mostLikes = podcast.Episodes.OrderByDescending(e => e.Likes.Count()).FirstOrDefault();
-        double totalWatched = await _db.UserEpisodeInteractions
-            .Where(interaction => interaction.Episode.PodcastId == podcast.Id)
-            .Select(interaction => interaction.LastListenPosition)
-            .SumAsync();
+        
+        var podcastIdParameter = new SqlParameter("@PodcastId", podcast.Id);
+        var query = "SELECT uei.* " +
+                    "FROM dbo.UserEpisodeInteractions uei " +
+                    "JOIN Episodes e ON uei.EpisodeId = e.Id " +
+                    "WHERE e.PodcastId = @PodcastId";
+        var totalWatched = await _db.UserEpisodeInteractions
+            .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
+        
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
         Episode? mostPlayed = podcast.Episodes.OrderByDescending(e => e.PlayCount).FirstOrDefault();
         
