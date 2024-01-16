@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Box, Flex, IconButton, useBreakpointValue, Text, Image, Icon, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useToast } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
+
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/react";
+
 import { BsExplicitFill, BsFillSkipForwardFill, BsPlayFill } from "react-icons/bs";
+
 import { IoIosMore } from "react-icons/io";
 import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
@@ -11,13 +15,20 @@ import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
+
+import ShareComponent from "../social/shareComponent";
 import { convertTime } from "../../utilities/commonUtils";
+
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
 
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const onShareModalClose = () => setIsShareModalOpen(false);
+  const onShareModalOpen = () => setIsShareModalOpen(true);
   // Handle click on episode
   const handleEpisodeClick = () => {
     dispatch({
@@ -218,6 +229,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
               </MenuItem>
               <MenuDivider />
               <MenuItem
+                onClick={onShareModalOpen}
                 _hover={{
                   backgroundColor: "rgba(255, 255, 255, 0.8)",
                   fontWeight: "bold",
@@ -231,6 +243,16 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
             </MenuList>
           </Menu>
         </Box>
+        <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
+            <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Share this Episode</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                <ShareComponent content={episode} contentType="episode" />
+                </ModalBody>
+            </ModalContent>
+        </Modal>
       </Flex>
       <AddToPlaylistModal isOpen={isAddToPlaylistModalOpen} onClose={() => setIsAddToPlaylistModalOpen(false)} episode={episode} />
     </Flex>

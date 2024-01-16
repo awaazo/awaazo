@@ -1,4 +1,11 @@
-import { extendTheme } from "@chakra-ui/react";
+
+import { extendTheme, ThemeConfig } from "@chakra-ui/react";
+
+// this a fix for the default color mode issue
+const config: ThemeConfig = {
+  useSystemColorMode: false, 
+  initialColorMode: 'dark', 
+};
 
 const overrides = {
   colors: {
@@ -10,6 +17,8 @@ const overrides = {
   },
   components: {
     Button: {
+      baseStyle: {
+      },
       variants: {
         gradient: {
           borderRadius: "full",
@@ -22,9 +31,9 @@ const overrides = {
           backgroundSize: "300% 300%",
           animation: "Gradient 10s infinite linear",
         },
-        // Other variants can be added here
       },
     },
+  
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -32,7 +41,6 @@ const overrides = {
           backdropFilter: "blur(10px)",
           backgroundColor: "rgba(255, 255, 255, 0.2)",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
         },
        
       }),
@@ -42,8 +50,26 @@ const overrides = {
         maxHeight: "200px", 
       },
     },
-  
+    Menu: {
+      baseStyle: {
+        list: {
+          borderRadius: "2xl",
+          backdropFilter: "blur(10px)",
+          backgroundColor: "rgba(255, 255, 255, 0.2)",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        },
+        item: {
+          backgroundColor: "transparent", 
+          _focus: {
+            backgroundColor: "rgba(255, 255, 255, 0.1)", 
+          },
+          _hover: {
+            backgroundColor: "rgba(255, 255, 255, 0.1)", 
+          },
+      },
   },
+},
+},
   styles: {
     global: {
       "@keyframes Gradient": {
@@ -51,16 +77,16 @@ const overrides = {
         "50%": { backgroundPosition: "0% 100%" },
         "100%": { backgroundPosition: "100% 0%" },
       },
-      "html, body": {
-        fontFamily: "Roboto Condensed, sans-serif",
-      },
       "*": {
         fontFamily: "Roboto Condensed, sans-serif",
       },
     },
   },
+  config,
 };
 
+
 const AppTheme = extendTheme(overrides);
+
 
 export default AppTheme;

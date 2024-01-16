@@ -143,6 +143,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
         
         // User 1-to-many UserEpisodeInteraction 
         modelBuilder.Entity<User>()
@@ -224,7 +225,7 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Rating many-to-1 user
         modelBuilder.Entity<User>()

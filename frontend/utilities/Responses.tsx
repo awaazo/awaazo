@@ -9,7 +9,8 @@ import {
   Bookmark,
   Section,
   Playlist,
-  TranscriptLine
+  TranscriptLine,
+  Annotation,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -126,6 +127,17 @@ export interface AddSectionResponse extends BaseResponse {
 
 export interface getSectionResponse extends BaseResponse {
   sections: Section[];
+}
+
+//#endregion
+
+//#region Annotation Responses
+export interface AddAnnotationResponse extends BaseResponse {
+  data: string;
+}
+
+export interface getAnnotationResponse extends BaseResponse {
+  annotations: Annotation[];
 }
 
 //#endregion

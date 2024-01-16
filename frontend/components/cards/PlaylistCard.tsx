@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { convertTime } from "../../utilities/commonUtils";
 import { RiPlayList2Fill } from "react-icons/ri";
-import NexLink from "next/link";
+import Link from "next/link";
 
 const PlaylistCard = ({ playlist }) => {
   return (
@@ -21,7 +21,7 @@ const PlaylistCard = ({ playlist }) => {
       }}
     >
       <Flex direction="column" flex={1}>
-        <NexLink href={`/Playlist/${playlist.id}`}>
+        <Link href={`/Playlist/${playlist.id}`}>
           <Flex justifyContent="space-between" mb={2} align="center">
             {/* Privacy */}
             <Flex alignItems="center">
@@ -60,7 +60,7 @@ const PlaylistCard = ({ playlist }) => {
               </Box>
             </Flex>
           </Box>
-        </NexLink>
+        </Link>
       </Flex>
     </Flex>
   );

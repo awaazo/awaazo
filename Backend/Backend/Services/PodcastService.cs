@@ -38,7 +38,7 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Accepted file types for audio files
     /// </summary>
-    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4" };
+    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4","audio/wav" };
 
     /// <summary>
     /// Maximum image file is 5MB
@@ -197,7 +197,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
-        .Include(p => p.Ratings)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.Id == podcastId)
         .Select(p => new PodcastResponse(p, domainUrl))
         .FirstOrDefaultAsync() ?? throw new Exception("Podcast does not exist.");
@@ -234,7 +234,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
-        .Include(p => p.Ratings)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -263,7 +263,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
-        .Include(p => p.Ratings)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(searchTerm))
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -291,7 +291,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
-        .Include(p => p.Ratings)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -323,7 +323,7 @@ public class PodcastService : IPodcastService
             .FromSqlRaw($"SELECT * FROM dbo.Podcasts {query}")
             .Include(p=>p.Podcaster)
             .Include(p => p.Episodes)
-            .Include(p => p.Ratings)
+            .Include(p => p.Ratings).ThenInclude(r => r.User)
             .Skip(page * pageSize)
             .Take(pageSize)
             .Select(p => new PodcastResponse(p, domainUrl))
