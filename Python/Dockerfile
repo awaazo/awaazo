@@ -8,7 +8,7 @@ FROM ubuntu:22.04
 WORKDIR /app
 ADD . /app
 
-# Install Python3.11 & ffmpeg
+# Install Python3.9 & ffmpeg
 RUN \
 --mount=type=cache,target=/var/cache/apt \
 apt-get -y update && apt-get install -y python3.9 \

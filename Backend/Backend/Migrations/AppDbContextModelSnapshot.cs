@@ -916,7 +916,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Ratings")
                         .HasForeignKey("PodcastId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
