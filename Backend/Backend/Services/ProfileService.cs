@@ -207,6 +207,10 @@ public class ProfileService : IProfileService
         if (user is null)
             throw new Exception("The email is not associated to a user");
 
+        // Delete all previous tokens
+        _db.ForgetPasswordTokens.RemoveRange(_db.ForgetPasswordTokens.Where(token => token.UserId == user.Id));
+        await _db.SaveChangesAsync();
+        
         // Generate token
         ForgetPasswordToken token = new ForgetPasswordToken(user);
         _db.ForgetPasswordTokens.Add(token);
