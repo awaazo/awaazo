@@ -41,7 +41,7 @@ describe('Section', () => {
         }
         cy.get('[data-cy="set-end-time-button"').click( {timeout:5000} );
         cy.get('[data-cy="add-section-button-form"').click( {timeout:5000} );
-        cy.wait(500);
+        cy.wait(1500);
         cy.visit('/CreatorHub/MyPodcasts');
         cy.url().should('include', '/CreatorHub/MyPodcasts', { timeout: 5000 });
         cy.wait(500);
