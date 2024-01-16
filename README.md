@@ -112,7 +112,7 @@ The following links can be used to download Docker:
 
 #### <h2>Nvidia CUDA enabled GPU</h2>
 
-Awaazo makes heavy usre of Artificial Intelligence (AI) and therefore utilizes GPU resources to speed up the computation time. Although having a CUDA enabled GPU is not required, it is <b>STRONGLY ADVISED</b>.
+Awaazo extensively employs AI and machine learning models, leveraging GPU resources to significantly enhance computation speed. While a CUDA-enabled GPU is not mandatory, its use is <b>highly recommended</b> to achieve superior performance and faster processing speeds.
 
 - [Download CUDA Toolkit](https://developer.nvidia.com/cuda-downloads?)
 
