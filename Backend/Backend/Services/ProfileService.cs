@@ -245,6 +245,7 @@ public class ProfileService : IProfileService
         // Change password
         user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         _db.Users.Update(user);
+        _db.ForgetPasswordTokens.Remove(token);
         await _db.SaveChangesAsync();
     }
 }
