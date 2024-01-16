@@ -7,6 +7,10 @@ import React, {
   ReactNode,
 } from "react";
 import { Episode } from "./Interfaces";
+import PodcastHelper from "../helpers/PodcastHelper";
+import { WatchHistory } from "../utilities/Interfaces";
+import { convertTime } from "../utilities/commonUtils"; 
+import { SaveWatchHistoryRequest } from "../utilities/Requests";
 
 interface PlayerState {
   episode: Episode;
@@ -133,14 +137,51 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
     typeof window !== "undefined" ? new Audio() : null,
   );
 
+  const request: SaveWatchHistoryRequest = {
+    timestamp: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+  };
+
+  const handleBeforeUnload = async () => {
+    if (audioRef.current) {
+      await PodcastHelper.saveWatchHistory(state.episode.id, request)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Saved Episode Watch History");
+        } else {
+          console.error("Error saving the episode watch history:", response.message);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
+    const loadWatchHistory = async () => {
+      if (audioRef.current && state.episode.id) {
+        PodcastHelper.getWatchHistory(state.episode.id)
+        .then((res) => {
+          if (res.status === 200) {
+            audioRef.current.currentTime = res.watchHistory.timestamp;
+          } else {
+            console.error("Error fetching section data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching section data:", error));
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    // Call the function to load the watch history
+    loadWatchHistory();
+  
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.currentTime = 0;
       }
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [state.episode]);
+
 
   return (
     <PlayerContext.Provider value={{ state, dispatch, audioRef }}>
