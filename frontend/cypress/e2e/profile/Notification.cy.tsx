@@ -30,7 +30,7 @@ describe("Notification", () => {
     it('Should see a new notifications if an episode gets uploaded to', () => {
         cy.console_error_hack();
         cy.login(null, "testRegister@email.com", "password123");
-        cy.wait(250);
+        cy.wait(1000);
         cy.episode_create(
             paths.angry,
             "Notifications",

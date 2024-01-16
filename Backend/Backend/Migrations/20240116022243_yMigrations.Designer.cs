@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240109232020_xMigrations")]
-    partial class xMigrations
+    [Migration("20240116022243_yMigrations")]
+    partial class yMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -919,7 +919,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Ratings")
                         .HasForeignKey("PodcastId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")

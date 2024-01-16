@@ -170,6 +170,11 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
   cy.get(':nth-child(10) > .chakra-button').click();
   cy.get('button[id=createBtn]').click(); 
   cy.wait(200);
+  cy.get('body').then(($body) => {
+    if ($body.text().includes('A podcast with the same name already exists')) {
+        expect(true).to.be.true;
+    }
+  })
 });
 /*
 -=-=-=-=-=-=-=End Podcast create
@@ -223,9 +228,12 @@ Cypress.Commands.add('cleanup', () => {
     .contains("My Podcasts")
     .should("be.visible")
     .click({ timeout: 12000 });
+  cy.wait(1000);
   cy.get('[data-cy="podcast-delete"]').should('exist').click({ timeout: 12000 });
+  cy.wait(1000);
   cy.contains("Button", "Delete").should('exist').click({ timeout: 12000 });
   cy.url().should("include", "/CreatorHub/MyPodcasts");
+  cy.get('body').should("not.contain", "Edit Podcast");
 });
 
 

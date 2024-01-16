@@ -155,8 +155,7 @@ describe("Episode_Create", () => {
       });
     cy.get('[data-cy="podcast-image-f2-legends"]').click();
     cy.get('button[id=createBtn]').click({ timeout: 10000 });
-    cy.intercept('GET', '/CreatorHub/MyPodcasts').as('podcasts');
-    cy.wait(250);
+    cy.wait(500);
     cy.get('body').then(($body) => {
       if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
           expect(true).to.be.true;

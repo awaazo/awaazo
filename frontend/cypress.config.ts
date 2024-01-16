@@ -14,7 +14,7 @@ export default defineConfig({
       "cypress/e2e/**/Podcast.cy.tsx", 
       "cypress/e2e/**/Episode.cy.tsx",
       "cypress/e2e/**/PlayerBar.cy.tsx",
-      //"cypress/e2e/**/Review.cy.tsx",
+      "cypress/e2e/**/Review.cy.tsx",
       "cypress/e2e/**/Search.cy.tsx",
       "cypress/e2e/**/Like.cy.tsx",
       "cypress/e2e/**/Comment.cy.tsx",
