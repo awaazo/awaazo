@@ -1,4 +1,27 @@
+import * as paths from '../../fixtures/file_paths.json';
+
 describe("PlayerBar", () => { 
+
+    it('Should create a podcast and upload an episode for playerbar testing', () => {
+        cy.console_error_hack();
+        cy.login(null, "testRegister@email.com", "password123");
+        cy.podcast_create(paths.max_verstappen_cover,'f2-legends', 'A podcast about F1 veterans and their rise to glory.')
+        cy.episode_create(
+            paths.Episode_cover,
+            "Has science gone too far?",
+            "OMG is that Gabe?",
+            paths.never_gonna_give_you_up,
+            "f2",
+          );
+        cy.wait(500);
+        cy.get('body').then(($body) => {
+            if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
+                expect(true).to.be.true;
+            } else {
+                cy.get("button").contains("Finish").click({ timeout: 12000 });
+            }
+        })
+    });
 
     it('Should remember what time I was at on the podcast', () =>  {
         cy.login(null, "testRegister@email.com", "password123");
@@ -108,9 +131,9 @@ describe("PlayerBar", () => {
         });
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
+        cy.wait(1000);
         cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
-        cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
-        cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
+        cy.wait(1000);
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:1"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
             expect(likeCount).to.equal(numLikesBefore); 
@@ -120,8 +143,6 @@ describe("PlayerBar", () => {
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
-        cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').should('be.visible').click({timeout: 5000})
-        cy.get('[data-cy="podcast-image-f2-legends"]').should('be.visible').click({timeout: 5000})
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:0"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
             expect(likeCount).to.equal(numLikesAfter); 
@@ -133,9 +154,6 @@ describe("PlayerBar", () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
             timeout: 5000,
         });
-        cy.wait(2500);
-        cy.reload();
-        cy.wait(2500);
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Love the episode! Half Life 3 when???");
@@ -148,6 +166,10 @@ describe("PlayerBar", () => {
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').click({ timeout: 5000 });
         cy.contains('DummyUsername:');
         cy.contains('Love the episode! Half Life 3 when???');
+    });
+    
+    it('Should delete a podcast to revert to a clean state', () => {
+        cy.cleanup();
     });
 });
 

@@ -1,3 +1,5 @@
+import * as paths from '../../fixtures/file_paths.json';
+
 describe('Section', () => {
     
     beforeEach(() => {
@@ -5,19 +7,24 @@ describe('Section', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
 
-    it('Should delete a Podcast', () => {
-        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
+    it('Should create a podcast and an episode', () => {
+        cy.console_error_hack();
+        cy.podcast_create(paths.max_verstappen_cover,'f2-legends', 'A podcast about F1 veterans and their rise to glory.')
+        cy.episode_create(
+            paths.Episode_cover,
+            "Has science gone too far?",
+            "OMG is that Gabe?",
+            paths.never_gonna_give_you_up,
+            "f2",
+          );
         cy.wait(500);
-        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
-        cy.get('button').contains('My Podcasts').click();
-        cy.url().should('include', '/MyPodcasts');
-        cy.data_log();
-        cy.get('[data-cy=podcast-image-f2-legends').click();
-        cy.get('[data-cy="podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa"]').click();
-        cy.get('[data-cy=podcast-delete').click();
-        cy.contains('Button', 'Delete').click();
-        cy.url().should('include', '/MyPodcasts');
-        cy.contains('aaaaaaaaaaaaaaaaaaaaaaaaa').should('not.exist');
+        cy.get('body').then(($body) => {
+            if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
+                expect(true).to.be.true;
+            } else {
+                cy.get("button").contains("Finish").click({ timeout: 12000 });
+            }
+        })
     });
 
     it('Should successfully create a Section', ()  => {
@@ -34,9 +41,10 @@ describe('Section', () => {
         }
         cy.get('[data-cy="set-end-time-button"').click( {timeout:5000} );
         cy.get('[data-cy="add-section-button-form"').click( {timeout:5000} );
-        cy.wait(500);
+        cy.wait(1500);
         cy.visit('/CreatorHub/MyPodcasts');
         cy.url().should('include', '/CreatorHub/MyPodcasts', { timeout: 5000 });
+        cy.wait(500);
         cy.get('[data-cy="sections-button"]').first().click( {timeout: 5000} );
         cy.contains('Section 1').should('exist');
     });
@@ -79,4 +87,9 @@ describe('Section', () => {
         cy.get('[data-cy="sections-button"]').first().click( {timeout: 5000} );
         cy.contains('Should cancel').should('not.exist');
     });
+
+    it('Cleanup', () => {
+        cy.logout();
+        cy.cleanup();
+    })
 });  
