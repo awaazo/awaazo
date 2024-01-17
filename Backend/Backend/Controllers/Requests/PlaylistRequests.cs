@@ -14,17 +14,12 @@ public class EditPlaylistRequest
     public string Description {get;set;} = string.Empty;
 
     public string Privacy {get;set;} = GetPrivacyEnumString(DEFAULT_PRIVACY);
-
-    public virtual IFormFile? CoverArt { get; set;}
 }
 
 [BindProperties]
 public class CreatePlaylistRequest : EditPlaylistRequest
 {
     public Guid[] EpisodeIds {get;set;} = Array.Empty<Guid>();
-
-    [Required]
-    public override IFormFile? CoverArt { get; set; }
 }
 
 [BindProperties]
