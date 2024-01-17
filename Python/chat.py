@@ -1,11 +1,12 @@
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import ConversationalRetrievalChain
+
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.prompts import SystemMessagePromptTemplate, ChatPromptTemplate, HumanMessagePromptTemplate
 import os
 from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 
 load_dotenv()
@@ -35,11 +36,13 @@ qa_prompt = ChatPromptTemplate.from_messages( messages )
 llm = ChatOpenAI(temperature=0.1, streaming=True, max_tokens=100)
 qa = RetrievalQA.from_chain_type(llm=llm, 
                                  chain_type="stuff",
-                                 retriever=retriever)
+                                 retriever=retriever,
+                                 callbacks=[StreamingStdOutCallbackHandler()],
+                                 )
 
 while True:
     user_question = input("\nAsk a question or type 'exit' to quit: ")
     if user_question.lower() == 'exit':
         break
-    response = qa.run(user_question)
+    response = qa.run(user_question, callbacks=[StreamingStdOutCallbackHandler()])
     print(response)
