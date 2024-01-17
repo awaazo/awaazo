@@ -38,6 +38,8 @@ qa = RetrievalQA.from_chain_type(llm=llm,
                                  chain_type="stuff",
                                  retriever=retriever,
                                  callbacks=[StreamingStdOutCallbackHandler()],
+                                # see chain thoughts as it runs -> make verbose true
+                                #  verbose=True, 
                                  )
 
 while True:
