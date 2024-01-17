@@ -43,18 +43,6 @@ public class PlaylistService : IPlaylistService
         if (await _db.Playlists.AnyAsync(p => p.Name == request.Name && p.UserId == user.Id))
             throw new Exception("Playlist with the same name already exists.");
 
-        // Check if the playlist Cover Art was provided
-        if (request.CoverArt == null)
-            throw new Exception("Cover Art is required.");
-
-        // Check if the Playlist Cover Art is an image
-        if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
-            throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
-
-        // Check if the Playlist Cover Art is smaller than 5MB
-        if (request.CoverArt.Length > MAX_IMG_SIZE)
-            throw new Exception("Cover Art must be smaller than 5MB.");
-
         // Check if all request episodes exist in the database
         foreach (Guid episodeId in request.EpisodeIds)
         {
@@ -80,9 +68,6 @@ public class PlaylistService : IPlaylistService
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
-
-        // Save cover Art to the file system
-        playlist.CoverArt = SavePlaylistCoverArt(playlistGuid, request.CoverArt);
 
         await _db.Playlists.AddAsync(playlist);
 
@@ -121,25 +106,7 @@ public class PlaylistService : IPlaylistService
         playlist.Name = request.Name;
         playlist.Description = request.Description;
         playlist.Privacy = GetPrivacyEnum(request.Privacy);
-        playlist.UpdatedAt = DateTime.Now;
-
-        if(request.CoverArt != null)
-        {
-            // Check if the Playlist Cover Art is an image
-            if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
-                throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
-
-            // Check if the Playlist Cover Art is smaller than 5MB
-            if (request.CoverArt.Length > MAX_IMG_SIZE)
-                throw new Exception("Cover Art must be smaller than 5MB.");
-
-            // Remove the old Cover Art
-            RemovePlaylistCoverArt(playlist.CoverArt);
-
-            // Save the new cover Art
-            playlist.CoverArt = SavePlaylistCoverArt(playlistId.ToString(), request.CoverArt);
-
-        }
+        playlist.UpdatedAt = DateTime.Now;       
 
         _db.Playlists.Update(playlist);
 
