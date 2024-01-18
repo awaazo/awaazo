@@ -85,5 +85,18 @@ public class RegisterRequest : LoginRequest
     public string Username { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// CheckEmailRequest
+/// </summary>
+[BindProperties]
+public class CheckEmailRequest
+{
+    /// <summary>
+    /// Email of the User to be Checked.
+    /// </summary>
+    [Required]
+    public string Email { get; set; } = string.Empty;
+}
+
 
 
