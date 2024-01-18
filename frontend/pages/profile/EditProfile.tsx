@@ -13,6 +13,13 @@ import {
   InputGroup,
   InputLeftAddon,
   Icon,
+  Modal,
+  ModalBody, 
+  ModalCloseButton, 
+  ModalContent, 
+  ModalHeader, 
+  ModalOverlay,
+  VStack
 } from "@chakra-ui/react";
 import { useState, FormEvent, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
@@ -20,6 +27,7 @@ import { UserProfileEditRequest } from "../../utilities/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserProfile } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
+import ChangePassWordForm from "../../components/profile/MyProfile/ChangePasswordForm";
 
 const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
@@ -39,6 +47,7 @@ const EditProfile: React.FC = () => {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [isModalChangePasswordOpen, setIsModelChangePasswordOpen] = useState(false);
 
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>(
     undefined,
@@ -181,6 +190,14 @@ const EditProfile: React.FC = () => {
     const newBio = e.target.value.slice(0, 250);
     setBio(newBio);
     setBioCharacterCount(newBio.length);
+  };
+
+  const openChangePasswordModal = () => {
+    setIsModelChangePasswordOpen(true);
+  };
+
+  const closeChangePasswordModal = () => {
+    setIsModelChangePasswordOpen(false);
   };
 
   const editPage = () => (
@@ -419,6 +436,38 @@ const EditProfile: React.FC = () => {
                 />
               </InputGroup>
             </FormControl>
+            
+            {/* Change Password Button */}
+            <Button
+              onClick={() => openChangePasswordModal()}
+              fontSize="md"
+              borderRadius={"full"}
+              minWidth={"200px"}
+              color={"white"}
+              marginTop={"15px"}
+              padding={"20px"}
+              outline={"1px solid rgba(255, 255, 255, 0.6)"}
+              style={{
+                background:
+                  "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                backgroundSize: "300% 300%",
+                animation: "Gradient 10s infinite linear",
+              }}>
+                Change Password
+              <style jsx>{`
+                @keyframes Gradient {
+                  0% {
+                    background-position: 100% 0%;
+                  }
+                  50% {
+                    background-position: 0% 100%;
+                  }
+                  100% {
+                    background-position: 100% 0%;
+                  }
+                }
+              `}</style>
+            </Button>
 
             {/* Update Profile Button */}
             <Button
@@ -456,6 +505,21 @@ const EditProfile: React.FC = () => {
           </Stack>
         </form>
       </Box>
+
+      <Modal isOpen={isModalChangePasswordOpen} onClose={closeChangePasswordModal}>
+      <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent boxShadow="dark-lg" backdropFilter="blur(40px)" display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={"10%"} padding={"2em"}>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <VStack spacing={5} align="center" backgroundColor={"transparent"}>
+                <Text>Change Password</Text>
+                <ChangePassWordForm/>
+              </VStack>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 
