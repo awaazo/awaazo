@@ -1,145 +1,191 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
-import Logo from "../../public/logo_white.svg";
-import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-import { ChangePasswordRequest } from "../../../utilities/Requests";
-import { FaGoogle } from "react-icons/fa";
-import { isEmail } from "validator";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
+import { ChangePasswordRequest } from "../../../utilities/Requests";
 
 const ChangePasswordForm: React.FC = () => {
-const [changePasswordError, setChangePasswordError] = useState<string | null>("");
-const [oldPassword, setOldPassword] = useState<string | null>("");
-const [newPassword, setNewPassword] = useState<string | null>("");
-const [confirmNewPassword, setConfirmPassword] = useState<string | null>("");
-// export default function ChangePassWordForm() {
-//     useEffect(() => {
-//         console;
-//         UserProfileHelper.profileGetRequest().then((response) => {
-//             if (response.status == 200) {
-//                 console.log(response.userProfile.bio);
-//             }
-//         });
-//     });
+    const [changePasswordError, setChangePasswordError] = useState<string | null>("");
+    const [oldPassword, setOldPassword] = useState<string | null>("");
+    const [newPassword, setNewPassword] = useState<string | null>("");
+    const [confirmNewPassword, setConfirmPassword] = useState<string | null>("");
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
-const handleChangePassword = async (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setChangePasswordError(null);
 
-    if(!oldPassword){
-        setChangePasswordError("Enter your current password.");
-        return;
+    if (!newPassword || newPassword.length < 8 || !/\d/.test(newPassword) || !/[a-zA-Z]/.test(newPassword)) {
+      setChangePasswordError("Your new Password must be at least 8 characters long and include both letters and numbers.");
+      return;
     }
 
-    if(!newPassword || newPassword.length < 8 || !/\d/.test(newPassword) || !/[a-zA-Z]/.test(newPassword)) {
-        setChangePasswordError("Your new Password must be at least 8 characters long and include both letters and numbers.");
-        return;
-    }
-
-    if(newPassword !== confirmNewPassword){
-        setChangePasswordError("Your new Passwords do not match.")
-        return;
+    if (newPassword !== confirmNewPassword) {
+      setChangePasswordError("Your new Passwords do not match.");
+      return;
     }
 
     const changePasswordRequest: ChangePasswordRequest = {
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-        confirmNewPassword: confirmNewPassword,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+      confirmNewPassword: confirmNewPassword,
     };
 
-    try{
-        const response = await UserProfileHelper.changePasswordRequest(changePasswordRequest);
-        if(response.status === 200){
-            window.location.href = "/";
-        } else {
-            setChangePasswordError(response.data);
-        }
+    try {
+      const response = await UserProfileHelper.changePasswordRequest(changePasswordRequest);
+      if (response.status === 200) {
+        window.location.href = "/";
+      } else {
+        setChangePasswordError(response.data);
+      }
     } catch (error) {
-        setChangePasswordError("An error occured while changing Passwords...")
+      setChangePasswordError("An error occurred while changing Passwords...");
+    }
+  };
+  
+  const handlePasswordChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    switch (field) {
+      case "oldPassword":
+        setOldPassword(value);
+        break;
+      case "newPassword":
+        setNewPassword(value);
+        break;
+      case "confirmNewPassword":
+        setConfirmPassword(value);
+        break;
+      default:
+        break;
     }
 
-}
+    setChangePasswordError(null);
+  };
 
-return(
-    <>
-    <form onSubmit={handleChangePassword}>
-      <Stack spacing={6} align={"center"}>
-        {changePasswordError && <Text color="red.500">{changePasswordError}</Text>}
+  const handleTogglePasswordVisibility = (field: string) => () => {
+    switch (field) {
+      case "oldPassword":
+        setShowOldPassword(!showOldPassword);
+        break;
+      case "newPassword":
+        setShowNewPassword(!showNewPassword);
+        break;
+      case "confirmNewPassword":
+        setShowConfirmPassword(!showConfirmPassword);
+        break;
+      default:
+        break;
+    }
+  };
 
-        <FormControl>
-          <FormLabel>Current Password</FormLabel>
-          <Input
-            type="password"
-            id="currentPassword"
-            placeholder="Enter current password"
-            // value={}
-            // onChange={handleCurrentPasswordChange}
-            borderRadius="0.8em"
-          />
-        </FormControl>
+  return (
+    <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <form onSubmit={handleChangePassword}>
+        <Stack spacing={6} align={"center"}>
+          {changePasswordError && <Text color="red.500">{changePasswordError}</Text>}
 
-        <FormControl>
-          <FormLabel>New Password</FormLabel>
-          <Input
-            type="password"
-            id="newPassword"
-            placeholder="Enter new password"
-            // value={newPassword}
-            // onChange={handleNewPasswordChange}
-            borderRadius="0.8em"
-          />
-        </FormControl>
+          <FormControl >
+            <FormLabel>Current Password</FormLabel>
+            <InputGroup>
+              <Input
+                type={showOldPassword ? "text" : "password"}
+                id="currentPassword"
+                placeholder="Enter current password"
+                onChange={handlePasswordChange("oldPassword")}
+                borderRadius="0.8em"
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={handleTogglePasswordVisibility("oldPassword")}>
+                  {showOldPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
 
-        <FormControl>
-          <FormLabel>Confirm New Password</FormLabel>
-          <Input
-            type="password"
-            id="confirmNewPassword"
-            placeholder="Confirm new password"
-            // value={confirmNewPassword}
-            // onChange={handleConfirmNewPasswordChange}
-            borderRadius="0.8em"
-          />
-        </FormControl>
+          <FormControl>
+            <FormLabel>New Password</FormLabel>
+            <InputGroup>
+              <Input
+                type={showNewPassword ? "text" : "password"}
+                id="newPassword"
+                placeholder="Enter new password"
+                onChange={handlePasswordChange("newPassword")}
+                borderRadius="0.8em"
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={handleTogglePasswordVisibility("newPassword")}>
+                  {showNewPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
 
-        <Button
-          type="submit"
-          fontSize="md"
-          borderRadius="full"
-          minWidth="200px"
-          color="white"
-          marginTop="15px"
-          marginBottom="10px"
-          padding="20px"
-          outline="1px solid rgba(255, 255, 255, 0.6)"
-          style={{
-            background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-            backgroundSize: "300% 300%",
-            animation: "Gradient 10s infinite linear",
-          }}
-        >
-          Change Password
-          <style jsx>{`
-            @keyframes Gradient {
-              0% {
-                background-position: 100% 0%;
+          <FormControl>
+            <FormLabel>Confirm New Password</FormLabel>
+            <InputGroup>
+              <Input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmNewPassword"
+                placeholder="Confirm new password"
+                onChange={handlePasswordChange("confirmNewPassword")}
+                borderRadius="0.8em"
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={handleTogglePasswordVisibility("confirmNewPassword")}>
+                  {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+
+          <Button
+            type="submit"
+            fontSize="md"
+            borderRadius="full"
+            minWidth="200px"
+            color="white"
+            marginTop="15px"
+            marginBottom="10px"
+            padding="20px"
+            outline="1px solid rgba(255, 255, 255, 0.6)"
+            style={{
+              background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+              backgroundSize: "300% 300%",
+              animation: "Gradient 10s infinite linear",
+            }}
+          >
+            Change Password
+            <style jsx>{`
+              @keyframes Gradient {
+                0% {
+                  background-position: 100% 0%;
+                }
+                50% {
+                  background-position: 0% 100%;
+                }
+                100% {
+                  background-position: 100% 0%;
+                }
               }
-              50% {
-                background-position: 0% 100%;
-              }
-              100% {
-                background-position: 100% 0%;
-              }
-            }
-          `}</style>
-        </Button>
-      </Stack>
-    </form>
-    </>
-);
+            `}</style>
+          </Button>
+        </Stack>
+      </form>
+    </Box>
+  );
 };
 
 export default ChangePasswordForm;
