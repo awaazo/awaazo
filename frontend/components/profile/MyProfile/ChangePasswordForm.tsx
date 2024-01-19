@@ -46,7 +46,7 @@ const ChangePasswordForm: React.FC = () => {
     try {
       const response = await UserProfileHelper.changePasswordRequest(changePasswordRequest);
       if (response.status === 200) {
-        window.location.href = "/";
+        window.location.href = "/profile/MyProfile";
       } else {
         setChangePasswordError(response.data);
       }

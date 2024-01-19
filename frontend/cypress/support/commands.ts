@@ -140,6 +140,26 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
   
 });
 
+Cypress.Commands.add('change_password', (old_pass, new_pass, confirm_pass) => {
+  cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
+        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.contains('button', 'My Account', {timeout: 5000}).then(($btn) => {
+            if ($btn) {
+            $btn.click();
+            }
+        }).then(($btn) => {
+            if (!$btn) {
+            cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
+            }
+        });
+        cy.get('button').contains('Edit Profile').click( {timeout: 5000} );
+        cy.get('button').contains('Change Password').scrollIntoView().click( {timeout:5000} );
+        cy.get('input[placeholder="Enter current password"').type(old_pass);
+        cy.get('input[placeholder="Enter new password"').type(new_pass);
+        cy.get('input[placeholder="Confirm new password"').type(confirm_pass);
+        cy.get('.css-44skqw').click( {timeout:5000} );
+});
+
 /*
 -=-=-=-=-=-=-=Podcast create
 */
