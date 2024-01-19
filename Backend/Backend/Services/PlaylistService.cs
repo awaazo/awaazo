@@ -44,16 +44,16 @@ public class PlaylistService : IPlaylistService
             throw new Exception("Playlist with the same name already exists.");
 
         // Check if the playlist Cover Art was provided
-        if (request.CoverArt == null)
-            throw new Exception("Cover Art is required.");
+        if (request.CoverArt != null)
+        {
+            // Check if the Playlist Cover Art is an image
+            if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
+                throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
 
-        // Check if the Playlist Cover Art is an image
-        if (!ALLOWED_IMG_FILES.Contains(request.CoverArt.ContentType))
-            throw new Exception("Cover Art must be a JPEG, PNG, or SVG.");
-
-        // Check if the Playlist Cover Art is smaller than 5MB
-        if (request.CoverArt.Length > MAX_IMG_SIZE)
-            throw new Exception("Cover Art must be smaller than 5MB.");
+            // Check if the Playlist Cover Art is smaller than 5MB
+            if (request.CoverArt.Length > MAX_IMG_SIZE)
+                throw new Exception("Cover Art must be smaller than 5MB.");
+        }
 
         // Check if all request episodes exist in the database
         foreach (Guid episodeId in request.EpisodeIds)
@@ -82,7 +82,7 @@ public class PlaylistService : IPlaylistService
         };
 
         // Save cover Art to the file system
-        if(playlist.CoverArt != null)
+        if(request.CoverArt != null)
         {
             playlist.CoverArt = SavePlaylistCoverArt(playlistGuid, request.CoverArt);
         }
@@ -106,7 +106,7 @@ public class PlaylistService : IPlaylistService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    /// <summaryD
+    /// <summary
     /// Edits a playlist for the given user.
     /// </summary>
     /// <param name="playlistId">Id of the playlist to edit</param>
