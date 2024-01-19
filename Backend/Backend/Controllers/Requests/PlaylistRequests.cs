@@ -8,22 +8,24 @@ namespace Backend.Controllers.Requests;
 [BindProperties]
 public class EditPlaylistRequest
 {
-    [Required] 
+    [Required]
     public string Name { get; set; } = string.Empty;
 
-    public string Description {get;set;} = string.Empty;
+    [Required]
+    public string Description { get; set; } = string.Empty;
 
-    public string Privacy {get;set;} = GetPrivacyEnumString(DEFAULT_PRIVACY);
+    public string Privacy { get; set; } = GetPrivacyEnumString(DEFAULT_PRIVACY);
 
-    public virtual IFormFile? CoverArt { get; set;}
+    public IFormFile? CoverArt { get; set; }
 }
 
 [BindProperties]
 public class CreatePlaylistRequest : EditPlaylistRequest
 {
-    public Guid[] EpisodeIds {get;set;} = Array.Empty<Guid>();
-
+    public Guid[] EpisodeIds { get; set; } = Array.Empty<Guid>();
+ 
 }
+
 
 [BindProperties]
 public class PlaylistCreateRequest
