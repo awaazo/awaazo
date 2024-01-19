@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
+using FFMpegCore.Enums;
 
 namespace Backend.Services;
 
@@ -897,6 +898,68 @@ public class PodcastService : IPodcastService
         return adjecentEpisode;
 
 
+    }
+
+    /// <summary>
+    /// Search Episode with search Term and filters
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="episodeFilter"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize, EpisodeFilter episodeFilter,string domainUrl) 
+    {
+       
+        List<Episode> episode = await _db.Episodes
+            .Include(e => e.Podcast)
+            .Include(e => e.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
+
+        // Filter on Episode Length
+        if(episodeFilter.MinEpisodeLength != null)
+        {
+            episode = episode.Where(u => u.Duration >= episodeFilter.MinEpisodeLength).ToList();
+        }
+        // Filter on basis of Episode length
+        if(episodeFilter.IsExplicit != null)
+        {
+            episode = episode.Where(u => u.IsExplicit == episodeFilter.IsExplicit).ToList();
+
+        }
+        // Filter on basis of Release Data
+        if(episodeFilter.ReleaseDate != null)
+        {
+            // Filter Last week
+            if (episodeFilter.ReleaseDate== "lastWeek")
+            {
+                DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastWeek);
+            }
+            // Filter last month
+            if (episodeFilter.ReleaseDate == "lastMonth")
+            {
+                DateTime lastMonth = DateTime.UtcNow.Subtract(new TimeSpan(30, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastMonth);
+
+            }
+            // Filter Last Year
+            if (episodeFilter.ReleaseDate == "lastYear")
+            {
+                DateTime lastYear = DateTime.UtcNow.Subtract(new TimeSpan(365, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastYear);
+
+            }
+        }
+
+        // Cast it to Episode Reponse
+        List<EpisodeResponse> response = episode.Select(u => new EpisodeResponse(u, domainUrl)).Skip(page * pageSize).Take(pageSize).ToList();
+
+     
+        return response;
     }
 
     #endregion Episode

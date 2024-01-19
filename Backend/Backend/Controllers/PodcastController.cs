@@ -591,6 +591,26 @@ public class PodcastController : ControllerBase
         }
 
     }
+    [HttpPost("episode/search")]
+    public async Task<IActionResult> SearchEpisode([FromBody] EpisodeFilter episodeFilter,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        _logger.LogDebug(@"Using the podcast\episode\search Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+            return Ok(await _podcastService.SearchEpisodeAsync(page,pageSize,episodeFilter,GetDomainUrl(HttpContext)));
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+
+    }
 
     #endregion
 }
