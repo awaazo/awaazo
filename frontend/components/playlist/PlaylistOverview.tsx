@@ -1,47 +1,18 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  IconButton,
-  Input,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spacer,
-  Switch,
-  Text,
-  Textarea,
-  VStack,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, IconButton, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spacer, Switch, Text, Textarea, VStack, useDisclosure, useToast } from "@chakra-ui/react";
 import { Episode, Playlist } from "../../utilities/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../cards/EpisodeCard";
-import PlaylistCard from "../cards/PlaylistCard";
 import { RiPlayList2Fill } from "react-icons/ri";
 import { convertTime } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
-import { CgPlayList } from "react-icons/cg";
 import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdIosShare } from "react-icons/md";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
-import PodcastHelper from "../../helpers/PodcastHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
 import ShareComponent from "../social/shareComponent";
 

@@ -25,7 +25,6 @@ const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
     };
   
     let payload;
-    let response;
     try {
       let response;
       switch (formData.annotationType) {
@@ -37,8 +36,8 @@ const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
           payload = { ...basePayload, name: formData.name, website: formData.website };
           response = await AnnotationHelper.sponsorAnnotationCreateRequest(payload, episodeId);
           break;
-        default: // 'basic'
-          payload = { ...basePayload, annotationType: 'info' }; // Adjust this if 'info' is not the correct type
+        default: 
+          payload = { ...basePayload, annotationType: 'info' }; 
           response = await AnnotationHelper.annotationCreateRequest(payload, episodeId);
           console.log("API Response:", response);
           break;

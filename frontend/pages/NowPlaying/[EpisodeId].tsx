@@ -1,21 +1,7 @@
 import { useState, useEffect } from "react";
 
-import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  useBreakpointValue,
-  Grid,
-  DrawerCloseButton
-} from "@chakra-ui/react";
+import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, Tabs, TabList, TabPanels, Tab, TabPanel, useBreakpointValue, Grid, DrawerCloseButton, Spinner} from "@chakra-ui/react";
 import { FaPlus, FaList } from 'react-icons/fa';
-import Navbar from "../../components/shared/Navbar";
-
-import AwaazoBirdBot from "../../components/nowPlaying/AwaazoBirdBot";
-import Bookmarks from "../../components/nowPlaying/Bookmarks";
-import Transcripts from "../../components/nowPlaying/Transcripts";
 import CoverArt from "../../components/nowPlaying/CoverArt";
 import Sections from "../../components/nowPlaying/Sections";
 import PodCue from "../../components/nowPlaying/PodCue";
@@ -29,7 +15,7 @@ import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
-import { Annotation } from "../../utilities/Interfaces";
+
 
 const NowPlaying = () => {
   const router = useRouter();
@@ -73,20 +59,31 @@ const NowPlaying = () => {
     };
 
   
-  useEffect(() => {
-    if (EpisodeId) {
-      PodcastHelper.getEpisodeById(EpisodeId)
-      .then((response) => {
-        if (response.status === 200) {
-          setEpisode(response.episode);
-        } else {
-          console.error("Error fetching episode data:", response.message);
+    useEffect(() => {
+      const fetchEpisode = async () => {
+        setIsLoading(true); // Start loading
+        try {
+          if (EpisodeId) {
+            const response = await PodcastHelper.getEpisodeById(EpisodeId);
+            if (response.status === 200) {
+              setEpisode(response.episode);
+            } else {
+              console.error("Error fetching episode data:", response.message);
+              // Set error state here if needed
+            }
+          }
+          fetchAnnotations();
+        } catch (error) {
+          console.error("Error fetching episode data:", error);
+          // Set error state here
+        } finally {
+          setIsLoading(false); // Stop loading
         }
-      })
-      .catch((error) => console.error("Error fetching episode data:", error));
-    }
-    fetchAnnotations();
-  }, [EpisodeId]);
+      };
+    
+      fetchEpisode();
+    }, [EpisodeId]);
+    
   
 
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
@@ -160,6 +157,12 @@ const NowPlaying = () => {
       flexDirection="column"
       overflow="hidden"
     >
+          {/* If isLoading is true, display the Spinner */}
+    {isLoading && (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+        <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
+      </Box>
+    )}
       {/* //bgColor={palette || null} */}
       {isMobile ? (
         <Slider {...sliderSettings}>
