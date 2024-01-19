@@ -82,7 +82,10 @@ public class PlaylistService : IPlaylistService
         };
 
         // Save cover Art to the file system
-        playlist.CoverArt = SavePlaylistCoverArt(playlistGuid, request.CoverArt);
+        if(playlist.CoverArt != null)
+        {
+            playlist.CoverArt = SavePlaylistCoverArt(playlistGuid, request.CoverArt);
+        }
 
         await _db.Playlists.AddAsync(playlist);
 
