@@ -8,6 +8,7 @@ using FFMpegCore.Arguments;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Services;
@@ -251,13 +252,13 @@ public class PodcastService : IPodcastService
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
     /// <param name="domainUrl"></param>
-    /// <param name="searchTerm"></param>
+    /// <param name="filter"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
+    public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, PodcastFilter filter)
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
-        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        List<Podcast> podcastResponses = await _db.Podcasts
         .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
@@ -265,13 +266,76 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
-        .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(searchTerm))
-        .Skip(page * pageSize)
-        .Take(pageSize)
-        .Select(p => new PodcastResponse(p, domainUrl))
+        .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(filter.SearchTerm))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
 
-        return podcastResponses;
+        // Logic to filter Podcasts Based on Tags
+        if(filter.Tags != null)
+        {
+            List<Podcast> podcasts = new List<Podcast>();
+
+            // Filter if any Tag Exist
+            foreach(var tag in filter.Tags)
+            {
+                podcasts.AddRange(podcastResponses.FindAll(u => u.Tags.Contains(tag)));
+            }
+
+            podcastResponses = podcasts.Distinct().ToList();
+
+
+
+        }
+        // Logic to Filter Podcasts Based on Explicit Content
+        if(filter.IsExplicit != null)
+        {
+            podcastResponses = podcastResponses.FindAll(u => u.IsExplicit == filter.IsExplicit).ToList();
+
+        }
+        
+        // Logic to filter Based on Type
+        if(filter.Type != null)
+        {
+            podcastResponses = podcastResponses.FindAll(u => u.Type == GetPodcastType(filter.Type)).ToList();
+            
+        }
+
+        // Logic to filter Based on release Date
+        if(filter.ReleaseDate != null)
+        {
+            // Filter Last week
+            if(filter.ReleaseDate == "lastWeek")
+            {
+                DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastWeek);
+            }
+            // Filter last month
+            if (filter.ReleaseDate == "lastMonth") {
+                DateTime lastMonth = DateTime.UtcNow.Subtract(new TimeSpan(30, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastMonth);
+
+            }
+            // Filter Last Year
+            if (filter.ReleaseDate == "lastYear")
+            {
+                DateTime lastYear = DateTime.UtcNow.Subtract(new TimeSpan(365, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastYear);
+
+            }
+
+
+        }
+        // Cast the podcast to PodcastResponse Object
+        List<PodcastResponse> response = podcastResponses.Select(u => new PodcastResponse(u, domainUrl)).ToList();
+        //Logic to Filter based on Rating
+        if (filter.RatingGreaterThen != null)
+        {
+            response = response.FindAll(u => u.AverageRating >= filter.RatingGreaterThen).ToList();
+        }
+        // Paginate the results
+        response = response.Skip(page * pageSize).Take(pageSize).ToList();
+
+
+        return response;
     }
 
     /// <summary>

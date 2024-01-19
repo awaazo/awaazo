@@ -177,8 +177,8 @@ public class PodcastController : ControllerBase
         }
     }
 
-    [HttpGet("search")]
-    public async Task<IActionResult> SearchPodcast(string searchTerm, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
+    [HttpPost("search")]
+    public async Task<IActionResult> SearchPodcast([FromBody] PodcastFilter filter, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
         _logger.LogDebug(@"Using the podcast\search Endpoint");
 
@@ -191,7 +191,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),searchTerm));
+            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),filter));
         }
         catch (Exception e)
         {
