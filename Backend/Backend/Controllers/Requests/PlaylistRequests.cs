@@ -23,8 +23,6 @@ public class CreatePlaylistRequest : EditPlaylistRequest
 {
     public Guid[] EpisodeIds {get;set;} = Array.Empty<Guid>();
 
-    [Required]
-    public override IFormFile? CoverArt { get; set; }
 }
 
 [BindProperties]
