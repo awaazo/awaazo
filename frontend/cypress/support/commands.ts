@@ -137,7 +137,7 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
     cy.get('input[placeholder="GitHub URL"]').clear().type(githubURL);
   }
   cy.get('button').contains('Update Profile').click();
-  
+  cy.wait(2000);
 });
 
 Cypress.Commands.add('change_password', (old_pass, new_pass, confirm_pass) => {

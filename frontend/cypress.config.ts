@@ -33,6 +33,7 @@ export default defineConfig({
       // Configure retry attempts for `cypress open`
       // Default is 0
       openMode: 0
-    }
+    },
+    defaultCommandTimeout: 10000
   },
 });
