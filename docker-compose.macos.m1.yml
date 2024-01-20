@@ -12,8 +12,8 @@ services:
       - "1433:1433"
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "My.VeryStrongPassword123!"
-      SA_PASSWORD: "My.VeryStrongPassword123!"
+      MSSQL_SA_PASSWORD: "MyPass@word"
+      SA_PASSWORD: "MyPass@word"
     volumes:
       - "./data:/var/opt/mssql"
     hostname: sql_server
