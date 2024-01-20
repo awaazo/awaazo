@@ -82,27 +82,28 @@ const Notifications = ({ initialNotifcationCount }) => {
     fetchNotifications();
   }, []);
 
-  useEffect(() => {
-    const fetchNotificationCount = async () => {
-      const response = await NotificationHelper.NotificationCount();
-      console.log(response);
-      if (
-        response !== null &&
-        response !== undefined &&
-        typeof response === "number"
-      ) {
-        setNotificationCount(response);
-        console.log(notificationCount);
-      } else {
-        console.error(
-          "Failed to fetch notification count:",
-          response.message || "No error message available",
-        );
-      }
-    };
+  const fetchNotificationCount = async () => {
+    const response = await NotificationHelper.NotificationCount();
+    console.log(response);
+    if (
+      response !== null &&
+      response !== undefined &&
+      typeof response === "number"
+    ) {
+      setNotificationCount(response);
+      console.log(notificationCount);
+    } else {
+      console.error(
+        "Failed to fetch notification count:",
+        response.message || "No error message available",
+      );
+    }
+  };
 
+  const handleClick = () => {
+    console.log("clicked");
     fetchNotificationCount();
-  }, []);
+  };
 
   const renderNotificationList = (type) => {
     const filteredNotifications = notifications
@@ -124,12 +125,11 @@ const Notifications = ({ initialNotifcationCount }) => {
       <div style={{ maxHeight: "300px", overflowY: "scroll" }}>
         {filteredNotifications.map((notification) => (
           <Link href={`/Explore/${notification.link}`} key={notification.id}>
-            <ListItem
-              bg={notification.isRead ? "gray.550" : "gray.600"}
-              p={"2"}
-              width={"100%"}
-            >
-              <HStack spacing={"15px"}>
+            <ListItem p={"2"} width={"100%"}>
+              <HStack
+                spacing={"15px"}
+                bg={notification.isRead ? "gray.550" : "gray.600"}
+              >
                 <Avatar src={notification.media} boxSize="50px" />
                 <VStack align="start" spacing={"0"} flex="1">
                   <Text
@@ -163,6 +163,7 @@ const Notifications = ({ initialNotifcationCount }) => {
     <Box marginRight={"15px"}>
       <Menu>
         <MenuButton
+          onClick={handleClick}
           as={IconButton}
           aria-label="Notifications"
           icon={
@@ -206,7 +207,7 @@ const Notifications = ({ initialNotifcationCount }) => {
             backdropFilter: "blur(4px)",
           }}
         >
-          <Tabs isFitted variant="enclosed">
+          <Tabs isFitted>
             <TabList mb="1em">
               <Tab>All</Tab>
               <Tab>User</Tab>

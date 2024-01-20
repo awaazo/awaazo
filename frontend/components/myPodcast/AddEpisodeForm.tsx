@@ -1,5 +1,24 @@
 import React, { useCallback, useState, FormEvent, useEffect } from "react";
-import { FormControl, Button, Textarea, Box, VStack, Image, Input, IconButton, Flex, Switch, Text, Center, Heading, Modal, ModalContent, ModalCloseButton, ModalOverlay, Spinner } from "@chakra-ui/react";
+import {
+  FormControl,
+  Button,
+  Textarea,
+  Box,
+  VStack,
+  Image,
+  Input,
+  IconButton,
+  Flex,
+  Switch,
+  Text,
+  Center,
+  Heading,
+  Modal,
+  ModalContent,
+  ModalCloseButton,
+  ModalOverlay,
+  Spinner,
+} from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -10,18 +29,19 @@ import { EpisodeAddRequest } from "../../utilities/Requests";
 import { AxiosProgressEvent } from "axios";
 import ImageAdder from "../../components/tools/ImageAdder";
 
-const AddEpisode = () => {
+const AddEpisodeForm = ({ podcastId }) => {
   const loginPage = "/auth/Login";
   const myPodcastsPage = "/CreatorHub/MyPodcasts";
 
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [addError, setAddError] = useState("");
   const [episodeName, setEpisodeName] = useState("");
-  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] = useState<number>(0);
+  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] =
+    useState<number>(0);
   const [description, setDescription] = useState("");
-  const [descriptionCharacterCount, setDescriptionCharacterCount] = useState<number>(0);
-  const [selectedPodcast, setSelectedPodcast] = useState<Podcast>(null);
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
+
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
   const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -32,23 +52,6 @@ const AddEpisode = () => {
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const [serverError, setServerError] = useState(false);
 
-  useEffect(() => {
-    AuthHelper.authMeRequest().then((res) => {
-      if (res.status == 200) {
-        setUser(res.userMenuInfo);
-        PodcastHelper.podcastMyPodcastsGet(0, 12).then((res2) => {
-          if (res2.status == 200) {
-            setPodcasts(res2.myPodcasts);
-          } else {
-            setAddError("Podcasts cannot be fetched");
-          }
-        });
-      } else {
-        window.location.href = loginPage;
-      }
-    });
-  }, [router]);
-
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
   }, []);
@@ -56,20 +59,15 @@ const AddEpisode = () => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      'audio/mp3': ['.mp3'],
-      'audio/wav': ['.wav'],
-      'audio/aac': ['.aac'],
-      'audio/ogg': ['.ogg'],
-      'audio/flac': ['.flac'],
-      'audio/m4a': ['.m4a'],
+      "audio/mp3": [".mp3"],
+      "audio/wav": [".wav"],
+      "audio/aac": [".aac"],
+      "audio/ogg": [".ogg"],
+      "audio/flac": [".flac"],
+      "audio/m4a": [".m4a"],
     },
     maxFiles: 1,
   });
-  
-
-  const handlePodcastSelect = (podcast) => {
-    setSelectedPodcast(podcast);
-  };
 
   const [loading, setLoading] = useState(false);
 
@@ -87,44 +85,50 @@ const AddEpisode = () => {
 
   const handleAddEpisode = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (
+      coverImageFile == null ||
+      episodeName == "" ||
+      description == "" ||
+      file == null
+    ) {
+      setAddError("Cover Image, Episode Name and Description Required.");
+      return;
+    }
     setLoading(true);
+    // Create request object
+    const request: EpisodeAddRequest = {
+      audioFile: file,
+      description: description,
+      thumbnail: coverImageFile,
+      isExplicit: isExplicit,
+      episodeName: episodeName,
+    };
 
-    if (selectedPodcast == null) {
-      setAddError("Please select the Podcast you wish to upload to");
+    setServerError(false);
+    setUploadModalOpen(true);
+    // Send the request
+    const response = await PodcastHelper.episodeAddRequest(
+      request,
+      podcastId,
+      onUploadProgress,
+    );
+    console.log(response);
+
+    setLoading(false);
+
+    if (response.status === 200) {
     } else {
-      if (coverImageFile == null || episodeName == "" || description == "" || file == null) {
-        setAddError("Cover Image, Episode Name and Description Required.");
-        return;
-      }
-
-      // Create request object
-      const request: EpisodeAddRequest = {
-        audioFile: file,
-        description: description,
-        thumbnail: coverImageFile,
-        isExplicit: isExplicit,
-        episodeName: episodeName,
-      };
-
-      setServerError(false);
-      setUploadModalOpen(true);
-      // Send the request
-      const response = await PodcastHelper.episodeAddRequest(request, selectedPodcast.id, onUploadProgress);
-      console.log(response);
-
-      setLoading(false);
-
-      if (response.status === 200) {
-      } else {
-        setServerError(true);
-        setAddError(response.data);
-      }
+      setServerError(true);
+      setAddError(response.data);
     }
   };
 
   // Define the progress callback
   const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
-    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+    const progress = Math.round(
+      (progressEvent.loaded / progressEvent.total) * 100,
+    );
     setUploadProgress(progress);
     console.log(progress);
   };
@@ -137,7 +141,9 @@ const AddEpisode = () => {
   };
 
   // Ensures episode description is not longer than 250 characters
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
     setDescriptionCharacterCount(newDesc.length);
@@ -150,75 +156,78 @@ const AddEpisode = () => {
 
   return (
     <>
-      <Center>
-        <VStack mt={"1em"}>
-          <Heading fontWeight={"normal"}>Upload Episode</Heading>
-          <Text mb={"1em"}>Choose a Podcast</Text>
-        </VStack>
-      </Center>
-
-      <Box display="flex" width="100%" justifyContent="center">
-        <Flex direction="row" wrap="wrap" justifyContent="center" alignItems="center">
-          {podcasts.map((podcast) => (
-            <Flex
-              key={podcast.id}
-              direction="column"
-              alignItems="center"
-              bg={selectedPodcast && selectedPodcast.id === podcast.id ? "brand.100" : "transparent"}
-              borderRadius="1em"
-              cursor="pointer"
-              outline={selectedPodcast && selectedPodcast.id === podcast.id ? "1px solid brand.100" : "none"}
-              onClick={() => handlePodcastSelect(podcast)}
-              p={2}
-              m={2}
-            >
-              <Image src={podcast.coverArtUrl} alt={podcast.name} boxSize="100px" borderRadius="2em" objectFit="cover" boxShadow="lg" outline="2px solid #FFFFFF80" data-cy={`podcast-image-${podcast.name.replace(/\s+/g, "-").toLowerCase()}`} />
-              <Text mt={2}> {podcast.name.length > 18 ? `${podcast.name.substring(0, 18)}...` : podcast.name}</Text>
-            </Flex>
-          ))}
-
-          {/* Create a Podcast Option */}
-          <Flex direction="column" alignItems="center" borderRadius="1em" cursor="pointer" outline="none" onClick={navigateToCreatePodcast} p={2} m={2} bg="transparent">
-            <Box boxSize="100px" borderRadius="2em" border="2px dashed gray" display="flex" alignItems="center" justifyContent="center" data-cy="create-podcast-box">
-              <AddIcon w={8} h={8} />
-            </Box>
-            <Text mt={2}>Create a Podcast</Text>
-          </Flex>
-        </Flex>
-      </Box>
-
       {/* Form Container */}
       <Center>
-        <VStack spacing={5} align="center" p={5}>
+        <VStack spacing={2} align="center" p={2}>
           <form onSubmit={handleAddEpisode}>
             {addError && <Text color="red.500">{addError}</Text>}
             <VStack spacing={5} align="center" p={5}>
               <ImageAdder onImageAdded={handleImageAdded} />
               {/* Episode Name Input */}
               <FormControl position="relative">
-                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." rounded="lg" pr="50px" />
-                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+                <Input
+                  value={episodeName}
+                  onChange={handleEpisodeNameChange}
+                  placeholder="Enter episode name..."
+                  rounded="lg"
+                  pr="50px"
+                />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
                   {episodeNameCharacterCount}/25
                 </Text>
               </FormControl>
 
               {/* Description Textarea */}
               <FormControl position="relative">
-                <Textarea value={description} onChange={handleDescriptionChange} placeholder="Enter episode description..." />
-                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+                <Textarea
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  placeholder="Enter episode description..."
+                />
+                <Text
+                  position="absolute"
+                  right="8px"
+                  bottom="8px"
+                  fontSize="sm"
+                  color="gray.500"
+                >
                   {descriptionCharacterCount}/250
                 </Text>
               </FormControl>
 
               {/* Genre Selection */}
-              <FormControl display="flex" alignItems="center" justifyContent="center">
-                <Switch id="explicitToggle" colorScheme="purple" isChecked={isExplicit} onChange={() => setIsExplicit(!isExplicit)} opacity={0.9}>
+              <FormControl
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Switch
+                  id="explicitToggle"
+                  colorScheme="purple"
+                  isChecked={isExplicit}
+                  onChange={() => setIsExplicit(!isExplicit)}
+                  opacity={0.9}
+                >
                   Explicit
                 </Switch>
               </FormControl>
 
               {/* File Upload */}
-              <Box {...getRootProps()} border="2px dotted gray" borderRadius="3xl" p={4} textAlign="center" width="300px" data-cy="podcast-file-dropzone">
+              <Box
+                {...getRootProps()}
+                border="2px dotted gray"
+                borderRadius="3xl"
+                p={4}
+                textAlign="center"
+                width="300px"
+                data-cy="podcast-file-dropzone"
+              >
                 <input {...getInputProps()} />
                 {file ? (
                   <Text>{file.name}</Text>
@@ -234,20 +243,45 @@ const AddEpisode = () => {
               </Box>
 
               {/* Upload Button */}
-              <Button id="createBtn" type="submit" variant={"gradient"} disabled={loading} w={"12rem"}>
+              <Button
+                id="createBtn"
+                type="submit"
+                variant={"gradient"}
+                disabled={loading}
+                w={"12rem"}
+              >
                 {loading ? <Spinner /> : "Upload"}
               </Button>
             </VStack>
           </form>
         </VStack>
       </Center>
-      <Modal isOpen={isUploadModalOpen} onClose={() => setUploadModalOpen(false)} isCentered>
+      <Modal
+        isOpen={isUploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        isCentered
+      >
         <ModalOverlay />
 
-        <ModalContent borderRadius="xl" backdropFilter="blur(50px)" p={9} maxW="800px" width="95%">
+        <ModalContent
+          borderRadius="xl"
+          backdropFilter="blur(50px)"
+          p={9}
+          maxW="800px"
+          width="95%"
+        >
           <Flex direction="column">
             <Flex align="start">
-              {coverImage && <Image src={coverImage} alt="Uploaded Cover Photo" boxSize="120px" borderRadius="8px" objectFit="cover" boxShadow="lg" />}
+              {coverImage && (
+                <Image
+                  src={coverImage}
+                  alt="Uploaded Cover Photo"
+                  boxSize="120px"
+                  borderRadius="8px"
+                  objectFit="cover"
+                  boxShadow="lg"
+                />
+              )}
               <Box ml={4}>
                 <Text fontSize="25px" fontWeight={"bold"}>
                   Uploading: {episodeName}
@@ -268,7 +302,12 @@ const AddEpisode = () => {
                 <>
                   <Box textAlign="center">
                     {uploadProgress !== 100 && (
-                      <Text fontSize="xs" textAlign="center" color="white" mb={2}>
+                      <Text
+                        fontSize="xs"
+                        textAlign="center"
+                        color="white"
+                        mb={2}
+                      >
                         Please wait while the file gets uploaded
                       </Text>
                     )}
@@ -290,7 +329,8 @@ const AddEpisode = () => {
                       borderRadius="full"
                       width={`${uploadProgress}%`}
                       style={{
-                        background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
+                        background:
+                          "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
                         backgroundSize: "300% 300%",
                         animation: "Gradient 3s infinite linear",
                       }}
@@ -298,12 +338,24 @@ const AddEpisode = () => {
                       zIndex="1"
                     />
 
-                    <Text position="absolute" width="100%" textAlign="center" color="white" fontWeight="bold" fontSize="xl" zIndex="2">
+                    <Text
+                      position="absolute"
+                      width="100%"
+                      textAlign="center"
+                      color="white"
+                      fontWeight="bold"
+                      fontSize="xl"
+                      zIndex="2"
+                    >
                       {uploadProgress}%
                     </Text>
                   </Box>
                   {uploadProgress === 100 && (
-                    <Button onClick={() => (window.location.href = myPodcastsPage)} alignSelf="center" bg="rgba(169, 169, 169, 0.2)">
+                    <Button
+                      onClick={() => (window.location.href = myPodcastsPage)}
+                      alignSelf="center"
+                      bg="rgba(169, 169, 169, 0.2)"
+                    >
                       Finish
                     </Button>
                   )}
@@ -317,4 +369,4 @@ const AddEpisode = () => {
   );
 };
 
-export default AddEpisode;
+export default AddEpisodeForm;
