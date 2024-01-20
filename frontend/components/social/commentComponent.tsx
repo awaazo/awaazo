@@ -34,7 +34,11 @@ import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./likeComponent";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
-const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
+const CommentComponent = ({
+  episodeIdOrCommentId,
+  initialComments,
+  showCount,
+}) => {
   // Component Values
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
@@ -145,18 +149,34 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
 
   return (
     <>
-      <Tooltip label="Comment" aria-label="Comment tooltip">
-        <Button
-          p={2}
-          m={1}
-          leftIcon={<Icon as={FaComments} />}
-          onClick={onOpen}
-          variant={"ghost"}
-          data-cy={`playerbar-comment-button`}
+      {showCount ? (
+        <Tooltip label="Comment" aria-label="Comment">
+          <Button
+            p={2}
+            m={1}
+            leftIcon={<Icon as={FaComments} />}
+            onClick={onOpen}
+            variant={"ghost"}
+            data-cy={`playerbar-comment-button`}
+          >
+            {noOfComments}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Tooltip
+          label={`${noOfComments} Comments`}
+          aria-label={`${noOfComments} Comments`}
         >
-          {noOfComments}
-        </Button>
-      </Tooltip>
+          <Button
+            p={2}
+            m={1}
+            leftIcon={<Icon as={FaComments} />}
+            onClick={onOpen}
+            variant={"ghost"}
+            data-cy={`playerbar-comment-button`}
+          />
+        </Tooltip>
+      )}
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
@@ -211,6 +231,7 @@ const CommentComponent = ({ episodeIdOrCommentId, initialComments }) => {
                             <LikeComponent
                               episodeOrCommentId={comment.id}
                               initialLikes={comment.likes}
+                              showCount={true}
                             />
                             {user.id === comment.user.id ? (
                               <IconButton

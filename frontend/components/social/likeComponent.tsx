@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import SocialHelper from "../../helpers/SocialHelper";
 
 // This component represents a like button for an episode or comment
-const LikeComponent = ({ episodeOrCommentId, initialLikes }) => {
+const LikeComponent = ({ episodeOrCommentId, initialLikes, showCount }) => {
   // Component Values
   const [likes, setLikes] = useState(initialLikes);
 
