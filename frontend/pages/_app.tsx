@@ -62,7 +62,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             <Box flex="1">
               {showNavbar && <Navbar />}
               <Component {...pageProps} />
-              <Box h="200px" />
+              <Box h="100px" />
               {showPlayerBar && <PlayerBar />}
             </Box>
           </Flex>
