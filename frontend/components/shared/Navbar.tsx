@@ -54,37 +54,11 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isUserSet, setIsUserSet] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
     backdropFilter: "blur(0px)",
   });
-
-  const toggleNotifications = () => {
-    setIsNotificationsOpen(!isNotificationsOpen);
-  };
-
-  const [notificationCount, setNotificationCount] = useState(0);
-
-  useEffect(() => {
-    const fetchNotificationCount = async () => {
-      const response = await NotificationHelper.NotificationCount();
-      if (
-        response !== null &&
-        response !== undefined &&
-        typeof response === "number"
-      ) {
-        setNotificationCount(response);
-      } else {
-        console.error(
-          "Failed to fetch notification count:",
-          response.message || "No error message available",
-        );
-      }
-    };
-
-    fetchNotificationCount();
-  }, []);
 
   interface SessionExt extends DefaultSession {
     token: {
@@ -172,6 +146,29 @@ export default function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      const response = await NotificationHelper.NotificationCount();
+      console.log(response);
+      if (
+        response !== null &&
+        response !== undefined &&
+        typeof response === "number"
+      ) {
+        setNotificationCount(response);
+        console.log(notificationCount);
+      } else {
+        console.error(
+          "Failed to fetch notification count:",
+          response.message || "No error message available",
+        );
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
+
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton
@@ -250,16 +247,6 @@ export default function Navbar() {
     </Menu>
   );
 
-  const NotificationsModal = () => {
-    return (
-      <Notifications
-        isOpen={isNotificationsOpen}
-        onClose={toggleNotifications}
-        notificationCount={notificationCount}
-      />
-    );
-  };
-
   return (
     <>
       <Box
@@ -291,46 +278,13 @@ export default function Navbar() {
                 size="md"
                 rounded="full"
               />
-              {!isMobile && currentPath === "/Explore/Search" && (
-                <Flex
-                  alignItems="center"
-                  as="form"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSearchSubmit();
-                  }}
-                  ml={5}
-                  width="20vh"
-                >
-                  <Input
-                    placeholder="Search"
-                    size="sm"
-                    borderRadius="full"
-                    mr={4}
-                    value={searchValue}
-                    data-cy={`search-input`}
-                    onChange={handleSearchChange}
-                  />
-                </Flex>
-              )}
             </Flex>
             <Spacer />
+            <Notifications initialNotifcationCount={notificationCount} />
             <Flex align="center">
-              <IconButton
-                aria-label="Notifications"
-                icon={<BellIcon />}
-                onClick={toggleNotifications}
-                data-cy={`notifications-button`}
-                variant="ghost"
-                size="md"
-                rounded={"full"}
-                opacity={0.7}
-                mr={2}
-              />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           </Flex>
-          {isNotificationsOpen && <NotificationsModal />}
         </Box>
       </Box>
     </>
