@@ -1,7 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Tooltip, useBreakpointValue } from "@chakra-ui/react";
-import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from "react-icons/fa";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Image,
+  Text,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Tooltip,
+  useBreakpointValue,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  FaPlay,
+  FaPause,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaStepForward,
+  FaStepBackward,
+} from "react-icons/fa";
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
@@ -133,80 +153,200 @@ const PlayerBar = () => {
     }
   };
 
-  const timeLeft = isEpisodeLoaded ? convertTime(Math.max(episode.duration - position, 0)) : "0:00";
+  const timeLeft = isEpisodeLoaded
+    ? convertTime(Math.max(episode.duration - position, 0))
+    : "0:00";
 
-  const thumbnailUrl = isEpisodeLoaded ? episode.thumbnailUrl : "/awaazo_bird_aihelper_logo.svg";
+  const thumbnailUrl = isEpisodeLoaded
+    ? episode.thumbnailUrl
+    : "/awaazo_bird_aihelper_logo.svg";
   const { data: palette } = usePalette(thumbnailUrl, 2, "rgbArray", {
     crossOrigin: "Anonymous",
     quality: 10,
   });
 
   return (
-    <Box maxWidth="100%" p={1} pt={3} pb={5} bg="rgba(0, 0, 0, 0.2)" style={{ backdropFilter: "blur(50px)" }} position="fixed" left="50%" transform="translateX(-50%)" width="100%" zIndex={999} bottom={"0em"}>
-      <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
+    <Box
+      maxWidth="100%"
+      p={1}
+      pt={3}
+      pb={5}
+      bg="rgba(0, 0, 0, 0.2)"
+      style={{ backdropFilter: "blur(50px)" }}
+      position="fixed"
+      left="50%"
+      transform="translateX(-50%)"
+      width="100%"
+      zIndex={999}
+      bottom={"0em"}
+    >
+      <Flex
+        flexDirection="row"
+        justifyContent={isEpisodeLoaded ? "space-between" : "flex-start"} // Updated justifyContent
+        alignItems="center"
+      >
         {/* Episode Info */}
-        <Flex alignItems="center" ml={2}>
-          {isEpisodeLoaded ? (
+        {isEpisodeLoaded ? (
+          <Flex alignItems="center" ml={2}>
             <Link href={`/NowPlaying/${episode.id}`} shallow>
-              <Image boxSize={isMobile ? "30px" : "40px"} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
+              <Image
+                boxSize={isMobile ? "30px" : "40px"}
+                src={episode.thumbnailUrl}
+                borderRadius="base"
+                mr={4}
+                objectFit="cover"
+                cursor="pointer"
+              />
             </Link>
-          ) : (
-            <Image boxSize={isMobile ? "30px" : "40px"} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
-          )}
-          <Box>
-            <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"}>
-              {isEpisodeLoaded ? episode.episodeName : "Unknown Episode"}
-            </Text>
-            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
-              {isEpisodeLoaded ? episode.podcastName : "Unknown Podcaster"}{" "}
-            </Text>
-          </Box>
-        </Flex>
-
-        <Flex flexDirection="column" width="45%" justifyContent="space-between" alignItems="center">
-          {/* Player Controls */}
-          <Flex alignItems="center" mb="5px">
-            <IconButton aria-label="Previous Episode" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={playPrevious} mr={2} data-cy={`play-previous`} />
-            <IconButton aria-label="Skip Backward" icon={<FaArrowRotateLeft />} variant="ghost" size="sm" onClick={skipBackward} mr={2} data-cy={`skip-backward`} />
-            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="gradient" size="md" onClick={togglePlayPause} mr={2} data-cy={`play-pause-button`} />
-            <IconButton aria-label=" Skip Forward" icon={<FaArrowRotateRight />} variant="ghost" size="sm" onClick={skipForward} mr={2} data-cy={`skip-forward`} />
-            <IconButton aria-label=" Next Episode" icon={<FaStepForward />} variant="ghost" size="sm" onClick={playNext} data-cy={`play-next`} />
+            <Box>
+              <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"}>
+                {episode.episodeName}
+              </Text>
+              <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
+                {episode.podcastName}
+              </Text>
+            </Box>
           </Flex>
+        ) : (
+          <Flex alignItems="center" ml={2}>
+            <Image
+              boxSize={isMobile ? "30px" : "40px"}
+              src="/awaazo_bird_aihelper_logo.svg"
+              borderRadius="full"
+              mr={4}
+              objectFit="cover"
+            />
+            <Box>
+              <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"}>
+                Not Playing
+              </Text>
+            </Box>
+          </Flex>
+        )}
+
+        <HStack
+          flexDirection="column"
+          width={isEpisodeLoaded ? "45%" : "75%"}
+          alignItems="center"
+        >
+          {/* Player Controls */}
+          <HStack alignItems="center" mb="5px">
+            <IconButton
+              aria-label="Previous Episode"
+              icon={<FaStepBackward />}
+              variant="ghost"
+              size="sm"
+              onClick={playPrevious}
+              mr={2}
+              data-cy={`play-previous`}
+            />
+            <IconButton
+              aria-label="Skip Backward"
+              icon={<FaArrowRotateLeft />}
+              variant="ghost"
+              size="sm"
+              onClick={skipBackward}
+              mr={2}
+              data-cy={`skip-backward`}
+            />
+            <IconButton
+              aria-label={isPlaying ? "Pause" : "Play"}
+              icon={isPlaying ? <FaPause /> : <FaPlay />}
+              variant="gradient"
+              size="md"
+              onClick={togglePlayPause}
+              mr={2}
+              data-cy={`play-pause-button`}
+            />
+            <IconButton
+              aria-label=" Skip Forward"
+              icon={<FaArrowRotateRight />}
+              variant="ghost"
+              size="sm"
+              onClick={skipForward}
+              mr={2}
+              data-cy={`skip-forward`}
+            />
+            <IconButton
+              aria-label=" Next Episode"
+              icon={<FaStepForward />}
+              variant="ghost"
+              size="sm"
+              onClick={playNext}
+              data-cy={`play-next`}
+            />
+          </HStack>
 
           {/* Slider */}
           {!isMobile && (
-            <Flex width="100%" mx={4} alignItems="center">
-              <Text data-cy={`time-passed-${convertTime(position)}`} mr={3} fontSize="xs" fontWeight="medium">
+            <Flex
+              width={isEpisodeLoaded ? "100%" : "65%"}
+              mx={4}
+              alignItems="center"
+            >
+              <Text
+                data-cy={`time-passed-${convertTime(position)}`}
+                mr={3}
+                fontSize="xs"
+                fontWeight="medium"
+              >
                 {convertTime(position)}
               </Text>
-              <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
+              <Slider
+                aria-label="Track Timeline"
+                value={position}
+                max={duration}
+                onChange={(val) => handleSeek(val)}
+              >
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
                   <SliderFilledTrack bg="brand.100" />
                 </SliderTrack>
               </Slider>
 
-              <Text data-cy={`time-left-${timeLeft}`} ml={3} fontSize="xs" fontWeight="medium">
+              <Text
+                data-cy={`time-left-${timeLeft}`}
+                ml={3}
+                fontSize="xs"
+                fontWeight="medium"
+              >
                 {timeLeft}
               </Text>
             </Flex>
           )}
-        </Flex>
+        </HStack>
 
         {/* Like and Comment - Hidden in mobile */}
 
-        {!isMobile && (
+        {!isMobile && isEpisodeLoaded && (
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
-              <BookmarkComponent episodeId={isEpisodeLoaded ? episode.id : "default-id"} selectedTimestamp={isEpisodeLoaded ? position : 0} />
-              <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} />
-              <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} />
+              <BookmarkComponent
+                episodeId={isEpisodeLoaded ? episode.id : "default-id"}
+                selectedTimestamp={isEpisodeLoaded ? position : 0}
+              />
+              <LikeComponent
+                episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
+                initialLikes={isEpisodeLoaded ? episode.likes : 0}
+              />
+              <CommentComponent
+                episodeIdOrCommentId={
+                  isEpisodeLoaded ? episode.id : "default-id"
+                }
+                initialComments={isEpisodeLoaded ? episode.comments.length : 0}
+              />
             </Flex>
 
             {/* Volume Control Section */}
             {!isTablet && (
               <Box display="contents" alignItems="center">
-                <IconButton aria-label={isMuted ? "Unmute" : "Mute"} icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />} variant="ghost" size="sm" onClick={toggleMute} />
+                <IconButton
+                  aria-label={isMuted ? "Unmute" : "Mute"}
+                  icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleMute}
+                />
                 <Slider
                   aria-label="Volume"
                   value={isMuted ? 0 : volume}
