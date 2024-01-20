@@ -1,15 +1,89 @@
-import { useState } from "react";
-import { Box, Flex, IconButton, Tag, Tooltip, useDisclosure, useBreakpointValue, Text, Icon, Button, VStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import {  Flex, Tag, Tooltip, useBreakpointValue, Text, Icon, Button, VStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Grid,
+  DrawerCloseButton } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
 import { convertTime } from "../../utilities/commonUtils";
+import { FaPlus, FaList } from 'react-icons/fa';
+import AnnotationForm from "../../components/nowPlaying/AnnotationForm";
+import AnnotationList from "../../components/nowPlaying/AnnotationList";
+import AnnotationHelper from "../../helpers/AnnotationHelper";
+import { Annotation } from "../../utilities/Interfaces";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const [annotations, setAnnotations] = useState([]);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [selectedAnnotation, setSelectedAnnotation] = useState(null);
+  const [episodes, setEpisode] = useState(null);
+
+  const handleOpenForm = (index = null) => {
+    setTabIndex(1);
+    if (index !== null) {
+      setSelectedAnnotation({ ...annotations[index], index });
+    } else {
+      setSelectedAnnotation(null);
+    }
+    onOpenAnnotationDrawer();
+  };
+
+
+  const fetchAnnotations = async () => {
+    if (episode.id) {
+      try {
+        const response = await AnnotationHelper.getAnnotationsRequest(episode.id);
+        if (response.status === 200) {
+          setAnnotations(response.annotations);
+        } else {
+          console.error('Failed to fetch annotations:', response.message);
+        }
+      } catch (error) {
+        console.error('Error fetching annotations:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (episode.id) {
+      PodcastHelper.getEpisodeById(episode.id)
+      .then((response) => {
+        if (response.status === 200) {
+          setEpisode(response.episode);
+        } else {
+          console.error("Error fetching episode data:", response.message);
+        }
+      })
+      .catch((error) => console.error("Error fetching episode data:", error));
+    }
+    fetchAnnotations();
+  }, [episode.id]);
+
+    const handleDeleteAnnotation = async (annotationId) => {
+      try {
+        const response = await AnnotationHelper.deleteAnnotationRequest(annotationId);
+        if (response.status === 200) {
+          // Optionally refresh the annotations list after deletion
+          // fetchAnnotations(); // This should be a function that fetches the updated list of annotations
+          console.log('Annotation deleted successfully');
+        } else {
+          console.error('Failed to delete annotation:', response.message);
+        }
+      } catch (error) {
+        console.error('Error deleting annotation:', error);
+      }
+      setAnnotations(prevAnnotations => prevAnnotations.filter(ann => ann.id !== annotationId));
+    };
 
   // Edit Episode Modal
   //-----------------------------------------------------------------------
@@ -51,7 +125,8 @@ const Episode = ({ episode }) => {
   //----------------------------------------------------------------------
 
   // For delete pop up
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
+  const { isOpen: isAnnotationDrawerOpen, onOpen: onOpenAnnotationDrawer, onClose: onCloseAnnotationDrawer } = useDisclosure();
   const [isDeleting, setDeleting] = useState(false);
 
   // Form errors
@@ -68,7 +143,7 @@ const Episode = ({ episode }) => {
     } else {
       setEpisodeError("Episode cannot be deleted");
     }
-    onClose();
+    onCloseDeleteModal();
     setDeleting(false);
   };
 
@@ -102,6 +177,9 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
+          <Tooltip label="Annotations" aria-label="Annotations Tooltip">
+            <IconButton  variant="ghost" data-cy="annotations-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Annotations" icon={<Icon as={FaList} />} onClick={() => handleOpenForm (episode)} />
+          </Tooltip>
           <Tooltip label="Sections" aria-label="Sections Tooltip">
             <IconButton
               variant="ghost"
@@ -120,13 +198,14 @@ const Episode = ({ episode }) => {
             <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
-            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} marginRight={5} color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpen} />
+            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} marginRight={5} color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
           </Tooltip>
         </Box>
       </Flex>
+      
 
       {/* Delete Episode Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isDeleteModalOpen} onClose={onCloseDeleteModal}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
@@ -136,7 +215,7 @@ const Episode = ({ episode }) => {
             This action cannot be undone
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={onCloseDeleteModal}>
               Cancel
             </Button>
             <Button colorScheme="red" ml={3} onClick={() => handleDelete(episode.episodeId)}>
@@ -191,6 +270,34 @@ const Episode = ({ episode }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <Drawer isOpen={isAnnotationDrawerOpen} placement="right" onClose={onCloseAnnotationDrawer} size="md">
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerHeader>Manage Annotations</DrawerHeader>
+        <DrawerCloseButton />
+        <DrawerBody>
+          <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
+            <TabList>
+              <Tab>List</Tab>
+              <Tab>{selectedAnnotation ? 'Edit' : 'Add'} Annotation</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
+              </TabPanel>
+              <TabPanel>
+              <AnnotationForm
+              episodeId={episode.id}
+              fetchAnnotations={fetchAnnotations}
+              />
+
+              </TabPanel> 
+            </TabPanels>
+          </Tabs>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
     </Flex>
   );
 };

@@ -11,7 +11,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { usePalette } from "color-thief-react";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
@@ -93,8 +92,6 @@ const NowPlaying = () => {
     try {
       const response = await AnnotationHelper.deleteAnnotationRequest(annotationId);
       if (response.status === 200) {
-        // Optionally refresh the annotations list after deletion
-        // fetchAnnotations(); // This should be a function that fetches the updated list of annotations
         console.log('Annotation deleted successfully');
       } else {
         console.error('Failed to delete annotation:', response.message);
@@ -126,10 +123,10 @@ const NowPlaying = () => {
           component: <Sections episodeId={episode.id} />,
           inSlider: true,
         },
-        {
-          component: <PodCue cues={annotations} />, 
-          inSlider: false, 
-        },
+        // {
+        //   component: <PodCue cues={annotations} />, 
+        //   inSlider: false, 
+        // },
 
         // DO NOT REMOVE
       ]);
@@ -207,7 +204,7 @@ const NowPlaying = () => {
         </Box>
       )}
       
-    <IconButton
+    {/* <IconButton
       icon={<FaPlus />}
       isRound
       size="lg"
@@ -218,7 +215,7 @@ const NowPlaying = () => {
       zIndex="overlay"
       onClick={() => handleOpenForm()}
       aria-label="Add annotation"
-    />
+    /> */}
 
     {/* Unified Drawer for Annotations */}
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
@@ -241,7 +238,6 @@ const NowPlaying = () => {
               episodeId={EpisodeId}
               fetchAnnotations={fetchAnnotations}
               />
-              
               </TabPanel> 
             </TabPanels>
           </Tabs>
