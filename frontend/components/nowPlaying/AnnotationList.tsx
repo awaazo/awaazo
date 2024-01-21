@@ -9,7 +9,7 @@ import {
   Td,
   Tooltip,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import {  DeleteIcon } from '@chakra-ui/icons';
 
 const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
   
@@ -31,16 +31,6 @@ const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
               <Td>{annotation?.content}</Td>
               <Td>{annotation?.annotationType}</Td>
               <Td>
-                <Tooltip label="Edit Annotation" hasArrow>
-                  <IconButton
-                    icon={<EditIcon />}
-                    size="sm"
-                    mr={2}
-                    colorScheme="blue"
-                    aria-label="Edit Annotation"
-                    onClick={() => editAnnotation(index)}
-                  />
-                </Tooltip>
                 <Tooltip label="Delete Annotation" hasArrow>
                   <IconButton
                     icon={<DeleteIcon />}

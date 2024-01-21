@@ -33,6 +33,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
 import { useRouter } from "next/router";
+import ShareComponent from "../social/shareComponent";
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer();
@@ -44,6 +45,9 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [description, setDescription] = useState(playlist.description);
 //   const [CoverImage, setCoverImage] = useState(playlist.coverimg);
   const router = useRouter();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const onShareModalOpen = () => setIsShareModalOpen(true);
+  const onShareModalClose = () => setIsShareModalOpen(false);
 
   // Function to handle deletion of the playlist
   const handleDelete = async (id) => {
@@ -231,20 +235,33 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               </MenuItem>
             </>
           )}
-          <MenuItem
-            _hover={{
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-              fontWeight: "bold",
-            }}
-            style={{
-              backgroundColor: "transparent",
-            }}
-          >
-            Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
-          </MenuItem>
+        <MenuItem
+          onClick={onShareModalOpen}
+          _hover={{
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            fontWeight: "bold",
+          }}
+          style={{
+            backgroundColor: "transparent",
+          }}
+        >
+          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
+        </MenuItem>
+
         </MenuList>
 
       </Menu>
+      <Modal isOpen={isShareModalOpen} onClose={onShareModalClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Share this Playlist</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ShareComponent content={playlist} contentType="playlist" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
