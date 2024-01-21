@@ -123,10 +123,10 @@ const NowPlaying = () => {
           component: <Sections episodeId={episode.id} />,
           inSlider: true,
         },
-        // {
-        //   component: <PodCue cues={annotations} />, 
-        //   inSlider: false, 
-        // },
+        {
+          component: <PodCue cues={annotations} />, 
+          inSlider: false, 
+        },
 
         // DO NOT REMOVE
       ]);

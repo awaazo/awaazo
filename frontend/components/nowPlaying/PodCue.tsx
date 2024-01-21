@@ -7,7 +7,7 @@ interface Annotation {
   id: string;
   timestamp: number;
   content: string;
-  annotationType: 'Media Link' | 'Info' | 'Sponsership' | 'media-link'; // Adjusted type name
+  annotationType: 'Media Link' | 'Info' | 'Sponsership' | 'media-link';
   sponsorship?: {
     name: string;
     website: string;
