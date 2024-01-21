@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import {  Flex, Tag, Tooltip, useBreakpointValue, Text, Icon, Button, VStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Grid,
-  DrawerCloseButton } from "@chakra-ui/react";
+import {  Flex, Tag, Tooltip, useBreakpointValue, Text, Icon, Button, VStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Box, IconButton, useDisclosure, Tabs, TabList, TabPanels, Tab,TabPanel} from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "../myPodcast/EditEpisodeForm";
@@ -14,10 +7,10 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
 import { convertTime } from "../../utilities/commonUtils";
 import { FaPlus, FaList } from 'react-icons/fa';
-import AnnotationForm from "../../components/nowPlaying/AnnotationForm";
-import AnnotationList from "../../components/nowPlaying/AnnotationList";
+import AnnotationForm from "../annotations/AnnotationForm";
+import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
-import { Annotation } from "../../utilities/Interfaces";
+
 
 // Component to render an episode
 const Episode = ({ episode }) => {
@@ -271,33 +264,40 @@ const Episode = ({ episode }) => {
         </ModalContent>
       </Modal>
 
-      <Drawer isOpen={isAnnotationDrawerOpen} placement="right" onClose={onCloseAnnotationDrawer} size="md">
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerHeader>Manage Annotations</DrawerHeader>
-        <DrawerCloseButton />
-        <DrawerBody>
-          <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
+      <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Annotations</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Tabs
+            isFitted
+            variant="enclosed"
+            colorScheme="blue"
+            defaultIndex={tabIndex}
+            onChange={index => setTabIndex(index)}
+          >
             <TabList>
-              <Tab>List</Tab>
-              <Tab>{selectedAnnotation ? 'Edit' : 'Add'} Annotation</Tab>
+              <Tab>Annotations</Tab>
+              <Tab>Add Annotation</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
                 <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
               </TabPanel>
               <TabPanel>
-              <AnnotationForm
-              episodeId={episode.id}
-              fetchAnnotations={fetchAnnotations}
-              />
-
-              </TabPanel> 
+                <AnnotationForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} />
+              </TabPanel>
             </TabPanels>
           </Tabs>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onCloseAnnotationDrawer}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
     </Flex>
   );
 };

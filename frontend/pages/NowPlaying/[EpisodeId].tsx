@@ -5,8 +5,8 @@ import { FaPlus, FaList } from 'react-icons/fa';
 import CoverArt from "../../components/nowPlaying/CoverArt";
 import Sections from "../../components/nowPlaying/Sections";
 import PodCue from "../../components/nowPlaying/PodCue";
-import AnnotationForm from "../../components/nowPlaying/AnnotationForm";
-import AnnotationList from "../../components/nowPlaying/AnnotationList";
+import AnnotationForm from "../../components/annotations/AnnotationForm";
+import AnnotationList from "../../components/annotations/AnnotationList";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -204,46 +204,7 @@ const NowPlaying = () => {
         </Box>
       )}
       
-    {/* <IconButton
-      icon={<FaPlus />}
-      isRound
-      size="lg"
-      colorScheme="teal"
-      position="fixed"
-      bottom="100px"
-      right="25px"
-      zIndex="overlay"
-      onClick={() => handleOpenForm()}
-      aria-label="Add annotation"
-    /> */}
 
-    {/* Unified Drawer for Annotations */}
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerHeader>Manage Annotations</DrawerHeader>
-        <DrawerCloseButton />
-        <DrawerBody>
-          <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
-            <TabList>
-              <Tab>List</Tab>
-              <Tab>{selectedAnnotation ? 'Edit' : 'Add'} Annotation</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
-              </TabPanel>
-              <TabPanel>
-              <AnnotationForm
-              episodeId={EpisodeId}
-              fetchAnnotations={fetchAnnotations}
-              />
-              </TabPanel> 
-            </TabPanels>
-          </Tabs>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
   </Box>
 );
 };
