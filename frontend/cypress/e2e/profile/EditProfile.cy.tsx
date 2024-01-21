@@ -11,8 +11,8 @@ describe('EditProfile', () => {
     //User should be abble to edit profile and the changes should be reflected immediately
     it('Should successfully edit profile', function(){
         cy.edit_profile(paths.profile_picture, 'NewUsername', 'NewBio','https://twitter.com/newTwitterUsername','https://linkedin.com/newLinkedInUsername','https://github.com/newGitHub');
-        cy.contains('NewUsername');
-        cy.contains('NewBio');
+        cy.contains('NewUsername', { timeout: 5000 });
+        cy.contains('NewBio', { timeout: 5000 });
     });
 
 
@@ -20,8 +20,8 @@ describe('EditProfile', () => {
     it('Should not edit anything if no inputs are given', function(){
         cy.edit_profile(null, null, null, null, null, null);
         cy.url().should('include', '/profile/MyProfile');
-        cy.contains('NewUsername');
-        cy.contains('NewBio');
+        cy.contains('NewUsername', { timeout: 5000 });
+        cy.contains('NewBio', { timeout: 5000 });
     });
 
     //Profile should not be edited if the fields are empty

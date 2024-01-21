@@ -5,9 +5,12 @@ using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using FFMpegCore.Arguments;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
+using FFMpegCore.Enums;
 
 namespace Backend.Services;
 
@@ -250,13 +253,13 @@ public class PodcastService : IPodcastService
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
     /// <param name="domainUrl"></param>
-    /// <param name="searchTerm"></param>
+    /// <param name="filter"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, string searchTerm)
+    public async Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, PodcastFilter filter)
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
-        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        List<Podcast> podcastResponses = await _db.Podcasts
         .Include(p=>p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
@@ -264,13 +267,76 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
-        .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(searchTerm))
-        .Skip(page * pageSize)
-        .Take(pageSize)
-        .Select(p => new PodcastResponse(p, domainUrl))
+        .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(filter.SearchTerm))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
 
-        return podcastResponses;
+        // Logic to filter Podcasts Based on Tags
+        if(filter.Tags != null)
+        {
+            List<Podcast> podcasts = new List<Podcast>();
+
+            // Filter if any Tag Exist
+            foreach(var tag in filter.Tags)
+            {
+                podcasts.AddRange(podcastResponses.FindAll(u => u.Tags.Contains(tag)));
+            }
+
+            podcastResponses = podcasts.Distinct().ToList();
+
+
+
+        }
+        // Logic to Filter Podcasts Based on Explicit Content
+        if(filter.IsExplicit != null)
+        {
+            podcastResponses = podcastResponses.FindAll(u => u.IsExplicit == filter.IsExplicit).ToList();
+
+        }
+        
+        // Logic to filter Based on Type
+        if(filter.Type != null)
+        {
+            podcastResponses = podcastResponses.FindAll(u => u.Type == GetPodcastType(filter.Type)).ToList();
+            
+        }
+
+        // Logic to filter Based on release Date
+        if(filter.ReleaseDate != null)
+        {
+            // Filter Last week
+            if(filter.ReleaseDate == "lastWeek")
+            {
+                DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastWeek);
+            }
+            // Filter last month
+            if (filter.ReleaseDate == "lastMonth") {
+                DateTime lastMonth = DateTime.UtcNow.Subtract(new TimeSpan(30, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastMonth);
+
+            }
+            // Filter Last Year
+            if (filter.ReleaseDate == "lastYear")
+            {
+                DateTime lastYear = DateTime.UtcNow.Subtract(new TimeSpan(365, 0, 0, 0, 0));
+                podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastYear);
+
+            }
+
+
+        }
+        // Cast the podcast to PodcastResponse Object
+        List<PodcastResponse> response = podcastResponses.Select(u => new PodcastResponse(u, domainUrl)).ToList();
+        //Logic to Filter based on Rating
+        if (filter.RatingGreaterThen != null)
+        {
+            response = response.FindAll(u => u.AverageRating >= filter.RatingGreaterThen).ToList();
+        }
+        // Paginate the results
+        response = response.Skip(page * pageSize).Take(pageSize).ToList();
+
+
+        return response;
     }
 
     /// <summary>
@@ -348,10 +414,15 @@ public class PodcastService : IPodcastService
         // Otherwise all good, get all needed metrics
         int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
         Episode? mostLikes = podcast.Episodes.OrderByDescending(e => e.Likes.Count()).FirstOrDefault();
-        double totalWatched = await _db.UserEpisodeInteractions
-            .Where(interaction => interaction.Episode.PodcastId == podcast.Id)
-            .Select(interaction => interaction.LastListenPosition)
-            .SumAsync();
+        
+        var podcastIdParameter = new SqlParameter("@PodcastId", podcast.Id);
+        var query = "SELECT uei.* " +
+                    "FROM dbo.UserEpisodeInteractions uei " +
+                    "JOIN Episodes e ON uei.EpisodeId = e.Id " +
+                    "WHERE e.PodcastId = @PodcastId";
+        var totalWatched = await _db.UserEpisodeInteractions
+            .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
+        
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
         Episode? mostPlayed = podcast.Episodes.OrderByDescending(e => e.PlayCount).FirstOrDefault();
         
@@ -827,6 +898,70 @@ public class PodcastService : IPodcastService
         return adjecentEpisode;
 
 
+    }
+
+    /// <summary>
+    /// Search Episode with search Term and filters
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="episodeFilter"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    public async Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize, EpisodeFilter episodeFilter,string domainUrl) 
+    {
+       
+        List<Episode> episode = await _db.Episodes
+            .Include(e => e.Podcast)
+            .Include(e => e.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
+
+        // Filter on Episode Length
+        if(episodeFilter.MinEpisodeLength != null)
+        {
+            episode = episode.Where(u => u.Duration >= episodeFilter.MinEpisodeLength).ToList();
+        }
+        // Filter on basis of Episode length
+        if(episodeFilter.IsExplicit != null)
+        {
+            episode = episode.Where(u => u.IsExplicit == episodeFilter.IsExplicit).ToList();
+
+        }
+        // Filter on basis of Release Data
+        if(episodeFilter.ReleaseDate != null)
+        {
+            // Filter Last week
+            if (episodeFilter.ReleaseDate== "lastWeek")
+            {
+                DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastWeek);
+            }
+            // Filter last month
+            if (episodeFilter.ReleaseDate == "lastMonth")
+            {
+                DateTime lastMonth = DateTime.UtcNow.Subtract(new TimeSpan(30, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastMonth);
+
+            }
+            // Filter Last Year
+            if (episodeFilter.ReleaseDate == "lastYear")
+            {
+                DateTime lastYear = DateTime.UtcNow.Subtract(new TimeSpan(365, 0, 0, 0, 0));
+                episode = episode.FindAll(u => u.CreatedAt >= lastYear);
+
+            }
+        }
+
+
+
+        // Cast it to Episode Reponse
+        List<EpisodeResponse> response = episode.Select(u => new EpisodeResponse(u, domainUrl)).Skip(page * pageSize).Take(pageSize).ToList();
+
+     
+        return response;
     }
 
     #endregion Episode
