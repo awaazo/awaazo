@@ -203,8 +203,7 @@ const Notifications = ({ initialNotifcationCount }) => {
         <MenuList
           minWidth={"400px"}
           style={{
-            backgroundColor: "rgba(70, 70, 70, 0.8)",
-            backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
           }}
         >
           <Tabs isFitted>
