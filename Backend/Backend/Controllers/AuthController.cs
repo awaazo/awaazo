@@ -184,4 +184,25 @@ public class AuthController : ControllerBase
             return await Task.FromResult<IActionResult>(BadRequest(e.Message));
         }
     }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("CheckEmail")]
+    public async Task<ActionResult> CheckEmail([FromBody] CheckEmailRequest request)
+    {
+        _logger.LogDebug(@"Using the auth\CheckEmail Endpoint");
+        try
+        {
+            var userExists = await _authService.CheckEmail(request.Email);
+            return Ok(userExists);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest("There was an issue checking this email");
+        }       
+    }
 }
