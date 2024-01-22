@@ -1,24 +1,24 @@
-// This component renders the transcripts of an episode
-import { Box, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/react";
-import { IoMicOutline } from "react-icons/io5";
-import { TranscriptLine } from "../../utilities/Interfaces";
-import { convertTime } from "../../utilities/commonUtils";
+import React from "react";
+import {
+  Box,
+  Text,
+  VStack,
+  Flex,
+  useBreakpointValue,
+  Icon,
+} from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { convertTime } from "../../utilities/commonUtils";
+import { LuBookCopy } from "react-icons/lu";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
-// Define the props for the Transcripts component
-interface TranscriptsProps {
+interface TranscriptProps {
   episodeId: string;
 }
 
-// Transcripts component
-const Transcripts: React.FC<TranscriptsProps> = ({ episodeId }) => {
-  const fontSize = useBreakpointValue({ base: "md", md: "lg" }); // Font size based on breakpoint
-  const iconSize = useBreakpointValue({ base: "16px", md: "24px" }); // Icon size based on breakpoint
-  const opacityLevels = [1, 0.4, 0.1]; // Opacity levels for different transcript lines
+const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
+  const fontSize = useBreakpointValue({ base: "md", md: "lg" });
   const [transcripts, setTranscripts] = useState(null);
-
-
 
   useEffect(() => {
     if (episodeId) {
@@ -27,44 +27,46 @@ const Transcripts: React.FC<TranscriptsProps> = ({ episodeId }) => {
           if (res.status === 200) {
             setTranscripts(res.transcript);
           } else {
-            console.error("Error fetching section data:", res.message);
+            console.error("Error fetching transcripts data:", res.message);
           }
         })
-        .catch((error) => console.error("Error fetching section data:", error));
+        .catch((error) => console.error("Error fetching transcripts data:", error));
     }
   }, [episodeId]);
 
-
   return (
     <Box
-      p={4}
-      borderRadius="2xl"
-      backdropBlur="4px"
-      bg="rgba(255, 255, 255, 0.01)"
+      border="3px solid rgba(255, 255, 255, 0.05)"
       width="100%"
-      minH="100%"
+      height="100%"
+      p={2}
+      borderRadius="1.1em"
     >
-      {/* Speaker and timestamp */}
-      <Flex justifyContent="space-between" alignItems="center" mb={2}>
-        <Flex alignItems="center">
-          <Icon as={IoMicOutline} boxSize={iconSize} mr={2} />
-          <Text fontWeight="bold" fontSize={fontSize}>
-            {transcripts[0]?.speaker} {/* Display the speaker of the first transcript line */}
-          </Text>
-        </Flex>
-        <Text color="gray.500">
-          {convertTime(transcripts[0]?.timestamp)} {/* Convert and display the timestamp of the first transcript line */}
+      <Flex justifyContent="flex-start" alignItems="center" m={3}>
+        <Icon as={LuBookCopy} boxSize={5} />
+        <Text fontSize={fontSize} fontWeight="bold" ml={2}>
+          Transcripts
         </Text>
       </Flex>
-
-      {/* Transcripts text */}
-      <Text>
-        {transcripts.map((transcript, index) => (
-          <span key={index} style={{ opacity: opacityLevels[index] || 0.1 }}>
-            {transcript.text}{" "} {/* Display the text of each transcript line */}
-          </span>
+      {/* <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
+        {transcripts?.map((transcript, index) => (
+          <Box
+            key={index}
+            bg="rgba(255, 255, 255, 0.02)"
+            borderRadius="2xl"
+            p={4}
+            _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}
+            w="100%"
+          >
+            <Flex justify="space-between" align="center">
+              <Text fontSize={fontSize} color="white">
+                {transcript.text}
+              </Text>
+              <Text color="gray.400">{transcript.speaker}</Text>
+            </Flex>
+          </Box>
         ))}
-      </Text>
+      </VStack> */}
     </Box>
   );
 };
