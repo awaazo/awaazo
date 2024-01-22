@@ -37,12 +37,15 @@ public class Program
 
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
+        builder.Services.AddScoped<IAnnotationService, AnnotationService>();
+
+
 
         builder.Services.AddScoped<ValidateUser>();
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
-
+        builder.Services.AddScoped<EmailService>(serviceProvider => new EmailService(builder.Configuration));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

@@ -1,20 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Avatar,
-  Heading,
-  Text,
-  VStack,
-  Stack,
-  Link,
-  IconButton,
-  Divider,
-  Flex,
-  Box,
-  HStack,
-  useColorModeValue,
-  useBreakpointValue,
-  Button,
-} from "@chakra-ui/react";
+import { Avatar, Heading, Text, VStack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue, Button } from "@chakra-ui/react";
 import { UserProfile } from "../../../utilities/Interfaces";
 import { useSession } from "next-auth/react";
 // Here we have used react-icons package for the iconS
@@ -73,31 +58,15 @@ export default function Header() {
 
   return (
     <>
-      <VStack
-        spacing={4}
-        px={2}
-        alignItems={{ base: "center", sm: "flex-start" }}
-        marginBottom={"2em"}
-        ml={isMobile ? "25px" : "0px"}
-      >
+      <VStack spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }} marginBottom={"2em"} ml={isMobile ? "25px" : "0px"}>
         <HStack>
-          <Avatar
-            boxShadow="xl"
-            style={{ width: "150px", height: "150px" }}
-            src={profile?.avatarUrl}
-          />
+          <Avatar boxShadow="xl" style={{ width: "150px", height: "150px" }} src={profile?.avatarUrl} />
           <VStack align="start" spacing={1}>
-            <Heading
-              textAlign={{ base: "center", sm: "left" }}
-              margin="0 auto"
-              fontSize={{ base: "2rem", sm: "2.5rem" }}
-            >
+            <Heading textAlign={{ base: "center", sm: "left" }} margin="0 auto" fontSize={{ base: "2rem", sm: "2.5rem" }}>
               {profile?.displayName}
             </Heading>
             <Text fontSize="1.5rem">
-              <span style={{ color: useColorModeValue("pink", "pink") }}>
-                @{profile?.username}
-              </span>
+              <span style={{ color: useColorModeValue("pink", "pink") }}>@{profile?.username}</span>
             </Text>
           </VStack>
         </HStack>
@@ -111,36 +80,9 @@ export default function Header() {
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.githubUrl}
-              aria-label={"Github Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaGithub />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.twitterUrl}
-              aria-label={"Twitter Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaTwitter />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.linkedInUrl}
-              aria-label={"Linkedin Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaLinkedin />}
-              {...iconProps}
-            />
+            <IconButton as={Link} isExternal href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
+            <IconButton as={Link} isExternal href={profile?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
+            <IconButton as={Link} isExternal href={profile?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
           </Box>
 
           <Button

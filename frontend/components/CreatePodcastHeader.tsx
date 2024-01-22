@@ -21,17 +21,16 @@ export default function CreatePodcastHeader() {
     setPodcasts(newPodcasts); // Update the podcasts state with the newPodcasts array
   }, []);
 
-  // Function to calculate the blur intensity based on the index, columns, and rows
   const calculateBlur = (index, columns, rows) => {
     const rowPosition = Math.floor(index / columns);
-    const blurIntensity = (rowPosition / (rows - 1)) * 20; // Increase '10' to increase max blur
+    const blurIntensity = (rowPosition / (rows - 1)) * 20; 
     return `${blurIntensity}px`;
   };
 
   // Function to calculate the opacity intensity based on the index, columns, and rows
   const calculateOpacity = (index, columns, rows) => {
     const rowPosition = Math.floor(index / columns);
-    const opacityIntensity = 0.9 - rowPosition / (rows - 1); // Decrease '10' to decrease max opacity
+    const opacityIntensity = 0.9 - rowPosition / (rows - 1); 
     return `${opacityIntensity}`;
   };
 
@@ -62,8 +61,8 @@ export default function CreatePodcastHeader() {
               overflow="hidden"
               boxShadow="md"
               style={{
-                filter: `blur(${podcast.blur})`, // Apply the blur effect based on the podcast's blur intensity
-                opacity: podcast.opacity, // Apply the opacity effect based on the podcast's opacity intensity
+                filter: `blur(${podcast.blur})`, 
+                opacity: podcast.opacity, 
               }}
             >
               {/* Image of the podcast */}

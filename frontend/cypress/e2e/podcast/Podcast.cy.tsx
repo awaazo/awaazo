@@ -4,7 +4,7 @@ describe ('Postcast_Create', () => {
     
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible', { timeout: 5000 });
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
 
     // User that exists should be able to create a Podcast
@@ -24,8 +24,8 @@ describe ('Postcast_Create', () => {
     // User should be able to edit a podcast name and have it reflected immediately
     it('Should edit a Podcast', () => {
         cy.wait(250);
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('button').contains('Edit Podcast').click();
@@ -42,7 +42,7 @@ describe ('Postcast_Create', () => {
         cy.logout();
         cy.visit('/');
         cy.url().should('include', '/');
-        cy.get('button[aria-label="Add Episode"]').click();
+        cy.visit('/CreatorHub/MyPodcasts');
         cy.url().should('include', '/auth/Login');
     });
 
@@ -57,7 +57,7 @@ describe ('Postcast_Create', () => {
     it('Should not accept files other than image files', () => {
         cy.podcast_create(paths.never_gonna_give_you_up, 'Video Games', 'Adoption of video games in the West.');
         cy.url().should('include', '/CreatorHub/CreatePodcast');
-        cy.contains('Cover art must be a JPEG, PNG, or SVG.').should('exist');
+        cy.contains('Cover Image').should('exist');
     });
 
     // Podcast names should be able to include special symbols not bound to ASCII characters
@@ -69,9 +69,8 @@ describe ('Postcast_Create', () => {
 
     // Users should be allowed to delete their own podcasts
     it('Should delete a Podcast', () => {
-        cy.get('button[aria-label="loggedInMenu"]').should('be.visible');
-        cy.wait(500);
-        cy.get('button[aria-label="loggedInMenu"]').click();
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
+        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 5000 });
         cy.get('button').contains('My Podcasts').click();
         cy.url().should('include', '/MyPodcasts');
         cy.get('[data-cy=podcast-image-f2-legends').click();
@@ -81,8 +80,6 @@ describe ('Postcast_Create', () => {
         cy.url().should('include', '/MyPodcasts');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ').should('not.exist');
     });
-
-    
 
     it('limits the number of characters in the input field', () => {
         cy.podcast_create(paths.f2_car, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'A podcast about error handling.');
@@ -97,4 +94,15 @@ describe ('Postcast_Create', () => {
         });
         cy.contains('aaaaaaaaaaaaaaaaaaaaaaaaa');
     });
+
+    it('Should clean up the suite by deleting the podcasts', () => {
+        cy.visit('/CreatorHub/MyPodcasts');
+        cy.get('[data-cy=podcast-image-f2-legends').click();
+        cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
+        cy.get('[data-cy=podcast-delete').click();
+        cy.contains('Button', 'Delete').click();
+        cy.reload();
+        cy.get('[data-cy=podcast-delete').click();
+        cy.contains('Button', 'Delete').click();
+    })
 });

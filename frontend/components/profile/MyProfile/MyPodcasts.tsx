@@ -1,25 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Avatar,
-  Button,
-  Link,
-  Stack,
-  Grid,
-  useBreakpointValue,
-  Text,
-  Flex,
-  IconButton,
-  Tooltip,
-  useColorMode,
-  VStack,
-  Image,
-  Wrap,
-} from "@chakra-ui/react";
+import { Box, Avatar, Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Container } from "@chakra-ui/react";
 
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
-import NextLink from "next/link";
+import Link from "next/link";
 import { Podcast } from "../../../utilities/Interfaces";
 import AuthHelper from "../../../helpers/AuthHelper";
 import PodcastHelper from "../../../helpers/PodcastHelper";
@@ -71,18 +55,9 @@ export default function Podcasts() {
 
   return (
     <>
-      <div
-        style={{
-          marginBottom: "1em",
-          fontSize: "1.5em",
-          fontWeight: "bold",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
         My Podcasts
-        <NextLink href="/MyPodcasts" passHref>
+        <Link href="/CreatorHub/MyPodcasts" passHref>
           <Button
             style={{
               fontWeight: "bold",
@@ -93,8 +68,8 @@ export default function Podcasts() {
           >
             Manage Podcasts
           </Button>
-        </NextLink>
-      </div>
+        </Link>
+      </Container>
 
       {podcasts && podcasts.length == 0 ? (
         <Text mt={"50px"} fontSize={"18px"} textAlign={"center"}>
@@ -102,20 +77,9 @@ export default function Podcasts() {
         </Text>
       ) : (
         <>
-          <Grid
-            templateColumns={`repeat(${columns}, 1fr)`}
-            gap={6}
-            placeItems="center"
-          >
+          <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
             {podcasts.map((podcast, index) => (
-              <Stack
-                key={index}
-                spacing={4}
-                direction="column"
-                align="center"
-                height="100%"
-                width="100%"
-              >
+              <Stack key={index} spacing={4} direction="column" align="center" height="100%" width="100%">
                 <PodcastCard podcast={podcast} />
               </Stack>
             ))}
@@ -125,13 +89,7 @@ export default function Podcasts() {
       {podcasts[(page + 1) * pageSize - 1] != null && (
         <Flex justify="center" mt={4}>
           <Tooltip label="Load More" placement="top">
-            <IconButton
-              aria-label="Load More"
-              icon={<ChevronDownIcon />}
-              onClick={handleLoadMoreClick}
-              size="lg"
-              variant="outline"
-            />
+            <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
           </Tooltip>
         </Flex>
       )}

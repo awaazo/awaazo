@@ -21,12 +21,12 @@ public class AppDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Episode> Episodes { get; set; }
     public virtual DbSet<UserEpisodeInteraction>? UserEpisodeInteractions { get; set; }
-    public virtual DbSet<Annotation>? Annotations { get; set; }
+    public virtual DbSet<Annotation> Annotations { get; set; }
     public virtual DbSet<Bookmark> Bookmarks { get; set; }
     public virtual DbSet<Podcast> Podcasts { get; set; }
     public virtual DbSet<UserFollow>? UserFollows { get; set; }
-    public virtual DbSet<Sponsor>? Sponsors { get; set; }
-    public virtual DbSet<MediaLink>? MediaLinks { get; set; }
+    public virtual DbSet<Sponsor> Sponsors { get; set; }
+    public virtual DbSet<MediaLink> MediaLinks { get; set; }
     public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
@@ -41,6 +41,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
     public virtual DbSet<EpisodeSections> EpisodeSections { get; set; }
  
+    public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
+    
     /// <summary>
     /// Maps to the Soundex function in the database.
     /// No need to implement on server as it will be used in db.
@@ -141,6 +143,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
         
         // User 1-to-many UserEpisodeInteraction 
         modelBuilder.Entity<User>()
@@ -222,7 +225,7 @@ public class AppDbContext : DbContext
             .HasMany(e => e.Ratings)
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Rating many-to-1 user
         modelBuilder.Entity<User>()

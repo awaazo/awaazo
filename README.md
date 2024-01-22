@@ -94,6 +94,54 @@ For complete details, refer to our [Tech Stack Wiki](https://github.com/awaazo/a
 
 <br>
 
+
+## Setup Instructions to run Awaazo
+
+The following steps show how to run Awaazo on your local machine using Docker.
+
+### Prerequisites:
+
+#### <h2>Docker <img src="https://1000logos.net/wp-content/uploads/2021/11/Docker-Logo-2013.png"  height= 50px/></h2>
+
+Awaazo runs on Docker, which means that it must be installed on your local machine. 
+The following links can be used to download Docker:
+- [Download for Windows](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe?utm_source=docker&amp;utm_medium=webreferral&amp;utm_campaign=dd-smartbutton&amp;utm_location=module)
+- [Download for Linux](https://docs.docker.com/desktop/linux/install/)
+- [Mac - Intel Chip](https://desktop.docker.com/mac/main/amd64/Docker.dmg?utm_source=docker&amp;utm_medium=webreferral&amp;utm_campaign=dd-smartbutton&amp;utm_location=module&amp;_gl=1*1gb7bzl*_ga*MTg5NDc4NDMyLjE2ODQ1MTc4OTE.*_ga_XJWPQMJYHQ*MTcwNTMzMzA4Ni40Ni4xLjE3MDUzMzMwOTYuNTAuMC4w)
+- [Mac - Apple Chip](https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&amp;utm_medium=webreferral&amp;utm_campaign=dd-smartbutton&amp;utm_location=module)
+
+#### <h2>Nvidia CUDA enabled GPU</h2>
+
+Awaazo extensively employs AI and machine learning models, leveraging GPU resources to significantly enhance computation speed. While a CUDA-enabled GPU is not mandatory, its use is <b>highly recommended</b> to achieve superior performance and faster processing speeds.
+
+- [Download CUDA Toolkit](https://developer.nvidia.com/cuda-downloads?)
+
+### Installation:
+
+The installation process pulls the latest Docker images from Awaazo's main branch. Make sure that Docker is running before doing the next steps.
+
+#### Windows
+- Download the [docker-compose file for GPU support](https://github.com/awaazo/awaazo/blob/main/docker-compose.latest.yml) or for [CPU-only support](https://github.com/awaazo/awaazo/blob/main/docker-compose.latest-cpu-only.yml).
+- Open a terminal and set the current working directory to where the docker-compose file is located.
+- Run the following command to start Awaazo: ```docker-compose -f docker-compose.latest.yml up```
+- To close Awaazo, run the following command: ```docker-compose -f docker-compose.latest.yml down```
+
+#### Linux
+- Download the [docker-compose file for GPU support](https://github.com/awaazo/awaazo/blob/main/docker-compose.latest.yml) or for [CPU-only support](https://github.com/awaazo/awaazo/blob/main/docker-compose.latest-cpu-only.yml).
+- Open a terminal and set the current working directory to where the docker-compose file is located.
+- Run the following command to start Awaazo: ```sudo docker-compose -f docker-compose.latest.yml up```
+- To close Awaazo, run the following command: ```sudo docker-compose -f docker-compose.latest.yml down```
+
+#### Mac
+
+- Download the [docker-compose file](https://github.com/awaazo/awaazo/blob/main/docker-compose.macos-latest.yml).
+- Open a terminal and set the current working directory to where the docker-compose file is located.
+- Run the following command to start Awaazo: ```sudo docker-compose -f docker-compose.latest.yml up```
+- To close Awaazo, run the following command: ```sudo docker-compose -f docker-compose.latest.yml down```
+
+
+<br>
+
 ## Team Members
 
 

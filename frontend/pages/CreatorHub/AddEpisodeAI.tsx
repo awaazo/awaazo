@@ -2,12 +2,11 @@ import { useCallback, useState } from "react";
 import { FormControl, FormLabel, Button, Textarea, Select, Box, VStack, Image, Text, Input } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import { useSession } from "next-auth/react";
-import Navbar from "../../components/shared/Navbar";
 import { useRouter } from "next/router";
 
 const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];
 
-const CreatePodcast = () => {
+const AddEpisodeAI= () => {
   const [episodeName, setEpisodeName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedPodcast, setSelectedPodcast] = useState("");
@@ -29,7 +28,6 @@ const CreatePodcast = () => {
 
   return (
     <>
-      <Navbar />
       <Box
         style={{
           display: "flex",
@@ -96,4 +94,4 @@ const CreatePodcast = () => {
   );
 };
 
-export default CreatePodcast;
+export default AddEpisodeAI;

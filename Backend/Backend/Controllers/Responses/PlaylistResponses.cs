@@ -6,6 +6,7 @@ namespace Backend.Controllers.Responses;
 [BindProperties]
 public class PlaylistInfoResponse
 {
+    public const string DEFAULT_PLAYLIST_URL = "https://icons8.com/icon/24520/playlist";
 
     public PlaylistInfoResponse(Playlist p, string domainUrl)
     {
@@ -16,7 +17,17 @@ public class PlaylistInfoResponse
         Privacy = p.GetPrivacyString();
         IsHandledByUser = p.IsHandledByUser;
         NumberOfEpisodes = p.PlaylistEpisodes.Count;
-        
+
+        if(p.CoverArt == "default")
+        {
+            CoverArt = DEFAULT_PLAYLIST_URL;
+        }
+        else
+        {
+            CoverArt = domainUrl + string.Format("playlist/{0}/getCoverArt", p.Id);
+        }
+
+
         Duration = p.PlaylistEpisodes
             .Sum(e=>e.Episode.Duration);
         
@@ -42,6 +53,8 @@ public class PlaylistInfoResponse
     public DateTime CreatedAt {get;set;} = DateTime.Now;
 
     public DateTime UpdatedAt {get;set;} = DateTime.Now;
+
+    public string CoverArt { get;set;} = string.Empty;
 }
 
 [BindProperties]

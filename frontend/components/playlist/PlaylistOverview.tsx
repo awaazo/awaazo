@@ -43,14 +43,17 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
+import ShareComponent from "../social/shareComponent";
 
-const PlaylistOverview = ({ playlistId }) => {
+const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
 
   const [playlist, setPlaylist] = useState<Playlist>(null);
   const [episodes, setEpisodes] = useState<Episode[]>(null);
-
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const onShareModalClose = () => setIsShareModalOpen(false);
+  const onShareModalOpen = () => setIsShareModalOpen(true);
   // Form values
   const [playlistName, setPlaylistName] = useState("");
   const [playlistNameCharacterCount, setPlaylistNameCharacterCount] =
@@ -67,6 +70,9 @@ const PlaylistOverview = ({ playlistId }) => {
   // Form errors
   const [playlistError, setPlaylistError] = useState("");
 
+  const handleSharePlaylist = () => {
+    onShareModalOpen();
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -474,6 +480,7 @@ const PlaylistOverview = ({ playlistId }) => {
                         {playlist.isHandledByUser && <OptionsMenu />}{" "}
                         <MenuDivider />
                         <MenuItem
+                          onClick={handleSharePlaylist}
                           _hover={{
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
@@ -491,6 +498,16 @@ const PlaylistOverview = ({ playlistId }) => {
                       </MenuList>
                     </Menu>
                   </Box>
+                  <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
+                  <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Share this Episode</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <ShareComponent content={playlist} contentType="playlist" />
+                      </ModalBody>
+                  </ModalContent>
+              </Modal>
                 </Flex>
               </>
             )}

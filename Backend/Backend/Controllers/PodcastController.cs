@@ -177,8 +177,8 @@ public class PodcastController : ControllerBase
         }
     }
 
-    [HttpGet("search")]
-    public async Task<IActionResult> SearchPodcast(string searchTerm, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
+    [HttpPost("search")]
+    public async Task<IActionResult> SearchPodcast([FromBody] PodcastFilter filter, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
         _logger.LogDebug(@"Using the podcast\search Endpoint");
 
@@ -191,7 +191,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),searchTerm));
+            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),filter));
         }
         catch (Exception e)
         {
@@ -550,7 +550,7 @@ public class PodcastController : ControllerBase
     [HttpGet("{episodeId}/getTranscript")]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
     {
-        _logger.LogDebug(@"Using the podcast\episodeId\getTranscript Endpoint");
+        this.LogDebugControllerAPICall(_logger);
 
         try
         {
@@ -585,6 +585,26 @@ public class PodcastController : ControllerBase
 
         }
         catch(Exception e)
+        {
+            _logger.LogError(e, "");
+            return BadRequest(e.Message);
+        }
+
+    }
+    [HttpPost("episode/search")]
+    public async Task<IActionResult> SearchEpisode([FromBody] EpisodeFilter episodeFilter,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        _logger.LogDebug(@"Using the podcast\episode\search Endpoint");
+
+        try
+        {
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+            return Ok(await _podcastService.SearchEpisodeAsync(page,pageSize,episodeFilter,GetDomainUrl(HttpContext)));
+
+        }
+        catch (Exception e)
         {
             _logger.LogError(e, "");
             return BadRequest(e.Message);
