@@ -78,7 +78,7 @@ const NotificationsPage = () => {
              <img
                 src={notification.image.src as string}  
                 alt={notification.category}
-                style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginRight: '20px' }}
+                style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginRight: '20px'}}
               />
                 <img
                   src={notification.image.src as string}  
