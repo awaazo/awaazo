@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Backend/Backend/Migrations/20240122140751_firstMigration.Designer.cs
-    [Migration("20240122140751_firstMigration")]
-========
-    [Migration("20240119181320_firstMigration")]
->>>>>>>> main:Backend/Backend/Migrations/20240119181320_firstMigration.Designer.cs
+    [Migration("20240122141733_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
