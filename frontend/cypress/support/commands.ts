@@ -46,7 +46,7 @@ Cypress.Commands.add('login', (username, email, password) => {
   cy.visit('/');
   cy.wait(500);
   cy.url().should('include', '/', { timeout: 5000 });
-  cy.get('button[aria-label="Menu"]').click({ timeout: 5000 });
+  cy.get('button[aria-label="Menu"]').scrollIntoView().click({ timeout: 5000 });
   cy.get('button').contains('Login').click({ timeout: 5000 });
   if (email) {
     cy.get('input[id="email"]').type(email);
@@ -114,10 +114,10 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
       cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     }
   });
-  cy.get('button').contains('Edit Profile').click();
-  if (filepath) {
-    cy.get('input[type="file"]').attachFile(filepath);
-  }
+  cy.get('[data-cy=edit_profile_button').click();
+  // if (filepath) {
+  //   cy.get('input[type="file"]').attachFile(filepath);
+  // }
   if (username) {
     cy.get('input#username').clear().type(username);
   }
@@ -137,7 +137,6 @@ Cypress.Commands.add('edit_profile', (filepath, username, bio, twitterURL, linke
     cy.get('input[placeholder="GitHub URL"]').clear().type(githubURL);
   }
   cy.get('button').contains('Update Profile').click();
-  cy.wait(2000);
 });
 
 Cypress.Commands.add('change_password', (old_pass, new_pass, confirm_pass) => {
@@ -152,12 +151,12 @@ Cypress.Commands.add('change_password', (old_pass, new_pass, confirm_pass) => {
             cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
             }
         });
-        cy.get('button').contains('Edit Profile').click( {timeout: 5000} );
+        cy.get('[data-cy=edit_profile_button').click();
         cy.get('button').contains('Change Password').scrollIntoView().click( {timeout:5000} );
         cy.get('input[placeholder="Enter current password"').type(old_pass);
         cy.get('input[placeholder="Enter new password"').type(new_pass);
         cy.get('input[placeholder="Confirm new password"').type(confirm_pass);
-        cy.get('.css-44skqw').click( {timeout:5000} );
+        cy.get('.css-97dsq > form > .chakra-stack > .chakra-button').click( {timeout:5000} );
 });
 
 /*
@@ -167,7 +166,7 @@ Cypress.Commands.add('podcast_create', (filepath, name, description) => {
   cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
   cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
   cy.wait(250);
-  cy.get('button').contains('My Podcasts').click();
+  cy.get('button').contains('CreatorHub').click();
   cy.url().should('include', '/CreatorHub/MyPodcasts');
   cy.get('.css-1bdrd0f').click();
   cy.url().should('include', '/CreatorHub/CreatePodcast');
@@ -245,7 +244,7 @@ Cypress.Commands.add('cleanup', () => {
   cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
   cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
   cy.get("button")
-    .contains("My Podcasts")
+    .contains("CreatorHub")
     .should("be.visible")
     .click({ timeout: 12000 });
   cy.wait(1000);

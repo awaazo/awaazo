@@ -53,6 +53,7 @@ export default function Header() {
               onClick={() => router.push("/profile/EditProfile")}
               backgroundColor="brand.100"
               _hover={{ bg: "brand.300" }}
+              data-cy={`edit_profile_button`}
             />
           </Box>
           <VStack align="start" spacing={1}>
