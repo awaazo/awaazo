@@ -124,7 +124,8 @@ public class ProfileService : IProfileService
     /// <returns>UserProfileResponse</returns>
     public async Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl)
     {
-        return new UserProfileResponse(user, domainUrl);
+        // Add the 'await' operator before the method call
+        return await Task.Run(() => new UserProfileResponse(user, domainUrl));
     }
 
     /// <summary>
