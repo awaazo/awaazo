@@ -1,26 +1,12 @@
-# Comment: How to install CUDA on your system with a CUDA-enabled NVIDIA GPU
+# Docker Compose file for Awaazo Application for AMD Graphics Card
+# Comments: This version prevents the installation of CUDA in the python backend server, which requires an NVIDIA Graphics Card
 #
-# Prerequisites:
-# - CUDA-enabled NVIDIA GPU
-# - NVIDIA driver installed
-#
-# Steps to install CUDA:
-# 1. Check the CUDA compatibility of your GPU by referring to the NVIDIA CUDA documentation: 
-#    [CUDA GPU Support](https://developer.nvidia.com/cuda-gpus)
-# 2. Download the CUDA Toolkit from the NVIDIA CUDA Toolkit download page: 
-#    [CUDA Toolkit Downloads](https://developer.nvidia.com/cuda-downloads)
-# 3. Follow the installation instructions provided by NVIDIA for your specific operating system:
-#    - Windows: [CUDA Installation Guide for Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html)
-#    - Linux: [CUDA Installation Guide for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-#    - macOS: [CUDA Installation Guide for macOS](https://docs.nvidia.com/cuda/cuda-installation-guide-mac-os-x/index.html)
-# 4. After successful installation, verify the CUDA installation by running the following command in the terminal:
-#    ```
-#    nvcc --version
-#    ```
-#    This should display the CUDA version information.
-#
-# Note: Make sure to carefully follow the installation instructions provided by NVIDIA to ensure a successful installation.
-# Command to clear cache and dangling images and containers: docker system prune -a  
+# Usage:
+#   docker-compose -f docker-compose.amd.yml up         
+#   docker-compose -f docker-compose.amd.yml down
+#   docker-compose -f docker-compose.amd.yml ps
+#   docker-compose -f docker-compose.amd.yml logs
+#   docker-compose -f docker-compose.amd.yml up --build -d
 
 version: '3.8'
 
