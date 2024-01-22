@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
+/// <summary>
+/// The Social Controller is responsible for handling all the requests related to social features.
+/// </summary>
 [ApiController]
 [Route("social")]
 [Authorize]
@@ -14,9 +17,15 @@ public class SocialController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly ISocialService _socialService;
-    private readonly ILogger _logger;
+    private readonly ILogger<SocialController> _logger;
 
-    public SocialController(IAuthService authService, ISocialService socialService, ILogger logger)
+    /// <summary>
+    /// Constructor for SocialController
+    /// </summary>
+    /// <param name="authService"> Service for authentication to be injected.</param>
+    /// <param name="socialService"> Service for social features to be injected.</param>
+    /// <param name="logger"> Logger for logging to be injected.</param>
+    public SocialController(IAuthService authService, ISocialService socialService, ILogger<SocialController> logger)
     {
         _authService = authService;
         _socialService = socialService;
@@ -25,13 +34,19 @@ public class SocialController : ControllerBase
 
     #region Comment
 
+    /// <summary>
+    /// Adds a comment to the episode or comment for the current user.
+    /// </summary>
+    /// <param name="episodeOrCommentId">Id of the episode or comment for which comment is to be added</param>
+    /// <param name="commentText">Text of the comment</param>
+    /// <returns>200 OK if comment is added, otherwise 400 Bad Request</returns>
     [HttpPost("{episodeOrCommentId}/comment")]
     public async Task<IActionResult> AddComment(Guid episodeOrCommentId, [FromBody] string commentText)
     {
-        _logger.LogDebug(@"Using the social\episodeOrCommentId\comment Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddComment));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -44,18 +59,23 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddComment));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Deletes the comment for the current user.
+    /// </summary>
+    /// <param name="commentId">Id of the comment to be deleted</param>
+    /// <returns>200 OK if comment is deleted, otherwise 400 Bad Request</returns>
     [HttpDelete("{commentId}/delete")]
     public async Task<IActionResult> DeleteComment(Guid commentId)
     {
-        _logger.LogDebug(@"Using the social\episodeOrCommentId\delete Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeleteComment));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -68,18 +88,23 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(DeleteComment));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Adds a like to the comment or episode for the current user.
+    /// </summary>
+    /// <param name="episodeOrCommentId">Id of the episode or comment for which like is to be added</param>
+    /// <returns>200 OK if like is added, otherwise 400 Bad Request</returns>
     [HttpPost("{episodeOrCommentId}/like")]
     public async Task<IActionResult> AddLike(Guid episodeOrCommentId)
     {
-        _logger.LogDebug(@"Using the social\episodeOrCommentId\like Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddLike));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -92,18 +117,23 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddLike));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Removes the like from the episode or comment for the current user.
+    /// </summary>
+    /// <param name="episodeOrCommentId">Id of the episode or comment for which like is to be removed</param>
+    /// <returns>200 OK if like is removed, otherwise 400 Bad Request</returns>
     [HttpDelete("{episodeOrCommentId}/unlike")]
     public async Task<IActionResult> RemoveLike(Guid episodeOrCommentId)
     {
-        _logger.LogDebug(@"Using the social\episodeOrCommentId\unlike Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(RemoveLike));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -116,7 +146,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(RemoveLike));
             return BadRequest(e.Message);
         }
     }
@@ -129,10 +159,10 @@ public class SocialController : ControllerBase
     [HttpGet("{episodeOrCommentId}/isLiked")]
     public async Task<ActionResult> IsLiked(Guid episodeOrCommentId)
     {
-        _logger.LogDebug(@"Using the social\episodeOrCommentId\isLike Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(IsLiked));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -145,7 +175,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(IsLiked));
             return BadRequest(e.Message);
         }
     }
@@ -155,14 +185,18 @@ public class SocialController : ControllerBase
 
     #region Rating
 
-
+    /// <summary>
+    /// Adds the rating to the podcast for the current user.
+    /// </summary>
+    /// <param name="request">Request object containing the podcastId and rating</param>
+    /// <returns>200 OK if rating is added, otherwise 400 Bad Request</returns>
     [HttpPost("rating")]
     public async Task<ActionResult> AddRating(RatingRequest request)
     {
-        _logger.LogDebug(@"Using the social\rating Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddRating));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -175,18 +209,23 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddRating));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Removes the rating from the podcast for the current user.
+    /// </summary>
+    /// <param name="podcastId">Id of the podcast for which rating is to be removed</param>
+    /// <returns>200 OK if rating is removed, otherwise 400 Bad Request</returns>
     [HttpDelete("deleteRating")]
     public async Task<ActionResult> RemoveRating(Guid podcastId)
     {
-        _logger.LogDebug(@"Using the social\deleteRating Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(RemoveRating));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -199,7 +238,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(RemoveRating));
             return BadRequest(e.Message);
         }
     }
@@ -208,13 +247,18 @@ public class SocialController : ControllerBase
 
     #region Review
 
+    /// <summary>
+    /// Adds the review to the podcast for the current user.
+    /// </summary>
+    /// <param name="request">Request object containing the podcastId and review text</param>
+    /// <returns>200 OK if review is added, otherwise 400 Bad Request</returns>
     [HttpPost("review")]
     public async Task<ActionResult> AddReview(ReviewRequest request)
     {
-        _logger.LogDebug(@"Using the social\review Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddReview));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -227,17 +271,23 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddReview));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Removes the review from the podcast for the current user.
+    /// </summary>
+    /// <param name="podcastId">Id of the podcast for which review is to be removed</param>
+    /// <returns>200 OK if review is removed, otherwise 400 Bad Request</returns> 
     [HttpDelete("deleteReview")]
     public async Task<ActionResult> RemoveReview(Guid podcastId)
     {
-        _logger.LogDebug(@"Using the social\deleteReview Endpoint");
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(RemoveReview));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -250,7 +300,7 @@ public class SocialController : ControllerBase
         catch (Exception e)
         {
             // Return the error message
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(RemoveReview));
             return BadRequest(e.Message);
         }
     }
