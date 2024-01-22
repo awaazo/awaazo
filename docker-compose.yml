@@ -20,7 +20,7 @@
 #    This should display the CUDA version information.
 #
 # Note: Make sure to carefully follow the installation instructions provided by NVIDIA to ensure a successful installation.
-
+# Command to clear cache and dangling images and containers: docker system prune -a  
 
 version: '3.8'
 
@@ -28,6 +28,7 @@ services:
 
   # DATABASE (MSSQL)
   sql:
+    platform: linux/amd64
     image: "mcr.microsoft.com/mssql/server:latest"
     container_name: sql_server
     user: root
@@ -42,6 +43,7 @@ services:
 
   # PYTHON Server (For AI related Stuff)
   python_backend:
+    platform: linux/amd64
     build: 
       context: Python/.
     deploy:
@@ -59,6 +61,7 @@ services:
 
   # BACKEND ASP.NET Server
   backend:
+    platform: linux/amd64
     build:
       context: Backend/Backend/.
       target: final
@@ -79,6 +82,7 @@ services:
 
   # FRONTEND SERVER
   frontend:
+    platform: linux/amd64
     build: 
       context: frontend/.
     container_name: frontend_server

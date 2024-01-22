@@ -153,6 +153,44 @@ public class ProfileController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [AllowAnonymous]
+    [HttpPost("sentForgotPasswordEmail")]
+    public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request) {
+        try {
+            this.LogDebugControllerAPICall(_logger);
+            
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            await _profileService.SentForgotPasswordEmail(request.Email);
+            return Ok($"Email sent to {request.Email}");
+        }
+        catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("resetPassword")]
+    public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request) {
+        try {
+            this.LogDebugControllerAPICall(_logger);
+            
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            await _profileService.ResetPassword(request);
+            return Ok();
+        }
+        catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }    
+    }
     
     #endregion 
 

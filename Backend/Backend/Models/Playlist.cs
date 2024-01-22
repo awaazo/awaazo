@@ -44,7 +44,7 @@ public class Playlist : BaseEntity
     /// <summary>
     /// Cover Art, Contains the File name + MIME Type
     /// </summary>
-    public string CoverArt { get; set; } = string.Empty;
+    public string CoverArt { get; set; } = "default";
 
     /// <summary>
     /// Playlist episodes
