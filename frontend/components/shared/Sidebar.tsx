@@ -41,16 +41,30 @@ const Sidebar = () => {
   const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
 
   return (
-    <Box bg="rgba(0, 0, 0, 0.3)" backdropFilter="blur(35px)" w={collapsed ? "60px" : "340px"} h="100vh" py={8} px={collapsed ? 2 : 3} position="sticky" top="0" zIndex={10} display={{ base: "none", md: "block" }} transition="width 0.4s ease-in-out">
-      <Flex justify="center" align="center" mb={5}>
+    <Box
+      bg="rgba(255, 255, 255, 0.1)"
+      w={collapsed ? "60px" : "100%"}
+      h="90vh"
+      py={8}
+      px={collapsed ? 2 : 3}
+      position="sticky"
+      top="0"
+      zIndex={10}
+      transition="width 0.2s ease-in-out" 
+      rounded="12px"
+      ml={3}
+      mt={"2em"}
+      outline={"2px solid rgba(255, 255, 255, 0.2)"}
+    >
+      <Flex justify="center" align="center" mb={7}>
         <Image src={Logo.src} alt="Logo" w="28px" />
       </Flex>
 
-      <VStack align="left" spacing={1}>
-        <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
+      <VStack align="left" spacing={"1em"}>
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.1)"}>
           {/* Home */}
           <Link href="/" passHref>
-            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }}>
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
               <Icon as={FaHome} fontSize="xl" mr={3} />
               {!collapsed && (
                 <Box flex="1" fontWeight="bold">
@@ -62,7 +76,7 @@ const Sidebar = () => {
 
           {/* Explore */}
           <Link href="/Explore/Search" passHref>
-            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }}>
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
               <Icon as={FaSearch} fontSize="xl" mr={3} />
               {!collapsed && (
                 <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
@@ -74,8 +88,8 @@ const Sidebar = () => {
         </Box>
 
         {/* My Shelf */}
-        <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
-          <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }} onClick={toggleCollapsed}>
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.1)"}>
+          <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed}>
             <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`}/>
             {!collapsed && (
               <Box flex="1" fontWeight="bold">
