@@ -38,7 +38,7 @@ const NotificationsPage = () => {
           textShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
         }}
       >"username", catch up on {notifications.length} notifications.</h1>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
         <button
           style={{ ...buttonStyle, backgroundColor: filter === 'All' ? '#007bff' : 'rgba(255, 255, 255, 0.1)', backdropFilter: filter === 'All' ? 'blur(25px)' : 'none', opacity: filter === 'All' ? 1 : 0.7 }}
           onClick={() => setFilter('All')}
@@ -66,19 +66,38 @@ const NotificationsPage = () => {
             alignItems: 'center',
             border: '1px solid #E5E7EB29',
             padding: '20px',
-            borderRadius: '12px',
+            borderRadius: '20px',
             width: '60vw',
             backdropFilter: 'blur(30px)',
-            boxShadow: '0 0 10px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 0 25px rgba(0, 0, 0, 0.3)',
             marginBottom: '20px',
             color: '#fff',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}>
-           <img
-              src={notification.image.src as string}  
-              alt={notification.category}
-              style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginRight: '10px' }}
-            />            
+           <div style={{ position: 'relative' }}>
+             <img
+                src={notification.image.src as string}  
+                alt={notification.category}
+                style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginRight: '20px' }}
+              />
+                <img
+                  src={notification.image.src as string}  
+                  alt={notification.category}
+                  style={{ 
+                    width: '55px', 
+                    height: '55px', 
+                    borderRadius: '50%', 
+                    objectFit: 'cover', 
+                    marginRight: '10px', 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-70%, -50%)', 
+                    zIndex: -1,
+                    filter: 'blur(10px)' 
+                  }}
+              />
+           </div>
             <div>
               <strong style={{
                 color: '#E8E8E8',
