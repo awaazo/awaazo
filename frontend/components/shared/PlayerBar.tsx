@@ -153,11 +153,11 @@ const PlayerBar = () => {
           ) : (
             <Image boxSize={isMobile ? "30px" : "40px"} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
           )}
-          <Box>
-            <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"}>
+          <Box maxWidth={isMobile ? "75%" : "100%"} >
+            <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"} isTruncated>
               {isEpisodeLoaded ? episode.episodeName : "Unknown Episode"}
             </Text>
-            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
+            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500" isTruncated>
               {isEpisodeLoaded ? episode.podcastName : "Unknown Podcaster"}{" "}
             </Text>
           </Box>
@@ -168,7 +168,7 @@ const PlayerBar = () => {
           <Flex alignItems="center" mb="5px">
             <IconButton aria-label="Previous Episode" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={playPrevious} mr={2} data-cy={`play-previous`} />
             <IconButton aria-label="Skip Backward" icon={<FaArrowRotateLeft />} variant="ghost" size="sm" onClick={skipBackward} mr={2} data-cy={`skip-backward`} />
-            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="gradient" size="md" onClick={togglePlayPause} mr={2} data-cy={`play-pause-button`} />
+            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="gradient" minWidth="2.5em" size="md" onClick={togglePlayPause} mr={2} data-cy={`play-pause-button`} />
             <IconButton aria-label=" Skip Forward" icon={<FaArrowRotateRight />} variant="ghost" size="sm" onClick={skipForward} mr={2} data-cy={`skip-forward`} />
             <IconButton aria-label=" Next Episode" icon={<FaStepForward />} variant="ghost" size="sm" onClick={playNext} data-cy={`play-next`} />
           </Flex>

@@ -14,5 +14,6 @@ declare namespace Cypress {
       review_create(description: string, stars: number): void;
       cleanup(): Chainable<any>;
       data_log(): Chainable<any>;
+      change_password(old_pass: string, new_pass: string, confirm_pass: string): void;
     }
   }

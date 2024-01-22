@@ -54,7 +54,7 @@ describe("Episode_Create", () => {
   // User should be able to edit a episode name and have it reflected immediately
   it("Should successfully edit an episode", function () {
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 12000 });
-    cy.get("button").contains("My Podcasts").click({ timeout: 12000 });
+    cy.get("button").contains("CreatorHub").click({ timeout: 12000 });
     cy.url().should("include", "/MyPodcasts");
     cy.get("[data-cy=edit-button]").first().click();
     cy.get('input[placeholder="Enter episode name..."]')
@@ -99,7 +99,7 @@ describe("Episode_Create", () => {
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     cy.get("button")
-      .contains("My Podcasts")
+      .contains("CreatorHub")
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.url().should("include", "/CreatorHub/MyPodcasts");
@@ -135,7 +135,7 @@ describe("Episode_Create", () => {
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     cy.get("button")
-      .contains("My Podcasts")
+      .contains("CreatorHub")
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.get("button").contains("New Episode").click({ timeout: 12000 });
@@ -200,7 +200,7 @@ describe("Episode_Create", () => {
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible");
     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
     cy.get("button")
-      .contains("My Podcasts")
+      .contains("CreatorHub")
       .should("be.visible")
       .click({ timeout: 12000 });
     cy.get('[data-cy="podcast-delete"]').should('exist').click({timeout: 12000});
