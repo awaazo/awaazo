@@ -91,4 +91,16 @@ public class Podcast : BaseEntity
             _ => "Unknown"
         };
     }
+    public static PodcastType GetPodcastType(string podcast)
+    {
+        podcast = podcast.ToLower();
+        if(podcast == "AIGenerated")
+        {
+            return PodcastType.AIGenerated;
+        }
+        else
+        {
+            return PodcastType.Real;
+        }
+    }
 }
