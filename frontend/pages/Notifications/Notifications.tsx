@@ -94,7 +94,7 @@ const NotificationsPage = () => {
                     left: '50%', 
                     transform: 'translate(-70%, -50%)', 
                     zIndex: -1,
-                    filter: 'blur(10px)' 
+                    filter: 'blur(13px)' 
                   }}
               />
            </div>
