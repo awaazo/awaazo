@@ -131,15 +131,12 @@ export default function Navbar() {
       <MenuList>
         <MenuGroup>
           <Link href="/profile/MyProfile" passHref>
-            <MenuItem>👤 My Account</MenuItem>
+            <MenuItem>My Account</MenuItem>
           </Link>
           <Link href="/CreatorHub/MyPodcasts" passHref>
-            <MenuItem>🎙️ My Podcasts</MenuItem>
+            <MenuItem>CreatorHub</MenuItem>
           </Link>
-          <MenuDivider />
-          <Link href="/CreatorHub/AddEpisode" passHref>
-            <MenuItem>⚙️ Settings</MenuItem>
-          </Link>
+    
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>

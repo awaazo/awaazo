@@ -26,7 +26,7 @@ describe ('Postcast_Create', () => {
         cy.wait(250);
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button').contains('CreatorHub').click();
         cy.url().should('include', '/CreatorHub/MyPodcasts');
         cy.get('button').contains('Edit Podcast').click();
         cy.get('input[type="file"]').attachFile(paths.f2_car);
@@ -71,7 +71,7 @@ describe ('Postcast_Create', () => {
     it('Should delete a Podcast', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 5000 });
-        cy.get('button').contains('My Podcasts').click();
+        cy.get('button').contains('CreatorHub').click();
         cy.url().should('include', '/MyPodcasts');
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]').click();
@@ -93,16 +93,12 @@ describe ('Postcast_Create', () => {
             }
         });
         cy.contains('aaaaaaaaaaaaaaaaaaaaaaaaa');
+        cy.logout();
+        cy.cleanup();
     });
 
     it('Should clean up the suite by deleting the podcasts', () => {
-        cy.visit('/CreatorHub/MyPodcasts');
-        cy.get('[data-cy=podcast-image-f2-legends').click();
-        cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
-        cy.get('[data-cy=podcast-delete').click();
-        cy.contains('Button', 'Delete').click();
-        cy.reload();
-        cy.get('[data-cy=podcast-delete').click();
-        cy.contains('Button', 'Delete').click();
+        cy.logout();
+        cy.cleanup();
     })
 });
