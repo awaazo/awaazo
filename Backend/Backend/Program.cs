@@ -165,7 +165,6 @@ public class Program
             dbContext.Database.Migrate();
         }
 
-        Console.Write("testing");
         app.Run();
     }
 }
