@@ -17,4 +17,6 @@ public interface IAuthService
     public Task<bool> ValidateGoogleTokenAsync(string token);
 
     public Task<User?> GoogleSSOAsync(GoogleRequest google);
+
+    public Task<bool> CheckEmail(string email);
 }

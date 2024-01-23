@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240116003604_firstMigration")]
+    [Migration("20240122183947_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -294,6 +294,30 @@ namespace Backend.Migrations
                     b.HasIndex("EpisodeId");
 
                     b.ToTable("EpisodeSections");
+                });
+
+            modelBuilder.Entity("Backend.Models.ForgetPasswordToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForgetPasswordTokens");
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>

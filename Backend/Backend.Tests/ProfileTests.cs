@@ -33,13 +33,18 @@ public class ProfileTests
 
     public ProfileTests()
     {
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+        
         // Prevent Null objects in case of no test running
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
         _loggerMock = new();
-        _profileService = new(_dbContextMock.Object);
+        _profileService = new(config, _dbContextMock.Object, new EmailService(config));
         _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -52,14 +57,19 @@ public class ProfileTests
 
     [TestInitialize]
     public void Initialize()
-    {
+    {        
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
         // Re-initilize every test
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         _httpContextMock = new();
         _authServiceMock = new();
         _httpRequestMock = new();
         _loggerMock = new();
-        _profileService = new(_dbContextMock.Object);
+        _profileService = new(config, _dbContextMock.Object, new EmailService(config));
         _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -67,12 +77,7 @@ public class ProfileTests
                 HttpContext = _httpContextMock.Object
             }
         };
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
+        
         // Set the Key to null
         config["Jwt:Key"] = null;
         MockBasicUtilities(out var podcast, out var user, out var episode);

@@ -86,6 +86,10 @@ export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
 }
 
+export interface GetChangePasswordResponse extends BaseResponse{
+  data: string;
+}
+
 //#endregion
 
 //#region Podcast Responses

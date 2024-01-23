@@ -10,8 +10,6 @@ const MyProfile = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [podcastId, setPodcastId] = useState(1);
 
-
-
   const ContentContainer = ({ children }) => (
     <Container width="100%" maxWidth="100%" paddingTop={isMobile ? "3em" : "2em"}>
       {children}

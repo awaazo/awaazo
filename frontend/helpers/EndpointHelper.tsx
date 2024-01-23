@@ -112,6 +112,10 @@ export default class EndpointHelper {
     );
   };
 
+  static getChangePasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/changePassword";
+  }
+
   // --------------------------------
   // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
   // --------------------------------

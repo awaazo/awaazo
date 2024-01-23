@@ -45,7 +45,7 @@ public class Program
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
-
+        builder.Services.AddScoped<EmailService>(serviceProvider => new EmailService(builder.Configuration));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -119,9 +119,10 @@ public class Program
 
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://localhost:3000",
-            "http://localhost:3500", "https://localhost:3500", "http://fronted:3500", "https://fronted:3500",
-            "http://173.177.247.82:3500", "https://173.177.247.82:3500", "https://173.177.247.82:32773/", "http://173.177.247.82:32773/")
+            builder.SetIsOriginAllowedToAllowWildcardSubdomains()
+                .WithOrigins("http://localhost:3000", "https://localhost:3000",
+                "http://localhost:3500", "https://localhost:3500",
+                "https://*.awaazo.com/*")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
