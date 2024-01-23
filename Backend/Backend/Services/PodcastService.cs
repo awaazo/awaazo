@@ -823,10 +823,15 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Gets the transcript for the given episode.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
-    public async Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId)
+    /// <param name="episodeId">Id of the episode for which to get the transcript</param>
+    /// <param name="seekTime">The time to seek to in the transcript</param>
+    /// <param name="includeWords">Whether or not to include the words in the transcript</param>
+    /// <returns>EpisodeTranscriptResponse object containing the transcript and status</returns>
+    public async Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
+        if (seekTime != null && seekTime < 0)
+            throw new Exception("Seek time cannot be negative.");
+
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes
         .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
@@ -843,14 +848,27 @@ public class PodcastService : IPodcastService
         // Otherwise, get the transcript lines from the json file
         using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
         var jsonTranscript = reader.ReadToEnd();
-        List<TranscriptLineResponse>? lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript);
+        List<TranscriptLineResponse> lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+
+
+        // If the words are not requested, remove them from the lines
+        if (!includeWords)
+            lines.ForEach(l => l.Words = new());
+
+        // If the seek time is requested, filter the lines to only include those that start after the seek time
+        // Those that start up to 60 seconds after the seek time are included
+        if(seekTime != null)
+            lines = lines
+            .Where(l => l.Start >= seekTime && l.Start <= seekTime + 60)
+            .ToList();
 
         // Create the episode transcript response object and set the lines if they exist.
         // Otherwise, set the lines to an empty list.
-        EpisodeTranscriptResponse transcript = new()
-        {
-            EpisodeId = episodeId,
-            Lines = lines ?? new List<TranscriptLineResponse>()
+        EpisodeTranscriptResponse transcript = new () 
+        { 
+            EpisodeId = episodeId, 
+            Status = "Ready",
+            Lines = lines
         };
 
         // Return the episode transcript response

@@ -1,15 +1,21 @@
 using System.Data;
-using Backend.Infrastructure;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Backend.Controllers.Responses;
 
+/// <summary>
+/// Response for an episode.
+/// </summary>
 [BindProperties]
 public class EpisodeResponse
 {
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EpisodeResponse"/> class.
+    /// </summary>
+    /// <param name="e">The episode.</param>
+    /// <param name="domainUrl">The domain URL.</param>
     public EpisodeResponse(Episode e,string domainUrl)
     {
         //Episode = e;
@@ -81,6 +87,8 @@ public class PodcastResponse
     public List<RatingResponse> Ratings { get; set; } = new List<RatingResponse>();
 }
 
+#region Transcript Responses
+
 /// <summary>
 /// Response for a transcript word.
 /// </summary>
@@ -145,14 +153,14 @@ public class TranscriptLineResponse
     public string Text { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the list of words in the transcript line.
-    /// </summary>
-    public List<TranscriptWordResponse> Words { get; set; } = new List<TranscriptWordResponse>();
-
-    /// <summary>
     /// Gets or sets the speaker of the transcript line.
     /// </summary>
     public string Speaker { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the list of words in the transcript line.
+    /// </summary>
+    public List<TranscriptWordResponse> Words { get; set; } = new List<TranscriptWordResponse>();
 }
 
 /// <summary>
@@ -177,10 +185,23 @@ public class EpisodeTranscriptResponse
     public List<TranscriptLineResponse> Lines { get; set; } = new List<TranscriptLineResponse>();
 }
 
+#endregion Transcript Responses
+
+
+/// <summary>
+/// Response for adjacent episodes.
+/// </summary>
 [BindProperties]
 public class AdjecentEpisodeResponse
 {
+    /// <summary>
+    /// Id of the next episode.
+    /// </summary>
     public Guid? Next { get; set; }
+
+    /// <summary>
+    /// Id of the previous episode.
+    /// </summary>
     public Guid? Previous { get; set; }
 
 }

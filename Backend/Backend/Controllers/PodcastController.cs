@@ -614,31 +614,6 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }   
-    
-    /// <summary>
-    /// Gets the transcript of an episode.
-    /// </summary>
-    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
-    /// <returns>The transcript or null if its not ready.</returns>
-    [HttpGet("{episodeId}/getTranscript")]
-    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
-    {
-        try
-        {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
-
-            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId));
-        }
-        catch(Exception e)
-        {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscript));
-            return BadRequest(e.Message);
-        }
-    }
 
     /// <summary>
     /// Gets Adjecent Episodes
@@ -691,6 +666,40 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    #region Transcript
+
+    /// <summary>
+    /// Gets the transcript of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
+    /// <param name="seekTime">The time to seek to in the transcript.</param>
+    /// <param name="includeWords">Whether to include the words in the transcript.</param>
+    /// <returns>The transcript or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getTranscript")]
+    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId, seekTime, includeWords));
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscript));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+
+    #endregion Transcript
 
     #endregion
 }
