@@ -110,6 +110,10 @@ export interface Bookmark {
   timestamp: number;
 }
 
+export interface WatchHistory {
+  timestamp: number;
+}
+
 export interface TranscriptLine {
   timestamp: number;
   text: string;
