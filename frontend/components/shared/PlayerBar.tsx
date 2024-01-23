@@ -177,7 +177,8 @@ const PlayerBar = () => {
       width="100%"
       zIndex={999}
       bottom={"1em"}
-      borderRadius="25px" 
+      borderTopLeftRadius="25px"
+      borderTopRightRadius="25px"
       outline={"2px solid rgba(255, 255, 255, 0.15)"}
     >
       <Flex

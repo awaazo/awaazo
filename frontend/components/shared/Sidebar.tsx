@@ -44,7 +44,7 @@ const Sidebar = () => {
     <Box
       bg="rgba(255, 255, 255, 0.07)"
       w={collapsed ? "60px" : "100%"}
-      h="88vh"
+      h="calc(88vh - 4em)"
       py={8}
       px={collapsed ? 2 : 3}
       position="sticky"
