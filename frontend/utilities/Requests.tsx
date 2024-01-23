@@ -18,6 +18,15 @@ export interface RegisterRequest extends LoginRequest {
 }
 
 /**
+ * Change Password Request to be sent to the server
+ */
+export interface ChangePasswordRequest{
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/**
  * Google SSO Request to be sent to the server
  */
 export interface GoogleSSORequest {

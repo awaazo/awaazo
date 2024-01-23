@@ -14,9 +14,6 @@ describe('Search', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[href="/Explore/Search"]').click();
         cy.get('[data-cy="search-input"]').should('be.visible').type('testUsername{enter}');
-        cy.intercept("GET", "/profile/*").as("profile");
-        cy.wait("@profile", { timeout: 15000 });
-        cy.data_log();
         cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
         cy.contains("@NewUsername").should('be.visible');
     });

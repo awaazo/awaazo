@@ -202,7 +202,6 @@ const Episode = ({ episode }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
-          <ModalCloseButton />
           <ModalBody>
             Are you sure you want to delete the episode "{episode.episodeName}". <br />
             This action cannot be undone
@@ -238,25 +237,14 @@ const Episode = ({ episode }) => {
       <Modal isOpen={isModalSectionsOpen} onClose={closeSectionsModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent
-          boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)"
-          bg={"rgba(0, 0, 0, 0.3)"}
-          backdropFilter="blur(10px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          minWidth={"40%"}
-          marginTop={"10%"}
+          minWidth={"50%"}
           padding={"2em"}
-          border="3px solid rgba(255, 255, 255, 0.05)"
-          borderRadius="3xl"
         >
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack align="center" backgroundColor={"transparent"}>
                 <Text>Manage Sections: {currentEpisode?.episodeName}</Text>
-
                 <ManageSections episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
             </Box>
@@ -265,6 +253,7 @@ const Episode = ({ episode }) => {
       </Modal>
 
       <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
+
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Annotations</ModalHeader>

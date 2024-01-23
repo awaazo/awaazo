@@ -106,7 +106,7 @@ public class PlaylistService : IPlaylistService
         return await _db.SaveChangesAsync() > 0;
     }
 
-    /// <summary
+    /// <summary>
     /// Edits a playlist for the given user.
     /// </summary>
     /// <param name="playlistId">Id of the playlist to edit</param>
@@ -168,7 +168,7 @@ public class PlaylistService : IPlaylistService
             // Delete the Image from the file system
             RemovePlaylistCoverArt(playlist.CoverArt);
         }
-        catch(Exception ex)
+        catch(Exception)
         {
             // log Error
 

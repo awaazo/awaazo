@@ -122,7 +122,7 @@ const AnnotationForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
           </FormControl>
         </>
       )}
-      <Button colorScheme="blue" onClick={handleSubmit}>Create Annotation</Button>
+      <Button variant="gradient" onClick={handleSubmit}>Create Annotation</Button>
     </VStack>
   );
 };

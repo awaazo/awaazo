@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   UserProfileEditRequest,
   UserProfileSetupRequest,
+  ChangePasswordRequest,
 } from "../utilities/Requests";
 import EndpointHelper from "./EndpointHelper";
 import {
@@ -9,6 +10,7 @@ import {
   UserProfileResponse,
   SearchProfilesResponse,
   UserProfileByIdResponse,
+  GetChangePasswordResponse
 } from "../utilities/Responses";
 import { data } from "cypress/types/jquery";
 
@@ -246,6 +248,53 @@ export default class UserProfileHelper {
         status: error.response.status,
         message: error.response.statusText,
         users: null,
+      };
+    }
+  };
+
+  /**
+   * Changes current users password
+   * @param requestData Request data to be sent to the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static changePasswordRequest = async (
+    requestData: ChangePasswordRequest,
+  ): Promise<GetChangePasswordResponse> => {
+    // Create the request options.
+    const options = {
+      method: "POST",
+      url: EndpointHelper.getChangePasswordEndpoint(),
+      data: requestData,
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json"
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following changePasswordRequest...");
+      console.debug(options);
+
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following changePasswordResponse...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        data: requestResponse.data
+      }
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        data: error.response.data
       };
     }
   };
