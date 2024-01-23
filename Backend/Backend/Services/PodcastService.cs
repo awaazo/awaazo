@@ -211,22 +211,24 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Gets all podcasts for the given user.
     /// </summary>
-    /// <param name="domainUrl"></param>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+    /// <param name="domainUrl">Domain URL</param>
+    /// <param name="user">User</param>
+    /// <param name="page">Page Number</param>
+    /// <param name="pageSize">Page Size</param>
+    /// <returns> List of Podcasts </returns>
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, User user)
     {
         return await GetUserPodcastsAsync(page, pageSize, domainUrl, user.Id);
     }
 
     /// <summary>
-    /// Gets all podcasts for the given user (to which the ID belongs).
+    /// Gets all podcasts for the given user.
     /// </summary>
-    /// <param name="domainUrl"></param>
-    /// <param name="userId"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+    /// <param name="domainUrl">Domain URL</param>
+    /// <param name="userId">User ID</param>
+    /// <param name="page">Page Number</param>
+    /// <param name="pageSize">Page Size</param>
+    /// <returns> List of Podcasts </returns>
     public async Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId)
     {
         // Check if the user has any podcasts, if they do retrieve them.
@@ -402,7 +404,7 @@ public class PodcastService : IPodcastService
         return podcastResponses;
     }
     
-    public async Task<object> GetMetrics(User user, Guid podcastId) {
+    public async Task<object?> GetMetrics(User user, Guid podcastId) {
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
@@ -420,7 +422,7 @@ public class PodcastService : IPodcastService
                     "FROM dbo.UserEpisodeInteractions uei " +
                     "JOIN Episodes e ON uei.EpisodeId = e.Id " +
                     "WHERE e.PodcastId = @PodcastId";
-        var totalWatched = await _db.UserEpisodeInteractions
+        var totalWatched = await _db.UserEpisodeInteractions!
             .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
         
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
@@ -519,7 +521,7 @@ public class PodcastService : IPodcastService
             // Send request to PY server to generate a transcript
             await new HttpClient().GetAsync(_pyBaseUrl + "/" + episode.PodcastId + "/" + episode.Audio.Split(FILE_SPLIT_KEY)[0] + "/create_transcript");
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ADD log here
         }

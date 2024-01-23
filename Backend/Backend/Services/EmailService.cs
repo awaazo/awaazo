@@ -17,10 +17,9 @@ public class EmailService : IDisposable
     }
 
     /// <summary>
-    /// 
+    /// Sends an email to the specified address with the specified subject and body.
     /// </summary>
-    /// <param name="message"></param>
-    /// <exception cref="">Throws exception if Smtp server is not reachable</exception>
+    /// <param name="message">The message to send.</param>
     public void Send(MailMessage message) { ;
         _client.Send(message);
         message.Dispose();

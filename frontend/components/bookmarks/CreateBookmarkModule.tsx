@@ -26,6 +26,7 @@ import {
 
 // This component represents a bookmark modal for an episode
 const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
+
   // Component Values
   const [isModalOpen, setModalOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -68,6 +69,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
   });
 
 };
+
 
   // Ensures bookmark title is not longer than 25 characters
   const handleBookmarkTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
