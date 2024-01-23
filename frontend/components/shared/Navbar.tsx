@@ -57,7 +57,7 @@ export default function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
-    backdropFilter: "blur(0px)",
+    backdropFilter: "blur(0px)",    
   });
 
   interface SessionExt extends DefaultSession {
@@ -132,7 +132,7 @@ export default function Navbar() {
     const blur = Math.min((scrollY / maxScroll) * 25, 25);
 
     setNavbarStyle({
-      backgroundColor: `rgba(0, 0, 0, ${(opacity / 1.3) * 0.2})`,
+      backgroundColor: `rgba(255, 255, 255, ${(opacity / 1.3) * 0})`,
       backdropFilter: `blur(${blur / 5}px)`,
     });
   };
@@ -250,11 +250,16 @@ export default function Navbar() {
   return (
     <>
       <Box
-        p={2}
+        p={3}
         mb={"3em"}
+        width={"100%"}
         position="sticky"
+        overflow={"hidden"}
+        alignSelf="center"
+        alignContent={"center"}
+        alignItems={"center"}
         top={"0"}
-        zIndex={999}
+        zIndex={5}
         data-testid="navbar-component"
         style={navbarStyle}
       >
@@ -280,13 +285,13 @@ export default function Navbar() {
               />
             </Flex>
             <Spacer />
-            <Notifications initialNotifcationCount={notificationCount} />
-            <Flex align="center">
+            <Flex align="center" justifyContent="flex-end">
+              <Notifications initialNotifcationCount={notificationCount} />
               {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
             </Flex>
           </Flex>
         </Box>
-      </Box>
+        </Box>
     </>
   );
 }

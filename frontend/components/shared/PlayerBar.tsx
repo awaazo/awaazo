@@ -169,7 +169,7 @@ const PlayerBar = () => {
     <Box
       maxWidth={isMobile ? "100%" : "97%"}
       padding={isMobile ? "0.5em" : "1em"}
-      bg="rgba(255, 255, 255, 0.07)" // White background color with 20% opacity
+      bg="rgba(255, 255, 255, 0.04)" // White background color with 20% opacity
       style={{ backdropFilter: "blur(50px)" }}
       position="fixed"
       left="50%"
@@ -177,9 +177,9 @@ const PlayerBar = () => {
       width="100%"
       zIndex={999}
       bottom={"1em"}
-      borderTopLeftRadius="25px"
-      borderTopRightRadius="25px"
-      outline={"2px solid rgba(255, 255, 255, 0.15)"}
+      borderTopLeftRadius="50px"
+      borderTopRightRadius="50px"
+      outline={"2px solid rgba(255, 255, 255, 0.1)"}
     >
       <Flex
         flexDirection="row"
@@ -256,8 +256,10 @@ const PlayerBar = () => {
               variant="gradient"
               size="md"
               onClick={togglePlayPause}
-              mr={2}
+              mr={1}
+              borderRadius={"14px"}
               data-cy={`play-pause-button`}
+              outline={"2px solid rgba(255, 255, 255, 0.2)"}
             />
             <IconButton
               aria-label=" Skip Forward"
