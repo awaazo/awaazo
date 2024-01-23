@@ -1,18 +1,3 @@
-using AutoMapper;
-using Backend.Controllers;
-using Backend.Controllers.Requests;
-using Backend.Models;
-using Backend.Services;
-using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
-using MockQueryable.Moq;
-using Moq;
-using System.Security.Claims;
-
 namespace Backend.Tests;
 
 /// <summary>
@@ -21,7 +6,7 @@ namespace Backend.Tests;
 [Collection("Sequential")]
 public class AuthTests : IAsyncLifetime
 {
-    private Mock<Microsoft.Extensions.Logging.ILogger> _IloggerMock;
+    private readonly Mock<Microsoft.Extensions.Logging.ILogger<AuthController>> _IloggerMock;
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
