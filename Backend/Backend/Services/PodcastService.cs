@@ -849,7 +849,7 @@ public class PodcastService : IPodcastService
         using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
         var jsonTranscript = reader.ReadToEnd();
         List<TranscriptLineResponse> lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
-
+        reader.Close();
 
         // If the words are not requested, remove them from the lines
         if (!includeWords)
@@ -875,6 +875,87 @@ public class PodcastService : IPodcastService
         return transcript;
     }
 
+    /// <summary>
+    /// Gets the transcript text for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to get the transcript</param>
+    /// <returns>EpisodeTranscriptTextResponse object containing the transcript text and status</returns>
+    public async Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Get the transcription status
+        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
+
+        // If the transcript is not ready, return its current status
+        if (status != TranscriptStatus.Ready)
+            return status == TranscriptStatus.InProgress ?
+                new EpisodeTranscriptTextResponse() { EpisodeId = episodeId, Status = "In Progess" } :
+                new EpisodeTranscriptTextResponse() { EpisodeId = episodeId, Status = "An Error Occured while generating the transcription" };
+
+        // Otherwise, get the transcript lines from the json file
+        using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
+        var jsonTranscript = reader.ReadToEnd();
+        List<TranscriptLineResponse> lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+        reader.Close();
+
+        EpisodeTranscriptTextResponse transcript = new()
+        {
+            EpisodeId = episodeId,
+            Status = "Ready",
+            Text = string.Join(" ", lines.Select(l => l.Text))
+        };
+
+        // Return the episode transcript response   
+        return transcript;
+    }
+
+    /// <summary>
+    /// Edits the transcript lines for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to edit the transcript</param>
+    /// <param name="lines">The new lines to replace the old ones</param>
+    /// <returns>True if the transcript was edited successfully, false otherwise</returns>
+    public async Task<bool> EditEpisodeTranscriptLinesAsync(Guid episodeId, TranscriptLineResponse[] lines)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Get the transcription status
+        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
+
+        // If the transcript is not ready, return false
+        if (status != TranscriptStatus.Ready)
+            return false;
+
+        // Otherwise, get the transcript lines from the json file
+        using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
+        var jsonTranscript = reader.ReadToEnd();
+        List<TranscriptLineResponse> prevLines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+        reader.Close();
+
+        // Update the lines
+        prevLines.ForEach(l =>
+        {
+            if (lines.Any(nl=>nl.Id == l.Id))
+            {
+                var line = lines.First(nl => nl.Id == l.Id);
+                l = line;
+            }
+        });
+        
+        // Save the updated lines to the json file
+        using StreamWriter writer = new(GetTranscriptPath(episodeId, episode.PodcastId));
+        writer.Write(JsonConvert.SerializeObject(prevLines));
+        writer.Close();
+
+        return true;
+    }
+
+
     public async Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl) {
         Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
 
@@ -882,6 +963,8 @@ public class PodcastService : IPodcastService
         var interaction = await GetUserEpisodeInteraction(user, episodeId);
         return interaction;
     }
+
+
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes

@@ -185,6 +185,29 @@ public class EpisodeTranscriptResponse
     public List<TranscriptLineResponse> Lines { get; set; } = new List<TranscriptLineResponse>();
 }
 
+
+/// <summary>
+/// Response for a transcript text.
+/// </summary>
+[BindProperties]
+public class EpisodeTranscriptTextResponse
+{
+    /// <summary>
+    /// Gets or sets the ID of the episode.
+    /// </summary>
+    public Guid EpisodeId { get; set; } = Guid.Empty;
+    
+    /// <summary>
+    /// Gets or sets the status of the transcript.
+    /// </summary>
+    public string Status { get; set; } = "Ready";
+
+    /// <summary>
+    /// Gets or sets the text of the transcript.
+    /// </summary>
+    public string Text { get; set; } = string.Empty;
+}
+
 #endregion Transcript Responses
 
 
