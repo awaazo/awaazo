@@ -12,6 +12,7 @@ import {
   TranscriptLine,
   Annotation,
   WatchHistory,
+  Metrics,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -187,6 +188,13 @@ export interface GetTranscriptResponse extends BaseResponse {
 //#region Watch History Response
 export interface GetWatchHistoryResponse extends BaseResponse {
   watchHistory: WatchHistory;
+}
+
+//#endregion
+
+//#region Metrics Responses
+export interface GetMetricsResponse extends BaseResponse {
+  metrics: Metrics;
 }
 
 //#endregion
