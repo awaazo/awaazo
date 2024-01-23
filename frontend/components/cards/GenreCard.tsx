@@ -11,10 +11,11 @@ const GenreCard = ({ genre, onMouseEnter, onMouseLeave }) => {
         overflow="hidden"
         position="relative"
         _hover={{
-          opacity: "0.7",
+          opacity: "0.8",
           cursor: "pointer",
-          transition: "box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out",
+          transition: "box-shadow 0.8s ease-in-out, opacity 0.3s ease-in-out",
         }}
+        boxShadow={"0 0 0 5px rgba(255, 255, 255, 0.05)"}
         boxSizing="border-box"
         onMouseEnter={() => onMouseEnter(genre.name)}
         onMouseLeave={onMouseLeave}

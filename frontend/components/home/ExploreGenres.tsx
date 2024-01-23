@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Image } from "@chakra-ui/react";
+import { Box, Text, Grid, Image, Flex} from "@chakra-ui/react";
 import { useState } from "react";
 import techImage from "../../styles/images/genres/tech.png";
 import medImage from "../../styles/images/genres/med.png";
@@ -22,21 +22,23 @@ const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   return (
-    <Box marginBottom="3em">
+    <Flex marginBottom="3em">
       <Grid
         templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(9, 1fr)"]}
-        gap={4}
+        justifyContent="space-evenly"
+        gap={5}
       >
         {genres.map((genre) => (
-          <GenreCard
-            key={genre.name}
-            genre={genre}
-            onMouseEnter={setHoveredGenre}
-            onMouseLeave={() => setHoveredGenre(null)}
-          />
+          <Box key={genre.name} width="100%">
+            <GenreCard
+              genre={genre}
+              onMouseEnter={setHoveredGenre}
+              onMouseLeave={() => setHoveredGenre(null)}
+            />
+          </Box>
         ))}
       </Grid>
-    </Box>
+    </Flex>
   );
 };
 
