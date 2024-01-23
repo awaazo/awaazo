@@ -639,5 +639,16 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/watchHistory";
   };
 
+  // --------------------------------
+  // METRICS ENDPOINT
+  // --------------------------------
+  /**
+   * Returns the Podcast Metrics endpoint.
+   * @returns The Podcast Metrics Endpoint
+   * */
+  static getMetricsEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/" + podcastId + "/metrics";
+  };
+
 }
 
