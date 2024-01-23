@@ -122,13 +122,13 @@ export interface TranscriptLine {
 
 export interface Metrics {
   totalEpisodesLikes: number;
-  mostLikedEpisode: number;
+  mostLikedEpisode: string;
   totalTimeWatched: number;
   totalPlayCount: number;
-  mostPlayedEpisode: number;
+  mostPlayedEpisode: string;
   totalCommentsCount: number;
-  mostCommentedOnEpisode: number;
-  mostLikedComment: number;
+  mostCommentedOnEpisode: string;
+  mostLikedComment: string;
 }
 
 export interface User {
