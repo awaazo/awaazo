@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button, FormControl, FormLabel, Input, VStack, Select } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Input, VStack, Select,  Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
 import AnnotationHelper from '../../helpers/AnnotationHelper';
 
-const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
+const AnnotationForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
   const [formData, setFormData] = useState({
     timestamp: '',
     content: '',
@@ -16,6 +16,10 @@ const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSliderChange = (value) => {
+    setFormData(prev => ({ ...prev, timestamp: value.toString() }));
   };
 
   const handleSubmit = async () => {
@@ -51,6 +55,13 @@ const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
     }
     
   };
+
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
   
 
   return (
@@ -65,7 +76,23 @@ const AnnotationForm = ({ episodeId, fetchAnnotations }) => {
       </FormControl>
       <FormControl>
         <FormLabel>Timestamp</FormLabel>
-        <Input name="timestamp" value={formData.timestamp} onChange={handleChange} />
+        <Box w="100%">
+          <Slider
+            min={0}
+            max={episodeLength}
+            step={1}
+            value={Number(formData.timestamp)}
+            onChange={handleSliderChange}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb boxSize={6}>
+              <Box color="tomato" />
+            </SliderThumb>
+          </Slider>
+          <Text mt={2}>Current timestamp: {formatTime(formData.timestamp)}</Text>
+        </Box>
       </FormControl>
       <FormControl>
         <FormLabel>Content</FormLabel>

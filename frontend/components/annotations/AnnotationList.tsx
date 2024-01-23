@@ -12,6 +12,12 @@ import {
 import {  DeleteIcon } from '@chakra-ui/icons';
 
 const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
+
+  const convertTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
   
   return (
     <Box overflowX="auto">
@@ -27,15 +33,15 @@ const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
         <Tbody>
           {annotations.map((annotation, index) => (
             <Tr key={index}>
-              <Td>{annotation?.timestamp}</Td>
+              <Td>{convertTime(annotation.timestamp)}</Td>
               <Td>{annotation?.content}</Td>
               <Td>{annotation?.annotationType}</Td>
               <Td>
                 <Tooltip label="Delete Annotation" hasArrow>
                   <IconButton
                     icon={<DeleteIcon />}
-                    size="sm"
-                    colorScheme="red"
+                    size="lg"
+                    colorScheme="black"
                     aria-label="Delete Annotation"
                     onClick={() => deleteAnnotation(annotation.id)}
                   />

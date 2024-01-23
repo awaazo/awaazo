@@ -265,39 +265,37 @@ const Episode = ({ episode }) => {
       </Modal>
 
       <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Annotations</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Tabs
-            isFitted
-            variant="enclosed"
-            colorScheme="blue"
-            defaultIndex={tabIndex}
-            onChange={index => setTabIndex(index)}
-          >
-            <TabList>
-              <Tab>Annotations</Tab>
-              <Tab>Add Annotation</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
-              </TabPanel>
-              <TabPanel>
-                <AnnotationForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onCloseAnnotationDrawer}>
-            Close
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Annotations</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Tabs
+              isFitted
+              variant="enclosed"
+              colorScheme="blue"
+              defaultIndex={tabIndex}
+              onChange={index => setTabIndex(index)}
+            >
+              <TabList>
+                <Tab>Annotations</Tab>
+                <Tab>Add Annotation</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
+                </TabPanel>
+                <TabPanel>
+                  {/* Pass the episode duration to the AnnotationForm */}
+                  <AnnotationForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} episodeLength={episode.duration} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 };
