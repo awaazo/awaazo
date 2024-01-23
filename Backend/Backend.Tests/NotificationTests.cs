@@ -26,7 +26,7 @@ namespace Backend.Tests
         private Mock<IAuthService> _authServiceMock;
         private Mock<HttpContext> _httpContextMock;
         private Mock<DbSet<User>> _user;
-        private Mock<ILogger> _loggerMock;
+        private Mock<ILogger<NotificationController>> _loggerMock;
         private Mock<HttpRequest> _httpRequestMock;
 
         private NotificationController _notificationController;

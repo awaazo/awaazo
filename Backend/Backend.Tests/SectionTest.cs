@@ -16,6 +16,7 @@ using Moq;
 using PusherServer;
 using Assert = Xunit.Assert;
 
+
 namespace Backend.Tests
 {
     [Collection("Sequential")]
@@ -39,7 +40,7 @@ namespace Backend.Tests
             _authServiceMock = new();
             // Intialize the services
             _sectionService = new(_dbContextMock.Object);
-            _sectionController = new (_authServiceMock.Object,_sectionService);
+            _sectionController = new (_authServiceMock.Object,_sectionService, new Mock<ILogger<SectionController>>().Object);
             MockBasicUtilities();
         }
 
@@ -51,7 +52,7 @@ namespace Backend.Tests
             _authServiceMock = new();
             // Intialize the services
             _sectionService = new(_dbContextMock.Object);
-            _sectionController = new(_authServiceMock.Object, _sectionService);
+            _sectionController = new(_authServiceMock.Object, _sectionService, new Mock<ILogger<SectionController>>().Object);
             MockBasicUtilities();
         }
 
