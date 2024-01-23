@@ -254,7 +254,6 @@ export default function Navbar() {
         mb={"3em"}
         width={"100%"}
         position="sticky"
-        overflow={"hidden"}
         alignSelf="center"
         alignContent={"center"}
         alignItems={"center"}
