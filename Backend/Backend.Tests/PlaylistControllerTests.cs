@@ -4,7 +4,7 @@ public class PlaylistControllerTests
 {
     private readonly Mock<IPlaylistService> _playlistServiceMock;
     private readonly Mock<IAuthService> _authServiceMock;
-    private readonly Mock<ILogger> _loggerMock;
+    private readonly Mock<ILogger<PlaylistController>> _loggerMock;
     private readonly Mock<HttpContext> _httpContextMock;
     private readonly PlaylistController _playlistController;
 
@@ -12,7 +12,7 @@ public class PlaylistControllerTests
     {
         _playlistServiceMock = new Mock<IPlaylistService>();
         _authServiceMock = new Mock<IAuthService>();
-        _loggerMock = new Mock<ILogger>();
+        _loggerMock = new Mock<ILogger<PlaylistController>>();
 
         // Setup HttpContext mock
         _httpContextMock = new Mock<HttpContext>();

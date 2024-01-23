@@ -3,15 +3,15 @@ using Backend.Controllers.Responses;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
-using Backend.Infrastructure;
 
 namespace Backend.Controllers;
 
+/// <summary>
+/// The Profile Controller is responsible for handling all the requests related to profile.
+/// </summary>
 [ApiController]
 [Route("profile")]
 [Authorize]
@@ -19,11 +19,16 @@ public class ProfileController : ControllerBase
 {
     private const int MIN_PAGE = 0;
     private const int DEFAULT_PAGE_SIZE = 20;
-
     private readonly IAuthService _authService;
     private readonly IProfileService _profileService;
     private readonly ILogger<ProfileController> _logger;
 
+    /// <summary>
+    /// Constructor for ProfileController
+    /// </summary>
+    /// <param name="authService"> Service for authentication to be injected</param>
+    /// <param name="profileService"> Service for profile to be injected</param>
+    /// <param name="logger"> Logger for logging to be injected</param>
     public ProfileController(IAuthService authService, IProfileService profileService, ILogger<ProfileController> logger)
     {
         _authService = authService;
@@ -33,53 +38,83 @@ public class ProfileController : ControllerBase
 
     #region Current User
 
+    /// <summary>
+    /// Delete the profile of the current user
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpDelete("delete")]
     public async Task<ActionResult> DeleteProfile()
     {
-        _logger.LogDebug(@"Using the profile\delete Endpoint");
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeleteProfile));
 
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
-        if (user is null)
-            return NotFound("User does not exist.");
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
 
-        // Delete the User Profile 
-        bool isDeleted = await _profileService.DeleteProfileAsync(user);
+            // Delete the User Profile 
+            bool isDeleted = await _profileService.DeleteProfileAsync(user);
 
-        // If User Profile is deleted successfully, return 200, else return 400 with error message. 
-        if (isDeleted)
-            return Ok("User profile deleted successfully.");
-        else
-            return BadRequest("User profile could not be deleted.");
+            // If User Profile is deleted successfully, return 200, else return 400 with error message. 
+            if (isDeleted)
+                return Ok("User profile deleted successfully.");
+            else
+                return BadRequest("User profile could not be deleted.");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(DeleteProfile));
+            return BadRequest(e.Message);
+        }
     }
 
+    /// <summary>
+    /// Setup the profile of the current user
+    /// </summary>
+    /// <param name="setupRequest"> The request containing the profile details</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("setup")]
     public async Task<ActionResult> SetupProfile([FromForm] ProfileSetupRequest setupRequest)
     {
-        _logger.LogDebug(@"Using the profile\setup Endpoint");
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SetupProfile));
 
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
-        if (user == null)
-            return NotFound("User does not exist.");
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
 
-        // Update User Profile
-        bool isChanged = await _profileService.SetupProfileAsync(setupRequest, user);
+            // Update User Profile
+            bool isChanged = await _profileService.SetupProfileAsync(setupRequest, user);
 
-        return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
+            return isChanged ? Ok("User Profile Updated.") : Ok("User Profile Unchanged.");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(SetupProfile));
+            return BadRequest(e.Message);
+        }
     }
 
+    /// <summary>
+    /// Edit the profile of the current user
+    /// </summary>
+    /// <param name="editRequest"> The request containing the updated profile details</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("edit")]
     public async Task<ActionResult> EditProfile([FromForm] ProfileEditRequest editRequest)
     {
-        _logger.LogDebug(@"Using the profile\edit Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditProfile));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -94,115 +129,49 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(_logger, e, callerName: nameof(EditProfile));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Get the profile of the current user
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("get")]
     public async Task<ActionResult<UserProfileResponse>> GetProfile()
     {
-        _logger.LogDebug(@"Using the profile\get Endpoint");
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetProfile));
 
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
 
-        // If User is not found, return 404
-        if (user == null)
-            return NotFound("User does not exist.");
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
 
-
-        return await _profileService.GetProfileAsync(user, GetDomainUrl(HttpContext));
+            return await _profileService.GetProfileAsync(user, GetDomainUrl(HttpContext));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetProfile));
+            return BadRequest(e.Message);
+        }
     }
 
+    /// <summary>
+    /// Get the avatar of the current user
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("avatar")]
     public async Task<ActionResult> GetProfileAvatar()
     {
-        _logger.LogDebug(@"Using the profile\avatar Endpoint");
-
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-        // If User is not found, return 404
-        if (user is null)
-            return NotFound("User does not exist.");
-
-        // If user has yet to upload an avatar, return default avatar. 
-        if (user.Avatar == "DefaultAvatar")
-            return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
-
-        // Otherwise, return the avatar
-        return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
-    }
-
-    [HttpPost("changePassword")]
-    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request) {
-        this.LogDebugControllerAPICall(_logger);
-        
-        // Identify User from JWT Token
-        User? user = await _authService.IdentifyUserAsync(HttpContext);
-        // If User is not found, return 404
-        if (user is null)
-            return NotFound("User does not exist.");
-
-        try {
-            await _profileService.ChangePassword(user, request);
-            return Ok();
-        }
-        catch (Exception e) {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpPost("sentForgotPasswordEmail")]
-    public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request) {
-        try {
-            this.LogDebugControllerAPICall(_logger);
-            
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
-
-            await _profileService.SentForgotPasswordEmail(request.Email);
-            return Ok($"Email sent to {request.Email}");
-        }
-        catch (Exception e) {
-            this.LogErrorAPICall(_logger, e);
-            return BadRequest(e.Message);
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpPost("resetPassword")]
-    public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request) {
-        try {
-            this.LogDebugControllerAPICall(_logger);
-            
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
-
-            await _profileService.ResetPassword(request);
-            return Ok();
-        }
-        catch (Exception e) {
-            this.LogErrorAPICall(_logger, e);
-            return BadRequest(e.Message);
-        }    
-    }
-    
-    #endregion 
-
-    #region Other Users
-
-    [HttpGet("search")]
-    public async Task<IActionResult> ProfileSearch(string searchTerm = "", int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
-    {
-        _logger.LogDebug(@"Using the profile\search Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetProfileAvatar));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -210,22 +179,151 @@ public class ProfileController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _profileService.SearchUserProfiles(searchTerm,page,pageSize,GetDomainUrl(HttpContext)));
+            // If user has yet to upload an avatar, return default avatar. 
+            if (user.Avatar == "DefaultAvatar")
+                return Redirect("https://img.icons8.com/?size=512&id=492ILERveW8G&format=png");
+
+            // Otherwise, return the avatar
+            return PhysicalFile(GetUserAvatarPath(user.Avatar), GetFileType(user.Avatar));
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetProfileAvatar));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Change the password of the user
+    /// </summary>
+    /// <param name="request"> Request object containing the new password</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpPost("changePassword")]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ChangePassword));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+
+            await _profileService.ChangePassword(user, request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ChangePassword));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Sent forgot password email
+    /// </summary>
+    /// <param name="request"> Request object containing the email</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [AllowAnonymous]
+    [HttpPost("sentForgotPasswordEmail")]
+    public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SentForgotPasswordEmail));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _profileService.SentForgotPasswordEmail(request.Email);
+            return Ok($"Email sent to {request.Email}");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(SentForgotPasswordEmail));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Reset password
+    /// </summary>
+    /// <param name="request"> Request object containing the new password</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [AllowAnonymous]
+    [HttpPost("resetPassword")]
+    public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ResetPassword));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _profileService.ResetPassword(request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ResetPassword));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion
+
+    #region Other Users
+
+    /// <summary>
+    /// Search for users
+    /// </summary>
+    /// <param name="searchTerm"> Search term to be used for searching</param>
+    /// <param name="page"> Page number of the search results</param>
+    /// <param name="pageSize"> Number of results per page</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("search")]
+    public async Task<IActionResult> ProfileSearch(string searchTerm = "", int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ProfileSearch));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _profileService.SearchUserProfiles(searchTerm, page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ProfileSearch));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get the profile of a user
+    /// </summary>
+    /// <param name="userId"> Id of the user whose profile is to be fetched</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{userId}/get")]
     public async Task<IActionResult> GetUser(Guid userId)
     {
-        _logger.LogDebug(@"Using the profile\get Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUser));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -237,18 +335,23 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetUser));
             return BadRequest(e.Message);
         }
     }
 
+    /// <summary>
+    /// Get the avatar of a user
+    /// </summary>
+    /// <param name="userId"> Id of the user whose avatar is to be fetched</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{userId}/avatar")]
     public async Task<IActionResult> GetUserAvatar(Guid userId)
     {
-        _logger.LogDebug(@"Using the profile\userId\avatar Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserAvatar));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -267,7 +370,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetUserAvatar));
             return BadRequest(e.Message);
         }
     }

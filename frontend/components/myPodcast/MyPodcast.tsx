@@ -5,7 +5,7 @@ import { MdEdit } from "react-icons/md";
 import EditPodcastForm from "../myPodcast/EditPodcastForm";
 import MyEpisodes from "../myPodcast/MyEpisodes";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Episode, Metrics } from "../../utilities/Interfaces";
 
 export default function MyPodcast({ podcastId }) {
   useEffect(() => {
@@ -22,6 +22,16 @@ export default function MyPodcast({ podcastId }) {
       }
     });
   }, [podcastId]);
+
+  useEffect(() => {
+    PodcastHelper.getMetrics(podcastId).then((res) => {
+      if (res.status == 200) {
+        setMetrics(res.metrics);
+      } else {
+        setMetricsError("Metrics cannot be fetched");
+      }
+    });
+  }, [podcastId]);
   // Page refs
   const MyPodcastsPage = "/CreatorHub/MyPodcasts";
   const CreatePage = "/CreatorHub/AddEpisode";
@@ -32,11 +42,13 @@ export default function MyPodcast({ podcastId }) {
   const [tags, setTags] = useState([]);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [description, setDescription] = useState("");
+  const [metrics, setMetrics] = useState<Metrics>(null);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   // Form errors
   const [createError, setCreateError] = useState("");
+  const [metricsError, setMetricsError] = useState("");
 
   //
   const navigateToCreatePage = () => {
@@ -186,15 +198,32 @@ export default function MyPodcast({ podcastId }) {
                 wordSpacing: "0.5em",
               }}
             >
-              <Text fontSize="md" fontWeight="bold">
-                🎧 Listeners: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                📊 Subscribers: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5
-              </Text>
+              {/* Podcast metrics */}
+              {metricsError && <Text color="red.500">{metricsError}</Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ▶️ Total Play Count: {metrics.totalTimeWatched}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💬 Total Comments Count: {metrics.totalCommentsCount}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                </Text>}
             </Box>
             <>
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -232,7 +261,7 @@ export default function MyPodcast({ podcastId }) {
                 outline: "none",
               }}
             >
-              {/* Description and statistics */}
+              {/* Description and metrics */}
               <Text
                 style={{
                   backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -259,16 +288,33 @@ export default function MyPodcast({ podcastId }) {
                   wordSpacing: "0.5em",
                 }}
               >
-                {/* Podcast statistics */}
-                <Text fontSize="md" fontWeight="bold">
-                  🎧 Listeners: 5
-                </Text>
-                <Text fontSize="md" fontWeight="bold">
-                  📊 Subscribers: 5
-                </Text>
-                <Text fontSize="md" fontWeight="bold">
-                  ❤️ Likes: 5
-                </Text>
+                {/* Podcast metrics */}
+                {metricsError && <Text color="red.500">{metricsError}</Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  ▶️ Total Play Count: {metrics.totalTimeWatched}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💬 Total Comments Count: {metrics.totalCommentsCount}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                </Text>}
+                {metrics && <Text fontSize="md" fontWeight="bold">
+                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                </Text>}
+                
               </Box>
             </Box>
 

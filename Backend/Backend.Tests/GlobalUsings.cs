@@ -12,3 +12,7 @@ global using Moq;
 global using Backend.Services;
 global using Microsoft.EntityFrameworkCore;
 global using MockQueryable.Moq;
+global using AutoMapper;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.VisualBasic;
+global using System.Security.Claims;

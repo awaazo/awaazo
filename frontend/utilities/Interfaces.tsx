@@ -110,10 +110,25 @@ export interface Bookmark {
   timestamp: number;
 }
 
+export interface WatchHistory {
+  timestamp: number;
+}
+
 export interface TranscriptLine {
   timestamp: number;
   text: string;
   speaker: string;
+}
+
+export interface Metrics {
+  totalEpisodesLikes: number;
+  mostLikedEpisode: string;
+  totalTimeWatched: number;
+  totalPlayCount: number;
+  mostPlayedEpisode: string;
+  totalCommentsCount: number;
+  mostCommentedOnEpisode: string;
+  mostLikedComment: string;
 }
 
 export interface User {

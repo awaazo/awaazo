@@ -110,17 +110,17 @@ const NowPlaying = () => {
           component: <CoverArt episodeId={episode.id} />,
           inSlider: false,
         },
+        {
+          component: <Transcripts episodeId={episode.id} />,
+          inSlider: true,
+        },
         // { component: <AwaazoBirdBot />, inSlider: false },
-        // {
-        //   component: <Bookmarks episodeId={episode.id}  />,
-        //   inSlider: true,
-        // },
-        // {
-        //   component: <Transcripts episodeId={episode.id}  />,
-        //   inSlider: true,
-        // },
         {
           component: <Sections episodeId={episode.id} />,
+          inSlider: true,
+        },
+        {
+          component: <Bookmarks episodeId={episode.id} />,
           inSlider: true,
         },
         {
