@@ -114,6 +114,7 @@ const Episode = ({ episode }) => {
         <CommentComponent
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
+          showCount={true}
         />
         <div
           style={{ marginTop: "4px", marginLeft: "4px" }}
@@ -122,6 +123,7 @@ const Episode = ({ episode }) => {
           <LikeComponent
             episodeOrCommentId={episode.id}
             initialLikes={episode.likes}
+            showCount={true}
           />
         </div>
       </Flex>
