@@ -742,7 +742,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return await _podcastService.EditEpisodeTranscriptLinesAsync(episodeId, transcriptLines)?
+            return await _podcastService.EditEpisodeTranscriptLinesAsync(user,episodeId, transcriptLines)?
                 Ok("Transcript lines edited successfully") : Ok("Failed to edit transcript lines. Transcript may not be ready yet.");
         }
         catch(Exception e)

@@ -915,14 +915,15 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Edits the transcript lines for the given episode.
     /// </summary>
+    /// <param name="user">User who is editing the transcript</param>
     /// <param name="episodeId">Id of the episode for which to edit the transcript</param>
     /// <param name="lines">The new lines to replace the old ones</param>
     /// <returns>True if the transcript was edited successfully, false otherwise</returns>
-    public async Task<bool> EditEpisodeTranscriptLinesAsync(Guid episodeId, TranscriptLineResponse[] lines)
+    public async Task<bool> EditEpisodeTranscriptLinesAsync(User user, Guid episodeId, TranscriptLineResponse[] lines)
     {
-        // Check if the episode exists, if it does retrieve it.
+        // Check if the episode exists, if it does retrieve it. Also check if the user owns the podcast.
         Episode episode = await _db.Episodes
-        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+        .FirstOrDefaultAsync(e => e.Id == episodeId && e.Podcast.Podcaster.Id == user.Id) ?? throw new Exception("Episode does not exist for the given ID.");
 
         // Get the transcription status
         TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
@@ -938,18 +939,24 @@ public class PodcastService : IPodcastService
         reader.Close();
 
         // Update the lines
-        prevLines.ForEach(l =>
+        foreach (TranscriptLineResponse line in lines)
         {
-            if (lines.Any(nl=>nl.Id == l.Id))
-            {
-                var line = lines.First(nl => nl.Id == l.Id);
-                l = line;
-            }
-        });
+            // Check if the line exists
+            TranscriptLineResponse? prevLine = prevLines.FirstOrDefault(l => l.Id == line.Id);
+            if (prevLine is null)
+                continue;
+
+            // Update the line
+            prevLine.Start = line.Start;
+            prevLine.End = line.End;
+            prevLine.Text = line.Text;
+            prevLine.Words = line.Words;
+
+        }
         
         // Save the updated lines to the json file
-        using StreamWriter writer = new(GetTranscriptPath(episodeId, episode.PodcastId));
-        writer.Write(JsonConvert.SerializeObject(prevLines));
+        using StreamWriter writer = new(GetTranscriptPath(episodeId, episode.PodcastId), false);
+        await writer.WriteAsync(JsonConvert.SerializeObject(prevLines));
         writer.Close();
 
         return true;
