@@ -1,24 +1,8 @@
-import {
-  Box,
-  IconButton,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Tooltip,
-} from '@chakra-ui/react';
-import {  DeleteIcon } from '@chakra-ui/icons';
+import { Box, IconButton, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import {convertTime} from '../../utilities/commonUtils'
 
 const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
-
-  const convertTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
-  
   return (
     <Box overflowX="auto">
       <Table variant="simple" size="sm">
@@ -38,13 +22,7 @@ const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
               <Td>{annotation?.annotationType}</Td>
               <Td>
                 <Tooltip label="Delete Annotation" hasArrow>
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    size="lg"
-                    colorScheme="black"
-                    aria-label="Delete Annotation"
-                    onClick={() => deleteAnnotation(annotation.id)}
-                  />
+                  <IconButton icon={<DeleteIcon />} size="lg" colorScheme="black" aria-label="Delete Annotation" onClick={() => deleteAnnotation(annotation.id)} />
                 </Tooltip>
               </Td>
             </Tr>
