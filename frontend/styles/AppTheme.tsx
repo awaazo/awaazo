@@ -78,7 +78,7 @@ const overrides = {
         "100%": { backgroundPosition: "100% 0%" },
       },
       "*": {
-        fontFamily: "Roboto Condensed, sans-serif",
+        fontFamily: "Inter, sans-serif",
       },
     },
   },

@@ -167,18 +167,18 @@ const PlayerBar = () => {
 
   return (
     <Box
-      maxWidth="100%"
-      p={1}
-      pt={3}
-      pb={5}
-      bg="rgba(0, 0, 0, 0.2)"
+      maxWidth={isMobile ? "100%" : "97%"}
+      padding={isMobile ? "0.5em" : "1em"}
+      bg="rgba(255, 255, 255, 0.07)" // White background color with 20% opacity
       style={{ backdropFilter: "blur(50px)" }}
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
-      bottom={"0em"}
+      bottom={"1em"}
+      borderRadius="25px" 
+      outline={"2px solid rgba(255, 255, 255, 0.15)"}
     >
       <Flex
         flexDirection="row"

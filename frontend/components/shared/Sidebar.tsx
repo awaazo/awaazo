@@ -42,26 +42,26 @@ const Sidebar = () => {
 
   return (
     <Box
-      bg="rgba(255, 255, 255, 0.1)"
+      bg="rgba(255, 255, 255, 0.07)"
       w={collapsed ? "60px" : "100%"}
-      h="90vh"
+      h="88vh"
       py={8}
       px={collapsed ? 2 : 3}
       position="sticky"
       top="0"
       zIndex={10}
       transition="width 0.2s ease-in-out" 
-      rounded="12px"
+      rounded="15px"
       ml={3}
       mt={"2em"}
-      outline={"2px solid rgba(255, 255, 255, 0.2)"}
+      outline={"2px solid rgba(255, 255, 255, 0.15)"}
     >
       <Flex justify="center" align="center" mb={7}>
         <Image src={Logo.src} alt="Logo" w="28px" />
       </Flex>
 
       <VStack align="left" spacing={"1em"}>
-        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.1)"}>
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
           {/* Home */}
           <Link href="/" passHref>
             <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
@@ -88,7 +88,7 @@ const Sidebar = () => {
         </Box>
 
         {/* My Shelf */}
-        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.1)"}>
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
           <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed}>
             <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`}/>
             {!collapsed && (

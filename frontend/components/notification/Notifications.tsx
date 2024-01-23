@@ -224,9 +224,9 @@ const Notifications = ({ initialNotifcationCount }) => {
               </TabPanel>
             </TabPanels>
             <Box textAlign={"center"}>
-              <Link href="/Notifications" shallow>
-                <Button variant={"ghost"}>See All</Button>
-              </Link>
+                <Link href="/Notifications/Notifications">
+                  <Button variant={"ghost"}>See All</Button>
+                </Link>
             </Box>
           </Tabs>
         </MenuList>
