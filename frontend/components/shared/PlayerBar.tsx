@@ -32,6 +32,7 @@ import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
+import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -246,11 +247,11 @@ const PlayerBar = () => {
             />
             <IconButton
               aria-label="Skip Backward"
-              icon={<FaArrowRotateLeft />}
+              icon={<TbRewindBackward10 size={"20px"} />}
               variant="ghost"
               size="sm"
               onClick={skipBackward}
-              mr={2}
+              mr={4}
               data-cy={`skip-backward`}
             />
             <IconButton
@@ -260,12 +261,12 @@ const PlayerBar = () => {
               minWidth="2.5em"
               size="md"
               onClick={togglePlayPause}
-              mr={2}
+              mr={4}
               data-cy={`play-pause-button`}
             />
             <IconButton
               aria-label=" Skip Forward"
-              icon={<FaArrowRotateRight />}
+              icon={<TbRewindForward10 size={"20px"} />}
               variant="ghost"
               size="sm"
               onClick={skipForward}
