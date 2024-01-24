@@ -88,7 +88,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
     <>
       <Tooltip label="Bookmark" aria-label="Bookmark tooltip">
         <Button
-          p={2}
+          padding={"0px"}
           m={1}
           variant={"ghost"}
           onClick={() => setModalOpen(true)}

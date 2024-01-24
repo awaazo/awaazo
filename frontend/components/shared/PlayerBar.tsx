@@ -30,6 +30,7 @@ import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
+import ChatBot from "./ChatBotButton";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -324,6 +325,7 @@ const PlayerBar = () => {
         {!isMobile && (
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
+              <ChatBot />
               <BookmarkComponent
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
