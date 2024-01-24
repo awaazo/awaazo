@@ -30,6 +30,7 @@ const overrides = {
           background: "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
           backgroundSize: "300% 300%",
           animation: "Gradient 10s infinite linear",
+          minWidth:"200px"
         },
       },
     },
@@ -39,8 +40,11 @@ const overrides = {
         dialog: {
           borderRadius: "3xl",
           backdropFilter: "blur(10px)",
-          backgroundColor: "rgba(255, 255, 255, 0.2)",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          padding:"2em",
+          mx:"auto", 
+          my:"auto",
         },
        
       }),

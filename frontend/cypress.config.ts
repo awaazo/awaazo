@@ -11,6 +11,7 @@ export default defineConfig({
       "cypress/e2e/**/Login.cy.tsx",
       "cypress/e2e/**/Logout.cy.tsx",
       "cypress/e2e/**/EditProfile.cy.tsx",
+      "cypress/e2e/**/ChangePassword.cy.tsx",
       "cypress/e2e/**/Podcast.cy.tsx", 
       "cypress/e2e/**/Episode.cy.tsx",
       "cypress/e2e/**/Section.cy.tsx",
@@ -32,6 +33,7 @@ export default defineConfig({
       // Configure retry attempts for `cypress open`
       // Default is 0
       openMode: 0
-    }
+    },
+    defaultCommandTimeout: 10000
   },
 });

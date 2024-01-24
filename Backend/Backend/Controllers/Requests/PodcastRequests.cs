@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.ComponentModel.DataAnnotations;
+using static Backend.Models.Podcast;
 
 namespace Backend.Controllers.Requests;
 
@@ -59,4 +61,36 @@ public class EditEpisodeRequest : CreateEpisodeRequest
 public class EpisodeHistorySaveRequest
 {
     public double ListenPosition { get; set; }
+}
+
+[BindProperties]
+public class PodcastFilter
+{
+    [Required]
+    public string SearchTerm { get; set; } = string.Empty;
+
+    public string[]? Tags { get; set; }
+
+    public bool? IsExplicit { get; set; }
+
+    public string? Type { get; set; }
+
+    public float? RatingGreaterThen { get; set; }
+
+    public string? ReleaseDate { get; set; }
+
+}
+
+public class EpisodeFilter
+{
+    [Required]
+    public string SearchTerm { get; set; } = string.Empty;
+    
+    public bool? IsExplicit { get; set; }
+
+    public string? ReleaseDate { get; set;}
+
+    [Range(0.0, Double.MaxValue, ErrorMessage = "Time must be a positive number")]
+    public float? MinEpisodeLength { get; set;}
+
 }

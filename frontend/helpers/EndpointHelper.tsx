@@ -112,6 +112,10 @@ export default class EndpointHelper {
     );
   };
 
+  static getChangePasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/changePassword";
+  }
+
   // --------------------------------
   // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
   // --------------------------------
@@ -620,6 +624,31 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/annotation/" + annotationId + "/delete";
   };
 
+  // --------------------------------
+  // WATCH HISTORY ENDPOINT
+  // --------------------------------
+
+  /**
+   * Returns the Episode Watch history endpoint.
+   * @returns The Episode Watch history Endpoint
+   * */
+  static saveWatchHistoryEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/saveWatchHistory";
+  };
+  static getWatchHistoryEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/watchHistory";
+  };
+
+  // --------------------------------
+  // METRICS ENDPOINT
+  // --------------------------------
+  /**
+   * Returns the Podcast Metrics endpoint.
+   * @returns The Podcast Metrics Endpoint
+   * */
+  static getMetricsEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/" + podcastId + "/metrics";
+  };
 
 }
 

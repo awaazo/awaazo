@@ -236,6 +236,12 @@ public class AuthService : IAuthService
     {
         return await GoogleJsonWebSignature.ValidateAsync(token) is not null;
     }
+
+
+    public async Task<bool> CheckEmail(string email)
+    {
+        return await _db.Users.FirstOrDefaultAsync(u => u.Email == email) is not null;
+    }
 }
 
 

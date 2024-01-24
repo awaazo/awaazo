@@ -11,6 +11,8 @@ import {
   Playlist,
   TranscriptLine,
   Annotation,
+  WatchHistory,
+  Metrics,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -83,6 +85,10 @@ export interface SearchPodcastResponse extends BaseResponse {
 
 export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
+}
+
+export interface GetChangePasswordResponse extends BaseResponse{
+  data: string;
 }
 
 //#endregion
@@ -172,9 +178,23 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 
 //#endregion
 
-//#region Transcript Responses
+//#region Transcript Response
 export interface GetTranscriptResponse extends BaseResponse {
   transcript: TranscriptLine;
+}
+
+//#endregion
+
+//#region Watch History Response
+export interface GetWatchHistoryResponse extends BaseResponse {
+  watchHistory: WatchHistory;
+}
+
+//#endregion
+
+//#region Metrics Responses
+export interface GetMetricsResponse extends BaseResponse {
+  metrics: Metrics;
 }
 
 //#endregion

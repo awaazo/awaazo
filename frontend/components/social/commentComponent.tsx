@@ -180,18 +180,7 @@ const CommentComponent = ({
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent
-          backdropFilter="blur(40px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          alignSelf={"center"}
-          padding={"2em"}
-          backgroundColor="rgba(255, 255, 255, 0.1)"
-          borderRadius={"2em"}
-          outlineColor="rgba(255, 255, 255, 0.25)"
-        >
+        <ModalContent alignItems="center">
           <ModalHeader fontWeight={"light"} fontSize={"1.5em"}>
             Comments
           </ModalHeader>
@@ -343,23 +332,9 @@ const CommentComponent = ({
               />
               <Button
                 leftIcon={<Icon as={FaPaperPlane} />}
-                colorScheme="blue"
                 onClick={handleAddComment}
                 zIndex="1"
-                fontSize="md"
-                borderRadius={"full"}
-                minWidth={"10em"}
-                color={"white"}
-                marginTop={"15px"}
-                marginBottom={"10px"}
-                padding={"20px"}
-                outline={"1px solid rgba(255, 255, 255, 0.6)"}
-                style={{
-                  background:
-                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-                  backgroundSize: "300% 300%",
-                  animation: "Gradient 10s infinite linear",
-                }}
+                variant="gradient"
               >
                 Add Comment
               </Button>

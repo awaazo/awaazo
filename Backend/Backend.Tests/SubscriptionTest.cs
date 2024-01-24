@@ -26,7 +26,7 @@ namespace Backend.Tests
         private Mock<DbSet<Podcast>> _podcast;
         private Mock<DbSet<User>> _user;
         private Mock<DbSet<PodcastFollow>> _podcastFollows;
-        private Mock<ILogger> _loggerMock;
+        private Mock<ILogger<SubscriptionController>> _loggerMock;
 
         private SubscriptionService _subscriptionService;
         private SubscriptionController _subscriptionController;

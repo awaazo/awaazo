@@ -18,6 +18,15 @@ export interface RegisterRequest extends LoginRequest {
 }
 
 /**
+ * Change Password Request to be sent to the server
+ */
+export interface ChangePasswordRequest{
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/**
  * Google SSO Request to be sent to the server
  */
 export interface GoogleSSORequest {
@@ -198,6 +207,13 @@ export interface PlaylistEditRequest {
   name: string;
   description: string;
   privacy: string;
+}
+
+//#endregion
+
+//#region Episode SaveWatchHistory Request
+export interface SaveWatchHistoryRequest {
+  timestamp: number;
 }
 
 //#endregion

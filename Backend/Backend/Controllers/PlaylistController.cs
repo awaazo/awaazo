@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.ControllerHelper;
 using static Backend.Infrastructure.FileStorageHelper;
+
 namespace Backend.Controllers;
 
+/// <summary>
+/// The Playlist Controller is responsible for handling all requests to the playlist endpoints.
+/// </summary>
 [ApiController]
 [Route("playlist")]
 [Authorize]
@@ -17,9 +21,15 @@ public class PlaylistController : ControllerBase
     private const int MIN_PAGE = 0;
     private readonly IPlaylistService _playlistService;
     private readonly IAuthService _authService;
-    private readonly ILogger _logger;
+    private readonly ILogger<PlaylistController> _logger;
 
-    public PlaylistController(IPlaylistService playlistService, IAuthService authService, ILogger logger)
+    /// <summary>
+    /// The constructor for the Playlist Controller.
+    /// </summary>
+    /// <param name="playlistService">Playlist Service to be injected.</param>
+    /// <param name="authService">Auth Service to be injected.</param>
+    /// <param name="logger">Logger to be injected.</param>
+    public PlaylistController(IPlaylistService playlistService, IAuthService authService, ILogger<PlaylistController> logger)
     {
         _logger = logger;
         _playlistService = playlistService;
@@ -31,12 +41,13 @@ public class PlaylistController : ControllerBase
     /// Creates a playlist with the given Episodes.
     /// </summary>
     /// <param name="request">Create Playlist Request.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpPost("create")]
     public async Task<ActionResult> CreatePlaylist([FromForm] CreatePlaylistRequest request)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\create Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(CreatePlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -50,7 +61,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(CreatePlaylist));
 
             return BadRequest(e.Message);
         }
@@ -61,12 +72,13 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <param name="request">Edit Playlist Request.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpPost("{playlistId}/edit")]
     public async Task<ActionResult> EditPlaylist(Guid playlistId, [FromForm] EditPlaylistRequest request)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\playlistId\edit Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditPlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -80,7 +92,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(EditPlaylist));
 
             return BadRequest(e.Message);
         }
@@ -91,12 +103,13 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <param name="episodeIds">Id of the Episode(s) to add.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpPost("{playlistId}/add")]
     public async Task<ActionResult> AddEpisodesToPlaylist(Guid playlistId, [FromBody] Guid[] episodeIds)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\playlistId\add Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddEpisodesToPlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -110,7 +123,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(AddEpisodesToPlaylist));
 
             return BadRequest(e.Message);
         }
@@ -121,12 +134,13 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <param name="episodeIds">Id of the Episode(s) to remove.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpDelete("{playlistId}/removeEpisodes")]
     public async Task<ActionResult> RemoveEpisodesFromPlaylist(Guid playlistId, [FromBody] Guid[] episodeIds)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\playlistId\removeEpisodes Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(RemoveEpisodesFromPlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -140,7 +154,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(RemoveEpisodesFromPlaylist));
 
             return BadRequest(e.Message);
         }
@@ -150,12 +164,13 @@ public class PlaylistController : ControllerBase
     /// Deletes the Playlist.
     /// </summary>
     /// <param name="playlistId">Id of the Playlist to delete.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpDelete("{playlistId}/delete")]
     public async Task<ActionResult> DeletePlaylist(Guid playlistId)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\playlistId\delete Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeletePlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -169,7 +184,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(DeletePlaylist));
 
             return BadRequest(e.Message);
         }
@@ -180,12 +195,13 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="page">Index of the current page.</param>
     /// <param name="pageSize">Size of the current page.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("myPlaylists")]
     public async Task<ActionResult> GetMyPlaylists(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMyPlaylists));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -197,7 +213,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMyPlaylists));
 
             return BadRequest(e.Message);
         }
@@ -209,12 +225,13 @@ public class PlaylistController : ControllerBase
     /// <param name="userId">Id of the User who owns the playlists.</param>
     /// <param name="page">Index of the current page.</param>
     /// <param name="pageSize">Size of the current page.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{userId}/getUserPlaylists")]
     public async Task<ActionResult> GetUserPlaylists(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserPlaylists));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -226,7 +243,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetUserPlaylists));
 
             return BadRequest(e.Message);
         }
@@ -237,12 +254,13 @@ public class PlaylistController : ControllerBase
     /// </summary>
     /// <param name="page">Index of the current page.</param>
     /// <param name="pageSize">Size of the current page.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("all")]
     public async Task<ActionResult> GetAllPlaylists(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllPlaylists));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -254,7 +272,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetAllPlaylists));
 
             return BadRequest(e.Message);
         }
@@ -266,12 +284,13 @@ public class PlaylistController : ControllerBase
     /// <param name="searchTerm">Search Term.</param>
     /// <param name="page">Index of the current page.</param>
     /// <param name="pageSize">Size of the current page.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("search")]
     public async Task<ActionResult> SearchPlaylists(string searchTerm, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchPlaylists));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -283,7 +302,7 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(SearchPlaylists));
 
             return BadRequest(e.Message);
         }   
@@ -291,15 +310,16 @@ public class PlaylistController : ControllerBase
 
 
     /// <summary>
-    /// Gets the Playlist Episodes for the given Playlist Id.
+    /// Gets the Playlist for the given Playlist Id.
     /// </summary>
     /// <param name="playlistId">Id of the Playlist.</param>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}")]
     public async Task<ActionResult> GetPlaylist(Guid playlistId)
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -311,21 +331,22 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetPlaylist));
 
             return BadRequest(e.Message);
         }
     }
 
     /// <summary>
-    /// Gets the Playlist of liked Episodes for the current user.
+    /// Gets the Playlist for liked Episodes.
     /// </summary>
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("getLikedEpisodesPlaylist")]
     public async Task<ActionResult> GetLikedEpisodesPlaylist()
     {
         try
         {
-            _logger.LogDebug(@"Using the playlist\myPlaylists Endpoint");
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetLikedEpisodesPlaylist));
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -337,23 +358,24 @@ public class PlaylistController : ControllerBase
         }
         catch(Exception e)
         {
-            _logger.LogError(e,e.Message);
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetLikedEpisodesPlaylist));
 
             return BadRequest(e.Message);
         }
     }
+
     /// <summary>
-    /// Gets Playlists Cover Art
+    /// Gets the Playlist Cover Art for the given Playlist Id.
     /// </summary>
-    /// <param name="playlistId"></param>
-    /// <returns></returns>
+    /// <param name="playlistId">Id of the Playlist.</param>    
+    /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}/getCoverArt")]
     public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
     {
-        _logger.LogDebug(@"Using the playlist\playlistId\getCoverArt Endpoint");
-
         try
         {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPlaylistCoverArt));
+
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
 
@@ -370,7 +392,7 @@ public class PlaylistController : ControllerBase
         catch (Exception e)
         {
             // If error occurs, return BadRequest
-            _logger.LogError(e, "");
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetPlaylistCoverArt));
             return BadRequest(e.Message);
         }
     }
