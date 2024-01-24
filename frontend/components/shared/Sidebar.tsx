@@ -55,7 +55,7 @@ const Sidebar = () => {
       roundedBottomRight="10px"
       // ml={3}
       mt={"2em"}
-      outline={"2px solid rgba(255, 255, 255, 0.08)"}
+      outline={"2px solid rgba(255, 255, 255, 0.06)"}
     >
       <Flex justify="center" align="center" mb={7}>
         <Image src={Logo.src} alt="Logo" w="28px" />

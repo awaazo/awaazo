@@ -182,7 +182,7 @@ const PlayerBar = () => {
       bottom={"0.1px"}
       borderTopLeftRadius="10px"
       borderTopRightRadius="10px"
-      outline={"2px solid rgba(255, 255, 255, 0.08)"}
+      border={"2px solid rgba(255, 255, 255, 0.03)"}
     >
       <Flex
         flexDirection="row"
