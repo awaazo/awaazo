@@ -44,11 +44,11 @@ const Sidebar = () => {
     <Box
       bg="rgba(255, 255, 255, 0.04)"
       w={collapsed ? "60px" : "300px"}
-      h="calc(88vh - 4em)"
+      h="calc(88vh - 5em)"
       py={8}
       px={collapsed ? 2 : 3}
       position="sticky"
-      top="1.5em"
+      top="3em"
       zIndex={10}
       transition="width 0.2s ease-in-out" 
       rounded="15px"
