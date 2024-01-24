@@ -272,7 +272,7 @@ const Episode = ({ episode }) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <AnnotationList annotations={annotations} editAnnotation={handleOpenForm} deleteAnnotation={handleDeleteAnnotation} />
+                  <AnnotationList annotations={annotations} deleteAnnotation={handleDeleteAnnotation} />
                 </TabPanel>
                 <TabPanel>
                   {/* Pass the episode duration to the AnnotationForm */}

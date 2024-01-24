@@ -56,7 +56,6 @@ const AnnotationForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
     }
   };
 
-
   return (
     <VStack spacing={4} align="stretch">
       <FormControl>

@@ -2,7 +2,7 @@ import { Box, IconButton, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@chak
 import { DeleteIcon } from "@chakra-ui/icons";
 import {convertTime} from '../../utilities/commonUtils'
 
-const AnnotationList = ({ annotations, editAnnotation, deleteAnnotation }) => {
+const AnnotationList = ({ annotations, deleteAnnotation }) => {
   return (
     <Box overflowX="auto">
       <Table variant="simple" size="sm">

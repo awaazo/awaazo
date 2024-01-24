@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Link, Image, AspectRatio, Text, Flex, IconButton, VStack } from '@chakra-ui/react';
+import { Box, Link, Image, AspectRatio, Text, Flex, IconButton, VStack, Icon } from '@chakra-ui/react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { usePlayer } from '../../utilities/PlayerContext';
+import { LuBookCopy } from 'react-icons/lu';
 
 interface Annotation {
   id: string;
@@ -115,14 +116,15 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
   return (
     <Box
       border="3px solid rgba(255, 255, 255, 0.05)"
+      maxH="300px" 
       width="100%"
       height="100%"
-      maxH="300px" // Fixed height
       p={2}
       borderRadius="1.1em"
-      overflowY="auto" // Scroll option
+      overflowY="auto"
     >
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
+      <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize="md" fontWeight="bold" ml={2} color="white">
           Annotations
         </Text>
