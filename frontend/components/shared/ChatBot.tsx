@@ -22,13 +22,14 @@ import dotenv from "dotenv";
 dotenv.config();
 import { IoMdSend } from "react-icons/io";
 
-
 const fetchChatGPTResponse = async (userMessage) => {
   const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
   // Check if the API key is present
   if (!API_KEY) {
-    console.error("OpenAI API key not found. Make sure to set it in your .env.local file.");
+    console.error(
+      "OpenAI API key not found. Make sure to set it in your .env.local file.",
+    );
   }
 
   const systemMessage = {
@@ -38,10 +39,7 @@ const fetchChatGPTResponse = async (userMessage) => {
 
   const apiRequestBody = {
     model: "gpt-3.5-turbo",
-    messages: [
-      systemMessage,
-      { role: "user", content: userMessage },
-    ],
+    messages: [systemMessage, { role: "user", content: userMessage }],
     max_tokens: 5, // currently set to super low 5, just to test our component. Bump it up for longer responses
   };
 
@@ -60,22 +58,12 @@ const fetchChatGPTResponse = async (userMessage) => {
 
 const ChatBot = () => {
   const { state, dispatch } = useChatBot();
-  const { episode } = state;
   const [isOpen, setIsOpen] = useState(state.isOpen);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-
-
   useEffect(() => {
- if (episode){
-      console.log("current episode ID:" + episode.id)
-    }  }, [episode]);
-
-
-  // useEffect(() => {
-  //   console.log("Current Episode ID:", state.currentEpisodeId);
-  // }, [state.currentEpisodeId]);
-
+    console.log("Current Episode ID:", state.currentEpisodeId);
+  }, [state.currentEpisodeId]);
 
   const toggleChatBot = () => {
     const newIsOpen = !isOpen;
@@ -90,7 +78,10 @@ const ChatBot = () => {
       setNewMessage("");
       const botResponse = await fetchChatGPTResponse(newMessage);
 
-      const updatedMessagesWithBot = [...updatedMessages, { text: botResponse, isBot: true }];
+      const updatedMessagesWithBot = [
+        ...updatedMessages,
+        { text: botResponse, isBot: true },
+      ];
       setMessages(updatedMessagesWithBot);
     }
   };
@@ -101,9 +92,7 @@ const ChatBot = () => {
 
   React.useEffect(() => {
     setIsOpen(state.isOpen);
-    if (episode){
-      console.log("current episode ID:" + episode.id)
-    }
+    console.log("current episode ID:" + state.currentEpisodeId);
   }, [state.isOpen]);
 
   return (
@@ -142,22 +131,23 @@ const ChatBot = () => {
             justifyContent="center"
             mt={"-0.5em"}
           >
-            <Image 
-            src={awaazo_bird_aihelper_logo.src}
-            alt="Logo"
-            w="50px"
-            />
+            <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
           </Box>
-          <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
+          <Text
+            textAlign="center"
+            fontSize="xl"
+            fontWeight="bold"
+            paddingTop={"1em"}
+          >
             Episode Title
           </Text>
-          <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
+          <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
             Episode Title
           </Text>
 
           {/* testing episode ID: to remove during production */}
-          <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
-            Episode ID:
+          <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
+            Episode ID: {state.currentEpisodeId}
           </Text>
           <VStack
             spacing={"20px"}
@@ -211,7 +201,11 @@ const ChatBot = () => {
             borderColor="gray.700"
           >
             <VStack spacing="2" align="center" padding="2em">
-              <Text textAlign="center" fontSize={"14px"} padding={"1em"}>Chat with your host, AUTHORNAME.<br/>Things you can ask:</Text>
+              <Text textAlign="center" fontSize={"14px"} padding={"1em"}>
+                Chat with your host, AUTHORNAME.
+                <br />
+                Things you can ask:
+              </Text>
               <Button
                 borderRadius={"25px"}
                 width={"auto"}
@@ -271,7 +265,7 @@ const ChatBot = () => {
                 transform="translateY(-50%)"
                 onClick={sendMessage}
               >
-                <IoMdSend size={"20px"}/>
+                <IoMdSend size={"20px"} />
               </Button>
             </InputGroup>
           </Box>
