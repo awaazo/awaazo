@@ -153,11 +153,11 @@ const PlayerBar = () => {
         PodcastHelper.getWatchHistory(episode.id)
         .then((res) => {
           if (res.status === 200) {
-            if (res.watchHistory.timestamp >= 0){
-            console.log("timestamp loaded: " + res.watchHistory.timestamp)
-            audioRef.current.currentTime = res.watchHistory.timestamp;
+            if (res.watchHistory.listenPosition >= 0){
+            console.log("listenPosition loaded: " + res.watchHistory.listenPosition)
+            audioRef.current.currentTime = res.watchHistory.listenPosition;
             } else {
-              console.log("timestamp loaded: " + res.watchHistory.timestamp)
+              console.log("listenPosition loaded: " + res.watchHistory.listenPosition)
               audioRef.current.currentTime = 0;
             }
           } else {
@@ -172,14 +172,14 @@ const PlayerBar = () => {
 
     const handleBeforeUnload = async () => {
       const request: SaveWatchHistoryRequest = {
-        timestamp: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+        listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
       };
       if (audioRef.current) {
         await PodcastHelper.saveWatchHistory(episode.id, request)
         .then((response) => {
           if (response.status === 200) {
             console.log("Saved Episode Watch History");
-            console.log("timestamp saved: " + audioRef.current.currentTime)
+            console.log("listenPosition saved: " + audioRef.current.currentTime)
           } else {
             console.error("Error saving the episode watch history:", response.message);
           }
@@ -197,14 +197,14 @@ const PlayerBar = () => {
 useEffect(() => {
   const saveHistoryAtInterval = async () => {
     const request: SaveWatchHistoryRequest = {
-      timestamp: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+      listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
     };
     if (audioRef.current) {
       await PodcastHelper.saveWatchHistory(episode.id, request)
       .then((response) => {
         if (response.status === 200) {
           console.log("Saved Episode Watch History");
-          console.log("timestamp saved: " + audioRef.current.currentTime)
+          console.log("listenPosition saved: " + audioRef.current.currentTime)
         } else {
           console.error("Error saving the episode watch history:", response.message);
         }
