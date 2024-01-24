@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Box, Flex, IconButton, Tooltip, useColorMode, useBreakpointValue, Text, VStack, Image, Wrap } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
+import { Box, Flex, IconButton, Tooltip,  useBreakpointValue, Text, VStack, Image, Wrap, Spinner } from "@chakra-ui/react";
+import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MyPodcast from "../../components/myPodcast/MyPodcast";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
-import router from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
@@ -19,7 +18,9 @@ const MyPodcasts = () => {
   const [createError, setCreateError] = useState("");
   const [selectedPodcastId, setSelectedPodcastId] = useState(null);
   const isMobile = useBreakpointValue({ base: true, md: false });
-  
+  const [isLoading, setIsLoading] = useState(false);
+
+
   const togglePodcastDetail = (id) => {
     if (selectedPodcastId === id) {
       setSelectedPodcastId(null);
@@ -29,32 +30,38 @@ const MyPodcasts = () => {
   };
 
   useEffect(() => {
-    AuthHelper.authMeRequest().then((res) => {
-      if (res.status == 200) {
-        setUser(res.userMenuInfo);
-        PodcastHelper.podcastMyPodcastsGet(page, pageSize).then((res2) => {
-          if (res2.status == 200) {
-            setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
-            setSelectedPodcastId(res2.myPodcasts.length > 0 ? res2.myPodcasts[0].id : null);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const authResponse = await AuthHelper.authMeRequest();
+        if (authResponse.status === 200) {
+          setUser(authResponse.userMenuInfo);
+          const podcastsResponse = await PodcastHelper.podcastMyPodcastsGet(page, pageSize);
+          if (podcastsResponse.status === 200) {
+            setPodcasts((prevPodcasts) => [...prevPodcasts, ...podcastsResponse.myPodcasts]);
+            setSelectedPodcastId(podcastsResponse.myPodcasts.length > 0 ? podcastsResponse.myPodcasts[0].id : null);
           } else {
             setCreateError("Podcasts cannot be fetched");
           }
-        });
-      } else {
-        window.location.href = loginPage;
+        } else {
+          window.location.href = loginPage;
+        }
+      } catch (error) {
+        console.error("Error during data fetching", error);
+        setCreateError("An error occurred while fetching data");
+      } finally {
+        setIsLoading(false);
       }
-    });
-  }, [router, page]);
+    };
+  
+    fetchData();
+  }, [page]);
 
   // Function to handle clicking the "Load More" button
   const handleLoadMoreClick = () => {
     setPage((page) => page + 1);
   };
 
-  // Function to navigate to create podcast page
-  const navigateToCreatePodcast = () => {
-    router.push("/CreatorHub/CreatePodcast");
-  };
 
   return (
     <>
@@ -66,6 +73,14 @@ const MyPodcasts = () => {
         </Flex>
       </Box>
       <Box px={["1em", "2em", "4em"]} pt={6}>
+      {isLoading ? (
+        <Flex justifyContent="center" alignItems="center" height="100px">
+          <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
+        </Flex>
+      ) : createError ? (
+        <Text color="red.500" textAlign="center">{createError}</Text>
+      ) : (
+        <>
         <Flex direction="row" wrap="wrap" justifyContent="center" alignItems="center">
           <Wrap spacing={6}>
             {podcasts.map((podcast) => (
@@ -108,6 +123,8 @@ const MyPodcasts = () => {
         )}
 
         {selectedPodcastId !== null && <MyPodcast podcastId={selectedPodcastId} />}
+      </>
+      )}
       </Box>
     </>
   );

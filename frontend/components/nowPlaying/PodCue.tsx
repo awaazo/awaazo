@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Link, Image, AspectRatio, Text, Flex, Heading, Spacer, IconButton } from '@chakra-ui/react';
+import { Box, Link, Image, AspectRatio, Text, Flex, IconButton, VStack, Icon } from '@chakra-ui/react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { usePlayer } from '../../utilities/PlayerContext';
+import { LuBookCopy } from 'react-icons/lu';
 
 interface Annotation {
   id: string;
   timestamp: number;
   content: string;
-  annotationType: 'Media Link' | 'Info' | 'Sponsership' | 'media-link'; // Adjusted type name
+  annotationType: 'Media Link' | 'Info' | 'Sponsership' | 'media-link';
   sponsorship?: {
     name: string;
     website: string;
@@ -29,9 +30,7 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
   useEffect(() => {
     const checkAnnotations = () => {
       const currentTime = audioRef.current?.currentTime ?? 0;
-      console.log('Current Time:', currentTime);
       const annotationsToShow = cues.filter(ann => currentTime >= ann.timestamp && currentTime < ann.timestamp + 10);
-      console.log('Cues to Show:', annotationsToShow);
       setCurrentAnnotations(annotationsToShow);
     };
 
@@ -83,24 +82,17 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
     }
 
     return annotationContent && (
-      <Flex
-        direction="column"
-        align="start"
-        p={5}
-        m={4}
-        bg="gray.700"
+      <Box
+        bg="rgba(255, 255, 255, 0.02)"
         borderRadius="2xl"
-        boxShadow="2xl"
-        width={["95%", "sm"]}
-        maxW="sm"
-        transition="transform 0.3s ease-in-out"
-        _hover={{ transform: "scale(1.05)" }}
+        p={4}
+        _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}
+        w="100%"
       >
-        <Flex direction="row" align="center" mb={3}>
-          <Heading as="h3" size="md" fontWeight="bold" mr={2} isTruncated>
+        <Flex justify="space-between" align="center">
+          <Text fontSize="md" color="white">
             {title}
-          </Heading>
-          <Spacer />
+          </Text>
           {annotation.mediaLink && (
             <Link href={annotation.mediaLink.url} isExternal>
               <IconButton
@@ -114,21 +106,37 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
             </Link>
           )}
         </Flex>
-        <Box>
+        <Box p={4} borderRadius="md">
           {annotationContent}
         </Box>
-      </Flex>
+      </Box>
     );
   };
 
-  if (!currentAnnotations.length) {
-    return null;
-  }
-
   return (
-    <Flex position="absolute" right="4" p="4" zIndex="10" justifyContent="center" flexDirection="column">
-      {currentAnnotations.map(annotation => renderAnnotationContent(annotation))}
-    </Flex>
+    <Box
+      border="3px solid rgba(255, 255, 255, 0.05)"
+      maxH="300px" 
+      width="100%"
+      height="100%"
+      p={2}
+      borderRadius="1.1em"
+      overflowY="auto"
+    >
+      <Flex justifyContent="flex-start" alignItems="center" m={3}>
+      <Icon as={LuBookCopy} boxSize={5} />
+        <Text fontSize="md" fontWeight="bold" ml={2} color="white">
+          Annotations
+        </Text>
+      </Flex>
+      <VStack spacing={3} align="start" mb={4}>
+        {currentAnnotations.length ? (
+          currentAnnotations.map(annotation => renderAnnotationContent(annotation))
+        ) : (
+          <Text color="white" p={4}>No annotations at this time.</Text>
+        )}
+      </VStack>
+    </Box>
   );
 };
 

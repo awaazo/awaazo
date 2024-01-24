@@ -262,7 +262,7 @@ useEffect(() => {
               <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bg="brand.100" />
+                  <SliderFilledTrack />
                 </SliderTrack>
               </Slider>
 
