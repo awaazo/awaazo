@@ -170,11 +170,12 @@ const CommentComponent = ({
           <Button
             p={2}
             m={1}
-            leftIcon={<Icon as={FaComments} />}
             onClick={onOpen}
             variant={"ghost"}
             data-cy={`playerbar-comment-button`}
-          />
+          >
+            <Icon as={FaComments} />
+          </Button>
         </Tooltip>
       )}
 

@@ -7,7 +7,7 @@ import SocialHelper from "../../helpers/SocialHelper";
 const LikeComponent = ({ episodeOrCommentId, initialLikes, showCount }) => {
   // Component Values
   const [likes, setLikes] = useState(initialLikes);
-
+  const [refresh, setRefresh] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
@@ -21,10 +21,11 @@ const LikeComponent = ({ episodeOrCommentId, initialLikes, showCount }) => {
     };
 
     fetchData();
-  }, [episodeOrCommentId]);
+  }, [episodeOrCommentId, refresh]);
 
   // Function to handle the like/unlike action
-  const handleLike = () => {
+  const handleLike = async () => {
+    setRefresh(!refresh);
     // Toggle the like status based on whether the episode or comment is currently liked
     if (isLiked) {
       // Call unlikeEpisode or unlikeComment because the episode or comment is currently liked
@@ -58,21 +59,35 @@ const LikeComponent = ({ episodeOrCommentId, initialLikes, showCount }) => {
 
   return (
     <>
-      {/* Tooltip to display the like/unlike action */}
-      <Tooltip label={isLiked ? "Unlike" : "Like"} aria-label="Like tooltip">
-        {/* Button to trigger the like/unlike action */}
-        <Button
-          variant={"ghost"}
-          p={2}
-          leftIcon={
+      {showCount ? (
+        <Tooltip label={isLiked ? "Unlike" : "Like"} aria-label="Like tooltip">
+          {/* Button to trigger the like/unlike action */}
+          <Button
+            variant={"ghost"}
+            p={2}
+            leftIcon={
+              <Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />
+            }
+            onClick={() => handleLike()}
+            data-cy={`like-button-index:`}
+          >
+            {likes}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Tooltip label={isLiked ? "Unlike" : "Like"} aria-label="Like tooltip">
+          {/* Button to trigger the like/unlike action */}
+          <Button
+            variant={"ghost"}
+            p={2}
+            onClick={() => handleLike()}
+            data-cy={`like-button-index:`}
+          >
+            {" "}
             <Icon as={FaHeart} color={isLiked ? "red.500" : "gray.500"} />
-          }
-          onClick={() => handleLike()}
-          data-cy={`like-button-index:`}
-        >
-          {likes}
-        </Button>
-      </Tooltip>
+          </Button>
+        </Tooltip>
+      )}
     </>
   );
 };

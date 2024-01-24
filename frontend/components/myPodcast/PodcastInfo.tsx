@@ -26,7 +26,7 @@ import EditPodcastForm from "./EditPodcastForm";
 import MyEpisodes from "./MyEpisodes";
 import { useEffect, useState } from "react";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Episode, Metrics } from "../../utilities/Interfaces";
 
 const PodcastInfo = ({ podcastId }) => {
   useEffect(() => {
@@ -53,15 +53,26 @@ const PodcastInfo = ({ podcastId }) => {
   const [tags, setTags] = useState([]);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [description, setDescription] = useState("");
-
+  const [metrics, setMetrics] = useState<Metrics>(null);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   // Form errors
   const [createError, setCreateError] = useState("");
+  const [metricsError, setMetricsError] = useState("");
 
   // For delete pop up
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isDeleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    PodcastHelper.getMetrics(podcastId).then((res) => {
+      if (res.status == 200) {
+        setMetrics(res.metrics);
+      } else {
+        setMetricsError("Metrics cannot be fetched");
+      }
+    });
+  }, [podcastId]);
 
   // Handle Deletion of podcast
   const handleDelete = async () => {
@@ -209,15 +220,61 @@ const PodcastInfo = ({ podcastId }) => {
               wordSpacing: "0.5em",
             }}
           >
-            <Text fontSize="md" fontWeight="bold">
-              🎧 Listeners: 5
-            </Text>
-            <Text fontSize="md" fontWeight="bold">
-              📊 Subscribers: 5
-            </Text>
-            <Text fontSize="md" fontWeight="bold">
-              ❤️ Likes: 5
-            </Text>
+            <Box
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(10px)",
+                borderRadius: "1em",
+                padding: "1em",
+                marginTop: "1em",
+                outline: "2px solid rgba(255, 255, 255, 0.1)",
+                marginBottom: "2em",
+                wordSpacing: "0.5em",
+              }}
+            >
+              {/* Podcast metrics */}
+              {metricsError && <Text color="red.500">{metricsError}</Text>}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ▶️ Total Play Count: {metrics.totalTimeWatched}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💬 Total Comments Count: {metrics.totalCommentsCount}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                </Text>
+              )}
+            </Box>
           </Box>
           <>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -287,16 +344,48 @@ const PodcastInfo = ({ podcastId }) => {
                 wordSpacing: "0.5em",
               }}
             >
-              {/* Podcast statistics */}
-              <Text fontSize="md" fontWeight="bold">
-                🎧 Listeners: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                📊 Subscribers: 5
-              </Text>
-              <Text fontSize="md" fontWeight="bold">
-                ❤️ Likes: 5
-              </Text>
+              {/* Podcast metrics */}
+              {metricsError && <Text color="red.500">{metricsError}</Text>}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  ▶️ Total Play Count: {metrics.totalTimeWatched}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💬 Total Comments Count: {metrics.totalCommentsCount}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                </Text>
+              )}
+              {metrics && (
+                <Text fontSize="md" fontWeight="bold">
+                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                </Text>
+              )}
             </Box>
           </Box>
 
