@@ -53,7 +53,7 @@ const PlayerMenu = ({ episode }) => {
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
+    <Box style={{ position: "relative", zIndex: 9999 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
         <MenuButton
           as={IconButton}

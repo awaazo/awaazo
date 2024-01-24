@@ -131,7 +131,11 @@ const ChatBot = () => {
             justifyContent="center"
             mt={"-0.5em"}
           >
-            <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
+            <Image 
+            src={awaazo_bird_aihelper_logo.src}
+            alt="Logo"
+            w="50px"
+            />
           </Box>
           <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
             Episode Title
