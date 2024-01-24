@@ -93,7 +93,7 @@ const ChatBot = () => {
       boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
-      bg="#24242475"
+      bg="#2424244D"
       backdropFilter="blur(50px)"
       color="white"
     >
@@ -171,11 +171,11 @@ const ChatBot = () => {
             p="30px"
             borderColor="gray.700"
           >
-            <VStack spacing="2" align="left" padding="4">
+            <VStack spacing="2" align="center" padding="4">
               <Text fontSize={"12px"}>Things you can ask:</Text>
               <Button
                 borderRadius={"25px"}
-                width={"85%"}
+                width={"auto"}
                 fontSize={"12px"}
                 fontWeight={"normal"}
                 onClick={() =>
@@ -188,7 +188,7 @@ const ChatBot = () => {
               </Button>
               <Button
                 borderRadius={"25px"}
-                width={"80%"}
+                width={"auto"}
                 fontSize={"12px"}
                 fontWeight={"normal"}
                 onClick={() =>
@@ -206,12 +206,12 @@ const ChatBot = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Ask me anything about this podcast ..."
-                fontSize={"15px"}
-                bg="#363636"
-                borderRadius="25px"
+                fontSize={"13px"}
+                bg="#3636369E"
+                borderRadius="45px"
                 p="30px"
                 border="none"
-                _focus={{ bg: "#363636", boxShadow: "none" }}
+                _focus={{ bg: "#181818", boxShadow: "none" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
                 onKeyDown={(e) => {
@@ -230,7 +230,7 @@ const ChatBot = () => {
                 transform="translateY(-50%)"
                 onClick={sendMessage}
               >
-                <GrUploadOption size={"25px"} />
+                <GrUploadOption size={"25px"} color={"white"} />
               </Button>
             </InputGroup>
           </Box>
