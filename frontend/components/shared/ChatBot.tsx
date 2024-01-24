@@ -20,7 +20,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const fetchChatGPTResponse = async (userMessage) => {
-  const API_KEY = "";
+  const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+  // Check if the API key is present
+  if (!API_KEY) {
+    console.error("OpenAI API key not found. Make sure to set it in your .env.local file.");
+  }
 
   const systemMessage = {
     role: "system",
