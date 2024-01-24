@@ -10,6 +10,8 @@ import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
+import { SaveWatchHistoryRequest } from "../../utilities/Requests";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -140,6 +142,84 @@ const PlayerBar = () => {
     crossOrigin: "Anonymous",
     quality: 10,
   });
+
+
+
+  useEffect(() => {
+    //remove 'if (episode)' when refreshing the page will keep the episode
+    if (episode){
+
+    const loadWatchHistory = async () => {
+        PodcastHelper.getWatchHistory(episode.id)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.watchHistory.timestamp >= 0){
+            console.log("timestamp loaded: " + res.watchHistory.timestamp)
+            audioRef.current.currentTime = res.watchHistory.timestamp;
+            } else {
+              console.log("timestamp loaded: " + res.watchHistory.timestamp)
+              audioRef.current.currentTime = 0;
+            }
+          } else {
+            console.error("Error fetching watch history data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching watch history data:", error));
+      
+    };
+    // Call the function to load the watch history
+    loadWatchHistory();
+
+    const handleBeforeUnload = async () => {
+      const request: SaveWatchHistoryRequest = {
+        timestamp: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+      };
+      if (audioRef.current) {
+        await PodcastHelper.saveWatchHistory(episode.id, request)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Saved Episode Watch History");
+            console.log("timestamp saved: " + audioRef.current.currentTime)
+          } else {
+            console.error("Error saving the episode watch history:", response.message);
+          }
+        });
+      }
+    };
+  
+    if (typeof window !== "undefined") {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+  }
+}, [episode]);
+
+//Saves watch history every 30 seconds
+useEffect(() => {
+  const saveHistoryAtInterval = async () => {
+    const request: SaveWatchHistoryRequest = {
+      timestamp: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+    };
+    if (audioRef.current) {
+      await PodcastHelper.saveWatchHistory(episode.id, request)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Saved Episode Watch History");
+          console.log("timestamp saved: " + audioRef.current.currentTime)
+        } else {
+          console.error("Error saving the episode watch history:", response.message);
+        }
+      });
+    }
+  };
+
+   const interval=setInterval(()=>{
+    saveHistoryAtInterval();
+    },30000)
+
+
+  return()=>clearInterval(interval)
+
+},[episode])
 
   return (
     <Box maxWidth="100%" p={1} pt={3} pb={5} bg="rgba(0, 0, 0, 0.2)" style={{ backdropFilter: "blur(50px)" }} position="fixed" left="50%" transform="translateX(-50%)" width="100%" zIndex={999} bottom={"0em"}>

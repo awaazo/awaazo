@@ -632,7 +632,7 @@ export default class PodcastHelper {
   };
 
   /**
-   * Creates a swave watch history request to the server.
+   * Creates a save watch history request to the server.
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
