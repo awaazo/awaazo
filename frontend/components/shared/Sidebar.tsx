@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <Box
       bg="rgba(255, 255, 255, 0.04)"
-      w={collapsed ? "60px" : "100%"}
+      w={collapsed ? "60px" : "300px"}
       h="calc(88vh - 4em)"
       py={8}
       px={collapsed ? 2 : 3}
