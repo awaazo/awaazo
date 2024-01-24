@@ -7,7 +7,6 @@ import {
   Input,
   Button,
   Image,
-  InputRightElement,
   InputGroup,
   HStack,
   Avatar,
@@ -17,47 +16,69 @@ import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.sv
 
 import { AiOutlineClose, AiFillMessage } from "react-icons/ai";
 import { useChatBot } from "../../utilities/ChatBotContext";
+import dotenv from "dotenv";
+dotenv.config();
+
+const fetchChatGPTResponse = async (userMessage) => {
+  const API_KEY = "";
+
+  const systemMessage = {
+    role: "system",
+    content: "Answer the question breifly and shortly",
+  };
+
+  const apiRequestBody = {
+    model: "gpt-3.5-turbo",
+    messages: [
+      systemMessage,
+      { role: "user", content: userMessage },
+    ],
+  };
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(apiRequestBody),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+};
 
 const ChatBot = () => {
   const { state, dispatch } = useChatBot();
-  const [isOpen, setIsOpen] = useState(state.isOpen); // Manage open state locally
-  const [messages, setMessages] = useState([]); // State for messages
-  const [newMessage, setNewMessage] = useState(""); // State for the new message input
+  const [isOpen, setIsOpen] = useState(state.isOpen);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
 
-  // Sample messages for mapping
-  const sampleMessages = [
-    { text: "What did joe say about his favorite dish?", isBot: false },
-    {
-      text: "Joe said that he loves Lasagna and wish's that his mom can cooked it for him ever y day , but she doesn’t , because she dies 20 years ago . ",
-      isBot: true,
-    },
-    { text: "You are the greatest bot ever created", isBot: false },
-    { text: "For once do something useful with your life son.", isBot: true },
-  ];
-
-  // Toggle the chatbot based on the local state and also dispatch to context
   const toggleChatBot = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
     dispatch({ type: "TOGGLE_CHAT", payload: newIsOpen });
   };
 
-  // Handler for sending messages
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (newMessage.trim()) {
-      setMessages([...messages, { text: newMessage, isBot: false }]);
+      const updatedMessages = [...messages, { text: newMessage, isBot: false }];
+      setMessages(updatedMessages);
       setNewMessage("");
+      const botResponse = await fetchChatGPTResponse(newMessage);
+
+      const updatedMessagesWithBot = [...updatedMessages, { text: botResponse, isBot: true }];
+      setMessages(updatedMessagesWithBot);
     }
   };
 
-  // Handle user clicking on predefined questions
   const handlePredefinedQuestionClick = (question) => {
     setNewMessage(question);
   };
 
-  // Listen to the context's state change for isOpen and update local state accordingly
   React.useEffect(() => {
     setIsOpen(state.isOpen);
+    console.clear(); // Clear console messages on component mount
   }, [state.isOpen]);
 
   return (
@@ -72,7 +93,7 @@ const ChatBot = () => {
       boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
-      bg="#242424"
+      bg="#24242475"
       backdropFilter="blur(50px)"
       color="white"
     >
@@ -106,7 +127,7 @@ const ChatBot = () => {
             paddingY="4"
             mt={"20px"}
           >
-            {sampleMessages.map((message, index) => (
+            {messages.map((message, index) => (
               <Box
                 key={index}
                 alignSelf={message.isBot ? "flex-start" : "flex-end"}
@@ -193,6 +214,11 @@ const ChatBot = () => {
                 _focus={{ bg: "#363636", boxShadow: "none" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
               />
               <Button
                 variant={"ghost"}
@@ -202,6 +228,7 @@ const ChatBot = () => {
                 right="5px"
                 top="50%"
                 transform="translateY(-50%)"
+                onClick={sendMessage}
               >
                 <GrUploadOption size={"25px"} />
               </Button>
