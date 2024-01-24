@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <Box
       bg="rgba(255, 255, 255, 0.04)"
-      w={collapsed ? "60px" : "300px"}
+      w={collapsed ? "60px" : "15em"}
       h="calc(88vh - 5em)"
       py={8}
       px={collapsed ? 2 : 3}
@@ -51,10 +51,11 @@ const Sidebar = () => {
       top="3em"
       zIndex={10}
       transition="width 0.2s ease-in-out" 
-      rounded="15px"
-      ml={3}
+      roundedTopRight="10px"
+      roundedBottomRight="10px"
+      // ml={3}
       mt={"2em"}
-      outline={"2px solid rgba(255, 255, 255, 0.1)"}
+      outline={"2px solid rgba(255, 255, 255, 0.08)"}
     >
       <Flex justify="center" align="center" mb={7}>
         <Image src={Logo.src} alt="Logo" w="28px" />
