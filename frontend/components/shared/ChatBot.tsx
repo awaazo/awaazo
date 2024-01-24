@@ -139,6 +139,8 @@ const ChatBot = () => {
           <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
             Episode Title
           </Text>
+
+          {/* testing episode ID: to remove during production */}
           <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
             Episode ID: {state.currentEpisodeId}
           </Text>
