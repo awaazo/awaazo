@@ -179,10 +179,10 @@ const PlayerBar = () => {
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
-      bottom={"1em"}
-      borderTopLeftRadius="50px"
-      borderTopRightRadius="50px"
-      outline={"2px solid rgba(255, 255, 255, 0.1)"}
+      bottom={"0.1px"}
+      borderTopLeftRadius="10px"
+      borderTopRightRadius="10px"
+      outline={"2px solid rgba(255, 255, 255, 0.08)"}
     >
       <Flex
         flexDirection="row"
