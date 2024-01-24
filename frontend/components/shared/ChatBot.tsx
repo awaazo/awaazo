@@ -103,11 +103,11 @@ const ChatBot = () => {
       w={isOpen ? "32%" : "0"}
       h="100vh"
       overflow="hidden"
-      transition="width 0.5s ease"
+      transition="width 0.2s ease-out"
       boxShadow="0px 0px 50px rgba(0, 0, 0, 0.5)"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
-      bg="#2626265A"
+      bg="#14141458"
       backdropFilter="blur(40px)"
     >
       {isOpen && (
