@@ -133,7 +133,7 @@ export default function Navbar() {
 
     setNavbarStyle({
       backgroundColor: `rgba(255, 255, 255, ${(opacity / 1.3) * 0})`,
-      backdropFilter: `blur(${blur / 5}px)`,
+      backdropFilter: `blur(${blur / 2}px)`,
     });
   };
 
