@@ -5,8 +5,12 @@ const GenreCard = ({ genre, onMouseEnter, onMouseLeave }) => {
   return (
     <Link href={`/Explore/Genre/${genre.link}`} passHref>
       <Box
+      // // old code
         h="180px"
         w="180px"
+      // // new code
+      //   width="15em"
+
         borderRadius="30px"
         overflow="hidden"
         position="relative"
