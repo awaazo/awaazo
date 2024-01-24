@@ -60,12 +60,20 @@ const fetchChatGPTResponse = async (userMessage) => {
 
 const ChatBot = () => {
   const { state, dispatch } = useChatBot();
+  const { episode } = state;
   const [isOpen, setIsOpen] = useState(state.isOpen);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+
+
   useEffect(() => {
-    console.log("Current Episode ID:", state.currentEpisodeId);
-  }, [state.currentEpisodeId]);
+    console.log("Current Episode ID:", episode.id);
+  }, [episode]);
+
+
+  // useEffect(() => {
+  //   console.log("Current Episode ID:", state.currentEpisodeId);
+  // }, [state.currentEpisodeId]);
 
 
   const toggleChatBot = () => {
@@ -92,7 +100,9 @@ const ChatBot = () => {
 
   React.useEffect(() => {
     setIsOpen(state.isOpen);
-    console.log("current episode ID:" + state.currentEpisodeId)
+    if (episode){
+      console.log("current episode ID:" + episode.id)
+    }
   }, [state.isOpen]);
 
   return (
@@ -146,7 +156,7 @@ const ChatBot = () => {
 
           {/* testing episode ID: to remove during production */}
           <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
-            Episode ID: {state.currentEpisodeId}
+            Episode ID: {episode.id}
           </Text>
           <VStack
             spacing={"20px"}

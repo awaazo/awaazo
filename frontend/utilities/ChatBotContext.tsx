@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import { Episode } from "./Interfaces";
 
 interface ChatBotState {
+  episode: Episode;
   isOpen: boolean;
-  currentEpisodeId: string | null;
 }
 
 interface ChatBotContextProps {
@@ -15,8 +16,8 @@ const ChatBotContext = createContext<ChatBotContextProps | undefined>(
 );
 
 const initialState: ChatBotState = {
+  episode: null,
   isOpen: false,
-  currentEpisodeId: null,
 };
 
 interface ChatBotProviderProps {
@@ -33,7 +34,7 @@ const chatBotReducer = (state: ChatBotState, action: any) => {
     case "SET_EPISODE_ID":
       return {
         ...state,
-        currentEpisodeId: action.payload,
+        episode: action.payload,
       };
     default:
       return state;
