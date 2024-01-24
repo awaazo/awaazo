@@ -34,7 +34,7 @@ import {
 import { IoIosMore } from "react-icons/io";
 import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import { MdDelete, MdIosShare } from "react-icons/md";
+import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/likeComponent";
 import CommentComponent from "../social/commentComponent";
@@ -252,7 +252,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
                 onClick={handleAddToPlaylistMenuToggle}
               >
                 Add to Playlist{" "}
-                <CgPlayList
+                <MdOutlinePlaylistAdd
                   size={24}
                   style={{ marginLeft: "auto", color: "white" }}
                 />

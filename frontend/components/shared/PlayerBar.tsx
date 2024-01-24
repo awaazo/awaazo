@@ -31,6 +31,7 @@ import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import ChatBot from "./ChatBotButton";
+import PlayerMenu from "../playerbar/Menu";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -325,6 +326,7 @@ const PlayerBar = () => {
         {!isMobile && (
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
+              <PlayerMenu episode={episode} />
               <ChatBot />
               <BookmarkComponent
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
