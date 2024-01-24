@@ -42,6 +42,7 @@ const fetchChatGPTResponse = async (userMessage) => {
       systemMessage,
       { role: "user", content: userMessage },
     ],
+    max_tokens: 5, // currently set to super low 5, just to test our component. Bump it up for longer responses
   };
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -138,7 +139,9 @@ const ChatBot = () => {
           <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
             Episode Title
           </Text>
-
+          <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
+            Episode ID: {state.currentEpisodeId}
+          </Text>
           <VStack
             spacing={"20px"}
             overflowY="auto"
