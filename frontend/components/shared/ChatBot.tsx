@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -53,6 +53,10 @@ const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(state.isOpen);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  useEffect(() => {
+    console.log("Current Episode ID:", state.currentEpisodeId);
+  }, [state.currentEpisodeId]);
+
 
   const toggleChatBot = () => {
     const newIsOpen = !isOpen;
@@ -78,7 +82,7 @@ const ChatBot = () => {
 
   React.useEffect(() => {
     setIsOpen(state.isOpen);
-    console.clear(); // Clear console messages on component mount
+    console.log("current episode ID:" + state.currentEpisodeId)
   }, [state.isOpen]);
 
   return (
