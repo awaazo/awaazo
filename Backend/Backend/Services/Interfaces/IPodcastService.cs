@@ -26,12 +26,11 @@ public interface IPodcastService
     public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl);
     public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
     public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
-    public Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Guid episodeId);
-    public Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPosition, string domain);
+    public Task<bool> SaveWatchHistory(User user, Guid episodeId, double listenPosition);
     public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);
     public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
     public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
-    public Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl);
+    public Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId);
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
     public Task<object?> GetMetrics(User user, Guid podcastId);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
