@@ -406,16 +406,19 @@ public class PodcastService : IPodcastService
     
     public async Task<object?> GetMetrics(User user, Guid podcastId) {
         // Check that user owns podcast
-        Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId);
+        Podcast? podcast = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(comment => comment.Likes)
+                .FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
             throw new Exception("Invalid podcast Id " + podcast);
 
         if (podcast.PodcasterId != user.Id)
             throw new UnauthorizedAccessException($"User {user.Email} does not own podcast {podcast.Name} ({podcast.Id})");
-
+        
         // Otherwise all good, get all needed metrics
         int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
-        Episode? mostLikes = podcast.Episodes.OrderByDescending(e => e.Likes.Count()).FirstOrDefault();
+        Episode? mostLikes = podcast.Episodes.MaxBy(e => e.Likes.Count());
         
         var podcastIdParameter = new SqlParameter("@PodcastId", podcast.Id);
         var query = "SELECT uei.* " +
@@ -426,13 +429,13 @@ public class PodcastService : IPodcastService
             .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
         
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
-        Episode? mostPlayed = podcast.Episodes.OrderByDescending(e => e.PlayCount).FirstOrDefault();
+        Episode? mostPlayed = podcast.Episodes.MaxBy(e => e.PlayCount);
         
         int totalComments = podcast.Episodes.Select(ep => ep.Comments.Count()).Sum();
-        Episode? mostCommented = podcast.Episodes.OrderByDescending(ep => ep.Comments.Count).FirstOrDefault();
+        Episode? mostCommented = podcast.Episodes.MaxBy(ep => ep.Comments.Count);
 
         Comment? mostLikedComment =
-            podcast.Episodes.Select(ep => ep.Comments.OrderByDescending(comment => comment.Likes.Count()).FirstOrDefault())
+            podcast.Episodes.Select(ep => ep.Comments.MaxBy(comment => comment.Likes.Count()))
                             .FirstOrDefault();
         return new {
             TotalEpisodesLikes = totalLikes,
