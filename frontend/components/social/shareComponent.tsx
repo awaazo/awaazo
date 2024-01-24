@@ -56,7 +56,7 @@ const ShareComponent = ({ content, contentType }) => {
 
   const shareToPlatform = (platform) => {
     const { url, name, description } = constructSharingDetails();
-    const shareMessage = `Check out this ${contentType} "${name}": ${description}. Listen here: ${url}`;
+    const shareMessage = `Check out this ${contentType} "${name}", Description: ${description}. Listen here: ${url}`;
     const encodedUrl = encodeURIComponent(url);
     const encodedMsg = encodeURIComponent(shareMessage);
 
