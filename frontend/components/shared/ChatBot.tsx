@@ -10,14 +10,18 @@ import {
   InputGroup,
   HStack,
   Avatar,
+  Flex,
 } from "@chakra-ui/react";
-import { GrUploadOption } from "react-icons/gr";
 import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
 
-import { AiOutlineClose, AiFillMessage } from "react-icons/ai";
+import { IoIosCloseCircle } from "react-icons/io";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+
 import { useChatBot } from "../../utilities/ChatBotContext";
 import dotenv from "dotenv";
 dotenv.config();
+import { IoMdSend } from "react-icons/io";
+
 
 const fetchChatGPTResponse = async (userMessage) => {
   const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
@@ -99,36 +103,42 @@ const ChatBot = () => {
       h="100vh"
       overflow="hidden"
       transition="width 0.5s ease"
-      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
+      boxShadow="0px 0px 50px rgba(0, 0, 0, 0.5)"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
-      bg="#2424244D"
-      backdropFilter="blur(50px)"
-      color="white"
+      bg="#2626265A"
+      backdropFilter="blur(40px)"
     >
       {isOpen && (
         <Box>
-          <IconButton
-            aria-label="Close chatbot"
-            icon={<AiOutlineClose />}
-            position="absolute"
-            top="2"
-            right="2"
-            onClick={toggleChatBot}
-            fontSize="20px"
-            variant="ghost"
-            color="white"
-            _hover={{ background: "transparent" }}
-            _active={{ background: "transparent" }}
-          />
+          <Flex>
+            <IconButton
+              display="flex"
+              aria-label="Close chatbot"
+              icon={<IoIosCloseCircle />}
+              onClick={toggleChatBot}
+              fontSize="30px"
+              variant="ghost"
+              color="#FFFFFF6B"
+              _hover={{ background: "transparent" }}
+              _active={{ background: "transparent" }}
+            />
+          </Flex>
           <Box
             display="flex"
             alignItems="center"
             justifyContent="center"
-            mt={"10px"}
+            mt={"-0.5em"}
           >
             <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
           </Box>
+          <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
+            Episode Title
+          </Text>
+          <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
+            Episode Title
+          </Text>
+
           <VStack
             spacing={"20px"}
             overflowY="auto"
@@ -180,13 +190,14 @@ const ChatBot = () => {
             p="30px"
             borderColor="gray.700"
           >
-            <VStack spacing="2" align="center" padding="4">
-              <Text fontSize={"12px"}>Things you can ask:</Text>
+            <VStack spacing="2" align="center" padding="2em">
+              <Text textAlign="center" fontSize={"14px"} padding={"1em"}>Chat with your host, AUTHORNAME.<br/>Things you can ask:</Text>
               <Button
                 borderRadius={"25px"}
                 width={"auto"}
                 fontSize={"12px"}
                 fontWeight={"normal"}
+                border={"2px solid rgba(255, 255, 255, 0.05)"}
                 onClick={() =>
                   handlePredefinedQuestionClick(
                     "What is the timp stamp where they talked about food",
@@ -200,6 +211,7 @@ const ChatBot = () => {
                 width={"auto"}
                 fontSize={"12px"}
                 fontWeight={"normal"}
+                border={"2px solid rgba(255, 255, 255, 0.05)"}
                 onClick={() =>
                   handlePredefinedQuestionClick(
                     "What did the podcaster think about Lasagna?",
@@ -214,12 +226,12 @@ const ChatBot = () => {
               <Input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Ask me anything about this podcast ..."
+                placeholder="Ask me anything about this episide..."
                 fontSize={"13px"}
-                bg="#3636369E"
+                bg="#3636363A"
                 borderRadius="45px"
                 p="30px"
-                border="none"
+                border={"2px solid rgba(255, 255, 255, 0.05)"}
                 _focus={{ bg: "#181818", boxShadow: "none" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
@@ -239,7 +251,7 @@ const ChatBot = () => {
                 transform="translateY(-50%)"
                 onClick={sendMessage}
               >
-                <GrUploadOption size={"25px"} color={"white"} />
+                <IoMdSend size={"20px"}/>
               </Button>
             </InputGroup>
           </Box>
