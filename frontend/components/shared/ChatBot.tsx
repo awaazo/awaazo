@@ -67,8 +67,9 @@ const ChatBot = () => {
 
 
   useEffect(() => {
-    console.log("Current Episode ID:", episode.id);
-  }, [episode]);
+ if (episode){
+      console.log("current episode ID:" + episode.id)
+    }  }, [episode]);
 
 
   // useEffect(() => {
@@ -156,7 +157,7 @@ const ChatBot = () => {
 
           {/* testing episode ID: to remove during production */}
           <Text textAlign="center" fontSize="sm"  paddingBottom={"1em"}>
-            Episode ID: {episode.id}
+            Episode ID:
           </Text>
           <VStack
             spacing={"20px"}
