@@ -445,7 +445,27 @@ public class PodcastService : IPodcastService
             MostLikedComment = mostLikedComment
         };
     }
-    
+
+    public async Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl)
+    {
+        // Get the podcasts from the database
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(p => p.Podcaster)
+        .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(p => new PodcastResponse(p, domainUrl))
+        .ToListAsync() ?? throw new Exception("No podcasts found.");
+
+        return podcastResponses;
+    }
+
     #endregion Podcast
 
     #region Episode

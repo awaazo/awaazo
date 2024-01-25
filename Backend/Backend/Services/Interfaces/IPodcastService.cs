@@ -17,6 +17,7 @@ public interface IPodcastService
     public Task<List<PodcastResponse>> GetUserPodcastsAsync(int page, int pageSize, string domainUrl, Guid userId);
     public Task<List<PodcastResponse>> GetSearchPodcastsAsync(int page, int pageSize, string domainUrl, PodcastFilter filter);
     public Task<List<PodcastResponse>> GetPodcastsByTagsAsync(int page, int pageSize, string domainUrl, string[] tags);
+    public Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl);
 
     // EPISODES
 
