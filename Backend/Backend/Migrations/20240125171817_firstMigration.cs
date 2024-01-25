@@ -417,8 +417,7 @@ namespace Backend.Migrations
                         name: "FK_UserEpisodeInteractions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
