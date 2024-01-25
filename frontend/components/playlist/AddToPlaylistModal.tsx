@@ -15,11 +15,22 @@ import {
 import NexLink from "next/link";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../utilities/Interfaces";
+import CreatePlaylistModal from "./CreatePlaylistModal";
 
 const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [page, setPage] = useState(0);
   const pageSize = 20;
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const onCreateModalClose = () => setIsCreateModalOpen(false);
+  const onCreateModalOpen = () => setIsCreateModalOpen(true);
+
+  const [reload, setReload] = useState(false);
+
+  const handleReload = () => {
+    setReload(!reload);
+  };
 
   const [targetPlaylistId, setTargetPlaylistId] = useState("");
 
@@ -34,7 +45,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
         setPlaylistError("Podcasts cannot be fetched");
       }
     });
-  }, [page]);
+  }, [page, reload]);
 
   const userPlaylists = playlists.filter(
     (playlist) => playlist.isHandledByUser,
@@ -72,9 +83,10 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <NexLink href={`/Playlist/MyPlaylists`}>
-              <Button borderRadius={"50px"}>Create New Playlist</Button>
-            </NexLink>
+            <Button borderRadius={"50px"} onClick={onCreateModalOpen}>
+              Create New Playlist
+            </Button>
+
             <Text>OR</Text>
             {playlistError && <Text color="red.500">{playlistError}</Text>}
             {/* Dropdown to select an existing playlist */}
@@ -104,6 +116,11 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
           </Button>
         </ModalFooter>
       </ModalContent>
+      <CreatePlaylistModal
+        onClose={onCreateModalClose}
+        isOpen={isCreateModalOpen}
+        handleReload={handleReload}
+      />
     </Modal>
   );
 };

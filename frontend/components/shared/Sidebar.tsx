@@ -28,7 +28,6 @@ const Sidebar = () => {
   const [imageUrls, setImageUrls] = useState({});
 
   const handleReload = () => {
-    console.log("test");
     setReload(!reload);
   };
 
