@@ -1,6 +1,4 @@
 # Import Python Libraries
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse
 from aiohttp import web
 from huggingface_hub import snapshot_download
 import os
@@ -271,6 +269,16 @@ async def handle_realistic_voice_cloning_request(request):
         print(f"Error in handle_realistic_voice_cloning_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_chat_request(request):
+    # Extract necessary information from the request
+    # For example, the user's message or any other relevant data
+
+    # Use the imported chat functionality to process the request
+    # Example: response = ChatFunctionality.process(user_message)
+
+    # Return the chat response
+    return web.Response(text=response)
+
 # Create the server instance
 app = web.Application()
 
@@ -278,6 +286,8 @@ app = web.Application()
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
 app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
+
+
 
 # Download the Speakers
 print("Downloading Speaker Models...")
