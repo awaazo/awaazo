@@ -1,5 +1,3 @@
-using System.Net.Mail;
-using Azure.Core;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
@@ -20,14 +18,9 @@ public class ProfileService : IProfileService
     /// </summary>
     private readonly AppDbContext _db;
 
-    private readonly EmailService _emailService;
-    private readonly IConfiguration _config;
-    
-    public ProfileService(IConfiguration config, AppDbContext db, EmailService emailService)
+    public ProfileService(AppDbContext db)
     {
         _db = db;
-        _emailService = emailService;
-        _config = config;
     }
 
     /// <summary>
