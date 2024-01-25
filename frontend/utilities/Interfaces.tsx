@@ -111,7 +111,7 @@ export interface Bookmark {
 }
 
 export interface WatchHistory {
-  timestamp: number;
+  listenPosition: number;
 }
 
 export interface TranscriptLine {

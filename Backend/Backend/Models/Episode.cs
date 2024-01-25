@@ -96,6 +96,8 @@ public class UserEpisodeInteraction : BaseEntity
     
     public Guid EpisodeId { get; set; }
 
+    public Episode Episode { get; set; } = null!;
+
     [DefaultValue(false)]
     public bool HasListened { get; set; }
 
@@ -106,13 +108,6 @@ public class UserEpisodeInteraction : BaseEntity
 
     public DateTime DateListened { get; set; }
 
-    private readonly AppDbContext _db;
-    public UserEpisodeInteraction(AppDbContext db)
-    {
-        _db = db;
-    }
-
-    public Episode? Episode => _db.Episodes?.Where(e => e.Id == EpisodeId).FirstOrDefault();
 }
 
 public class EpisodeSections

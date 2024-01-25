@@ -229,3 +229,32 @@ public class AdjecentEpisodeResponse
     public Guid? Previous { get; set; }
 
 }
+
+/// <summary>
+/// Resonse for the listen position of an episode.
+/// </summary>
+[BindProperties]
+public class ListenPositionResponse
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ListenPositionResponse"/> class.
+    /// </summary>
+    /// <param name="interaction">The interaction.</param>
+    public ListenPositionResponse(UserEpisodeInteraction interaction)
+    {
+        ListenPosition = interaction.LastListenPosition;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ListenPositionResponse"/> class.
+    /// </summary>
+    public ListenPositionResponse()
+    {
+        ListenPosition = 0;
+    }
+
+    /// <summary>
+    /// The Listen Position in seconds
+    /// </summary>
+    public double ListenPosition { get; set; }
+}

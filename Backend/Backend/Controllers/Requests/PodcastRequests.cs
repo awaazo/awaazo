@@ -57,11 +57,19 @@ public class EditEpisodeRequest : CreateEpisodeRequest
     public new IFormFile? Thumbnail { get; set; }
 }
 
+/// <summary>
+/// Request to save the current listen position of an episode
+/// </summary>
 [BindProperties]
 public class EpisodeHistorySaveRequest
 {
+    /// <summary>
+    /// The Listen Position in seconds
+    /// </summary>
+    [Required]
     public double ListenPosition { get; set; }
 }
+
 
 [BindProperties]
 public class PodcastFilter

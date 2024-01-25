@@ -790,38 +790,78 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
-    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Guid episodeId)
-    {
-        return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episodeId).FirstOrDefaultAsync();
-    }
+    #region Watch History
 
-    public async Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPisition, string domain)
+    /// <summary>
+    /// Saves the watch history for the given episode.
+    /// </summary>
+    /// <param name="user">Current user watching the episode</param>
+    /// <param name="episodeId">Id of the episode being watched</param>
+    /// <param name="listenPosition">The position in the episode the user is at</param>
+    /// <returns>True if the watch history was saved successfully, false otherwise</returns>
+    public async Task<bool> SaveWatchHistory(User user, Guid episodeId, double listenPosition)
     {
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
 
-        // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episodeId);
+        // Make sure the listen position is not negative
+        if (listenPosition < 0)
+            throw new Exception("Listen position cannot be negative.");
+        // Make sure the listen position is not greater than the duration of the episode
+        if (listenPosition > episode.Duration)
+            throw new Exception("Listen position cannot be greater than the duration of the episode.");
+
+        // Check if the User Episode Interaction exists, if it does retrieve it.
+        UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
+            .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
+
+        // If the interaction does not exist, create a new one.
         if (interaction is null)
         {
-            interaction = new UserEpisodeInteraction(_db)
+            interaction = new ()
             {
                 EpisodeId = episode.Id,
                 UserId = user.Id,
                 DateListened = DateTime.Now,
-                LastListenPosition = Math.Min(episode.Duration, listenPisition)
+                LastListenPosition = listenPosition,
+                HasListened = true
             };
-            await _db.UserEpisodeInteractions!.AddAsync(interaction);
+            await _db.UserEpisodeInteractions.AddAsync(interaction);
         }
         else
         {
             interaction.DateListened = DateTime.Now;
-            interaction.LastListenPosition = Math.Min(episode.Duration, listenPisition);
-            _db.UserEpisodeInteractions!.Update(interaction);
+            interaction.LastListenPosition = listenPosition;
+            interaction.HasListened = true;
+            _db.UserEpisodeInteractions.Update(interaction);
         }
 
-        await _db.SaveChangesAsync();
-        return interaction;
+        return await _db.SaveChangesAsync() > 0;
     }
+
+    /// <summary>
+    /// Gets the watch history for the given episode.
+    /// </summary>
+    /// <param name="user">Current user watching the episode</param>
+    /// <param name="episodeId">Id of the episode being watched</param>
+    /// <returns>ListenPositionResponse object containing the listen position</returns>
+    public async Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId) 
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+
+        // Check if the User Episode Interaction exists, if it does retrieve it.
+        UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
+            .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
+
+        // If the interaction does not exist, return 0
+        if (interaction is null)
+            return new() { ListenPosition = 0 };
+        else
+            return new() { ListenPosition = interaction.LastListenPosition };
+    }
+
+    #endregion Watch History
 
     /// <summary>
     /// Gets the transcript for the given episode.
@@ -965,14 +1005,6 @@ public class PodcastService : IPodcastService
         return true;
     }
 
-
-    public async Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl) {
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
-
-        // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episodeId);
-        return interaction;
-    }
 
 
 

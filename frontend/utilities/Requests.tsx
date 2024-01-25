@@ -213,7 +213,7 @@ export interface PlaylistEditRequest {
 
 //#region Episode SaveWatchHistory Request
 export interface SaveWatchHistoryRequest {
-  timestamp: number;
+  listenPosition: number;
 }
 
 //#endregion
