@@ -33,6 +33,6 @@ public interface IPodcastService
     public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
     public Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl);
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
-    public Task<object?> GetMetrics(User user, Guid podcastId);
+    public Task<object?> GetMetrics(User user, Guid podcastId, string domainUrl);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
 }
