@@ -17,9 +17,8 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import { PiQueueFill } from "react-icons/pi";
 import { FaDeleteLeft } from "react-icons/fa6";
 
-const ViewQueueModal = () => {
+const ViewQueueModal = ({ isOpen, onClose }) => {
   const { state, dispatch } = usePlayer();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleQueueSelect = (index: number) => {
     dispatch({
@@ -28,30 +27,13 @@ const ViewQueueModal = () => {
     });
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   const handleRemoveFromQueue = (episode) => {
     dispatch({ type: "REMOVE_FROM_QUEUE", payload: episode });
   };
 
   return (
     <>
-      <IconButton
-        icon={<PiQueueFill />}
-        variant={"ghost"}
-        aria-label="View Queue"
-        fontSize={"15px"}
-        onClick={handleOpenModal}
-        data-cy={`queue-button`}
-      />
-
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Queue</ModalHeader>

@@ -35,7 +35,7 @@ export default class PlaylistHelper {
       url: EndpointHelper.getCreatePlaylistEndpoint(),
       headers: {
         accept: "*/*",
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
       cache: false,
@@ -51,6 +51,7 @@ export default class PlaylistHelper {
 
       console.debug("Received the following playlistCreateRequest...");
       console.debug(requestResponse);
+      console.log(requestResponse);
 
       // Return the response.
       return {

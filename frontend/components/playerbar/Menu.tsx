@@ -40,6 +40,7 @@ import { CgPlayList, CgPlayListSearch } from "react-icons/cg";
 import { FaDeleteLeft } from "react-icons/fa6";
 import ShareComponent from "../social/shareComponent";
 import { CiMenuKebab } from "react-icons/ci";
+import ViewQueueModal from "../playlist/ViewQueueModal";
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
@@ -49,6 +50,10 @@ const PlayerMenu = ({ episode }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalClose = () => setIsShareModalOpen(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
+
+  const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
+  const onQueueModalClose = () => setIsQueueModalOpen(false);
+  const onQueueModalOpen = () => setIsQueueModalOpen(true);
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -101,6 +106,7 @@ const PlayerMenu = ({ episode }) => {
             style={{
               backgroundColor: "transparent",
             }}
+            onClick={onQueueModalOpen}
           >
             View Queue
             <CgPlayListSearch
@@ -174,6 +180,7 @@ const PlayerMenu = ({ episode }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
+      <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
     </Box>
   );
 };
