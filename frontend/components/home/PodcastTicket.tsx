@@ -39,11 +39,13 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
             aria-label="Play"
             mb={2}
             icon={<FaPlay />}
+            borderRadius={"15px"}
             variant="ghost"
             size="md"
             shadow="md"
             color="white"
-            bg="brand.100"
+            // bg="brand.100"
+            bgGradient="linear(to-r, brand.100, brand.200)"
             position="absolute"
             bottom={-6}
             left="50%"
@@ -54,9 +56,24 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
               opacity: 1,
               transform: "translateX(-50%) translateY(0%) ",
             }}
-            transition="all 0.3s ease-in-out"
+            transition="all 0.2s ease-in-out"
           />
-          <Box display="flex" alignItems="center" mt={2} bg="brand.100" p={1} rounded="lg" position="absolute" top={-6} left="50%" transform="translateX(-50%)" opacity={0} _groupHover={{ top: 0, opacity: 1 }} transition="all 0.3s ease-in-out">
+          <Box 
+          display="flex" 
+          alignItems="center" 
+          mt={2} 
+          // bg="brand.100" 
+          bgGradient="linear(to-r, brand.100, brand.200)"
+          p={1} 
+          rounded="lg" 
+          position="absolute" 
+          top={-6} 
+          left="50%" 
+          transform="translateX(-50%)" 
+          opacity={0} 
+          _groupHover={{ top: 0, opacity: 1 }} 
+          transition="all 0.2s ease-in-out"
+          >
             <Icon as={FaClock} color="white" mr={1} size="md" />
             <Text color="white" fontSize="small">
               {convertTime(duration)}
