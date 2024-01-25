@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class firstMigratino : Migration
+    public partial class firstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -166,30 +166,6 @@ namespace Backend.Migrations
                     table.PrimaryKey("PK_Subscriptions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Subscriptions_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserEpisodeInteractions",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HasListened = table.Column<bool>(type: "bit", nullable: false),
-                    HasLiked = table.Column<bool>(type: "bit", nullable: false),
-                    LastListenPosition = table.Column<double>(type: "float", nullable: false),
-                    DateListened = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserEpisodeInteractions", x => new { x.UserId, x.EpisodeId });
-                    table.ForeignKey(
-                        name: "FK_UserEpisodeInteractions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -413,6 +389,36 @@ namespace Backend.Migrations
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserEpisodeInteractions",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HasListened = table.Column<bool>(type: "bit", nullable: false),
+                    HasLiked = table.Column<bool>(type: "bit", nullable: false),
+                    LastListenPosition = table.Column<double>(type: "float", nullable: false),
+                    DateListened = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserEpisodeInteractions", x => new { x.UserId, x.EpisodeId });
+                    table.ForeignKey(
+                        name: "FK_UserEpisodeInteractions_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserEpisodeInteractions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -648,6 +654,11 @@ namespace Backend.Migrations
                 name: "IX_Subscriptions_UserId",
                 table: "Subscriptions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserEpisodeInteractions_EpisodeId",
+                table: "UserEpisodeInteractions",
+                column: "EpisodeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserFollows_FollowerId",

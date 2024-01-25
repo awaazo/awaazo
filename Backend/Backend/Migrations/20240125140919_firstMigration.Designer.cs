@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240124215003_firstMigratino")]
-    partial class firstMigratino
+    [Migration("20240125140919_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -719,6 +719,8 @@ namespace Backend.Migrations
 
                     b.HasKey("UserId", "EpisodeId");
 
+                    b.HasIndex("EpisodeId");
+
                     b.ToTable("UserEpisodeInteractions");
                 });
 
@@ -985,11 +987,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany()
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("EpisodeInteractions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Episode");
 
                     b.Navigation("User");
                 });
