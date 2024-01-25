@@ -6,11 +6,12 @@ import { RiRobot2Line } from "react-icons/ri";
 
 import { useChatBot } from "../../utilities/ChatBotContext";
 
-const ChatBot = () => {
+const ChatBot = ({ episodeId }) => {
   const { dispatch } = useChatBot();
 
   const handleClick = () => {
     dispatch({ type: "TOGGLE_CHAT" });
+    dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
   };
 
   return (

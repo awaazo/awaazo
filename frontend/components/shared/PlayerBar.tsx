@@ -328,7 +328,7 @@ const PlayerBar = () => {
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
-              <ChatBot />
+              <ChatBot episodeId={episode?.id} />
               <BookmarkComponent
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
