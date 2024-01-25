@@ -1,4 +1,3 @@
-import { SetStateAction } from "react";
 import {
   UserMenuInfo,
   UserProfile,
@@ -15,186 +14,71 @@ import {
   Metrics,
 } from "./Interfaces";
 
-export interface BaseResponse {
+export interface BaseResponse<T = undefined> {
   status: number;
   message: string;
+  data?: T;
 }
 
-//#region Auth Responses
-
-export interface LoginResponse extends BaseResponse {
-  data: string;
-}
-
-export interface RegisterResponse extends BaseResponse {
-  data: string;
-}
-
-export interface GoogleSSOResponse extends BaseResponse {
-  data: string;
-}
-
+// Auth Responses
+export interface LoginResponse extends BaseResponse<string> {}
+export interface RegisterResponse extends BaseResponse<string> {}
+export interface GoogleSSOResponse extends BaseResponse<string> {}
 export interface LogoutResponse extends BaseResponse {}
+export interface MeResponse extends BaseResponse<UserMenuInfo> {}
 
-export interface MeResponse extends BaseResponse {
-  userMenuInfo: UserMenuInfo;
-}
+// User Profile Responses
+export interface UserProfileResponse extends BaseResponse<UserProfile> {}
+export interface UserProfileByIdResponse
+  extends BaseResponse<userProfileByID> {}
 
+// Podcast Responses
+export interface CreatePodcastResponse extends BaseResponse<string> {}
+export interface EditPodcastResponse extends BaseResponse<string> {}
+export interface MyPodcastResponse extends BaseResponse<Podcast[]> {}
+export interface AllPodcastResponse extends BaseResponse<Podcast[]> {}
+export interface ByTagsPodcastResponse extends BaseResponse<Podcast[]> {}
+export interface SearchPodcastResponse extends BaseResponse<Podcast[]> {}
+export interface GetMyPodcastResponse extends BaseResponse<Podcast> {}
+export interface GetChangePasswordResponse extends BaseResponse<string> {}
+
+//Search Responses
 export interface SearchProfilesResponse extends BaseResponse {
   users: User[];
 }
 
-//#endregion
+// Episode Responses
+export interface CreateEpisodeResponse extends BaseResponse<string> {}
+export interface EditEpisodeResponse extends BaseResponse<string> {}
+export interface GetMyEpisodeResponse extends BaseResponse<Episode> {}
 
-//#region User Profile Responses
+// Notification Responses
+export interface NotificationResponse extends BaseResponse<Notification[]> {}
 
-export interface UserProfileResponse extends BaseResponse {
-  userProfile: UserProfile;
-}
+// Social Responses
+export interface IsLikedResponse extends BaseResponse<boolean> {}
 
-export interface UserProfileByIdResponse extends BaseResponse {
-  userProfileByID: userProfileByID;
-}
+// Bookmark Responses
+export interface GetBookmarksResponse extends BaseResponse<Bookmark[]> {}
 
-//#endregion
+// Section Responses
+export interface AddSectionResponse extends BaseResponse<string> {}
+export interface GetSectionResponse extends BaseResponse<Section[]> {}
 
-//#region Podcast Responses
-export interface CreatePodcastResponse extends BaseResponse {
-  data: string;
-}
+// Annotation Responses
+export interface AddAnnotationResponse extends BaseResponse<string> {}
+export interface GetAnnotationResponse extends BaseResponse<Annotation[]> {}
 
-export interface EditPodcastResponse extends BaseResponse {
-  data: string;
-}
+// Playlist Responses
+export interface PlaylistDataResponse extends BaseResponse<string> {}
+export interface GetPlaylistsResponse extends BaseResponse<Playlist[]> {}
+export interface GetPlaylistEpisodesResponse extends BaseResponse<Playlist> {}
 
-export interface MyPodcastResponse extends BaseResponse {
-  myPodcasts: Podcast[];
-}
+// Transcript Response
+export interface GetTranscriptResponse extends BaseResponse<TranscriptLine[]> {}
 
-export interface AllPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
-}
+// Watch History Response
+export interface GetWatchHistoryResponse extends BaseResponse<WatchHistory> {}
 
-export interface ByTagsPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
-}
-
-export interface SearchPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
-}
-
-export interface GetMyPodcastResponse extends BaseResponse {
-  podcast: Podcast;
-}
-
-export interface GetChangePasswordResponse extends BaseResponse{
-  data: string;
-}
-
-//#endregion
-
-//#region Podcast Responses
-export interface CreateEpisodeResponse extends BaseResponse {
-  data: string;
-}
-
-export interface EditEpisodeResponse extends BaseResponse {
-  data: string;
-}
-
-export interface GetMyEpisodeResponse extends BaseResponse {
-  episode: Episode;
-}
-
-//#endregion
-
-export interface NotificationResponse extends BaseResponse {
-  notifications: Notification[];
-}
-
-//#region Social Responses
-export interface IsLikedResponse extends BaseResponse {
-  isLiked: boolean;
-}
-
-//#endregion
-
-//#region Episode Bookmark Responses
-export interface GetBookmarksResponse extends BaseResponse {
-  bookmarks: Bookmark[];
-}
-
-//#endregion
-
-//#region Social Responses
-export interface AddSectionResponse extends BaseResponse {
-  data: string;
-}
-
-export interface getSectionResponse extends BaseResponse {
-  sections: Section[];
-}
-
-//#endregion
-
-//#region Annotation Responses
-export interface AddAnnotationResponse extends BaseResponse {
-  data: string;
-}
-
-export interface getAnnotationResponse extends BaseResponse {
-  annotations: Annotation[];
-}
-
-//#endregion
-
-//#region Playlist Responses
-export interface PlaylistDataResponse extends BaseResponse {
-  data: string;
-}
-
-export interface GetPlaylistsResponse extends BaseResponse {
-  playlists: Playlist[];
-}
-
-export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  playlist: Playlist;
-}
-
-//#endregion
-
-//#region Playlist Responses
-export interface PlaylistDataResponse extends BaseResponse {
-  data: string;
-}
-
-export interface GetPlaylistsResponse extends BaseResponse {
-  playlists: Playlist[];
-}
-
-export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  playlist: Playlist;
-}
-
-//#endregion
-
-//#region Transcript Response
-export interface GetTranscriptResponse extends BaseResponse {
-  transcript: TranscriptLine;
-}
-
-//#endregion
-
-//#region Watch History Response
-export interface GetWatchHistoryResponse extends BaseResponse {
-  watchHistory: WatchHistory;
-}
-
-//#endregion
-
-//#region Metrics Responses
-export interface GetMetricsResponse extends BaseResponse {
-  metrics: Metrics;
-}
-
-//#endregion
+// Metrics Responses
+export interface GetMetricsResponse extends BaseResponse<Metrics> {}

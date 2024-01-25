@@ -30,6 +30,8 @@ import {
   MdOutlinePodcasts,
 } from "react-icons/md";
 
+import Link from "next/link";
+
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
@@ -51,6 +53,10 @@ const PlayerMenu = ({ episode }) => {
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleRemoveFromQueue = () => {
+    dispatch({ type: "REMOVE_FROM_QUEUE", payload: episode });
+  };
 
   return (
     <Box style={{ position: "relative", zIndex: 9999 }} data-cy={`3-dots`}>
@@ -110,6 +116,7 @@ const PlayerMenu = ({ episode }) => {
             style={{
               backgroundColor: "transparent",
             }}
+            onClick={handleRemoveFromQueue}
           >
             Remove from Queue
             <FaDeleteLeft
@@ -117,21 +124,26 @@ const PlayerMenu = ({ episode }) => {
               style={{ marginLeft: "auto", color: "white" }}
             />
           </MenuItem>
-          <MenuItem
-            _hover={{
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-              fontWeight: "bold",
-            }}
-            style={{
-              backgroundColor: "transparent",
-            }}
+          <Link
+            href={"Explore/" + episode?.podcastId}
+            style={{ textDecoration: "none" }}
           >
-            Go to Podcast Page
-            <MdOutlinePodcasts
-              size="18px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
-          </MenuItem>
+            <MenuItem
+              _hover={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                fontWeight: "bold",
+              }}
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Go to Podcast Page
+              <MdOutlinePodcasts
+                size="18px"
+                style={{ marginLeft: "auto", color: "white" }}
+              />
+            </MenuItem>
+          </Link>
 
           <MenuDivider />
           <MenuItem
