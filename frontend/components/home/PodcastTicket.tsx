@@ -15,10 +15,10 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
   return (
     <VStack
-      p={3}
-      spacing={2}
+      p={2}
+      spacing={1}
       alignItems="center"
-      borderRadius="15px"
+      borderRadius="26px"
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(10px)"
       boxShadow="md"
@@ -30,8 +30,9 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       onClick={handleEpisodeClick}
       cursor="pointer"
       role="group"
+      
     >
-      <Box position="relative" width="120px" height="120px" borderRadius="md" overflow="hidden">
+      <Box position="relative" width="120px" height="120px" borderRadius="20px" overflow="hidden" >
         <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" boxSize="full" />
         <Box position="absolute" top="0" left="0" w="full" h="full">
           <IconButton
@@ -40,7 +41,6 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
             icon={<FaPlay />}
             variant="ghost"
             size="md"
-            isRound={true}
             shadow="md"
             color="white"
             bg="brand.100"
@@ -66,7 +66,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       </Box>
 
       {/* Bottom: Episode Info */}
-      <VStack spacing={0} align="stretch" w="full">
+      <VStack spacing={0} align="center" w="full">
         <Text fontWeight="bold" noOfLines={1} textAlign="left" data-cy={`ticket-episode-${episode.episodeName}`}>
           {episodeName}
         </Text>

@@ -19,10 +19,10 @@ const GenreCard = ({ genre, onMouseEnter, onMouseLeave }) => {
           cursor: "pointer",
           transition: "box-shadow 0.8s ease-in-out, opacity 0.3s ease-in-out",
         }}
-        boxShadow={"0 0 0 5px rgba(255, 255, 255, 0.05)"}
         boxSizing="border-box"
         onMouseEnter={() => onMouseEnter(genre.name)}
         onMouseLeave={onMouseLeave}
+        boxShadow={"0px 0px 15px rgba(0, 0, 0, 0.4)"}
       >
         <Image src={genre.image.src} alt={`${genre.name} background`} width="100%" height="100%" objectFit="cover" />
       </Box>

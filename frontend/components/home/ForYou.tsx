@@ -18,17 +18,17 @@ const ForYou: React.FC = () => {
   }, []);
 
   return (
-    <Box>
-      {podcasts && podcasts.length > 0 ? (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 , xl:5}} spacing={5}>
-          {podcasts.map((podcast) => (
-            <PodcastCard key={podcast.id} podcast={podcast} />
-          ))}
-        </SimpleGrid>
-      ) : (
-        <Text>No podcasts available</Text>
-      )}
-    </Box>
+<Box>
+  {podcasts && podcasts.length > 0 ? (
+    <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} >
+      {podcasts.map((podcast) => (
+        <PodcastCard key={podcast.id} podcast={podcast} />
+      ))}
+    </SimpleGrid>
+  ) : (
+    <Text>No podcasts available</Text>
+  )}
+</Box>
   );
 };
 
