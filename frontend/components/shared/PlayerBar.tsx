@@ -203,7 +203,7 @@ const PlayerBar = () => {
         const request: SaveWatchHistoryRequest = {
           listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
         };
-        if (audioRef.current) {
+        if (audioRef.current && isEpisodeLoaded) {
           await PodcastHelper.saveWatchHistory(episode.id, request).then(
             (response) => {
               if (response.status === 200) {
@@ -271,7 +271,7 @@ const PlayerBar = () => {
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
-      bottom={"0.1px"}
+      bottom={isMobile ? "55px" : "0.1px"}
       borderTopLeftRadius="10px"
       borderTopRightRadius="10px"
       border={"2px solid rgba(255, 255, 255, 0.03)"}
@@ -279,6 +279,7 @@ const PlayerBar = () => {
       <Flex
         flexDirection="row"
         justifyContent={isEpisodeLoaded ? "space-between" : "flex-start"} // Updated justifyContent
+        mr={isEpisodeLoaded ? "15px" : "0px"}
         alignItems="center"
       >
         {/* Episode Info */}
