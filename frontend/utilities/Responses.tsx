@@ -9,6 +9,10 @@ import {
   Bookmark,
   Section,
   Playlist,
+  TranscriptLine,
+  Annotation,
+  WatchHistory,
+  Metrics,
 } from "./Interfaces";
 
 export interface BaseResponse {
@@ -83,6 +87,10 @@ export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
 }
 
+export interface GetChangePasswordResponse extends BaseResponse{
+  data: string;
+}
+
 //#endregion
 
 //#region Podcast Responses
@@ -129,17 +137,13 @@ export interface getSectionResponse extends BaseResponse {
 
 //#endregion
 
-//#region Playlist Responses
-export interface PlaylistDataResponse extends BaseResponse {
+//#region Annotation Responses
+export interface AddAnnotationResponse extends BaseResponse {
   data: string;
 }
 
-export interface GetPlaylistsResponse extends BaseResponse {
-  playlists: Playlist[];
-}
-
-export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  playlist: Playlist;
+export interface getAnnotationResponse extends BaseResponse {
+  annotations: Annotation[];
 }
 
 //#endregion
@@ -158,5 +162,39 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 }
 
 //#endregion
+
+//#region Playlist Responses
+export interface PlaylistDataResponse extends BaseResponse {
+  data: string;
+}
+
+export interface GetPlaylistsResponse extends BaseResponse {
+  playlists: Playlist[];
+}
+
+export interface GetPlaylistEpisodesResponse extends BaseResponse {
+  playlist: Playlist;
+}
+
+//#endregion
+
+//#region Transcript Response
+export interface GetTranscriptResponse extends BaseResponse {
+  transcript: TranscriptLine;
+}
+
+//#endregion
+
+//#region Watch History Response
+export interface GetWatchHistoryResponse extends BaseResponse {
+  watchHistory: WatchHistory;
+}
+
+//#endregion
+
+//#region Metrics Responses
+export interface GetMetricsResponse extends BaseResponse {
+  metrics: Metrics;
+}
 
 //#endregion

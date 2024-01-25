@@ -18,6 +18,15 @@ export interface RegisterRequest extends LoginRequest {
 }
 
 /**
+ * Change Password Request to be sent to the server
+ */
+export interface ChangePasswordRequest{
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/**
  * Google SSO Request to be sent to the server
  */
 export interface GoogleSSORequest {
@@ -126,18 +135,14 @@ export interface SectionAddRequest {
 
 //#endregion
 
-//#region Playlist Requests
-export interface PlaylistCreateRequest {
-  name: string;
-  description: string;
-  privacy: string;
-  episodeIds: string[];
-}
-
-export interface PlaylistEditRequest {
-  name: string;
-  description: string;
-  privacy: string;
+//#region Annotation Requests
+export interface AnnotationAddRequest {
+  timestamp: number;
+  content: string;
+  type: string;
+  referenceUrl?: string;
+  imageUrl?: string;
+  videoUrl?: string;
 }
 
 //#endregion
@@ -186,6 +191,29 @@ export interface PlaylistEditRequest {
   name: string;
   description: string;
   privacy: string;
+}
+
+//#endregion
+
+//#region Playlist Requests
+export interface PlaylistCreateRequest {
+  name: string;
+  description: string;
+  privacy: string;
+  episodeIds: string[];
+}
+
+export interface PlaylistEditRequest {
+  name: string;
+  description: string;
+  privacy: string;
+}
+
+//#endregion
+
+//#region Episode SaveWatchHistory Request
+export interface SaveWatchHistoryRequest {
+  listenPosition: number;
 }
 
 //#endregion

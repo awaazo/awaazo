@@ -1,50 +1,118 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { Box, Flex, Icon, Image, VStack, Text, Tooltip } from "@chakra-ui/react";
+import Link from "next/link";
+import { FaHome, FaSearch } from "react-icons/fa";
+import { VscLibrary } from "react-icons/vsc";
 import Logo from "../../public/logo_white.svg";
-import { Box, VStack, Text, Icon, Flex, Image, Divider, Stack, Link } from "@chakra-ui/react";
-import { FaHome, FaSearch, FaHeart, FaMusic,  FaUserFriends, FaCog, FaBroadcastTower, FaSignOutAlt } from "react-icons/fa";
-
-const SidebarSection = ({ children }) => (
-  <Text fontSize="xs" fontWeight="bold" letterSpacing="wider" color="gray.400" my={3}>
-    {children}
-  </Text>
-);
-
-const SidebarItem = ({ icon, label, isActive }) => (
-  <Flex align="center" p="2" mb="1" borderRadius="md" bg={isActive ? "orange.500" : "transparent"} color="white">
-    <Icon as={icon} fontSize="lg" mr={3} />
-    <Text flex="1">{label}</Text>
-  </Flex>
-);
+import { useRouter } from "next/router";
+import PlaylistHelper from "../../helpers/PlaylistHelper";
+import { Playlist } from "../../utilities/Interfaces";
+import ViewQueueModal from "../playlist/ViewQueueModal";
+import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 
 const Sidebar = () => {
+  const router = useRouter();
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [reload, setReload] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [imageUrls, setImageUrls] = useState({});
+
+  const toggleCollapsed = () => setCollapsed(!collapsed);
+
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
+  useEffect(() => {
+    const newImageUrls = {};
+    playlists.forEach((playlist) => {
+      newImageUrls[playlist.id] = `https://source.unsplash.com/random/100x100?sig=${playlist.id}`;
+    });
+    setImageUrls(newImageUrls);
+  }, [playlists]);
+
+  useEffect(() => {
+    PlaylistHelper.playlistMyPlaylistsGet(0, 20).then((res) => {
+      if (res.status === 200) {
+        setPlaylists(res.playlists);
+      }
+    });
+  }, [reload]);
+
+  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
+
   return (
-    <Box bg={"rgba(0, 0, 0, 0.3)"}
-    backdropFilter="blur(35px)" borderRightRadius={20} w="250px" color="white" py={5} px={4} h="100vh" boxShadow="0px 0px 15px rgba(0, 0, 0, 0.3)"
-    data-testid="navbar-component"
-    border="3px solid rgba(255, 255, 255, 0.05)">
-      <Flex mb={10} justify="start" align="center">
-        <Image src={Logo.src} alt="Logo" mr={1} w="30px"  />
-       
+    <Box bg="rgba(0, 0, 0, 0.3)" backdropFilter="blur(35px)" w={collapsed ? "60px" : "340px"} h="100vh" py={8} px={collapsed ? 2 : 3} position="sticky" top="0" zIndex={10} display={{ base: "none", md: "block" }} transition="width 0.4s ease-in-out">
+      <Flex justify="center" align="center" mb={5}>
+        <Image src={Logo.src} alt="Logo" w="28px" />
       </Flex>
-      <VStack align="start" spacing={1}>
-        <SidebarSection>MENU</SidebarSection>
-        <SidebarItem icon={FaHome} label="Home" isActive />
-        <SidebarItem icon={FaSearch} label="Search" isActive={false} />
-        
-        <Divider my={5} />
-        <SidebarItem icon={FaHeart} label="Likes" isActive={false} />
-        <SidebarItem icon={FaMusic} label="Playlists" isActive={false} />
-        <SidebarItem icon={FaUserFriends} label="Albums" isActive={false} />
-        <SidebarItem icon={FaUserFriends} label="Following" isActive={false} />
 
-        <SidebarSection>GENERAL</SidebarSection>
-        <SidebarItem icon={FaCog} label="Settings" isActive={false} />
-        <SidebarItem icon={FaSignOutAlt} label="Log out" isActive={false} />
+      <VStack align="left" spacing={1}>
+        <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
+          {/* Home */}
+          <Link href="/" passHref>
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }}>
+              <Icon as={FaHome} fontSize="xl" mr={3} />
+              {!collapsed && (
+                <Box flex="1" fontWeight="bold">
+                  Home
+                </Box>
+              )}
+            </Flex>
+          </Link>
 
-        <Divider my={5} />
+          {/* Explore */}
+          <Link href="/Explore/Search" passHref>
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.100" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }}>
+              <Icon as={FaSearch} fontSize="xl" mr={3} />
+              {!collapsed && (
+                <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
+                  Explore
+                </Box>
+              )}
+            </Flex>
+          </Link>
+        </Box>
+
+        {/* My Shelf */}
+        <Box p={1} bg={"rgba(0, 0, 0, 0.3)"} rounded={"xl"} width={"100%"}>
+          <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.100" }} onClick={toggleCollapsed}>
+            <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`}/>
+            {!collapsed && (
+              <Box flex="1" fontWeight="bold">
+                My Shelf
+              </Box>
+            )}
+            {!collapsed && (
+              <Box onClick={handleModalClick}>
+                <Tooltip label="View Queue" fontSize="small">
+                  <span>
+                    <ViewQueueModal />
+                  </span>
+                </Tooltip>
+                <Tooltip label="Create Playlist" fontSize="small">
+                  <span>
+                    <CreatePlaylistModal />
+                  </span>
+                </Tooltip>
+              </Box>
+            )}
+          </Flex>
+
+          {/* User Playlists */}
+          {userPlaylists.length > 0 && (
+            <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 400px)" overflowY="auto">
+              {userPlaylists.map((playlist) => (
+                <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
+                  <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
+                    <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
+                    {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
+                  </Flex>
+                </Link>
+              ))}
+            </VStack>
+          )}
+        </Box>
       </VStack>
-
     </Box>
   );
 };

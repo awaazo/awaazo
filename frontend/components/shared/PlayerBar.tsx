@@ -1,33 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Image,
-  Text,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Tooltip,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import {
-  FaPlay,
-  FaPause,
-  FaVolumeUp,
-  FaVolumeMute,
-  FaStepForward,
-  FaStepBackward,
-} from "react-icons/fa";
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Tooltip, useBreakpointValue } from "@chakra-ui/react";
+import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from "react-icons/fa";
 import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
 import CommentComponent from "../social/commentComponent";
 import LikeComponent from "../social/likeComponent";
+import BookmarkComponent from "../bookmarks/CreateBookmarkModule";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
+import { SaveWatchHistoryRequest } from "../../utilities/Requests";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -151,156 +135,138 @@ const PlayerBar = () => {
     }
   };
 
-  const timeLeft = isEpisodeLoaded
-    ? convertTime(Math.max(episode.duration - position, 0))
-    : "0:00";
+  const timeLeft = isEpisodeLoaded ? convertTime(Math.max(episode.duration - position, 0)) : "0:00";
 
-  const thumbnailUrl = isEpisodeLoaded
-    ? episode.thumbnailUrl
-    : "/awaazo_bird_aihelper_logo.svg";
+  const thumbnailUrl = isEpisodeLoaded ? episode.thumbnailUrl : "/awaazo_bird_aihelper_logo.svg";
   const { data: palette } = usePalette(thumbnailUrl, 2, "rgbArray", {
     crossOrigin: "Anonymous",
     quality: 10,
   });
 
+
+
+  useEffect(() => {
+    //remove 'if (episode)' when refreshing the page will keep the episode
+    if (episode){
+
+    const loadWatchHistory = async () => {
+        PodcastHelper.getWatchHistory(episode.id)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.watchHistory.listenPosition >= 0){
+            console.log("listenPosition loaded: " + res.watchHistory.listenPosition)
+            audioRef.current.currentTime = res.watchHistory.listenPosition;
+            } else {
+              console.log("listenPosition loaded: " + res.watchHistory.listenPosition)
+              audioRef.current.currentTime = 0;
+            }
+          } else {
+            console.error("Error fetching watch history data:", res.message);
+          }
+        })
+        .catch((error) => console.error("Error fetching watch history data:", error));
+      
+    };
+    // Call the function to load the watch history
+    loadWatchHistory();
+
+    const handleBeforeUnload = async () => {
+      const request: SaveWatchHistoryRequest = {
+        listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+      };
+      if (audioRef.current) {
+        await PodcastHelper.saveWatchHistory(episode.id, request)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Saved Episode Watch History");
+            console.log("listenPosition saved: " + audioRef.current.currentTime)
+          } else {
+            console.error("Error saving the episode watch history:", response.message);
+          }
+        });
+      }
+    };
+  
+    if (typeof window !== "undefined") {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+  }
+}, [episode]);
+
+//Saves watch history every 30 seconds
+useEffect(() => {
+  const saveHistoryAtInterval = async () => {
+    const request: SaveWatchHistoryRequest = {
+      listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
+    };
+    if (audioRef.current) {
+      await PodcastHelper.saveWatchHistory(episode.id, request)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Saved Episode Watch History");
+          console.log("listenPosition saved: " + audioRef.current.currentTime)
+        } else {
+          console.error("Error saving the episode watch history:", response.message);
+        }
+      });
+    }
+  };
+
+   const interval=setInterval(()=>{
+    saveHistoryAtInterval();
+    },30000)
+
+
+  return()=>clearInterval(interval)
+
+},[episode])
+
   return (
-    <Box
-      maxWidth="96%"
-      p={2}
-      borderRadius="1.5em"
-      bg="rgba(0, 0, 0, 0.2)"
-      shadow="md"
-      style={{ backdropFilter: "blur(50px)" }}
-      border="2px solid rgba(255, 255, 255, 0.05)"
-      boxShadow="0px 0px 15px rgba(0, 0, 0, 0.2)"
-      position="fixed"
-      left="50%"
-      transform="translateX(-50%)"
-      width="100%"
-      zIndex={999}
-      bottom={"1em"}
-    >
-      <Flex
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+    <Box maxWidth="100%" p={1} pt={3} pb={5} bg="rgba(0, 0, 0, 0.2)" style={{ backdropFilter: "blur(50px)" }} position="fixed" left="50%" transform="translateX(-50%)" width="100%" zIndex={999} bottom={"0em"}>
+      <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
         {/* Episode Info */}
         <Flex alignItems="center" ml={2}>
           {isEpisodeLoaded ? (
             <Link href={`/NowPlaying/${episode.id}`} shallow>
-              <Image
-                boxSize={isMobile ? "30px" : "40px"}
-                src={episode.thumbnailUrl}
-                borderRadius="base"
-                mr={4}
-                objectFit="cover"
-                cursor="pointer"
-              />
+              <Image boxSize={isMobile ? "30px" : "40px"} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
             </Link>
           ) : (
-            <Image
-              boxSize={isMobile ? "30px" : "40px"}
-              src="/awaazo_bird_aihelper_logo.svg"
-              borderRadius="full"
-              mr={4}
-              objectFit="cover"
-            />
+            <Image boxSize={isMobile ? "30px" : "40px"} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
           )}
-          <Box>
-            <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"}>
+          <Box maxWidth={isMobile ? "75%" : "100%"} >
+            <Text fontWeight="bold" fontSize={isMobile ? "sm" : "md"} isTruncated>
               {isEpisodeLoaded ? episode.episodeName : "Unknown Episode"}
             </Text>
-            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500">
-              {isEpisodeLoaded ? episode.description : "Unknown Podcaster"}{" "}
-              {/* change to podcast's name */}
+            <Text fontSize={isMobile ? "xs" : "sm"} color="gray.500" isTruncated>
+              {isEpisodeLoaded ? episode.podcastName : "Unknown Podcaster"}{" "}
             </Text>
           </Box>
         </Flex>
 
-        <Flex
-          flexDirection="column"
-          width="45%"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <Flex flexDirection="column" width="45%" justifyContent="space-between" alignItems="center">
           {/* Player Controls */}
           <Flex alignItems="center" mb="5px">
-            <IconButton
-              aria-label="Previous Episode"
-              icon={<FaStepBackward />}
-              variant="ghost"
-              size="sm"
-              onClick={playPrevious}
-              mr={2}
-              data-cy={`play-previous`}
-            />
-            <IconButton
-              aria-label="Skip Backward"
-              icon={<FaArrowRotateLeft />}
-              variant="ghost"
-              size="sm"
-              onClick={skipBackward}
-              mr={2}
-              data-cy={`skip-backward`}
-            />
-            <IconButton
-              aria-label={isPlaying ? "Pause" : "Play"}
-              icon={isPlaying ? <FaPause /> : <FaPlay />}
-              variant="ghost"
-              size="sm"
-              onClick={togglePlayPause}
-              mr={2}
-              data-cy={`play-pause-button`}
-            />
-            <IconButton
-              aria-label=" Skip Forward"
-              icon={<FaArrowRotateRight />}
-              variant="ghost"
-              size="sm"
-              onClick={skipForward}
-              mr={2}
-              data-cy={`skip-forward`}
-            />
-            <IconButton
-              aria-label=" Next Episode"
-              icon={<FaStepForward />}
-              variant="ghost"
-              size="sm"
-              onClick={playNext}
-              data-cy={`play-next`}
-            />
+            <IconButton aria-label="Previous Episode" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={playPrevious} mr={2} data-cy={`play-previous`} />
+            <IconButton aria-label="Skip Backward" icon={<FaArrowRotateLeft />} variant="ghost" size="sm" onClick={skipBackward} mr={2} data-cy={`skip-backward`} />
+            <IconButton aria-label={isPlaying ? "Pause" : "Play"} icon={isPlaying ? <FaPause /> : <FaPlay />} variant="gradient" minWidth="2.5em" size="md" onClick={togglePlayPause} mr={2} data-cy={`play-pause-button`} />
+            <IconButton aria-label=" Skip Forward" icon={<FaArrowRotateRight />} variant="ghost" size="sm" onClick={skipForward} mr={2} data-cy={`skip-forward`} />
+            <IconButton aria-label=" Next Episode" icon={<FaStepForward />} variant="ghost" size="sm" onClick={playNext} data-cy={`play-next`} />
           </Flex>
 
           {/* Slider */}
           {!isMobile && (
             <Flex width="100%" mx={4} alignItems="center">
-              <Text
-                data-cy={`time-passed-${convertTime(position)}`}
-                mr={3}
-                fontSize="xs"
-                fontWeight="medium"
-              >
+              <Text data-cy={`time-passed-${convertTime(position)}`} mr={3} fontSize="xs" fontWeight="medium">
                 {convertTime(position)}
               </Text>
-              <Slider
-                aria-label="Track Timeline"
-                value={position}
-                max={duration}
-                onChange={(val) => handleSeek(val)}
-              >
+              <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
-                  <SliderFilledTrack bg="brand.100" />
+                  <SliderFilledTrack />
                 </SliderTrack>
               </Slider>
 
-              <Text
-                data-cy={`time-left-${timeLeft}`}
-                ml={3}
-                fontSize="xs"
-                fontWeight="medium"
-              >
+              <Text data-cy={`time-left-${timeLeft}`} ml={3} fontSize="xs" fontWeight="medium">
                 {timeLeft}
               </Text>
             </Flex>
@@ -312,28 +278,15 @@ const PlayerBar = () => {
         {!isMobile && (
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
-              <LikeComponent
-                episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
-                initialLikes={isEpisodeLoaded ? episode.likes : 0}
-              />
-              <CommentComponent
-                episodeIdOrCommentId={
-                  isEpisodeLoaded ? episode.id : "default-id"
-                }
-                initialComments={isEpisodeLoaded ? episode.comments.length : 0}
-              />
+              <BookmarkComponent episodeId={isEpisodeLoaded ? episode.id : "default-id"} selectedTimestamp={isEpisodeLoaded ? position : 0} />
+              <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} />
+              <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} />
             </Flex>
 
             {/* Volume Control Section */}
             {!isTablet && (
               <Box display="contents" alignItems="center">
-                <IconButton
-                  aria-label={isMuted ? "Unmute" : "Mute"}
-                  icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleMute}
-                />
+                <IconButton aria-label={isMuted ? "Unmute" : "Mute"} icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />} variant="ghost" size="sm" onClick={toggleMute} />
                 <Slider
                   aria-label="Volume"
                   value={isMuted ? 0 : volume}

@@ -1,63 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { SimpleGrid, Box, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Text, SimpleGrid, Spinner } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../cards/PodcastCard";
 
-// Component to display recommended podcasts
 const ForYou: React.FC = () => {
-  useEffect(() => {
-    PodcastHelper.podcastAllPodcastsGet(0, 12).then((res) => {
-      if (res.status == 200) {
-        setPodcasts(res.podcasts);
-      } else {
-        setPodcasts(null);
-      }
-    });
-  }, []);
-  const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchPodcasts = async () => {
+      setIsLoading(true);
+      try {
+        const res = await PodcastHelper.podcastAllPodcastsGet(0, 12);
+        if (res.status === 200) {
+          setPodcasts(res.podcasts);
+        } else {
+          throw new Error('Failed to load podcasts');
+        }
+      } catch (err) {
+        setError(err.message || 'An error occurred while fetching podcasts');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPodcasts();
+  }, []);
 
   return (
-    <>
-      <Box
-        w={{ base: "70%", md: "20%" }}
-        top={0}
-        left={0}
-        zIndex={-99}
-        borderRadius={"0.5em"}
-      >
-        {/* Title */}
-        <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
-          Podcasts For You
-        </Text>
-      </Box>
-      {/* Grid to display the recommended podcasts */}
-      <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
-        {/* Check if there are podcasts available */}
-        {podcasts && podcasts.length > 0 ? (
-          // Map through the podcasts and render a PodcastCard for each one
-          podcasts.map((podcast, index) => (
-            <PodcastCard
-              key={index}
-              podcast={podcast}
-              data-cy={`podcast-card-${index}`} // Unique data-cy attribute for each PodcastCard
-            />
-          ))
-        ) : (
-          // Display a message if no podcasts are available
-          <Text
-            style={{
-              marginTop: "50px",
-              marginBottom: "50px",
-              marginLeft: "35px",
-            }}
-          >
-            (No podcasts available)
-          </Text>
-        )}
-      </SimpleGrid>
-    </>
+    <Box>
+      {isLoading ? (
+        <Spinner size="xl" />
+      ) : error ? (
+        <Text color="red.500">{error}</Text>
+      ) : podcasts && podcasts.length > 0 ? (
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} spacing={5}>
+          {podcasts.map((podcast) => (
+            <PodcastCard key={podcast.id} podcast={podcast} />
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Text>No podcasts available</Text>
+      )}
+    </Box>
   );
 };
 

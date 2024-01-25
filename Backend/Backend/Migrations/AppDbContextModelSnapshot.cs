@@ -38,9 +38,6 @@ namespace Backend.Migrations
                     b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("SponsorshipId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<double>("Timestamp")
                         .HasColumnType("float");
 
@@ -53,8 +50,6 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EpisodeId");
-
-                    b.HasIndex("SponsorshipId");
 
                     b.ToTable("Annotations");
                 });
@@ -298,6 +293,30 @@ namespace Backend.Migrations
                     b.ToTable("EpisodeSections");
                 });
 
+            modelBuilder.Entity("Backend.Models.ForgetPasswordToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForgetPasswordTokens");
+                });
+
             modelBuilder.Entity("Backend.Models.MediaLink", b =>
                 {
                     b.Property<Guid>("Id")
@@ -377,6 +396,10 @@ namespace Backend.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CoverArt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -538,6 +561,9 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AnnotationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -552,9 +578,13 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Website")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AnnotationId")
+                        .IsUnique();
 
                     b.HasIndex("EpisodeId");
 
@@ -716,13 +746,7 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Sponsor", "Sponsorship")
-                        .WithMany()
-                        .HasForeignKey("SponsorshipId");
-
                     b.Navigation("Episode");
-
-                    b.Navigation("Sponsorship");
                 });
 
             modelBuilder.Entity("Backend.Models.Bookmark", b =>
@@ -916,7 +940,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Podcast", "Podcast")
                         .WithMany("Ratings")
                         .HasForeignKey("PodcastId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
@@ -932,9 +956,17 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Sponsor", b =>
                 {
+                    b.HasOne("Backend.Models.Annotation", "Annotation")
+                        .WithOne("Sponsorship")
+                        .HasForeignKey("Backend.Models.Sponsor", "AnnotationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.Episode", null)
                         .WithMany("Sponsors")
                         .HasForeignKey("EpisodeId");
+
+                    b.Navigation("Annotation");
                 });
 
             modelBuilder.Entity("Backend.Models.Subscription", b =>
@@ -973,6 +1005,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Annotation", b =>
                 {
                     b.Navigation("MediaLink");
+
+                    b.Navigation("Sponsorship");
                 });
 
             modelBuilder.Entity("Backend.Models.Comment", b =>

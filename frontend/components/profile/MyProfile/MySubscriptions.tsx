@@ -2,51 +2,38 @@ import React, { useState, useEffect, FC } from "react";
 import SubscribeHelper from "../../../helpers/SubscribeHelper";
 import { MySubscriptions } from "../../../utilities/Interfaces";
 import Link from "next/link";
-import {
-  Stack,
-  Flex,
-  Avatar,
-  Text,
-  Box,
-  useColorModeValue,
-  Badge,
-  useToken,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-} from "@chakra-ui/react";
+import { Stack, Flex, Avatar, Text, Box, useColorModeValue, useToken, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Spinner } from "@chakra-ui/react";
 
 const Subscriptions: FC = () => {
   const [subscriptions, setSubscriptions] = useState<MySubscriptions[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [subscriptionError, setSubscriptionError] = useState("");
+  
   useEffect(() => {
     const fetchSubscriptions = async () => {
-      const response = await SubscribeHelper.getMySubscriptions();
-      if (Array.isArray(response)) {
-        setSubscriptions(response);
-      } else {
-        console.error(
-          "Failed to fetch subscriptions:",
-          response.message || "No error message available",
-        );
+      setIsLoading(true);
+      try {
+        const response = await SubscribeHelper.getMySubscriptions();
+        if (Array.isArray(response)) {
+          setSubscriptions(response);
+        } else {
+          console.error("Failed to fetch subscriptions:", response.message || "No error message available");
+          setSubscriptionError("Failed to fetch subscriptions");
+        }
+      } catch (error) {
+        console.error("Error fetching subscriptions:", error);
+        setSubscriptionError("Failed to load subscriptions");
+      } finally {
+        setIsLoading(false);
       }
     };
-
+  
     fetchSubscriptions();
   }, []);
+  
 
-  const [blue500, gray300, gray500, gray700] = useToken("colors", [
-    "blue.500",
-    "gray.300",
-    "gray.500",
-    "gray.700",
-  ]);
+  const [blue500, gray300, gray500, gray700] = useToken("colors", ["blue.500", "gray.300", "gray.500", "gray.700"]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -75,6 +62,13 @@ const Subscriptions: FC = () => {
           <ModalHeader>My Subscriptions</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          {isLoading ? (
+              <Flex justifyContent="center" alignItems="center" height="100px">
+                <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
+              </Flex>
+            ) : subscriptionError ? (
+              <Text color="red.500" textAlign="center">{subscriptionError}</Text>
+            ) : (
             <Stack spacing={4}>
               {subscriptions.map((subscription) => (
                 <Box
@@ -89,18 +83,10 @@ const Subscriptions: FC = () => {
                   }}
                   bg={useColorModeValue("white", gray700)}
                 >
-                  <Flex
-                    direction={{ base: "column", md: "row" }}
-                    alignItems={{ base: "center", md: "flex-start" }}
-                    justifyContent="space-between"
-                  >
+                  <Flex direction={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "flex-start" }} justifyContent="space-between">
                     <Flex alignItems="center" mb={{ base: 4, md: 0 }}>
                       <Link href={`/Explore/${subscription.id}`} passHref>
-                        <Avatar
-                          size="lg"
-                          src={subscription.coverArtUrl}
-                          mr={4}
-                        />
+                        <Avatar size="lg" src={subscription.coverArtUrl} mr={4} />
                       </Link>
                       <Flex direction="column" justifyContent="center">
                         <Link href={`/Explore/${subscription.id}`} passHref>
@@ -117,6 +103,7 @@ const Subscriptions: FC = () => {
                 </Box>
               ))}
             </Stack>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleCloseModal} colorScheme="blue">

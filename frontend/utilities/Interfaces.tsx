@@ -3,7 +3,7 @@ export interface Podcast {
   coverArtUrl: string;
   name: string;
   podcasterId: string;
-  podcaster: string; // redundant, remove later
+  podcaster: string; 
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -17,7 +17,7 @@ export interface Podcast {
 export interface Episode {
   id: string;
   podcastId: string;
-  podcaster: string;
+  podcastName: string;
   thumbnailUrl: string;
   episodeName: string;
   description: string;
@@ -110,10 +110,25 @@ export interface Bookmark {
   timestamp: number;
 }
 
+export interface WatchHistory {
+  listenPosition: number;
+}
+
 export interface TranscriptLine {
   timestamp: number;
   text: string;
   speaker: string;
+}
+
+export interface Metrics {
+  totalEpisodesLikes: number;
+  mostLikedEpisode: string;
+  totalTimeWatched: number;
+  totalPlayCount: number;
+  mostPlayedEpisode: string;
+  totalCommentsCount: number;
+  mostCommentedOnEpisode: string;
+  mostLikedComment: string;
 }
 
 export interface User {

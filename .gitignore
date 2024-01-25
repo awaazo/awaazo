@@ -298,4 +298,15 @@ backend/.env
 docker-compose.release.yml
 Backend/Backend/Logs
 python/*ServerFiles
+<<<<<<< HEAD
 Python/.env
+=======
+python/.venv
+python/env/**
+python/rvc_service/logs/**
+python/rvc_service/env
+python/env
+python/venv
+python/text_to_speech_service/models/**
+python/.venv
+>>>>>>> e3d1ce60413990053551da5f3da838bc6d38c66e

@@ -12,6 +12,8 @@ declare namespace Cypress {
       podcast_create(filepath: string, name: string, description:string): void;
       episode_create(filepath: string, name: string, description:string, sound_file:string, podcast: string): void;
       review_create(description: string, stars: number): void;
+      cleanup(): Chainable<any>;
       data_log(): Chainable<any>;
+      change_password(old_pass: string, new_pass: string, confirm_pass: string): void;
     }
   }

@@ -57,7 +57,7 @@ export default class EndpointHelper {
    * @returns The Google SSO Endpoint
    */
   static getGoogleSSOEndpoint = () => {
-    return this.getBackendAddress() + "/auth/googleSSO";
+    return this .getBackendAddress() + "/auth/googleSSO";
   };
 
   // --------------------------------
@@ -111,6 +111,10 @@ export default class EndpointHelper {
       pageSize
     );
   };
+
+  static getChangePasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/changePassword";
+  }
 
   // --------------------------------
   // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
@@ -579,4 +583,72 @@ export default class EndpointHelper {
   static getLikedEpisodesPlaylistEndpoint = () => {
     return this.getBackendAddress() + "/playlist/getLikedEpisodesPlaylist";
   };
+
+  // --------------------------------
+  // TRANSCRIPT ENDPOINT
+  // --------------------------------
+  /**
+   * Returns the Episode Transcript endpoint.
+   * @returns The Episode Transcript Endpoint
+   * */
+  static getTranscriptEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript";
+  };
+
+
+  // --------------------------------
+  // ANNOTATIONS ENDPOINT
+  // --------------------------------
+
+  /**
+   * Returns the Episode Annotations endpoint.
+   * @returns The Episode Annotations Endpoint
+   * */
+  static addAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createAnnotation";
+  };
+
+  static addMediaAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createMediaLinkAnnotation";
+  };
+
+  static addSponsorAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/createSponserAnnotation";
+  };
+
+  static getAnnotationsEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/annotation/" + episodeId + "/getAnnotation";
+  };
+
+  static deleteAnnotationEndpoint = (annotationId) => {
+    return this.getBackendAddress() + "/annotation/" + annotationId + "/delete";
+  };
+
+  // --------------------------------
+  // WATCH HISTORY ENDPOINT
+  // --------------------------------
+
+  /**
+   * Returns the Episode Watch history endpoint.
+   * @returns The Episode Watch history Endpoint
+   * */
+  static saveWatchHistoryEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/saveWatchHistory";
+  };
+  static getWatchHistoryEndpoint = (episodeId) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/watchHistory";
+  };
+
+  // --------------------------------
+  // METRICS ENDPOINT
+  // --------------------------------
+  /**
+   * Returns the Podcast Metrics endpoint.
+   * @returns The Podcast Metrics Endpoint
+   * */
+  static getMetricsEndpoint = (podcastId) => {
+    return this.getBackendAddress() + "/podcast/" + podcastId + "/metrics";
+  };
+
 }
+

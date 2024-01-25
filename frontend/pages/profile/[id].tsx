@@ -7,12 +7,8 @@ import {
   Stack,
   useBreakpointValue,
 } from "@chakra-ui/react";
-
 import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
-
 import { MdEdit } from "react-icons/md";
-
-import Navbar from "../../components/shared/Navbar";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserProfile } from "../../utilities/Interfaces";
 import { useRouter } from "next/router";
@@ -47,7 +43,6 @@ export default function userProfile() {
 
   return (
     <>
-      <Navbar />
       {isMobile ? (
         <Box
           display="flex"

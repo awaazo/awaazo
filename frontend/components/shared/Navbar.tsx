@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { DefaultSession } from "next-auth";
-import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, Image, Input, useBreakpointValue } from "@chakra-ui/react";
-import { AddIcon, HamburgerIcon, BellIcon } from "@chakra-ui/icons";
-import Logo from "../../public/logo_white.svg";
+import { Box, Flex, Input, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from "@chakra-ui/react";
+import { HamburgerIcon, BellIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import AuthHelper from "../../helpers/AuthHelper";
 import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import { GoogleSSORequest } from "../../utilities/Requests";
 import NotificationHelper from "../../helpers/NotificationsHelper";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const loginPage = "/auth/Login";
@@ -17,21 +17,22 @@ export default function Navbar() {
   const signupPage = "/auth/Signup";
   const { data: session, status } = useSession();
   const isMobile = useBreakpointValue({ base: true, md: false });
-
   const [searchValue, setSearchValue] = useState("");
+  const router = useRouter();
+  const currentPath = router.pathname;
 
   const handleSearchSubmit = () => {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
     window.location.href = searchlink;
   };
-
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",
     username: "",
     avatarUrl: "",
   });
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isUserSet, setIsUserSet] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -70,7 +71,7 @@ export default function Navbar() {
       AuthHelper.authMeRequest().then((response) => {
         if (response.status == 200) {
           setUser(response.userMenuInfo);
-          setIsUserLoggedIn(true); // Set login status to true
+          setIsUserLoggedIn(true);
           setIsUserSet(true);
           setIsLoggedIn(true);
         }
@@ -94,7 +95,7 @@ export default function Navbar() {
             AuthHelper.authMeRequest().then((response) => {
               if (response.status == 200) {
                 setUser(response.userMenuInfo);
-                setIsUserLoggedIn(true); // Set login status to true
+                setIsUserLoggedIn(true);
                 setIsUserSet(true);
                 setIsLoggedIn(true);
               }
@@ -105,37 +106,24 @@ export default function Navbar() {
     }
   }, [session, isLoggedIn]);
 
-  /**
-   * Logs the user out of the application.
-   */
   const handleLogOut = async () => {
     AuthHelper.authLogoutRequest();
     // User logged in via Google, so use next-auth's signOut
     if (session) await signOut();
-
     // Set Logged In Status to false and redirect to index page
     setIsUserLoggedIn(false);
     setIsUserSet(false);
     window.location.href = indexPage;
   };
-
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
-  /**
-   * Shows the Basic info about the user currently logged in and gives access to btns.
-   * @returns User Profile Menu for the top-right corner
-   */
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
         {user.avatarUrl === "" ? (
-          <Avatar
-            size={"sm"}
-            src={""}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-          />
+          <Avatar size={"sm"} src={""} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
           <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
@@ -143,15 +131,12 @@ export default function Navbar() {
       <MenuList>
         <MenuGroup>
           <Link href="/profile/MyProfile" passHref>
-            <MenuItem>👤 My Account</MenuItem>
+            <MenuItem>My Account</MenuItem>
           </Link>
           <Link href="/CreatorHub/MyPodcasts" passHref>
-            <MenuItem>🎙️ My Podcasts</MenuItem>
+            <MenuItem>CreatorHub</MenuItem>
           </Link>
-          <MenuDivider />
-          <Link href="/CreatorHub/AddEpisode" passHref>
-            <MenuItem>⚙️ Settings</MenuItem>
-          </Link>
+    
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -163,13 +148,9 @@ export default function Navbar() {
     </Menu>
   );
 
-  /**
-   * Shows login and signup options for the user to eventually log in.
-   * @returns Logged Out Meny for the top-right corner
-   */
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton menu-id="menuBtn" aria-label="Menu" as={Button} variant={"link"} cursor={"pointer"}>
+      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={"link"} cursor={"pointer"}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
@@ -188,61 +169,31 @@ export default function Navbar() {
 
   return (
     <>
-      <Box className="transparent-box" p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
-        <Flex alignItems={"center"} justifyContent={"space-between"} px={6}>
-          <Link href="/">
-            <Box maxWidth={"1.5em"} ml={-2}>
-              <Image src={Logo.src} alt="logo" />
-            </Box>
-          </Link>
-          {isMobile ? (
-            <Flex alignItems={"center"}>
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1,
-                  },
+      <Box p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
+        <Flex justifyContent="space-between">
+          <Flex align="center">
+            <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
+            <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
+            {!isMobile && currentPath === "/Explore/Search" && (
+              <Flex
+                alignItems="center"
+                as="form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearchSubmit();
                 }}
-                data-cy={`search-input-web`}
-              />
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-            </Flex>
-          ) : (
-            <Flex
-              alignItems={"center"}
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearchSubmit();
-              }}
-            >
-              <Input
-                placeholder="Search"
-                size="sm"
-                borderRadius="full"
-                mr={4}
-                value={searchValue}
-                onChange={handleSearchChange}
-                css={{
-                  "::placeholder": {
-                    opacity: 1, // increase placeholder opacity
-                  },
-                }}
-                data-cy={`search-input-web`}
-              />
-              <Link href="/CreatorHub/AddEpisode">
-                <IconButton aria-label="Add Episode" icon={<AddIcon />} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={3} />
-              </Link>
-              <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={4} data-cy={`notifications-button`}/>
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-            </Flex>
-          )}
+                ml={5}
+                width="20vh"
+              >
+                <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} data-cy={`search-input`} onChange={handleSearchChange} />
+              </Flex>
+            )}
+          </Flex>
+          <Spacer />
+          <Flex align="center">
+            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} data-cy={`notifications-button`} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} />
+            {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+          </Flex>
         </Flex>
         {isNotificationsOpen && <NotificationsModal />}
       </Box>

@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using Azure.Core;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
@@ -18,10 +19,15 @@ public class ProfileService : IProfileService
     /// Current DB instance.
     /// </summary>
     private readonly AppDbContext _db;
+
+    private readonly EmailService _emailService;
+    private readonly IConfiguration _config;
     
-    public ProfileService(AppDbContext db)
+    public ProfileService(IConfiguration config, AppDbContext db, EmailService emailService)
     {
         _db = db;
+        _emailService = emailService;
+        _config = config;
     }
 
     /// <summary>
@@ -118,7 +124,8 @@ public class ProfileService : IProfileService
     /// <returns>UserProfileResponse</returns>
     public async Task<UserProfileResponse> GetProfileAsync(User user, string domainUrl)
     {
-        return new UserProfileResponse(user, domainUrl);
+        // Add the 'await' operator before the method call
+        return await Task.Run(() => new UserProfileResponse(user, domainUrl));
     }
 
     /// <summary>
@@ -192,6 +199,58 @@ public class ProfileService : IProfileService
 
         user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         _db.Users.Update(user);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task SentForgotPasswordEmail(string requestEmail) {
+        // Verify that email exists
+        User? user = await _db.Users.Where(u => u.Email == requestEmail).FirstOrDefaultAsync();
+        if (user is null)
+            throw new Exception("The email is not associated to a user");
+
+        // Delete all previous tokens
+        _db.ForgetPasswordTokens.RemoveRange(_db.ForgetPasswordTokens.Where(token => token.UserId == user.Id));
+        await _db.SaveChangesAsync();
+        
+        // Generate token
+        ForgetPasswordToken token = new ForgetPasswordToken(user);
+        _db.ForgetPasswordTokens.Add(token);
+        await _db.SaveChangesAsync();
+
+        string url = $"{_config["Jwt:Audience"]}/resetpassword?token={token.Token}&email={requestEmail}";
+        string awazoEmail = _config["Smtp:Username"]!; //"noreply@awazo.com";
+        MailMessage message = new MailMessage() {
+            From = new MailAddress(awazoEmail),
+            Subject = $"Password Reset for {requestEmail}",
+            Body = $"A password reset was requests for {requestEmail}. Click on the link below to reset your password <br /><br />" +
+                 $"<a href=\"{url}\">Click here</a> <br /><br />",
+            IsBodyHtml = true
+        };
+        message.To.Add(requestEmail);
+        _emailService.Send(message);
+    }
+
+    public async Task ResetPassword(ResetPasswordRequest request) {
+        // Check that email provided matches the token
+        ForgetPasswordToken? token = await _db.ForgetPasswordTokens.FirstOrDefaultAsync(e => e.Token == request.Token);
+        if (token is null)
+            throw new Exception("Invalid token");
+        
+        User? user = await _db.Users.FirstOrDefaultAsync(u => u.Id == token.UserId);
+        if (user is null)
+            throw new Exception("Invalid user Id for forget password token");
+        
+        // Check if email matche
+        if (user.Email != request.Email)
+            throw new Exception("Stored token email and provided do not match");
+
+        if (request.NewPassword != request.ConfirmNewPassword)
+            throw new Exception("Passwords do not match");
+        
+        // Change password
+        user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        _db.Users.Update(user);
+        _db.ForgetPasswordTokens.Remove(token);
         await _db.SaveChangesAsync();
     }
 }

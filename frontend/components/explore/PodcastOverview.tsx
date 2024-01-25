@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -15,12 +15,18 @@ import {
 import EpisodeCard from "../cards/EpisodeCard";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
+import AuthHelper from "../../helpers/AuthHelper";
 
 // Component to render the podcast overview
-export default function PodcastOverview({ podcast }) {
+export default function PodcastOverview({ podcast, User }) {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [showMore, setShowMore] = useState(false);
+  const [podcastData, setPodcastData] = useState(podcast);
+
+const updatePodcastData = (newData) => {
+  setPodcastData(newData);
+};
 
   // Function to render the podcast description
   const renderDescription = () => {
@@ -36,6 +42,20 @@ export default function PodcastOverview({ podcast }) {
       ))
       .slice(0, showMore ? descriptionLines.length : 3);
   };
+
+  const [currentUserID, setCurrentUserID] = useState(null);
+
+  useEffect(() => {
+    const fetchUserID = async () => {
+      const response = await AuthHelper.authMeRequest();
+      if (response.status === 200) {
+        setCurrentUserID(response.userMenuInfo.id);
+      }
+    };
+
+    fetchUserID();
+  }, []);
+
 
   // Text style
   const textStyle = {
@@ -100,7 +120,6 @@ export default function PodcastOverview({ podcast }) {
             <Text fontSize="xl" fontWeight="bold">
               <Wrap align="center" spacing={4}>
                 <WrapItem>🎙️ {podcast.name}</WrapItem>
-
                 {/* Display tags */}
                 {podcast.tags.map((tag, index) => (
                   <WrapItem key={index}>
@@ -121,10 +140,12 @@ export default function PodcastOverview({ podcast }) {
 
                 {/* Move the subscription button to the right with ml utility */}
                 <WrapItem ml="auto">
-                  <Subscription
-                    PodcastId={podcast.id}
-                    initialIsSubscribed={Boolean}
-                  />
+                <Subscription
+                  PodcastId={podcast.id}
+                  initialIsSubscribed={Boolean}
+                  podcasterId={podcast.podcasterId}
+                  currentUserID={currentUserID}
+                />
                 </WrapItem>
               </Wrap>
             </Text>
@@ -218,7 +239,7 @@ export default function PodcastOverview({ podcast }) {
                 outline: "none",
               }}
             >
-              <Reviews podcast={podcast} />
+              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
             </Box>
           </Box>
         ) : (
@@ -234,7 +255,7 @@ export default function PodcastOverview({ podcast }) {
                 outline: "none",
               }}
             >
-              <Reviews podcast={podcast} />
+              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID}/>
             </Box>
 
             {/* Podcast mapping on the right */}
