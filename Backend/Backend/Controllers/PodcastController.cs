@@ -359,7 +359,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetMetrics(user, podcastId));
+            return Ok(await _podcastService.GetMetrics(user, podcastId, GetDomainUrl(HttpContext)));
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
