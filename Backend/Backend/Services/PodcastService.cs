@@ -787,46 +787,91 @@ public class PodcastService : IPodcastService
         return episode.Thumbnail;
     }
 
-    public async Task<UserEpisodeInteraction?> GetUserEpisodeInteraction(User user, Guid episodeId)
-    {
-        return await _db.UserEpisodeInteractions!.Where(e => e.UserId == user.Id && e.EpisodeId == episodeId).FirstOrDefaultAsync();
-    }
+    #region Watch History
 
-    public async Task<UserEpisodeInteraction> SaveWatchHistory(User user, Guid episodeId, double listenPisition, string domain)
+    /// <summary>
+    /// Saves the watch history for the given episode.
+    /// </summary>
+    /// <param name="user">Current user watching the episode</param>
+    /// <param name="episodeId">Id of the episode being watched</param>
+    /// <param name="listenPosition">The position in the episode the user is at</param>
+    /// <returns>True if the watch history was saved successfully, false otherwise</returns>
+    public async Task<bool> SaveWatchHistory(User user, Guid episodeId, double listenPosition)
     {
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
 
-        // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episodeId);
+        // Make sure the listen position is not negative
+        if (listenPosition < 0)
+            throw new Exception("Listen position cannot be negative.");
+        // Make sure the listen position is not greater than the duration of the episode
+        if (listenPosition > episode.Duration)
+            throw new Exception("Listen position cannot be greater than the duration of the episode.");
+
+        // Check if the User Episode Interaction exists, if it does retrieve it.
+        UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
+            .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
+
+        // If the interaction does not exist, create a new one.
         if (interaction is null)
         {
-            interaction = new UserEpisodeInteraction(_db)
+            interaction = new ()
             {
                 EpisodeId = episode.Id,
                 UserId = user.Id,
                 DateListened = DateTime.Now,
-                LastListenPosition = Math.Min(episode.Duration, listenPisition)
+                LastListenPosition = listenPosition,
+                HasListened = true
             };
-            await _db.UserEpisodeInteractions!.AddAsync(interaction);
+            await _db.UserEpisodeInteractions.AddAsync(interaction);
         }
         else
         {
             interaction.DateListened = DateTime.Now;
-            interaction.LastListenPosition = Math.Min(episode.Duration, listenPisition);
-            _db.UserEpisodeInteractions!.Update(interaction);
+            interaction.LastListenPosition = listenPosition;
+            interaction.HasListened = true;
+            _db.UserEpisodeInteractions.Update(interaction);
         }
 
-        await _db.SaveChangesAsync();
-        return interaction;
+        return await _db.SaveChangesAsync() > 0;
     }
+
+    /// <summary>
+    /// Gets the watch history for the given episode.
+    /// </summary>
+    /// <param name="user">Current user watching the episode</param>
+    /// <param name="episodeId">Id of the episode being watched</param>
+    /// <returns>ListenPositionResponse object containing the listen position</returns>
+    public async Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId) 
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+
+        // Check if the User Episode Interaction exists, if it does retrieve it.
+        UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
+            .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
+
+        // If the interaction does not exist, return 0
+        if (interaction is null)
+            return new() { ListenPosition = 0 };
+        else
+            return new() { ListenPosition = interaction.LastListenPosition };
+    }
+
+    #endregion Watch History
 
     /// <summary>
     /// Gets the transcript for the given episode.
     /// </summary>
-    /// <param name="episodeId"></param>
-    /// <returns></returns>
-    public async Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId)
+    /// <param name="episodeId">Id of the episode for which to get the transcript</param>
+    /// <param name="seekTime">The time to seek to in the transcript</param>
+    /// <param name="includeWords">Whether or not to include the words in the transcript</param>
+    /// <returns>EpisodeTranscriptResponse object containing the transcript and status</returns>
+    public async Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
+        if (seekTime != null && seekTime < 0)
+            throw new Exception("Seek time cannot be negative.");
+
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes
         .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
@@ -843,27 +888,122 @@ public class PodcastService : IPodcastService
         // Otherwise, get the transcript lines from the json file
         using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
         var jsonTranscript = reader.ReadToEnd();
-        List<TranscriptLineResponse>? lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript);
+        List<TranscriptLineResponse> lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+        reader.Close();
+
+        // If the words are not requested, remove them from the lines
+        if (!includeWords)
+            lines.ForEach(l => l.Words = new());
+
+        // If the seek time is requested, filter the lines to only include those that start after the seek time
+        // Those that start up to 60 seconds after the seek time are included
+        if(seekTime != null)
+            lines = lines
+            .Where(l => l.Start >= seekTime && l.Start <= seekTime + 60)
+            .ToList();
 
         // Create the episode transcript response object and set the lines if they exist.
         // Otherwise, set the lines to an empty list.
-        EpisodeTranscriptResponse transcript = new()
-        {
-            EpisodeId = episodeId,
-            Lines = lines ?? new List<TranscriptLineResponse>()
+        EpisodeTranscriptResponse transcript = new () 
+        { 
+            EpisodeId = episodeId, 
+            Status = "Ready",
+            Lines = lines
         };
 
         // Return the episode transcript response
         return transcript;
     }
 
-    public async Task<UserEpisodeInteraction?> GetWatchHistory(User user, Guid episodeId, string getDomainUrl) {
-        Episode episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+    /// <summary>
+    /// Gets the transcript text for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to get the transcript</param>
+    /// <returns>EpisodeTranscriptTextResponse object containing the transcript text and status</returns>
+    public async Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
-        // Check if user had episode interaction before
-        var interaction = await GetUserEpisodeInteraction(user, episodeId);
-        return interaction;
+        // Get the transcription status
+        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
+
+        // If the transcript is not ready, return its current status
+        if (status != TranscriptStatus.Ready)
+            return status == TranscriptStatus.InProgress ?
+                new EpisodeTranscriptTextResponse() { EpisodeId = episodeId, Status = "In Progess" } :
+                new EpisodeTranscriptTextResponse() { EpisodeId = episodeId, Status = "An Error Occured while generating the transcription" };
+
+        // Otherwise, get the transcript lines from the json file
+        using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
+        var jsonTranscript = reader.ReadToEnd();
+        List<TranscriptLineResponse> lines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+        reader.Close();
+
+        EpisodeTranscriptTextResponse transcript = new()
+        {
+            EpisodeId = episodeId,
+            Status = "Ready",
+            Text = string.Join(" ", lines.Select(l => l.Text))
+        };
+
+        // Return the episode transcript response   
+        return transcript;
     }
+
+    /// <summary>
+    /// Edits the transcript lines for the given episode.
+    /// </summary>
+    /// <param name="user">User who is editing the transcript</param>
+    /// <param name="episodeId">Id of the episode for which to edit the transcript</param>
+    /// <param name="lines">The new lines to replace the old ones</param>
+    /// <returns>True if the transcript was edited successfully, false otherwise</returns>
+    public async Task<bool> EditEpisodeTranscriptLinesAsync(User user, Guid episodeId, TranscriptLineResponse[] lines)
+    {
+        // Check if the episode exists, if it does retrieve it. Also check if the user owns the podcast.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId && e.Podcast.Podcaster.Id == user.Id) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Get the transcription status
+        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
+
+        // If the transcript is not ready, return false
+        if (status != TranscriptStatus.Ready)
+            return false;
+
+        // Otherwise, get the transcript lines from the json file
+        using StreamReader reader = new(GetTranscriptPath(episodeId, episode.PodcastId));
+        var jsonTranscript = reader.ReadToEnd();
+        List<TranscriptLineResponse> prevLines = JsonConvert.DeserializeObject<List<TranscriptLineResponse>>(jsonTranscript) ?? new List<TranscriptLineResponse>();
+        reader.Close();
+
+        // Update the lines
+        foreach (TranscriptLineResponse line in lines)
+        {
+            // Check if the line exists
+            TranscriptLineResponse? prevLine = prevLines.FirstOrDefault(l => l.Id == line.Id);
+            if (prevLine is null)
+                continue;
+
+            // Update the line
+            prevLine.Start = line.Start;
+            prevLine.End = line.End;
+            prevLine.Text = line.Text;
+            prevLine.Words = line.Words;
+
+        }
+        
+        // Save the updated lines to the json file
+        using StreamWriter writer = new(GetTranscriptPath(episodeId, episode.PodcastId), false);
+        await writer.WriteAsync(JsonConvert.SerializeObject(prevLines));
+        writer.Close();
+
+        return true;
+    }
+
+
+
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes

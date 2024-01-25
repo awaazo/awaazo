@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
+using Backend.Controllers.Responses;
 
 namespace Backend.Controllers;
 
@@ -567,7 +568,7 @@ public class PodcastController : ControllerBase
     ///       send request to this route.
     /// </summary>
     /// <param name="episodeId">Id of the episode for which the watch history is to be saved.</param>
-    /// <param name="request">ListenPosition of the episode.</param>
+    /// <param name="request">ListenPosition of the episode in seconds.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
@@ -579,8 +580,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
-            return Ok(interaction);
+            return await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition) ? Ok("Successfully saved watch history") : Ok("Failed to save watch history");
         }
         catch (Exception e)
         {
@@ -605,8 +605,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.GetWatchHistory(user, episodeId, GetDomainUrl(HttpContext));
-            return Ok(interaction);
+            return Ok(await _podcastService.GetWatchHistory(user, episodeId));
         }
         catch (Exception e)
         {
@@ -614,31 +613,6 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }   
-    
-    /// <summary>
-    /// Gets the transcript of an episode.
-    /// </summary>
-    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
-    /// <returns>The transcript or null if its not ready.</returns>
-    [HttpGet("{episodeId}/getTranscript")]
-    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId)
-    {
-        try
-        {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
-
-            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId));
-        }
-        catch(Exception e)
-        {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscript));
-            return BadRequest(e.Message);
-        }
-    }
 
     /// <summary>
     /// Gets Adjecent Episodes
@@ -691,6 +665,92 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    #region Transcript
+
+    /// <summary>
+    /// Gets the transcript of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
+    /// <param name="seekTime">The time to seek to in the transcript.</param>
+    /// <param name="includeWords">Whether to include the words in the transcript.</param>
+    /// <returns>The transcript or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getTranscript")]
+    public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId, seekTime, includeWords));
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscript));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets the transcript text of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
+    /// <returns>The transcript text or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getTranscriptText")]
+    public async Task<ActionResult> GetEpisodeTranscriptText(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscriptText));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeTranscriptTextAsync(episodeId));
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscriptText));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Edits the transcript lines of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which the transcript lines are to be edited.</param>
+    /// <param name="transcriptLines">The transcript lines to edit.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpPost("{episodeId}/editTranscriptLines")]
+    public async Task<ActionResult> EditEpisodeTranscriptLines(Guid episodeId, TranscriptLineResponse[] transcriptLines)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditEpisodeTranscriptLines));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            if (user is null)
+                return NotFound("User not found");
+
+            return await _podcastService.EditEpisodeTranscriptLinesAsync(user,episodeId, transcriptLines)?
+                Ok("Transcript lines edited successfully") : Ok("Failed to edit transcript lines. Transcript may not be ready yet.");
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(EditEpisodeTranscriptLines));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion Transcript
 
     #endregion
 }

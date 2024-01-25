@@ -501,7 +501,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                   <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
                   <ModalOverlay />
                     <ModalContent>
-                      <ModalHeader>Share this Episode</ModalHeader>
+                      <ModalHeader>Share this Playlist</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
                         <ShareComponent content={playlist} contentType="playlist" />

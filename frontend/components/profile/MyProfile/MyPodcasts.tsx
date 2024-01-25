@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Box, Avatar, Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Container } from "@chakra-ui/react";
+import { Box, Avatar, Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Container, Spinner } from "@chakra-ui/react";
 
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 import Link from "next/link";
 import { Podcast } from "../../../utilities/Interfaces";
-import AuthHelper from "../../../helpers/AuthHelper";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../cards/PodcastCard";
 
@@ -15,23 +14,32 @@ export default function Podcasts() {
   const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 });
 
   // Form errors
-  const [podcastError, setPodcastError] = useState("");
   const [page, setPage] = useState(0);
   const pageSize = 6;
-
-  // State to maintain the selected podcast ID
+  const [isLoading, setIsLoading] = useState(false);
+  const [podcastError, setPodcastError] = useState("");
+  
   useEffect(() => {
-    // Check to make sure the user has logged in
-
-    PodcastHelper.podcastMyPodcastsGet(page, pageSize).then((res2) => {
-      // If logged in, set user, otherwise redirect to login page
-      if (res2.status == 200) {
-        setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
-      } else {
-        setPodcastError("Podcasts cannot be fetched");
+    const fetchPodcasts = async () => {
+      setIsLoading(true);
+      try {
+        const res2 = await PodcastHelper.podcastMyPodcastsGet(page, pageSize);
+        if (res2.status == 200) {
+          setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
+        } else {
+          setPodcastError("Podcasts cannot be fetched");
+        }
+      } catch (error) {
+        console.error("Error fetching podcasts:", error);
+        setPodcastError("Failed to load podcasts");
+      } finally {
+        setIsLoading(false);
       }
-    });
+    };
+  
+    fetchPodcasts();
   }, [page]);
+  
 
   // Function to handle clicking the "Load More" button
   const handleLoadMoreClick = () => {
@@ -70,7 +78,16 @@ export default function Podcasts() {
           </Button>
         </Link>
       </Container>
-
+      {isLoading ? (
+      <Flex justifyContent="center" alignItems="center" height="100px">
+        <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
+      </Flex>
+    ) : (
+      <>
+      {podcastError && (
+            <Text color="red.500" textAlign="center">{podcastError}</Text>
+          )}
+  
       {podcasts && podcasts.length == 0 ? (
         <Text mt={"50px"} fontSize={"18px"} textAlign={"center"}>
           You have not created any podcasts yet.
@@ -92,6 +109,8 @@ export default function Podcasts() {
             <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
           </Tooltip>
         </Flex>
+      )}
+        </>
       )}
     </>
   );

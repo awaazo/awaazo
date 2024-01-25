@@ -1,10 +1,9 @@
-
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
 // this a fix for the default color mode issue
 const config: ThemeConfig = {
-  useSystemColorMode: false, 
-  initialColorMode: 'dark', 
+  useSystemColorMode: false,
+  initialColorMode: "dark",
 };
 
 const overrides = {
@@ -17,8 +16,7 @@ const overrides = {
   },
   components: {
     Button: {
-      baseStyle: {
-      },
+      baseStyle: {},
       variants: {
         gradient: {
           borderRadius: "full",
@@ -30,11 +28,11 @@ const overrides = {
           background: "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
           backgroundSize: "300% 300%",
           animation: "Gradient 10s infinite linear",
-          minWidth:"200px"
+          minWidth: "200px",
         },
       },
     },
-  
+
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -42,16 +40,15 @@ const overrides = {
           backdropFilter: "blur(10px)",
           backgroundColor: "rgba(255, 255, 255, 0.1)",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          padding:"2em",
-          mx:"auto", 
-          my:"auto",
+          padding: "2em",
+          mx: "auto",
+          my: "auto",
         },
-       
       }),
     },
     Textarea: {
       baseStyle: {
-        maxHeight: "200px", 
+        maxHeight: "200px",
       },
     },
     Menu: {
@@ -63,17 +60,28 @@ const overrides = {
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         },
         item: {
-          backgroundColor: "transparent", 
+          backgroundColor: "transparent",
           _focus: {
-            backgroundColor: "rgba(255, 255, 255, 0.1)", 
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
           },
           _hover: {
-            backgroundColor: "rgba(255, 255, 255, 0.1)", 
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
           },
+        },
       },
+    },
+    Slider:  {
+      baseStyle: {
+        track: {
+        },
+        thumb: {
+        },
+        filledTrack: {
+          bg: "brand.100", 
+        },
+      },
+    },
   },
-},
-},
   styles: {
     global: {
       "@keyframes Gradient": {
@@ -89,8 +97,6 @@ const overrides = {
   config,
 };
 
-
 const AppTheme = extendTheme(overrides);
-
 
 export default AppTheme;
