@@ -333,6 +333,25 @@ public class PodcastTests
     }
 
     [Fact]
+    public void Episode_GetRecentPodcasts_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        List<PodcastResponse>? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetRecentPodcasts(PAGE, PAGE_SIZE, DOMAIN).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
+    [Fact]
     public void Episode_DeleteEpisodeAsync_ValidRequest_ReturnsTrue()
     {
         // Arrange
@@ -475,6 +494,24 @@ public class PodcastTests
     }
 
 
+    [Fact]
+    public void Episode_GetRecentEpisodes_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        List<EpisodeResponse>? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetRecentEpisodes(PAGE, PAGE_SIZE, DOMAIN).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
 
 
     #endregion
