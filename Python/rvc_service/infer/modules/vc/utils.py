@@ -21,7 +21,7 @@ def get_index_path_from_model(sid):
 
 def load_hubert(config):
     models, _, _ = checkpoint_utils.load_model_ensemble_and_task(
-        ["rvc_service/assets/hubert/hubert_base.pt"],
+        ["ServerFiles/hubert_base.pt"],
         suffix="",
     )
     hubert_model = models[0]
