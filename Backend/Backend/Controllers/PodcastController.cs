@@ -378,12 +378,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
             return Ok(await _podcastService.GetRecentPodcasts(page, pageSize, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
@@ -786,12 +780,6 @@ public class PodcastController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
         }
