@@ -371,7 +371,7 @@ public class PodcastController : ControllerBase
     /// Gets recent podcasts
     /// </summary>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
-    [HttpGet("recentPodcasts")]
+    [HttpGet("getRecentPodcasts")]
     public async Task<ActionResult> GetRecentPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -772,6 +772,32 @@ public class PodcastController : ControllerBase
         catch(Exception e)
         {
             this.LogErrorAPICall(_logger, e:e, callerName: nameof(EditEpisodeTranscriptLines));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets recent Episodes
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("getRecentEpisodes")]
+    public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }

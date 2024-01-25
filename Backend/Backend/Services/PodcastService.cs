@@ -1126,6 +1126,26 @@ public class PodcastService : IPodcastService
         return response;
     }
 
+    public async Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl)
+    {
+        // Get the episodes from the database
+        List<EpisodeResponse> episodeResponses = await _db.Episodes
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(e => e.Podcast)
+        .Include(e => e.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(e => new EpisodeResponse(e, domainUrl))
+        .ToListAsync() ?? throw new Exception("No Episodes found.");
+
+        return episodeResponses;
+    }
+
+
     #endregion Episode
 
     #region Private Method

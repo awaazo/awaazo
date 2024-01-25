@@ -35,4 +35,5 @@ public interface IPodcastService
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
     public Task<object?> GetMetrics(User user, Guid podcastId);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
+    public Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl);
 }
