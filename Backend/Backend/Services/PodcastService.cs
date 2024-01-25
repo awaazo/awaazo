@@ -404,7 +404,7 @@ public class PodcastService : IPodcastService
         return podcastResponses;
     }
     
-    public async Task<object?> GetMetrics(User user, Guid podcastId) {
+    public async Task<object?> GetMetrics(User user, Guid podcastId, string domainUrl) {
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.Likes)
@@ -439,13 +439,13 @@ public class PodcastService : IPodcastService
                             .FirstOrDefault();
         return new {
             TotalEpisodesLikes = totalLikes,
-            MostLikedEpisode = mostLikes,
+            MostLikedEpisode = mostLikes is null ? null : new EpisodeResponse(mostLikes, domainUrl, false),
             TotalTimeWatched = totalWatched,
             TotalPlayCount = totalPlayCount,
-            MostPlayedEpisode = mostPlayed,
+            MostPlayedEpisode = mostPlayed is null ? null : new EpisodeResponse(mostPlayed, domainUrl, false),
             TotalCommentsCount = totalComments,
-            MostCommentedOnEpisode = mostCommented,
-            MostLikedComment = mostLikedComment
+            MostCommentedOnEpisode = mostCommented is null ? null : new EpisodeResponse(mostCommented, domainUrl, false),
+            MostLikedComment = mostLikedComment is null ? null : new CommentResponse(mostLikedComment, domainUrl)
         };
     }
     
