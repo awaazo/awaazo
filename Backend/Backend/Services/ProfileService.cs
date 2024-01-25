@@ -202,34 +202,6 @@ public class ProfileService : IProfileService
         await _db.SaveChangesAsync();
     }
 
-    public async Task SentForgotPasswordEmail(string requestEmail) {
-        // Verify that email exists
-        User? user = await _db.Users.Where(u => u.Email == requestEmail).FirstOrDefaultAsync();
-        if (user is null)
-            throw new Exception("The email is not associated to a user");
-
-        // Delete all previous tokens
-        _db.ForgetPasswordTokens.RemoveRange(_db.ForgetPasswordTokens.Where(token => token.UserId == user.Id));
-        await _db.SaveChangesAsync();
-        
-        // Generate token
-        ForgetPasswordToken token = new ForgetPasswordToken(user);
-        _db.ForgetPasswordTokens.Add(token);
-        await _db.SaveChangesAsync();
-
-        string url = $"{_config["Jwt:Audience"]}/resetpassword?token={token.Token}&email={requestEmail}";
-        string awazoEmail = _config["Smtp:Username"]!; //"noreply@awazo.com";
-        MailMessage message = new MailMessage() {
-            From = new MailAddress(awazoEmail),
-            Subject = $"Password Reset for {requestEmail}",
-            Body = $"A password reset was requests for {requestEmail}. Click on the link below to reset your password <br /><br />" +
-                 $"<a href=\"{url}\">Click here</a> <br /><br />",
-            IsBodyHtml = true
-        };
-        message.To.Add(requestEmail);
-        _emailService.Send(message);
-    }
-
     public async Task ResetPassword(ResetPasswordRequest request) {
         // Check that email provided matches the token
         ForgetPasswordToken? token = await _db.ForgetPasswordTokens.FirstOrDefaultAsync(e => e.Token == request.Token);
