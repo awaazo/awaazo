@@ -41,6 +41,8 @@ import { FaDeleteLeft } from "react-icons/fa6";
 import ShareComponent from "../social/shareComponent";
 import { CiMenuKebab } from "react-icons/ci";
 import ViewQueueModal from "../playlist/ViewQueueModal";
+import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
+import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
@@ -54,6 +56,11 @@ const PlayerMenu = ({ episode }) => {
   const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
   const onQueueModalClose = () => setIsQueueModalOpen(false);
   const onQueueModalOpen = () => setIsQueueModalOpen(true);
+
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+    useState(false);
+  const onAddToPlaylistModalClose = () => setIsAddToPlaylistModalOpen(false);
+  const onAddToPlaylistModalOpen = () => setIsAddToPlaylistModalOpen(true);
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,6 +97,7 @@ const PlayerMenu = ({ episode }) => {
             style={{
               backgroundColor: "transparent",
             }}
+            onClick={onAddToPlaylistModalOpen}
           >
             Add to Playlist
             <MdOutlinePlaylistAdd
@@ -181,6 +189,11 @@ const PlayerMenu = ({ episode }) => {
         </ModalContent>
       </Modal>
       <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
+      <AddToPlaylistModal
+        episode={episode}
+        isOpen={isAddToPlaylistModalOpen}
+        onClose={onAddToPlaylistModalClose}
+      />
     </Box>
   );
 };
