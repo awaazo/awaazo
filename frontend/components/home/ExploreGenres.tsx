@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Image, Flex} from "@chakra-ui/react";
+import { Box, Text, Grid, Image, Flex, SimpleGrid} from "@chakra-ui/react";
 import { useState } from "react";
 import techImage from "../../styles/images/genres/tech.png";
 import medImage from "../../styles/images/genres/med.png";
@@ -22,23 +22,33 @@ const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   return (
-    <Flex marginBottom="3em">
-      <Grid
-        templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(9, 1fr)"]}
-        justifyContent="space-evenly"
-        gap={5}
-      >
-        {genres.map((genre) => (
-          <Box key={genre.name} width="100%">
-            <GenreCard
-              genre={genre}
-              onMouseEnter={setHoveredGenre}
-              onMouseLeave={() => setHoveredGenre(null)}
-            />
-          </Box>
-        ))}
-      </Grid>
-    </Flex>
+
+<Flex
+  justifyContent="flex-start"
+  flexWrap="wrap"
+  maxWidth={{ base: "100%", md: "1500px" }}
+>
+  {genres.map((genre) => (
+    <Box
+      key={genre.name}
+      width={{
+        base: "100%",
+        sm: "48%",
+        md: "31%",
+        lg: "23%",
+        xl: "16%",  // Adjust the width for very large screens
+      }}
+      marginBottom={{ base: "1.5em", md: "1.5em", lg: "3em" }}
+    >
+      <GenreCard
+        genre={genre}
+        onMouseEnter={setHoveredGenre}
+        onMouseLeave={() => setHoveredGenre(null)}
+      />
+    </Box>
+  ))}
+</Flex>
+
   );
 };
 
