@@ -16,7 +16,7 @@ public class EpisodeResponse
     /// </summary>
     /// <param name="e">The episode.</param>
     /// <param name="domainUrl">The domain URL.</param>
-    public EpisodeResponse(Episode e,string domainUrl)
+    public EpisodeResponse(Episode e,string domainUrl, bool includeComments = true)
     {
         //Episode = e;
         Id = e.Id;
@@ -30,7 +30,8 @@ public class EpisodeResponse
         AudioUrl = domainUrl + string.Format("podcast/{0}/{1}/getAudio", e.PodcastId, e.Id);
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
         Likes = e.Likes.Count;
-        Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
+        if (includeComments) 
+            Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
         PodcastName = e.Podcast.Name;
 
     }
