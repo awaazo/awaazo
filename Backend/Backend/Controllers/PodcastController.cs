@@ -568,7 +568,7 @@ public class PodcastController : ControllerBase
     ///       send request to this route.
     /// </summary>
     /// <param name="episodeId">Id of the episode for which the watch history is to be saved.</param>
-    /// <param name="request">ListenPosition of the episode.</param>
+    /// <param name="request">ListenPosition of the episode in seconds.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
@@ -580,8 +580,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition, GetDomainUrl(HttpContext));
-            return Ok(interaction);
+            return await _podcastService.SaveWatchHistory(user, episodeId, request.ListenPosition) ? Ok("Successfully saved watch history") : Ok("Failed to save watch history");
         }
         catch (Exception e)
         {
@@ -606,8 +605,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            var interaction = await _podcastService.GetWatchHistory(user, episodeId, GetDomainUrl(HttpContext));
-            return Ok(interaction);
+            return Ok(await _podcastService.GetWatchHistory(user, episodeId));
         }
         catch (Exception e)
         {
