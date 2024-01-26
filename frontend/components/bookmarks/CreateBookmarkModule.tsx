@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { CiBookmark, CiBookmarkPlus } from "react-icons/ci";
+import { CiBookmark } from "react-icons/ci";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
 import { convertTime } from "../../utilities/commonUtils"; 
 import { EpisodeBookmarkRequest } from "../../utilities/Requests";
