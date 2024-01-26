@@ -40,7 +40,7 @@ const fetchChatGPTResponse = async (userMessage) => {
   const apiRequestBody = {
     model: "gpt-3.5-turbo",
     messages: [systemMessage, { role: "user", content: userMessage }],
-    max_tokens: 5, // currently set to super low 5, just to test our component. Bump it up for longer responses
+    max_tokens: 50, // currently set to super low 5, just to test our component. Bump it up for longer responses
   };
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
