@@ -37,7 +37,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
   const [noteCharacterCount, setNoteCharacterCount] = useState<number>(0);
 
 
- // Function to handle the bookmark/delete bookmark action
+ // Function to handle the bookmark POST action
  const handleBookmark = (e: FormEvent) => {
   e.preventDefault();
   
