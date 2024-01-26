@@ -96,7 +96,7 @@ const Sidebar = () => {
               aria-label="Search"
             />
           </Link>{" "}
-          <Link href="/Playlists/MyPlaylists" passHref>
+          <Link href="/Playlist/MyPlaylists" passHref>
             <IconButton
               icon={<VscLibrary />}
               variant="ghost"
@@ -104,7 +104,7 @@ const Sidebar = () => {
               onClick={onCreateModalOpen}
             />
           </Link>
-          <Link href="/Profile/MyProfile" passHref>
+          <Link href="/profile/MyProfile" passHref>
             <IconButton
               icon={<FaUser />}
               variant="ghost"
