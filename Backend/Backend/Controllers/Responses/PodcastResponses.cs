@@ -17,6 +17,7 @@ public class EpisodeResponse
     /// </summary>
     /// <param name="e">The episode.</param>
     /// <param name="domainUrl">The domain URL.</param>
+    /// <param name="includeComments">if set to <c>true</c> [include comments].</param>
     public EpisodeResponse(Episode e,string domainUrl, bool includeComments = true)
     {
         //Episode = e;
@@ -289,8 +290,8 @@ public class PodcastMetricsResponse
 
     public CommentResponse? MostLikedComment { get; set; }
 
-    public GenderMetrics DemographicsGender { get; set; }
-    public Dictionary<string, uint >DemographicsAge { get; set; }
+    public GenderMetrics DemographicsGender { get; set; } = new GenderMetrics();
+    public Dictionary<string, uint > DemographicsAge { get; set; } = new Dictionary<string, uint>();
     
     [BindProperties]
     public class GenderMetrics

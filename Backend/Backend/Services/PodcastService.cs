@@ -1177,7 +1177,7 @@ public class PodcastService : IPodcastService
         .Include(e => e.Comments).ThenInclude(c => c.Likes)
         .Skip(page * pageSize)
         .Take(pageSize)
-        .Select(e => new EpisodeResponse(e, domainUrl))
+        .Select(e => new EpisodeResponse(e, domainUrl,true))
         .ToListAsync() ?? throw new Exception("No Episodes found.");
 
         return episodeResponses;
