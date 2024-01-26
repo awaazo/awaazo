@@ -1,18 +1,4 @@
-using Backend.Controllers;
-using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
-using Backend.Models;
-using Backend.Services;
-using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockQueryable.Moq;
-using Moq;
 using Assert = Xunit.Assert;
 
 namespace Backend.Tests;
@@ -347,6 +333,25 @@ public class PodcastTests
     }
 
     [Fact]
+    public void Episode_GetRecentPodcasts_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        List<PodcastResponse>? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetRecentPodcasts(PAGE, PAGE_SIZE, DOMAIN).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
+    [Fact]
     public void Episode_DeleteEpisodeAsync_ValidRequest_ReturnsTrue()
     {
         // Arrange
@@ -489,6 +494,24 @@ public class PodcastTests
     }
 
 
+    [Fact]
+    public void Episode_GetRecentEpisodes_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        List<EpisodeResponse>? response = null;
+        // Act
+        try
+        {
+            response = _podcastService.GetRecentEpisodes(PAGE, PAGE_SIZE, DOMAIN).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
 
 
     #endregion
@@ -704,6 +727,26 @@ public class PodcastTests
     //    Assert.NotNull(response);
     //}
 
+    [Fact]
+    public void Episode_GetRecentPodcasts_ValidRequest_ReturnsOK()
+    {
+        // Arrange
+        OkObjectResult? response = null;
+
+        // Act
+        try
+        {
+            response = _podcastController.GetRecentPodcasts().Result as OkObjectResult;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
     // It is currently impossible to test this since it calls an external api, and we cant moq that
     //[Fact]
     //public void Episode_AddEpisode_ValidRequest_ReturnsOK()
@@ -872,7 +915,28 @@ public class PodcastTests
 
         Assert.NotNull(response);        
     }
-    
+
+
+    [Fact]
+    public void Episode_GetRecentEpisodes_ValidRequest_ReturnsOK()
+    {
+        // Arrange
+        OkObjectResult? response = null;
+
+        // Act
+        try
+        {
+            response = _podcastController.GetRecentEpisodes().Result as OkObjectResult;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+
+        Assert.NotNull(response);
+    }
+
     #endregion
 
     #region Private Method

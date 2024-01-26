@@ -483,7 +483,27 @@ public class PodcastService : IPodcastService
             DemographicsAge = ageGroupHistorgram
         };
     }
-    
+
+    public async Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl)
+    {
+        // Get the podcasts from the database
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(p => p.Podcaster)
+        .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(p => new PodcastResponse(p, domainUrl))
+        .ToListAsync() ?? throw new Exception("No podcasts found.");
+
+        return podcastResponses;
+    }
+
     #endregion Podcast
 
     #region Episode
@@ -1143,6 +1163,26 @@ public class PodcastService : IPodcastService
      
         return response;
     }
+
+    public async Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl)
+    {
+        // Get the episodes from the database
+        List<EpisodeResponse> episodeResponses = await _db.Episodes
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(e => e.Podcast)
+        .Include(e => e.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(e => new EpisodeResponse(e, domainUrl))
+        .ToListAsync() ?? throw new Exception("No Episodes found.");
+
+        return episodeResponses;
+    }
+
 
     #endregion Episode
 
