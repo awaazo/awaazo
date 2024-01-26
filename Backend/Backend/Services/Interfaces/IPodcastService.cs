@@ -32,6 +32,6 @@ public interface IPodcastService
     public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
     public Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId);
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
-    public Task<object?> GetMetrics(User user, Guid podcastId);
+    public Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
 }
