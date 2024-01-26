@@ -87,6 +87,10 @@ export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
 }
 
+export interface SearchEpisodeResponse extends BaseResponse {
+  episodes: Episode[];
+}
+
 export interface GetChangePasswordResponse extends BaseResponse {
   data: string;
 }

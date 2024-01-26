@@ -206,12 +206,24 @@ export default class EndpointHelper {
    * Returns the Podcast search endpoint.
    * @returns The Podcast search Endpoint
    */
-  static getSearchPodcastEndpoint = (searchTerm, page, pageSize) => {
+  static getSearchPodcastEndpoint = (page, pageSize) => {
     return (
       this.getBackendAddress() +
-      "/podcast/search?searchterm=" +
-      searchTerm +
-      "&page=" +
+      "/podcast/search?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
+   * Returns the Podcast search endpoint.
+   * @returns The Podcast search Endpoint
+   */
+  static getSearchEpisodeEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/episode/search?page=" +
       page +
       "&pageSize=" +
       pageSize

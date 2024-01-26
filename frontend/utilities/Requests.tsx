@@ -20,7 +20,7 @@ export interface RegisterRequest extends LoginRequest {
 /**
  * Change Password Request to be sent to the server
  */
-export interface ChangePasswordRequest{
+export interface ChangePasswordRequest {
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
@@ -77,6 +77,22 @@ export interface PodcastEditRequest {
   coverImage: File;
   description: string;
   tags: string[];
+}
+
+export interface PodcastSearchRequest {
+  searchTerm: string | string[];
+  tags: string[];
+  type: string;
+  isExplicit: boolean;
+  ratingGreaterThan: number;
+  releaseDate: string;
+}
+
+export interface EpisodeSearchRequest {
+  searchTerm: string | string[];
+  isExplicit: boolean;
+  releaseDate: string;
+  minEpisodeLength: number;
 }
 
 export interface PodcastByTagsRequest {
