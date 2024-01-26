@@ -82,7 +82,7 @@ describe("PlayerBar", () => {
         });
     });
 
-    it.skip('Should successfully skip ahead when pushing the "Skip Ahead" button', () => {
+    it('Should successfully skip ahead when pushing the "Skip Ahead" button', () => {
         let timePassedValue = ""
         cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
@@ -102,7 +102,7 @@ describe("PlayerBar", () => {
         });
     });
 
-    it.skip('Should successfully skip back when pushing the "Skip Back" button', () => {
+    it('Should successfully skip back when pushing the "Skip Back" button', () => {
         let timePassedValue = ""
         cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {

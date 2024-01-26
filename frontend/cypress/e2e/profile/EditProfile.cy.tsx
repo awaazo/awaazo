@@ -6,6 +6,7 @@ describe('EditProfile', () => {
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
+        cy.console_error_hack();
     });
     
     //User should be abble to edit profile and the changes should be reflected immediately
