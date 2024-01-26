@@ -45,7 +45,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
     if (newTitle == "" || newNote == "") {
       setBookmarkError("Bookmark Title and Note are Both Required");
       return;
-    } if (newTitle.length < 3) {
+    } else if (newTitle.length < 3) {
         setBookmarkError("Bookmark Title must be 3 or more characters long")
     } 
     else {
