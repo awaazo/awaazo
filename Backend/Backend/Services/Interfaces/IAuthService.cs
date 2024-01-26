@@ -19,4 +19,6 @@ public interface IAuthService
     public Task<User?> GoogleSSOAsync(GoogleRequest google);
 
     public Task<bool> CheckEmail(string email);
+
+    public Task SentForgotPasswordEmail(string requestEmail);
 }
