@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, SimpleGrid, Spinner } from "@chakra-ui/react";
+import { Box, Text, SimpleGrid, Spinner, Flex } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../cards/PodcastCard";
@@ -36,14 +36,12 @@ const ForYou: React.FC = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
-        <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
-          spacing={5}
-        >
+        <Flex flexWrap="wrap" >
           {podcasts.map((podcast) => (
-            <PodcastCard key={podcast.id} podcast={podcast} />
+            <PodcastCard key={podcast.id} podcast={podcast} 
+            />
           ))}
-        </SimpleGrid>
+        </Flex>
       ) : (
         <Text>No podcasts available</Text>
       )}

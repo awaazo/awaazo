@@ -14,7 +14,8 @@ interface PodcastCardProps {
 const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
   const size = useBreakpointValue({ base: "150px", md: "200px", lg: "220px" });
   return (
-    <Box width={size} height={size} position="relative">
+    <Box width={size} height={size} position="relative" margin={"1em"}
+>
       <Link href={`/Explore/${podcast.id}`} passHref>
         <Flex
           direction="column"
