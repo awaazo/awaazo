@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Tooltip, Text, IconButton, Container,  Button, VStack, Spinner } from "@chakra-ui/react";
+import {
+  Flex,
+  Tooltip,
+  Text,
+  IconButton,
+  Container,
+  Button,
+  VStack,
+  Spinner,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Podcast, Episode } from "../../../utilities/Interfaces";
@@ -17,7 +26,7 @@ export default function MyEpisodes() {
   const [range, setRange] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [podcastError, setPodcastError] = useState("");
-  
+
   useEffect(() => {
     const fetchPodcasts = async () => {
       setIsLoading(true);
@@ -35,11 +44,9 @@ export default function MyEpisodes() {
         setIsLoading(false);
       }
     };
-  
+
     fetchPodcasts();
   }, [page]);
-
-  
 
   useEffect(() => {
     const extractEpisodes = () => {
@@ -72,7 +79,13 @@ export default function MyEpisodes() {
       {/* Display spinner when loading */}
       {isLoading ? (
         <Flex justifyContent="center" alignItems="center" height="100px">
-          <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+          />
         </Flex>
       ) : (
         <>
@@ -99,12 +112,14 @@ export default function MyEpisodes() {
               </Button>
             </Link>
           </Container>
-  
+
           {/* Render error message if any */}
           {podcastError && (
-            <Text color="red.500" textAlign="center">{podcastError}</Text>
+            <Text color="red.500" textAlign="center">
+              {podcastError}
+            </Text>
           )}
-  
+
           {/* Check if episodes are available */}
           {rangeEpisodes && rangeEpisodes.length === 0 ? (
             <Text mt="50px" mb="50px" fontSize="18px" textAlign="center">
@@ -113,17 +128,32 @@ export default function MyEpisodes() {
           ) : (
             <>
               {/* Render the list of selected episodes */}
-              <VStack spacing={6} w={{ base: "auto", md: "lg" }}>
+              <VStack
+                spacing={"2px"}
+                w={{ base: "auto", md: "lg" }}
+                minWidth="100%"
+              >
                 {rangeEpisodes.map((episode, index) => (
-                  <EpisodeCard key={index} episode={episode} inPlaylist={false} playlistId={null} />
+                  <EpisodeCard
+                    key={index}
+                    episode={episode}
+                    inPlaylist={false}
+                    playlistId={null}
+                  />
                 ))}
               </VStack>
-  
+
               {/* Render Load More button */}
               {rangeEpisodes.length < allEpisodes.length && (
-                <Flex justify="center" mt={4}>
+                <Flex justify="center" mt={4} alignSelf={"center"}>
                   <Tooltip label="Load More" placement="top">
-                    <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
+                    <IconButton
+                      aria-label="Load More"
+                      icon={<ChevronDownIcon />}
+                      onClick={handleLoadMoreClick}
+                      size="lg"
+                      variant="outline"
+                    />
                   </Tooltip>
                 </Flex>
               )}
@@ -133,5 +163,4 @@ export default function MyEpisodes() {
       )}
     </>
   );
-  
 }

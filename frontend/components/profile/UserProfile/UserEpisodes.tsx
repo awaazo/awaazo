@@ -103,7 +103,11 @@ export default function UserEpisodes({ userId }) {
         <>
           {/* Render the list of selected episodes */}
           {/* Render the list of selected episodes */}
-          <VStack spacing={6} w={{ base: "auto", md: "lg" }}>
+          <VStack
+            spacing={"2px"}
+            w={{ base: "auto", md: "lg" }}
+            minWidth="100%"
+          >
             {rangeEpisodes.map((episode, index) => (
               <EpisodeCard
                 episode={episode}

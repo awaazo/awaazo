@@ -234,7 +234,7 @@ const PlayerBar = () => {
       const request: SaveWatchHistoryRequest = {
         listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
       };
-      if (audioRef.current) {
+      if (audioRef.current && isEpisodeLoaded) {
         await PodcastHelper.saveWatchHistory(episode.id, request).then(
           (response) => {
             if (response.status === 200) {

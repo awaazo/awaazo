@@ -24,9 +24,9 @@ export default function PodcastOverview({ podcast, User }) {
   const [showMore, setShowMore] = useState(false);
   const [podcastData, setPodcastData] = useState(podcast);
 
-const updatePodcastData = (newData) => {
-  setPodcastData(newData);
-};
+  const updatePodcastData = (newData) => {
+    setPodcastData(newData);
+  };
 
   // Function to render the podcast description
   const renderDescription = () => {
@@ -55,7 +55,6 @@ const updatePodcastData = (newData) => {
 
     fetchUserID();
   }, []);
-
 
   // Text style
   const textStyle = {
@@ -102,7 +101,7 @@ const updatePodcastData = (newData) => {
           />
         </Flex>
 
-        <Flex width="100%" >
+        <Flex width="100%">
           <Box position="relative" mr={5}>
             <Image
               boxSize={isMobile ? "0px" : "180px"}
@@ -140,12 +139,12 @@ const updatePodcastData = (newData) => {
 
                 {/* Move the subscription button to the right with ml utility */}
                 <WrapItem ml="auto">
-                <Subscription
-                  PodcastId={podcast.id}
-                  initialIsSubscribed={Boolean}
-                  podcasterId={podcast.podcasterId}
-                  currentUserID={currentUserID}
-                />
+                  <Subscription
+                    PodcastId={podcast.id}
+                    initialIsSubscribed={Boolean}
+                    podcasterId={podcast.podcasterId}
+                    currentUserID={currentUserID}
+                  />
                 </WrapItem>
               </Wrap>
             </Text>
@@ -239,7 +238,11 @@ const updatePodcastData = (newData) => {
                 outline: "none",
               }}
             >
-              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
+              <Reviews
+                podcast={podcastData}
+                updatePodcastData={updatePodcastData}
+                currentUserID={currentUserID}
+              />
             </Box>
           </Box>
         ) : (
@@ -255,7 +258,11 @@ const updatePodcastData = (newData) => {
                 outline: "none",
               }}
             >
-              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID}/>
+              <Reviews
+                podcast={podcastData}
+                updatePodcastData={updatePodcastData}
+                currentUserID={currentUserID}
+              />
             </Box>
 
             {/* Podcast mapping on the right */}
