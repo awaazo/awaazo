@@ -82,7 +82,7 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(SetupProfile));
+            this.LogDebugControllerAPICall(_logger);
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -90,6 +90,13 @@ public class ProfileController : ControllerBase
             // If User is not found, return 404
             if (user == null)
                 return NotFound("User does not exist.");
+            
+            // Validate file extension
+            if (setupRequest.Avatar is not null) {
+                string extension = Path.GetExtension(setupRequest.Avatar.FileName);
+                if (extension != ".jpg" && extension != ".png" && extension != ".jpeg" && extension != ".gif")
+                    return BadRequest(new { Errors = new[] { $"Invalid file extension {extension}" } });
+            }
 
             // Update User Profile
             bool isChanged = await _profileService.SetupProfileAsync(setupRequest, user);
@@ -98,7 +105,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(SetupProfile));
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
@@ -113,7 +120,7 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditProfile));
+            this.LogDebugControllerAPICall(_logger);
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -121,6 +128,13 @@ public class ProfileController : ControllerBase
             // If User is not found, return 404
             if (user == null)
                 return NotFound("User does not exist.");
+            
+            // Validate file extension
+            if (editRequest.Avatar is not null) {
+                string extension = Path.GetExtension(editRequest.Avatar.FileName);
+                if (extension != ".jpg" && extension != ".png" && extension != ".jpeg" && extension != ".gif")
+                    return BadRequest(new { Errors = new[] { $"Invalid file extension {extension}" } });
+            }
 
             // Update User Profile
             bool isChanged = await _profileService.EditProfileAsync(editRequest, user);
