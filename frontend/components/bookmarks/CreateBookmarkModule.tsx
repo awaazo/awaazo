@@ -64,6 +64,8 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp}) => {
     if (response.status === 200) {
       setNewTitle("");
       setNewNote("");
+      setTitleCharacterCount(0);
+      setNoteCharacterCount(0);
       setModalOpen(false);
       console.log("Bookmarked Episode");
     } else {
