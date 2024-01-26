@@ -8,10 +8,9 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import SectionHelper from "../../helpers/SectionHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Bookmark } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
-import { LuBookCopy } from "react-icons/lu";
+import { CiBookmark } from "react-icons/ci";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
 
 interface BookmarksProps {
@@ -20,7 +19,7 @@ interface BookmarksProps {
 
 const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [bookmarks, setBookmarks] = useState(null);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(null);
 
   useEffect(() => {
     if (episodeId) {
@@ -45,7 +44,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
       borderRadius="1.1em"
     >
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
-        <Icon as={LuBookCopy} boxSize={5} />
+        <Icon as={CiBookmark} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
           Bookmarks
         </Text>
@@ -64,7 +63,12 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
               <Text fontSize={fontSize} color="white">
                 {bookmark.title}
               </Text>
-              <Text color="gray.400">{convertTime(bookmark.timestamp)}</Text>
+              <Text color="gray.400">{convertTime(bookmark.time)}</Text>
+            </Flex>
+            <Flex justify="space-between" align="center">
+              <Text fontSize={fontSize} color="gray.400">
+                {bookmark.note}
+              </Text>
             </Flex>
           </Box>
         ))}
