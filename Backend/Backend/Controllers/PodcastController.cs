@@ -359,15 +359,35 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetMetrics(user, podcastId));
+            return Ok(await _podcastService.GetMetrics(user, podcastId, GetDomainUrl(HttpContext)));
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }
-    
-    #endregion 
+
+    /// <summary>
+    /// Gets recent podcasts
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("getRecentPodcasts")]
+    public async Task<ActionResult> GetRecentPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+
+            return Ok(await _podcastService.GetRecentPodcasts(page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion
 
     #region Episode
 
@@ -746,6 +766,26 @@ public class PodcastController : ControllerBase
         catch(Exception e)
         {
             this.LogErrorAPICall(_logger, e:e, callerName: nameof(EditEpisodeTranscriptLines));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets recent Episodes
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("getRecentEpisodes")]
+    public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+
+            return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }

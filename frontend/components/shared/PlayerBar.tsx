@@ -234,22 +234,26 @@ const PlayerBar = () => {
       const request: SaveWatchHistoryRequest = {
         listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
       };
-      if (audioRef.current) {
-        await PodcastHelper.saveWatchHistory(episode.id, request).then(
-          (response) => {
-            if (response.status === 200) {
-              console.log("Saved Episode Watch History");
-              console.log(
-                "listenPosition saved: " + audioRef.current.currentTime,
-              );
-            } else {
-              console.error(
-                "Error saving the episode watch history:",
-                response.message,
-              );
-            }
-          },
-        );
+      if (audioRef.current && episode !== null) {
+        try {
+          await PodcastHelper.saveWatchHistory(episode.id, request).then(
+            (response) => {
+              if (response.status === 200) {
+                console.log("Saved Episode Watch History");
+                console.log(
+                  "listenPosition saved: " + audioRef.current.currentTime,
+                );
+              } else {
+                console.error(
+                  "Error saving the episode watch history:",
+                  response.message,
+                );
+              }
+            },
+          );
+        } catch (error) {
+          console.error("Error saving the episode watch history:", error);
+        }
       }
     };
 
