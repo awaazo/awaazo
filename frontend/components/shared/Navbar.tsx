@@ -57,7 +57,7 @@ export default function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
-    backdropFilter: "blur(0px)",    
+    backdropFilter: "blur(0px)",
   });
 
   interface SessionExt extends DefaultSession {
@@ -150,14 +150,12 @@ export default function Navbar() {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
-      console.log(response);
       if (
         response !== null &&
         response !== undefined &&
         typeof response === "number"
       ) {
         setNotificationCount(response);
-        console.log(notificationCount);
       } else {
         console.error(
           "Failed to fetch notification count:",
@@ -202,7 +200,6 @@ export default function Navbar() {
           <Link href="/CreatorHub/MyPodcasts" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
-    
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -287,7 +284,7 @@ export default function Navbar() {
             </Flex>
           </Flex>
         </Box>
-        </Box>
+      </Box>
     </>
   );
 }
