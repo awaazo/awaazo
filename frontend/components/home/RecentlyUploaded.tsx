@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, VStack, Text, HStack, useBreakpointValue, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  Text,
+  HStack,
+  useBreakpointValue,
+  Spinner,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastTicket from "./PodcastTicket";
@@ -7,7 +15,7 @@ import PodcastTicket from "./PodcastTicket";
 const RecentlyUploaded: React.FC = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -17,10 +25,10 @@ const RecentlyUploaded: React.FC = () => {
         if (res.status === 200) {
           setPodcasts(res.podcasts);
         } else {
-          throw new Error('Failed to load podcasts');
+          throw new Error("Failed to load podcasts");
         }
       } catch (err) {
-        setError(err.message || 'An error occurred while fetching podcasts');
+        setError(err.message || "An error occurred while fetching podcasts");
       } finally {
         setIsLoading(false);
       }
@@ -47,11 +55,20 @@ const RecentlyUploaded: React.FC = () => {
             },
           }}
         >
-          {podcasts && podcasts.length > 0 ? (
-            podcasts.map((podcast) => podcast.episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />))
-          ) : (
-            <Text>No episodes available</Text>
-          )}
+          <SimpleGrid
+            columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }}
+            spacing={5}
+          >
+            {podcasts && podcasts.length > 0 ? (
+              podcasts.map((podcast) =>
+                podcast.episodes.map((episode) => (
+                  <PodcastTicket key={episode.id} episode={episode} />
+                )),
+              )
+            ) : (
+              <Text>No episodes available</Text>
+            )}
+          </SimpleGrid>
         </HStack>
       )}
     </VStack>

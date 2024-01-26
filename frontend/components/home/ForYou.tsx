@@ -37,7 +37,7 @@ const ForYou: React.FC = () => {
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
         <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+          columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
           spacing={5}
         >
           {podcasts.map((podcast) => (
