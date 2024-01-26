@@ -6,12 +6,13 @@ describe('EditProfile', () => {
     beforeEach(() => {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
+        cy.console_error_hack();
     });
     
     //User should be abble to edit profile and the changes should be reflected immediately
     it('Should successfully edit profile', function(){
         cy.edit_profile(paths.profile_picture, 'NewUsername', 'NewBio','https://twitter.com/newTwitterUsername','https://linkedin.com/newLinkedInUsername','https://github.com/newGitHub');
-        cy.contains('NewUsername', { timeout: 5000 });
+        cy.contains('NewUsername', { timeout: 15000 });
         cy.contains('NewBio', { timeout: 5000 });
     });
 

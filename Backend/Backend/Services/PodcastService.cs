@@ -404,18 +404,21 @@ public class PodcastService : IPodcastService
         return podcastResponses;
     }
     
-    public async Task<object?> GetMetrics(User user, Guid podcastId) {
+    public async Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl) {
         // Check that user owns podcast
-        Podcast? podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId);
+        Podcast? podcast = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(comment => comment.Likes)
+                .FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
             throw new Exception("Invalid podcast Id " + podcast);
 
         if (podcast.PodcasterId != user.Id)
             throw new UnauthorizedAccessException($"User {user.Email} does not own podcast {podcast.Name} ({podcast.Id})");
 
-        // Otherwise all good, get all needed metrics
+        // Otherwise all good, get podcast related metrics
         int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
-        Episode? mostLikes = podcast.Episodes.OrderByDescending(e => e.Likes.Count()).FirstOrDefault();
+        Episode? mostLikes = podcast.Episodes.MaxBy(e => e.Likes.Count());
         
         var podcastIdParameter = new SqlParameter("@PodcastId", podcast.Id);
         var query = "SELECT uei.* " +
@@ -426,26 +429,81 @@ public class PodcastService : IPodcastService
             .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
         
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
-        Episode? mostPlayed = podcast.Episodes.OrderByDescending(e => e.PlayCount).FirstOrDefault();
+        Episode? mostPlayed = podcast.Episodes.MaxBy(e => e.PlayCount);
         
         int totalComments = podcast.Episodes.Select(ep => ep.Comments.Count()).Sum();
-        Episode? mostCommented = podcast.Episodes.OrderByDescending(ep => ep.Comments.Count).FirstOrDefault();
+        Episode? mostCommented = podcast.Episodes.MaxBy(ep => ep.Comments.Count);
 
         Comment? mostLikedComment =
-            podcast.Episodes.Select(ep => ep.Comments.OrderByDescending(comment => comment.Likes.Count()).FirstOrDefault())
+            podcast.Episodes.Select(ep => ep.Comments.MaxBy(comment => comment.Likes.Count()))
                             .FirstOrDefault();
-        return new {
-            TotalEpisodesLikes = totalLikes,
-            MostLikedEpisode = mostLikes,
+        
+        // Get demographic related metrics
+        var userPodscastInteraction = await _db.UserEpisodeInteractions
+            .Include(inter => inter.Episode)
+            .Include(inter => inter.User)
+            .Where(inter => inter.Episode.PodcastId == podcastId).ToListAsync();
+
+        var genderMetrics = new PodcastMetricsResponse.GenderMetrics();
+        Dictionary<string, uint> ageGroupHistorgram = new();
+        ageGroupHistorgram["0-12"] = 0;
+        ageGroupHistorgram["13-18"] = 0;
+        ageGroupHistorgram["19-30"] = 0;
+        ageGroupHistorgram["31-45"] = 0;
+        ageGroupHistorgram["46-65"] = 0;
+        ageGroupHistorgram["65+"] = 0;
+        
+        foreach (var interaction in userPodscastInteraction) {
+            switch (interaction.User.Gender) {
+                case User.GenderEnum.Male: genderMetrics.TotalMale++; break;
+                case User.GenderEnum.Female: genderMetrics.TotalFemale++; break;
+                case User.GenderEnum.Other: genderMetrics.TotalOther++; break;
+                case User.GenderEnum.None: genderMetrics.TotalUnknown++; break;
+            }
+
+            uint age = (uint)(DateTime.Now.Year - interaction.User.DateOfBirth.Year);
+            if (age <= 12) ageGroupHistorgram["0-12"]++;
+            else if (age <= 18) ageGroupHistorgram["13-18"]++;
+            else if (age <= 30) ageGroupHistorgram["19-30"]++;
+            else if (age <= 45) ageGroupHistorgram["31-45"]++;
+            else if (age <= 65) ageGroupHistorgram["46-65"]++;
+            else ageGroupHistorgram["65+"]++;
+        }
+        
+        return new PodcastMetricsResponse(domainUrl) {
+            TotalEpisodesLikes = (uint)totalLikes,
+            MostLikedEpisode = EpisodeResponse.FromEpisode(mostLikes, domainUrl),
             TotalTimeWatched = totalWatched,
-            TotalPlayCount = totalPlayCount,
-            MostPlayedEpisode = mostPlayed,
-            TotalCommentsCount = totalComments,
-            MostCommentedOnEpisode = mostCommented,
-            MostLikedComment = mostLikedComment
+            TotalPlayCount = (uint)totalPlayCount,
+            MostPlayedEpisode = EpisodeResponse.FromEpisode(mostPlayed, domainUrl),
+            TotalCommentsCount = (uint)totalComments,
+            MostCommentedOnEpisode = EpisodeResponse.FromEpisode(mostCommented, domainUrl),
+            MostLikedComment = CommentResponse.FromComment(mostLikedComment, domainUrl),
+            DemographicsGender = genderMetrics,
+            DemographicsAge = ageGroupHistorgram
         };
     }
-    
+
+    public async Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl)
+    {
+        // Get the podcasts from the database
+        List<PodcastResponse> podcastResponses = await _db.Podcasts
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(p => p.Podcaster)
+        .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Ratings).ThenInclude(r => r.User)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(p => new PodcastResponse(p, domainUrl))
+        .ToListAsync() ?? throw new Exception("No podcasts found.");
+
+        return podcastResponses;
+    }
+
     #endregion Podcast
 
     #region Episode
@@ -1105,6 +1163,26 @@ public class PodcastService : IPodcastService
      
         return response;
     }
+
+    public async Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl)
+    {
+        // Get the episodes from the database
+        List<EpisodeResponse> episodeResponses = await _db.Episodes
+        .OrderByDescending(p => p.CreatedAt)
+        .Include(e => e.Podcast)
+        .Include(e => e.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.User)
+        .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(e => new EpisodeResponse(e, domainUrl,true))
+        .ToListAsync() ?? throw new Exception("No Episodes found.");
+
+        return episodeResponses;
+    }
+
 
     #endregion Episode
 

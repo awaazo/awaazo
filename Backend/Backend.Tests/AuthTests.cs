@@ -46,7 +46,7 @@ public class AuthTests : IAsyncLifetime
         config["Jwt:Key"] = null;
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config,  new EmailService(config));
 
         // Exception
         object exception = new();
@@ -85,7 +85,7 @@ public class AuthTests : IAsyncLifetime
         config["Jwt:Issuer"] = null;
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // Exception
         object exception = new();
@@ -126,7 +126,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // Exception
         object exception = new();
@@ -164,7 +164,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
@@ -178,6 +178,11 @@ public class AuthTests : IAsyncLifetime
     public async void LoginAsync_InvalidEmail_ReturnsNull()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -205,7 +210,7 @@ public class AuthTests : IAsyncLifetime
         };
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.LoginAsync(loginRequest);
@@ -218,6 +223,10 @@ public class AuthTests : IAsyncLifetime
     public async void LoginAsync_InvalidPassword_ReturnsNull()
     {
         // ARRANGE
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -246,7 +255,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
 
@@ -261,6 +270,11 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -289,7 +303,7 @@ public class AuthTests : IAsyncLifetime
         };
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.LoginAsync(loginRequest);
@@ -305,6 +319,11 @@ public class AuthTests : IAsyncLifetime
     public async void RegisterAsync_ExistingEmail_ReturnsNull()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -336,7 +355,7 @@ public class AuthTests : IAsyncLifetime
         };
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
 
@@ -353,6 +372,11 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -402,7 +426,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.RegisterAsync(registerRequest);
@@ -419,6 +443,11 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -468,7 +497,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.RegisterAsync(registerRequest);
@@ -485,6 +514,11 @@ public class AuthTests : IAsyncLifetime
     public async void IdentifyUserAsync_IdentifiedUser_ReturnsUser()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
@@ -512,7 +546,7 @@ public class AuthTests : IAsyncLifetime
         httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.IdentifyUserAsync(httpContextMock.Object);
@@ -529,6 +563,11 @@ public class AuthTests : IAsyncLifetime
     public async void IdentifyUserAsync_UnidentifiedUser_ReturnsNull()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
@@ -560,7 +599,7 @@ public class AuthTests : IAsyncLifetime
         httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.IdentifyUserAsync(httpContextMock.Object);
@@ -573,6 +612,11 @@ public class AuthTests : IAsyncLifetime
     public async void IdentifyUserAsync_NoUserId_ReturnsNull()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString() + "1234NotValid") };
@@ -600,7 +644,7 @@ public class AuthTests : IAsyncLifetime
         httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
         var user = await authService.IdentifyUserAsync(httpContextMock.Object);
@@ -613,6 +657,11 @@ public class AuthTests : IAsyncLifetime
     public async void GoogleSSOAsync_ExistingUser_ReturnsUser()
     {
         // ARRANGE
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -643,7 +692,7 @@ public class AuthTests : IAsyncLifetime
         };
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
 
@@ -663,6 +712,10 @@ public class AuthTests : IAsyncLifetime
     {
         // ARRANGE
 
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
         // Mock
         Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
@@ -703,7 +756,7 @@ public class AuthTests : IAsyncLifetime
 
 
         // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object);
+        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
 

@@ -716,6 +716,8 @@ namespace Backend.Migrations
 
                     b.HasKey("UserId", "EpisodeId");
 
+                    b.HasIndex("EpisodeId");
+
                     b.ToTable("UserEpisodeInteractions");
                 });
 
@@ -982,11 +984,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany()
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("EpisodeInteractions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("Episode");
 
                     b.Navigation("User");
                 });

@@ -147,7 +147,7 @@ class Pipeline(object):
                     "Loading rmvpe model,%s" % "%s/rmvpe.pt" % os.environ["rmvpe_root"]
                 )
                 self.model_rmvpe = RMVPE(
-                    "%s/rmvpe.pt" % os.environ["rmvpe_root"],
+                    "ServerFiles/Speakers/rmvpe.pt",
                     is_half=self.is_half,
                     device=self.device,
                 )

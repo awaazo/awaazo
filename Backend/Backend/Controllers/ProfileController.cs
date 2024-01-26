@@ -223,34 +223,6 @@ public class ProfileController : ControllerBase
     }
 
     /// <summary>
-    /// Sent forgot password email
-    /// </summary>
-    /// <param name="request"> Request object containing the email</param>
-    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
-    [AllowAnonymous]
-    [HttpPost("sentForgotPasswordEmail")]
-    public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request)
-    {
-        try
-        {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(SentForgotPasswordEmail));
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _profileService.SentForgotPasswordEmail(request.Email);
-            return Ok($"Email sent to {request.Email}");
-        }
-        catch (Exception e)
-        {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(SentForgotPasswordEmail));
-            return BadRequest(e.Message);
-        }
-    }
-
-    /// <summary>
     /// Reset password
     /// </summary>
     /// <param name="request"> Request object containing the new password</param>

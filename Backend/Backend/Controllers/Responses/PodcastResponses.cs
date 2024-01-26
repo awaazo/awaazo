@@ -1,6 +1,8 @@
 using System.Data;
+using AutoMapper.Configuration.Annotations;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers.Responses;
 
@@ -10,13 +12,13 @@ namespace Backend.Controllers.Responses;
 [BindProperties]
 public class EpisodeResponse
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="EpisodeResponse"/> class.
     /// </summary>
     /// <param name="e">The episode.</param>
     /// <param name="domainUrl">The domain URL.</param>
-    public EpisodeResponse(Episode e,string domainUrl)
+    /// <param name="includeComments">if set to <c>true</c> [include comments].</param>
+    public EpisodeResponse(Episode e,string domainUrl, bool includeComments = true)
     {
         //Episode = e;
         Id = e.Id;
@@ -30,11 +32,12 @@ public class EpisodeResponse
         AudioUrl = domainUrl + string.Format("podcast/{0}/{1}/getAudio", e.PodcastId, e.Id);
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
         Likes = e.Likes.Count;
-        Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
+        if (includeComments) 
+            Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
         PodcastName = e.Podcast.Name;
 
     }
-
+    
     public Guid Id { get; set; } = Guid.Empty;
     public Guid PodcastId { get; set; } = Guid.Empty;
     public string EpisodeName { get; set; } = string.Empty;
@@ -50,6 +53,10 @@ public class EpisodeResponse
     public List<CommentResponse> Comments { get; set; } = new();
 
     public string PodcastName { get; set; } = string.Empty;
+    
+    public static EpisodeResponse? FromEpisode(Episode? ep, string domainUrl) {
+        return ep is null ? null : new EpisodeResponse(ep, domainUrl, false);
+    }
 }
 
 
@@ -256,4 +263,42 @@ public class ListenPositionResponse
     /// The Listen Position in seconds
     /// </summary>
     public double ListenPosition { get; set; }
+}
+
+/// <summary>
+/// Response for metrics API route
+/// </summary>
+[BindProperties]
+public class PodcastMetricsResponse
+{
+    private string _domainURL;
+    public PodcastMetricsResponse(string domainURL) {
+        _domainURL = domainURL;
+    }
+    public uint TotalEpisodesLikes { get; set; } = 0;
+
+    public double TotalTimeWatched { get; set; } = 0;
+    public uint TotalPlayCount { get; set; } = 0;
+    
+    public uint TotalCommentsCount { get; set; } = 0;
+    
+    public EpisodeResponse? MostLikedEpisode { get; set; }
+    
+    public EpisodeResponse? MostPlayedEpisode { get; set; }
+    
+    public EpisodeResponse? MostCommentedOnEpisode { get; set; }
+
+    public CommentResponse? MostLikedComment { get; set; }
+
+    public GenderMetrics DemographicsGender { get; set; } = new GenderMetrics();
+    public Dictionary<string, uint > DemographicsAge { get; set; } = new Dictionary<string, uint>();
+    
+    [BindProperties]
+    public class GenderMetrics
+    {
+        public uint TotalMale { get; set; } = 0;
+        public uint TotalFemale { get; set; } = 0;
+        public uint TotalOther { get; set; } = 0;
+        public uint TotalUnknown { get; set; } = 0;
+    }
 }

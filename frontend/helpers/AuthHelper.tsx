@@ -52,11 +52,32 @@ export default class AuthHelper {
             }
         }
         catch (error) {
-            // Return the error.
-            return {
-                status: error.response.status,
-                message: error.response.statusText
+            console.error("An error occurred during logout: ", error);
+    
+            // Initialize default error response
+            let errorResponse = {
+                status: 500, // Default to internal server error
+                message: "An unknown error occurred"
+            };
+    
+            // Check if the error has a response object
+            if (error.response) {
+                // Use the error details from the response
+                errorResponse.status = error.response.status;
+                errorResponse.message = error.response.statusText;
+            } else if (error.code === 'ECONNABORTED') {
+                // Handle the aborted request
+                errorResponse.status = 0;
+                errorResponse.message = "The request was aborted";
+            } else if (error.request) {
+                // Handle no response
+                errorResponse.message = "No response was received";
+            } else if (error.message) {
+                // Use the error message from the error object
+                errorResponse.message = error.message;
             }
+    
+            return errorResponse;
         }
     }
 

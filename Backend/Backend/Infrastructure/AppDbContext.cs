@@ -150,7 +150,8 @@ public class AppDbContext : DbContext
             .HasMany(e => e.EpisodeInteractions)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         modelBuilder.Entity<User>()
             .HasMany(e => e.Bookmarks)
