@@ -1,5 +1,6 @@
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -92,10 +93,8 @@ public class ProfileController : ControllerBase
                 return NotFound("User does not exist.");
             
             // Validate file extension
-            if (setupRequest.Avatar is not null) {
-                string extension = Path.GetExtension(setupRequest.Avatar.FileName);
-                if (extension != ".jpg" && extension != ".png" && extension != ".jpeg" && extension != ".gif")
-                    return BadRequest(new { Errors = new[] { $"Invalid file extension {extension}" } });
+            if (!FileStorageHelper.ValidateAvatar(setupRequest.Avatar, out var errors)) {
+                return BadRequest(errors);
             }
 
             // Update User Profile
@@ -130,12 +129,10 @@ public class ProfileController : ControllerBase
                 return NotFound("User does not exist.");
             
             // Validate file extension
-            if (editRequest.Avatar is not null) {
-                string extension = Path.GetExtension(editRequest.Avatar.FileName);
-                if (extension != ".jpg" && extension != ".png" && extension != ".jpeg" && extension != ".gif")
-                    return BadRequest(new { Errors = new[] { $"Invalid file extension {extension}" } });
+            if (!FileStorageHelper.ValidateAvatar(editRequest.Avatar, out var errors)) {
+                return BadRequest(errors);
             }
-
+            
             // Update User Profile
             bool isChanged = await _profileService.EditProfileAsync(editRequest, user);
 

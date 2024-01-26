@@ -51,6 +51,8 @@ public static class FileStorageHelper
     /// </summary>
     public const string TRANSCRIPT_FILE_TYPE = ".json";
 
+    public static readonly string[] AVATAR_EXTENSIONS = new[] { ".jpg", ".png", ".jpeg", ".gif"};
+
     public enum TranscriptStatus 
     {
         InProgress=0,
@@ -131,6 +133,26 @@ public static class FileStorageHelper
         return Combine(GetCurrentDirectory(), BASE_DIR, AVATARS_DIR_NAME, userAvatarName.Split(FILE_SPLIT_KEY)[0]);
     }
 
+    public static bool ValidateAvatar(IFormFile? file, out object? errorObject) {
+        errorObject = null;
+        if (file is not null) {
+            string extension = Path.GetExtension(file.FileName);
+            bool ok = false;
+            foreach (var ext in AVATAR_EXTENSIONS) {
+                if (extension == ext) {
+                    ok = true;
+                    break;
+                }
+            }
+
+            if (!ok) {
+                errorObject = new { Errors = new[] { $"Invalid file extension {extension}" } };
+                return false;
+            }
+        }
+        return true;
+    }
+    
     #endregion
 
     #region Podcast
@@ -569,5 +591,4 @@ public static class FileStorageHelper
     {
         return filename.Split(FILE_SPLIT_KEY)[1];
     }
-
 }
