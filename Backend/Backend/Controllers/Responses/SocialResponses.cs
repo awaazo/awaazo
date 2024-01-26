@@ -38,6 +38,10 @@ public class CommentResponse
     public string Text { get; set; }
     public DateTime DateCreated {get;set;}
     public List<CommentReplyResponse> Replies {get;set;}
+    
+    public static CommentResponse? FromComment(Comment? comment, string domainUrl) {
+        return comment is null ? null : new CommentResponse(comment, domainUrl);
+    }
 }
 
 [BindProperties]

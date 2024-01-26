@@ -24,6 +24,5 @@ public interface IProfileService
     public Task<string> GetUserAvatarNameAsync(Guid userId);
 
     public Task ChangePassword(User user, ChangePasswordRequest request);
-    public Task SentForgotPasswordEmail(string requestEmail);
     public Task ResetPassword(ResetPasswordRequest requestEmail);
 }
