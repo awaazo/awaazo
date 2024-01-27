@@ -132,20 +132,20 @@ export default function Navbar() {
     const blur = Math.min((scrollY / maxScroll) * 25, 25);
 
     setNavbarStyle({
-      backgroundColor: `rgba(255, 255, 255, ${(opacity / 1.3) * 0})`,
-      backdropFilter: `blur(${blur / 2}px)`,
+      backgroundColor: `rgba(255, 255, 255, 0)`,
+      backdropFilter: `blur(50px)`,
     });
   };
 
-  useEffect(() => {
-    // Add scroll event listener when the component mounts
-    window.addEventListener("scroll", handleScroll);
+  // useEffect(() => {
+  //   // Add scroll event listener when the component mounts
+  //   window.addEventListener("scroll", handleScroll);
 
-    // Cleanup by removing the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  //   // Cleanup by removing the event listener when the component unmounts
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const fetchNotificationCount = async () => {
