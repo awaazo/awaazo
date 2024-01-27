@@ -86,7 +86,7 @@ export default class PlaylistHelper {
       url: EndpointHelper.getEditPlaylistEndpoint(playlistId),
       headers: {
         accept: "*/*",
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
       cache: false,

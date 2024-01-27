@@ -22,6 +22,9 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
+  Switch,
+  Text,
+  Flex
 } from "@chakra-ui/react";
 import { IoIosMore } from "react-icons/io";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -116,7 +119,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   useEffect(() => {
     setName(playlist.name);
     setDescription(playlist.description);
-    // setIsPrivate logic here if needed
+    setPrivacy(playlist.privacy);
   }, [playlist]);
 
   // Handle save logic for editing a playlist
@@ -134,7 +137,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     const request = {
       name: name,
       description: description,
-      privacy: "false", // Adjust based on your actual implementation
+      privacy: privacy,
     };
 
     const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
@@ -150,6 +153,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         ...playlist,
         name: name,
         description: description,
+        privacy: privacy,
         // Include other updated fields if applicable
       };
       // Update the parent component's state
@@ -166,6 +170,9 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     closeEditModal();
   };
 
+  const [privacy, setPrivacy] = useState("Public");
+  //const [isPrivate, setIsPrivate] = useState(playlist.privacy);
+  
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
@@ -298,6 +305,27 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
             <FormControl mt={4}>
+            <FormControl mt={4} display="flex" alignItems="center">
+              <FormLabel htmlFor="privateCheckbox" mb="0">
+                Private
+              </FormLabel>
+              <FormControl
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Flex align="center" mb="2">
+                  <Text mr="2" fontSize="sm">
+                    Private:
+                  </Text>
+                  <Switch
+                    isChecked={privacy === "Private"}
+                    onChange={() => setPrivacy(prevPrivacy => prevPrivacy === "Private" ? "Public" : "Private")}
+                    colorScheme="purple"
+                  />
+                </Flex>
+              </FormControl>
+            </FormControl>  
               <FormLabel>Cover Image</FormLabel>
               {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
             </FormControl>
