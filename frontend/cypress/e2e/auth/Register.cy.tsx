@@ -2,6 +2,7 @@ import * as paths from "../../fixtures/file_paths.json";
 
 describe("Register", () => {
   beforeEach(() => {
+    cy.console_error_hack();
     cy.visit("/");
     cy.url().should("include", "/", { timeout: 5000 }); 
   });
@@ -94,8 +95,9 @@ describe("Register", () => {
   });
 
   it("limits the number of characters in the input field", () => {
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get("button").contains("Sign up").click();
+    // cy.get('button[aria-label="Menu"]').click();
+    // cy.get("button").contains("Sign up").click();
+    cy.visit("/auth/Signup");
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );

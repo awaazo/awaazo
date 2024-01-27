@@ -48,7 +48,7 @@ export default function MyPodcast({ podcastId }) {
         <Tabs isFitted width={"100%"}>
           <TabList mb="1em" width={"30%"}>
             <Tab>Podcast Info</Tab>
-            <Tab>Add Episode</Tab>
+            <Tab data-cy={'add-episde-tab'}>Add Episode</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>

@@ -200,6 +200,7 @@ export default function EditEpisodeForm({ episode }) {
                   value={episodeName}
                   onChange={handleEpisodeNameChange}
                   placeholder="Enter episode name..."
+                  data-cy={`episode-name-input`}
                   rounded="lg"
                   pr="50px"
                 />

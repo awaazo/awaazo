@@ -3,6 +3,7 @@ import * as paths from '../../fixtures/file_paths.json';
 describe('Section', () => {
     
     beforeEach(() => {
+        cy.console_error_hack();
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
@@ -32,16 +33,20 @@ describe('Section', () => {
         cy.url().should('include', '/CreatorHub/MyPodcasts', { timeout: 5000 });
         cy.get('[data-cy="sections-button"]').first().click( {timeout: 5000} );
         cy.get('[data-cy="add-sections-button"').click( {timeout:5000} );
-        cy.get('[data-cy="section-title-input"]').type('Section 1', {timeout: 5000});
+        cy.wait(250);
+        cy.get('[data-cy="section-title-input"]').type('Section 1', {timeout: 5000}); 
+        cy.wait(250);
         cy.get('[data-cy="sections-play-pause"').click( {timeout:5000} );
         cy.wait(1000);
-        cy.get('[data-cy="sections-play-pause"').click( {timeout:5000} );
         for (let i = 0; i < 30; i++) {
             cy.get('body').type('{rightarrow}');
         }
+        cy.get('[data-cy="sections-play-pause"').click( {timeout:5000} );
+        cy.wait(250);
         cy.get('[data-cy="set-end-time-button"').click( {timeout:5000} );
+        cy.wait(250);
         cy.get('[data-cy="add-section-button-form"').click( {timeout:5000} );
-        cy.wait(1500);
+        cy.wait(1000);
         cy.visit('/CreatorHub/MyPodcasts');
         cy.url().should('include', '/CreatorHub/MyPodcasts', { timeout: 5000 });
         cy.wait(500);

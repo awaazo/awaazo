@@ -24,7 +24,7 @@ import ImageAdder from "../../components/tools/ImageAdder";
 import GenreSelector from "../../components/tools/GenreSelector";
 
 export default function CreatePodcast() {
-  const createPage = "/CreatorHub/MyPodcast";
+  const createPage = "/CreatorHub/MyPodcasts";
   const loginPage = "/auth/Login";
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
   const [podcastName, setPodcastName] = useState("");

@@ -2,8 +2,11 @@ import * as paths from '../../fixtures/file_paths.json';
 
 describe("PlayerBar", () => { 
 
-    it('Should create a podcast and upload an episode for playerbar testing', () => {
+    beforeEach(() => {
         cy.console_error_hack();
+      });
+
+    it('Should create a podcast and upload an episode for playerbar testing', () => {
         cy.login(null, "testRegister@email.com", "password123");
         cy.podcast_create(paths.max_verstappen_cover,'f2-legends', 'A podcast about F1 veterans and their rise to glory.')
         cy.episode_create(
@@ -109,6 +112,7 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
+        cy.get('[data-cy="play-previous"]').should('be.visible').click({timeout : 5000});
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(15500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});

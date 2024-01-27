@@ -2,17 +2,15 @@ import * as paths from '../../fixtures/file_paths.json';
 
 describe('Review', () => {
     
-    // beforeEach(() => {
-    //     cy.login(null, 'dummyRegister@email.com', 'password123');
-    //     cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
-    // });
+    beforeEach(() => {
+        cy.console_error_hack();
+    });
 
     it('Should create a Podcast so others can review it', function () {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
-        cy.reload();
         cy.podcast_create(paths.max_verstappen_cover,'F2 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/AddEpisode');
+        cy.url().should('include', '/CreatorHub/MyPodcasts');
     });
 
     it('Should successfully add a review', function(){

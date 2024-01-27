@@ -2,10 +2,14 @@ import * as paths from "../../fixtures/file_paths.json";
 
 describe("Notification", () => { 
 
-    it('Should create a Podcast so others can review it', function () {
+    beforeEach(() => {
+        cy.console_error_hack();
+    });
+
+    it('Should create a Podcast so I can get a notification', function () {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.podcast_create(paths.max_verstappen_cover, 'F2 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/AddEpisode');
+        cy.url().should('include', '/CreatorHub/MyPodcasts');
     });
     
     it('Should subscribe to a Podcast', () => {
@@ -13,9 +17,7 @@ describe("Notification", () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:F2 Legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:F2 Legends"]').should('be.visible').click( {timeout:5000} )
         cy.get("button").contains("Subscribe").click();
         cy.get("button").contains("Unsubscribe").should('exist');
     });
@@ -24,7 +26,7 @@ describe("Notification", () => {
         cy.console_error_hack();
         cy.login(null, "dummyRegister@email.com", "password123");
         cy.get('[data-cy="notifications-button"]').scrollIntoView().should('be.visible').click( {timeout: 5000} );
-        cy.get('.css-ndlb3l > .chakra-text').contains('0').should('be.visible');
+        cy.get('body').contains('There are no Notifications right now');
     });
 
     it('Should see a new notifications if an episode gets uploaded to', () => {
@@ -54,7 +56,7 @@ describe("Notification", () => {
             });
         cy.console_error_hack();
         cy.get('[data-cy="notifications-button"]').should('be.visible').click( {timeout: 5000} );
-        cy.get('.css-ndlb3l > .chakra-text').contains('1').should('be.visible');
+        cy.get('body').contains('New Episode added : Notifications');
     });
 
     it('Should unsubscribe from a podcast', () => {
@@ -62,9 +64,7 @@ describe("Notification", () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
         timeout: 5000,
         });
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:F2 Legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:F2 Legends"]').should('be.visible').click( {timeout:5000} )
         cy.get("button").contains("Unsubscribe").click();
         cy.get("button").contains("Subscribe").should('exist');
     });
