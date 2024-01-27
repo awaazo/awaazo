@@ -298,7 +298,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalBody>
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)}  focusBorderColor="brand.100"/>
+              <Input value={name} onChange={(e) => setName(e.target.value)}  data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100"/>
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
