@@ -21,6 +21,7 @@ def get_speaker_model_path(speaker_name,base_path):
         Exception: If no model exists for the given speaker name.
     """
     try:
+        
         # Define the speaker's model path
         speaker_model_path = f'{base_path}/{speaker_name}/{speaker_name}.pth'
 
@@ -87,7 +88,8 @@ def clone_voice(audio_file_path,speaker_name,base_path,index_rate,filter_radius,
         None
     """
     try:
-        
+        print("-------------------- Starting RVC --------------------")
+
         # Get the file name
         file_name = audio_file_path.split('.')[0]
 
@@ -149,6 +151,7 @@ def clone_voice(audio_file_path,speaker_name,base_path,index_rate,filter_radius,
         os.remove(status_file_path)
 
         print("RVC request complete")
+        print("-------------------- RVC Complete --------------------")
 
     except Exception as e:
         # If an error occurs, update the status file with the error message
