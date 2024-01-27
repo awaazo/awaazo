@@ -4,11 +4,16 @@ from huggingface_hub import snapshot_download
 import os
 import torch
 import threading
+import json
+import logging
+# import asyncio
 
 # Import Custom Libraries
 import transcription_service.stt
 import text_to_speech_service.tts
 import rvc_service.rvc
+from assistant.chat_with_transcript import chat_with_transcript
+from assistant.ingest import process_transcript
 
 # Server Settings
 HOST = "0.0.0.0"
@@ -19,6 +24,9 @@ CREATE_TRANSCRIPT = "/create_transcript"
 PODCASTS_FOLDER_PATH = "/ServerFiles/Podcasts"
 SPEAKERS_FOLDER_PATH = "/ServerFiles/Speakers"
 REPO_ID = "Awaazo/Speakers"
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
 
 async def handle_transcription_request(request):
     '''
@@ -270,28 +278,48 @@ async def handle_realistic_voice_cloning_request(request):
         return web.Response(status=400, text=str(e))
 
 async def handle_chat_request(request):
-    # Extract necessary information from the request
-    # For example, the user's message or any other relevant data
+    """
+    Handles the chat request.
+    """
+    try:
+        data = await request.json()
+        episode_id = data.get("episode_id")
+        if not episode_id:
+            raise ValueError("Missing 'episode_id' in request")
 
-    # Use the imported chat functionality to process the request
-    # Example: response = ChatFunctionality.process(user_message)
+        # Process transcript before starting the chat
+        process_transcript(episode_id)  # This will prepare the vector store
 
-    # Return the chat response
-    return web.Response(text=response)
+        # Start the chat session
+        response_text = chat_with_transcript(episode_id, "vectorstore", verbose=False)
 
-# Create the server instance
+        return web.Response(text=json.dumps({"response": response_text}), status=200)
+
+    except FileNotFoundError as e:
+        logging.error(f"Transcript file not found: {e}")
+        return web.Response(text=f"Transcript file not found: {e}", status=404)
+    except Exception as e:
+        logging.error(f"Chat request error: {e}")
+        return web.Response(text=f"An error occurred: {e}", status=500)
+
+# Server Initialization
 app = web.Application()
 
-# Add the routes to the server
-app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
-app.add_routes([web.post('/tts', handle_text_to_speech_request)])
-app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
-
+# Route Definitions
+app.router.add_get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)
+app.router.add_post('/tts', handle_text_to_speech_request)
+app.router.add_post('/rvc', handle_realistic_voice_cloning_request)
+app.router.add_post("/chat_with_transcript", handle_chat_request)
 
 
 # Download the Speakers
 print("Downloading Speaker Models...")
-snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}',local_dir_use_symlinks=False)
+# snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}',local_dir_use_symlinks=False)
 
 # Start the server
 web.run_app(app, port=PORT)
+
+# Starting Server
+if __name__ == '__main__':
+    logging.info("Server is starting...")
+    web.run_app(app, host=HOST, port=PORT)

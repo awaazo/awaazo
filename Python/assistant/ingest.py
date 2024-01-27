@@ -20,19 +20,32 @@ def process_transcript(episode_id):
         llm = ChatOpenAI()
         embeddings = OpenAIEmbeddings()
 
-        # Load and process the JSON transcript
-        with open(f'./transcripts/{episode_id}.json', 'r') as file:
+       # Load and process the JSON transcript
+        transcript_folder = r'c:\Users\hanba\Desktop\awaazo\Python\transcripts'
+        transcript_json = os.path.join(transcript_folder, f'{episode_id}.json')
+        transcript_txt = os.path.join(transcript_folder, f'{episode_id}.txt')
+        
+
+        if not os.path.exists(transcript_json):
+            raise FileNotFoundError(f"Transcript JSON file not found at {transcript_json}")
+
+        with open(transcript_json, 'r') as file:
             data = json.load(file)
 
-        text_values = [entry['text'] for entry in data]
+        try:
+            text_values = [entry['text'] for entry in data]
+        except KeyError:
+            raise ValueError("Expected 'text' key in JSON data entries")
+
         combined_text = '\n'.join(text_values)
 
-        with open(f'./transcripts/{episode_id}.txt', 'w') as output_file:
+        with open(transcript_txt, 'w') as output_file:
             output_file.write(combined_text)
         print("Transcript parsed as text")
 
+
         # Load documents from the directory
-        transcript_loader = DirectoryLoader('./transcripts', glob="**/*.txt")
+        transcript_loader = DirectoryLoader(transcript_folder, glob="**/*.txt")
         loaders = [transcript_loader]
         documents = []
         for loader in loaders:

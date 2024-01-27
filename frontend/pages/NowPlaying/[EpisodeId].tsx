@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Box, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, Tabs, TabList, TabPanels, Tab, TabPanel, useBreakpointValue, Grid, DrawerCloseButton, Spinner} from "@chakra-ui/react";
-import { FaPlus, FaList } from 'react-icons/fa';
+import { Box,  useDisclosure,  useBreakpointValue, Grid,  Spinner} from "@chakra-ui/react";
 import CoverArt from "../../components/nowPlaying/CoverArt";
 import Sections from "../../components/nowPlaying/Sections";
 import PodCue from "../../components/nowPlaying/PodCue";
