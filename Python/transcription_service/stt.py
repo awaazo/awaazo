@@ -4,6 +4,7 @@ import os
 import whisperx
 import torch
 import datetime
+import requests
 
 def process_transcript(transcript):
     """
@@ -113,6 +114,8 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
     
     """
     try:
+        print('------------ Creating WhisperX Transcript ------------')
+
         time0 = datetime.datetime.now()
 
         # Get the file name
@@ -156,28 +159,43 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         # Save the transcript to a json file
         json.dump(process_transcript(result["segments"]), open(transcript_file_path, 'w'))
 
-        # Once the transcript is created, delete the status file
-        os.remove(status_file_path)
-
         time1 = datetime.datetime.now()
 
         # Assign the Speaker labels
-        diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
-        diarize_segments = diarize_model(audio)
-        result = whisperx.assign_word_speakers(diarize_segments,result)
+        # diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
+        # diarize_segments = diarize_model(audio)
+        # result = whisperx.assign_word_speakers(diarize_segments,result)
 
-        # Save the transcript to a json file
-        json.dump(result["segments"], open(transcript_file_path, 'w'))
+        # # Save the transcript to a json file
+        # json.dump(result["segments"], open(transcript_file_path, 'w'))
 
-        time2 = datetime.datetime.now()
+        # time2 = datetime.datetime.now()
 
-        print(f"Transcription time: {time1-time0}")
-        print(f"Diarization time: {time2-time1}")
-        print(f"Total time: {time2-time0}")
-        print(f"Transcript saved to {transcript_file_path}")
+        # print(f"Transcription time: {time1-time0}")
+        # print(f"Diarization time: {time2-time1}")
+        # print(f"Total time: {time2-time0}")
+        # print(f"Transcript saved to {transcript_file_path}")
+
+        podcast_id = file_name.split('/')[-2]
+        episode_id = file_name.split('/')[-1]
+
+        print(f"Podcast ID: {podcast_id}")
+        print(f"Episode ID: {episode_id}")
+
+        # Send a request to the Ingest API to ingest the transcript
+        response = requests.post('http://localhost:8000/ingest', json={'podcast_id': podcast_id, 'episode_id':episode_id})
+
+        # If the response was successful, no Exception will be raised
+        response.raise_for_status()
+
+        # Once the transcript is created, delete the status file
+        os.remove(status_file_path)
+
+        print('------------ WhisperX Transcript Created ------------')
 
     except Exception as e:
         # If an error occurs, update the status file with the error message
+        print(f"Error: {e}")
         with open(status_file_path, 'w') as f:
             f.write('Error\n')
             f.write(str(e))

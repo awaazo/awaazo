@@ -9,6 +9,8 @@ import threading
 import transcription_service.stt
 import text_to_speech_service.tts
 import rvc_service.rvc
+import assistant_service.ingest
+import assistant_service.chat
 
 # Server Settings
 HOST = "0.0.0.0"
@@ -269,15 +271,53 @@ async def handle_realistic_voice_cloning_request(request):
         print(f"Error in handle_realistic_voice_cloning_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_ingest_request(request):
+    try:
+        print("Handling ingest request...")
+
+        data = await request.json()
+
+        # Get the podcast and episode IDs to ingest
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}")
+
+        assistant_service.ingest.process_transcript(podcast_id,episode_id)
+
+        return web.Response(text="Ingest process has been initiated.", status=200)
+    except Exception as e:
+        # If an error occurs, send a 400 response with the error message
+        print(f"Error in handle_ingest_request: {e}")
+        return web.Response(status=400, text=str(e))
+
 async def handle_chat_request(request):
     # Extract necessary information from the request
-    # For example, the user's message or any other relevant data
+        # For example, the user's message or any other relevant data
 
-    # Use the imported chat functionality to process the request
-    # Example: response = ChatFunctionality.process(user_message)
+        # Use the imported chat functionality to process the request
+        # Example: response = ChatFunctionality.process(user_message)
 
-    # Return the chat response
-    return web.Response(text=response)
+        # Return the chat response
+    try:
+        print("Handling chat request...")
+
+        data = await request.json()
+
+        # Get the podcast and episode IDs, and the user's prompt
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+        prompt = data.get('prompt')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Prompt: {prompt}")
+
+        response = assistant_service.chat.chat(podcast_id,episode_id,prompt)
+
+        return web.Response(text=response, status=200)
+    except Exception as e:
+        # If an error occurs, send a 400 response with the error message
+        print(f"Error in handle_chat_request: {e}")
+        return web.Response(status=400, text=str(e))
 
 # Create the server instance
 app = web.Application()
@@ -286,12 +326,17 @@ app = web.Application()
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
 app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
-
+app.add_routes([web.post('/ingest', handle_ingest_request)])
+app.add_routes([web.post('/chat', handle_chat_request)])
 
 
 # Download the Speakers
 print("Downloading Speaker Models...")
-snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}',local_dir_use_symlinks=False)
+if(not os.path.isdir(f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}')):
+    os.mkdir(f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}')
+    snapshot_download(repo_id=REPO_ID,  local_dir=f'{os.getcwd()}{SPEAKERS_FOLDER_PATH}',local_dir_use_symlinks=False)
+else:
+    print("Speaker Models already exist.")
 
 # Start the server
 web.run_app(app, port=PORT)
