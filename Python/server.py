@@ -11,6 +11,7 @@ import text_to_speech_service.tts
 import rvc_service.rvc
 import assistant_service.ingest
 import assistant_service.chat
+import service_pipeline as sp
 
 # Server Settings
 HOST = "0.0.0.0"
@@ -319,16 +320,52 @@ async def handle_chat_request(request):
         print(f"Error in handle_chat_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_tts_request(request):
+    try:
+        print("---------------- Handling TTS/RVC Request ----------------")
+
+        data = await request.json()
+
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+        text = data.get('text')
+        language = data.get('language','en')
+        speaker_name = data.get('speaker_name', 'Default')
+        delimiter = data.get('delimiter','')
+        use_tortoise = data.get('use_tortoise',True)
+        index_rate = data.get('index_rate', 0.5)
+        filter_radius = data.get('filter_radius', 3)
+        resample_sr = data.get('resample_sr', 0)
+        rms_mix_rate = data.get('rms_mix_rate', 0.25)
+        protect = data.get('protect',0.33)
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Text: {text}, Language: {language}, Speaker Name: {speaker_name}, Delimiter: {delimiter}, Use Tortoise?: {use_tortoise}, Index Rate: {index_rate}, Filter Radius: {filter_radius}, Resample Sample Rate: {resample_sr}, RMS Mix Rate:{rms_mix_rate}, Protect: {protect}\n")
+
+        threading.Thread(target=sp.tts_rvc_pipeline, args=(podcast_id,episode_id,text,delimiter,speaker_name,language,use_tortoise,index_rate,filter_radius,resample_sr,rms_mix_rate,protect)).start()
+
+        print("---------------- TTS/RVC Request Completed ----------------")
+        
+        return web.Response(text="TTS/RVC started...", status=200)
+    
+    except Exception as e:
+        print(f"Error in handle_tts_request: {e}")
+        return web.Response(status=400, text=str(e))
+    
+async def handle_stt_request(request):
+    print("---------------- Handling STT Request ----------------")
+    return web.Response(text="STT started...", status=200)
+
 # Create the server instance
 app = web.Application()
 
 # Add the routes to the server
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
-app.add_routes([web.post('/tts', handle_text_to_speech_request)])
+#app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
-app.add_routes([web.post('/ingest', handle_ingest_request)])
+#app.add_routes([web.post('/ingest', handle_ingest_request)])
 app.add_routes([web.post('/chat', handle_chat_request)])
-
+app.add_routes([web.post('/tts', handle_tts_request)])
+app.add_routes([web.post('/stt', handle_stt_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")

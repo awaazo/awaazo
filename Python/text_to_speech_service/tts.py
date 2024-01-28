@@ -24,7 +24,7 @@ def create_audio_coqui(text, language, speaker_file_path, result_file_path):
     try:
 
         # Get the file name
-        file_name = result_file_path.split('.')[0]
+        file_name = result_file_path.split('.wav')[0]
 
         # Define the status file path
         status_file_path = f'{file_name}_tts_status.txt'
@@ -76,7 +76,7 @@ def create_audio_tortoise(text,speaker,result_file_path,delimiter=''):
         print(result_file_path)
 
         # Get the file name
-        file_name = result_file_path.split('.')[0]
+        file_name = result_file_path.split('.wav')[0]
 
         # Define the status file path
         status_file_path = f'{file_name}_tts_status.txt'

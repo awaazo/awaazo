@@ -91,7 +91,7 @@ def clone_voice(audio_file_path,speaker_name,base_path,index_rate,filter_radius,
         print("-------------------- Starting RVC --------------------")
 
         # Get the file name
-        file_name = audio_file_path.split('.')[0]
+        file_name = audio_file_path.split('.wav')[0]
 
         # Define the new audio file path
         new_audio_file_path = f'{file_name}_rvc.wav'

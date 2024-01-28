@@ -176,18 +176,6 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         # print(f"Total time: {time2-time0}")
         # print(f"Transcript saved to {transcript_file_path}")
 
-        podcast_id = file_name.split('/')[-2]
-        episode_id = file_name.split('/')[-1]
-
-        print(f"Podcast ID: {podcast_id}")
-        print(f"Episode ID: {episode_id}")
-
-        # Send a request to the Ingest API to ingest the transcript
-        response = requests.post('http://localhost:8000/ingest', json={'podcast_id': podcast_id, 'episode_id':episode_id})
-
-        # If the response was successful, no Exception will be raised
-        response.raise_for_status()
-
         # Once the transcript is created, delete the status file
         os.remove(status_file_path)
 

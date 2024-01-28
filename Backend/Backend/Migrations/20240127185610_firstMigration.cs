@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Backend/Backend/Migrations/20240124045348_InitialCreate.cs
-    public partial class InitialCreate : Migration
-========
     public partial class firstMigration : Migration
->>>>>>>> main:Backend/Backend/Migrations/20240125171817_firstMigration.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
