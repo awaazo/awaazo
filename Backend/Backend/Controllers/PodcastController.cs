@@ -686,6 +686,52 @@ public class PodcastController : ControllerBase
         }
     }
 
+    #region Episode Chat
+
+    [HttpGet("{episodeId}/getEpisodeChat")]
+    public async Task<IActionResult> GetEpisodeChat(Guid episodeId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeChat));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeChatAsync(page,pageSize,episodeId,user,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeChat));
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("addEpisodeChat")]
+    public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddEpisodeChat));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.PromptEpisodeChatAsync(request.EpisodeId,user,request.Prompt,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(AddEpisodeChat));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion Episode Chat
+
     #region Transcript
 
     /// <summary>

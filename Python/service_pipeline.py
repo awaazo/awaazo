@@ -46,19 +46,19 @@ def tts_rvc_pipeline(podcast_id, episode_id, text, delimiter='', speaker='Defaul
 
         # Check that the podcast exists
         if not os.path.exists(PODCAST_DIR):
-            raise (f"Podcast does not exist for given podcast_id {podcast_id} at {PODCAST_DIR}")
+            raise Exception(f"Podcast does not exist for given podcast_id {podcast_id} at {PODCAST_DIR}")
 
         # Check that the episode does not already exist
         if os.path.exists(f"{PODCAST_DIR}/{episode_id}"):
-            raise (f"Episode already exists for given episode_id {episode_id} at {PODCAST_DIR}/{episode_id}")
+            raise Exception(f"Episode already exists for given episode_id {episode_id} at {PODCAST_DIR}/{episode_id}")
 
         # Check that the speaker exists
         if not os.path.exists(SPEAKER_DIR):
-            raise (f"Speaker does not exist for given speaker {speaker} at {SPEAKER_DIR}")
+            raise Exception(f"Speaker does not exist for given speaker {speaker} at {SPEAKER_DIR}")
         
         # Check that the text is not empty
         if text == "":
-            raise (f"Text is empty")
+            raise Exception(f"Text is empty")
 
         # ====================================================
         
@@ -79,7 +79,6 @@ def tts_rvc_pipeline(podcast_id, episode_id, text, delimiter='', speaker='Defaul
             tts.create_audio_coqui(text=text,language=language, speaker_file_path=f"{SPEAKER_DIR}/{speaker}.wav",result_file_path=f"{PODCAST_DIR}/{episode_id}.wav") 
 
         print("TTS step done...")
-        time.sleep(2)
         print("Starting RVC step...")
   
         rvc.clone_voice(audio_file_path=f"{PODCAST_DIR}/{episode_id}.wav",speaker_name=speaker,base_path=SPEAKER_BASE_DIR,
@@ -92,7 +91,7 @@ def tts_rvc_pipeline(podcast_id, episode_id, text, delimiter='', speaker='Defaul
         
         # Check that the episode was created
         if not os.path.exists(f"{PODCAST_DIR}/{episode_id}.wav"):
-            raise (f"Episode was not created for given episode_id {episode_id} at {PODCAST_DIR}/{episode_id}.wav")
+            raise Exception(f"Episode was not created for given episode_id {episode_id} at {PODCAST_DIR}/{episode_id}.wav")
 
         # ====================================================
 
@@ -129,26 +128,30 @@ def transcription_ingestion_pipeline(podcast_id, episode_id, model_name="base", 
         PODCAST_DIR = f"{BASE_DIR}/Podcasts/{podcast_id}"
         EPISODE = f"{PODCAST_DIR}/{episode_id}"
 
+        # Convert to strings, if not already
+        episode_id = str(episode_id)
+        podcast_id = str(podcast_id)
+
         # DO PRE PROCESSING CHECKS
         # ==================================================== 
 
         # Check that the podcast exists
         if not os.path.exists(PODCAST_DIR):
-            raise (f"Podcast does not exist for given podcast_id {podcast_id} at {PODCAST_DIR}")
+            raise Exception(f"Podcast does not exist for given podcast_id {podcast_id} at {PODCAST_DIR}")
 
         # Find the episode file
         for file in os.listdir(PODCAST_DIR):
-            if file.endswith(tuple(AUDIO_FILE_EXTENSIONS)):
-                episode_filename = file
+            if file.endswith(tuple(AUDIO_FILE_EXTENSIONS)) and file.startswith(episode_id):
+                episode_filename = f"{PODCAST_DIR}/{file}"
                 break
 
         # Check that the episode exists
         if not os.path.exists(episode_filename):
-            raise (f"Episode does not exist for given episode_id {episode_id} at {episode_filename}")
+            raise Exception(f"Episode does not exist for given episode_id {episode_id} at {episode_filename}")
         
         # Check that the episode has not already been transcribed
         if os.path.exists(f"{EPISODE}.json"):
-            raise (f"Episode has already been transcribed for given episode_id {episode_id} at {EPISODE}.json")
+            raise Exception(f"Episode has already been transcribed for given episode_id {episode_id} at {EPISODE}.json")
 
         # ====================================================
 
@@ -162,7 +165,7 @@ def transcription_ingestion_pipeline(podcast_id, episode_id, model_name="base", 
 
         print("Starting transcription step...")
 
-        stt.create_transcript_whisperx(episode_file_path=f"{episode_filename}", model_name=model_name, batch_size=batch_size, compute_type=compute_type, device=device)
+        stt.create_transcript_whisperx(audio_path=f"{episode_filename}", model_name=model_name, batch_size=batch_size, compute_type=compute_type, device=device)
 
         print("Transcription step done...")
         print("Starting ingestion step...")
@@ -176,11 +179,11 @@ def transcription_ingestion_pipeline(podcast_id, episode_id, model_name="base", 
 
         # Check that the episode was transcribed
         if not os.path.exists(f"{EPISODE}.json"):
-            raise (f"Episode was not transcribed for given episode_id {episode_id} at {EPISODE}.json")
+            raise Exception(f"Episode was not transcribed for given episode_id {episode_id} at {EPISODE}.json")
         
         # Check that the episode was ingested
         if not os.path.isdir(f"{EPISODE}_vectorstore"):
-            raise (f"Episode was not ingested for given episode_id {episode_id} at {EPISODE}_vectorstore")
+            raise Exception(f"Episode was not ingested for given episode_id {episode_id} at {EPISODE}_vectorstore")
         
         # ====================================================
 

@@ -352,20 +352,37 @@ async def handle_tts_request(request):
         return web.Response(status=400, text=str(e))
     
 async def handle_stt_request(request):
-    print("---------------- Handling STT Request ----------------")
-    return web.Response(text="STT started...", status=200)
+    try:
+        print("---------------- Handling STT Request ----------------")
+
+        data = await request.json()
+
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}\n")
+
+        #threading.Thread(target=sp.transcription_ingestion_pipeline, args=(podcast_id,episode_id)).start()
+        sp.transcription_ingestion_pipeline(podcast_id,episode_id)
+
+        print("---------------- TTS/RVC Request Completed ----------------")
+
+        return web.Response(text="STT started...", status=200)
+    except Exception as e:
+        print(f"Error in handle_stt_request: {e}")
+        return web.Response(status=400, text=str(e))
 
 # Create the server instance
 app = web.Application()
 
 # Add the routes to the server
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
-#app.add_routes([web.post('/tts', handle_text_to_speech_request)])
+app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
-#app.add_routes([web.post('/ingest', handle_ingest_request)])
+app.add_routes([web.post('/ingest', handle_ingest_request)])
 app.add_routes([web.post('/chat', handle_chat_request)])
-app.add_routes([web.post('/tts', handle_tts_request)])
-app.add_routes([web.post('/stt', handle_stt_request)])
+app.add_routes([web.post('/tts_rvc', handle_tts_request)])
+app.add_routes([web.post('/stt_ingest', handle_stt_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")

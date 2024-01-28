@@ -116,10 +116,14 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
     try:
         print('------------ Creating WhisperX Transcript ------------')
 
+        print(f'Creating transcript using WhisperX for {audio_path}')
+
         time0 = datetime.datetime.now()
 
+        ext = audio_path.split('.')[-1]
+
         # Get the file name
-        file_name = audio_path.split('.')[0]
+        file_name = audio_path.split(f'.{ext}')[0]
 
         # Define the transcript file path
         transcript_file_path = f'{file_name}.json'

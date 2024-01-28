@@ -7,5 +7,6 @@ langchain-community
 openai
 python-dotenv
 unstructured
+chromadb
 # WhisperX install
 git+https://github.com/m-bain/whisperx.git
