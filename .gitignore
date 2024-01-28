@@ -291,7 +291,6 @@ frontend/Dockerfile
 backend/Dockerfile
 backend/.env
 backend_server
-Backend/Backend/Migrations
 *.env.local
 *appsettings.json
 *appsettings.Development.json
