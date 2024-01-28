@@ -100,18 +100,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} size="sm">
         <ModalOverlay />
-        <ModalContent
-          backdropFilter="blur(40px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          alignSelf={"center"}
-          padding={"2em"}
-          backgroundColor="rgba(255, 255, 255, 0.1)"
-          borderRadius={"2em"}
-          outlineColor="rgba(255, 255, 255, 0.25)"
-        >
+        <ModalContent>
           <ModalHeader fontWeight={"light"} fontSize={"1.5em"}>
             Bookmark
           </ModalHeader>
@@ -123,7 +112,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
               <FormControl position="relative">
                 <Input
                   placeholder="Enter A Title"
-                  rounded="lg"
+                  rounded="xl"
                   pr="50px"
                   value={newTitle}
                   onChange={handleBookmarkTitleChange}
@@ -134,6 +123,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
                   bottom="8px"
                   fontSize="sm"
                   color="gray.500"
+                  rounded="xl"
                 >
                   {titleCharacterCount}/25
                 </Text>
@@ -143,6 +133,7 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
                 <Textarea
                   placeholder="Enter A Note"
                   mb="2"
+                  
                   value={newNote}
                   onChange={handleBookmarkNoteChange}
                 />
@@ -172,18 +163,9 @@ const BookmarkComponent = ({ episodeId, selectedTimestamp }) => {
           <ModalFooter>
             <Button
               leftIcon={<Icon as={CiBookmark} />}
-              colorScheme="blue"
               onClick={handleBookmark}
-              zIndex="1"
-              fontSize="md"
-              borderRadius={"full"}
-              minWidth={"10em"}
-              color={"white"}
-              marginTop={"15px"}
-              marginBottom={"10px"}
-              padding={"20px"}
-              outline={"1px solid rgba(255, 255, 255, 0.6)"}
               variant="gradient"
+              zIndex="1"
             >
               Add Bookmark
             </Button>

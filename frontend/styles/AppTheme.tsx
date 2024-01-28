@@ -43,6 +43,7 @@ const overrides = {
           padding: "2em",
           mx: "auto",
           my: "auto",
+          alignItems: "center",
         },
       }),
     },
