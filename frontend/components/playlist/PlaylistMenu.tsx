@@ -33,7 +33,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
 import { useRouter } from "next/router";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer();

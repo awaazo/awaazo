@@ -38,7 +38,7 @@ import { PlaylistEditRequest } from "../../utilities/Requests";
 import { useRouter } from "next/router";
 import { CgPlayList, CgPlayListSearch } from "react-icons/cg";
 import { FaDeleteLeft } from "react-icons/fa6";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 import { CiMenuKebab } from "react-icons/ci";
 import ViewQueueModal from "../playlist/ViewQueueModal";
 import CreatePlaylistModal from "../playlist/CreatePlaylistModal";

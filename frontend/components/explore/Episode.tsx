@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/likeComponent";
-import CommentComponent from "../social/commentComponent";
+import LikeComponent from "../social/Likes";
+import CommentComponent from "../social/Comments";
 import { BsExplicitFill } from "react-icons/bs";
 
 // Component to display an episode

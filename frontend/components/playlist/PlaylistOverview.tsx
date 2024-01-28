@@ -43,7 +43,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();

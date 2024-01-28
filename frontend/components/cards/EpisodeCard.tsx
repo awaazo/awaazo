@@ -36,12 +36,12 @@ import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/likeComponent";
-import CommentComponent from "../social/commentComponent";
+import LikeComponent from "../social/Likes";
+import CommentComponent from "../social/Comments";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 import { convertTime } from "../../utilities/commonUtils";
 
 // Component to display an episode
