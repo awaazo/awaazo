@@ -1,20 +1,5 @@
-using Backend.Controllers;
-using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
-using Backend.Models;
-using Backend.Services;
-using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockQueryable.Moq;
-using Moq;
 using Assert = Xunit.Assert;
-using InvalidDataException = System.IO.InvalidDataException;
 
 namespace Backend.Tests;
 
