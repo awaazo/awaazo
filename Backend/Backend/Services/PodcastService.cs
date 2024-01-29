@@ -1234,11 +1234,23 @@ public class PodcastService : IPodcastService
         return new EpisodeChatResponse(chatMessages, user, episodeId, domainUrl);
     }
 
+    /// <summary>
+    /// Prompt the episode chat with a question and get a response.
+    /// </summary>
+    /// <param name="episodeId"> The episode ID to prompt the chat for.</param>
+    /// <param name="user"> The user that is prompting the chat.</param>
+    /// <param name="prompt"> The question to prompt the chat with.</param>
+    /// <param name="domainUrl"> The domain URL to use for the response.</param>
+    /// <returns> The response from the chat.</returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
     public async Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
+        string defaultErrorMsg ="Sorry, but I can't answer your question right now. Please try again later."; 
+
+        // Send request to PY server to chat with the episode
         var url = _pyBaseUrl+"/chat";
         var json = $@"{{
             ""podcast_id"": ""{episode.PodcastId}"",
@@ -1249,21 +1261,21 @@ public class PodcastService : IPodcastService
         string responseText = string.Empty;
 
         try
-        {
+        {   
+            // Send request to PY server to generate a chat response
             using var httpClient = new HttpClient();
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(url, content);
 
-            // Handle the response here
-            responseText = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                responseText = defaultErrorMsg;
+            else
+                responseText = await response.Content.ReadAsStringAsync();
         }
         catch (Exception)
         {
             throw;
         }
-
-        if (string.IsNullOrEmpty(responseText))
-            responseText = "Sorry, but I can't answer your question right now. Please try again later.";
 
         EpisodeChatMessage promptMessage = new()
         {
