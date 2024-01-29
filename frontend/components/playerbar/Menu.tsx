@@ -24,11 +24,7 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 import { BsFillSkipForwardFill } from "react-icons/bs";
-import {
-  MdIosShare,
-  MdOutlinePlaylistAdd,
-  MdOutlinePodcasts,
-} from "react-icons/md";
+import { MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
 
 import Link from "next/link";
 
@@ -57,8 +53,7 @@ const PlayerMenu = ({ episode }) => {
   const onQueueModalClose = () => setIsQueueModalOpen(false);
   const onQueueModalOpen = () => setIsQueueModalOpen(true);
 
-  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
-    useState(false);
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] = useState(false);
   const onAddToPlaylistModalClose = () => setIsAddToPlaylistModalOpen(false);
   const onAddToPlaylistModalOpen = () => setIsAddToPlaylistModalOpen(true);
 
@@ -73,16 +68,7 @@ const PlayerMenu = ({ episode }) => {
   return (
     <Box style={{ position: "relative", zIndex: 9999 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-        <MenuButton
-          as={IconButton}
-          aria-label="Options"
-          icon={<CiMenuKebab />}
-          variant="ghost"
-          fontSize="20px"
-          ml={1}
-          _hover={{ boxShadow: "lg" }}
-          onClick={handleMenuToggle}
-        />
+        <MenuButton as={IconButton} aria-label="Options" icon={<CiMenuKebab />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
         <MenuList
           style={{
             backgroundColor: "rgba(50, 50, 50, 0.8)",
@@ -100,10 +86,7 @@ const PlayerMenu = ({ episode }) => {
             onClick={onAddToPlaylistModalOpen}
           >
             Add to Playlist
-            <MdOutlinePlaylistAdd
-              size="20px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            <MdOutlinePlaylistAdd size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
           <MenuDivider />
           <MenuItem
@@ -117,10 +100,7 @@ const PlayerMenu = ({ episode }) => {
             onClick={onQueueModalOpen}
           >
             View Queue
-            <CgPlayListSearch
-              size="18px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            <CgPlayListSearch size="18px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
           <MenuItem
             _hover={{
@@ -133,15 +113,9 @@ const PlayerMenu = ({ episode }) => {
             onClick={handleRemoveFromQueue}
           >
             Remove from Queue
-            <FaDeleteLeft
-              size="18px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            <FaDeleteLeft size="18px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
-          <Link
-            href={"Explore/" + episode?.podcastId}
-            style={{ textDecoration: "none" }}
-          >
+          <Link href={"Explore/" + episode?.podcastId} style={{ textDecoration: "none" }}>
             <MenuItem
               _hover={{
                 backgroundColor: "rgba(255, 255, 255, 0.8)",
@@ -152,10 +126,7 @@ const PlayerMenu = ({ episode }) => {
               }}
             >
               Go to Podcast Page
-              <MdOutlinePodcasts
-                size="18px"
-                style={{ marginLeft: "auto", color: "white" }}
-              />
+              <MdOutlinePodcasts size="18px" style={{ marginLeft: "auto", color: "white" }} />
             </MenuItem>
           </Link>
 
@@ -170,11 +141,7 @@ const PlayerMenu = ({ episode }) => {
               backgroundColor: "transparent",
             }}
           >
-            Share{" "}
-            <MdIosShare
-              size="20px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
         </MenuList>
       </Menu>
@@ -189,11 +156,7 @@ const PlayerMenu = ({ episode }) => {
         </ModalContent>
       </Modal>
       <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
-      <AddToPlaylistModal
-        episode={episode}
-        isOpen={isAddToPlaylistModalOpen}
-        onClose={onAddToPlaylistModalClose}
-      />
+      <AddToPlaylistModal episode={episode} isOpen={isAddToPlaylistModalOpen} onClose={onAddToPlaylistModalClose} />
     </Box>
   );
 };

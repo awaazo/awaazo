@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Flex,
-  Tag,
   Tooltip,
   useBreakpointValue,
   Text,
@@ -31,7 +30,7 @@ import EditEpisodeForm from "./EditEpisodeForm";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
 import { convertTime } from "../../utilities/commonUtils";
-import { FaPlus, FaList } from "react-icons/fa";
+import { FaList } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
@@ -60,9 +59,7 @@ const Episode = ({ episode }) => {
   const fetchAnnotations = async () => {
     if (episode.id) {
       try {
-        const response = await AnnotationHelper.getAnnotationsRequest(
-          episode.id,
-        );
+        const response = await AnnotationHelper.getAnnotationsRequest(episode.id);
         if (response.status === 200) {
           setAnnotations(response.annotations);
         } else {
@@ -91,9 +88,7 @@ const Episode = ({ episode }) => {
 
   const handleDeleteAnnotation = async (annotationId) => {
     try {
-      const response = await AnnotationHelper.deleteAnnotationRequest(
-        annotationId,
-      );
+      const response = await AnnotationHelper.deleteAnnotationRequest(annotationId);
       if (response.status === 200) {
         // Optionally refresh the annotations list after deletion
         // fetchAnnotations(); // This should be a function that fetches the updated list of annotations
@@ -104,9 +99,7 @@ const Episode = ({ episode }) => {
     } catch (error) {
       console.error("Error deleting annotation:", error);
     }
-    setAnnotations((prevAnnotations) =>
-      prevAnnotations.filter((ann) => ann.id !== annotationId),
-    );
+    setAnnotations((prevAnnotations) => prevAnnotations.filter((ann) => ann.id !== annotationId));
   };
 
   // Edit Episode Modal
@@ -149,16 +142,8 @@ const Episode = ({ episode }) => {
   //----------------------------------------------------------------------
 
   // For delete pop up
-  const {
-    isOpen: isDeleteModalOpen,
-    onOpen: onOpenDeleteModal,
-    onClose: onCloseDeleteModal,
-  } = useDisclosure();
-  const {
-    isOpen: isAnnotationDrawerOpen,
-    onOpen: onOpenAnnotationDrawer,
-    onClose: onCloseAnnotationDrawer,
-  } = useDisclosure();
+  const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
+  const { isOpen: isAnnotationDrawerOpen, onOpen: onOpenAnnotationDrawer, onClose: onCloseAnnotationDrawer } = useDisclosure();
   const [isDeleting, setDeleting] = useState(false);
 
   // Form errors
@@ -180,42 +165,15 @@ const Episode = ({ episode }) => {
   };
 
   return (
-    <Flex
-      paddingTop={5}
-      paddingBottom={5}
-      mt={3}
-      width="100%"
-      borderRadius="15px"
-      bg="rgba(255, 255, 255, 0.1)"
-      backdropFilter="blur(4px)"
-      boxShadow="sm"
-      style={{ cursor: "pointer" }}
-      onClick={() => console.log(episode.id, episode.name)}
-    >
+    <Flex paddingTop={5} paddingBottom={5} mt={3} width="100%" borderRadius="15px" bg="rgba(255, 255, 255, 0.1)" backdropFilter="blur(4px)" boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
       <Box position="relative" mr={5}>
-        <Image
-          boxSize={isMobile ? "0px" : "125px"}
-          src={episode.thumbnailUrl}
-          borderRadius="10%"
-          marginLeft={isMobile ? "0px" : "20px"}
-          mt={1}
-        />
+        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
-        <Text
-          fontWeight="medium"
-          fontSize={isMobile ? "sm" : "2xl"}
-          data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}
-        >
+        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
           {episode.episodeName}
-          {episode.isExplicit && (
-            <Icon
-              as={BsExplicitFill}
-              boxSize={isMobile ? "10px" : "16px"}
-              ml={4}
-            />
-          )}
+          {episode.isExplicit && <Icon as={BsExplicitFill} boxSize={isMobile ? "10px" : "16px"} ml={4} />}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
           <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
         </Text>
@@ -261,32 +219,10 @@ const Episode = ({ episode }) => {
             />
           </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
-            <IconButton
-              variant="ghost"
-              data-cy="edit-button"
-              fontSize={isMobile ? "md" : "lg"}
-              mr={1}
-              rounded={"full"}
-              opacity={0.7}
-              color="white"
-              aria-label="Edit Episode"
-              icon={<Icon as={MdEdit} />}
-              onClick={() => openEditEpisodeModal(episode)}
-            />
+            <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
-            <IconButton
-              variant="ghost"
-              data-cy="delete-button"
-              fontSize={isMobile ? "md" : "lg"}
-              rounded={"full"}
-              opacity={0.7}
-              marginRight={5}
-              color="white"
-              aria-label="Delete Episode"
-              icon={<Icon as={MdDelete} />}
-              onClick={onOpenDeleteModal}
-            />
+            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} marginRight={5} color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
           </Tooltip>
         </Box>
       </Flex>
@@ -297,19 +233,14 @@ const Episode = ({ episode }) => {
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalBody>
-            Are you sure you want to delete the episode "{episode.episodeName}".{" "}
-            <br />
+            Are you sure you want to delete the episode "{episode.episodeName}". <br />
             This action cannot be undone
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onCloseDeleteModal}>
               Cancel
             </Button>
-            <Button
-              colorScheme="red"
-              ml={3}
-              onClick={() => handleDelete(episode.episodeId)}
-            >
+            <Button colorScheme="red" ml={3} onClick={() => handleDelete(episode.episodeId)}>
               Delete
             </Button>
           </ModalFooter>
@@ -319,24 +250,11 @@ const Episode = ({ episode }) => {
       {/* Edit Episode Modal */}
       <Modal isOpen={isModalEpisodeOpen} onClose={closeEditEpisodeModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent
-          boxShadow="dark-lg"
-          backdropFilter="blur(40px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          marginTop={"10%"}
-          padding={"2em"}
-        >
+        <ModalContent boxShadow="dark-lg" backdropFilter="blur(40px)" display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={"10%"} padding={"2em"}>
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack
-                spacing={5}
-                align="center"
-                backgroundColor={"transparent"}
-              >
+              <VStack spacing={5} align="center" backgroundColor={"transparent"}>
                 <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
 
                 <EditEpisodeForm episode={episode} />
@@ -354,10 +272,7 @@ const Episode = ({ episode }) => {
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack align="center" backgroundColor={"transparent"}>
                 <Text>Manage Sections: {currentEpisode?.episodeName}</Text>
-                <ManageSections
-                  episodeId={episode.id}
-                  podcastId={episode.podcastId}
-                />
+                <ManageSections episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
             </Box>
           </ModalBody>
@@ -370,31 +285,18 @@ const Episode = ({ episode }) => {
           <ModalHeader>Annotations</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Tabs
-              isFitted
-              variant="enclosed"
-              colorScheme="blue"
-              defaultIndex={tabIndex}
-              onChange={(index) => setTabIndex(index)}
-            >
+            <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
               <TabList>
                 <Tab>Annotations</Tab>
                 <Tab>Add Annotation</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <AnnotationList
-                    annotations={annotations}
-                    deleteAnnotation={handleDeleteAnnotation}
-                  />
+                  <AnnotationList annotations={annotations} deleteAnnotation={handleDeleteAnnotation} />
                 </TabPanel>
                 <TabPanel>
                   {/* Pass the episode duration to the AnnotationForm */}
-                  <AnnotationForm
-                    episodeId={episode.id}
-                    fetchAnnotations={fetchAnnotations}
-                    episodeLength={episode.duration}
-                  />
+                  <AnnotationForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} episodeLength={episode.duration} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

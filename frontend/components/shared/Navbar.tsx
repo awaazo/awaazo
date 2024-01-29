@@ -211,7 +211,7 @@ export default function Navbar() {
           <Link href="/profile/MyProfile" passHref>
             <MenuItem>My Account</MenuItem>
           </Link>
-          <Link href="/CreatorHub/MyPodcasts" passHref>
+          <Link href="/CreatorHub" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
     
