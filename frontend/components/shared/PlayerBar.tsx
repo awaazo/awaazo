@@ -12,7 +12,7 @@ import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { SaveWatchHistoryRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import ChatBot from "./ChatBotButton";
+import ChatBot from "./ChatBot";
 import PlayerMenu from "../playerbar/Menu";
 
 const PlayerBar = () => {
@@ -231,8 +231,8 @@ const PlayerBar = () => {
       width="100%"
       zIndex={999}
       bottom={"0.1px"}
-      borderTopLeftRadius="10px"
-      borderTopRightRadius="10px"
+      borderTopLeftRadius="30px"
+      borderTopRightRadius="30px"
       border={"2px solid rgba(255, 255, 255, 0.03)"}
     >
       <Flex flexDirection="row" justifyContent={isEpisodeLoaded ? "space-between" : "flex-start"} alignItems="center">

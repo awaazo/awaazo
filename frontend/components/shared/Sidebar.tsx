@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Flex,
-  Icon,
-  Image,
-  VStack,
-  Text,
-  Tooltip,
-  IconButton,
-} from "@chakra-ui/react";
+import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, Container } from "@chakra-ui/react";
 import Link from "next/link";
 import { FaHome, FaPlus, FaSearch } from "react-icons/fa";
 import { VscLibrary } from "react-icons/vsc";
@@ -39,9 +30,7 @@ const Sidebar = () => {
   useEffect(() => {
     const newImageUrls = {};
     playlists.forEach((playlist) => {
-      newImageUrls[
-        playlist.id
-      ] = `https://source.unsplash.com/random/100x100?sig=${playlist.id}`;
+      newImageUrls[playlist.id] = `https://source.unsplash.com/random/100x100?sig=${playlist.id}`;
     });
     setImageUrls(newImageUrls);
   }, [playlists]);
@@ -63,9 +52,7 @@ const Sidebar = () => {
     });
   }, [reload]);
 
-  const userPlaylists = playlists.filter(
-    (playlist) => playlist.isHandledByUser,
-  );
+  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
 
   return (
     <Box
@@ -78,9 +65,8 @@ const Sidebar = () => {
       top="3em"
       zIndex={10}
       transition="width 0.2s ease-in-out"
-      roundedTopRight="10px"
-      roundedBottomRight="10px"
-      // ml={3}
+      roundedTopRight="30px"
+      roundedBottomRight="30px"
       mt={"2em"}
       outline={"2px solid rgba(255, 255, 255, 0.06)"}
     >
@@ -88,25 +74,10 @@ const Sidebar = () => {
         <Image src={Logo.src} alt="Logo" w="28px" />
       </Flex>
       <VStack align="left" spacing={"1em"}>
-        <Box
-          p={1}
-          bg={"rgba(0, 0, 0, 0.1)"}
-          rounded={"xl"}
-          width={"100%"}
-          outline={"2px solid rgba(255, 255, 255, 0.05)"}
-        >
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
           {/* Home */}
           <Link href="/" passHref>
-            <Flex
-              as={Flex}
-              align="center"
-              p="2"
-              mb="1"
-              borderRadius="md"
-              color={router.pathname === "/" ? "brand.200" : "grey.700"}
-              transition="color 0.4s ease-in-out"
-              _hover={{ textDecoration: "none", color: "brand.300" }}
-            >
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
               <Icon as={FaHome} fontSize="xl" mr={3} />
               {!collapsed && (
                 <Box flex="1" fontWeight="bold">
@@ -118,18 +89,7 @@ const Sidebar = () => {
 
           {/* Explore */}
           <Link href="/Explore/Search" passHref>
-            <Flex
-              as={Flex}
-              align="center"
-              p="2"
-              mb="1"
-              borderRadius="md"
-              color={
-                router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"
-              }
-              transition="color 0.4s ease-in-out"
-              _hover={{ textDecoration: "none", color: "brand.300" }}
-            >
+            <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
               <Icon as={FaSearch} fontSize="xl" mr={3} />
               {!collapsed && (
                 <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
@@ -141,29 +101,9 @@ const Sidebar = () => {
         </Box>
 
         {/* My Shelf */}
-        <Box
-          p={1}
-          bg={"rgba(0, 0, 0, 0.1)"}
-          rounded={"xl"}
-          width={"100%"}
-          outline={"2px solid rgba(255, 255, 255, 0.05)"}
-        >
-          <Flex
-            align="center"
-            p="2"
-            mb="1"
-            borderRadius="md"
-            color="grey.700"
-            transition="color 0.4s ease-in-out"
-            _hover={{ textDecoration: "none", color: "brand.300" }}
-            onClick={toggleCollapsed}
-          >
-            <Icon
-              as={VscLibrary}
-              fontSize="xl"
-              mr={3}
-              data-cy={`playlist-icon`}
-            />
+        <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
+          <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed}>
+            <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
             {!collapsed && (
               <Box flex="1" fontWeight="bold">
                 My Shelf
@@ -174,26 +114,12 @@ const Sidebar = () => {
                 {" "}
                 <Tooltip label="View Queue" fontSize="small">
                   <span>
-                    <IconButton
-                      icon={<PiQueueFill />}
-                      variant={"ghost"}
-                      aria-label="View Queue"
-                      fontSize={"15px"}
-                      onClick={onQueueModalOpen}
-                      data-cy={`queue-button`}
-                    />{" "}
+                    <IconButton icon={<PiQueueFill />} variant={"ghost"} aria-label="View Queue" fontSize={"15px"} onClick={onQueueModalOpen} data-cy={`queue-button`} />{" "}
                   </span>
                 </Tooltip>
                 <Tooltip label="Create Playlist" fontSize="small">
                   <span>
-                    <IconButton
-                      icon={<FaPlus />}
-                      variant={"ghost"}
-                      aria-label="Add Playlist"
-                      fontSize={"15px"}
-                      onClick={onCreateModalOpen}
-                      data-cy={`add-playlist-button`}
-                    />
+                    <IconButton icon={<FaPlus />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"} onClick={onCreateModalOpen} data-cy={`add-playlist-button`} />
                   </span>
                 </Tooltip>
               </Box>
@@ -202,41 +128,12 @@ const Sidebar = () => {
 
           {/* User Playlists */}
           {userPlaylists.length > 0 && (
-            <VStack
-              align="left"
-              spacing={1}
-              mt={4}
-              maxH="calc(100vh - 400px)"
-              overflowY="auto"
-            >
+            <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 400px)" overflowY="auto">
               {userPlaylists.map((playlist) => (
-                <Link
-                  href={`/Playlist/${playlist.id}`}
-                  key={playlist.id}
-                  passHref
-                >
-                  <Flex
-                    align="center"
-                    padding={1}
-                    pl={2}
-                    borderRadius="5px"
-                    _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}
-                  >
-                    <Image
-                      src={
-                        imageUrls[playlist.id] ||
-                        "https://via.placeholder.com/100"
-                      }
-                      alt="Playlist"
-                      boxSize={collapsed ? "24px" : "12"}
-                      mr={collapsed ? "0" : "2"}
-                      borderRadius="8"
-                    />
-                    {!collapsed && (
-                      <Text data-cy={`playlist-${playlist.name}`}>
-                        {playlist.name}
-                      </Text>
-                    )}
+                <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
+                  <Flex align="center" padding={1} pl={2} borderRadius="10px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
+                    <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
+                    {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
                   </Flex>
                 </Link>
               ))}
@@ -245,11 +142,7 @@ const Sidebar = () => {
         </Box>
       </VStack>{" "}
       <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
-      <CreatePlaylistModal
-        handleReload={handleReload}
-        isOpen={isCreateModalOpen}
-        onClose={onCreateModalClose}
-      />
+      <CreatePlaylistModal handleReload={handleReload} isOpen={isCreateModalOpen} onClose={onCreateModalClose} />
     </Box>
   );
 };

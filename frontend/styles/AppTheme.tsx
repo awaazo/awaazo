@@ -87,6 +87,17 @@ const overrides = {
         },
       },
     },
+    Container : { 
+      variants: {
+        innerbox: {
+          p: 1,
+          bg: "rgba(0, 0, 0, 0.1)",
+          rounded: "xl",
+          width: "100%",
+          outline: "2px solid rgba(255, 255, 255, 0.05)"
+        }
+      }
+    }
   },
   styles: {
     global: {
