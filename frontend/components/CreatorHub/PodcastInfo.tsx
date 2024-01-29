@@ -1,12 +1,12 @@
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Flex, Wrap, Box, Text, WrapItem, Button, Tooltip, IconButton, Icon, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, VStack, useDisclosure, useBreakpointValue } from "@chakra-ui/react";
-
 import { MdEdit } from "react-icons/md";
 import EditPodcastForm from "./EditPodcast";
 import MyEpisodes from "./MyEpisodes";
 import { useEffect, useState } from "react";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Episode, Metrics } from "../../utilities/Interfaces";
+import { GiHeptagram } from "react-icons/gi";
 
 const PodcastInfo = ({ podcastId }) => {
   useEffect(() => {
@@ -23,9 +23,6 @@ const PodcastInfo = ({ podcastId }) => {
       }
     });
   }, [podcastId]);
-  // Page refs
-  const MyPodcastsPage = "/CreatorHub/MyPodcasts";
-  const CreatePage = "/CreatorHub/AddEpisode";
 
   // Form Values
   const [coverImage, setCoverImage] = useState("");
@@ -61,7 +58,7 @@ const PodcastInfo = ({ podcastId }) => {
     const response = await PodcastHelper.deletePodcast(podcastId);
     console.log(response);
     if (response.status == 200) {
-      window.location.href = MyPodcastsPage;
+      window.location.reload();
     } else {
       setCreateError("Podcasts cannot be deleted");
     }
@@ -69,31 +66,22 @@ const PodcastInfo = ({ podcastId }) => {
     setDeleting(false);
   };
 
-  // Edit Podcast Modal
-  //----------------------------------------------------------------------
-
-  // State for managing modal visibility and the current episode
   const [isModalPodcastOpen, setIsModalPodcastOpen] = useState(false);
-  const [currentPodcast, setCurrentPodcast] = useState(null);
   const openEditPodcastModal = () => {
     setIsModalPodcastOpen(true);
   };
   const closeEditPodcastModal = () => {
     setIsModalPodcastOpen(false);
   };
-  //----------------------------------------------------------------------
-
-  //
-  const navigateToCreatePage = () => {
-    window.location.href = CreatePage;
-  };
+  console.log("Rendering episodes:", episodes);
+  console.log("Rendering metrics:", metrics);
 
   return (
     <>
       <Flex justify="space-between" align="center" w="full">
         <Wrap align="center" spacing={4}>
           <WrapItem>
-            <Text fontSize="xl" fontWeight="bold">
+            <Text fontSize="2xl" fontWeight="bold">
               🎙️ {podcastName}
             </Text>
           </WrapItem>
@@ -101,19 +89,14 @@ const PodcastInfo = ({ podcastId }) => {
           {/* Display tags */}
           {tags.map((tag, index) => (
             <WrapItem key={index}>
-              <Box bg="rgba(50, 153, 175, 0.4)" px={3} py={1} borderRadius="10em">
-                <Text fontSize="md">{tag}</Text>
+              <Box bg="brand.200" px={2} py={1} borderRadius="1em" display="flex" alignItems="center">
+                <Icon as={GiHeptagram} color="brand.600" />
+                <Text fontSize="sm" ml={2}>{tag}</Text>
               </Box>
             </WrapItem>
           ))}
         </Wrap>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-          }}
-        >
+        <Box display="flex" alignItems="center" gap="1rem">
           {isMobile ? (
             <Box>
               <Tooltip label="Edit Podcast" aria-label="Edit Podcast Tooltip">
@@ -121,133 +104,73 @@ const PodcastInfo = ({ podcastId }) => {
               </Tooltip>
             </Box>
           ) : (
-            <Button
-              onClick={() => openEditPodcastModal()}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                borderRadius: "10em",
-                padding: "1em",
-                color: "white",
-                outline: "solid 1px rgba(158, 202, 237, 0.6)",
-                // boxShadow: "0 0 15px rgba(158, 202, 237, 0.6)",
-              }}
-            >
-              Edit Podcast
+            <Button onClick={() => openEditPodcastModal()} display="flex"  borderRadius="1em" padding="1em" color="white" bg="brand.100" >
+             
+              <Text fontSize="md"> Edit Podcast</Text>
             </Button>
           )}
           {/* Edit button */}
           <IconButton onClick={onOpen} disabled={isDeleting} variant="ghost" size={isMobile === true ? "sm" : "lg"} rounded={"full"} opacity={0.7} mr={3} color="red" aria-label="Delete">
-            <DeleteIcon
-              w={isMobile === true ? "5" : "6"}
-              h={isMobile === false ? "5" : "6"}
-              color="#FF6666"
-              data-cy={`podcast-delete`} // Adding a data-cy attribute to delete button
-            />
+            <DeleteIcon w={isMobile === true ? "5" : "6"} h={isMobile === false ? "5" : "6"} color="#FF6666" data-cy={`podcast-delete`} />
           </IconButton>
-        </div>
+        </Box>
       </Flex>
 
       {isMobile ? (
         <Box>
-          <Text
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "1em",
-              padding: "1em",
-              outline: "2px solid rgba(255, 255, 255, 0.1)",
-              marginBottom: "0.5em",
-              marginTop: "1em",
-              wordBreak: "break-word",
-            }}
-          >
+          <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="0.5em" marginTop="1em" wordBreak="break-word">
             {description}
           </Text>
-          <Box
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "1em",
-              padding: "1em",
-              marginTop: "1em",
-              outline: "2px solid rgba(255, 255, 255, 0.1)",
-              marginBottom: "2em",
-              wordSpacing: "0.5em",
-            }}
-          >
-            <Box
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "1em",
-                padding: "1em",
-                marginTop: "1em",
-                outline: "2px solid rgba(255, 255, 255, 0.1)",
-                marginBottom: "2em",
-                wordSpacing: "0.5em",
-              }}
-            >
+          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ▶️ Total Play Count: {metrics.totalTimeWatched}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💬 Total Comments Count: {metrics.totalCommentsCount}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
-                </Text>
-              )}
+              {/* {metrics && (
+                <>
+                  <Text fontSize="md" fontWeight="bold">
+                    ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    ▶️ Total Play Count: {metrics.totalTimeWatched}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💬 Total Comments Count: {metrics.totalCommentsCount}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                  </Text>
+                </>
+              )} */}
             </Box>
           </Box>
           <>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <Box display="flex" alignItems="center">
               <Text fontSize="md" style={{ fontWeight: "bold", paddingLeft: 15 }}>
                 Episodes:
               </Text>{" "}
-            </div>
+            </Box>
 
             {episodes.length === 0 ? (
-              <Text
-                align={"center"}
-                fontSize="md"
-                style={{
-                  fontWeight: "normal",
-                  marginTop: "2em",
-                }}
-              >
+              <Text align={"center"} fontSize="md" fontWeight="normal" marginTop="2em">
                 (This podcast has no episodes yet)
               </Text>
             ) : (
@@ -269,94 +192,60 @@ const PodcastInfo = ({ podcastId }) => {
             }}
           >
             {/* Description and statistics */}
-            <Text
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "1em",
-                padding: "2em",
-                outline: "2px solid rgba(255, 255, 255, 0.1)",
-                marginBottom: "0.5em",
-                marginTop: "1em",
-                wordBreak: "break-word",
-              }}
-            >
+            <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="0.5em" marginTop="1em">
               {description}
             </Text>
-            <Box
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "1em",
-                padding: "2em",
-                marginTop: "1em",
-                outline: "2px solid rgba(255, 255, 255, 0.1)",
-                marginBottom: "2em",
-                wordSpacing: "0.5em",
-              }}
-            >
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💗 Most Liked Episode: {metrics.mostLikedEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ⏱️ Total Time Watched: {metrics.totalTimeWatched}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  ▶️ Total Play Count: {metrics.totalTimeWatched}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  🚀 Most Played Episode: {metrics.mostPlayedEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💬 Total Comments Count: {metrics.totalCommentsCount}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
-                </Text>
-              )}
-              {metrics && (
-                <Text fontSize="md" fontWeight="bold">
-                  💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
-                </Text>
-              )}
+              {/* {metrics && (
+                <>
+                  <Text fontSize="md" fontWeight="bold">
+                    ❤️ Total Episode Likes: {metrics.totalEpisodesLikes}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💗 Most Liked Episode: {metrics.mostLikedEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    ⏱️ Total Time Watched: {metrics.totalTimeWatched}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    ▶️ Total Play Count: {metrics.totalTimeWatched}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    🚀 Most Played Episode: {metrics.mostPlayedEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💬 Total Comments Count: {metrics.totalCommentsCount}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    🗯️ Most Commented On Episode: {metrics.mostCommentedOnEpisode}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="bold">
+                    💌 Most Liked Comment: {metrics.mostCommentedOnEpisode}
+                  </Text>
+                </>
+              )} */}
             </Box>
           </Box>
 
           {/* Podcast mapping on the right */}
-          <div style={{ flex: 1, paddingLeft: 25, marginTop: "1.5em" }}>
+          <Box flex="1" paddingLeft="25px" marginTop="1.5em">
             {episodes.length === 0 ? (
-              <Text
-                align={"center"}
-                fontSize="lg"
-                style={{
-                  fontWeight: "normal",
-                  marginTop: "5em",
-                }}
-              >
+              <Text align={"center"} fontSize="lg" fontWeight="normal" marginTop="5em">
                 (This podcast has no episodes yet)
               </Text>
             ) : (
               episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
             )}
-          </div>
+          </Box>
         </Flex>
       )}
       {/* Modal for deleting a podcast */}
