@@ -290,6 +290,7 @@ frontend/.env
 frontend/Dockerfile
 backend/Dockerfile
 backend/.env
+backend_server
 *.env.local
 *appsettings.json
 *appsettings.Development.json

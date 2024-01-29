@@ -32,7 +32,9 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
             console.error("Error fetching bookmarks data:", res.message);
           }
         })
-        .catch((error) => console.error("Error fetching bookmarks data:", error));
+        .catch((error) =>
+          console.error("Error fetching bookmarks data:", error),
+        );
     }
   }, [episodeId]);
 

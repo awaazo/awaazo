@@ -11,11 +11,11 @@ services:
     ports:
       - "1433:1433"
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "MyPass@word"
-      SA_PASSWORD: "MyPass@word"
+      ACCEPT_EULA: "y"
+      MSSQL_SA_PASSWORD: "My.VeryStrongPassword123!"
+      SA_PASSWORD: "My.VeryStrongPassword123!"
     volumes:
-      - "./data:/var/opt/mssql"
+      - "./data:/var/opt/mssql/data"
     hostname: sql_server
     restart: on-failure:5
 
@@ -30,6 +30,7 @@ services:
     volumes:
       - "./backend_server/ServerFiles:/app/ServerFiles" # Modified volume path for macOS
 
+
   # BACKEND ASP.NET Server
   backend:
     build:
@@ -43,6 +44,7 @@ services:
       - sql:database
       - sql:sql_server
       - python_backend:py
+
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:  

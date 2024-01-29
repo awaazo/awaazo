@@ -1,5 +1,5 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Menu,
@@ -31,9 +31,10 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+import ImageAdder from "../tools/ImageAdder";
+
 import { useRouter } from "next/router";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer();
@@ -43,7 +44,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isDeleting, setDeleting] = useState(false);
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description);
-//   const [CoverImage, setCoverImage] = useState(playlist.coverimg);
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
   const router = useRouter();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
@@ -134,7 +135,8 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     const request = {
       name: name,
       description: description,
-      privacy: "false", // Adjust based on your actual implementation
+      privacy: "false",
+      coverArt: playlistCoverArt,
     };
 
     const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
@@ -169,6 +171,17 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+  // const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+  //   try {
+  //     const response = await fetch(addedImageUrl);
+  //     const blob = await response.blob();
+  //     const file = new File([blob], "avatar.jpg", { type: blob.type });
+  //     setPlaylistCoverArt(file);
+  //   } catch (error) {
+  //     console.error("Error converting image URL to File:", error);
+  //   }
+  // }, []);
 
   return (
     <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
@@ -235,21 +248,19 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               </MenuItem>
             </>
           )}
-        <MenuItem
-          onClick={onShareModalOpen}
-          _hover={{
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            fontWeight: "bold",
-          }}
-          style={{
-            backgroundColor: "transparent",
-          }}
-        >
-          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
-        </MenuItem>
-
+          <MenuItem
+            onClick={onShareModalOpen}
+            _hover={{
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              fontWeight: "bold",
+            }}
+            style={{
+              backgroundColor: "transparent",
+            }}
+          >
+            Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
+          </MenuItem>
         </MenuList>
-
       </Menu>
       <Modal isOpen={isShareModalOpen} onClose={onShareModalClose} isCentered>
         <ModalOverlay />
@@ -261,7 +272,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      
+
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
@@ -289,18 +300,16 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Edit Playlist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          {/* <ImageAdder onImageAdded={handleImageAdded} /> */}
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)}  focusBorderColor="brand.100"/>
+              <Input value={name} onChange={(e) => setName(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
-            <FormControl mt={4}>
-              <FormLabel>Cover Image</FormLabel>
-              {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
-            </FormControl>
+           
           </ModalBody>
           <ModalFooter>
             <Button bg="black.100" _hover={{ bg: "brand.100" }} mr={3} onClick={handleSaveEdit}>

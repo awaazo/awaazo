@@ -41,7 +41,7 @@ import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
 import { PlaylistEditRequest } from "../../utilities/Requests";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();
@@ -58,7 +58,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
   const [playlistDescription, setPlaylistDescription] = useState("");
   const [playlistDescriptionCharacterCount, setPlaylistDescriptionCharacterCount] = useState<number>(0);
   const [isPrivate, setIsPrivate] = useState(false);
-
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
   const [reload, setReload] = useState(false);
 
   // Form errors
@@ -185,6 +185,11 @@ const PlaylistOverview = ({ episode, playlistId }) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
+  const handleCoverArtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files[0];
+    setPlaylistCoverArt(file);
+  };
+
   // Handle logic for editing a playlist
   const handleEditPlaylist = async (e: FormEvent) => {
     e.preventDefault();
@@ -198,6 +203,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
       name: playlistName,
       description: playlistDescription,
       privacy: isPrivate ? "Private" : "Public",
+      coverArt: playlistCoverArt,
     };
 
     // Send the request
@@ -234,7 +240,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
             backgroundColor: "rgba(255, 255, 255, 0.4)",
             fontWeight: "bold",
           }}
-          style={{ backgroundColor: "transparent" }}
+          backgroundColor="transparent"
           onClick={() => {
             setIsEditing(true);
             handleMenuToggle();
@@ -247,10 +253,8 @@ const PlaylistOverview = ({ episode, playlistId }) => {
             backgroundColor: "rgba(255, 255, 255, 0.4)",
             fontWeight: "bold",
           }}
-          style={{
-            backgroundColor: "transparent",
-            color: "red",
-          }}
+          backgroundColor="transparent"
+          color="red"
           onClick={onOpen}
         >
           Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`} />
@@ -258,6 +262,8 @@ const PlaylistOverview = ({ episode, playlistId }) => {
       </>
     );
   };
+
+
 
   return (
     <VStack spacing="4" align="stretch">

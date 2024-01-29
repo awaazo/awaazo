@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, VStack, Button, Text, Select } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  VStack,
+  Button,
+  Text,
+  Select,
+} from "@chakra-ui/react";
 import NexLink from "next/link";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../utilities/Interfaces";
+import CreatePlaylistModal from "./CreatePlaylistModal";
 
 const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [page, setPage] = useState(0);
   const pageSize = 20;
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const onCreateModalClose = () => setIsCreateModalOpen(false);
+  const onCreateModalOpen = () => setIsCreateModalOpen(true);
+
+  const [reload, setReload] = useState(false);
+
+  const handleReload = () => {
+    setReload(!reload);
+  };
 
   const [targetPlaylistId, setTargetPlaylistId] = useState("");
 
@@ -22,9 +45,11 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
         setPlaylistError("Podcasts cannot be fetched");
       }
     });
-  }, [page]);
+  }, [page, reload]);
 
-  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
+  const userPlaylists = playlists.filter(
+    (playlist) => playlist.isHandledByUser,
+  );
 
   const handleAddToExistingPlaylist = async () => {
     // Ensure all required fields are filled
@@ -36,7 +61,10 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
     const request = [episode.id];
 
     // Send the request
-    const response = await PlaylistHelper.playlistAddEpisodeRequest(request, targetPlaylistId);
+    const response = await PlaylistHelper.playlistAddEpisodeRequest(
+      request,
+      targetPlaylistId,
+    );
 
     if (response.status === 200) {
       onClose();
@@ -51,17 +79,21 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Adding {episode.episodeName} to a Playlist</ModalHeader>
+        <ModalHeader>Adding {episode?.episodeName} to a Playlist</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <NexLink href={`/Playlist/MyPlaylists`}>
-              <Button borderRadius={"50px"}>Create New Playlist</Button>
-            </NexLink>
+            <Button borderRadius={"50px"} onClick={onCreateModalOpen}>
+              Create New Playlist
+            </Button>
+
             <Text>OR</Text>
             {playlistError && <Text color="red.500">{playlistError}</Text>}
             {/* Dropdown to select an existing playlist */}
-            <Select placeholder="Select an Existing Playlist" onChange={(e) => setTargetPlaylistId(e.target.value)}>
+            <Select
+              placeholder="Select an Existing Playlist"
+              onChange={(e) => setTargetPlaylistId(e.target.value)}
+            >
               {userPlaylists.map((playlist) => (
                 <option key={playlist.id} value={playlist.id}>
                   {playlist.name}
@@ -75,11 +107,20 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
           <Button colorScheme="red" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="blue" mr={3} onClick={() => handleAddToExistingPlaylist()}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => handleAddToExistingPlaylist()}
+          >
             Add to Playlist
           </Button>
         </ModalFooter>
       </ModalContent>
+      <CreatePlaylistModal
+        onClose={onCreateModalClose}
+        isOpen={isCreateModalOpen}
+        handleReload={handleReload}
+      />
     </Modal>
   );
 };

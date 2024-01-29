@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, SimpleGrid, Spinner } from "@chakra-ui/react";
+import { Box, Text, SimpleGrid, Spinner, Flex } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../cards/PodcastCard";
@@ -7,7 +7,7 @@ import PodcastCard from "../cards/PodcastCard";
 const ForYou: React.FC = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -17,10 +17,10 @@ const ForYou: React.FC = () => {
         if (res.status === 200) {
           setPodcasts(res.podcasts);
         } else {
-          throw new Error('Failed to load podcasts');
+          throw new Error("Failed to load podcasts");
         }
       } catch (err) {
-        setError(err.message || 'An error occurred while fetching podcasts');
+        setError(err.message || "An error occurred while fetching podcasts");
       } finally {
         setIsLoading(false);
       }
@@ -36,11 +36,12 @@ const ForYou: React.FC = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} spacing={5}>
+        <Flex flexWrap="wrap" >
           {podcasts.map((podcast) => (
-            <PodcastCard key={podcast.id} podcast={podcast} />
+            <PodcastCard key={podcast.id} podcast={podcast} 
+            />
           ))}
-        </SimpleGrid>
+        </Flex>
       ) : (
         <Text>No podcasts available</Text>
       )}

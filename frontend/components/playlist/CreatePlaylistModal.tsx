@@ -1,24 +1,26 @@
 // CreatePlaylist.tsx
-import React, { useState, FormEvent } from "react";
-import { Box,Flex, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Button, FormControl, Textarea, Text, VStack, Switch } from "@chakra-ui/react";
-import { FaPlus } from "react-icons/fa";
+import React, { useState, useEffect, FormEvent, useCallback } from "react";
+import { Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Button, FormControl, Textarea, Text, VStack, Switch } from "@chakra-ui/react";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistCreateRequest } from "../../utilities/Requests";
+import ImageAdder from "../tools/ImageAdder";
+import awaazoFace from "../../styles/images/awaazoFace.png";
 
-const CreatePlaylistModal = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
+
+const CreatePlaylistModal = ({ handleReload, isOpen, onClose }) => {
   const [playlistError, setPlaylistError] = useState("");
   const [playlistName, setPlaylistName] = useState("");
   const [playlistDescription, setPlaylistDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [reload, setReload] = useState(false);
   const [playlistNameCharacterCount, setPlaylistNameCharacterCount] = useState<number>(0);
   const [playlistDescriptionCharacterCount, setPlaylistDescriptionCharacterCount] = useState<number>(0);
+  const [playlistcoverArt, setPlaylistCoverArt] = useState<File | null>(null);
+  
+
 
   const handleAddPlaylist = async (e: FormEvent) => {
     e.preventDefault();
-    // Ensure all required fields are filled
-    if (playlistName == "" || playlistDescription == "") {
+    if (playlistName === "" || playlistDescription === "") {
       setPlaylistError("Playlist Name and Description are Both Required");
       return;
     }
@@ -27,23 +29,28 @@ const CreatePlaylistModal = () => {
       name: playlistName,
       description: playlistDescription,
       privacy: isPrivate ? "Private" : "Public",
-      episodeIds: [],
+      coverArt: playlistcoverArt ,
+      episodeIds: []
     };
 
-    // Send the request
-    const response = await PlaylistHelper.playlistCreateRequest(request);
-
-    if (response.status === 200) {
-      setPlaylistName("");
-      setPlaylistDescription("");
-      setIsPrivate(false);
-      setReload(!reload);
-      setModalOpen(false);
-    } else {
-      console.log(response.data);
-      setPlaylistError(response.data);
+    try {
+      const response = await PlaylistHelper.playlistCreateRequest(request);
+      if (response.status === 200) {
+        setPlaylistName("");
+        setPlaylistDescription("");
+        setIsPrivate(false);
+        setPlaylistCoverArt(null);
+        onClose();
+        handleReload();
+      } else {
+        setPlaylistError(response.data);
+      }
+    } catch (error) {
+      console.error("Error creating playlist", error);
+      setPlaylistError("An error occurred while creating the playlist");
     }
   };
+    
 
   // Ensures playlist name is not longer than 25 characters
   const handlePlaylistNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,12 +66,21 @@ const CreatePlaylistModal = () => {
     setPlaylistDescriptionCharacterCount(newDesc.length);
   };
 
+  const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+    try {
+      const response = await fetch(addedImageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "avatar.jpg", { type: blob.type });
+      setPlaylistCoverArt(file);
+    } catch (error) {
+      console.error("Error converting image URL to File:", error);
+    }
+  }, []);
+  
   return (
     <>
-      <IconButton icon={<FaPlus />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"} onClick={() => setModalOpen(true)} data-cy={`add-playlist-button`} />
-      
       {/* Modal for Adding Playlist */}
-      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create New Playlist</ModalHeader>
@@ -73,7 +89,8 @@ const CreatePlaylistModal = () => {
           <ModalBody>
             {playlistError && <Text color="red.500">{playlistError}</Text>}
             <VStack spacing={5} align="center" p={5}>
-
+ 
+                <ImageAdder onImageAdded={handleImageAdded} />
               <FormControl position="relative">
                 <Input placeholder="Enter Playlist Name" rounded="lg" pr="50px" value={playlistName} onChange={handlePlaylistNameChange} />
                 <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
@@ -96,7 +113,6 @@ const CreatePlaylistModal = () => {
                   <Switch isChecked={isPrivate} onChange={() => setIsPrivate(!isPrivate)} colorScheme="purple" />
                 </Flex>
               </FormControl>
-
             </VStack>
           </ModalBody>
 
@@ -105,10 +121,8 @@ const CreatePlaylistModal = () => {
               Add Playlist
             </Button>
           </ModalFooter>
-
         </ModalContent>
       </Modal>
-   
     </>
   );
 };

@@ -152,6 +152,7 @@ export interface PlaylistCreateRequest {
   name: string;
   description: string;
   privacy: string;
+  coverArt:File;
   episodeIds: string[];
 }
 
@@ -159,61 +160,12 @@ export interface PlaylistEditRequest {
   name: string;
   description: string;
   privacy: string;
+  coverArt:File;
 }
-
-//#endregion
-
-//#region Playlist Requests
-export interface PlaylistCreateRequest {
-  name: string;
-  description: string;
-  privacy: string;
-  episodeIds: string[];
-}
-
-export interface PlaylistEditRequest {
-  name: string;
-  description: string;
-  privacy: string;
-}
-
-//#endregion
-
-//#region Playlist Requests
-export interface PlaylistCreateRequest {
-  name: string;
-  description: string;
-  privacy: string;
-  episodeIds: string[];
-}
-
-export interface PlaylistEditRequest {
-  name: string;
-  description: string;
-  privacy: string;
-}
-
-//#endregion
-
-//#region Playlist Requests
-export interface PlaylistCreateRequest {
-  name: string;
-  description: string;
-  privacy: string;
-  episodeIds: string[];
-}
-
-export interface PlaylistEditRequest {
-  name: string;
-  description: string;
-  privacy: string;
-}
-
 //#endregion
 
 //#region Episode SaveWatchHistory Request
 export interface SaveWatchHistoryRequest {
   listenPosition: number;
 }
-
 //#endregion
