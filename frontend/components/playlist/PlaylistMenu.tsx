@@ -1,5 +1,5 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Menu,
@@ -31,6 +31,7 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
+import ImageAdder from "../tools/ImageAdder";
 
 import { useRouter } from "next/router";
 import ShareComponent from "../social/Share";
@@ -42,9 +43,8 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isDeleting, setDeleting] = useState(false);
   const [name, setName] = useState(playlist.name);
-  const [coverArt, setcoverArt] = useState(playlist.coverArt);
   const [description, setDescription] = useState(playlist.description);
-
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
   const router = useRouter();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
@@ -136,7 +136,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       name: name,
       description: description,
       privacy: "false",
-      coverArt: coverArt,
+      coverArt: playlistCoverArt,
     };
 
     const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
@@ -171,6 +171,17 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+  // const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+  //   try {
+  //     const response = await fetch(addedImageUrl);
+  //     const blob = await response.blob();
+  //     const file = new File([blob], "avatar.jpg", { type: blob.type });
+  //     setPlaylistCoverArt(file);
+  //   } catch (error) {
+  //     console.error("Error converting image URL to File:", error);
+  //   }
+  // }, []);
 
   return (
     <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
@@ -289,6 +300,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Edit Playlist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          {/* <ImageAdder onImageAdded={handleImageAdded} /> */}
             <FormControl>
               <FormLabel>Name</FormLabel>
               <Input value={name} onChange={(e) => setName(e.target.value)} focusBorderColor="brand.100" />
@@ -297,10 +309,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               <FormLabel>Description</FormLabel>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
-            <FormControl mt={4}>
-              {/* <Input type="file" onChange={handleCoverArtChange} /> */}
-              {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
-            </FormControl>
+           
           </ModalBody>
           <ModalFooter>
             <Button bg="black.100" _hover={{ bg: "brand.100" }} mr={3} onClick={handleSaveEdit}>
