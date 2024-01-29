@@ -1,6 +1,13 @@
 import * as React from "react";
 import { useState } from "react";
-import { Box, Container, Stack, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  HStack,
+  Stack,
+  VStack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import Header from "../../components/profile/MyProfile/MyHeader";
 import MyEpisodes from "../../components/profile/MyProfile/MyEpisodes";
 import Podcasts from "../../components/profile/MyProfile/MyPodcasts";
@@ -10,32 +17,33 @@ const MyProfile = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [podcastId, setPodcastId] = useState(1);
 
-  const ContentContainer = ({ children }) => (
-    <Container width="100%" maxWidth="100%" paddingTop={isMobile ? "3em" : "2em"}>
-      {children}
-    </Container>
-  );
-
   return (
-    <Box display="flex" justifyContent="center" alignItems="center">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width={"95%"}
+    >
       {isMobile ? (
-        <ContentContainer>
+        <VStack justify="center" align="center" ml={"15px"}>
           <Header />
           <Podcasts />
           <MyEpisodes />
           <MyPlaylists />
-        </ContentContainer>
+        </VStack>
       ) : (
-        <Stack direction="row" spacing="4">
-          <ContentContainer>
+        <HStack width="80%" align={"start"} spacing={"15px"}>
+          <VStack width="50%" align="start" spacing={"10px"}>
             <Header />
+            <Box height="20px" />
             <Podcasts />
-          </ContentContainer>
-          <ContentContainer>
+          </VStack>
+          <VStack width="50%" align="start">
             <MyEpisodes />
+            <Box height="25px" />
             <MyPlaylists />
-          </ContentContainer>
-        </Stack>
+          </VStack>
+        </HStack>
       )}
     </Box>
   );

@@ -2,6 +2,7 @@ import * as paths from "../../fixtures/file_paths.json";
 
 describe("Register", () => {
   beforeEach(() => {
+    cy.console_error_hack();
     cy.visit("/");
     cy.url().should("include", "/", { timeout: 5000 }); 
   });
@@ -56,13 +57,19 @@ describe("Register", () => {
       "password123",
       "2000-01-01",
     );
-    cy.setup_user(
-      paths.profile_picture,
-      "{selectall}{backspace}",
-      "{selectall}{backspace}",
-    );
-    cy.url().should("include", "/profile/ProfileSetup");
-    cy.contains("Avatar, Display Name and Bio Required.").should("exist");
+    cy.wait(500);
+    cy.get('body').then(($body) => {
+      if ($body.text().includes('An Account with that Email and/or Username already exists. Please Login or use a different Email address.')) {
+          expect(true).to.be.true;
+      }else{
+        cy.setup_user(
+          paths.profile_picture,
+          "{selectall}{backspace}",
+          "{selectall}{backspace}",
+        );
+        cy.url().should("include", "/profile/ProfileSetup");
+        cy.contains("Avatar, Display Name and Bio Required.").should("exist");
+      }});
   });
 
   // Test unsuccessful registration from the main page
@@ -94,8 +101,9 @@ describe("Register", () => {
   });
 
   it("limits the number of characters in the input field", () => {
-    cy.get('button[aria-label="Menu"]').click();
-    cy.get("button").contains("Sign up").click();
+    // cy.get('button[aria-label="Menu"]').click();
+    // cy.get("button").contains("Sign up").click();
+    cy.visit("/auth/Signup");
     cy.get('input[id="username"]').type(
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );

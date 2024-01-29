@@ -21,7 +21,7 @@ export default function EditPodcastForm({ podcastId }) {
     });
   }, [podcastId]);
   // Page refs
-  const myPodcastsPage = "/CreatorHub/MyPodcasts";
+  const myPodcastsPage = "/CreatorHub";
 
   // Form Values
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);

@@ -36,10 +36,9 @@ const ForYou: React.FC = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
-        <Flex flexWrap="wrap" >
+        <Flex flexWrap="wrap">
           {podcasts.map((podcast) => (
-            <PodcastCard key={podcast.id} podcast={podcast} 
-            />
+            <PodcastCard key={podcast.id} podcast={podcast} />
           ))}
         </Flex>
       ) : (

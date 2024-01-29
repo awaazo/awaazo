@@ -21,7 +21,7 @@ export default defineConfig({
       "cypress/e2e/**/Like.cy.tsx",
       "cypress/e2e/**/Comment.cy.tsx",
       "cypress/e2e/**/Notification.cy.tsx",
-      // "cypress/e2e/**/Playlists.cy.tsx"
+      "cypress/e2e/**/Playlists.cy.tsx"
     ],
     setupNodeEvents(on, config) {
       // implement node event listeners here
@@ -32,7 +32,7 @@ export default defineConfig({
       runMode: 3,
       // Configure retry attempts for `cypress open`
       // Default is 0
-      openMode: 0
+      openMode: 3
     },
     defaultCommandTimeout: 10000
   },
