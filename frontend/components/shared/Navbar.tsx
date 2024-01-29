@@ -56,7 +56,6 @@ export default function Navbar() {
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
     backdropFilter: "blur(0px)",
-    backdropFilter: "blur(0px)",
   });
 
   interface SessionExt extends DefaultSession {
