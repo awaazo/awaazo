@@ -4,6 +4,7 @@ import os
 import whisperx
 import torch
 import datetime
+import requests
 
 def process_transcript(transcript):
     """
@@ -113,10 +114,16 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
     
     """
     try:
+        print('------------ Creating WhisperX Transcript ------------')
+
+        print(f'Creating transcript using WhisperX for {audio_path}')
+
         time0 = datetime.datetime.now()
 
+        ext = audio_path.split('.')[-1]
+
         # Get the file name
-        file_name = audio_path.split('.')[0]
+        file_name = audio_path.split(f'.{ext}')[0]
 
         # Define the transcript file path
         transcript_file_path = f'{file_name}.json'
@@ -156,28 +163,31 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         # Save the transcript to a json file
         json.dump(process_transcript(result["segments"]), open(transcript_file_path, 'w'))
 
-        # Once the transcript is created, delete the status file
-        os.remove(status_file_path)
-
         time1 = datetime.datetime.now()
 
         # Assign the Speaker labels
-        diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
-        diarize_segments = diarize_model(audio)
-        result = whisperx.assign_word_speakers(diarize_segments,result)
+        # diarize_model = whisperx.DiarizationPipeline(use_auth_token="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",device=device)
+        # diarize_segments = diarize_model(audio)
+        # result = whisperx.assign_word_speakers(diarize_segments,result)
 
-        # Save the transcript to a json file
-        json.dump(result["segments"], open(transcript_file_path, 'w'))
+        # # Save the transcript to a json file
+        # json.dump(result["segments"], open(transcript_file_path, 'w'))
 
-        time2 = datetime.datetime.now()
+        # time2 = datetime.datetime.now()
 
-        print(f"Transcription time: {time1-time0}")
-        print(f"Diarization time: {time2-time1}")
-        print(f"Total time: {time2-time0}")
-        print(f"Transcript saved to {transcript_file_path}")
+        # print(f"Transcription time: {time1-time0}")
+        # print(f"Diarization time: {time2-time1}")
+        # print(f"Total time: {time2-time0}")
+        # print(f"Transcript saved to {transcript_file_path}")
+
+        # Once the transcript is created, delete the status file
+        os.remove(status_file_path)
+
+        print('------------ WhisperX Transcript Created ------------')
 
     except Exception as e:
         # If an error occurs, update the status file with the error message
+        print(f"Error: {e}")
         with open(status_file_path, 'w') as f:
             f.write('Error\n')
             f.write(str(e))

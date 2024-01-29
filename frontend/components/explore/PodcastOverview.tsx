@@ -95,14 +95,14 @@ const updatePodcastData = (newData) => {
           <Image
             boxSize={isMobile ? "125px" : "0px"}
             src={podcast.coverArtUrl}
-            borderRadius="10%"
+            borderRadius="1.5em"
             marginLeft={isMobile ? "0px" : "20px"}
             border={isMobile ? "3px solid rgba(255, 255, 255, 0.2)" : "0px"}
             mt={1}
           />
         </Flex>
 
-        <Flex width="100%" boxShadow="sm">
+        <Flex width="100%" >
           <Box position="relative" mr={5}>
             <Image
               boxSize={isMobile ? "0px" : "180px"}
@@ -111,7 +111,7 @@ const updatePodcastData = (newData) => {
               borderRadius="2em"
               marginLeft={isMobile ? "0px" : "20px"}
               mt={1}
-              border={isMobile ? "0px" : "3px solid rgba(255, 255, 255, 0.2)"}
+              // outline={isMobile ? "0px" : "2px solid rgba(255, 255, 255, 0.05)"}
             />
           </Box>
           <Flex direction="column" flex={1} style={{ paddingTop: "10px" }}>

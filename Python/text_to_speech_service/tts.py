@@ -24,7 +24,7 @@ def create_audio_coqui(text, language, speaker_file_path, result_file_path):
     try:
 
         # Get the file name
-        file_name = result_file_path.split('.')[0]
+        file_name = result_file_path.split('.wav')[0]
 
         # Define the status file path
         status_file_path = f'{file_name}_tts_status.txt'
@@ -72,10 +72,11 @@ def create_audio_tortoise(text,speaker,result_file_path,delimiter=''):
         Exception: If an error occurs during the audio generation process.
     """
     try:
+        print("-------------------- Starting Tortoise TTS --------------------")
         print(result_file_path)
 
         # Get the file name
-        file_name = result_file_path.split('.')[0]
+        file_name = result_file_path.split('.wav')[0]
 
         # Define the status file path
         status_file_path = f'{file_name}_tts_status.txt'
@@ -179,6 +180,7 @@ def create_audio_tortoise(text,speaker,result_file_path,delimiter=''):
 
         # Once the audio is generated, delete the status file
         os.remove(status_file_path)
+        print("-------------------- Tortoise TTS Complete --------------------")
 
     except Exception as e:
         # If an error occurs, update the status file with the error message

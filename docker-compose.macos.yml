@@ -70,7 +70,5 @@ services:
       - "3500:3500"
     links:
       - backend:backend_server
-    depends_on:
-      - backend
       - backend
     restart: on-failure:5

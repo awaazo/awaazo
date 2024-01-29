@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
 using FFMpegCore.Enums;
+using System.Net;
 
 namespace Backend.Services;
 
@@ -41,7 +42,7 @@ public class PodcastService : IPodcastService
     /// <summary>
     /// Accepted file types for audio files
     /// </summary>
-    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4","audio/wav" };
+    private static readonly string[] ALLOWED_AUDIO_FILES = { "audio/mpeg", "audio/mp3", "audio/x-wav", "audio/mp4", "audio/wav" };
 
     /// <summary>
     /// Maximum image file is 5MB
@@ -194,7 +195,7 @@ public class PodcastService : IPodcastService
     {
         // Check if the podcast exists, if it does retrieve it.
         PodcastResponse podcastResponse = await _db.Podcasts
-        .Include(p=>p.Podcaster)
+        .Include(p => p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -233,7 +234,7 @@ public class PodcastService : IPodcastService
     {
         // Check if the user has any podcasts, if they do retrieve them.
         List<PodcastResponse> podcastResponses = await _db.Podcasts
-        .Include(p=>p.Podcaster)
+        .Include(p => p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -262,7 +263,7 @@ public class PodcastService : IPodcastService
     {
         // Get the podcasts from the database, where the podcast name sounds like the searchTerm
         List<Podcast> podcastResponses = await _db.Podcasts
-        .Include(p=>p.Podcaster)
+        .Include(p => p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -273,12 +274,12 @@ public class PodcastService : IPodcastService
         .ToListAsync() ?? throw new Exception("No podcasts found.");
 
         // Logic to filter Podcasts Based on Tags
-        if(filter.Tags != null)
+        if (filter.Tags != null)
         {
             List<Podcast> podcasts = new List<Podcast>();
 
             // Filter if any Tag Exist
-            foreach(var tag in filter.Tags)
+            foreach (var tag in filter.Tags)
             {
                 podcasts.AddRange(podcastResponses.FindAll(u => u.Tags.Contains(tag)));
             }
@@ -289,30 +290,31 @@ public class PodcastService : IPodcastService
 
         }
         // Logic to Filter Podcasts Based on Explicit Content
-        if(filter.IsExplicit != null)
+        if (filter.IsExplicit != null)
         {
             podcastResponses = podcastResponses.FindAll(u => u.IsExplicit == filter.IsExplicit).ToList();
 
         }
-        
+
         // Logic to filter Based on Type
-        if(filter.Type != null)
+        if (filter.Type != null)
         {
             podcastResponses = podcastResponses.FindAll(u => u.Type == GetPodcastType(filter.Type)).ToList();
-            
+
         }
 
         // Logic to filter Based on release Date
-        if(filter.ReleaseDate != null)
+        if (filter.ReleaseDate != null)
         {
             // Filter Last week
-            if(filter.ReleaseDate == "lastWeek")
+            if (filter.ReleaseDate == "lastWeek")
             {
                 DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
                 podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastWeek);
             }
             // Filter last month
-            if (filter.ReleaseDate == "lastMonth") {
+            if (filter.ReleaseDate == "lastMonth")
+            {
                 DateTime lastMonth = DateTime.UtcNow.Subtract(new TimeSpan(30, 0, 0, 0, 0));
                 podcastResponses = podcastResponses.FindAll(u => u.CreatedAt >= lastMonth);
 
@@ -353,7 +355,7 @@ public class PodcastService : IPodcastService
     {
         // Get the podcasts from the database
         List<PodcastResponse> podcastResponses = await _db.Podcasts
-        .Include(p=>p.Podcaster)
+        .Include(p => p.Podcaster)
         .Include(p => p.Episodes).ThenInclude(e => e.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
@@ -389,7 +391,7 @@ public class PodcastService : IPodcastService
         // Execute the query
         List<PodcastResponse> podcastResponses = await _db.Podcasts
             .FromSqlRaw($"SELECT * FROM dbo.Podcasts {query}")
-            .Include(p=>p.Podcaster)
+            .Include(p => p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings).ThenInclude(r => r.User)
             .Skip(page * pageSize)
@@ -403,8 +405,9 @@ public class PodcastService : IPodcastService
 
         return podcastResponses;
     }
-    
-    public async Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl) {
+
+    public async Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl)
+    {
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.Likes)
@@ -419,7 +422,7 @@ public class PodcastService : IPodcastService
         // Otherwise all good, get podcast related metrics
         int totalLikes = podcast.Episodes.Select(e => e.Likes.Count()).Sum();
         Episode? mostLikes = podcast.Episodes.MaxBy(e => e.Likes.Count());
-        
+
         var podcastIdParameter = new SqlParameter("@PodcastId", podcast.Id);
         var query = "SELECT uei.* " +
                     "FROM dbo.UserEpisodeInteractions uei " +
@@ -427,17 +430,17 @@ public class PodcastService : IPodcastService
                     "WHERE e.PodcastId = @PodcastId";
         var totalWatched = await _db.UserEpisodeInteractions!
             .FromSqlRaw(query, podcastIdParameter).SumAsync(e => e.LastListenPosition);
-        
+
         long totalPlayCount = podcast.Episodes.Select(e => (long)e.PlayCount).Sum();
         Episode? mostPlayed = podcast.Episodes.MaxBy(e => e.PlayCount);
-        
+
         int totalComments = podcast.Episodes.Select(ep => ep.Comments.Count()).Sum();
         Episode? mostCommented = podcast.Episodes.MaxBy(ep => ep.Comments.Count);
 
         Comment? mostLikedComment =
             podcast.Episodes.Select(ep => ep.Comments.MaxBy(comment => comment.Likes.Count()))
                             .FirstOrDefault();
-        
+
         // Get demographic related metrics
         var userPodscastInteraction = await _db.UserEpisodeInteractions
             .Include(inter => inter.Episode)
@@ -452,9 +455,11 @@ public class PodcastService : IPodcastService
         ageGroupHistorgram["31-45"] = 0;
         ageGroupHistorgram["46-65"] = 0;
         ageGroupHistorgram["65+"] = 0;
-        
-        foreach (var interaction in userPodscastInteraction) {
-            switch (interaction.User.Gender) {
+
+        foreach (var interaction in userPodscastInteraction)
+        {
+            switch (interaction.User.Gender)
+            {
                 case User.GenderEnum.Male: genderMetrics.TotalMale++; break;
                 case User.GenderEnum.Female: genderMetrics.TotalFemale++; break;
                 case User.GenderEnum.Other: genderMetrics.TotalOther++; break;
@@ -469,8 +474,9 @@ public class PodcastService : IPodcastService
             else if (age <= 65) ageGroupHistorgram["46-65"]++;
             else ageGroupHistorgram["65+"]++;
         }
-        
-        return new PodcastMetricsResponse(domainUrl) {
+
+        return new PodcastMetricsResponse(domainUrl)
+        {
             TotalEpisodesLikes = (uint)totalLikes,
             MostLikedEpisode = EpisodeResponse.FromEpisode(mostLikes, domainUrl),
             TotalTimeWatched = totalWatched,
@@ -577,7 +583,15 @@ public class PodcastService : IPodcastService
         try
         {
             // Send request to PY server to generate a transcript
-            await new HttpClient().GetAsync(_pyBaseUrl + "/" + episode.PodcastId + "/" + episode.Audio.Split(FILE_SPLIT_KEY)[0] + "/create_transcript");
+            var url = _pyBaseUrl+"/stt_ingest";
+            var json = $@"{{
+                ""podcast_id"": ""{episode.PodcastId}"",
+                ""episode_id"": ""{episode.Id}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            await httpClient.PostAsync(url, content);
         }
         catch (Exception)
         {
@@ -655,7 +669,15 @@ public class PodcastService : IPodcastService
                 RemoveTranscript(episodeId, episode.PodcastId);
 
                 // Send request to PY server to generate a transcript
-                await new HttpClient().GetAsync(_pyBaseUrl + "/" + episode.PodcastId + "/" + episode.Audio.Split(FILE_SPLIT_KEY)[0] + "/create_transcript");
+                var url = _pyBaseUrl+"/stt_ingest";
+                var json = $@"{{
+                    ""podcast_id"": ""{episode.PodcastId}"",
+                    ""episode_id"": ""{episode.Id}""
+                }}";
+
+                using var httpClient = new HttpClient();
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await httpClient.PostAsync(url, content);
             }
             catch (Exception)
             {
@@ -873,7 +895,7 @@ public class PodcastService : IPodcastService
         // If the interaction does not exist, create a new one.
         if (interaction is null)
         {
-            interaction = new ()
+            interaction = new()
             {
                 EpisodeId = episode.Id,
                 UserId = user.Id,
@@ -900,7 +922,7 @@ public class PodcastService : IPodcastService
     /// <param name="user">Current user watching the episode</param>
     /// <param name="episodeId">Id of the episode being watched</param>
     /// <returns>ListenPositionResponse object containing the listen position</returns>
-    public async Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId) 
+    public async Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
@@ -955,16 +977,16 @@ public class PodcastService : IPodcastService
 
         // If the seek time is requested, filter the lines to only include those that start after the seek time
         // Those that start up to 60 seconds after the seek time are included
-        if(seekTime != null)
+        if (seekTime != null)
             lines = lines
             .Where(l => l.Start >= seekTime && l.Start <= seekTime + 60)
             .ToList();
 
         // Create the episode transcript response object and set the lines if they exist.
         // Otherwise, set the lines to an empty list.
-        EpisodeTranscriptResponse transcript = new () 
-        { 
-            EpisodeId = episodeId, 
+        EpisodeTranscriptResponse transcript = new()
+        {
+            EpisodeId = episodeId,
             Status = "Ready",
             Lines = lines
         };
@@ -1051,7 +1073,7 @@ public class PodcastService : IPodcastService
             prevLine.Words = line.Words;
 
         }
-        
+
         // Save the updated lines to the json file
         using StreamWriter writer = new(GetTranscriptPath(episodeId, episode.PodcastId), false);
         await writer.WriteAsync(JsonConvert.SerializeObject(prevLines));
@@ -1078,18 +1100,18 @@ public class PodcastService : IPodcastService
         AdjecentEpisodeResponse adjecentEpisode = new AdjecentEpisodeResponse();
 
         // Order the list by Release Date
-        List<Episode> EpisodeList = await _db.Episodes!.OrderBy(e =>e.ReleaseDate).ToListAsync();
+        List<Episode> EpisodeList = await _db.Episodes!.OrderBy(e => e.ReleaseDate).ToListAsync();
 
         var index = EpisodeList.IndexOf(episode);
 
 
-        if(index - 1 >= 0)
+        if (index - 1 >= 0)
         {
             adjecentEpisode.Previous = EpisodeList[index - 1].Id;
 
         }
 
-        if(index + 1 < EpisodeList.Count)
+        if (index + 1 < EpisodeList.Count)
         {
             adjecentEpisode.Next = EpisodeList[index + 1].Id;
         }
@@ -1108,9 +1130,9 @@ public class PodcastService : IPodcastService
     /// <param name="episodeFilter"></param>
     /// <param name="domainUrl"></param>
     /// <returns></returns>
-    public async Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize, EpisodeFilter episodeFilter,string domainUrl) 
+    public async Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize, EpisodeFilter episodeFilter, string domainUrl)
     {
-       
+
         List<Episode> episode = await _db.Episodes
             .Include(e => e.Podcast)
             .Include(e => e.Likes)
@@ -1120,21 +1142,21 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
 
         // Filter on Episode Length
-        if(episodeFilter.MinEpisodeLength != null)
+        if (episodeFilter.MinEpisodeLength != null)
         {
             episode = episode.Where(u => u.Duration >= episodeFilter.MinEpisodeLength).ToList();
         }
         // Filter on basis of Episode length
-        if(episodeFilter.IsExplicit != null)
+        if (episodeFilter.IsExplicit != null)
         {
             episode = episode.Where(u => u.IsExplicit == episodeFilter.IsExplicit).ToList();
 
         }
         // Filter on basis of Release Data
-        if(episodeFilter.ReleaseDate != null)
+        if (episodeFilter.ReleaseDate != null)
         {
             // Filter Last week
-            if (episodeFilter.ReleaseDate== "lastWeek")
+            if (episodeFilter.ReleaseDate == "lastWeek")
             {
                 DateTime lastWeek = DateTime.UtcNow.Subtract(new TimeSpan(7, 0, 0, 0, 0));
                 episode = episode.FindAll(u => u.CreatedAt >= lastWeek);
@@ -1160,7 +1182,7 @@ public class PodcastService : IPodcastService
         // Cast it to Episode Reponse
         List<EpisodeResponse> response = episode.Select(u => new EpisodeResponse(u, domainUrl)).Skip(page * pageSize).Take(pageSize).ToList();
 
-     
+
         return response;
     }
 
@@ -1177,7 +1199,7 @@ public class PodcastService : IPodcastService
         .Include(e => e.Comments).ThenInclude(c => c.Likes)
         .Skip(page * pageSize)
         .Take(pageSize)
-        .Select(e => new EpisodeResponse(e, domainUrl,true))
+        .Select(e => new EpisodeResponse(e, domainUrl, true))
         .ToListAsync() ?? throw new Exception("No Episodes found.");
 
         return episodeResponses;
@@ -1192,6 +1214,89 @@ public class PodcastService : IPodcastService
     {
         return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
     }
+
+    #region Episode Chat
+
+    public async Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Get the episode chat messages
+        List<EpisodeChatMessage> chatMessages = await _db.EpisodeChatMessages
+            .Where(m => m.EpisodeId == episodeId)
+            .OrderByDescending(m => m.CreatedAt)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // Return the chat with the messages
+        return new EpisodeChatResponse(chatMessages, user, episodeId, domainUrl);
+    }
+
+    public async Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        var url = _pyBaseUrl+"/chat";
+        var json = $@"{{
+            ""podcast_id"": ""{episode.PodcastId}"",
+            ""episode_id"": ""{episodeId}"",
+            ""prompt"": ""{prompt}""
+        }}";
+
+        string responseText = string.Empty;
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync(url, content);
+
+            // Handle the response here
+            responseText = await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        if (string.IsNullOrEmpty(responseText))
+            responseText = "Sorry, but I can't answer your question right now. Please try again later.";
+
+        EpisodeChatMessage promptMessage = new()
+        {
+            Id = Guid.NewGuid(),
+            EpisodeId = episodeId,
+            UserId = user.Id,
+            Message = prompt,
+            IsPrompt = true,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        EpisodeChatMessage responseMessage = new()
+        {
+            Id = Guid.NewGuid(),
+            EpisodeId = episodeId,
+            UserId = Guid.Empty,
+            Message = responseText,
+            IsPrompt = false,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        await _db.EpisodeChatMessages.AddAsync(promptMessage);
+        await _db.EpisodeChatMessages.AddAsync(responseMessage);
+
+        await _db.SaveChangesAsync();
+        
+        // Return the chat with the messages
+        return new EpisodeChatMessageResponse(responseMessage, user, domainUrl);
+    }
+
+    #endregion Episode Chat
 
     #endregion
 }
