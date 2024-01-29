@@ -2,6 +2,10 @@ import * as paths from '../../fixtures/file_paths.json';
 
 describe('Comment', () => {
 
+    beforeEach(() => {
+        cy.console_error_hack();
+    });
+
     it('Should create a podcast and an episode', () => {
         cy.console_error_hack();
         cy.login(null, 'testRegister@email.com', 'password123');
@@ -25,18 +29,14 @@ describe('Comment', () => {
 
     it('Should comment a Podcast', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:f2-legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Is there an error in the title?");
         cy.get('button').contains('Add Comment').click( {timeout: 5000} )
         cy.contains('Is there an error in the title?');
         cy.visit('/').url().should('include', '/');
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:f2-legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250);
@@ -46,9 +46,7 @@ describe('Comment', () => {
 
     it('Should reply to a comment on a Podcast', () => {
         cy.login(null, 'testRegister@email.com', 'password123');
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:f2-legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.get('Input[placeholder="Reply to this comment..."]').should('be.visible').first().type("No! I was testing stuff using Cypress!");
@@ -61,9 +59,7 @@ describe('Comment', () => {
 
     it('Should like a reply on a Podcast', () => {
         cy.login(null, 'testRegister@email.com', 'password123');
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:f2-legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.wait(250)
@@ -72,9 +68,7 @@ describe('Comment', () => {
 
     it('Should delete a comment on a Podcast and consequently, delete all replies to said comment', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
-        cy.get('[href="/Explore/Search"]').click();
-        cy.get('[data-cy="search-input"]').should('be.visible').type('F2{enter}');
-        cy.get('[data-cy="podcast-name:f2-legends"').should('be.visible').click( {timeout:5000} )
+        cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.get('[data-cy="delete-comment-id:"]').should('be.visible').first().click({ timeout: 5000 })

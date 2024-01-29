@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Img, Flex, Spacer, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Spacer,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import type { Episode } from "../../utilities/Interfaces";
 import type { Playlist } from "../../utilities/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
@@ -53,75 +61,91 @@ export default function Playlist() {
   };
 
   return (
-
-      <VStack spacing="4" align="stretch" width="95%" justify="center" mx="auto">
-        {playlist && (
-          <>
-            <Flex justifyContent="space-between" align="center">
-              {/* Playlist Name */}
-              <Flex alignItems="center">
-                <Img src={playlist.coverArt ? playlist.coverArt : "https://images.unsplash.com/photo-1605286111427-67133b091012?q=80&w=2148&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt="Playlist Cover" boxSize="150px" objectFit="cover" borderRadius="md" />
-                <Text fontWeight="medium" fontSize="30px" ml={2}>
-                  {playlist.name}
-                </Text>
-              </Flex>
-              <Text fontWeight="medium" fontSize="md">
-                {playlist.privacy}
+    <VStack spacing="4" align="stretch" width="95%" justify="center" mx="auto">
+      {playlist && (
+        <>
+          <Flex justifyContent="space-between" align="center">
+            {/* Playlist Name */}
+            <Flex alignItems="center">
+              <RiPlayList2Fill size={"30px"} />
+              <Text fontWeight="medium" fontSize="30px" ml={2}>
+                {playlist.name}
               </Text>
             </Flex>
-            <Box fontSize="sm" color="white">
-              <Text fontWeight="small" fontSize="lg" mb={2}>
-                {playlist.description}
-              </Text>
-              <Flex>
-                <Box flex={1}>
-                  <Text color="white">
-                    <Text>
-                    {playlist.numberOfEpisodes} Episodes
-                    </Text>{" "}
-                  </Text>
-                  <Text color="white">
-                    <Text>
-                      {" "}
-                      <b>Duration:</b> {formatSecToDurationString(playlist.duration)}
-                    </Text>{" "}
-                  </Text>
-                </Box>
-                <Box>
-                  <Text color="gray.500">
-                    <Text fontWeight="bold">Created At: {new Date(playlist.createdAt).toLocaleDateString()}</Text>{" "}
-                  </Text>
-                  <Text color="gray.500">
-                    <Text fontWeight="bold">Updated At: {new Date(playlist.updatedAt).toLocaleDateString()}</Text>{" "}
-                  </Text>
-                </Box>
-              </Flex>
-              <Flex mt={4}>
-                <Button onClick={() => handlePlaylistClick()} leftIcon={<FaPlay />}>
-                  Play
-                </Button>
-                <Button onClick={() => handlePlaylistShuffleClick()} leftIcon={<ImShuffle />} ml={2}>
-                  Shuffle
-                </Button>
-                <Spacer />
-                <PlaylistMenu playlist={playlist} onUpdate={updatePlaylistData} />
-              </Flex>
-            </Box>
-            <Box>
-              <Text fontSize="xl" fontWeight="bold" mt={2}>
-                Episodes:
-              </Text>
-              {episodes && episodes.length > 0 ? (
-                episodes.map((episode: any) => <EpisodeCard episode={episode} inPlaylist={true} playlistId={playlist.id} />)
-              ) : (
-                <Text textAlign={"center"} mt={"5%"} fontWeight={"bold"}>
-                  No episodes in this playlist yet
+            <Text fontWeight="medium" fontSize="md">
+              {playlist.privacy}
+            </Text>
+          </Flex>
+          <Box fontSize="sm" color="white">
+            <Text fontWeight="small" fontSize="lg" mb={2}>
+              {playlist.description}
+            </Text>
+            <Flex>
+              <Box flex={1}>
+                <Text color="white">
+                  <Text>{playlist.numberOfEpisodes} Episodes</Text>{" "}
                 </Text>
-              )}
-            </Box>
-          </>
-        )}
-      </VStack>
-
+                <Text color="white">
+                  <Text>
+                    {" "}
+                    <b>Duration:</b>{" "}
+                    {formatSecToDurationString(playlist.duration)}
+                  </Text>{" "}
+                </Text>
+              </Box>
+              <Box>
+                <Text color="gray.500">
+                  <Text fontWeight="bold">
+                    Created At:{" "}
+                    {new Date(playlist.createdAt).toLocaleDateString()}
+                  </Text>{" "}
+                </Text>
+                <Text color="gray.500">
+                  <Text fontWeight="bold">
+                    Updated At:{" "}
+                    {new Date(playlist.updatedAt).toLocaleDateString()}
+                  </Text>{" "}
+                </Text>
+              </Box>
+            </Flex>
+            <Flex mt={4}>
+              <Button
+                onClick={() => handlePlaylistClick()}
+                leftIcon={<FaPlay />}
+              >
+                Play
+              </Button>
+              <Button
+                onClick={() => handlePlaylistShuffleClick()}
+                leftIcon={<ImShuffle />}
+                ml={2}
+              >
+                Shuffle
+              </Button>
+              <Spacer />
+              <PlaylistMenu playlist={playlist} onUpdate={updatePlaylistData} />
+            </Flex>
+          </Box>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold" mt={2}>
+              Episodes:
+            </Text>
+            {episodes && episodes.length > 0 ? (
+              episodes.map((episode: any) => (
+                <EpisodeCard
+                  episode={episode}
+                  inPlaylist={true}
+                  playlistId={playlist.id}
+                />
+              ))
+            ) : (
+              <Text textAlign={"center"} mt={"5%"} fontWeight={"bold"}>
+                No episodes in this playlist yet
+              </Text>
+            )}
+          </Box>
+        </>
+      )}
+    </VStack>
   );
 }

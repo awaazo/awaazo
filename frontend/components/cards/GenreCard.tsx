@@ -5,11 +5,11 @@ const GenreCard = ({ genre, onMouseEnter, onMouseLeave }) => {
   return (
     <Link href={`/Explore/Genre/${genre.link}`} passHref>
       <Box
-      // // old code
+        // // old code
         h="180px"
         w="180px"
-      // // new code
-      //   width="15em"
+        // // new code
+        //   width="15em"
 
         borderRadius="30px"
         overflow="hidden"
@@ -24,7 +24,13 @@ const GenreCard = ({ genre, onMouseEnter, onMouseLeave }) => {
         onMouseLeave={onMouseLeave}
         boxShadow={"0px 0px 15px rgba(0, 0, 0, 0.4)"}
       >
-        <Image src={genre.image.src} alt={`${genre.name} background`} width="100%" height="100%" objectFit="cover" />
+        <Image
+          src={genre.image.src}
+          alt={`${genre.name} background`}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+        />
       </Box>
     </Link>
   );

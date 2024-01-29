@@ -4,6 +4,7 @@ import * as paths from '../../fixtures/file_paths.json';
 describe('EditProfile', () => {
     
     beforeEach(() => {
+        cy.console_error_hack();
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
         cy.console_error_hack();

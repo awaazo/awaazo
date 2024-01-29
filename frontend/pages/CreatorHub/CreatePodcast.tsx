@@ -1,5 +1,19 @@
 import React, { useState, FormEvent, useEffect, useCallback } from "react";
-import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, Center, Heading, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Textarea,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  Wrap,
+  WrapItem,
+  Center,
+  Heading,
+  VStack,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
 import { PodcastCreateRequest } from "../../utilities/Requests";
@@ -14,10 +28,12 @@ export default function CreatePodcast() {
   const loginPage = "/auth/Login";
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
   const [podcastName, setPodcastName] = useState("");
-  const [podcastNameCharacterCount, setPodcastNameCharacterCount] = useState<number>(0);
+  const [podcastNameCharacterCount, setPodcastNameCharacterCount] =
+    useState<number>(0);
   const [tags, setTags] = useState([]);
   const [description, setDescription] = useState("");
-  const [descriptionCharacterCount, setDescriptionCharacterCount] = useState<number>(0);
+  const [descriptionCharacterCount, setDescriptionCharacterCount] =
+    useState<number>(0);
   const [createError, setCreateError] = useState("");
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const router = useRouter();
@@ -73,7 +89,9 @@ export default function CreatePodcast() {
   };
 
   // Ensures episode description is not longer than 250 characters
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
     setDescriptionCharacterCount(newDesc.length);
@@ -100,14 +118,33 @@ export default function CreatePodcast() {
         </VStack>
       </Center>
       <CreatePodcastHeader />
-      <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <form onSubmit={handleCreate}>
           <Stack spacing={6} align={"center"}>
             <ImageAdder onImageAdded={handleImageAdded} />
             {createError && <Text color="red.500">{createError}</Text>}
             <FormControl position="relative">
-              <Input id="podcastName" placeholder="Podcast Name" value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: "center", borderRadius: "0.8em" }} pr="50px" />{" "}
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Input
+                id="podcastName"
+                placeholder="Podcast Name"
+                value={podcastName}
+                onChange={handlePodcastNameChange}
+                style={{ alignSelf: "center", borderRadius: "0.8em" }}
+                pr="50px"
+              />{" "}
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {podcastNameCharacterCount}/25
               </Text>
             </FormControl>
@@ -127,7 +164,13 @@ export default function CreatePodcast() {
                 }}
                 resize="vertical"
               />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
                 {descriptionCharacterCount}/250
               </Text>
             </FormControl>
@@ -143,7 +186,14 @@ export default function CreatePodcast() {
               </FormLabel>
               <GenreSelector onGenresChange={handleGenresChange} />
             </FormControl>
-            <Button variant="gradient" id="createBtn" type="submit" minWidth={"200px"} marginTop={"3"} w={"12rem"}>
+            <Button
+              variant="gradient"
+              id="createBtn"
+              type="submit"
+              minWidth={"200px"}
+              marginTop={"3"}
+              w={"12rem"}
+            >
               Start Broadcasting
             </Button>
           </Stack>
@@ -152,9 +202,3 @@ export default function CreatePodcast() {
     </>
   );
 }
-
-
-
-
-
-
