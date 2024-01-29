@@ -12,13 +12,13 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import MyPodcast from "../../components/myPodcast/MyPodcast";
+import MyPodcast from "../../components/CreatorHub/MyPodcast";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
 
-const MyPodcasts = () => {
+const Creatorhub = () => {
   // Page refs
   const loginPage = "/auth/Login";
 
@@ -87,7 +87,7 @@ const MyPodcasts = () => {
       <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
         <Flex align="center" justify="space-between" p={4}>
           <Text fontSize="30px" fontWeight={"light"}>
-            My Podcasts
+            The CreatorHub
           </Text>
         </Flex>
       </Box>
@@ -204,4 +204,4 @@ const MyPodcasts = () => {
   );
 };
 
-export default MyPodcasts;
+export default Creatorhub;

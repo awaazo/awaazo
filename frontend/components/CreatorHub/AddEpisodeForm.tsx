@@ -27,7 +27,7 @@ import router from "next/router";
 import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import { EpisodeAddRequest } from "../../utilities/Requests";
 import { AxiosProgressEvent } from "axios";
-import ImageAdder from "../../components/tools/ImageAdder";
+import ImageAdder from "../tools/ImageAdder";
 
 const AddEpisodeForm = ({ podcastId }) => {
   const loginPage = "/auth/Login";

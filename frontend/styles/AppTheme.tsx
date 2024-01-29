@@ -45,7 +45,12 @@ const overrides = {
           my: "auto",
           alignItems: "center",
         },
+        header: {
+          fontWeight: "light",
+          fontSize: "1.5em",
+        }
       }),
+      
     },
     Textarea: {
       baseStyle: {

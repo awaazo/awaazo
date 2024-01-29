@@ -125,8 +125,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent alignItems="center">
-          <ModalHeader fontWeight={"light"} fontSize={"1.5em"}>
+        <ModalContent>
+          <ModalHeader>
             Comments
           </ModalHeader>
           <ModalCloseButton />

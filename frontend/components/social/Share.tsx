@@ -35,7 +35,7 @@ const Share = ({ content, contentType }) => {
   };
 
   const constructSharingDetails = () => {
-    const baseUrl = contentType === "episode" ? "http://104.221.79.22:3500/Explore/" : "http://104.221.79.22:3500/Playlist/";
+    const baseUrl = contentType === "episode" ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/Explore/` : `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/Playlist/`;
     const url = `${baseUrl}${content.id || "defaultId"}`;
     const name = content.name || content.episodeName || "Default Name";
     const description = content.description || "Default description";
@@ -92,7 +92,7 @@ const Share = ({ content, contentType }) => {
 
   const ShareIcon = ({ platform, icon }) => (
     <Tooltip label={platform.name} hasArrow>
-      <Box as="button" borderRadius="md" p={1} _hover={{ bg: "gray.200", color: "blue.500" }}>
+      <Box as="button" borderRadius="md" p={1} _hover={{ bg: "gray.200", color: "brand.100" }}>
         <Icon as={icon} w={6} h={6} onClick={() => shareToPlatform(platform.name)} cursor="pointer" />
       </Box>
     </Tooltip>

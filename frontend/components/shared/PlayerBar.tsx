@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from "react-icons/fa";
 import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
-import CommentComponent from "../social/Comments";
-import LikeComponent from "../social/Likes";
-import BookmarkComponent from "../bookmarks/CreateBookmarkModule";
+import Comments from "../social/Comments";
+import Likes from "../social/Likes";
+import Bookmarks from "../social/Bookmarks";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
@@ -292,9 +292,9 @@ const PlayerBar = () => {
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
               <ChatBot episodeId={episode?.id} />
-              <BookmarkComponent episodeId={isEpisodeLoaded ? episode.id : "default-id"} selectedTimestamp={isEpisodeLoaded ? position : 0} />
-              <LikeComponent episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-              <CommentComponent episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} showCount={false} />
+              <Bookmarks episodeId={isEpisodeLoaded ? episode.id : "default-id"} selectedTimestamp={isEpisodeLoaded ? position : 0} />
+              <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
+              <Comments episodeIdOrCommentId={isEpisodeLoaded ? episode.id : "default-id"} initialComments={isEpisodeLoaded ? episode.comments.length : 0} showCount={false} />
             </Flex>
 
             {/* Volume Control Section */}
