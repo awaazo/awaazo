@@ -290,6 +290,7 @@ frontend/.env
 frontend/Dockerfile
 backend/Dockerfile
 backend/.env
+backend_server
 *.env.local
 *appsettings.json
 *appsettings.Development.json
@@ -298,6 +299,7 @@ backend/.env
 docker-compose.release.yml
 Backend/Backend/Logs
 python/*ServerFiles
+Python/.env
 python/.venv
 python/env/**
 python/rvc_service/logs/**
@@ -306,3 +308,4 @@ python/env
 python/venv
 python/text_to_speech_service/models/**
 python/.venv
+Python/assistant_service/*.env

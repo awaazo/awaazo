@@ -2,8 +2,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { DefaultSession } from "next-auth";
-import { Box, Flex, Input, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from "@chakra-ui/react";
-import { HamburgerIcon, BellIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Flex,
+  Avatar,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  MenuGroup,
+  useBreakpointValue,
+  Spacer,
+} from "@chakra-ui/react";
+import {
+  HamburgerIcon,
+  ArrowBackIcon,
+  ArrowForwardIcon,
+} from "@chakra-ui/icons";
 import AuthHelper from "../../helpers/AuthHelper";
 import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
@@ -25,7 +43,7 @@ export default function Navbar() {
     const searchlink = "/Explore/Search?searchTerm=" + searchValue;
     window.location.href = searchlink;
   };
-  
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserMenuInfo>({
     id: "",
@@ -34,26 +52,11 @@ export default function Navbar() {
   });
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isUserSet, setIsUserSet] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
-  const toggleNotifications = () => {
-    setIsNotificationsOpen(!isNotificationsOpen);
-  };
-
   const [notificationCount, setNotificationCount] = useState(0);
-
-  useEffect(() => {
-    const fetchNotificationCount = async () => {
-      const response = await NotificationHelper.NotificationCount();
-      if (response !== null && response !== undefined && typeof response === "number") {
-        setNotificationCount(response);
-      } else {
-        console.error("Failed to fetch notification count:", response.message || "No error message available");
-      }
-    };
-
-    fetchNotificationCount();
-  }, []);
+  const [navbarStyle, setNavbarStyle] = useState({
+    backgroundColor: "transparent",
+    backdropFilter: "blur(0px)",
+  });
 
   interface SessionExt extends DefaultSession {
     token: {
@@ -107,25 +110,95 @@ export default function Navbar() {
   }, [session, isLoggedIn]);
 
   const handleLogOut = async () => {
-    AuthHelper.authLogoutRequest();
-    // User logged in via Google, so use next-auth's signOut
-    if (session) await signOut();
-    // Set Logged In Status to false and redirect to index page
-    setIsUserLoggedIn(false);
-    setIsUserSet(false);
-    window.location.href = indexPage;
+    try {
+      // Wait for the logout request to complete
+      await AuthHelper.authLogoutRequest();
+      console.log("Logout successful");
+      if (session) {
+        await signOut();
+      }
+
+      // Set Logged In Status to false
+      setIsUserLoggedIn(false);
+      setIsUserSet(false);
+
+      // Redirect to the index page
+      window.location.href = indexPage;
+    } catch (error) {
+      // Handle any errors that occur during logout
+      console.error("Logout failed", error);
+    }
   };
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
+  // Function to handle scroll event
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const maxScroll = 100;
+    const opacity = Math.min(scrollY / maxScroll, 1);
+    const blur = Math.min((scrollY / maxScroll) * 25, 25);
+
+    setNavbarStyle({
+      backgroundColor: `rgba(255, 255, 255, 0)`,
+      backdropFilter: `blur(50px)`,
+    });
+  };
+
+  // useEffect(() => {
+  //   // Add scroll event listener when the component mounts
+  //   window.addEventListener("scroll", handleScroll);
+
+  //   // Cleanup by removing the event listener when the component unmounts
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      const response = await NotificationHelper.NotificationCount();
+      if (
+        response !== null &&
+        response !== undefined &&
+        typeof response === "number"
+      ) {
+        setNotificationCount(response);
+      } else {
+        console.error(
+          "Failed to fetch notification count:",
+          response.message || "No error message available",
+        );
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
+
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
+      <MenuButton
+        aria-label="loggedInMenu"
+        as={Button}
+        rounded={"full"}
+        variant={"link"}
+        cursor={"pointer"}
+      >
         {user.avatarUrl === "" ? (
-          <Avatar size={"sm"} src={""} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
+          <Avatar
+            size={"sm"}
+            src={""}
+            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
+          />
         ) : (
-          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
+          <Avatar
+            size={"sm"}
+            src={user.avatarUrl}
+            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
+            bg="rgba(255, 255, 255, 0.2)"
+            backdropFilter="blur(10px)"
+          />
         )}
       </MenuButton>
       <MenuList>
@@ -133,14 +206,16 @@ export default function Navbar() {
           <Link href="/profile/MyProfile" passHref>
             <MenuItem>My Account</MenuItem>
           </Link>
-          <Link href="/CreatorHub/MyPodcasts" passHref>
+          <Link href="/CreatorHub" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
-    
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem onClick={handleLogOut} style={{ color: "red", fontWeight: "normal" }}>
+          <MenuItem
+            onClick={handleLogOut}
+            style={{ color: "red", fontWeight: "normal" }}
+          >
             Logout
           </MenuItem>
         </MenuGroup>
@@ -150,52 +225,74 @@ export default function Navbar() {
 
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={"link"} cursor={"pointer"}>
+      <MenuButton
+        menu-id="menuBtn"
+        aria-label="Menu"
+        data-cy={`navbar-hamburger`}
+        as={Button}
+        variant={"link"}
+        cursor={"pointer"}
+      >
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
+        <MenuItem
+          id="loginBtn"
+          onClick={() => (window.location.href = loginPage)}
+        >
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
+        <MenuItem onClick={() => (window.location.href = signupPage)}>
+          Sign up
+        </MenuItem>
       </MenuList>
     </Menu>
   );
 
-  const NotificationsModal = () => {
-    return <Notifications isOpen={isNotificationsOpen} onClose={toggleNotifications} notificationCount={notificationCount} />;
-  };
-
   return (
     <>
-      <Box p={2} mr={"2em"} ml={"2em"} mb={"3em"} position="sticky" top={4} zIndex={999} data-testid="navbar-component">
-        <Flex justifyContent="space-between">
-          <Flex align="center">
-            <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
-            <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
-            {!isMobile && currentPath === "/Explore/Search" && (
-              <Flex
-                alignItems="center"
-                as="form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSearchSubmit();
-                }}
-                ml={5}
-                width="20vh"
-              >
-                <Input placeholder="Search" size="sm" borderRadius="full" mr={4} value={searchValue} data-cy={`search-input`} onChange={handleSearchChange} />
-              </Flex>
-            )}
+      <Box
+        p={3}
+        mb={"3em"}
+        width={"100%"}
+        position="sticky"
+        alignSelf="center"
+        alignContent={"center"}
+        alignItems={"center"}
+        top={"0"}
+        zIndex={5}
+        data-testid="navbar-component"
+        style={navbarStyle}
+      >
+        <Box mr={"2em"} ml={"2em"}>
+          <Flex justifyContent="space-between">
+            <Flex align="center">
+              <IconButton
+                aria-label="Back"
+                icon={<ArrowBackIcon />}
+                onClick={() => window.history.back()}
+                variant="ghost"
+                size="md"
+                mr={2}
+                rounded="full"
+              />
+              <IconButton
+                aria-label="Forward"
+                icon={<ArrowForwardIcon />}
+                onClick={() => window.history.forward()}
+                variant="ghost"
+                size="md"
+                rounded="full"
+              />
+            </Flex>
+            <Spacer />
+            <Flex align="center" justifyContent="flex-end">
+              <Notifications initialNotifcationCount={notificationCount} />
+              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+            </Flex>
           </Flex>
-          <Spacer />
-          <Flex align="center">
-            <IconButton aria-label="Notifications" icon={<BellIcon />} onClick={toggleNotifications} data-cy={`notifications-button`} variant="ghost" size="md" rounded={"full"} opacity={0.7} mr={2} />
-            {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
-          </Flex>
-        </Flex>
-        {isNotificationsOpen && <NotificationsModal />}
+        </Box>
       </Box>
     </>
   );

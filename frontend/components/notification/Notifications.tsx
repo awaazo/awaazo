@@ -1,54 +1,64 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  Box,
-  VStack,
-  Text,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   List,
   ListItem,
   Avatar,
-  Button,
   HStack,
-  IconButton,
-  Select,
+  VStack,
+  Text,
+  Box,
   Badge,
-  useColorModeValue,
+  Button,
+  Divider,
 } from "@chakra-ui/react";
-
+import { BellIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-import { Notification, User } from "../../utilities/Interfaces";
+import { Notification } from "../../utilities/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
 
-interface NotificationsProps {
-  isOpen: boolean;
-  onClose: () => void;
-  notificationCount: number;
-}
-
-const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
+const Notifications = ({ initialNotifcationCount }) => {
+  console.log("Initial count" + initialNotifcationCount);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [filter, setFilter] = useState<"all" | "episode" | "user">("all");
-  const [sortByDate, setSortByDate] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(
+    initialNotifcationCount,
+  );
   const [userId, setUserId] = useState<string | null>(null);
+
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+
+  useEffect(() => {
+    setNotificationCount(initialNotifcationCount);
+  }, [initialNotifcationCount]);
 
   useEffect(() => {
     const fetchUserId = async () => {
       const userResponse = await AuthHelper.authMeRequest();
-      if (userResponse && userResponse.userMenuInfo && userResponse.userMenuInfo.id) {
+      if (
+        userResponse &&
+        userResponse.userMenuInfo &&
+        userResponse.userMenuInfo.id
+      ) {
         setUserId(userResponse.userMenuInfo.id);
         console.log("User data fetched:", userResponse.userMenuInfo);
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
           cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
         });
-        const channel = pusher.subscribe("user-" + userResponse.userMenuInfo.id);
+        const channel = pusher.subscribe(
+          "user-" + userResponse.userMenuInfo.id,
+        );
         channel.bind("notification", function (data) {
           // Handle the incoming notification data here
           console.log("Received new notification:", data);
@@ -64,97 +74,175 @@ const Notifications: FC<NotificationsProps> = ({ isOpen, onClose }) => {
     fetchUserId();
   }, []);
 
-  // Fetch notifications from the API
   useEffect(() => {
     const fetchNotifications = async () => {
       const response = await NotificationHelper.getNotifications();
       if (Array.isArray(response)) {
         setNotifications(response);
       } else {
-        console.error("Failed to fetch notifications:", response.message || "No error message available");
+        console.error(
+          "Failed to fetch notifications:",
+          response.message || "No error message available",
+        );
       }
     };
 
     fetchNotifications();
   }, []);
 
-  useEffect(() => {
-    const fetchNotificationCount = async () => {
-      const response = await NotificationHelper.NotificationCount();
-      console.log(response);
-      if (response !== null && response !== undefined && typeof response === "number") {
-        setNotificationCount(response);
-      } else {
-        console.error("Failed to fetch notification count:", response.message || "No error message available");
-      }
-    };
+  const fetchNotificationCount = async () => {
+    const response = await NotificationHelper.NotificationCount();
+    console.log(response);
+    if (
+      response !== null &&
+      response !== undefined &&
+      typeof response === "number"
+    ) {
+      setNotificationCount(response);
+      console.log(notificationCount);
+    } else {
+      console.error(
+        "Failed to fetch notification count:",
+        response.message || "No error message available",
+      );
+    }
+  };
 
+  const handleClick = () => {
+    console.log("clicked");
     fetchNotificationCount();
-  }, []);
+  };
 
-  const markAsRead = (notificationId) => {
-    setNotifications(notifications.map((notification) => (notification.id === notificationId ? { ...notification, isRead: true } : notification)));
+  const renderNotificationList = (type) => {
+    const filteredNotifications = notifications
+      .filter((notification) => {
+        if (type === "all") return true;
+        return notification.type === type;
+      })
+      .slice(0, 5);
+
+    if (filteredNotifications.length === 0) {
+      return (
+        <Text textAlign={"center"} mt={"10px"}>
+          There are no Notifications right now
+        </Text>
+      );
+    }
+
+    return (
+      <div style={{ maxHeight: "300px", overflowY: "scroll" }}>
+        {filteredNotifications.map((notification) => (
+          <Link href={`/Explore/${notification.link}`} key={notification.id}>
+            <ListItem p={"2"} width={"100%"}>
+              <HStack
+                spacing={"15px"}
+                bg={notification.isRead ? "gray.550" : "gray.750"}
+                borderRadius={"10px"}
+                padding={"5px"}
+              >
+                <Avatar src={notification.media} boxSize="50px" />
+                <VStack align="start" spacing={"0"} flex="1">
+                  <Text
+                    color="blue.400"
+                    fontWeight="bold"
+                    textDecoration="underline"
+                    fontSize="16px"
+                  >
+                    {notification.title}
+                  </Text>
+                  <Text fontWeight="bold" fontSize="16px">
+                    {notification.message}
+                  </Text>
+                  <Text
+                    fontSize="14px"
+                    color="gray.400"
+                  >{`Created: ${formatDistanceToNow(
+                    new Date(notification.createdAt),
+                  )} ago`}</Text>
+                </VStack>
+              </HStack>
+              <Divider mt={"5px"} />
+            </ListItem>
+          </Link>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay backdropFilter="blur(0px)" />
-        <ModalContent
-          width={"31vw"}
-          maxW={"100vw"}
-          boxShadow="dark-lg"
-          backdropFilter="blur(40px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          marginTop={"10%"}
-          padding={"2em"}
-          borderRadius="xl"
-          backgroundColor="rgba(255, 255, 255, 0.1)"
-        >
-          <ModalCloseButton />
-          <ModalBody>
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack spacing={5} align="center">
-                <Select value={filter} onChange={(e) => setFilter(e.target.value as "all" | "episode" | "user")}>
-                  <option value="all">All Notifications</option>
-                  <option value="episode">Episode Interactions</option>
-                  <option value="user">User Notifications</option>
-                </Select>
-                {/* <Button onClick={() => setSortByDate(!sortByDate)}>
-                  Sort by {sortByDate ? "Oldest" : "Newest"}
-                </Button> */}
-                <Box borderRadius="xl" position="absolute" top={2} left={2} backgroundColor="red" padding={1}>
-                  <Text fontWeight="bold" color="white" fontSize="lg">
-                    {notificationCount}
-                  </Text>
-                </Box>
-                <List borderRadius="xl" spacing={4} width="134%" maxHeight="50vh" overflowY="auto">
-                  {notifications.map((notification) => (
-                    <ListItem key={notification.id} bg={notification.isRead ? "gray.550" : "gray.600"} p={"6"} width={"100%"} boxShadow={" 0px 4px 4px rgba(0, 0, 0, 0.35)"} borderRadius="xl">
-                      <HStack spacing={4}>
-                        <Avatar src={notification.media} />
-                        <VStack align="start" spacing={1} flex="1">
-                          <Link href={`/Explore/${notification.link}`}>
-                            <Text color="blue.400" fontWeight="bold" textDecoration="underline">
-                              {notification.title}
-                            </Text>
-                          </Link>
-                          <Text fontWeight="bold">{notification.message}</Text>
-                          <Text fontSize="sm" color="gray.400">{`Created: ${formatDistanceToNow(new Date(notification.createdAt))} ago`}</Text>
-                        </VStack>
-                      </HStack>
-                    </ListItem>
-                  ))}
-                </List>
-              </VStack>
+    <Box marginRight={"15px"}>
+      <Menu>
+        <MenuButton
+          onClick={handleClick}
+          as={IconButton}
+          aria-label="Notifications"
+          icon={
+            <Box position="relative" display="inline-block">
+              <BellIcon fontSize={"22px"} />
+              {notificationCount > 0 && (
+                <Badge
+                  borderRadius="full"
+                  position="absolute"
+                  bottom={0}
+                  right={0}
+                  transform="translate(50%, 50%)"
+                  fontSize="0.85em"
+                  color={"white"}
+                  style={{
+                    borderRadius: "full",
+                    fontSize: "md",
+                    color: "white",
+                    background:
+                      "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
+                    backgroundSize: "300% 300%",
+                    animation: "Gradient 10s infinite linear",
+                  }}
+                >
+                  {notificationCount}
+                </Badge>
+              )}
             </Box>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+          }
+          data-cy={`notifications-button`}
+          variant="ghost"
+          size="md"
+          rounded={"full"}
+          opacity={0.7}
+          mr={2}
+        />
+        <MenuList
+          minWidth={"400px"}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          }}
+          backdropFilter={"blur(50px)"}
+        >
+          <Tabs isFitted>
+            <TabList mb="1em">
+              <Tab>All</Tab>
+              <Tab>User</Tab>
+              <Tab>Episode</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <List>{renderNotificationList("all")}</List>
+              </TabPanel>
+              <TabPanel>
+                <List>{renderNotificationList("user")}</List>
+              </TabPanel>
+              <TabPanel>
+                <List>{renderNotificationList("PodcastAlert")}</List>
+              </TabPanel>
+            </TabPanels>
+            <Box textAlign={"center"}>
+              <Link href="/Notifications/MyNotifications">
+                <Button variant={"ghost"}>See All</Button>
+              </Link>
+            </Box>
+          </Tabs>
+        </MenuList>
+      </Menu>
+    </Box>
   );
 };
 

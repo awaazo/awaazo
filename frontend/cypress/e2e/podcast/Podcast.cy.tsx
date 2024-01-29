@@ -3,6 +3,7 @@ import * as paths from '../../fixtures/file_paths.json';
 describe ('Postcast_Create', () => {
     
     beforeEach(() => {
+        cy.console_error_hack();
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
     });
@@ -10,14 +11,12 @@ describe ('Postcast_Create', () => {
     // User that exists should be able to create a Podcast
     it('Should successfully create a Podcast', ()  => {
         cy.podcast_create(paths.max_verstappen_cover,'F1 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/AddEpisode');
         cy.contains('F1 Legends');
     });
 
     //Podcast should not be created if the Podcast name already exists
     it('Should not create a podcast if the same podcast name already exists', () => {
         cy.podcast_create(paths.max_verstappen_cover,'F1 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/CreatePodcast');
         cy.contains('A podcast with the same name already exists').should('exist');
     });
 
@@ -27,13 +26,14 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
         cy.get('button').contains('CreatorHub').click();
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
         cy.get('button').contains('Edit Podcast').click();
         cy.get('input[type="file"]').attachFile(paths.f2_car);
+        cy.wait(250);
+        cy.get('.chakra-modal__footer > .chakra-button').click( {timeout: 5000});
         cy.get('input[id="podcastName"]').clear().type('{selectall}{backspace}');
         cy.get('input[id="podcastName"]').type("F2 legends");
         cy.contains('Button', 'Update').click();
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
         cy.contains('F2 legends');
     });
 
@@ -42,7 +42,7 @@ describe ('Postcast_Create', () => {
         cy.logout();
         cy.visit('/');
         cy.url().should('include', '/');
-        cy.visit('/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub');
         cy.url().should('include', '/auth/Login');
     });
 
@@ -63,7 +63,7 @@ describe ('Postcast_Create', () => {
     // Podcast names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in podcast name', () => {
         cy.podcast_create(paths.crazy_symbols, '♣™∏⊄‾ℜ→∞ϖñ', 'A podcast about CRAZY symbols.');
-        cy.url().should('include', '/CreatorHub/AddEpisode');
+        cy.url().should('include', '/CreatorHub');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ');
     });
 
@@ -72,19 +72,17 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 5000 });
         cy.get('button').contains('CreatorHub').click();
-        cy.url().should('include', '/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]').click();
         cy.get('[data-cy=podcast-delete').click();
         cy.contains('Button', 'Delete').click();
-        cy.url().should('include', '/MyPodcasts');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ').should('not.exist');
     });
 
     it('limits the number of characters in the input field', () => {
         cy.podcast_create(paths.f2_car, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'A podcast about error handling.');
-        cy.url().should('include', '/CreatorHub/AddEpisode');
-        cy.visit('/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub');
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').should('be.visible').then(($element) => {

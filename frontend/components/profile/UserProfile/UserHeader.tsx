@@ -79,6 +79,7 @@ export default function Header({ userId }) {
   return (
     <>
       <VStack
+        width={"100%"}
         spacing={4}
         px={2}
         alignItems={{ base: "center", sm: "flex-start" }}

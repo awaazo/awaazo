@@ -44,7 +44,7 @@ public class ProfileTests
         _authServiceMock = new();
         _httpRequestMock = new();
         _loggerMock = new();
-        _profileService = new(config, _dbContextMock.Object, new EmailService(config));
+        _profileService = new(_dbContextMock.Object);
         _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -69,7 +69,7 @@ public class ProfileTests
         _authServiceMock = new();
         _httpRequestMock = new();
         _loggerMock = new();
-        _profileService = new(config, _dbContextMock.Object, new EmailService(config));
+        _profileService = new(_dbContextMock.Object);
         _profileController = new(_authServiceMock.Object, _profileService, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()

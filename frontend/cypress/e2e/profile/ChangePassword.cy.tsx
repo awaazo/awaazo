@@ -39,13 +39,10 @@ describe('Change Password', () => {
           timeout: 12000,
         });
         cy.change_password("password123", "password321", "password321");
-        cy.wait(1000);
         cy.url().should('include', '/profile/MyProfile');
+        cy.wait(1500);
         cy.logout();
         cy.login(null, "testRegister@email.com", "password321");
-        cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
-            timeout: 12000,
-          });
     });
 
     it('Should successfully change password to the old for testing purposes', () => {

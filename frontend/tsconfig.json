@@ -21,7 +21,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/navbar.jsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx"  ],
+, "components/navbar.jsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx", "components/shared/Navbar.tsx", "pages/api/gpt-response.js"  ],
   "exclude": [
     "node_modules"
   ]

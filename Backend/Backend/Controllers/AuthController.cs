@@ -6,7 +6,6 @@ using Backend.Services.Interfaces;
 using Backend.Controllers.Responses;
 using static Backend.Infrastructure.ControllerHelper;
 
-
 namespace Backend.Controllers;
 
 /// <summary>
@@ -204,5 +203,33 @@ public class AuthController : ControllerBase
             _logger.LogError(e, "");
             return BadRequest("There was an issue checking this email");
         }       
+    }
+
+    /// <summary>
+    /// Sent forgot password email
+    /// </summary>
+    /// <param name="request"> Request object containing the email</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [AllowAnonymous]
+    [HttpPost("sentForgotPasswordEmail")]
+    public async Task<ActionResult> SentForgotPasswordEmail([FromBody] ForgotPasswordEmailRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SentForgotPasswordEmail));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _authService.SentForgotPasswordEmail(request.Email);
+            return Ok($"Email sent to {request.Email}");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(SentForgotPasswordEmail));
+            return BadRequest(e.Message);
+        }
     }
 }
