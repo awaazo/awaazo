@@ -49,7 +49,7 @@ describe("Register", () => {
     });
   });
 
-  it.only("Should Successfully Register & should fail setup by leaving fields blank", function () {
+  it("Should Successfully Register & should fail setup by leaving fields blank", function () {
     cy.register_user(
       "testRegister1@email.com",
       "TestUsername1",
