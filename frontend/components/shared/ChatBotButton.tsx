@@ -1,8 +1,6 @@
-import { Box, Button, Tooltip } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { AiFillMessage } from "react-icons/ai";
-import { FaRobot } from "react-icons/fa";
-import { RiRobot2Line } from "react-icons/ri";
+import React from "react";
+import { Button, Tooltip } from "@chakra-ui/react";
+import { RiRobot2Fill } from "react-icons/ri";
 
 import { useChatBot } from "../../utilities/ChatBotContext";
 
@@ -18,7 +16,7 @@ const ChatBotButton = ({ episodeId }) => {
     <>
       <Tooltip label="ChatBot" aria-label="ChatBot">
         <Button padding={"0px"} variant={"ghost"} onClick={handleClick}>
-          <RiRobot2Line size="20px" />
+          <RiRobot2Fill size="20px" />
         </Button>
       </Tooltip>
     </>
