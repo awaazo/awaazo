@@ -16,7 +16,6 @@ const Sidebar = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [reload, setReload] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
-  const [imageUrls, setImageUrls] = useState({});
 
   const handleReload = () => {
     setReload(!reload);
@@ -27,13 +26,7 @@ const Sidebar = () => {
   const handleModalClick = (event) => {
     event.stopPropagation();
   };
-  useEffect(() => {
-    const newImageUrls = {};
-    playlists.forEach((playlist) => {
-      newImageUrls[playlist.id] = `https://source.unsplash.com/random/100x100?sig=${playlist.id}`;
-    });
-    setImageUrls(newImageUrls);
-  }, [playlists]);
+
 
   // Queue and Create Playlist Modals
   const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
@@ -132,7 +125,7 @@ const Sidebar = () => {
               {userPlaylists.map((playlist) => (
                 <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                   <Flex align="center" padding={1} pl={2} borderRadius="10px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
-                    <Image src={imageUrls[playlist.id] || "https://via.placeholder.com/100"} alt="Playlist" boxSize={collapsed ? "24px" : "12"} mr={collapsed ? "0" : "2"} borderRadius="8" />
+                    <Image src={playlist.coverArt} alt="Playlist Cover" boxSize={collapsed ? "24px" : "12"} objectFit="cover" mr={collapsed ? "0" : "2"} borderRadius="8" />
                     {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
                   </Flex>
                 </Link>

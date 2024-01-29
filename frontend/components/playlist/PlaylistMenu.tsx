@@ -31,7 +31,7 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+
 import { useRouter } from "next/router";
 import ShareComponent from "../social/Share";
 
@@ -42,8 +42,9 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isDeleting, setDeleting] = useState(false);
   const [name, setName] = useState(playlist.name);
+  const [coverArt, setcoverArt] = useState(playlist.coverArt);
   const [description, setDescription] = useState(playlist.description);
-//   const [CoverImage, setCoverImage] = useState(playlist.coverimg);
+
   const router = useRouter();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
@@ -134,7 +135,8 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     const request = {
       name: name,
       description: description,
-      privacy: "false", // Adjust based on your actual implementation
+      privacy: "false",
+      coverArt: coverArt,
     };
 
     const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
@@ -235,21 +237,19 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               </MenuItem>
             </>
           )}
-        <MenuItem
-          onClick={onShareModalOpen}
-          _hover={{
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            fontWeight: "bold",
-          }}
-          style={{
-            backgroundColor: "transparent",
-          }}
-        >
-          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
-        </MenuItem>
-
+          <MenuItem
+            onClick={onShareModalOpen}
+            _hover={{
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              fontWeight: "bold",
+            }}
+            style={{
+              backgroundColor: "transparent",
+            }}
+          >
+            Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
+          </MenuItem>
         </MenuList>
-
       </Menu>
       <Modal isOpen={isShareModalOpen} onClose={onShareModalClose} isCentered>
         <ModalOverlay />
@@ -261,7 +261,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      
+
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
@@ -291,14 +291,14 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalBody>
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)}  focusBorderColor="brand.100"/>
+              <Input value={name} onChange={(e) => setName(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
             <FormControl mt={4}>
-              <FormLabel>Cover Image</FormLabel>
+              {/* <Input type="file" onChange={handleCoverArtChange} /> */}
               {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
             </FormControl>
           </ModalBody>

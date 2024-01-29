@@ -20,7 +20,6 @@ const ProfileSetup: React.FC = () => {
   const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarImage, setAvatarImage] = useState<string | null>(null);
   const [setupError, setSetupError] = useState("");
   const router = useRouter();
 
@@ -41,7 +40,6 @@ const ProfileSetup: React.FC = () => {
       const blob = await response.blob();
       const file = new File([blob], "avatar.jpg", { type: blob.type });
       setAvatarFile(file);
-      setAvatarImage(addedImageUrl);
     } catch (error) {
       console.error("Error converting image URL to File:", error);
     }
@@ -97,21 +95,8 @@ const ProfileSetup: React.FC = () => {
   const SetupPage = () => (
     <>
       <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <Img
-          src={LogoWhite.src}
-          alt="logo"
-          style={{
-            maxHeight: "10em",
-            maxWidth: "3em",
-          }}
-        />
-        <Text
-          style={{
-            fontSize: "1.5rem",
-            textAlign: "center",
-            marginTop: "1rem",
-          }}
-        >
+        <Img src={LogoWhite.src} alt="logo" maxHeight="10em" maxWidth="3em" />
+        <Text fontSize="1.5rem" textAlign="center" marginTop="1rem">
           Hey, @{user.username}! Let's get you set up.
         </Text>
 
@@ -123,7 +108,7 @@ const ProfileSetup: React.FC = () => {
             {setupError && <Text color="red.500">{setupError}</Text>}
 
             <FormControl position="relative">
-              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} style={{ alignSelf: "center" }} />
+              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} alignSelf = "center" />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {displayNameCharacterCount}/25
               </Text>

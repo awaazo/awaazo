@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Flex, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Img, Flex, Spacer, Text, VStack } from "@chakra-ui/react";
 import type { Episode } from "../../utilities/Interfaces";
 import type { Playlist } from "../../utilities/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
@@ -60,7 +60,7 @@ export default function Playlist() {
             <Flex justifyContent="space-between" align="center">
               {/* Playlist Name */}
               <Flex alignItems="center">
-                <RiPlayList2Fill size={"30px"} />
+                <Img src={playlist.coverArt ? playlist.coverArt : "https://images.unsplash.com/photo-1605286111427-67133b091012?q=80&w=2148&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt="Playlist Cover" boxSize="150px" objectFit="cover" borderRadius="md" />
                 <Text fontWeight="medium" fontSize="30px" ml={2}>
                   {playlist.name}
                 </Text>
