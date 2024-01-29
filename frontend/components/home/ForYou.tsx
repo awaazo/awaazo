@@ -36,11 +36,14 @@ const ForYou: React.FC = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
-        <HStack alignSelf={"center"} spacing={5} width="100%">
+        <SimpleGrid
+          columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
+          spacing={5}
+        >
           {podcasts.map((podcast) => (
             <PodcastCard key={podcast.id} podcast={podcast} />
           ))}
-        </HStack>
+        </SimpleGrid>
       ) : (
         <Text>No podcasts available</Text>
       )}
