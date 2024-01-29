@@ -8,11 +8,7 @@ export default class EndpointHelper {
    * @returns The address of the backend
    */
   static getBackendAddress = () => {
-    if (
-      process.env.NODE_ENV === "development" ||
-      process.env.NODE_ENV === "test"
-    )
-      return process.env.NEXT_PUBLIC_BASE_URL;
+    if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") return process.env.NEXT_PUBLIC_BASE_URL;
     else return process.env.NEXT_PUBLIC_BASE_URL;
   };
 
@@ -57,7 +53,7 @@ export default class EndpointHelper {
    * @returns The Google SSO Endpoint
    */
   static getGoogleSSOEndpoint = () => {
-    return this .getBackendAddress() + "/auth/googleSSO";
+    return this.getBackendAddress() + "/auth/googleSSO";
   };
 
   // --------------------------------
@@ -101,21 +97,16 @@ export default class EndpointHelper {
    * @returns The Profile search Endpoint
    */
   static getProfileSearchEndpoint = (searchTerm, page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/profile/search?searchterm=" +
-      searchTerm +
-      "&page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/profile/search?searchterm=" + searchTerm + "&page=" + page + "&pageSize=" + pageSize;
   };
 
   static getChangePasswordEndpoint = () => {
     return this.getBackendAddress() + "/profile/changePassword";
-  }
+  };
 
+  static getforgotPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/sentForgotPasswordEmail";
+  };
   // --------------------------------
   // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
   // --------------------------------
@@ -133,13 +124,7 @@ export default class EndpointHelper {
    * @returns The Podcast myPodcasts Endpoint
    */
   static getPodcastMyPodcastsEndpoint = (page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/podcast/myPodcasts?page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/podcast/myPodcasts?page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -147,13 +132,7 @@ export default class EndpointHelper {
    * @returns The Podcast all podcasts Endpoint
    */
   static getPodcastAllPodcastsEndpoint = (page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/podcast/all?page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/podcast/all?page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -177,15 +156,7 @@ export default class EndpointHelper {
    * @returns The Podcast myPodcasts Endpoint
    */
   static getPodcastByUserIdEndpoint = (userId, page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/podcast/userPodcasts?userId=" +
-      userId +
-      "&page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/podcast/userPodcasts?userId=" + userId + "&page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -193,13 +164,7 @@ export default class EndpointHelper {
    * @returns The Podcasts by tags Endpoint
    */
   static getByTagsPodcastEndpoint = (page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/podcast/byTags?page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/podcast/byTags?page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -207,15 +172,7 @@ export default class EndpointHelper {
    * @returns The Podcast search Endpoint
    */
   static getSearchPodcastEndpoint = (searchTerm, page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/podcast/search?searchterm=" +
-      searchTerm +
-      "&page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/podcast/search?searchterm=" + searchTerm + "&page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -275,9 +232,7 @@ export default class EndpointHelper {
    */
 
   static getPodcastRatingDeleteEndpoint = (podcastId) => {
-    return (
-      this.getBackendAddress() + "/social/deleteRating?podcastId=" + podcastId
-    );
+    return this.getBackendAddress() + "/social/deleteRating?podcastId=" + podcastId;
   };
   /**
    * Returns the Podcast rating endpoint.
@@ -293,9 +248,7 @@ export default class EndpointHelper {
    */
 
   static getPodcastReviewDeleteEndpoint = (podcastId) => {
-    return (
-      this.getBackendAddress() + "/social/deleteReview?podcastId=" + podcastId
-    );
+    return this.getBackendAddress() + "/social/deleteReview?podcastId=" + podcastId;
   };
 
   /**
@@ -303,9 +256,7 @@ export default class EndpointHelper {
    * @returns The Podcast COMMENTS + LIKES Endpoint
    */
   static getCommentEndpoint = (episodeOrCommentId: string) => {
-    return (
-      this.getBackendAddress() + "/social/" + episodeOrCommentId + "/comment"
-    );
+    return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/comment";
   };
 
   /**
@@ -329,9 +280,7 @@ export default class EndpointHelper {
    * @returns The Podcast unlike Endpoint
    */
   static getUnlikeEndpoint = (episodeOrCommentId) => {
-    return (
-      this.getBackendAddress() + "/social/" + episodeOrCommentId + "/unLike"
-    );
+    return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/unLike";
   };
 
   /**
@@ -339,21 +288,17 @@ export default class EndpointHelper {
    * @returns The Podcast isLiked Endpoint
    */
   static getIsLikedEndpoint = (episodeOrCommentId) => {
-    return (
-      this.getBackendAddress() + "/social/" + episodeOrCommentId + "/isLiked"
-    );
+    return this.getBackendAddress() + "/social/" + episodeOrCommentId + "/isLiked";
   };
 
   /**
    * Returns the Episode Play endpoint.
    * @returns The Episode Play Endpoint
    */
-  
 
   // --------------------------------
   // BOOKMARKS ENDPOINTS
   // --------------------------------
-
 
   /**
    * Returns the Episode Bookmarks endpoint.
@@ -369,9 +314,7 @@ export default class EndpointHelper {
    * */
 
   static getBookmarkAddEndpoint = (episodeId) => {
-    return (
-      this.getBackendAddress() + "/bookmark/" + episodeId + "/add"
-    );
+    return this.getBackendAddress() + "/bookmark/" + episodeId + "/add";
   };
 
   /**
@@ -379,15 +322,10 @@ export default class EndpointHelper {
    * @returns The Episode Delete Bookmark Endpoint
    * */
   static getBookmarkDeleteEndpoint = (bookmarkId) => {
-    return (
-      this.getBackendAddress() + "/bookmark/" + bookmarkId + "/delete"
-    );
+    return this.getBackendAddress() + "/bookmark/" + bookmarkId + "/delete";
   };
 
-  static getPodcastEpisodePlayEndpoint = (
-    podcastId: string,
-    episodeId: string,
-  ) => {
+  static getPodcastEpisodePlayEndpoint = (podcastId: string, episodeId: string) => {
     return `${this.getBackendAddress()}/podcast/${podcastId}/${episodeId}/getAudio`;
   };
 
@@ -419,9 +357,7 @@ export default class EndpointHelper {
    * @returns The Subscribe Endpoint
    */
   static addSubscriptionEndpoint = (PodcastId) => {
-    return (
-      this.getBackendAddress() + "/subscription/" + PodcastId + "/subscribe"
-    );
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/subscribe";
   };
 
   /**
@@ -429,9 +365,7 @@ export default class EndpointHelper {
    * @returns The Unsubscribe Endpoint
    */
   static addUnsubscriptionEndpoint = (PodcastId) => {
-    return (
-      this.getBackendAddress() + "/subscription/" + PodcastId + "/unsubscribe"
-    );
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/unsubscribe";
   };
 
   /**
@@ -439,9 +373,7 @@ export default class EndpointHelper {
    * @returns The isSubscribed Endpoint
    */
   static getIsSubscribedEndpoint = (PodcastId) => {
-    return (
-      this.getBackendAddress() + "/subscription/" + PodcastId + "/IsSubscribed"
-    );
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/IsSubscribed";
   };
 
   /**
@@ -457,12 +389,7 @@ export default class EndpointHelper {
    * @returns The Podcast Subscriptions Endpoint
    */
   static getAllPodcastSubscriptionsEndpoint = (PodcastId) => {
-    return (
-      this.getBackendAddress() +
-      "/subscription/" +
-      PodcastId +
-      "/GetAllPodcastSubscriber"
-    );
+    return this.getBackendAddress() + "/subscription/" + PodcastId + "/GetAllPodcastSubscriber";
   };
 
   // --------------------------------
@@ -525,9 +452,7 @@ export default class EndpointHelper {
    * @returns The get RemoveFromPlaylist Endpoint
    * */
   static getRemoveFromPlaylistEndpoint = (playlistID) => {
-    return (
-      this.getBackendAddress() + "/playlist/" + playlistID + "/removeEpisodes"
-    );
+    return this.getBackendAddress() + "/playlist/" + playlistID + "/removeEpisodes";
   };
 
   /**
@@ -543,13 +468,7 @@ export default class EndpointHelper {
    * @returns The get myPlaylists Endpoint
    * */
   static getMyPlaylistsEndpoint = (page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/playlist/myPlaylists?page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/playlist/myPlaylists?page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -557,15 +476,7 @@ export default class EndpointHelper {
    * @returns The get UserPlaylists Endpoint
    * */
   static getUserPlaylistsEndpoint = (userId, page, pageSize) => {
-    return (
-      this.getBackendAddress() +
-      "/playlist/" +
-      userId +
-      "/getUserPlaylists?page=" +
-      page +
-      "&pageSize=" +
-      pageSize
-    );
+    return this.getBackendAddress() + "/playlist/" + userId + "/getUserPlaylists?page=" + page + "&pageSize=" + pageSize;
   };
 
   /**
@@ -594,7 +505,6 @@ export default class EndpointHelper {
   static getTranscriptEndpoint = (episodeId) => {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript";
   };
-
 
   // --------------------------------
   // ANNOTATIONS ENDPOINT
@@ -649,6 +559,4 @@ export default class EndpointHelper {
   static getMetricsEndpoint = (podcastId) => {
     return this.getBackendAddress() + "/podcast/" + podcastId + "/metrics";
   };
-
 }
-

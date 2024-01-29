@@ -12,6 +12,23 @@ namespace Backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EpisodeChatMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsPrompt = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EpisodeChatMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForgetPasswordTokens",
                 columns: table => new
                 {
@@ -682,6 +699,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "CommentReplyLikes");
+
+            migrationBuilder.DropTable(
+                name: "EpisodeChatMessages");
 
             migrationBuilder.DropTable(
                 name: "EpisodeLikes");
