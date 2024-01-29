@@ -10,7 +10,7 @@ describe('Review', () => {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
         cy.podcast_create(paths.max_verstappen_cover,'F2 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
     });
 
     it('Should successfully add a review', function(){

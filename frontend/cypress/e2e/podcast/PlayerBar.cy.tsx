@@ -136,7 +136,7 @@ describe("PlayerBar", () => {
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
         cy.wait(1000);
-        cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub').url().should('include', '/CreatorHub');
         cy.wait(1000);
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:1"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
@@ -146,7 +146,7 @@ describe("PlayerBar", () => {
         cy.visit("/").url().should('include', '/');
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('button[data-cy^="like-button-index:"]').last().click();
-        cy.visit('/CreatorHub/MyPodcasts').url().should('include', '/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub').url().should('include', '/CreatorHub');
         cy.get('[data-cy="episode-metric-Has science gone too far?-likes:0"]').should('be.visible').invoke('text').then((logText) => {
             const likeCount = logText.slice(-2).trim();
             expect(likeCount).to.equal(numLikesAfter); 

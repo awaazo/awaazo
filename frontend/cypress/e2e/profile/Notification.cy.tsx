@@ -9,7 +9,7 @@ describe("Notification", () => {
     it('Should create a Podcast so I can get a notification', function () {
         cy.login(null, 'testRegister@email.com', 'password123');
         cy.podcast_create(paths.max_verstappen_cover, 'F2 Legends', 'A podcast about F1 veterans and their rise to glory.')
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
     });
     
     it('Should subscribe to a Podcast', () => {

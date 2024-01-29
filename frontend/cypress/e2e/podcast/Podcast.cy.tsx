@@ -26,7 +26,7 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible');
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click();
         cy.get('button').contains('CreatorHub').click();
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
         cy.get('button').contains('Edit Podcast').click();
         cy.get('input[type="file"]').attachFile(paths.f2_car);
         cy.wait(250);
@@ -42,7 +42,7 @@ describe ('Postcast_Create', () => {
         cy.logout();
         cy.visit('/');
         cy.url().should('include', '/');
-        cy.visit('/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub');
         cy.url().should('include', '/auth/Login');
     });
 
@@ -63,7 +63,7 @@ describe ('Postcast_Create', () => {
     // Podcast names should be able to include special symbols not bound to ASCII characters
     it('Should accept special symbols in podcast name', () => {
         cy.podcast_create(paths.crazy_symbols, '♣™∏⊄‾ℜ→∞ϖñ', 'A podcast about CRAZY symbols.');
-        cy.url().should('include', '/CreatorHub/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ');
     });
 
@@ -72,18 +72,17 @@ describe ('Postcast_Create', () => {
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should('be.visible', { timeout: 5000 });
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().click({ timeout: 5000 });
         cy.get('button').contains('CreatorHub').click();
-        cy.url().should('include', '/MyPodcasts');
+        cy.url().should('include', '/CreatorHub');
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-♣™∏⊄‾ℜ→∞ϖñ]').click();
         cy.get('[data-cy=podcast-delete').click();
         cy.contains('Button', 'Delete').click();
-        cy.url().should('include', '/MyPodcasts');
         cy.contains('♣™∏⊄‾ℜ→∞ϖñ').should('not.exist');
     });
 
     it('limits the number of characters in the input field', () => {
         cy.podcast_create(paths.f2_car, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'A podcast about error handling.');
-        cy.visit('/CreatorHub/MyPodcasts');
+        cy.visit('/CreatorHub');
         cy.get('[data-cy=podcast-image-f2-legends').click();
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').click();
         cy.get('[data-cy=podcast-image-aaaaaaaaaaaaaaaaaaaaaaaaa').should('be.visible').then(($element) => {
