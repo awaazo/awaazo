@@ -1217,6 +1217,16 @@ public class PodcastService : IPodcastService
 
     #region Episode Chat
 
+    /// <summary>
+    /// Gets the episode chat for the given episode and user.
+    /// </summary>
+    /// <param name="page">The page of the chat to get</param>
+    /// <param name="pageSize">The size of the page</param>
+    /// <param name="episodeId">The id of the episode for which to get the chat</param>
+    /// <param name="user">The user for which to get the chat</param>
+    /// <param name="domainUrl">The domain url</param>
+    /// <returns>EpisodeChatResponse object containing the chat messages</returns>
+    /// <exception cref="Exception">If the episode does not exist</exception> 
     public async Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
@@ -1225,7 +1235,7 @@ public class PodcastService : IPodcastService
         // Get the episode chat messages
         List<EpisodeChatMessage> chatMessages = await _db.EpisodeChatMessages
             .Where(m => m.EpisodeId == episodeId)
-            .OrderByDescending(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt)
             .Skip(page * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -1233,6 +1243,7 @@ public class PodcastService : IPodcastService
         // Return the chat with the messages
         return new EpisodeChatResponse(chatMessages, user, episodeId, domainUrl);
     }
+<<<<<<< Updated upstream
 
     /// <summary>
     /// Prompt the episode chat with a question and get a response.
@@ -1243,6 +1254,9 @@ public class PodcastService : IPodcastService
     /// <param name="domainUrl"> The domain URL to use for the response.</param>
     /// <returns> The response from the chat.</returns>
     /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
+=======
+    
+>>>>>>> Stashed changes
     public async Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
