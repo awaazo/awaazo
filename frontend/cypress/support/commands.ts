@@ -93,8 +93,9 @@ Cypress.Commands.add('register_user', (email, username, password, confirmPasswor
 Cypress.Commands.add('setup_user', (filepath, displayName, bio) => {
   cy.url().should('include', '/profile/ProfileSetup', { timeout: 5000 });
   cy.get('input[type="file"]').attachFile(filepath);
+  cy.wait(250);
   cy.get('button').contains('Done').click();
-  cy.wait(400);
+  cy.wait(750);
   cy.get('input[id="displayName"]').type(displayName, { timeout: 12000 });
   cy.get('Textarea[id="bio"]').type(bio);
   cy.get(':nth-child(5) > .chakra-button').click();

@@ -92,6 +92,8 @@ describe("PlayerBar", () => {
         timeout: 5000,
         });
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
+        cy.get('[data-cy="play-previous"]').should('be.visible').click({timeout : 5000});
+        cy.wait(500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(5500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
@@ -113,6 +115,7 @@ describe("PlayerBar", () => {
         });
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });
         cy.get('[data-cy="play-previous"]').should('be.visible').click({timeout : 5000});
+        cy.wait(500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
         cy.wait(15500);
         cy.get('[data-cy="play-pause-button"]').should('be.visible').click({timeout : 5000});
