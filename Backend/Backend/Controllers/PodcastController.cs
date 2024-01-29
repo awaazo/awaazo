@@ -359,15 +359,35 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetMetrics(user, podcastId));
+            return Ok(await _podcastService.GetMetrics(user, podcastId, GetDomainUrl(HttpContext)));
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }
-    
-    #endregion 
+
+    /// <summary>
+    /// Gets recent podcasts
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("getRecentPodcasts")]
+    public async Task<ActionResult> GetRecentPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+
+            return Ok(await _podcastService.GetRecentPodcasts(page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion
 
     #region Episode
 
@@ -666,6 +686,69 @@ public class PodcastController : ControllerBase
         }
     }
 
+    #region Episode Chat
+
+    /// <summary>
+    /// Gets the chat of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a chat is requested.</param>
+    /// <param name="page">The page number to return.</param>
+    /// <param name="pageSize">The number of results per page.</param>
+    /// <returns>The chat or null if its not ready.</returns>
+    [HttpGet("{episodeId}/getEpisodeChat")]
+    public async Task<IActionResult> GetEpisodeChat(Guid episodeId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeChat));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetEpisodeChatAsync(page,pageSize,episodeId,user,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeChat));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Adds a chat message to an episode.
+    /// </summary>
+    /// <param name="request">Request object containing the episode chat details.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    /// <remarks>
+    /// The request object should contain the following fields:
+    /// - EpisodeId: The ID of the episode to add the chat to.
+    /// - Prompt: The prompt to add to the episode chat.
+    /// </remarks>
+    [HttpPost("addEpisodeChat")]
+    public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddEpisodeChat));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.PromptEpisodeChatAsync(request.EpisodeId,user,request.Prompt,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e:e, callerName: nameof(AddEpisodeChat));
+            return BadRequest(e.Message);
+        }
+    }
+
+    #endregion Episode Chat
+
     #region Transcript
 
     /// <summary>
@@ -746,6 +829,26 @@ public class PodcastController : ControllerBase
         catch(Exception e)
         {
             this.LogErrorAPICall(_logger, e:e, callerName: nameof(EditEpisodeTranscriptLines));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets recent Episodes
+    /// </summary>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpGet("getRecentEpisodes")]
+    public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+
+            return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }

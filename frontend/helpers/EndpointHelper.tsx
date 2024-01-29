@@ -58,6 +58,7 @@ export default class EndpointHelper {
    */
   static getGoogleSSOEndpoint = () => {
     return this.getBackendAddress() + "/auth/googleSSO";
+    return this.getBackendAddress() + "/auth/googleSSO";
   };
 
   // --------------------------------
@@ -116,6 +117,9 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/profile/changePassword";
   };
 
+  static getforgotPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/sentForgotPasswordEmail";
+  };
   // --------------------------------
   // PODCAST ENDPOINTS (INCLUDES PODCAST+EPISODES)
   // --------------------------------

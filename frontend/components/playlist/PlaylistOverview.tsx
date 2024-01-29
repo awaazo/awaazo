@@ -29,7 +29,6 @@ import {
 import { Episode, Playlist } from "../../utilities/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../cards/EpisodeCard";
-import PlaylistCard from "../cards/PlaylistCard";
 import { RiPlayList2Fill } from "react-icons/ri";
 import { convertTime } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
@@ -41,9 +40,8 @@ import { MdDelete, MdIosShare } from "react-icons/md";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
-import PodcastHelper from "../../helpers/PodcastHelper";
 import { PlaylistEditRequest } from "../../utilities/Requests";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();
@@ -56,15 +54,11 @@ const PlaylistOverview = ({ episode, playlistId }) => {
   const onShareModalOpen = () => setIsShareModalOpen(true);
   // Form values
   const [playlistName, setPlaylistName] = useState("");
-  const [playlistNameCharacterCount, setPlaylistNameCharacterCount] =
-    useState<number>(0);
+  const [playlistNameCharacterCount, setPlaylistNameCharacterCount] = useState<number>(0);
   const [playlistDescription, setPlaylistDescription] = useState("");
-  const [
-    playlistDescriptionCharacterCount,
-    setPlaylistDescriptionCharacterCount,
-  ] = useState<number>(0);
+  const [playlistDescriptionCharacterCount, setPlaylistDescriptionCharacterCount] = useState<number>(0);
   const [isPrivate, setIsPrivate] = useState(false);
-
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
   const [reload, setReload] = useState(false);
 
   // Form errors
@@ -183,15 +177,18 @@ const PlaylistOverview = ({ episode, playlistId }) => {
   };
 
   // Ensures playlist description is not longer than 250 characters
-  const handlePlaylistDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const handlePlaylistDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDesc = e.target.value.slice(0, 250);
     setPlaylistDescription(newDesc);
     setPlaylistDescriptionCharacterCount(newDesc.length);
   };
 
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleCoverArtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files[0];
+    setPlaylistCoverArt(file);
+  };
 
   // Handle logic for editing a playlist
   const handleEditPlaylist = async (e: FormEvent) => {
@@ -206,13 +203,11 @@ const PlaylistOverview = ({ episode, playlistId }) => {
       name: playlistName,
       description: playlistDescription,
       privacy: isPrivate ? "Private" : "Public",
+      coverArt: playlistCoverArt,
     };
 
     // Send the request
-    const response = await PlaylistHelper.playlistEditRequest(
-      request,
-      playlist.id,
-    );
+    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
 
     if (response.status === 200) {
       // Success, refresh sidebar
@@ -245,33 +240,30 @@ const PlaylistOverview = ({ episode, playlistId }) => {
             backgroundColor: "rgba(255, 255, 255, 0.4)",
             fontWeight: "bold",
           }}
-          style={{ backgroundColor: "transparent" }}
+          backgroundColor="transparent"
           onClick={() => {
             setIsEditing(true);
             handleMenuToggle();
           }}
-          
         >
-          Edit "{playlist.name}"{" "}
-          <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} data-cy={`edit-button`} />
+          Edit "{playlist.name}" <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} data-cy={`edit-button`} />
         </MenuItem>
         <MenuItem
           _hover={{
             backgroundColor: "rgba(255, 255, 255, 0.4)",
             fontWeight: "bold",
           }}
-          style={{
-            backgroundColor: "transparent",
-            color: "red",
-          }}
+          backgroundColor="transparent"
+          color="red"
           onClick={onOpen}
         >
-          Delete "{playlist.name}"{" "}
-          <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`}/>
+          Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`} />
         </MenuItem>
       </>
     );
   };
+
+
 
   return (
     <VStack spacing="4" align="stretch">
@@ -285,20 +277,8 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                 {isEditing ? (
                   <>
                     <FormControl position="relative">
-                      <Input
-                        placeholder="Enter Playlist Name"
-                        rounded="lg"
-                        pr="50px"
-                        value={playlistName}
-                        onChange={handlePlaylistNameChange}
-                      />
-                      <Text
-                        position="absolute"
-                        right="8px"
-                        bottom="8px"
-                        fontSize="sm"
-                        color="gray.500"
-                      >
+                      <Input placeholder="Enter Playlist Name" rounded="lg" pr="50px" value={playlistName} onChange={handlePlaylistNameChange} />
+                      <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                         {playlistNameCharacterCount}/25
                       </Text>
                     </FormControl>
@@ -314,11 +294,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                   <Text mr="2" fontSize="sm">
                     Private:
                   </Text>
-                  <Switch
-                    isChecked={isPrivate}
-                    onChange={() => setIsPrivate(!isPrivate)}
-                    colorScheme="purple"
-                  />
+                  <Switch isChecked={isPrivate} onChange={() => setIsPrivate(!isPrivate)} colorScheme="purple" />
                 </>
               ) : (
                 playlist.privacy
@@ -330,18 +306,8 @@ const PlaylistOverview = ({ episode, playlistId }) => {
               {isEditing ? (
                 <>
                   <FormControl position="relative">
-                    <Textarea
-                      rounded="lg"
-                      value={playlistDescription}
-                      onChange={handlePlaylistDescriptionChange}
-                    />
-                    <Text
-                      position="absolute"
-                      right="8px"
-                      bottom="8px"
-                      fontSize="sm"
-                      color="gray.500"
-                    >
+                    <Textarea rounded="lg" value={playlistDescription} onChange={handlePlaylistDescriptionChange} />
+                    <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                       {playlistDescriptionCharacterCount}/250
                     </Text>
                   </FormControl>
@@ -361,9 +327,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                 >
                   Cancel
                 </Button>
-                <Button onClick={(e) => handleEditPlaylist(e)}>
-                  Update Playlist Info
-                </Button>
+                <Button onClick={(e) => handleEditPlaylist(e)}>Update Playlist Info</Button>
               </Box>
             ) : (
               <>
@@ -383,46 +347,24 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                   </Box>
                   <Box>
                     <Text color="gray.500">
-                      <Text fontWeight="bold">
-                        Created At:{" "}
-                        {new Date(playlist.createdAt).toLocaleDateString()}
-                      </Text>{" "}
+                      <Text fontWeight="bold">Created At: {new Date(playlist.createdAt).toLocaleDateString()}</Text>{" "}
                     </Text>
                     <Text color="gray.500">
-                      <Text fontWeight="bold">
-                        Updated At:{" "}
-                        {new Date(playlist.updatedAt).toLocaleDateString()}
-                      </Text>{" "}
+                      <Text fontWeight="bold">Updated At: {new Date(playlist.updatedAt).toLocaleDateString()}</Text>{" "}
                     </Text>
                   </Box>
                 </Flex>
                 <Flex mt={4}>
-                  <Button
-                    onClick={() => handlePlaylistClick()}
-                    leftIcon={<FaPlay />}
-                  >
+                  <Button onClick={() => handlePlaylistClick()} leftIcon={<FaPlay />}>
                     Play
                   </Button>
-                  <Button
-                    onClick={() => handlePlaylistShuffleClick()}
-                    leftIcon={<ImShuffle />}
-                    ml={2}
-                  >
+                  <Button onClick={() => handlePlaylistShuffleClick()} leftIcon={<ImShuffle />} ml={2}>
                     Shuffle
                   </Button>
                   <Spacer />
                   <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
                     <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-                      <MenuButton
-                        as={IconButton}
-                        aria-label="Options"
-                        icon={<IoIosMore />}
-                        variant="ghost"
-                        fontSize="20px"
-                        ml={1}
-                        _hover={{ boxShadow: "lg" }}
-                        onClick={handleMenuToggle}
-                      />
+                      <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
                       <MenuList
                         style={{
                           backgroundColor: "rgba(50, 50, 50, 0.8)",
@@ -439,11 +381,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "transparent",
                           }}
                         >
-                          Play "{playlist.name}"{" "}
-                          <BsPlayFill
-                            size="20px"
-                            style={{ marginLeft: "auto", color: "white" }}
-                          />
+                          Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
                         <MenuItem
                           onClick={() => handleMenuItemClick("playNext")}
@@ -455,11 +393,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "transparent",
                           }}
                         >
-                          Play Next{" "}
-                          <TbPlayerTrackNextFilled
-                            size="18px"
-                            style={{ marginLeft: "auto", color: "white" }}
-                          />
+                          Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
                         <MenuItem
                           onClick={() => handleMenuItemClick("playLater")}
@@ -471,14 +405,9 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "transparent",
                           }}
                         >
-                          Play Later{" "}
-                          <BsFillSkipForwardFill
-                            size="18px"
-                            style={{ marginLeft: "auto", color: "white" }}
-                          />
+                          Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
-                        {playlist.isHandledByUser && <OptionsMenu />}{" "}
-                        <MenuDivider />
+                        {playlist.isHandledByUser && <OptionsMenu />} <MenuDivider />
                         <MenuItem
                           onClick={handleSharePlaylist}
                           _hover={{
@@ -489,25 +418,21 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "transparent",
                           }}
                         >
-                          Share{" "}
-                          <MdIosShare
-                            size="20px"
-                            style={{ marginLeft: "auto", color: "white" }}
-                          />
+                          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
                       </MenuList>
                     </Menu>
                   </Box>
                   <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
-                  <ModalOverlay />
+                    <ModalOverlay />
                     <ModalContent>
                       <ModalHeader>Share this Playlist</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
                         <ShareComponent content={playlist} contentType="playlist" />
                       </ModalBody>
-                  </ModalContent>
-              </Modal>
+                    </ModalContent>
+                  </Modal>
                 </Flex>
               </>
             )}
@@ -517,13 +442,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
               Episodes:
             </Text>
             {episodes && episodes.length > 0 ? (
-              episodes.map((episode: any) => (
-                <EpisodeCard
-                  episode={episode}
-                  inPlaylist={true}
-                  playlistId={playlist.id}
-                />
-              ))
+              episodes.map((episode: any) => <EpisodeCard episode={episode} inPlaylist={true} playlistId={playlist.id} />)
             ) : (
               <Text textAlign={"center"} mt={"5%"} fontWeight={"bold"}>
                 No episodes in this playlist yet
@@ -536,19 +455,14 @@ const PlaylistOverview = ({ episode, playlistId }) => {
               <ModalHeader>Confirm Deletion</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                Are you sure you want to delete the episode "{playlist.name}".{" "}
-                <br />
+                Are you sure you want to delete the episode "{playlist.name}". <br />
                 This action cannot be undone
               </ModalBody>
               <ModalFooter>
                 <Button variant="ghost" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button
-                  colorScheme="red"
-                  ml={3}
-                  onClick={() => handleDelete(playlist.id)}
-                >
+                <Button colorScheme="red" ml={3} onClick={() => handleDelete(playlist.id)}>
                   Delete
                 </Button>
               </ModalFooter>

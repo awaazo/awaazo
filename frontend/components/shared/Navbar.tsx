@@ -5,7 +5,6 @@ import { DefaultSession } from "next-auth";
 import {
   Box,
   Flex,
-  Input,
   Avatar,
   IconButton,
   Button,
@@ -20,7 +19,6 @@ import {
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
-  BellIcon,
   ArrowBackIcon,
   ArrowForwardIcon,
 } from "@chakra-ui/icons";
@@ -57,6 +55,7 @@ export default function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
+    backdropFilter: "blur(0px)",
     backdropFilter: "blur(0px)",
   });
 
@@ -112,13 +111,24 @@ export default function Navbar() {
   }, [session, isLoggedIn]);
 
   const handleLogOut = async () => {
-    AuthHelper.authLogoutRequest();
-    // User logged in via Google, so use next-auth's signOut
-    if (session) await signOut();
-    // Set Logged In Status to false and redirect to index page
-    setIsUserLoggedIn(false);
-    setIsUserSet(false);
-    window.location.href = indexPage;
+    try {
+      // Wait for the logout request to complete
+      await AuthHelper.authLogoutRequest();
+      console.log("Logout successful");
+      if (session) {
+        await signOut();
+      }
+
+      // Set Logged In Status to false
+      setIsUserLoggedIn(false);
+      setIsUserSet(false);
+
+      // Redirect to the index page
+      window.location.href = indexPage;
+    } catch (error) {
+      // Handle any errors that occur during logout
+      console.error("Logout failed", error);
+    }
   };
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
@@ -197,7 +207,7 @@ export default function Navbar() {
           <Link href="/profile/MyProfile" passHref>
             <MenuItem>My Account</MenuItem>
           </Link>
-          <Link href="/CreatorHub/MyPodcasts" passHref>
+          <Link href="/CreatorHub" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
         </MenuGroup>

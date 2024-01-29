@@ -10,8 +10,8 @@ import AppTheme from "../styles/AppTheme";
 import { useRouter } from "next/router";
 import ColorModeFix from "../styles/ColorModeFix";
 import { ChatBotProvider } from "../utilities/ChatBotContext";
-import { set } from "lodash";
-import ChatBot from "../components/shared/ChatBot";
+import  ChatBot  from "../components/shared/ChatBot";
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   ColorModeFix();
@@ -73,11 +73,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <ChatBotProvider>
             <Flex>
               {showSidebar && <Sidebar />}
+              <Box  zIndex={"1"}>
               {showChatBot && <ChatBot />}
+              </Box>
               <Box flex="1">
                 {showNavbar && <Navbar />}
                 <Component {...pageProps} />
-                <Box h="100px" />
+                <Box h="100px" zIndex={"2"}/>
                 {showPlayerBar && <PlayerBar />}
               </Box>
             </Flex>

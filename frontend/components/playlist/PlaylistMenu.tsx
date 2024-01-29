@@ -1,5 +1,5 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Menu,
@@ -24,7 +24,7 @@ import {
   FormLabel,
   Switch,
   Text,
-  Flex
+  Flex,
 } from "@chakra-ui/react";
 import { IoIosMore } from "react-icons/io";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -34,9 +34,10 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+import ImageAdder from "../tools/ImageAdder";
+
 import { useRouter } from "next/router";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer();
@@ -46,7 +47,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isDeleting, setDeleting] = useState(false);
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description);
-//   const [CoverImage, setCoverImage] = useState(playlist.coverimg);
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
   const router = useRouter();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
@@ -137,10 +138,14 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     const request = {
       name: name,
       description: description,
-      privacy: privacy,
+      privacy: "false",
+      coverArt: playlistCoverArt,
     };
 
-    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
+    const response = await PlaylistHelper.playlistEditRequest(
+      request,
+      playlist.id,
+    );
     if (response.status === 200) {
       toast({
         position: "top",
@@ -172,15 +177,35 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
 
   const [privacy, setPrivacy] = useState("Public");
   //const [isPrivate, setIsPrivate] = useState(playlist.privacy);
-  
+
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
 
+  // const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+  //   try {
+  //     const response = await fetch(addedImageUrl);
+  //     const blob = await response.blob();
+  //     const file = new File([blob], "avatar.jpg", { type: blob.type });
+  //     setPlaylistCoverArt(file);
+  //   } catch (error) {
+  //     console.error("Error converting image URL to File:", error);
+  //   }
+  // }, []);
+
   return (
     <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-        <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<IoIosMore />}
+          variant="ghost"
+          fontSize="20px"
+          ml={1}
+          _hover={{ boxShadow: "lg" }}
+          onClick={handleMenuToggle}
+        />
         <MenuList
           style={{
             backgroundColor: "rgba(50, 50, 50, 0.8)",
@@ -197,7 +222,11 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
+            Play "{playlist.name}"{" "}
+            <BsPlayFill
+              size="20px"
+              style={{ marginLeft: "auto", color: "white" }}
+            />
           </MenuItem>
           <MenuItem
             onClick={() => handleMenuItemClick("playNext")}
@@ -209,7 +238,11 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
+            Play Next{" "}
+            <TbPlayerTrackNextFilled
+              size="18px"
+              style={{ marginLeft: "auto", color: "white" }}
+            />
           </MenuItem>
           <MenuItem
             onClick={() => handleMenuItemClick("playLater")}
@@ -221,42 +254,68 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
+            Play Later{" "}
+            <BsFillSkipForwardFill
+              size="18px"
+              style={{ marginLeft: "auto", color: "white" }}
+            />
           </MenuItem>
 
           {playlist.isHandledByUser && (
             <>
               <MenuDivider />
               <MenuItem
-                _hover={{ backgroundColor: "rgba(255, 255, 255, 0.4)", fontWeight: "bold" }}
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  fontWeight: "bold",
+                }}
                 style={{ backgroundColor: "transparent" }}
                 onClick={() => {
                   openEditModal();
                   handleMenuToggle();
                 }}
               >
-                Edit "{playlist.name}" <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} data-cy={`edit-button`} />
+                Edit "{playlist.name}"{" "}
+                <FiEdit
+                  size={20}
+                  style={{ marginLeft: "auto", color: "white" }}
+                  data-cy={`edit-button`}
+                />
               </MenuItem>
-              <MenuItem _hover={{ backgroundColor: "rgba(255, 255, 255, 0.4)", fontWeight: "bold" }} style={{ backgroundColor: "transparent", color: "red" }} onClick={onOpen}>
-                Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`} />
+              <MenuItem
+                _hover={{
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  fontWeight: "bold",
+                }}
+                style={{ backgroundColor: "transparent", color: "red" }}
+                onClick={onOpen}
+              >
+                Delete "{playlist.name}"{" "}
+                <MdDelete
+                  size={20}
+                  style={{ marginLeft: "auto", color: "red" }}
+                  data-cy={`delete-button`}
+                />
               </MenuItem>
             </>
           )}
-        <MenuItem
-          onClick={onShareModalOpen}
-          _hover={{
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            fontWeight: "bold",
-          }}
-          style={{
-            backgroundColor: "transparent",
-          }}
-        >
-          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
-        </MenuItem>
-
+          <MenuItem
+            onClick={onShareModalOpen}
+            _hover={{
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              fontWeight: "bold",
+            }}
+            style={{
+              backgroundColor: "transparent",
+            }}
+          >
+            Share{" "}
+            <MdIosShare
+              size="20px"
+              style={{ marginLeft: "auto", color: "white" }}
+            />
+          </MenuItem>
         </MenuList>
-
       </Menu>
       <Modal isOpen={isShareModalOpen} onClose={onShareModalClose} isCentered>
         <ModalOverlay />
@@ -268,21 +327,26 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      
+
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Are you sure you want to delete the episode "{playlist.name}". <br />
+            Are you sure you want to delete the episode "{playlist.name}".{" "}
+            <br />
             This action cannot be undone
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="red" ml={3} onClick={() => handleDelete(playlist.id)}>
+            <Button
+              colorScheme="red"
+              ml={3}
+              onClick={() => handleDelete(playlist.id)}
+            >
               Delete
             </Button>
           </ModalFooter>
@@ -296,42 +360,32 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Edit Playlist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            {/* <ImageAdder onImageAdded={handleImageAdded} /> */}
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)}  data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100"/>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                data-cy={`edit-playlist-name-form`}
+                focusBorderColor="brand.100"
+              />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
-            </FormControl>
-            <FormControl mt={4}>
-            <FormControl mt={4} display="flex" alignItems="center">
-              <FormLabel htmlFor="privateCheckbox" mb="0">
-                Private
-              </FormLabel>
-              <FormControl
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Flex align="center" mb="2">
-                  <Text mr="2" fontSize="sm">
-                    Private:
-                  </Text>
-                  <Switch
-                    isChecked={privacy === "Private"}
-                    onChange={() => setPrivacy(prevPrivacy => prevPrivacy === "Private" ? "Public" : "Private")}
-                    colorScheme="purple"
-                  />
-                </Flex>
-              </FormControl>
-            </FormControl>  
-              <FormLabel>Cover Image</FormLabel>
-              {/* <Input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} /> */}
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                focusBorderColor="brand.100"
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button bg="black.100" _hover={{ bg: "brand.100" }} mr={3} onClick={handleSaveEdit}>
+            <Button
+              bg="black.100"
+              _hover={{ bg: "brand.100" }}
+              mr={3}
+              onClick={handleSaveEdit}
+            >
               Save
             </Button>
             <Button variant="ghost" onClick={closeEditModal}>

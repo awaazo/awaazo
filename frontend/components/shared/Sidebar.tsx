@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Flex,
-  Icon,
-  Image,
-  VStack,
-  Text,
-  Tooltip,
-  IconButton,
-  useBreakpointValue,
+import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, Container   useBreakpointValue,
   HStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -27,7 +18,6 @@ const Sidebar = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [reload, setReload] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
-  const [imageUrls, setImageUrls] = useState({});
 
   const handleReload = () => {
     setReload(!reload);
@@ -38,15 +28,7 @@ const Sidebar = () => {
   const handleModalClick = (event) => {
     event.stopPropagation();
   };
-  useEffect(() => {
-    const newImageUrls = {};
-    playlists.forEach((playlist) => {
-      newImageUrls[
-        playlist.id
-      ] = `https://source.unsplash.com/random/100x100?sig=${playlist.id}`;
-    });
-    setImageUrls(newImageUrls);
-  }, [playlists]);
+
 
   // Queue and Create Playlist Modals
   const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
@@ -65,9 +47,7 @@ const Sidebar = () => {
     });
   }, [reload]);
 
-  const userPlaylists = playlists.filter(
-    (playlist) => playlist.isHandledByUser,
-  );
+  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 

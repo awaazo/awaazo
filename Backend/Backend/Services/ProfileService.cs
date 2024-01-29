@@ -1,5 +1,3 @@
-using System.Net.Mail;
-using Azure.Core;
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
@@ -20,14 +18,9 @@ public class ProfileService : IProfileService
     /// </summary>
     private readonly AppDbContext _db;
 
-    private readonly EmailService _emailService;
-    private readonly IConfiguration _config;
-    
-    public ProfileService(IConfiguration config, AppDbContext db, EmailService emailService)
+    public ProfileService(AppDbContext db)
     {
         _db = db;
-        _emailService = emailService;
-        _config = config;
     }
 
     /// <summary>
@@ -200,34 +193,6 @@ public class ProfileService : IProfileService
         user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         _db.Users.Update(user);
         await _db.SaveChangesAsync();
-    }
-
-    public async Task SentForgotPasswordEmail(string requestEmail) {
-        // Verify that email exists
-        User? user = await _db.Users.Where(u => u.Email == requestEmail).FirstOrDefaultAsync();
-        if (user is null)
-            throw new Exception("The email is not associated to a user");
-
-        // Delete all previous tokens
-        _db.ForgetPasswordTokens.RemoveRange(_db.ForgetPasswordTokens.Where(token => token.UserId == user.Id));
-        await _db.SaveChangesAsync();
-        
-        // Generate token
-        ForgetPasswordToken token = new ForgetPasswordToken(user);
-        _db.ForgetPasswordTokens.Add(token);
-        await _db.SaveChangesAsync();
-
-        string url = $"{_config["Jwt:Audience"]}/resetpassword?token={token.Token}&email={requestEmail}";
-        string awazoEmail = _config["Smtp:Username"]!; //"noreply@awazo.com";
-        MailMessage message = new MailMessage() {
-            From = new MailAddress(awazoEmail),
-            Subject = $"Password Reset for {requestEmail}",
-            Body = $"A password reset was requests for {requestEmail}. Click on the link below to reset your password <br /><br />" +
-                 $"<a href=\"{url}\">Click here</a> <br /><br />",
-            IsBodyHtml = true
-        };
-        message.To.Add(requestEmail);
-        _emailService.Send(message);
     }
 
     public async Task ResetPassword(ResetPasswordRequest request) {

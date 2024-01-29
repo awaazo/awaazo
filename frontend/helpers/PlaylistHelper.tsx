@@ -1,19 +1,7 @@
-import axios, {
-  AxiosProgressEvent,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from "axios";
+import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import {
-  BaseResponse,
-  GetPlaylistEpisodesResponse,
-  GetPlaylistsResponse,
-  PlaylistDataResponse,
-} from "../utilities/Responses";
-import {
-  PlaylistCreateRequest,
-  PlaylistEditRequest,
-} from "../utilities/Requests";
+import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse } from "../utilities/Responses";
+import { PlaylistCreateRequest, PlaylistEditRequest } from "../utilities/Requests";
 
 export default class PlaylistHelper {
   static getUserProfile() {
@@ -25,22 +13,22 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistCreateRequest = async (
-    requestData: PlaylistCreateRequest,
-  ): Promise<PlaylistDataResponse> => {
-    // Create the request options.
-    const options = {
-      method: "POST",
-      data: requestData,
-      url: EndpointHelper.getCreatePlaylistEndpoint(),
-      headers: {
-        accept: "*/*",
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-      cache: false,
-    };
+ public static playlistCreateRequest = async (
+  requestData: PlaylistCreateRequest,
+): Promise<PlaylistDataResponse> => {
+ 
 
+  const options = {
+    method: "POST",
+    data: requestData,
+    url: EndpointHelper.getCreatePlaylistEndpoint(),
+    headers: {
+      accept: "*/*",
+      "Content-Type": "multipart/form-data",
+    },
+    withCredentials: true,
+    cache: false,
+  };
     try {
       console.debug("Sending the following playlistCreateRequest...");
       console.debug(options);
@@ -75,10 +63,7 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistEditRequest = async (
-    requestData: PlaylistEditRequest,
-    playlistId,
-  ): Promise<PlaylistDataResponse> => {
+  public static playlistEditRequest = async (requestData: PlaylistEditRequest, playlistId): Promise<PlaylistDataResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -124,10 +109,7 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistAddEpisodeRequest = async (
-    requestData,
-    playlistId,
-  ): Promise<PlaylistDataResponse> => {
+  public static playlistAddEpisodeRequest = async (requestData, playlistId): Promise<PlaylistDataResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -173,10 +155,7 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistRemoveEpisodeRequest = async (
-    requestData,
-    playlistId,
-  ): Promise<BaseResponse> => {
+  public static playlistRemoveEpisodeRequest = async (requestData, playlistId): Promise<BaseResponse> => {
     // Create the request options.
     const options = {
       method: "DELETE",
@@ -220,9 +199,7 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistDeleteRequest = async (
-    playlistId,
-  ): Promise<BaseResponse> => {
+  public static playlistDeleteRequest = async (playlistId): Promise<BaseResponse> => {
     // Create the request options.
     const options = {
       method: "DELETE",
@@ -264,10 +241,7 @@ export default class PlaylistHelper {
    * Gets all myPlaylists from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistMyPlaylistsGet = async (
-    page,
-    pageSize,
-  ): Promise<GetPlaylistsResponse> => {
+  public static playlistMyPlaylistsGet = async (page, pageSize): Promise<GetPlaylistsResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -309,11 +283,7 @@ export default class PlaylistHelper {
    * Gets all UserPlaylists from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistsUserPlaylistsGet = async (
-    userId,
-    page,
-    pageSize,
-  ): Promise<GetPlaylistsResponse> => {
+  public static playlistsUserPlaylistsGet = async (userId, page, pageSize): Promise<GetPlaylistsResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -355,9 +325,7 @@ export default class PlaylistHelper {
    * Gets all episodes of a playlist from the server.
    * @returns A GetPlaylistEpisodesResponse object with the server's response.
    */
-  public static playlistsEpisodesGet = async (
-    playListId,
-  ): Promise<GetPlaylistEpisodesResponse> => {
+  public static playlistsEpisodesGet = async (playListId): Promise<GetPlaylistEpisodesResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -399,42 +367,41 @@ export default class PlaylistHelper {
    * Gets all liked episodes from the server.
    * @returns A GetPlaylistEpisodesResponse object with the server's response.
    */
-  public static playlistsLikedEpisodesGet =
-    async (): Promise<GetPlaylistEpisodesResponse> => {
-      // Create the request options.
-      const options = {
-        method: "Get",
-        url: EndpointHelper.getLikedEpisodesPlaylistEndpoint(),
-        headers: {
-          accept: "*/*",
-        },
-        withCredentials: true,
-        cache: false,
-      };
-
-      try {
-        console.debug("Sending the following playlistsUserPlaylistsGet...");
-        console.debug(options);
-
-        console.log(options);
-        // Send the request and wait for the response.
-        const requestResponse = await axios(options);
-
-        console.debug("Received the following playlistsUserPlaylistsGet...");
-        console.debug(requestResponse);
-        // Return the response.
-        return {
-          status: requestResponse.status,
-          message: requestResponse.statusText,
-          playlist: requestResponse.data,
-        };
-      } catch (error) {
-        // Return the error.
-        return {
-          status: error.response.status,
-          message: error.response.statusText,
-          playlist: null,
-        };
-      }
+  public static playlistsLikedEpisodesGet = async (): Promise<GetPlaylistEpisodesResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getLikedEpisodesPlaylistEndpoint(),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
     };
+
+    try {
+      console.debug("Sending the following playlistsUserPlaylistsGet...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following playlistsUserPlaylistsGet...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        playlist: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        playlist: null,
+      };
+    }
+  };
 }

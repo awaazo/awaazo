@@ -9,12 +9,9 @@ using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using static Backend.Models.User;
-using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using static Backend.Models.Playlist;
-
+using System.Net.Mail;
 
 namespace Backend.Services;
 
@@ -22,11 +19,15 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
+    private readonly EmailService _emailService;
 
-    public AuthService(AppDbContext db, IMapper mapper)
+    public AuthService(AppDbContext db, IMapper mapper, IConfiguration config, EmailService emailService)
     {
         _db = db;
         _mapper = mapper;
+        _config = config;
+        _emailService = emailService;
     }
 
     /// <summary>
@@ -241,6 +242,42 @@ public class AuthService : IAuthService
     public async Task<bool> CheckEmail(string email)
     {
         return await _db.Users.FirstOrDefaultAsync(u => u.Email == email) is not null;
+    }
+
+    /// <summary>
+    /// Sends a forgot password email to the requested email
+    /// </summary>
+    /// <param name="requestEmail"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task SentForgotPasswordEmail(string requestEmail)
+    {
+        // Verify that email exists
+        User? user = await _db.Users.Where(u => u.Email == requestEmail).FirstOrDefaultAsync();
+        if (user is null)
+            throw new Exception("The email is not associated to a user");
+
+        // Delete all previous tokens
+        _db.ForgetPasswordTokens.RemoveRange(_db.ForgetPasswordTokens.Where(token => token.UserId == user.Id));
+        await _db.SaveChangesAsync();
+
+        // Generate token
+        ForgetPasswordToken token = new ForgetPasswordToken(user);
+        _db.ForgetPasswordTokens.Add(token);
+        await _db.SaveChangesAsync();
+
+        string url = $"{_config["Jwt:Audience"]}/resetpassword?token={token.Token}&email={requestEmail}";
+        string awazoEmail = _config["Smtp:Username"]!; //"noreply@awazo.com";
+        MailMessage message = new MailMessage()
+        {
+            From = new MailAddress(awazoEmail),
+            Subject = $"Password Reset for {requestEmail}",
+            Body = $"A password reset was requests for {requestEmail}. Click on the link below to reset your password <br /><br />" +
+                 $"<a href=\"{url}\">Click here</a> <br /><br />",
+            IsBodyHtml = true
+        };
+        message.To.Add(requestEmail);
+        _emailService.Send(message);
     }
 }
 

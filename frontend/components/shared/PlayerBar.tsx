@@ -10,7 +10,6 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Tooltip,
   useBreakpointValue,
   HStack,
 } from "@chakra-ui/react";
@@ -22,10 +21,10 @@ import {
   FaStepForward,
   FaStepBackward,
 } from "react-icons/fa";
-import { FaArrowRotateLeft, FaArrowRotateRight } from "react-icons/fa6";
-import CommentComponent from "../social/commentComponent";
-import LikeComponent from "../social/likeComponent";
-import BookmarkComponent from "../bookmarks/CreateBookmarkModule";
+import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
+import Comments from "../social/Comments";
+import Likes from "../social/Likes";
+import Bookmarks from "../social/Bookmarks";
 import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
@@ -34,7 +33,6 @@ import { SaveWatchHistoryRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
-import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -234,22 +232,26 @@ const PlayerBar = () => {
       const request: SaveWatchHistoryRequest = {
         listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
       };
-      if (audioRef.current && isEpisodeLoaded) {
-        await PodcastHelper.saveWatchHistory(episode.id, request).then(
-          (response) => {
-            if (response.status === 200) {
-              console.log("Saved Episode Watch History");
-              console.log(
-                "listenPosition saved: " + audioRef.current.currentTime,
-              );
-            } else {
-              console.error(
-                "Error saving the episode watch history:",
-                response.message,
-              );
-            }
-          },
-        );
+      if (audioRef.current && episode !== null) {
+        try {
+          await PodcastHelper.saveWatchHistory(episode.id, request).then(
+            (response) => {
+              if (response.status === 200) {
+                console.log("Saved Episode Watch History");
+                console.log(
+                  "listenPosition saved: " + audioRef.current.currentTime,
+                );
+              } else {
+                console.error(
+                  "Error saving the episode watch history:",
+                  response.message,
+                );
+              }
+            },
+          );
+        } catch (error) {
+          console.error("Error saving the episode watch history:", error);
+        }
       }
     };
 
@@ -264,8 +266,8 @@ const PlayerBar = () => {
     <Box
       maxWidth={isMobile ? "100%" : "97%"}
       padding={isMobile ? "0.5em" : "1em"}
-      bg="rgba(255, 255, 255, 0.04)" // White background color with 20% opacity
-      style={{ backdropFilter: "blur(50px)" }}
+      bg="rgba(255, 255, 255, 0.04)"
+      backdropFilter="blur(50px)"
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
@@ -422,16 +424,16 @@ const PlayerBar = () => {
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
               <ChatBot episodeId={episode?.id} />
-              <BookmarkComponent
+              <Bookmarks
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
               />
-              <LikeComponent
+              <Likes
                 episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
                 initialLikes={isEpisodeLoaded ? episode.likes : 0}
                 showCount={false}
               />
-              <CommentComponent
+              <Comments
                 episodeIdOrCommentId={
                   isEpisodeLoaded ? episode.id : "default-id"
                 }
