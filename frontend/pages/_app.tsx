@@ -10,8 +10,8 @@ import AppTheme from "../styles/AppTheme";
 import { useRouter } from "next/router";
 import ColorModeFix from "../styles/ColorModeFix";
 import { ChatBotProvider } from "../utilities/ChatBotContext";
-import { set } from "lodash";
-import ChatBot from "../components/shared/ChatBot";
+import  ChatBot  from "../components/shared/ChatBot";
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   ColorModeFix();

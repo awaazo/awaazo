@@ -26,7 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaLinesLeaning } from "react-icons/fa6";
-import EditEpisodeForm from "./EditEpisodeForm";
+import EditEpisodeForm from "./EditEpisode";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
 import { convertTime } from "../../utilities/commonUtils";

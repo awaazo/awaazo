@@ -1,28 +1,8 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import {
-  Flex,
-  Wrap,
-  Box,
-  Text,
-  WrapItem,
-  Button,
-  Tooltip,
-  IconButton,
-  Icon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  VStack,
-  useDisclosure,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Flex, Wrap, Box, Text, WrapItem, Button, Tooltip, IconButton, Icon, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, VStack, useDisclosure, useBreakpointValue } from "@chakra-ui/react";
 
 import { MdEdit } from "react-icons/md";
-import EditPodcastForm from "./EditPodcastForm";
+import EditPodcastForm from "./EditPodcast";
 import MyEpisodes from "./MyEpisodes";
 import { useEffect, useState } from "react";
 import PodcastHelper from "../../helpers/PodcastHelper";
@@ -121,12 +101,7 @@ const PodcastInfo = ({ podcastId }) => {
           {/* Display tags */}
           {tags.map((tag, index) => (
             <WrapItem key={index}>
-              <Box
-                bg="rgba(50, 153, 175, 0.4)"
-                px={3}
-                py={1}
-                borderRadius="10em"
-              >
+              <Box bg="rgba(50, 153, 175, 0.4)" px={3} py={1} borderRadius="10em">
                 <Text fontSize="md">{tag}</Text>
               </Box>
             </WrapItem>
@@ -142,16 +117,7 @@ const PodcastInfo = ({ podcastId }) => {
           {isMobile ? (
             <Box>
               <Tooltip label="Edit Podcast" aria-label="Edit Podcast Tooltip">
-                <IconButton
-                  variant="ghost"
-                  fontSize="lg"
-                  rounded="full"
-                  opacity={0.7}
-                  color="white"
-                  aria-label="Edit Podcast"
-                  icon={<Icon as={MdEdit} />}
-                  onClick={() => openEditPodcastModal()}
-                />
+                <IconButton variant="ghost" fontSize="lg" rounded="full" opacity={0.7} color="white" aria-label="Edit Podcast" icon={<Icon as={MdEdit} />} onClick={() => openEditPodcastModal()} />
               </Tooltip>
             </Box>
           ) : (
@@ -171,17 +137,7 @@ const PodcastInfo = ({ podcastId }) => {
             </Button>
           )}
           {/* Edit button */}
-          <IconButton
-            onClick={onOpen}
-            disabled={isDeleting}
-            variant="ghost"
-            size={isMobile === true ? "sm" : "lg"}
-            rounded={"full"}
-            opacity={0.7}
-            mr={3}
-            color="red"
-            aria-label="Delete"
-          >
+          <IconButton onClick={onOpen} disabled={isDeleting} variant="ghost" size={isMobile === true ? "sm" : "lg"} rounded={"full"} opacity={0.7} mr={3} color="red" aria-label="Delete">
             <DeleteIcon
               w={isMobile === true ? "5" : "6"}
               h={isMobile === false ? "5" : "6"}
@@ -278,10 +234,7 @@ const PodcastInfo = ({ podcastId }) => {
           </Box>
           <>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <Text
-                fontSize="md"
-                style={{ fontWeight: "bold", paddingLeft: 15 }}
-              >
+              <Text fontSize="md" style={{ fontWeight: "bold", paddingLeft: 15 }}>
                 Episodes:
               </Text>{" "}
             </div>
@@ -298,9 +251,7 @@ const PodcastInfo = ({ podcastId }) => {
                 (This podcast has no episodes yet)
               </Text>
             ) : (
-              episodes.map((episode, index) => (
-                <MyEpisodes episode={episode} key={index} />
-              ))
+              episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
             )}
           </>
         </Box>
@@ -403,9 +354,7 @@ const PodcastInfo = ({ podcastId }) => {
                 (This podcast has no episodes yet)
               </Text>
             ) : (
-              episodes.map((episode, index) => (
-                <MyEpisodes episode={episode} key={index} />
-              ))
+              episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
             )}
           </div>
         </Flex>
@@ -434,24 +383,11 @@ const PodcastInfo = ({ podcastId }) => {
       {/* Modal for editing a podcast */}
       <Modal isOpen={isModalPodcastOpen} onClose={closeEditPodcastModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent
-          boxShadow="dark-lg"
-          backdropFilter="blur(40px)"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          marginTop={"10%"}
-          padding={"2em"}
-        >
+        <ModalContent boxShadow="dark-lg" backdropFilter="blur(40px)" display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={"10%"} padding={"2em"}>
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack
-                spacing={5}
-                align="center"
-                backgroundColor={"transparent"}
-              >
+              <VStack spacing={5} align="center" backgroundColor={"transparent"}>
                 <Text>Edit Podcast: {podcastName}</Text>
                 <EditPodcastForm podcastId={podcastId} />
               </VStack>

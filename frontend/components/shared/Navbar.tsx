@@ -2,28 +2,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { DefaultSession } from "next-auth";
-import {
-  Box,
-  Flex,
-  Input,
-  Avatar,
-  IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  MenuGroup,
-  useBreakpointValue,
-  Spacer,
-} from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  BellIcon,
-  ArrowBackIcon,
-  ArrowForwardIcon,
-} from "@chakra-ui/icons";
+import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from "@chakra-ui/react";
+import { HamburgerIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import AuthHelper from "../../helpers/AuthHelper";
 import Notifications from "../notification/Notifications";
 import { UserMenuInfo } from "../../utilities/Interfaces";
@@ -57,7 +37,7 @@ export default function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: "transparent",
-    backdropFilter: "blur(0px)",    
+    backdropFilter: "blur(0px)",
   });
 
   interface SessionExt extends DefaultSession {
@@ -115,21 +95,20 @@ export default function Navbar() {
     try {
       // Wait for the logout request to complete
       await AuthHelper.authLogoutRequest();
-      console.log('Logout successful');
+      console.log("Logout successful");
       if (session) {
         await signOut();
       }
-  
+
       // Set Logged In Status to false
       setIsUserLoggedIn(false);
       setIsUserSet(false);
-  
+
       // Redirect to the index page
       window.location.href = indexPage;
     } catch (error) {
       // Handle any errors that occur during logout
-      console.error('Logout failed', error);
-  
+      console.error("Logout failed", error);
     }
   };
   const handleSearchChange = (event) => {
@@ -163,18 +142,11 @@ export default function Navbar() {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount();
       console.log(response);
-      if (
-        response !== null &&
-        response !== undefined &&
-        typeof response === "number"
-      ) {
+      if (response !== null && response !== undefined && typeof response === "number") {
         setNotificationCount(response);
         console.log(notificationCount);
       } else {
-        console.error(
-          "Failed to fetch notification count:",
-          response.message || "No error message available",
-        );
+        console.error("Failed to fetch notification count:", response.message || "No error message available");
       }
     };
 
@@ -183,27 +155,11 @@ export default function Navbar() {
 
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton
-        aria-label="loggedInMenu"
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton aria-label="loggedInMenu" as={Button} rounded={"full"} variant={"link"} cursor={"pointer"}>
         {user.avatarUrl === "" ? (
-          <Avatar
-            size={"sm"}
-            src={""}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-          />
+          <Avatar size={"sm"} src={""} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
-          <Avatar
-            size={"sm"}
-            src={user.avatarUrl}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-            bg="rgba(255, 255, 255, 0.2)"
-            backdropFilter="blur(10px)"
-          />
+          <Avatar size={"sm"} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
       </MenuButton>
       <MenuList>
@@ -214,14 +170,10 @@ export default function Navbar() {
           <Link href="/CreatorHub" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
-    
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem
-            onClick={handleLogOut}
-            style={{ color: "red", fontWeight: "normal" }}
-          >
+          <MenuItem onClick={handleLogOut} style={{ color: "red", fontWeight: "normal" }}>
             Logout
           </MenuItem>
         </MenuGroup>
@@ -231,66 +183,27 @@ export default function Navbar() {
 
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton
-        menu-id="menuBtn"
-        aria-label="Menu"
-        data-cy={`navbar-hamburger`}
-        as={Button}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={"link"} cursor={"pointer"}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem
-          id="loginBtn"
-          onClick={() => (window.location.href = loginPage)}
-        >
+        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = signupPage)}>
-          Sign up
-        </MenuItem>
+        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
       </MenuList>
     </Menu>
   );
 
   return (
     <>
-      <Box
-        p={3}
-        mb={"3em"}
-        width={"100%"}
-        position="sticky"
-        alignSelf="center"
-        alignContent={"center"}
-        alignItems={"center"}
-        top={"0"}
-        zIndex={5}
-        data-testid="navbar-component"
-        style={navbarStyle}
-      >
+      <Box p={3} mb={"3em"} width={"100%"} position="sticky" alignSelf="center" alignContent={"center"} alignItems={"center"} top={"0"} zIndex={5} data-testid="navbar-component" style={navbarStyle}>
         <Box mr={"2em"} ml={"2em"}>
           <Flex justifyContent="space-between">
             <Flex align="center">
-              <IconButton
-                aria-label="Back"
-                icon={<ArrowBackIcon />}
-                onClick={() => window.history.back()}
-                variant="ghost"
-                size="md"
-                mr={2}
-                rounded="full"
-              />
-              <IconButton
-                aria-label="Forward"
-                icon={<ArrowForwardIcon />}
-                onClick={() => window.history.forward()}
-                variant="ghost"
-                size="md"
-                rounded="full"
-              />
+              <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
+              <IconButton aria-label="Forward" icon={<ArrowForwardIcon />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
             </Flex>
             <Spacer />
             <Flex align="center" justifyContent="flex-end">
@@ -299,7 +212,7 @@ export default function Navbar() {
             </Flex>
           </Flex>
         </Box>
-        </Box>
+      </Box>
     </>
   );
 }

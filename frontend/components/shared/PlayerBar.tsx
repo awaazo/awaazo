@@ -12,7 +12,7 @@ import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { SaveWatchHistoryRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import ChatBot from "./ChatBot";
+import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
 
 const PlayerBar = () => {

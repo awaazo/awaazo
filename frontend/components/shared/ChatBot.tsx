@@ -1,11 +1,9 @@
-// ChatBot.tsx component
-
-import React, { useState, useEffect, FormEvent, useContext } from "react";
-import { Box, IconButton, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar, Tooltip, Flex } from "@chakra-ui/react";
-import { RiRobot2Fill } from "react-icons/ri";
-import { IoIosCloseCircle, IoMdSend } from "react-icons/io";
-import { useChatBot } from "../../utilities/ChatBotContext";
+import React, { useEffect, useState } from "react";
+import { Box, IconButton, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar, Flex } from "@chakra-ui/react";
 import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
+import { IoIosCloseCircle } from "react-icons/io";
+import { useChatBot } from "../../utilities/ChatBotContext";
+import { IoMdSend } from "react-icons/io";
 
 const fetchChatGPTResponse = async (userMessage) => {
   const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
@@ -19,13 +17,11 @@ const fetchChatGPTResponse = async (userMessage) => {
     role: "system",
     content: "Answer the question breifly and shortly",
   };
-
   const apiRequestBody = {
     model: "gpt-3.5-turbo",
     messages: [systemMessage, { role: "user", content: userMessage }],
-    max_tokens: 50, // currently set to super low 5, just to test our component. Bump it up for longer responses
+    max_tokens: 50,
   };
-
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -34,27 +30,23 @@ const fetchChatGPTResponse = async (userMessage) => {
     },
     body: JSON.stringify(apiRequestBody),
   });
-
   const data = await response.json();
   return data.choices[0].message.content;
 };
 
-const ChatBot = ({ episodeId }) => {
+const ChatBot = () => {
   const { state, dispatch } = useChatBot();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(state.isOpen);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-
   useEffect(() => {
     console.log("Current Episode ID:", state.currentEpisodeId);
   }, [state.currentEpisodeId]);
 
-   const toggleChatBot = () => {
-    setIsOpen(!isOpen);
-    dispatch({ type: "TOGGLE_CHAT" });
-    if (episodeId) {
-      dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
-    }
+  const toggleChatBot = () => {
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+    dispatch({ type: "TOGGLE_CHAT", payload: newIsOpen });
   };
 
   const sendMessage = async () => {
@@ -68,38 +60,31 @@ const ChatBot = ({ episodeId }) => {
       setMessages(updatedMessagesWithBot);
     }
   };
-
   const handlePredefinedQuestionClick = (question) => {
     setNewMessage(question);
   };
-
   React.useEffect(() => {
     setIsOpen(state.isOpen);
     console.log("current episode ID:" + state.currentEpisodeId);
   }, [state.isOpen]);
-
+  const playerBarHeight = "200px";
   return (
-    <>
-    <Tooltip label="ChatBot" aria-label="ChatBot">
-      <Button padding={"0px"} variant={"ghost"} onClick={toggleChatBot}>
-        <RiRobot2Fill size="20px" />
-      </Button>
-    </Tooltip>
-
-     {/* Chat Sidebar */}
     <Box
       position="fixed"
       right="0"
-      top="0"
+      top="4em"
+      transition="width 0.2s ease-in-out"
+      bottom={playerBarHeight}
       w={isOpen ? "32%" : "0"}
-      h="100vh"
+      h={`calc(100vh - ${playerBarHeight})`}
       overflow="hidden"
-      transition="width 0.2s ease-out"
-      boxShadow="0px 0px 50px rgba(0, 0, 0, 0.5)"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
-      bg="#14141458"
-      backdropFilter="blur(40px)"
+      bg="rgba(255, 255, 255, 0.04)"
+      backdropFilter="blur(50px)"
+      outline={"2px solid rgba(255, 255, 255, 0.06)"}
+      roundedTopLeft="30px"
+      roundedBottomLeft="30px"
     >
       {isOpen && (
         <Box>
@@ -115,7 +100,6 @@ const ChatBot = ({ episodeId }) => {
           <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
             Episode Title
           </Text>
-
           {/* testing episode ID: to remove during production */}
           <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
             Episode ID: {state.currentEpisodeId}
@@ -148,7 +132,6 @@ const ChatBot = ({ episodeId }) => {
                 What did the podcaster think about Lasagna?
               </Button>
             </VStack>
-
             <InputGroup>
               <Input
                 value={newMessage}
@@ -159,7 +142,7 @@ const ChatBot = ({ episodeId }) => {
                 borderRadius="45px"
                 p="30px"
                 border={"2px solid rgba(255, 255, 255, 0.05)"}
-                _focus={{ bg: "#181818", boxShadow: "none" }}
+                _focus={{ bg: "#181818", boxShadow: "none", borderColor: "brand.100" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
                 onKeyDown={(e) => {
@@ -168,16 +151,14 @@ const ChatBot = ({ episodeId }) => {
                   }
                 }}
               />
-              <Button variant={"ghost"} borderRadius={"25px"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage}>
-                <IoMdSend size={"20px"} />
+              <Button variant={"ghost"} width="3em" height="3em" rounded={"full"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage}>
+                <IoMdSend size={"30px"} />
               </Button>
             </InputGroup>
           </Box>
         </Box>
       )}
     </Box>
-    </>
   );
 };
-
 export default ChatBot;
