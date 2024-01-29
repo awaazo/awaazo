@@ -73,11 +73,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <ChatBotProvider>
             <Flex>
               {showSidebar && <Sidebar />}
+              <Box  zIndex={"1"}>
               {showChatBot && <ChatBot />}
+              </Box>
               <Box flex="1">
                 {showNavbar && <Navbar />}
                 <Component {...pageProps} />
-                <Box h="100px" />
+                <Box h="100px" zIndex={"2"}/>
                 {showPlayerBar && <PlayerBar />}
               </Box>
             </Flex>
