@@ -42,6 +42,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<EpisodeSections> EpisodeSections { get; set; }
  
     public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
+    public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }
     
     /// <summary>
     /// Maps to the Soundex function in the database.
@@ -275,6 +276,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(p => p.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
     }
     
     public override int SaveChanges()
