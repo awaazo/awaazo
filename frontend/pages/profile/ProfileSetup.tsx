@@ -130,20 +130,7 @@ const ProfileSetup: React.FC = () => {
             </FormControl>
 
             <FormControl position="relative">
-              <Textarea
-                id="bio"
-                placeholder="What's your story?"
-                value={bio}
-                onChange={handleBioChange}
-                style={{
-                  width: "100%",
-                  height: "100px",
-                  padding: "12px",
-                  fontSize: "16px",
-                  borderRadius: "18px",
-                }}
-                resize="vertical"
-              />
+              <Textarea id="bio" placeholder="What's your story?" value={bio} onChange={handleBioChange} width="100%" height="100px" padding="12px" fontSize="16px" borderRadius="18px" resize="vertical" />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {bioCharacterCount}/250
               </Text>

@@ -1,11 +1,12 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
-import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, IconButton } from "@chakra-ui/react";
+import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, IconButton, Img } from "@chakra-ui/react";
 import { PodcastEditRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import GenreSelector from "../tools/GenreSelector";
 
 export default function EditPodcastForm({ podcastId }) {
   useEffect(() => {
-    console; // Log to console
+    console;
     PodcastHelper.getPodcastById(podcastId).then((res) => {
       if (res.status == 200) {
         setCoverImage(res.podcast.coverArtUrl);
@@ -22,9 +23,6 @@ export default function EditPodcastForm({ podcastId }) {
   // Page refs
   const myPodcastsPage = "/CreatorHub/MyPodcasts";
 
-  // Genres
-  const PodcastGenres = ["Technology", "Comedy", "Science", "History", "News", "True Crime", "Business", "Health", "Education", "Travel", "Music", "Arts", "Sports", "Politics", "Fiction", "Food"];
-
   // Form Values
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [podcastName, setPodcastName] = useState("");
@@ -38,7 +36,6 @@ export default function EditPodcastForm({ podcastId }) {
 
   // Other
   const [coverImage, setCoverImage] = useState<string | null>("");
-  const [genreColors, setGenreColors] = useState({});
 
   /**
    * Handles Cover Image upload
@@ -83,44 +80,6 @@ export default function EditPodcastForm({ podcastId }) {
     }
   };
 
-  /**
-   * Returns a random dark color code
-   * @returns Random Color code
-   */
-  function getRandomDarkColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 8)]; // Restrict to the first 8 characters for darker colors
-    }
-    return color;
-  }
-
-  /**
-   * Returns a random gradient
-   * @returns Random Gradient
-   */
-  function getRandomGradient() {
-    const color1 = getRandomDarkColor();
-    const color2 = getRandomDarkColor();
-    return `linear-gradient(45deg, ${color1}, ${color2})`;
-  }
-
-  /**
-   * Adds/Removes a genre from selected interests
-   * @param genre Interest/Genre that was clicked
-   */
-  const handleInterestClick = (genre: string) => {
-    if (tags.includes(genre)) {
-      setTags(tags.filter((item) => item !== genre));
-    } else {
-      setTags([...tags, genre]);
-      if (!genreColors[genre]) {
-        setGenreColors({ ...genreColors, [genre]: getRandomDarkColor() });
-      }
-    }
-  };
-
   // Ensures podcast name is not longer than 25 characters
   const handlePodcastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value.slice(0, 25);
@@ -135,6 +94,9 @@ export default function EditPodcastForm({ podcastId }) {
     setDescriptionCharacterCount(newDesc.length);
   };
 
+  const handleInterestClick = (selectedGenres: string[]) => {
+    setTags(selectedGenres);
+  };
   /**
    * Contains the elements of the Create Podcast page
    * @returns Create Podcast Page content
@@ -144,34 +106,9 @@ export default function EditPodcastForm({ podcastId }) {
       <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
         <form onSubmit={handleCreate}>
           <Stack spacing={6} align={"center"}>
-            <div
-              style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
-                alt="Cover Photo"
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "50%",
-                  padding: "15px",
-                  position: "relative",
-                }}
-              />
-              <label
-                htmlFor="Cover Photo"
-                style={{
-                  position: "absolute",
-                  cursor: "pointer",
-                  bottom: "15px",
-                  right: "5px",
-                }}
-              >
+            <Box position="relative" display="flex" flexDirection="column" alignItems="center">
+              <Img src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"} alt="Cover Photo" width="150px" height="150px" padding="15px" position="relative" borderRadius="20%" />
+              <label htmlFor="Cover Photo">
                 <IconButton
                   aria-label="Upload Cover Photo"
                   icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
@@ -180,10 +117,8 @@ export default function EditPodcastForm({ podcastId }) {
                   borderRadius="full"
                   border="1px solid grey"
                   padding={3}
-                  style={{
-                    backdropFilter: "blur(5px)",
-                    backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  }}
+                  backdropFilter="blur(5px)"
+                  backgroundColor="rgba(0, 0, 0, 0.4)"
                   zIndex={-999}
                 />
                 <input
@@ -196,7 +131,7 @@ export default function EditPodcastForm({ podcastId }) {
                   }}
                 />
               </label>
-            </div>
+            </Box>
             {editError && <Text color="red.500">{editError}</Text>}
 
             <FormControl position="relative">
@@ -207,88 +142,20 @@ export default function EditPodcastForm({ podcastId }) {
             </FormControl>
 
             <FormControl position="relative">
-              <Textarea
-                id="description"
-                placeholder="What's the Podcast about?"
-                value={description}
-                onChange={handleDescriptionChange}
-                style={{
-                  width: "100%",
-                  height: "100px",
-                  padding: "12px",
-                  fontSize: "16px",
-                  borderRadius: "18px",
-                }}
-                resize="vertical" // Made the bio textarea resizable
-              />
+              <Textarea id="description" placeholder="What's the Podcast about?" value={description} onChange={handleDescriptionChange} width="100%" height="100px" padding="12px" fontSize="16px" borderRadius="18px" resize="vertical" />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {descriptionCharacterCount}/250
               </Text>
             </FormControl>
 
             <FormControl>
-              <FormLabel
-                style={{
-                  textAlign: "center",
-                  padding: "10px",
-                }}
-              >
+              <FormLabel textAlign="center" padding="10px">
                 What kind of topics are on the Podcast?
               </FormLabel>
-              <Wrap spacing={4} justify="center" maxWidth={"600px"}>
-                {PodcastGenres.map((genre) => (
-                  <WrapItem key={genre}>
-                    <Button
-                      size="sm"
-                      variant={tags.includes(genre) ? "solid" : "outline"}
-                      colorScheme="white"
-                      backgroundColor={tags.includes(genre) ? genreColors[genre] || getRandomGradient() : "transparent"}
-                      color="white"
-                      borderColor="white"
-                      borderRadius="full"
-                      _hover={{
-                        backgroundColor: tags.includes(genre) ? genreColors[genre] || getRandomGradient() : "gray",
-                      }}
-                      onClick={() => handleInterestClick(genre)}
-                    >
-                      {genre}
-                    </Button>
-                  </WrapItem>
-                ))}
-              </Wrap>
+              <GenreSelector onGenresChange={handleInterestClick} />
             </FormControl>
-            <Button
-              id="createBtn"
-              type="submit"
-              fontSize="md"
-              borderRadius={"full"}
-              minWidth={"200px"}
-              color={"white"}
-              marginTop={"15px"}
-              marginBottom={"10px"}
-              padding={"20px"}
-              // semi transparent white outline
-              outline={"1px solid rgba(255, 255, 255, 0.6)"}
-              style={{
-                background: "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-                backgroundSize: "300% 300%",
-                animation: "Gradient 10s infinite linear",
-              }}
-            >
+            <Button id="createBtn" type="submit" variant="gradient">
               Update
-              <style jsx>{`
-                @keyframes Gradient {
-                  0% {
-                    background-position: 100% 0%;
-                  }
-                  50% {
-                    background-position: 0% 100%;
-                  }
-                  100% {
-                    background-position: 100% 0%;
-                  }
-                }
-              `}</style>
             </Button>
           </Stack>
         </form>
