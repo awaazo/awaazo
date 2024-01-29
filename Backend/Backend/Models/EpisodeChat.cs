@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Backend.Models;
 
 /// <summary>
@@ -8,7 +10,8 @@ public class EpisodeChatMessage : BaseEntity
 
     /// <summary>
     /// The unique ID of the episode chat
-    /// </summary> 
+    /// </summary>
+    [Key] 
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>

@@ -362,8 +362,8 @@ async def handle_stt_request(request):
 
         print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}\n")
 
-        #threading.Thread(target=sp.transcription_ingestion_pipeline, args=(podcast_id,episode_id)).start()
-        sp.transcription_ingestion_pipeline(podcast_id,episode_id)
+        threading.Thread(target=sp.transcription_ingestion_pipeline, args=(podcast_id,episode_id)).start()
+        #sp.transcription_ingestion_pipeline(podcast_id,episode_id)
 
         print("---------------- TTS/RVC Request Completed ----------------")
 

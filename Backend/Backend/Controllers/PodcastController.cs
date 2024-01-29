@@ -688,6 +688,13 @@ public class PodcastController : ControllerBase
 
     #region Episode Chat
 
+    /// <summary>
+    /// Gets the chat of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which a chat is requested.</param>
+    /// <param name="page">The page number to return.</param>
+    /// <param name="pageSize">The number of results per page.</param>
+    /// <returns>The chat or null if its not ready.</returns>
     [HttpGet("{episodeId}/getEpisodeChat")]
     public async Task<IActionResult> GetEpisodeChat(Guid episodeId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
@@ -709,6 +716,16 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Adds a chat message to an episode.
+    /// </summary>
+    /// <param name="request">Request object containing the episode chat details.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    /// <remarks>
+    /// The request object should contain the following fields:
+    /// - EpisodeId: The ID of the episode to add the chat to.
+    /// - Prompt: The prompt to add to the episode chat.
+    /// </remarks>
     [HttpPost("addEpisodeChat")]
     public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
     {
