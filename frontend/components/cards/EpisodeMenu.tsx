@@ -19,7 +19,7 @@ import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import ShareComponent from "../social/shareComponent";
+import ShareComponent from "../social/Share";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";

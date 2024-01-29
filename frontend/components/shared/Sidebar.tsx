@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, Container   useBreakpointValue,
+import {
+  Box,
+  Flex,
+  Icon,
+  Image,
+  VStack,
+  Text,
+  Tooltip,
+  IconButton,
+  Container,
+  useBreakpointValue,
   HStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -29,7 +39,6 @@ const Sidebar = () => {
     event.stopPropagation();
   };
 
-
   // Queue and Create Playlist Modals
   const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
   const onQueueModalClose = () => setIsQueueModalOpen(false);
@@ -47,7 +56,9 @@ const Sidebar = () => {
     });
   }, [reload]);
 
-  const userPlaylists = playlists.filter((playlist) => playlist.isHandledByUser);
+  const userPlaylists = playlists.filter(
+    (playlist) => playlist.isHandledByUser,
+  );
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -257,10 +268,7 @@ const Sidebar = () => {
                       _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}
                     >
                       <Image
-                        src={
-                          imageUrls[playlist.id] ||
-                          "https://via.placeholder.com/100"
-                        }
+                        src={"https://via.placeholder.com/100"}
                         alt="Playlist"
                         boxSize={collapsed ? "24px" : "12"}
                         mr={collapsed ? "0" : "2"}

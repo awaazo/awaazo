@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Xmigration12 : Migration
+    public partial class Xmigration1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "EpisodeChatMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsPrompt = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EpisodeChatMessages", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ForgetPasswordTokens",
                 columns: table => new
@@ -417,8 +434,7 @@ namespace Backend.Migrations
                         name: "FK_UserEpisodeInteractions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -683,6 +699,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "CommentReplyLikes");
+
+            migrationBuilder.DropTable(
+                name: "EpisodeChatMessages");
 
             migrationBuilder.DropTable(
                 name: "EpisodeLikes");
