@@ -25,7 +25,8 @@ const overrides = {
           padding: "20px",
           paddingLeft: "2rem",
           paddingRight: "2rem",
-          background: "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
+          background:
+            "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
           backgroundSize: "300% 300%",
           animation: "Gradient 10s infinite linear",
           minWidth: "200px",
@@ -48,9 +49,8 @@ const overrides = {
         header: {
           fontWeight: "light",
           fontSize: "1.5em",
-        }
+        },
       }),
-      
     },
     Textarea: {
       baseStyle: {
@@ -76,28 +76,26 @@ const overrides = {
         },
       },
     },
-    Slider:  {
+    Slider: {
       baseStyle: {
-        track: {
-        },
-        thumb: {
-        },
+        track: {},
+        thumb: {},
         filledTrack: {
-          bg: "brand.100", 
+          bg: "brand.100",
         },
       },
     },
-    Container : { 
+    Container: {
       variants: {
         innerbox: {
           p: 1,
           bg: "rgba(0, 0, 0, 0.1)",
           rounded: "xl",
           width: "100%",
-          outline: "2px solid rgba(255, 255, 255, 0.05)"
-        }
-      }
-    }
+          outline: "2px solid rgba(255, 255, 255, 0.05)",
+        },
+      },
+    },
   },
   styles: {
     global: {

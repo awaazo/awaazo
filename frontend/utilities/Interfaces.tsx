@@ -3,7 +3,7 @@ export interface Podcast {
   coverArtUrl: string;
   name: string;
   podcasterId: string;
-  podcaster: string; 
+  podcaster: string;
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -108,7 +108,7 @@ export interface Bookmark {
   id: string;
   title: string;
   note?: string;
-  timestamp: number;
+  time: number;
 }
 
 export interface WatchHistory {

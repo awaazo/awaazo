@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import SectionHelper from "../../helpers/SectionHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Bookmark, Episode } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
@@ -20,7 +20,7 @@ interface BookmarksProps {
 
 const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [bookmarks, setBookmarks] = useState(null);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(null);
 
   useEffect(() => {
     if (episodeId) {
@@ -66,7 +66,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
               <Text fontSize={fontSize} color="white">
                 {bookmark.title}
               </Text>
-              <Text color="gray.400">{convertTime(bookmark.timestamp)}</Text>
+              <Text color="gray.400">{convertTime(bookmark.time)}</Text>
             </Flex>
           </Box>
         ))}
