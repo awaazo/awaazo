@@ -29,11 +29,19 @@ import Link from "next/link";
 import Pusher from "pusher-js";
 
 const Notifications = ({ initialNotifcationCount }) => {
+  console.log("Initial count" + initialNotifcationCount);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationCount, setNotificationCount] = useState(
     initialNotifcationCount,
   );
   const [userId, setUserId] = useState<string | null>(null);
+
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+
+  useEffect(() => {
+    setNotificationCount(initialNotifcationCount);
+  }, [initialNotifcationCount]);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -128,7 +136,9 @@ const Notifications = ({ initialNotifcationCount }) => {
             <ListItem p={"2"} width={"100%"}>
               <HStack
                 spacing={"15px"}
-                bg={notification.isRead ? "gray.550" : "gray.600"}
+                bg={notification.isRead ? "gray.550" : "gray.750"}
+                borderRadius={"10px"}
+                padding={"5px"}
               >
                 <Avatar src={notification.media} boxSize="50px" />
                 <VStack align="start" spacing={"0"} flex="1">
@@ -205,6 +215,7 @@ const Notifications = ({ initialNotifcationCount }) => {
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.3)",
           }}
+          backdropFilter={"blur(50px)"}
         >
           <Tabs isFitted>
             <TabList mb="1em">
@@ -224,9 +235,9 @@ const Notifications = ({ initialNotifcationCount }) => {
               </TabPanel>
             </TabPanels>
             <Box textAlign={"center"}>
-                <Link href="/Notifications/Notifications">
-                  <Button variant={"ghost"}>See All</Button>
-                </Link>
+              <Link href="/Notifications/MyNotifications">
+                <Button variant={"ghost"}>See All</Button>
+              </Link>
             </Box>
           </Tabs>
         </MenuList>

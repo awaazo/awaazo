@@ -55,7 +55,7 @@ const Episode = ({ episode }) => {
         e.currentTarget.style.transform = "scale(1)";
       }}
     >
-      <Box position="relative" mr={5}>
+      <Box data-cy={`episode-name-${episode.episodeName}`} position="relative" mr={5}>
         <Image
           boxSize={isMobile ? "0px" : "125px"}
           src={episode.thumbnailUrl}

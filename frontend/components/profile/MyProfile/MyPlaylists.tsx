@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Tooltip, Text,IconButton, Container, VStack, Button } from "@chakra-ui/react";
+import {
+  Flex,
+  Tooltip,
+  Text,
+  IconButton,
+  Container,
+  VStack,
+  Button,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Playlist } from "../../../utilities/Interfaces";
@@ -33,7 +41,14 @@ export default function MyPlaylists() {
   return (
     <>
       {/* Render the heading */}
-      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
+      <Container
+        marginBottom="1em"
+        fontSize="1.5em"
+        fontWeight="bold"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         My Playlists
         <Link href="/Playlist/MyPlaylists" passHref>
           <Button
@@ -55,15 +70,25 @@ export default function MyPlaylists() {
       ) : (
         <>
           {/* Render the list of selected episodes */}
-          <VStack spacing={6} w={{ base: "auto", md: "lg" }}>
+          <VStack
+            spacing={"2px"}
+            w={{ base: "auto", md: "lg" }}
+            minWidth="100%"
+          >
             {playlists.map((playlist, index) => (
               <PlaylistCard playlist={playlist} />
             ))}
           </VStack>
           {playlists[(page + 1) * pageSize - 1] != null && (
-            <Flex justify="center" mt={4}>
+            <Flex justify="center" mt={4} alignSelf={"center"}>
               <Tooltip label="Load More" placement="top">
-                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
+                <IconButton
+                  aria-label="Load More"
+                  icon={<ChevronDownIcon />}
+                  onClick={handleLoadMoreClick}
+                  size="lg"
+                  variant="outline"
+                />
               </Tooltip>
             </Flex>
           )}
