@@ -16,7 +16,7 @@ namespace Backend.Controllers;
 /// </summary>
 [ApiController]
 [Route("podcast")]
-
+[Authorize]
 public class PodcastController : ControllerBase
 {
     private const int MIN_PAGE=0;
@@ -47,7 +47,6 @@ public class PodcastController : ControllerBase
     /// <param name="request">Request object containing the podcast details.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("create")]
-    [Authorize]
     public async Task<IActionResult> CreatePodcast([FromForm] CreatePodcastRequest request)
     {
         try
@@ -77,7 +76,6 @@ public class PodcastController : ControllerBase
     /// <param name="request">Request object containing the podcast details.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("edit")]
-    [Authorize]
     public async Task<IActionResult> EditPodcast([FromForm] EditPodcastRequest request)
     {
         try
@@ -107,7 +105,6 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to be deleted.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpDelete("delete")]
-    [Authorize]
     public async Task<IActionResult> DeletePodcast(Guid podcastId)
     {
         try
@@ -138,7 +135,6 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("myPodcasts")]
-    [Authorize]
     public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -170,6 +166,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("userPodcasts")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUserPodcasts(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -193,6 +190,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("all")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -217,6 +215,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("search")]
+    [AllowAnonymous]
     public async Task<IActionResult> SearchPodcast([FromBody] PodcastFilter filter, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -239,6 +238,7 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to be fetched.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetPodcastById(Guid podcastId)
     {
         try
@@ -262,6 +262,7 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast for which the cover art is to be fetched.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/getCoverArt")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPodcastCoverArt(Guid podcastId)
     {
         try
@@ -290,6 +291,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">Number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("byTags")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -312,7 +314,6 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to get metrics for.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/metrics")]
-    [Authorize]
     public async Task<ActionResult> GetMetrics(Guid podcastId) {
         try {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
@@ -337,6 +338,7 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("getRecentPodcasts")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetRecentPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -365,7 +367,6 @@ public class PodcastController : ControllerBase
     [HttpPost("{podcastId}/add")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
-    [Authorize]
     public async Task<IActionResult> AddEpisode(Guid podcastId, [FromForm] CreateEpisodeRequest request)
     {
         try
@@ -398,7 +399,6 @@ public class PodcastController : ControllerBase
     [HttpPost("{episodeId}/edit")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
-    [Authorize]
     public async Task<IActionResult> EditEpisode(Guid episodeId, [FromForm] EditEpisodeRequest request)
     {
         try
@@ -428,7 +428,6 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">Id of the episode to be deleted.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpDelete("{episodeId}/delete")]
-    [Authorize]
     public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
         try
@@ -458,6 +457,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">Id of the episode to be fetched.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("episode/{episodeId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetEpisode(Guid episodeId)
     {
         try
@@ -481,6 +481,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">Id of the episode for which the audio is to be fetched.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/{episodeId}/getAudio")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetEpisodeAudio(Guid podcastId, Guid episodeId)
     {
         try
@@ -508,6 +509,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">Id of the episode for which the thumbnail is to be fetched.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/{episodeId}/getThumbnail")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetEpisodeThumbnail(Guid podcastId, Guid episodeId)
     {
         try
@@ -538,7 +540,6 @@ public class PodcastController : ControllerBase
     /// <param name="request">ListenPosition of the episode in seconds.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
-    [Authorize]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
         try
         {
@@ -563,7 +564,6 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which the watch history is requested.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{episodeId}/watchHistory")]
-    [Authorize]
     public async Task<IActionResult> GetWatchHistory(Guid episodeId)
     {
         try
@@ -589,6 +589,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which adjecent episodes are requested.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{episodeId}/adjecentEpisode")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAdjecentEpisode(Guid episodeId)
     {
         try
@@ -612,6 +613,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("episode/search")]
+    [AllowAnonymous]
     public async Task<IActionResult> SearchEpisode([FromBody] EpisodeFilter episodeFilter,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -637,7 +639,6 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>The chat or null if its not ready.</returns>
     [HttpGet("{episodeId}/getEpisodeChat")]
-    [Authorize]
     public async Task<IActionResult> GetEpisodeChat(Guid episodeId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -669,7 +670,6 @@ public class PodcastController : ControllerBase
     /// - Prompt: The prompt to add to the episode chat.
     /// </remarks>
     [HttpPost("addEpisodeChat")]
-    [Authorize]
     public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
     {
         try
@@ -702,7 +702,6 @@ public class PodcastController : ControllerBase
     /// <param name="includeWords">Whether to include the words in the transcript.</param>
     /// <returns>The transcript or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscript")]
-    [Authorize]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
         try
@@ -729,7 +728,6 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
     /// <returns>The transcript text or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscriptText")]
-    [Authorize]
     public async Task<ActionResult> GetEpisodeTranscriptText(Guid episodeId)
     {
         try
@@ -757,7 +755,6 @@ public class PodcastController : ControllerBase
     /// <param name="transcriptLines">The transcript lines to edit.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/editTranscriptLines")]
-    [Authorize]
     public async Task<ActionResult> EditEpisodeTranscriptLines(Guid episodeId, TranscriptLineResponse[] transcriptLines)
     {
         try
@@ -784,6 +781,7 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("getRecentEpisodes")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
