@@ -16,7 +16,7 @@ namespace Backend.Controllers;
 /// </summary>
 [ApiController]
 [Route("podcast")]
-[Authorize]
+
 public class PodcastController : ControllerBase
 {
     private const int MIN_PAGE=0;
@@ -24,6 +24,7 @@ public class PodcastController : ControllerBase
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
     private readonly ILogger<PodcastController> _logger;
+
 
     /// <summary>
     /// Constructor for PodcastController
@@ -46,6 +47,7 @@ public class PodcastController : ControllerBase
     /// <param name="request">Request object containing the podcast details.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("create")]
+    [Authorize]
     public async Task<IActionResult> CreatePodcast([FromForm] CreatePodcastRequest request)
     {
         try
@@ -75,6 +77,7 @@ public class PodcastController : ControllerBase
     /// <param name="request">Request object containing the podcast details.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("edit")]
+    [Authorize]
     public async Task<IActionResult> EditPodcast([FromForm] EditPodcastRequest request)
     {
         try
@@ -104,6 +107,7 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to be deleted.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpDelete("delete")]
+    [Authorize]
     public async Task<IActionResult> DeletePodcast(Guid podcastId)
     {
         try
@@ -134,6 +138,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("myPodcasts")]
+    [Authorize]
     public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -171,13 +176,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserPodcasts));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
             return Ok(await _podcastService.GetUserPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),userId));
         }
         catch (Exception e)
@@ -200,13 +198,6 @@ public class PodcastController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllPodcasts));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             return Ok(await _podcastService.GetAllPodcastsAsync(page,pageSize, GetDomainUrl(HttpContext)));
         }
@@ -232,13 +223,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchPodcast));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
             return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),filter));
         }
         catch (Exception e)
@@ -260,13 +244,6 @@ public class PodcastController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPodcastById));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             return Ok(await _podcastService.GetPodcastByIdAsync(GetDomainUrl(HttpContext),podcastId));
         }
@@ -290,13 +267,6 @@ public class PodcastController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPodcastCoverArt));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             // Get the name of the cover art file
             string coverArtName = await _podcastService.GetPodcastCoverArtNameAsync(podcastId);
@@ -326,13 +296,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPodcastsByTags));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
             // Return the podcasts that match the given genres
             return Ok(await _podcastService.GetPodcastsByTagsAsync(page,pageSize,GetDomainUrl(HttpContext),tags));
         }
@@ -349,12 +312,14 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to get metrics for.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/metrics")]
+    [Authorize]
     public async Task<ActionResult> GetMetrics(Guid podcastId) {
         try {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
+
             // If User is not found, return 404
             if (user is null)
                 return NotFound("User does not exist.");
@@ -400,6 +365,7 @@ public class PodcastController : ControllerBase
     [HttpPost("{podcastId}/add")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
+    [Authorize]
     public async Task<IActionResult> AddEpisode(Guid podcastId, [FromForm] CreateEpisodeRequest request)
     {
         try
@@ -432,6 +398,7 @@ public class PodcastController : ControllerBase
     [HttpPost("{episodeId}/edit")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
+    [Authorize]
     public async Task<IActionResult> EditEpisode(Guid episodeId, [FromForm] EditEpisodeRequest request)
     {
         try
@@ -461,6 +428,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">Id of the episode to be deleted.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpDelete("{episodeId}/delete")]
+    [Authorize]
     public async Task<IActionResult> DeleteEpisode(Guid episodeId)
     {
         try
@@ -496,13 +464,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisode));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user == null)
-                return NotFound("User does not exist.");
-
             return Ok(await _podcastService.GetEpisodeByIdAsync(episodeId, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
@@ -525,13 +486,6 @@ public class PodcastController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeAudio));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             // Get the name of the audio file
             string audioName = await _podcastService.GetEpisodeAudioNameAsync(episodeId);
@@ -560,13 +514,6 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeThumbnail));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
-
             // Get the name of the thumbnail file
             string thumbnailName = await _podcastService.GetEpisodeThumbnailNameAsync(episodeId);
 
@@ -591,6 +538,7 @@ public class PodcastController : ControllerBase
     /// <param name="request">ListenPosition of the episode in seconds.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
+    [Authorize]
     public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
         try
         {
@@ -615,6 +563,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which the watch history is requested.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{episodeId}/watchHistory")]
+    [Authorize]
     public async Task<IActionResult> GetWatchHistory(Guid episodeId)
     {
         try
@@ -646,11 +595,7 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAdjecentEpisode));
 
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
             return Ok(await _podcastService.GetAdjecentEpisodeAsync(episodeId));
-
         }
         catch(Exception e)
         {
@@ -673,11 +618,7 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchEpisode));
 
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
             return Ok(await _podcastService.SearchEpisodeAsync(page,pageSize,episodeFilter,GetDomainUrl(HttpContext)));
-
         }
         catch (Exception e)
         {
@@ -696,6 +637,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>The chat or null if its not ready.</returns>
     [HttpGet("{episodeId}/getEpisodeChat")]
+    [Authorize]
     public async Task<IActionResult> GetEpisodeChat(Guid episodeId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -703,7 +645,7 @@ public class PodcastController : ControllerBase
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeChat));
 
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            
+
             if (user is null)
                 return NotFound("User not found");
 
@@ -727,6 +669,7 @@ public class PodcastController : ControllerBase
     /// - Prompt: The prompt to add to the episode chat.
     /// </remarks>
     [HttpPost("addEpisodeChat")]
+    [Authorize]
     public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
     {
         try
@@ -738,7 +681,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return Ok(await _podcastService.PromptEpisodeChatAsync(request.EpisodeId,user,request.Prompt,GetDomainUrl(HttpContext)));
+            return Ok(await _podcastService.PromptEpisodeChatAsync(request.EpisodeId, user, request.Prompt, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {
@@ -759,6 +702,7 @@ public class PodcastController : ControllerBase
     /// <param name="includeWords">Whether to include the words in the transcript.</param>
     /// <returns>The transcript or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscript")]
+    [Authorize]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
         try
@@ -785,6 +729,7 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
     /// <returns>The transcript text or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscriptText")]
+    [Authorize]
     public async Task<ActionResult> GetEpisodeTranscriptText(Guid episodeId)
     {
         try
@@ -812,6 +757,7 @@ public class PodcastController : ControllerBase
     /// <param name="transcriptLines">The transcript lines to edit.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/editTranscriptLines")]
+    [Authorize]
     public async Task<ActionResult> EditEpisodeTranscriptLines(Guid episodeId, TranscriptLineResponse[] transcriptLines)
     {
         try
