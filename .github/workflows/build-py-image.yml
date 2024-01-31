@@ -17,7 +17,7 @@ jobs:
 
         # Add .env for openai secrets
         - name: Add .env assistant_service to python
-          working-directory: python/assistant_service
+          working-directory: Python/assistant_service
           env:
             settings: ${{ vars.OPEN_AI_KEY }}
           run: |
