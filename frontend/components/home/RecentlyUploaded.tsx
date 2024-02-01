@@ -7,6 +7,7 @@ import {
   useBreakpointValue,
   Spinner,
   SimpleGrid,
+  Flex,
 } from "@chakra-ui/react";
 import { Podcast } from "../../utilities/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
@@ -40,38 +41,23 @@ const RecentlyUploaded: React.FC = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <VStack spacing={4} align="stretch">
+    <Box>
       {isLoading ? (
         <Spinner size="xl" />
       ) : error ? (
         <Text color="red.500">{error}</Text>
+      ) : podcasts && podcasts.length > 0 ? (
+        <Flex flexWrap="wrap">
+          {podcasts.map((podcast) =>
+            podcast.episodes.map((episode) => (
+              <PodcastTicket key={episode.id} episode={episode} />
+            )),
+          )}
+        </Flex>
       ) : (
-        <HStack
-          spacing={4}
-          overflowX="auto"
-          css={{
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-          }}
-        >
-          <SimpleGrid
-            columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }}
-            spacing={5}
-          >
-            {podcasts && podcasts.length > 0 ? (
-              podcasts.map((podcast) =>
-                podcast.episodes.map((episode) => (
-                  <PodcastTicket key={episode.id} episode={episode} />
-                )),
-              )
-            ) : (
-              <Text>No episodes available</Text>
-            )}
-          </SimpleGrid>
-        </HStack>
+        <Text>No episodes available</Text>
       )}
-    </VStack>
+    </Box>
   );
 };
 
