@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import SubscribeHelper from "../../helpers/SubscribeHelper";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { BaseResponse } from "../../utilities/Responses";
-import AuthRequest  from "../../helpers/AuthHelper";
 import LoginPrompt from "../shared/LoginPrompt";
 
 const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, currentUserID }) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
-  const [shouldShowLoginPrompt, setShouldShowLoginPrompt] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     SubscribeHelper.getIsSubscribed(PodcastId)
@@ -47,7 +46,7 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
             // Update the UI to reflect the subscribe
             setIsSubscribed(true);
           } else if (response.status === 401) {
-            setShouldShowLoginPrompt(true);
+            setShowLoginPrompt(true);
           } else {
             console.error(
               "Error subscribing podcast. Server returned status:",
@@ -91,10 +90,10 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
         </Button>
       </Tooltip>
       {/* Conditionally render the LoginPrompt component with infoMessage */}
-      {shouldShowLoginPrompt && (
+      {showLoginPrompt && (
         <LoginPrompt
           isOpen={true}
-          onClose={() => setShouldShowLoginPrompt(false)}
+          onClose={() => setShowLoginPrompt(false)}
           infoMessage="To Subscribe to a Podcast, you must be logged in. Please log in or create an account."
         />
       )}
