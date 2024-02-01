@@ -1,6 +1,3 @@
-using Backend.Controllers;
-using Backend.Controllers.Requests;
-using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Xunit.Assert;
 
@@ -148,7 +145,6 @@ public class AuthTests
 
     [Fact]
     public void GenerateToken_NullAudience_ReturnsException()
-
     {
         // ARRANGE
         // So as to not mutate global state
@@ -173,7 +169,6 @@ public class AuthTests
 
     [Fact]
     public void GenerateToken_ValidConfig_ReturnsTokenString()
-
     {
         // ARRANGE
         string token = "";
@@ -197,14 +192,8 @@ public class AuthTests
     public async void LoginAsync_InvalidEmail_ReturnsNull()
     {
         // ARRANGE
-
-        // toDO: Make sure that the userName is not in the DB!!!
-        // Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
+        var loginRequest = CreateLoginRequest();
+        loginRequest.Email += "Invalid";
         User? user = null;
 
         // ACT
@@ -225,14 +214,8 @@ public class AuthTests
     public async void LoginAsync_InvalidPassword_ReturnsNull()
     {
         // ARRANGE
-        
-        // toDO: Make sure that the password is not in the DB!!!
-        // Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX1"
-        };
+        var loginRequest = CreateLoginRequest();
+        loginRequest.Password += "Invalid";
         User? user = null;
 
         // ACT
@@ -254,12 +237,7 @@ public class AuthTests
 
     {
         // ARRANGE
-        // Request
-        LoginRequest loginRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD
-        };
+        var loginRequest = CreateLoginRequest();
         User? user = null;
 
         // ACT
@@ -283,16 +261,7 @@ public class AuthTests
     public async void RegisterAsync_ExistingEmail_ReturnsNull()
     {
         // ARRANGE
-
-        // Request
-        RegisterRequest registerRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD,
-            Username = USERNAME,
-            DateOfBirth = DateTime.Now,
-            Gender = User.GenderEnum.Male.ToString()
-        };
+        var registerRequest = CreateRegisterRequest();
         User? user = null;
 
         // ACT
@@ -314,18 +283,14 @@ public class AuthTests
     public async void RegisterAsync_InvalidGender_ReturnsUserWithNoneGender()
     {
         // ARRANGE
-
-        // Request
         string newUsername = USERNAME + "1";
         string newEmail = EMAIL + "1";
-        RegisterRequest registerRequest = new()
-        {
-            Email = newEmail,
-            Password = PASSWORD,
-            Username = newUsername,
-            DateOfBirth = DateTime.Now,
-            Gender = "NotAValidGender"
-        };
+
+        var registerRequest = CreateRegisterRequest();
+        registerRequest.Email = newEmail;
+        registerRequest.Password = newUsername;
+        registerRequest.Gender = "NotAValidGender";
+
         User? user = null;
 
         _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
@@ -340,7 +305,6 @@ public class AuthTests
         });
 
         // ACT
-
         try
         {
             user = await _authService.RegisterAsync(registerRequest);
@@ -361,19 +325,14 @@ public class AuthTests
     public async void RegisterAsync_ValidUser_ReturnsUser()
     {
         // ARRANGE       
-
         string newUsername = USERNAME + "1";
         string newEmail = EMAIL + "1";
-        RegisterRequest registerRequest = new()
-        {
-            Email = newEmail,
-            Password = PASSWORD,
-            Username = newUsername,
-            DateOfBirth = DateTime.Now,
-            Gender = User.GenderEnum.Male.ToString()
-        };
-        User? user = null;
 
+        var registerRequest = CreateRegisterRequest();
+        registerRequest.Email = newEmail;
+        registerRequest.Username = newUsername;
+
+        User? user = null;
 
         _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
         {
@@ -463,6 +422,7 @@ public class AuthTests
     {
         // ARRANGE
         User? user = null;
+
         // Guid has to be not valid
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString() + "1234NotValid") };      
@@ -489,18 +449,8 @@ public class AuthTests
     public async void GoogleSSOAsync_ExistingUser_ReturnsUser()
     {
         // ARRANGE
-
         User? user = null;
-        // Request
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX",
-            Token = "XXXXXXXXXXXXXXXXXX"
-        };
-
+        var googleRequest = CreateGoogleRequest();
 
         // ACT
         try
@@ -523,15 +473,10 @@ public class AuthTests
     public async void GoogleSSOAsync_NewUser_ReturnsUser()
     {
         // ARRANGE
-        // Request
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXXNewUser@gmail",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXXNew",
-            Avatar = "XXXXXXXXXXXXXXXXX"
-        };
         User? user = null;
+        var googleRequest = CreateGoogleRequest();
+        googleRequest.Email = "XXXXXXXXXXXXXXXXXNewUser@gmail";
+        googleRequest.Name = "XXXXXXXXXXXXXXXXXNew";
 
         // ACT
         try 
@@ -559,25 +504,13 @@ public class AuthTests
     {
         // ARRANGE
         IActionResult actionResult = null;
-        var httpContext = new DefaultHttpContext();
         _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create the Request
-        LoginRequest loginRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD
-        };
+        var loginRequest = CreateLoginRequest();
 
         // Need to have a default httpContext
-        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
         try
@@ -599,16 +532,10 @@ public class AuthTests
     {
         // ARRANGE
         IActionResult? actionResult = null;
-
         _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create the Request
-        LoginRequest loginRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD
-        };
+        LoginRequest loginRequest = CreateLoginRequest();
 
         // ACT
         try
@@ -629,27 +556,13 @@ public class AuthTests
     {
         // ARRANGE
         IActionResult? actionResult = null;
-        var httpContext = new DefaultHttpContext();
         _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(new User());
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
-        RegisterRequest registerRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD,
-            DateOfBirth = DateTime.Now,
-            Gender = User.GenderEnum.Male.ToString(),
-            Username = USERNAME
-        };
+        // Create the Request
+        var registerRequest = CreateRegisterRequest();
 
-        // Need to have a default httpContext
-        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        // Need to have a default httpContext controller
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
         try
@@ -671,19 +584,10 @@ public class AuthTests
         // ARRANGE
         IActionResult? actionResult = null;
         _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
+        
 
         // Create the Request
-
-        RegisterRequest registerRequest = new()
-        {
-            Email = EMAIL,
-            Password = PASSWORD,
-            DateOfBirth = DateTime.Now,
-            Gender = User.GenderEnum.Male.ToString(),
-            Username = USERNAME
-        };
+        var registerRequest = CreateRegisterRequest();
 
         // ACT
         try
@@ -708,10 +612,7 @@ public class AuthTests
         IActionResult? actionResult = null;
         _httpContextMock.Object.Request.Path = "/auth/me";
         _httpContextMock.Object.Request.Host = new HostString("localhost:5000");
-        // Setup Mocks
-
         _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // ACT
         try
@@ -735,7 +636,6 @@ public class AuthTests
         // ARRANGE
         IActionResult? actionResult = null;
         _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // ACT
         try
@@ -756,29 +656,14 @@ public class AuthTests
     {
         // ARRANGE
         IActionResult? actionResult = null;
-        var httpContext = new DefaultHttpContext();
         _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
         _authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-        // Create the Request
 
-        GoogleRequest googleRequest = new()
-        {
-            Email = EMAIL,
-            Name = USERNAME,
-            Sub = "id",
-            Avatar = "test.img",
-            Token = "Token String"
-        };
+        // Create the Request
+        var googleRequest = CreateGoogleRequest();
 
         // Need to have a default httpContext
-        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
         try
@@ -801,16 +686,9 @@ public class AuthTests
         // ARRANGE
         IActionResult? actionResult = null;
         _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
-        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create the Request
-        GoogleRequest googleRequest = new()
-        {
-            Email = EMAIL,
-            Name = USERNAME,
-            Sub = "id",
-            Avatar = "test.img"
-        };
+        GoogleRequest googleRequest = CreateGoogleRequest();
 
         // ACT
         try
@@ -828,7 +706,7 @@ public class AuthTests
 
     #endregion
 
-
+    #region Private Methods
     private void MockBasicUtilities()
     {
         var userGuid = Guid.NewGuid();
@@ -850,6 +728,7 @@ public class AuthTests
         }.AsQueryable().BuildMockDbSet();
 
         _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(_user.Object.FirstOrDefault()!);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         _dbContextMock.SetupGet(db => db.Users).Returns(_user.Object);
         _dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
@@ -860,4 +739,50 @@ public class AuthTests
         _httpRequestMock.Setup(t => t.IsHttps).Returns(true);
         _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));       
     }
+
+    private AuthController CreateDefaultHttpAuthController()
+    {
+        return new AuthController(_config, _authServiceMock.Object, _loggerMock.Object)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+    }
+    
+    private LoginRequest CreateLoginRequest()
+    {
+        return new LoginRequest()
+        {
+            Email = EMAIL,
+            Password = PASSWORD
+        };
+    }
+
+    private RegisterRequest CreateRegisterRequest()
+    {
+        return new RegisterRequest()
+        {
+            Email = EMAIL,
+            Password = PASSWORD,
+            Username = USERNAME,
+            DateOfBirth = DateTime.Now,
+            Gender = User.GenderEnum.Male.ToString()
+        };
+    }
+
+    private GoogleRequest CreateGoogleRequest()
+    {
+        return new GoogleRequest()
+        {
+            Email = "XXXXXXXXXXXXXXXXX",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Name = "XXXXXXXXXXXXXXXXX",
+            Avatar = "XXXXXXXXXXXXXXXXX",
+            Token = "XXXXXXXXXXXXXXXXXX"
+        };
+    }
+
+    #endregion
 }
