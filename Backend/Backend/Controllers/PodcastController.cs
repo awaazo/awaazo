@@ -702,16 +702,12 @@ public class PodcastController : ControllerBase
     /// <param name="includeWords">Whether to include the words in the transcript.</param>
     /// <returns>The transcript or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscript")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            if (user is null)
-                return NotFound("User not found");
 
             return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId, seekTime, includeWords));
         }
@@ -728,16 +724,12 @@ public class PodcastController : ControllerBase
     /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
     /// <returns>The transcript text or null if its not ready.</returns>
     [HttpGet("{episodeId}/getTranscriptText")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetEpisodeTranscriptText(Guid episodeId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscriptText));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            if (user is null)
-                return NotFound("User not found");
 
             return Ok(await _podcastService.GetEpisodeTranscriptTextAsync(episodeId));
         }

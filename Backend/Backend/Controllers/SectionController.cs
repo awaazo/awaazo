@@ -66,18 +66,12 @@ public class SectionController : ControllerBase
     /// <param name="episodeId"> Id of the episode for which sections are to be fetched</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{episodeId}/get")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetSection(Guid episodeId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetSection));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user == null)
-                return NotFound("User does not exist.");
 
             return Ok(await _SectionService.GetSectionsAsync(episodeId));
         }

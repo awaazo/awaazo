@@ -262,18 +262,12 @@ public class ProfileController : ControllerBase
     /// <param name="pageSize"> Number of results per page</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("search")]
+    [AllowAnonymous]
     public async Task<IActionResult> ProfileSearch(string searchTerm = "", int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(ProfileSearch));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             return Ok(await _profileService.SearchUserProfiles(searchTerm, page, pageSize, GetDomainUrl(HttpContext)));
         }
@@ -290,18 +284,12 @@ public class ProfileController : ControllerBase
     /// <param name="userId"> Id of the user whose profile is to be fetched</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{userId}/get")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUser(Guid userId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUser));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             return Ok(await _profileService.GetUserProfile(userId, GetDomainUrl(HttpContext)));
         }
@@ -318,18 +306,12 @@ public class ProfileController : ControllerBase
     /// <param name="userId"> Id of the user whose avatar is to be fetched</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{userId}/avatar")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUserAvatar(Guid userId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserAvatar));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             // Get the avatar name of the user. 
             string avatarName = await _profileService.GetUserAvatarNameAsync(userId);

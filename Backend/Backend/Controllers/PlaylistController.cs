@@ -1,6 +1,5 @@
 ﻿using Backend.Controllers.Requests;
 using Backend.Models;
-using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -227,16 +226,12 @@ public class PlaylistController : ControllerBase
     /// <param name="pageSize">Size of the current page.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{userId}/getUserPlaylists")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetUserPlaylists(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserPlaylists));
-
-            // Get the current User
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Get the user playlists.
             return Ok(await _playlistService.GetUserPlaylistsAsync(userId,user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -256,16 +251,12 @@ public class PlaylistController : ControllerBase
     /// <param name="pageSize">Size of the current page.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("all")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetAllPlaylists(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllPlaylists));
-
-            // Get the current User
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Get the user playlists.
             return Ok(await _playlistService.GetAllPlaylistsAsync(user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -286,16 +277,12 @@ public class PlaylistController : ControllerBase
     /// <param name="pageSize">Size of the current page.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("search")]
+    [AllowAnonymous]
     public async Task<ActionResult> SearchPlaylists(string searchTerm, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchPlaylists));
-
-            // Get the current User
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Gets the searched Playlists
             return Ok(await _playlistService.SearchPlaylistsAsync(searchTerm,user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -370,18 +357,12 @@ public class PlaylistController : ControllerBase
     /// <param name="playlistId">Id of the Playlist.</param>    
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}/getCoverArt")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPlaylistCoverArt));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             // Get the name of the cover art file
             string coverArtName = await _playlistService.GetPlaylistCoverArtNameAsync(playlistId);

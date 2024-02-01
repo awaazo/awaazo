@@ -131,6 +131,7 @@ public class AnnotationController : ControllerBase
     /// <param name="episodeId">Id of the episode to get the annotation from.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{episodeId}/getAnnotation")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAnnotation(Guid episodeId)
     {
         try
@@ -138,12 +139,6 @@ public class AnnotationController : ControllerBase
             // Log the message
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAnnotation));
 
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user == null)
-                return NotFound("User does not exist.");
             // Call the services Method
             return Ok(await _annotationService.GetEpisodeAnnotationAsync(episodeId));
         }
