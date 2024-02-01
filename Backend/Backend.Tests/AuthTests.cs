@@ -46,7 +46,8 @@ public class AuthTests
         _loggerMock = new();
         _mapperMock = new();
         _authServiceMock = new();
-        // VERY SKETCH
+
+        // VERY SKETCH. Could accidently send real emails if we are not careful
         _emailService = new(_config);
         _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
         _authController = new(_config, _authServiceMock.Object, _loggerMock.Object) 
@@ -68,8 +69,7 @@ public class AuthTests
         // Config
         _config = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json")
-        .Build();
-        
+        .Build();       
 
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         _httpContextMock = new();
@@ -77,7 +77,8 @@ public class AuthTests
         _loggerMock = new();
         _mapperMock = new();
         _authServiceMock = new();
-        // VERY SKETCH
+
+        // VERY SKETCH. Could accidently send real emails if we are not careful
         _emailService = new(_config);
         _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
         _authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
