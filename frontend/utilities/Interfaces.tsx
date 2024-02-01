@@ -49,6 +49,7 @@ export interface Playlist {
   createdAt: Date;
   updatedAt: Date;
   playlistEpisodes: Episode[];
+  coverArt: string;
 }
 
 export interface Section {
@@ -107,7 +108,7 @@ export interface Bookmark {
   id: string;
   title: string;
   note?: string;
-  timestamp: number;
+  time: number;
 }
 
 export interface WatchHistory {

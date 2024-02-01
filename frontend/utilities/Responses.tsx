@@ -1,19 +1,4 @@
-import { SetStateAction } from "react";
-import {
-  UserMenuInfo,
-  UserProfile,
-  Podcast,
-  Episode,
-  userProfileByID,
-  User,
-  Bookmark,
-  Section,
-  Playlist,
-  TranscriptLine,
-  Annotation,
-  WatchHistory,
-  Metrics,
-} from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, TranscriptLine, Annotation, WatchHistory, Metrics } from "./Interfaces";
 
 export interface BaseResponse {
   status: number;
@@ -87,7 +72,11 @@ export interface GetMyPodcastResponse extends BaseResponse {
   podcast: Podcast;
 }
 
-export interface GetChangePasswordResponse extends BaseResponse{
+export interface SearchEpisodeResponse extends BaseResponse {
+  episodes: Episode[];
+}
+
+export interface GetChangePasswordResponse extends BaseResponse {
   data: string;
 }
 
@@ -145,22 +134,6 @@ export interface AddAnnotationResponse extends BaseResponse {
 export interface getAnnotationResponse extends BaseResponse {
   annotations: Annotation[];
 }
-
-//#endregion
-
-//#region Playlist Responses
-export interface PlaylistDataResponse extends BaseResponse {
-  data: string;
-}
-
-export interface GetPlaylistsResponse extends BaseResponse {
-  playlists: Playlist[];
-}
-
-export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  playlist: Playlist;
-}
-
 //#endregion
 
 //#region Playlist Responses

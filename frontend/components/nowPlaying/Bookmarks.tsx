@@ -6,13 +6,14 @@ import {
   Flex,
   useBreakpointValue,
   Icon,
+  IconButton
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import SectionHelper from "../../helpers/SectionHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Bookmark } from "../../utilities/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
-import { LuBookCopy } from "react-icons/lu";
+import { CiBookmark } from "react-icons/ci";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
+import { FaTrash } from "react-icons/fa";
 
 interface BookmarksProps {
   episodeId: string;
@@ -20,8 +21,27 @@ interface BookmarksProps {
 
 const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [bookmarks, setBookmarks] = useState(null);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(null);
+  const [deletedBookmark, setDeletedBookmark] = useState();
 
+  //fetch bookmarks every time a new episodeid is set
+  useEffect(() => {
+    if (episodeId) {
+      BookmarksHelper.getAllBookmarks(episodeId)
+        .then((res) => {
+          if (res.status === 200) {
+            setBookmarks(res.bookmarks);
+          } else {
+            console.error("Error fetching bookmarks data:", res.message);
+          }
+        })
+        .catch((error) =>
+          console.error("Error fetching bookmarks data:", error),
+        );
+    }
+  }, [episodeId]);
+
+  //fetch bookmarks every time a bookmark has been added/deleted
   useEffect(() => {
     if (episodeId) {
       BookmarksHelper.getAllBookmarks(episodeId)
@@ -34,7 +54,24 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
         })
         .catch((error) => console.error("Error fetching bookmarks data:", error));
     }
-  }, [episodeId]);
+  }, [bookmarks]);
+
+
+   // Function to handle the bookmark/delete bookmark action
+ const handleDeleteBookmark = (bookmarkId) => {
+  console.log("id: ",bookmarkId);
+  // Send the request to delete bookmark
+  BookmarksHelper.deleteEpisodeBookmark(bookmarkId)
+  .then((response) => {
+    if (response.status === 200) {
+      setDeletedBookmark(bookmarkId);
+      console.log("Bookmark " + bookmarkId + " deleted");
+    } else {
+      console.error("Error deleting bookmark", response.message);
+    }
+  });
+
+};
 
   return (
     <Box
@@ -45,7 +82,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
       borderRadius="1.1em"
     >
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
-        <Icon as={LuBookCopy} boxSize={5} />
+        <Icon as={CiBookmark} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
           Bookmarks
         </Text>
@@ -64,7 +101,17 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
               <Text fontSize={fontSize} color="white">
                 {bookmark.title}
               </Text>
-              <Text color="gray.400">{convertTime(bookmark.timestamp)}</Text>
+              <IconButton icon={<Icon as={FaTrash} />} variant={"ghost"} aria-label="Delete Bookmark" data-cy={`delete-bookmark-id:`} onClick={() => handleDeleteBookmark(bookmark.id)} size="md" />
+            </Flex>
+            <Flex justify="space-between" align="center">
+              <Text fontSize={fontSize} color="gray.500">
+                {convertTime(bookmark.time)}
+              </Text>
+            </Flex>
+            <Flex justify="space-between" align="center">
+              <Text fontSize={fontSize} color="gray.400">
+                {bookmark.note}
+              </Text>
             </Flex>
           </Box>
         ))}

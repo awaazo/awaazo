@@ -6,6 +6,8 @@ import {
   Container,
   Stack,
   useBreakpointValue,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import { MdEdit } from "react-icons/md";
@@ -42,37 +44,31 @@ export default function userProfile() {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
 
   return (
-    <>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width={"95%"}
+    >
       {isMobile ? (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          paddingTop="3em"
-        >
-          <Container width="100%" maxWidth="100%">
+        <VStack justify="center" align="center" ml={"15px"}>
+          <UserHeader userId={userId} />
+          <UserPodcasts userId={userId} />
+          <UserEpisodes userId={userId} />
+          <UserPlaylists userId={userId} />
+        </VStack>
+      ) : (
+        <HStack width="80%" align={"start"} spacing={"15px"}>
+          <VStack width="50%" align="start" spacing={"10px"}>
             <UserHeader userId={userId} />
             <UserPodcasts userId={userId} />
-          </Container>
-          <Container width="100%" maxWidth="100%">
+          </VStack>
+          <VStack width="50%" align="start">
             <UserEpisodes userId={userId} />
             <UserPlaylists userId={userId} />
-          </Container>
-        </Box>
-      ) : (
-        <Box display="flex" justifyContent="center" paddingTop="2em">
-          <Stack isInline={isInline} spacing="4">
-            <Container>
-              <UserHeader userId={userId} />
-              <UserPodcasts userId={userId} />
-            </Container>
-            <Container>
-              <UserEpisodes userId={userId} />
-              <UserPlaylists userId={userId} />
-            </Container>
-          </Stack>
-        </Box>
+          </VStack>
+        </HStack>
       )}
-    </>
+    </Box>
   );
 }

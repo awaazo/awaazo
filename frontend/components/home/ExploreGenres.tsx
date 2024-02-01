@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Image } from "@chakra-ui/react";
+import { Box, Text, Grid, Image, Flex, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import techImage from "../../styles/images/genres/tech.png";
 import medImage from "../../styles/images/genres/med.png";
@@ -6,7 +6,7 @@ import comedyImage from "../../styles/images/genres/comedy.png";
 import politicsImage from "../../styles/images/genres/politics.png";
 import crimeImage from "../../styles/images/genres/crime.png";
 import otherImage from "../../styles/images/genres/other.png";
-import GenreCard from "../cards/GenreCard"
+import GenreCard from "../cards/GenreCard";
 
 // Define the genres array with name, image, and link properties
 const genres = [
@@ -22,21 +22,30 @@ const ExploreGenres = () => {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   return (
-    <Box marginBottom="3em">
-      <Grid
-        templateColumns={["repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(9, 1fr)"]}
-        gap={4}
-      >
-        {genres.map((genre) => (
+    <Flex
+      justifyContent="flex-start"
+      flexWrap="wrap"
+      maxWidth={{ base: "100%", md: "1500px" }}
+    >
+      {genres.map((genre) => (
+        <Box
+          key={genre.name}
+          width={{
+            base: "50%",
+            md: "31%",
+            lg: "23%",
+            xl: "16%",
+          }}
+          marginBottom={{ base: "1.5em", md: "1.5em", lg: "3em" }}
+        >
           <GenreCard
-            key={genre.name}
             genre={genre}
             onMouseEnter={setHoveredGenre}
             onMouseLeave={() => setHoveredGenre(null)}
           />
-        ))}
-      </Grid>
-    </Box>
+        </Box>
+      ))}
+    </Flex>
   );
 };
 

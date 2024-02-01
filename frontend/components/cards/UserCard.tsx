@@ -1,8 +1,17 @@
-import { Box, Image, Flex, useColorModeValue, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Flex,
+  useColorModeValue,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { use } from "chai";
 import Link from "next/link";
 
 // Define the UserCard component
 const UserCard = ({ user }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <Link href={`/profile/${user.id}`} passHref>
       <Flex
@@ -30,11 +39,13 @@ const UserCard = ({ user }) => {
           src={user.avatarUrl}
           alt="Profile Pic"
           borderRadius="full"
-          boxSize="125px"
+          boxSize={isMobile ? "75px" : "125px"}
           mb={4}
         />
         <Box>
-          <Text fontWeight="bold" data-cy={`user-card-${user.displayName}`}>{user.displayName}</Text>
+          <Text fontWeight="bold" data-cy={`user-card-${user.displayName}`}>
+            {user.displayName}
+          </Text>
           <Text>@{user.username}</Text>
         </Box>
       </Flex>
