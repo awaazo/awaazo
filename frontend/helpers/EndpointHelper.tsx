@@ -133,6 +133,34 @@ export default class EndpointHelper {
   };
 
   /**
+   * Returns the Podcast getRecentPodcasts endpoint.
+   * @returns The Podcast getRecentPodcasts Endpoint
+   */
+  static getRecentPodcastsEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/getRecentPodcasts?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
+   * Returns the Podcast getRecentEpisodes endpoint.
+   * @returns The Podcast getRecentEpisodes Endpoint
+   */
+  static getRecentEpisodesEndpoint = (page, pageSize) => {
+    return (
+      this.getBackendAddress() +
+      "/podcast/getRecentEpisodes?page=" +
+      page +
+      "&pageSize=" +
+      pageSize
+    );
+  };
+
+  /**
    * Returns the Podcast myPodcasts endpoint.
    * @returns The Podcast myPodcasts Endpoint
    */
