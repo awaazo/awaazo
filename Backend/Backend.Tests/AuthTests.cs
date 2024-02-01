@@ -1,10 +1,7 @@
 using Backend.Controllers;
 using Backend.Controllers.Requests;
-using Backend.Models;
-using Backend.Services;
-using Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using Assert = Xunit.Assert;
 
 namespace Backend.Tests;
@@ -15,10 +12,11 @@ namespace Backend.Tests;
 [Collection("Sequential")]
 public class AuthTests
 {
-
+    #region variables and initializers
+    
     private Mock<AppDbContext> _dbContextMock;
-    private Mock<IAuthService> _authServiceMock;
     private Mock<HttpContext> _httpContextMock;
+    private Mock<IAuthService> _authServiceMock;
     private Mock<DbSet<User>> _user;
     private Mock<ILogger<AuthController>> _loggerMock;
     private Mock<HttpRequest> _httpRequestMock;
@@ -29,6 +27,10 @@ public class AuthTests
     private EmailService _emailService;
     private const string DOMAIN = "TestDomain";
     private IConfiguration _config;
+
+    private const string USERNAME = "username";
+    private const string EMAIL = "test@email.com";
+    private const string PASSWORD = "password";
 
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
@@ -46,10 +48,11 @@ public class AuthTests
         _httpRequestMock = new();
         _loggerMock = new();
         _mapperMock = new();
+        _authServiceMock = new();
         // VERY SKETCH
         _emailService = new(_config);
         _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
-        _authController = new(_config, _authService, _loggerMock.Object) 
+        _authController = new(_config, _authServiceMock.Object, _loggerMock.Object) 
         {
             ControllerContext = new ControllerContext()
             {
@@ -76,10 +79,11 @@ public class AuthTests
         _httpRequestMock = new();
         _loggerMock = new();
         _mapperMock = new();
+        _authServiceMock = new();
         // VERY SKETCH
         _emailService = new(_config);
         _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
-        _authController = new(_config, _authService, _loggerMock.Object)
+        _authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -90,6 +94,8 @@ public class AuthTests
         MockBasicUtilities();
     }
 
+    #endregion
+
     #region Test Service
 
     [Fact]
@@ -97,6 +103,7 @@ public class AuthTests
     {
         // ARRANGE
         // So as to not mutate global state
+        // Set Key to null
         var testConfig = _config;
         testConfig["Jwt:Key"] = null;
 
@@ -108,6 +115,7 @@ public class AuthTests
         catch (Exception ex)
         {
             Assert.Equal("Key is null", ex.Message);
+            return;
         }
 
         // ASSERT
@@ -118,6 +126,7 @@ public class AuthTests
     public void GenerateToken_NullIssuer_ReturnsException()
     {
         // ARRANGE
+        // So as to not mutate global state
         // Set the Issuer to null
         var testConfig = _config;
         testConfig["Jwt:Issuer"] = null;
@@ -130,6 +139,7 @@ public class AuthTests
         catch (Exception ex)
         {
             Assert.Equal("Issuer is null", ex.Message);
+            return;
         }
 
         // ASSERT
@@ -141,6 +151,7 @@ public class AuthTests
 
     {
         // ARRANGE
+        // So as to not mutate global state
         // Set the Audience to null
         var testConfig = _config;
         testConfig["Jwt:Audience"] = null;
@@ -153,6 +164,7 @@ public class AuthTests
         catch (Exception ex)
         {
             Assert.Equal("Audience is null", ex.Message);
+            return;
         }
 
         // ASSERT
@@ -242,13 +254,11 @@ public class AuthTests
 
     {
         // ARRANGE
-        // toDO: Make sure that the password AND userName ARE IN the DB!!!
         // Request
         LoginRequest loginRequest = new()
-
         {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
+            Email = EMAIL,
+            Password = PASSWORD
         };
         User? user = null;
 
@@ -265,8 +275,8 @@ public class AuthTests
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user.Username);
+        Assert.Equal(EMAIL, user.Email);
+        Assert.Equal(USERNAME, user.Username);
     }
 
     [Fact]
@@ -275,15 +285,13 @@ public class AuthTests
         // ARRANGE
 
         // Request
-        //toDo: Make the email ALREADY Exist in the db!!!!
         RegisterRequest registerRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
+            Email = EMAIL,
+            Password = PASSWORD,
+            Username = USERNAME,
             DateOfBirth = DateTime.Now,
-            Gender = "Male"
-
+            Gender = User.GenderEnum.Male.ToString()
         };
         User? user = null;
 
@@ -308,27 +316,28 @@ public class AuthTests
         // ARRANGE
 
         // Request
-
+        string newUsername = USERNAME + "1";
+        string newEmail = EMAIL + "1";
         RegisterRequest registerRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXXX",
+            Email = newEmail,
+            Password = PASSWORD,
+            Username = newUsername,
             DateOfBirth = DateTime.Now,
-            Gender = "NoValidGender"
+            Gender = "NotAValidGender"
         };
         User? user = null;
 
-        //mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
-        //{
-        //    Id = Guid.NewGuid(),
-        //    Email = "XXXXXXXXXXXXXXXXX1",
-        //    Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-        //    Username = "XXXXXXXXXXXXXXXXX",
-        //    DateOfBirth = DateTime.Now,
-        //    Gender = User.GenderEnum.None,
-        //    CreatedAt = DateTime.Now
-        //});
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
+        {
+            Id = Guid.NewGuid(),
+            Email = newEmail,
+            Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+            Username = newUsername,
+            DateOfBirth = DateTime.Now,
+            Gender = User.GenderEnum.None,
+            CreatedAt = DateTime.Now
+        });
 
         // ACT
 
@@ -344,38 +353,38 @@ public class AuthTests
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX1", user!.Email);
+        Assert.Equal(newEmail, user!.Email);
         Assert.Equal(User.GenderEnum.None, user.Gender);
     }
 
     [Fact]
     public async void RegisterAsync_ValidUser_ReturnsUser()
-
     {
         // ARRANGE       
 
-        // Request
+        string newUsername = USERNAME + "1";
+        string newEmail = EMAIL + "1";
         RegisterRequest registerRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX11",
+            Email = newEmail,
+            Password = PASSWORD,
+            Username = newUsername,
             DateOfBirth = DateTime.Now,
-            Gender = "Male"
+            Gender = User.GenderEnum.Male.ToString()
         };
         User? user = null;
 
 
-        //mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
-        //{
-        //    Id = Guid.NewGuid(),
-        //    Email = "XXXXXXXXXXXXXXXXX1",
-        //    Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-        //    Username = "XXXXXXXXXXXXXXXXX",
-        //    DateOfBirth = DateTime.Now,
-        //    Gender = User.GenderEnum.Male,
-        //    CreatedAt = DateTime.Now
-        //});
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
+        {
+            Id = Guid.NewGuid(),
+            Email = newEmail,
+            Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+            Username = newUsername,
+            DateOfBirth = registerRequest.DateOfBirth,
+            Gender = User.GenderEnum.Male,
+            CreatedAt = DateTime.Now
+        });
 
         // ACT
         try
@@ -390,7 +399,7 @@ public class AuthTests
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX1", user!.Email);
+        Assert.Equal(newEmail, user.Email);
         Assert.Equal(User.GenderEnum.Male, user.Gender);
     }
 
@@ -398,16 +407,18 @@ public class AuthTests
     public async void IdentifyUserAsync_IdentifiedUser_ReturnsUser()
     {
         // ARRANGE      
+        User? retrievedUser = null;
+        User storedUser = _user.Object.FirstOrDefault()!;
+        var guid = storedUser.Id;
+        Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
 
         // Request
-        //Mock<HttpContext> httpContextMock = new();
-        //httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
-        User? user = null;
+        _httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // ACT
         try
         {
-            user = await _authService.IdentifyUserAsync(_authController.HttpContext);
+            retrievedUser = await _authService.IdentifyUserAsync(_authController.HttpContext);
         }
         catch(Exception ex) 
         {
@@ -415,10 +426,10 @@ public class AuthTests
         }
         
         // ASSERT
-        Assert.IsType<User>(user);
-        Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
-        Assert.Equal(User.GenderEnum.Male, user.Gender);
+        Assert.IsType<User>(retrievedUser);
+        Assert.NotNull(retrievedUser);
+        Assert.Equal(storedUser.Email, retrievedUser.Email);
+        Assert.Equal(User.GenderEnum.Male, retrievedUser.Gender);
     }
 
     [Fact]
@@ -479,29 +490,7 @@ public class AuthTests
     {
         // ARRANGE
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
+        User? user = null;
         // Request
         GoogleRequest googleRequest = new()
         {
@@ -512,18 +501,20 @@ public class AuthTests
             Token = "XXXXXXXXXXXXXXXXXX"
         };
 
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
 
         // ACT
-
-        var user = await authService.GoogleSSOAsync(googleRequest);
-
-
+        try
+        {
+            user = await _authService.GoogleSSOAsync(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+        
         // ASSERT
-        Assert.IsType<User>(user);
         Assert.NotNull(user);
-
+        Assert.IsType<User>(user);
         Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
         Assert.Equal("XXXXXXXXXXXXXXXXX", user.Username);
     }
@@ -532,41 +523,7 @@ public class AuthTests
     public async void GoogleSSOAsync_NewUser_ReturnsUser()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-
-                Id = Guid.NewGuid(),
-
-                Email = "XXXXXXXXXXXXXXXXXNewUser1",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "C",
-                DateOfBirth = DateTime.Now,
-                DisplayName= "XXXXXXXXXXXXXXXXXNew",
-                Avatar= "XXXXXXXXXXXXXXXXX",
-                Gender = User.GenderEnum.Other
-
-            }
-        }.AsQueryable().BuildMockDbSet();
-        Mock<DbSet<Playlist>> playlists = new[]{
-            new Playlist(){}
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
-
         // Request
-
         GoogleRequest googleRequest = new()
         {
             Email = "XXXXXXXXXXXXXXXXXNewUser@gmail",
@@ -574,20 +531,21 @@ public class AuthTests
             Name = "XXXXXXXXXXXXXXXXXNew",
             Avatar = "XXXXXXXXXXXXXXXXX"
         };
-
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        User? user = null;
 
         // ACT
-
-        var user = await authService.GoogleSSOAsync(googleRequest);
-
-
+        try 
+        {
+            user = await _authService.GoogleSSOAsync(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+       
         // ASSERT
-        Assert.IsType<User>(user);
         Assert.NotNull(user);
-
+        Assert.IsType<User>(user);
         Assert.Equal("XXXXXXXXXXXXXXXXXNewUser@gmail", user!.Email);
         Assert.Equal("XXXXXXXXXXXXXXXXXNewUser", user.Username);
     }
@@ -600,19 +558,20 @@ public class AuthTests
     public async void Login_ValidUser_ReturnsOkObjectResult()
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
+        IActionResult actionResult = null;
         var httpContext = new DefaultHttpContext();
+        _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+        // Create the Request
+        LoginRequest loginRequest = new()
+        {
+            Email = EMAIL,
+            Password = PASSWORD
+        };
 
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object)
+        // Need to have a default httpContext
+        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -620,16 +579,15 @@ public class AuthTests
             }
         };
 
-
-        // Create the Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
-
         // ACT
-        IActionResult actionResult = await authController.Login(loginRequest);
+        try
+        {
+            actionResult = await authController.Login(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -640,39 +598,29 @@ public class AuthTests
 
     {
         // ARRANGE
+        IActionResult? actionResult = null;
 
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        var httpContext = new DefaultHttpContext();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create the Request
         LoginRequest loginRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
+            Email = EMAIL,
+            Password = PASSWORD
         };
 
         // ACT
-        IActionResult actionResult = await authController.Login(loginRequest);
+        try
+        {
+            actionResult = await _authController.Login(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
-
         Assert.IsType<BadRequestObjectResult>(actionResult);
     }
 
@@ -680,18 +628,22 @@ public class AuthTests
     public async void Register_NewUser_ReturnsOkObjectResult()
     {
         // ARRANGE
+        IActionResult? actionResult = null;
+        var httpContext = new DefaultHttpContext();
+        _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(new User());
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        HttpContext httpContext = new DefaultHttpContext();
+        RegisterRequest registerRequest = new()
+        {
+            Email = EMAIL,
+            Password = PASSWORD,
+            DateOfBirth = DateTime.Now,
+            Gender = User.GenderEnum.Male.ToString(),
+            Username = USERNAME
+        };
 
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object)
+        // Need to have a default httpContext
+        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -699,18 +651,15 @@ public class AuthTests
             }
         };
 
-        // Create the Request
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
-            Gender = "Male",
-            Username = "XXXXXXXXXXXXXXXXX"
-        };
-
         // ACT
-        IActionResult actionResult = await authController.Register(registerRequest);
+        try
+        {
+            actionResult = await authController.Register(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -720,35 +669,31 @@ public class AuthTests
     public async void Register_InvalidUser_ReturnsBadRequestObjectResult()
     {
         // ARRANGE
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object);
 
         // Create the Request
 
         RegisterRequest registerRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
+            Email = EMAIL,
+            Password = PASSWORD,
             DateOfBirth = DateTime.Now,
-            Gender = "Male",
-            Username = "XXXXXXXXXXXXXXXXX"
+            Gender = User.GenderEnum.Male.ToString(),
+            Username = USERNAME
         };
 
         // ACT
-        IActionResult actionResult = await authController.Register(registerRequest);
-
+        try
+        {
+            actionResult = await _authController.Register(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -760,31 +705,23 @@ public class AuthTests
 
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        HttpContext httpContext = new DefaultHttpContext();
-        httpContext.Request.Path = "/auth/me";
-        httpContext.Request.Host = new HostString("localhost:5000");
+        IActionResult? actionResult = null;
+        _httpContextMock.Object.Request.Path = "/auth/me";
+        _httpContextMock.Object.Request.Host = new HostString("localhost:5000");
         // Setup Mocks
 
-        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
-
+        _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // ACT
-        IActionResult actionResult = await authController.Me();
+        try
+        {
+            actionResult = await _authController.Me();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -796,21 +733,19 @@ public class AuthTests
 
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object);
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // ACT
-        IActionResult actionResult = await authController.Me();
+        try
+        {
+            actionResult = await _authController.Me();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -820,19 +755,24 @@ public class AuthTests
     public async void GoogleSSO_ValidUser_ReturnsOkObjectResult()
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
+        IActionResult? actionResult = null;
         var httpContext = new DefaultHttpContext();
+        _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
+        _authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+        // Create the Request
 
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+        GoogleRequest googleRequest = new()
+        {
+            Email = EMAIL,
+            Name = USERNAME,
+            Sub = "id",
+            Avatar = "test.img",
+            Token = "Token String"
+        };
 
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object)
+        // Need to have a default httpContext
+        AuthController authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
             {
@@ -840,19 +780,15 @@ public class AuthTests
             }
         };
 
-        // Create the Request
-
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX",
-            Token = "XXXXXXXXXXXXXXXXXX"
-        };
-
         // ACT
-        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
+        try
+        {
+            actionResult = await authController.GoogleSSO(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -863,33 +799,28 @@ public class AuthTests
     {
 
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _loggerMock.Object);
-
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
 
         // Create the Request
         GoogleRequest googleRequest = new()
         {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX"
+            Email = EMAIL,
+            Name = USERNAME,
+            Sub = "id",
+            Avatar = "test.img"
         };
 
         // ACT
-        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
-
+        try
+        {
+            actionResult = await _authController.GoogleSSO(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -903,41 +834,30 @@ public class AuthTests
         var userGuid = Guid.NewGuid();
         _user = new[]
         {
-                new User()
-                {
-                    Id = userGuid,
-                    Email = "XXXXXXXXXXXXXXXXX",
-                    Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                    Username = "XXXXXXXXXXXXXXXXX",
-                    DateOfBirth = DateTime.Now,
-                    Gender = Models.User.GenderEnum.Male
-                }
-            }.AsQueryable().BuildMockDbSet();
-        var notification = new[]
-        {
-                new Notification()
-                {
-                    Id = Guid.NewGuid(),
-                    User = _user.Object.First(),
-                    UserId = userGuid,
-                    IsRead = false,
-                    Type = Notification.NotificationType.None
-                }
-            }.AsQueryable().BuildMockDbSet();
+            new User()
+            {
+                Id = userGuid,
+                Email = EMAIL,
+                Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+                Username = USERNAME,
+                DateOfBirth = DateTime.Now,
+                Gender = Models.User.GenderEnum.Male
+            }
+        }.AsQueryable().BuildMockDbSet();
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
+        Mock<DbSet<Playlist>> playlists = new[]{
+            new Playlist(){}
+        }.AsQueryable().BuildMockDbSet();
+
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(_user.Object.FirstOrDefault()!);
 
         _dbContextMock.SetupGet(db => db.Users).Returns(_user.Object);
-        _dbContextMock.SetupGet(db => db.Notifications).Returns(notification.Object);
+        _dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
+
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
 
         _httpContextMock.Setup(ctx => ctx.Request).Returns(_httpRequestMock.Object);
         _httpRequestMock.Setup(t => t.IsHttps).Returns(true);
-        _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));
-
-        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).Returns(Task.FromResult(_user.Object.First()));
+        _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));       
     }
 }
