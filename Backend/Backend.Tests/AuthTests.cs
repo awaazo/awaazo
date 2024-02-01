@@ -289,7 +289,7 @@ public class AuthTests
 
         var registerRequest = CreateRegisterRequest();
         registerRequest.Email = newEmail;
-        registerRequest.Password = newUsername;
+        registerRequest.Username = newUsername;
         registerRequest.Gender = "NotAValidGender";
 
         User? user = null;
