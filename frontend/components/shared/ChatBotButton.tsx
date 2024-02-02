@@ -5,7 +5,7 @@ import { useChatBot } from "../../utilities/ChatBotContext";
 import LoginPrompt from "../shared/LoginPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
-const ChatBotButton = ({ episodeId, currentUserID }) => {
+const ChatBotButton = ({ episodeId }) => {
   const { dispatch } = useChatBot();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 

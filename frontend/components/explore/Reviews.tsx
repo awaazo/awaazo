@@ -18,6 +18,8 @@ import {
   PodcastRatingRequest,
   PodcastReviewRequest,
 } from "../../utilities/Requests";
+import LoginPrompt from "../shared/LoginPrompt";
+import AuthHelper from "../../helpers/AuthHelper";
 
 // Component for displaying and adding reviews
 const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
@@ -29,7 +31,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
   const [reviewCharacterCount, setReviewCharacterCount] = useState<number>(0);
   const [reviewError, setReviewError] = useState("");
   const [reviews, setReviews] = useState(podcast.ratings);
-
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const fetchAndUpdateReviews = async () => {
     try {
@@ -46,6 +48,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
   };
   // Function to handle adding a review
   const handleAddReview = async (event) => {
+    console.log("Yo");
     event.preventDefault();
     if (newRating == 0) {
       setReviewError("You must submit a rating");
@@ -111,7 +114,17 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
               Reviews
             </Text>
             <Button
-              onClick={() => setIsAddingReview(true)}
+              onClick={() => {
+                AuthHelper.authMeRequest().then((response) => {
+                  if(response.status == 401){
+                    //Not logged in, prompt user to sign in.
+                    setShowLoginPrompt(true);
+                    return;
+                  } else{
+                    setIsAddingReview(true);
+                  }
+                });
+              }}
               style={{ borderRadius: "30px" }}
             >
               Add Your Review
@@ -213,6 +226,13 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
         <Flex justify="center" align="center" mt={8} width="100%">
           <Text>(No reviews have been posted yet)</Text>
         </Flex>
+      )}
+      {showLoginPrompt && (
+        <LoginPrompt
+          isOpen={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+          infoMessage="You must be logged in to write a Review. Please log in or create an account."
+        />
       )}
     </VStack>
   );
