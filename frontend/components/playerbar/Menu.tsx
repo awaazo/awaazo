@@ -39,6 +39,8 @@ import { CiMenuKebab } from "react-icons/ci";
 import ViewQueueModal from "../playlist/ViewQueueModal";
 import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
+import AuthHelper from "../../helpers/AuthHelper";
+import LoginPrompt from "../shared/LoginPrompt";
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
@@ -60,6 +62,25 @@ const PlayerMenu = ({ episode }) => {
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const handleAddPlaylistClick = () => {
+    console.log("Clicked");
+    // Check login status before opening the modal
+    AuthHelper.authMeRequest().then((response) => {
+      if (response.status === 401) {
+        console.log("User not logged in");
+        // Handle not logged in state (e.g., show a login prompt)
+        onAddToPlaylistModalClose();
+        setShowLoginPrompt(true);
+        return;
+      } else {
+        // User is logged in, open the modal
+        onAddToPlaylistModalOpen();
+      }
+    });
+  };
 
   const handleRemoveFromQueue = () => {
     dispatch({ type: "REMOVE_FROM_QUEUE", payload: episode });
@@ -83,7 +104,7 @@ const PlayerMenu = ({ episode }) => {
             style={{
               backgroundColor: "transparent",
             }}
-            onClick={onAddToPlaylistModalOpen}
+            onClick={() => {handleAddPlaylistClick() ; onAddToPlaylistModalOpen(); }}
           >
             Add to Playlist
             <MdOutlinePlaylistAdd size="20px" style={{ marginLeft: "auto", color: "white" }} />
@@ -157,7 +178,15 @@ const PlayerMenu = ({ episode }) => {
       </Modal>
       <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
       <AddToPlaylistModal episode={episode} isOpen={isAddToPlaylistModalOpen} onClose={onAddToPlaylistModalClose} />
-    </Box>
+      {/* LoginPrompt */}
+      {showLoginPrompt && (
+          <LoginPrompt
+            isOpen={showLoginPrompt}
+            onClose={() => setShowLoginPrompt(false)}
+            infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account."
+          />
+        )}
+      </Box>
   );
 };
 

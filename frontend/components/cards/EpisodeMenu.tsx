@@ -23,6 +23,8 @@ import ShareComponent from "../social/Share";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
+import AuthHelper from "../../helpers/AuthHelper";
+import LoginPrompt from "../shared/LoginPrompt";
 
 const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();
@@ -33,6 +35,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalClose = () => setIsShareModalOpen(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   // Add to Playlist implementation
   const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
@@ -52,6 +55,19 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setIsMenuOpen(false);
     }
+  };
+
+  const handleAddPlaylistClick = () => {
+    // Check login status before opening the modal
+    AuthHelper.authMeRequest().then((response) => {
+      if (response.status === 401) {
+        console.log("User not logged in");
+        // Handle not logged in state (e.g., show a login prompt)
+        setIsAddToPlaylistModalOpen(false);
+        setShowLoginPrompt(true);
+        return;
+      } 
+    });
   };
 
   useEffect(() => {
@@ -152,12 +168,13 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               fontWeight: "bold",
             }}
             style={{ backgroundColor: "transparent" }}
-            onClick={handleAddToPlaylistMenuToggle}
+            onClick={() => {handleAddPlaylistClick() ; handleAddToPlaylistMenuToggle(); }}
           >
             Add to Playlist{" "}
             <MdOutlinePlaylistAdd
               size={24}
               style={{ marginLeft: "auto", color: "white" }}
+              onClick={handleAddPlaylistClick}
             />
           </MenuItem>
           {inPlaylist && (
@@ -259,6 +276,14 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
         onClose={() => setIsAddToPlaylistModalOpen(false)}
         episode={episode}
       />
+      {/* LoginPrompt */}
+      {showLoginPrompt && (
+        <LoginPrompt
+          isOpen={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+          infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account."
+        />
+      )}
     </div>
   );
 };
