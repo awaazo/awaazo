@@ -108,7 +108,7 @@ export interface Bookmark {
   id: string;
   title: string;
   note?: string;
-  timestamp: number;
+  time: number;
 }
 
 export interface WatchHistory {
