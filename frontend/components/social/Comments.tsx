@@ -6,6 +6,7 @@ import { FaComments, FaClock, FaPaperPlane, FaTrash, FaReply } from "react-icons
 import { Comment, User } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./Likes";
+import LoginPrompt from "../shared/LoginPrompt";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
@@ -18,6 +19,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
   const [noOfComments, setNoOfComments] = useState(initialComments);
   const [user, setUser] = useState(null);
   const [numRepliesToShow, setNumRepliesToShow] = useState(3);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -61,6 +63,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
         // Update the UI to reflect the new comment
         setNoOfComments((noOfComments) => noOfComments + 1);
       } else {
+        //User is not logged in, prompt them to do so
+        setShowLoginPrompt(true);
         console.log("Error posting comment:", response.message);
       }
       setNewComment("");
@@ -81,6 +85,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
       // Update the UI to reflect the new reply
       setReplyChange((replyChange) => replyChange + 1);
     } else {
+      //User is not logged in, prompt them to do so
+      setShowLoginPrompt(true);
       console.log("Error posting comment:", response.message);
     }
     const updatedReplyTexts = [...replyTexts];
@@ -149,7 +155,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
                           </VStack>
                           <HStack spacing={2}>
                             <LikeComponent episodeOrCommentId={comment.id} initialLikes={comment.likes} showCount={true} />
-                            {user.id === comment.user.id ? (
+                            {user && user.id === comment.user.id ? (
                               <IconButton icon={<Icon as={FaTrash} />} variant={"ghost"} aria-label="Delete Comment" data-cy={`delete-comment-id:`} onClick={() => handleDeleteComment(comment.id, true)} size="md" />
                             ) : null}
                           </HStack>
@@ -217,6 +223,13 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
+      {showLoginPrompt && (
+        <LoginPrompt
+          isOpen={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+          infoMessage="To add a Reply or a Comment, you must be logged in. Please log in or create an account."
+      />
+      )}
     </>
   );
 };

@@ -4,8 +4,11 @@ import { Notification } from "../../utilities/Interfaces";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Box, Button, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const NotificationsPage = () => {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(0);
   const pageSize = 8;
@@ -30,8 +33,22 @@ const NotificationsPage = () => {
       }
     };
 
-    fetchNotifications();
-  }, [page]);
+    //If user is not logged in, notifications redirect to Login page
+    const checkLogin = async () => {
+      const response = await AuthHelper.authMeRequest();
+      var isLoggedIn = true;
+      if (response.status === 401) {
+        isLoggedIn = false;
+      }
+
+      if(isLoggedIn){
+        fetchNotifications();
+      }else{
+        router.replace("/auth/Login");
+      }
+    }
+    checkLogin();
+  }, [page, router]);
 
   const buttonStyle = {
     width: "7em",
