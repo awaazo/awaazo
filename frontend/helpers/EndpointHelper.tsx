@@ -611,15 +611,15 @@ export default class EndpointHelper {
   };
 
   // --------------------------------
-  // TRANSCRIPT ENDPOINT
+  // TRANSCRIPT ENDPOINTS
   // --------------------------------
   /**
    * Returns the Episode Transcript endpoint.
    * @returns The Episode Transcript Endpoint
    * */
-  static getTranscriptEndpoint = (episodeId) => {
+  static editTranscriptLinesEndpoint = (episodeId) => {
     return (
-      this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript"
+      this.getBackendAddress() + "/podcast/" + episodeId + "/editTranscriptLines"
     );
   };
 
