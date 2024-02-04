@@ -1,4 +1,4 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, TranscriptLine, Annotation, WatchHistory, Metrics } from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics } from "./Interfaces";
 
 export interface BaseResponse {
   status: number;
@@ -153,7 +153,7 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 
 //#region Transcript Response
 export interface GetTranscriptResponse extends BaseResponse {
-  transcript: TranscriptLine;
+  transcript: Transcript;
 }
 
 //#endregion

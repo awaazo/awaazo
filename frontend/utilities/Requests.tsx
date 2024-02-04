@@ -185,3 +185,22 @@ export interface SaveWatchHistoryRequest {
   listenPosition: number;
 }
 //#endregion
+
+//#region Episode editTrasncriptLines Request
+export interface editTranscriptLinesRequest {
+  id: number,
+  seek: number,
+  start: number,
+  end: number,
+  text: string,
+  speaker: string,
+  words: {
+    start: number,
+    end: number,
+    word: string,
+    score: number,
+    speaker: string
+  }[];
+}
+//#endregion
+
