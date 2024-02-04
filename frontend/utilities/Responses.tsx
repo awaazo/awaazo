@@ -158,6 +158,13 @@ export interface GetTranscriptResponse extends BaseResponse {
 
 //#endregion
 
+//#region Transcript Response
+export interface GetTranscriptTextResponse extends BaseResponse {
+  text: string;
+}
+
+//#endregion
+
 //#region Watch History Response
 export interface GetWatchHistoryResponse extends BaseResponse {
   watchHistory: WatchHistory;

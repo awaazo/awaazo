@@ -30,6 +30,8 @@ import {
   GetWatchHistoryResponse,
   GetMetricsResponse,
   SearchEpisodeResponse,
+  GetTranscriptResponse,
+  GetTranscriptTextResponse,
 } from "../utilities/Responses";
 
 export default class PodcastHelper {
@@ -682,7 +684,7 @@ export default class PodcastHelper {
   };
 
   /**
-   * Gets an episode transcript by episodeId from the server.
+   * Edits an episode transcript by episodeId from the server.
    * @returns A BaseResponse object with the server's response.
    */
   public static editTranscriptLines = async (
@@ -720,6 +722,92 @@ export default class PodcastHelper {
       return {
         status: error.response?.status,
         message: error.response?.statusText,
+      };
+    }
+  };
+
+  /**
+   * Edits an episode transcript by episodeId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static getTranscriptText = async (
+    episodeId,
+  ): Promise<GetTranscriptTextResponse> => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      url: EndpointHelper.getTranscriptTextEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getTranscriptText...");
+      console.debug(options);
+
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getTranscriptText...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        text: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        text: error.response?.data,
+      };
+    }
+  };
+
+  /**
+   * Gets an episode transcript by episodeId from the server.
+   * @returns A GetTranscriptResponse object with the server's response.
+   */
+  public static getTranscript = async (
+    episodeId
+  ): Promise<GetTranscriptResponse> => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      url: EndpointHelper.getTranscriptEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getTranscript...");
+      console.debug(options);
+
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getTranscript...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        transcript: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        transcript: error.response.data,
       };
     }
   };
