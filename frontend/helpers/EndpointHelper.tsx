@@ -614,8 +614,8 @@ export default class EndpointHelper {
   // TRANSCRIPT ENDPOINTS
   // --------------------------------
   /**
-   * Returns the Episode Transcript endpoint.
-   * @returns The Episode Transcript Endpoint
+   * Returns the Episode edit transcript lines endpoint.
+   * @returns The Episode edit transcript lines Endpoint
    * */
   static editTranscriptLinesEndpoint = (episodeId) => {
     return (

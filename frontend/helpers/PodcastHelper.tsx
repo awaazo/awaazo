@@ -13,6 +13,7 @@ import {
   SaveWatchHistoryRequest,
   PodcastSearchRequest,
   EpisodeSearchRequest,
+  editTranscriptLinesRequest,
 } from "../utilities/Requests";
 import {
   BaseResponse,
@@ -26,7 +27,6 @@ import {
   EditEpisodeResponse,
   GetMyEpisodeResponse,
   EditPodcastResponse,
-  GetTranscriptResponse,
   GetWatchHistoryResponse,
   GetMetricsResponse,
   SearchEpisodeResponse,
@@ -685,41 +685,41 @@ export default class PodcastHelper {
    * Gets an episode transcript by episodeId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static getTranscript = async (
+  public static editTranscriptLines = async (
     episodeId,
-  ): Promise<GetTranscriptResponse> => {
+    requestData: editTranscriptLinesRequest,
+  ): Promise<BaseResponse> => {
     const options = {
       method: "GET",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
       },
-      url: EndpointHelper.getTranscriptEndpoint(episodeId),
+      data: requestData,
+      url: EndpointHelper.editTranscriptLinesEndpoint(episodeId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
     };
 
     try {
-      console.debug("Sending the following getTrasncript...");
+      console.debug("Sending the following editTranscriptLinesRequest...");
       console.debug(options);
 
       // Send the request and wait for the response.
       const requestResponse = await axios(options);
 
-      console.debug("Received the following getTranscript...");
+      console.debug("Received the following editTranscriptLinesRequest...");
       console.debug(requestResponse);
 
       // Return the response.
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
-        transcript: requestResponse.data,
       };
     } catch (error) {
       return {
         status: error.response?.status,
         message: error.response?.statusText,
-        transcript: null,
       };
     }
   };
