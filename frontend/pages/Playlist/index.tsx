@@ -13,6 +13,8 @@ import { useState, useEffect } from "react";
 import PlaylistCard from "../../components/cards/PlaylistCard";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../utilities/Interfaces";
+import router from "next/router";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const MyPlaylist = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -30,6 +32,20 @@ const MyPlaylist = () => {
         setPlaylistError("Podcasts cannot be fetched");
       }
     });
+
+    //If user is not logged in, notifications redirect to Login page
+    const checkLogin = async () => {
+      const response = await AuthHelper.authMeRequest();
+      var isLoggedIn = true;
+      if (response.status === 401) {
+        isLoggedIn = false;
+      }
+
+      if(!isLoggedIn){
+        router.replace("/auth/Login");
+      }
+    }
+    checkLogin();
   }, [page]);
 
   // Function to handle clicking the "Load More" button

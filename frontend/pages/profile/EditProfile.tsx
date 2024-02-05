@@ -45,7 +45,7 @@ const EditProfile = () => {
         setWebsiteUrl(response.userProfile.websiteUrl);
         setAvatar(response.userProfile.avatarUrl);
       } else {
-        router.push("/auth/login");
+        router.replace("/auth/Login");
       }
     });
   }, [router]);
