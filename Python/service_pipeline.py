@@ -5,8 +5,6 @@ import assistant_service.ingest as ingest
 
 import torch
 import os
-import time
-import threading
 
 def tts_rvc_pipeline(podcast_id, episode_id, text, delimiter='', speaker='Default', language='en', use_tortoise=True, 
                      index_rate=0.5, filter_radius=3, resample_sr=0, rms_mix_rate=0.25, protect=0.33):
