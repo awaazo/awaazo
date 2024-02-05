@@ -7,7 +7,6 @@ const ForgotPassword: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     toast({
       title: "Reset Link Sent",
       description: "We've sent a password reset link to your email address.",
