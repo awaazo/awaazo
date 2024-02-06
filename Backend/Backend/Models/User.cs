@@ -111,6 +111,8 @@ public class User : BaseEntity
     /// </summary>
     public bool IsPodcaster { get; set; }
 
+    [DefaultValue(false)] public bool IsAdmin { get; set; } = false;
+
     /// <summary>
     /// User's podcasts.
     /// </summary>

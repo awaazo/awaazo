@@ -159,6 +159,10 @@ public class Program
         {
             builder.UseMiddleware<ValidateUser>();
         });
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/admin"), builder =>
+        {
+            builder.UseMiddleware<ValidateAdmin>();
+        });
 
         app.MapControllers();
 
