@@ -98,8 +98,8 @@ const overrides = {
         },
         authBox:{
           p:6, 
-          bg:"rgba(0, 0, 0, 0.3)" ,
-          border:"3px solid rgba(255, 255, 255, 0.05)",
+          bg:"rgba(255, 255, 255, 0.04)" ,
+          outline:"2px solid rgba(255, 255, 255, 0.06)",
           backdropFilter:"blur(10px)" ,
           boxShadow:"0 4px 6px rgba(0, 0, 0, 0.2)" ,
           borderRadius:"3xl" ,

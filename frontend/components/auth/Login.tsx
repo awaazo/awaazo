@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import { Box, Button, Input, Stack, Text, Flex, ButtonGroup, Img, InputGroup, InputRightElement, FormControl, IconButton, Alert, AlertDescription } from "@chakra-ui/react";
+import { Box, Button, Input, Stack, Text, Flex, ButtonGroup, Img, InputGroup, InputRightElement, FormControl, IconButton, Alert, AlertDescription, Container } from "@chakra-ui/react";
 import AuthHelper from "../../helpers/AuthHelper";
 import { LoginRequest } from "../../types/Requests";
 import { FaGoogle } from "react-icons/fa";
@@ -55,7 +55,7 @@ const Login: React.FC = () => {
   return (
     <>
       <Flex minHeight="100vh" align="center" justify="center">
-        <Box p={6} bg={"rgba(0, 0, 0, 0.3)"} border="3px solid rgba(255, 255, 255, 0.05)" backdropFilter="blur(10px)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)" borderRadius="3xl" maxW="400px" w="full" textAlign="center">
+        <Container variant={"authBox"}>
           {loginError && (
             <Alert status="error" borderRadius="xl" mb={4} p={2}>
               <AlertDescription display="block" fontSize="sm">
@@ -66,11 +66,11 @@ const Login: React.FC = () => {
           <Flex justifyContent="center" mb={4}>
             <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
           </Flex>
-          <Text fontSize="lg" fontWeight="bold" color="white" mb={1} align={"left"} textColor={"brand.100"}>
+          <Text fontSize="lg" fontWeight="bold" color="white"  align={"center"} textColor={"brand.300"}>
             Login to Awaazo
           </Text>
-          <Text fontSize="sm" color="gray.400" mb={6} align={"left"}>
-            Rediscover Awaazo: Your gateway to an extraordinary, AI-enhanced podcast universe!
+          <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
+            Get into the new age of podcasting.
           </Text>
           <form onSubmit={handleLogin}>
             <Stack spacing={4}>
@@ -110,20 +110,19 @@ const Login: React.FC = () => {
                 Google
               </Button>
             </ButtonGroup>
-
-            <Text color="gray.400" fontSize="sm" mb={1} align={"left"}>
+            <Text color="brand.300" fontSize="sm" mb={1} align={"center"}>
               <Box as="a" href="/auth/ForgotPassword" mb={1}>
                 Forgot password?
               </Box>
             </Text>
-            <Text color="gray.400" fontSize="sm" align={"left"}>
+            <Text color="gray.400" fontSize="sm" align={"center"}>
               Don't have an account?{" "}
               <Box as="a" href="/auth/Signup" color="brand.100" fontWeight="semibold">
                 Sign up
               </Box>
             </Text>
           </form>
-        </Box>
+        </Container>
       </Flex>
     </>
   );

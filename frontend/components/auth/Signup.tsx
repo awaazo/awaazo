@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
+import { Box,Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -100,15 +100,15 @@ const SignUp: React.FC = () => {
 
   return (
     <Flex minHeight="100vh" align="center" justify="center">
-      <Box p={6} bg={"rgba(0, 0, 0, 0.3)"} border="3px solid rgba(255, 255, 255, 0.05)" backdropFilter="blur(10px)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)" borderRadius="3xl" maxW="400px" w="full" textAlign="center">
+      <Container variant={"authBox"}>
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
-        <Text fontSize="lg" fontWeight="bold" color="white" mb={1} align={"left"} textColor={"brand.100"}>
+        <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
           Sign Up to Awaazo
         </Text>
-        <Text fontSize="sm" color="gray.400" mb={6} align={"left"}>
-          Join Awaazo and transform podcasting with AI brilliance Create, Connect, Captivate!
+        <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
+          Join Awaazo and transform podcasting.
         </Text>
 
         {signUpError && (
@@ -170,7 +170,7 @@ const SignUp: React.FC = () => {
             </Text>
           </Stack>
         </form>
-      </Box>
+      </Container>
     </Flex>
   );
 };
