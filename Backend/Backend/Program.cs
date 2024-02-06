@@ -168,6 +168,8 @@ public class Program
             dbContext.Database.Migrate();
         }
 
+        Console.Write("Delete me!");
+
         app.Run();
     }
 }
