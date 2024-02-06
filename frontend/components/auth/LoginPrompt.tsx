@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthHelper from "../../helpers/AuthHelper";
-import Login from "../auth/Login";
+import Login from "./Login";
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 interface LoginPromptProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ const LoginPrompt: React.FC<LoginPromptProps> = ({ isOpen, onClose, returnUrl, i
       <ModalOverlay />
       <ModalContent bg={"rgba(0, 0, 0, 0.3)"} border="3px solid rgba(255, 255, 255, 0.05)" backdropFilter="blur(10px)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)" borderRadius="3xl" maxW="400px" textAlign="center">
         <ModalBody>
-          <Login isOpen={isOpen} onClose={onClose} returnUrl={returnUrl} infoMessage={infoMessage} />
+          <Login />
         </ModalBody>
         <ModalCloseButton />
       </ModalContent>

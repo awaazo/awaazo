@@ -24,7 +24,7 @@ import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 
 const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();

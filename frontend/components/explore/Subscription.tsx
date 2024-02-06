@@ -3,7 +3,7 @@ import SubscribeHelper from "../../helpers/SubscribeHelper";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { BaseResponse } from "../../types/Responses";
 
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 
 const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, currentUserID }) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);

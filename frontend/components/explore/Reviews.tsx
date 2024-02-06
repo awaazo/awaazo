@@ -18,7 +18,7 @@ import {
   PodcastRatingRequest,
   PodcastReviewRequest,
 } from "../../types/Requests";
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
 // Component for displaying and adding reviews

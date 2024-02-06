@@ -6,7 +6,7 @@ import { convertTime } from "../../utilities/CommonUtils";
 import { EpisodeBookmarkRequest } from "../../types/Requests";
 
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 
 
 
@@ -19,7 +19,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const MAX_TITLE_CHARS = 25;
   const MAX_NOTE_CHARS = 250;
-  
+
   const checkAuthentication = async () => {
     try {
       const response = await AuthHelper.authMeRequest();

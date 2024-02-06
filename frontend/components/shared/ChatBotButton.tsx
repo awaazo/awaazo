@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { RiRobot2Fill } from "react-icons/ri";
 import { useChatBot } from "../../utilities/ChatBotContext";
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
 const ChatBotButton = ({ episodeId }) => {

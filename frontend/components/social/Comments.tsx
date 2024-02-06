@@ -6,7 +6,7 @@ import { FaComments, FaClock, FaPaperPlane, FaTrash, FaReply } from "react-icons
 import { Comment, User } from "../../types/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./Likes";
-import LoginPrompt from "../shared/LoginPrompt";
+import LoginPrompt from "../auth/LoginPrompt";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
