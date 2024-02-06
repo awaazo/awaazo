@@ -14,7 +14,13 @@ const overrides = {
       300: "#a29bfb",
     },
   },
+
+
+
+
   components: {
+
+    
     Button: {
       baseStyle: {},
       variants: {
@@ -50,13 +56,34 @@ const overrides = {
           fontSize: "1.5em",
         }
       }),
-      
+      variants: {
+        minimal: {
+          dialog: {
+            backdropFilter: "blur(40px)",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            padding: "0",
+            mx: "auto",
+            my: '0',
+            alignItems: "center",
+          },
+        }
+      },
     },
+
+
+
+
+
     Textarea: {
       baseStyle: {
         maxHeight: "200px",
       },
     },
+
+
+
+
     Menu: {
       baseStyle: {
         list: {
@@ -76,6 +103,10 @@ const overrides = {
         },
       },
     },
+
+
+
+
     Slider:  {
       baseStyle: {
         track: {
@@ -87,6 +118,9 @@ const overrides = {
         },
       },
     },
+
+
+
     Container : { 
       variants: {
         innerBox: {
@@ -109,7 +143,13 @@ const overrides = {
         }
       }
     }
+
+
   },
+
+
+
+  
   styles: {
     global: {
       "@keyframes Gradient": {

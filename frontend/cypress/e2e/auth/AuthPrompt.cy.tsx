@@ -1,6 +1,6 @@
 import * as paths from '../../fixtures/file_paths.json';
 
-describe('LoginPrompt', () => {
+describe('AuthPrompt', () => {
 
   beforeEach(() => {
     cy.console_error_hack();

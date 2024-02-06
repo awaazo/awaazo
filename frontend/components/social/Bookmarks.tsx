@@ -6,7 +6,7 @@ import { convertTime } from "../../utilities/CommonUtils";
 import { EpisodeBookmarkRequest } from "../../types/Requests";
 
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../auth/LoginPrompt";
+import LoginPrompt from "../auth/AuthPrompt";
 
 
 

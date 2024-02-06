@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import SocialHelper from "../../helpers/SocialHelper";
-import LoginPrompt from "../auth/LoginPrompt";
+import LoginPrompt from "../auth/AuthPrompt";
 
 const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
   const [likes, setLikes] = useState(initialLikes);

@@ -11,7 +11,7 @@ import ViewQueueModal from "../playlist/ViewQueueModal";
 import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import { PiQueueFill } from "react-icons/pi";
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../auth/LoginPrompt";
+import LoginPrompt from "../auth/AuthPrompt";
 
 const Sidebar = () => {
   const router = useRouter();

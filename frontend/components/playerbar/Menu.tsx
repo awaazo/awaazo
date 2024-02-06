@@ -40,7 +40,7 @@ import ViewQueueModal from "../playlist/ViewQueueModal";
 import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../auth/LoginPrompt";
+import LoginPrompt from "../auth/AuthPrompt";
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
