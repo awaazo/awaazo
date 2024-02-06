@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { RegisterRequest } from "../../utilities/Requests";
+import { RegisterRequest } from "../../types/Requests";
 import { FaGoogle } from "react-icons/fa";
 import { isEmail } from "validator";
 
@@ -144,7 +144,7 @@ const SignUp: React.FC = () => {
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
-            <Button id="loginBtn" type="submit" color="black" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Button id="loginBtn" type="submit" color="white" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
               Sign Up
             </Button>
 

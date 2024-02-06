@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import SubscribeHelper from "../../helpers/SubscribeHelper";
-import { Button, Icon, Tooltip } from "@chakra-ui/react";
-import { BaseResponse } from "../../utilities/Responses";
+import { Button, Tooltip } from "@chakra-ui/react";
+import { BaseResponse } from "../../types/Responses";
+
 import LoginPrompt from "../shared/LoginPrompt";
 
 const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, currentUserID }) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
   useEffect(() => {
     SubscribeHelper.getIsSubscribed(PodcastId)
       .then((isSubscribed) => {
@@ -45,6 +45,7 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
           if (response.status === 200) {
             // Update the UI to reflect the subscribe
             setIsSubscribed(true);
+            
           } else if (response.status === 401) {
             setShowLoginPrompt(true);
           } else {
@@ -65,10 +66,6 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
         });
       }
     };
-
-    console.log(`podcasterId: ${podcasterId}`); // Debugging line
-    console.log(`currentUserID: ${currentUserID}`); // Debugging line
-    
     if (podcasterId === currentUserID) {
       return null;
     }
@@ -83,13 +80,12 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
           variant="ghost"
           onClick={handleSubscribe}
           fontWeight={"bold"}
-          bg={isSubscribed ? "gray.700" : "blue.500"}
+          bg={isSubscribed ? "gray.700" : "brand.100"}
           borderRadius={"50px"}
         >
           {isSubscribed ? "Unsubscribe" : "Subscribe"}
         </Button>
       </Tooltip>
-      {/* Conditionally render the LoginPrompt component with infoMessage */}
       {showLoginPrompt && (
         <LoginPrompt
           isOpen={true}

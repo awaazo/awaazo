@@ -3,12 +3,12 @@ import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text,
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
 import LogoWhite from "../../public/logo_white.svg";
-import { UserProfileSetupRequest } from "../../utilities/Requests";
+import { UserProfileSetupRequest } from "../../types/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
-import { UserMenuInfo } from "../../utilities/Interfaces";
+import { UserMenuInfo } from "../../types/Interfaces";
 import ImageAdder from "../../components/tools/ImageAdder";
 import GenreSelector from "../../components/tools/GenreSelector";
-import withAuth from "../../utilities/authHOC";
+import withAuth from "../../utilities/AuthHOC";
 
 const ProfileSetup: React.FC = () => {
   const mainPage = "/";

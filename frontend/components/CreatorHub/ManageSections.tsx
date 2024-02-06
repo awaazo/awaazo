@@ -3,9 +3,9 @@ import { Box, Button, Flex, Text, IconButton, Input, Tooltip, HStack, FormContro
 import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import SectionsPlayingBar from "./SectionsPlayingBar";
 import SectionHelper from "../../helpers/SectionHelper";
-import { Section } from "../../utilities/Interfaces";
-import { SectionAddRequest } from "../../utilities/Requests";
-import { convertTime } from "../../utilities/commonUtils";
+import { Section } from "../../types/Interfaces";
+import { SectionAddRequest } from "../../types/Requests";
+import { convertTime } from "../../utilities/CommonUtils";
 
 const ManageSections = ({ episodeId, podcastId }) => {
   const [sections, setSections] = useState<Section[]>(null);

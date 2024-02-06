@@ -47,7 +47,7 @@ import EpisodeCard from "../../components/cards/EpisodeCard";
 import GenreSelector from "../../components/tools/GenreSelector";
 import ForYou from "../../components/home/ForYou";
 import ExploreGenres from "../../components/home/ExploreGenres";
-import { formatSecToDurationString } from "../../utilities/commonUtils";
+import { formatSecToDurationString } from "../../utilities/CommonUtils";
 import { FaXmark } from "react-icons/fa6";
 import { set } from "lodash";
 

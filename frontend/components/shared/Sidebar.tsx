@@ -6,7 +6,7 @@ import { VscLibrary } from "react-icons/vsc";
 import Logo from "../../public/logo_white.svg";
 import { useRouter } from "next/router";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { Playlist } from "../../utilities/Interfaces";
+import { Playlist } from "../../types/Interfaces";
 import ViewQueueModal from "../playlist/ViewQueueModal";
 import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import { PiQueueFill } from "react-icons/pi";

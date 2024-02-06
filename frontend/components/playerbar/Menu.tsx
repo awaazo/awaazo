@@ -30,7 +30,7 @@ import Link from "next/link";
 
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+import { PlaylistEditRequest } from "../../types/Requests";
 import { useRouter } from "next/router";
 import { CgPlayList, CgPlayListSearch } from "react-icons/cg";
 import { FaDeleteLeft } from "react-icons/fa6";

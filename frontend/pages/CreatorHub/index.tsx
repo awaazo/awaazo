@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Box, Flex, IconButton, Tooltip, useBreakpointValue, Text, VStack, Image, Wrap, Spinner } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MyPodcast from "../../components/CreatorHub/MyPodcast";
-import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
+import { UserMenuInfo, Podcast } from "../../types/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
-import withAuth from "../../utilities/authHOC";
+import withAuth from "../../utilities/AuthHOC";
 
 const Creatorhub = () => {
   // Page refs

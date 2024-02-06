@@ -29,7 +29,7 @@ import { FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "./EditEpisode";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
-import { convertTime } from "../../utilities/commonUtils";
+import { convertTime } from "../../utilities/CommonUtils";
 import { FaList } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";

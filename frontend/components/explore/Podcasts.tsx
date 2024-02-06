@@ -8,7 +8,7 @@ import {
   Card,
   Flex,
 } from "@chakra-ui/react";
-import { Podcast } from "../../utilities/Interfaces";
+import { Podcast } from "../../types/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import NextLink from "next/link";
 

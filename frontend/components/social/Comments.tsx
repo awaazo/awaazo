@@ -3,7 +3,7 @@ import SocialHelper from "../../helpers/SocialHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Textarea, VStack, useDisclosure, Icon, Avatar, Text, HStack, Box, Tooltip, Input, useBreakpointValue, IconButton } from "@chakra-ui/react";
 import { FaComments, FaClock, FaPaperPlane, FaTrash, FaReply } from "react-icons/fa";
-import { Comment, User } from "../../utilities/Interfaces";
+import { Comment, User } from "../../types/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./Likes";
 import LoginPrompt from "../shared/LoginPrompt";

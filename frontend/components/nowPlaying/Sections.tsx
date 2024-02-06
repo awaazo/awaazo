@@ -9,8 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import SectionHelper from "../../helpers/SectionHelper";
-import { Episode } from "../../utilities/Interfaces";
-import { convertTime } from "../../utilities/commonUtils";
+import { Episode } from "../../types/Interfaces";
+import { convertTime } from "../../utilities/CommonUtils";
 import { LuBookCopy } from "react-icons/lu";
 
 interface SectionsProps {

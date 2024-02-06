@@ -9,8 +9,8 @@ import {
   IconButton
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { Bookmark } from "../../utilities/Interfaces";
-import { convertTime } from "../../utilities/commonUtils";
+import { Bookmark } from "../../types/Interfaces";
+import { convertTime } from "../../utilities/CommonUtils";
 import { CiBookmark } from "react-icons/ci";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
 import { FaTrash } from "react-icons/fa";

@@ -19,7 +19,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 
 // Here we have used react-icons package for the icon
 import { FaPlay } from "react-icons/fa";
-import { Podcast, Episode } from "../../../utilities/Interfaces";
+import { Podcast, Episode } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import { usePlayer } from "../../../utilities/PlayerContext";
 

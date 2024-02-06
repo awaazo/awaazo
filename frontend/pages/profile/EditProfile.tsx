@@ -1,14 +1,14 @@
 import { Box, Textarea, Center, Heading, Button, Img, FormControl, FormLabel, Input, Stack, Text, IconButton, InputGroup, InputLeftAddon, Icon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, VStack } from "@chakra-ui/react";
 import { useState, FormEvent, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-import { UserProfileEditRequest } from "../../utilities/Requests";
+import { UserProfileEditRequest } from "../../types/Requests";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
-import { UserProfile } from "../../utilities/Interfaces";
+import { UserProfile } from "../../types/Interfaces";
 import { useRouter } from "next/router";
 import ChangePassWordForm from "../../components/profile/MyProfile/ChangePasswordForm";
 import GenreSelector from "../../components/tools/GenreSelector";
 import { FaKey } from 'react-icons/fa';
-import withAuth from "../../utilities/authHOC";
+import withAuth from "../../utilities/AuthHOC";
 
 const EditProfile = () => {
   const [bio, setBio] = useState("");

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, useToast } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, useToast, Container } from "@chakra-ui/react";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,17 +18,7 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <Flex minHeight="100vh" align="center" justify="center">
-      <Box
-        p={6}
-        bg={"rgba(0, 0, 0, 0.3)"}
-        border="3px solid rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(10px)"
-        boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)"
-        borderRadius="lg"
-        maxW="400px"
-        w="full"
-        textAlign="center"
-      >
+      <Container variant={"authBox"}>
         <Text fontSize="xl" fontWeight="bold" color="white" mb={4}>
           Forgot your password?
         </Text>
@@ -50,12 +40,12 @@ const ForgotPassword: React.FC = () => {
                 required
               />
             </FormControl>
-            <Button type="submit" bg="brand.100" color={"black"} size="md" fontSize="md" borderRadius="2xl" py={3} width="full" boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Button type="submit" bg="brand.100" color="white" size="md" fontSize="md" borderRadius="2xl" py={3} width="full" boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
               Send Reset Link
             </Button>
           </Stack>
         </form>
-      </Box>
+      </Container>
     </Flex>
   );
 };

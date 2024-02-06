@@ -17,13 +17,12 @@ import ReviewsHelper from "../../helpers/ReviewsHelper";
 import {
   PodcastRatingRequest,
   PodcastReviewRequest,
-} from "../../utilities/Requests";
+} from "../../types/Requests";
 import LoginPrompt from "../shared/LoginPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
 // Component for displaying and adding reviews
 const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
-  const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [isAddingReview, setIsAddingReview] = useState(false);
   const [newRating, setNewRating] = useState(0);
@@ -114,7 +113,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
               Reviews
             </Text>
             <Button
-              onClick={() => {
+               onClick={() => {
                 AuthHelper.authMeRequest().then((response) => {
                   if(response.status == 401){
                     //Not logged in, prompt user to sign in.
@@ -125,7 +124,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
                   }
                 });
               }}
-              style={{ borderRadius: "30px" }}
+            borderRadius = "30px" 
             >
               Add Your Review
             </Button>
@@ -226,8 +225,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
         <Flex justify="center" align="center" mt={8} width="100%">
           <Text>(No reviews have been posted yet)</Text>
         </Flex>
-      )}
-      {showLoginPrompt && (
+      )} {showLoginPrompt && (
         <LoginPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}

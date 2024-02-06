@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Notification } from "../../utilities/Interfaces";
+import { Notification } from "../../types/Interfaces";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Box, Button, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import AuthHelper from "../../helpers/AuthHelper";
-import withAuth from "../../utilities/authHOC";
+import withAuth from "../../utilities/AuthHOC";
 
 const NotificationsPage = () => {
   const router = useRouter();

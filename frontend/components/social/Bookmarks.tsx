@@ -1,14 +1,14 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { Button, Icon, Tooltip, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, Textarea, VStack, Text, Input, useBreakpointValue } from "@chakra-ui/react";
 import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
-import { convertTime } from "../../utilities/commonUtils";
-import { EpisodeBookmarkRequest } from "../../utilities/Requests";
+import { convertTime } from "../../utilities/CommonUtils";
+import { EpisodeBookmarkRequest } from "../../types/Requests";
+
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../shared/LoginPrompt";
 
-const MAX_TITLE_CHARS = 25;
-const MAX_NOTE_CHARS = 250;
+
 
 const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -17,7 +17,9 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   const [bookmarkError, setBookmarkError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
+  const MAX_TITLE_CHARS = 25;
+  const MAX_NOTE_CHARS = 250;
+  
   const checkAuthentication = async () => {
     try {
       const response = await AuthHelper.authMeRequest();

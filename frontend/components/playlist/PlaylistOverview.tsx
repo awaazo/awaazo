@@ -26,11 +26,11 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Episode, Playlist } from "../../utilities/Interfaces";
+import { Episode, Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
-import { convertTime } from "../../utilities/commonUtils";
+import { convertTime } from "../../utilities/CommonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -40,7 +40,7 @@ import { MdDelete, MdIosShare } from "react-icons/md";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+import { PlaylistEditRequest } from "../../types/Requests";
 import ShareComponent from "../social/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {

@@ -8,7 +8,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { convertTime } from "../../utilities/commonUtils";
+import { convertTime } from "../../utilities/CommonUtils";
 import { LuBookCopy } from "react-icons/lu";
 import PodcastHelper from "../../helpers/PodcastHelper";
 

@@ -4,12 +4,12 @@ import axios, {
   AxiosResponse,
 } from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { SectionAddRequest } from "../utilities/Requests";
+import { SectionAddRequest } from "../types/Requests";
 import {
   AddSectionResponse,
   BaseResponse,
   getSectionResponse,
-} from "../utilities/Responses";
+} from "../types/Responses";
 
 export default class PodcastHelper {
   static getUserProfile() {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, FormControl, FormLabel, Input, VStack, Select, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from "@chakra-ui/react";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
-import {convertTime} from '../../utilities/commonUtils'
+import {convertTime} from '../../utilities/CommonUtils'
 
 const AnnotationForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
   const [formData, setFormData] = useState({

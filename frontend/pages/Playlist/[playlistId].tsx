@@ -8,12 +8,12 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import type { Episode } from "../../utilities/Interfaces";
-import type { Playlist } from "../../utilities/Interfaces";
+import type { Episode } from "../../types/Interfaces";
+import type { Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../../components/cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
-import { formatSecToDurationString } from "../../utilities/commonUtils";
+import { formatSecToDurationString } from "../../utilities/CommonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";

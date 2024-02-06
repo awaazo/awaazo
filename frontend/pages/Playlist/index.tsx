@@ -12,10 +12,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import PlaylistCard from "../../components/cards/PlaylistCard";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { Playlist } from "../../utilities/Interfaces";
+import { Playlist } from "../../types/Interfaces";
 import router from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import withAuth from "../../utilities/authHOC";
+import withAuth from "../../utilities/AuthHOC";
 
 const MyPlaylist = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
