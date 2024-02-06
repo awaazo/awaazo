@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import ChangePassWordForm from "../../components/profile/MyProfile/ChangePasswordForm";
 import GenreSelector from "../../components/tools/GenreSelector";
 import { FaKey } from 'react-icons/fa';
+import withAuth from "../../utilities/authHOC";
 
 const EditProfile = () => {
   const [bio, setBio] = useState("");
@@ -44,9 +45,7 @@ const EditProfile = () => {
         setGithubLink(response.userProfile.githubUrl);
         setWebsiteUrl(response.userProfile.websiteUrl);
         setAvatar(response.userProfile.avatarUrl);
-      } else {
-        router.replace("/auth/Login");
-      }
+      } 
     });
   }, [router]);
 
@@ -210,4 +209,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default withAuth(EditProfile);

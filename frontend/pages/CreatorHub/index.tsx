@@ -6,6 +6,7 @@ import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
+import withAuth from "../../utilities/authHOC";
 
 const Creatorhub = () => {
   // Page refs
@@ -42,8 +43,6 @@ const Creatorhub = () => {
           } else {
             setCreateError("Podcasts cannot be fetched");
           }
-        } else {
-          window.location.href = loginPage;
         }
       } catch (error) {
         console.error("Error during data fetching", error);
@@ -130,4 +129,4 @@ const Creatorhub = () => {
   );
 };
 
-export default Creatorhub;
+export default withAuth(Creatorhub);

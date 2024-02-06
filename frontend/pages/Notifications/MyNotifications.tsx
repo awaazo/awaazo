@@ -6,6 +6,7 @@ import { Box, Button, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
+import withAuth from "../../utilities/authHOC";
 
 const NotificationsPage = () => {
   const router = useRouter();
@@ -32,22 +33,6 @@ const NotificationsPage = () => {
         );
       }
     };
-
-    //If user is not logged in, notifications redirect to Login page
-    const checkLogin = async () => {
-      const response = await AuthHelper.authMeRequest();
-      var isLoggedIn = true;
-      if (response.status === 401) {
-        isLoggedIn = false;
-      }
-
-      if(isLoggedIn){
-        fetchNotifications();
-      }else{
-        router.replace("/auth/Login");
-      }
-    }
-    checkLogin();
   }, [page, router]);
 
   const buttonStyle = {
@@ -221,4 +206,4 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage;
+export default withAuth(NotificationsPage);

@@ -8,6 +8,7 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../utilities/Interfaces";
 import ImageAdder from "../../components/tools/ImageAdder";
 import GenreSelector from "../../components/tools/GenreSelector";
+import withAuth from "../../utilities/authHOC";
 
 const ProfileSetup: React.FC = () => {
   const mainPage = "/";
@@ -146,4 +147,4 @@ const ProfileSetup: React.FC = () => {
   }
 };
 
-export default ProfileSetup;
+export default withAuth(ProfileSetup);
