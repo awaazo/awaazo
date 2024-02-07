@@ -11,6 +11,7 @@ import LoginPrompt from "../auth/AuthPrompt";
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
   // Component Values
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -115,6 +116,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
 
   return (
     <>
+    
       {showCount ? (
         <Tooltip label="Comment" aria-label="Comment">
           <Button p={2} m={1} leftIcon={<Icon as={FaComments} />} onClick={onOpen} variant={"ghost"} data-cy={`playerbar-comment-button`}>
@@ -227,7 +229,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
         <LoginPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
-          infoMessage="To add a Reply or a Comment, you must be logged in. Please log in or create an account."
+          infoMessage="Login To add a Reply or a Comment."
       />
       )}
     </>

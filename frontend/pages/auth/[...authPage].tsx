@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Login from "../../components/auth/Login";
 import SignUp from "../../components/auth/Signup";
 import ForgotPassword from "../../components/auth/ForgotPassword";
-
+import { Flex } from "@chakra-ui/react";
 const AuthPage = () => {
   const router = useRouter();
   const { authPage } = router.query;
@@ -17,7 +17,12 @@ const AuthPage = () => {
     return components[authPage?.[0]] || components["Login"];
   };
 
-  return getCurrentComponent();
+
+  return (
+    <Flex minHeight="100vh" align="center" justify="center">
+      {getCurrentComponent()}
+    </Flex>
+  );
 };
 
 export default AuthPage;

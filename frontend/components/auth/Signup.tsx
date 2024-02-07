@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box,Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
+import { Box, Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -34,7 +34,7 @@ const SignUp: React.FC = () => {
     return age;
   };
   const age = calculateAge(dateOfBirth);
-  
+
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignUpError(null);
-    
+
     if (!email || !isEmail(email)) {
       setSignUpError("Please enter a valid email address.");
       return;
@@ -66,7 +66,7 @@ const SignUp: React.FC = () => {
       setSignUpError("Passwords do not match.");
       return;
     }
-    
+
     if (age < 8) {
       setSignUpError("You're too young to be on Awaazo, come back in a couple of years!");
       return;
@@ -75,7 +75,7 @@ const SignUp: React.FC = () => {
       setSignUpError("Centenarian? Impressive! But Awaazo is for the young at heart.");
       return;
     }
-    
+
     const registerRequest: RegisterRequest = {
       email: email,
       password: password,
@@ -83,8 +83,6 @@ const SignUp: React.FC = () => {
       dateOfBirth: dateOfBirth,
       gender: "None",
     };
-
-    
 
     try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
@@ -99,7 +97,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <Flex minHeight="100vh" align="center" justify="center">
+    <>
       <Container variant={"authBox"}>
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
@@ -171,7 +169,7 @@ const SignUp: React.FC = () => {
           </Stack>
         </form>
       </Container>
-    </Flex>
+    </>
   );
 };
 

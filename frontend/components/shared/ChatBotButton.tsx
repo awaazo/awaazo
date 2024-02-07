@@ -33,7 +33,7 @@ const ChatBotButton = ({ episodeId }) => {
         <LoginPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
-          infoMessage="To access our ChatBot, you must be logged in. Please log in or create an account."
+          infoMessage="Login to chat and ask about the episode"
         />
       )}
     </>

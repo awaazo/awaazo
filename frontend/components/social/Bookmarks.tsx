@@ -130,7 +130,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
         <LoginPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
-          infoMessage="To add a Bookmark, you must be logged in. Please log in or create an account."
+          infoMessage="Login to add a Bookmark"
       />
       )}
     </>
