@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import { FormControl, Button, Textarea, Box, VStack, Image, Input, IconButton, Flex, Switch, Text, Center, Heading, Modal, ModalContent, ModalCloseButton, ModalOverlay, Spinner } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { UserMenuInfo, Podcast } from "../../utilities/Interfaces";
-import { EpisodeAddRequest } from "../../utilities/Requests";
+import { UserMenuInfo, Podcast } from "../../types/Interfaces";
+import { EpisodeAddRequest } from "../../types/Requests";
 import { AxiosProgressEvent } from "axios";
 import ImageAdder from "../tools/ImageAdder";
 

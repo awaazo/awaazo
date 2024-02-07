@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Image, Text, VStack } from "@chakra-ui/react";
-import { Episode } from "../../utilities/Interfaces";
+import { Episode } from "../../types/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
 interface CoverArtProps {
