@@ -47,6 +47,11 @@ public class User : BaseEntity
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
+    /// Stripe Id for the customer
+    /// </summary>
+    public string StripeId { get; set; } = string.Empty;
+
+    /// <summary>
     /// URL for user's PFP
     /// </summary>
     public string Avatar { get; set; } = "DefaultAvatar";
@@ -156,6 +161,11 @@ public class User : BaseEntity
     public ICollection<Notification> Notifications {  get; } = new List<Notification>();
 
     public ICollection<Playlist> Playlists { get; } = new List<Playlist>();
+
+    /// <summary>
+    /// Withdrawls done by the User
+    /// </summary>
+    public ICollection<Withdrawals> Withdrawals { get; } = new List<Withdrawals>(); 
 
     /// <summary>
     /// Gender enum.

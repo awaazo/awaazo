@@ -11,6 +11,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Backend.Middlewares;
 using System.Reflection;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Backend;
 
@@ -27,14 +29,13 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.WriteIndented = true;
         });
-
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
-        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+        builder.Services.AddScoped<ISubscriptionService, Services.SubscriptionService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
         builder.Services.AddScoped<ISocialService, SocialService>();
-
+       
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
         builder.Services.AddScoped<IAnnotationService, AnnotationService>();
@@ -46,6 +47,11 @@ public class Program
         builder.Services.AddScoped<ILogger, FileLogger>();
 
         builder.Services.AddScoped<EmailService>(serviceProvider => new EmailService(builder.Configuration));
+
+       
+        builder.Services.AddScoped<SessionService>();
+        builder.Services.AddScoped<IStripeServices, StripeServices>();
+        StripeConfiguration.ApiKey = config["StripeOptions:SecretKey"];
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

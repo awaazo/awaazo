@@ -32,4 +32,10 @@ public interface ISocialService
     public Task<bool> AddReviewToPodcastAsync(Guid podcastId, User user, string review);
     public Task<bool> RemoveReviewFromPodcastAsync(Guid podcastId, User user);
 
+
+    // Points
+    public Task<string> GiftPoints(int quantity, Guid episodeId, User user);
+
+    public Task<bool> ConfirmPaymentWebhook(HttpContext httpContext);
+
 }

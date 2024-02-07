@@ -43,6 +43,9 @@ public class AppDbContext : DbContext
  
     public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
     public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }
+
+
+    public virtual DbSet<Points> Points { get; set; }
     
     /// <summary>
     /// Maps to the Soundex function in the database.

@@ -86,6 +86,11 @@ public class Episode : BaseEntity
     /// Playlist Episodes for this episode
     /// </summary>
     public ICollection<PlaylistEpisode> PlaylistEpisodes { get; } = new List<PlaylistEpisode>();
+
+    /// <summary>
+    /// Points collected by an episode
+    /// </summary>
+    public ICollection<Points> Points { get; } = new List<Points>();
 }
 
 public class UserEpisodeInteraction : BaseEntity

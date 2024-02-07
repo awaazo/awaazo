@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Backend.Controllers;
 
@@ -305,6 +307,52 @@ public class SocialController : ControllerBase
         }
     }
 
+    #endregion
+
+
+    #region Points
+    [HttpPost("{episodeId}/points")]    
+    public async Task<IActionResult> GiftPoints(Guid episodeId,int points)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GiftPoints));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _socialService.GiftPoints(points,episodeId,user));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GiftPoints));
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("webhook/points")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmPayment()
+    {
+        try
+        {
+  
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ConfirmPayment));
+
+            return Ok(await _socialService.ConfirmPaymentWebhook(HttpContext));
+
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ConfirmPayment));
+            return BadRequest(e.Message);
+
+        }
+    }
     #endregion
 
 }
