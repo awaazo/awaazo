@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
+using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Models;
 
@@ -56,6 +57,16 @@ public class Episode : BaseEntity
     /// Duration of the episode in seconds
     /// </summary>
     public double Duration { get; set; } = 0;
+
+    /// <summary>
+    /// Whether the episode transcript is ready or not
+    /// </summary>
+    public bool IsTranscriptReady { get; set; } = false;
+
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public TranscriptStatus TranscriptStatus { get; set; } = TranscriptStatus.None;
 
     public DateTime ReleaseDate { get; set; } = DateTime.Now;
 

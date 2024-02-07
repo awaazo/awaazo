@@ -20,8 +20,6 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
-
-
     /// <summary>
     /// Current database instance
     /// </summary>
@@ -53,7 +51,6 @@ public class PodcastService : IPodcastService
     /// Maximum audio file is 1GB
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
-
 
     /// <summary>
     /// Maximum request size
@@ -564,7 +561,8 @@ public class PodcastService : IPodcastService
             IsExplicit = request.IsExplicit,
             ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
+            IsTranscriptReady = false,
         };
 
         // Check if the episode is explicit and the podcast is not
@@ -583,7 +581,7 @@ public class PodcastService : IPodcastService
         try
         {
             // Send request to PY server to generate a transcript
-            var url = _pyBaseUrl+"/stt_ingest";
+            var url = _pyBaseUrl + "/stt_ingest";
             var json = $@"{{
                 ""podcast_id"": ""{episode.PodcastId}"",
                 ""episode_id"": ""{episode.Id}""
@@ -591,7 +589,10 @@ public class PodcastService : IPodcastService
 
             using var httpClient = new HttpClient();
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            await httpClient.PostAsync(url, content);
+            var resp  = await httpClient.PostAsync(url, content);
+
+            if (resp.StatusCode == HttpStatusCode.OK)
+                episode.TranscriptStatus = TranscriptStatus.InProgress;
         }
         catch (Exception)
         {
@@ -635,6 +636,7 @@ public class PodcastService : IPodcastService
         episode.Description = request.Description;
         episode.IsExplicit = request.IsExplicit;
         episode.UpdatedAt = DateTime.Now;
+        episode.IsTranscriptReady = false;
 
         // Update the episode audio if it was changed
         if (request.AudioFile != null)
@@ -669,7 +671,7 @@ public class PodcastService : IPodcastService
                 RemoveTranscript(episodeId, episode.PodcastId);
 
                 // Send request to PY server to generate a transcript
-                var url = _pyBaseUrl+"/stt_ingest";
+                var url = _pyBaseUrl + "/stt_ingest";
                 var json = $@"{{
                     ""podcast_id"": ""{episode.PodcastId}"",
                     ""episode_id"": ""{episode.Id}""
@@ -677,7 +679,10 @@ public class PodcastService : IPodcastService
 
                 using var httpClient = new HttpClient();
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                await httpClient.PostAsync(url, content);
+                var resp = await httpClient.PostAsync(url, content);
+
+                if (resp.StatusCode == HttpStatusCode.OK)
+                    episode.TranscriptStatus = TranscriptStatus.InProgress;
             }
             catch (Exception)
             {
@@ -940,6 +945,8 @@ public class PodcastService : IPodcastService
 
     #endregion Watch History
 
+    #region Transcription
+
     /// <summary>
     /// Gets the transcript for the given episode.
     /// </summary>
@@ -1083,7 +1090,77 @@ public class PodcastService : IPodcastService
     }
 
 
+    /// <summary>
+    /// Updates the transcription status for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to update the transcription status</param>
+    /// <returns>True if the transcription status was updated successfully, false otherwise</returns>  
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> UpdateTranscriptionStatusAsync(Guid episodeId)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
+        // Get the transcription status
+        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
+
+        // If the transcript is not ready, or the transcript file does not exist, update the transcript status
+        if (status != TranscriptStatus.Ready || !File.Exists(GetTranscriptPath(episodeId, episode.PodcastId)))
+        {
+            // Set the status
+            episode.TranscriptStatus = status;
+            episode.IsTranscriptReady = false;
+        }
+        else
+        {
+            // If the transcription is successful, set the status to ready
+            episode.TranscriptStatus = TranscriptStatus.Ready;
+            episode.IsTranscriptReady = true;
+        }
+
+        // Update the episode in the database
+        _db.Episodes.Update(episode);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Check if the user owns the podcast of the episode
+        if(await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
+        {
+            // Send request to PY server to generate a transcript
+            var url = _pyBaseUrl + "/stt";
+            var json = $@"{{
+                ""podcast_id"": ""{episode.PodcastId}"",
+                ""episode_id"": ""{episode.Id}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var resp = await httpClient.PostAsync(url, content);
+
+            if(resp.StatusCode == HttpStatusCode.OK)
+            {
+                // Update the episode's transcript status
+                episode.TranscriptStatus = TranscriptStatus.InProgress;
+                episode.IsTranscriptReady = false;
+                _db.Episodes.Update(episode);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            else
+                throw new Exception("An error occured while generating the transcript: "+resp.Content.ReadAsStringAsync().Result);
+        }
+        else
+            throw new Exception("User does not have permission to generate transcript for this episode.");
+    }
+
+
+    #endregion Transcription
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes
@@ -1271,10 +1348,10 @@ public class PodcastService : IPodcastService
         };
 
 
-        string defaultErrorMsg ="Sorry, but I can't answer your question right now. Please try again later."; 
+        string defaultErrorMsg = "Sorry, but I can't answer your question right now. Please try again later.";
 
         // Send request to PY server to chat with the episode
-        var url = _pyBaseUrl+"/chat";
+        var url = _pyBaseUrl + "/chat";
         var json = $@"{{
             ""podcast_id"": ""{episode.PodcastId}"",
             ""episode_id"": ""{episodeId}"",
@@ -1285,7 +1362,7 @@ public class PodcastService : IPodcastService
         string responseText = string.Empty;
 
         try
-        {   
+        {
             // Send request to PY server to generate a chat response
             using var httpClient = new HttpClient();
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -1298,7 +1375,7 @@ public class PodcastService : IPodcastService
                 responseText = await response.Content.ReadAsStringAsync();
         }
         catch (Exception)
-        {   
+        {
             throw;
         }
 
@@ -1319,8 +1396,8 @@ public class PodcastService : IPodcastService
         await _db.EpisodeChatMessages.AddAsync(responseMessage);
 
         // Save the changes to the database
-        await _db.SaveChangesAsync();   
-        
+        await _db.SaveChangesAsync();
+
         // Return the chat with the messages
         return new EpisodeChatMessageResponse(responseMessage, user, domainUrl);
     }

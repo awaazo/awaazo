@@ -117,12 +117,14 @@ public class Program
         });
 
 
+
+
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithOrigins("http://localhost:3000", "https://localhost:3000",
                 "http://localhost:3500", "https://localhost:3500",
-                "https://*.awaazo.com/*")
+                "https://*.awaazo.com/*","http://localhost:8500", "http://py:8000")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -158,6 +160,13 @@ public class Program
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/bookmark"), builder =>
         {
             builder.UseMiddleware<ValidateUser>();
+        });
+
+        /* Add middleware to check if the referer is allowed. This makes sure that only 
+         the python server can access the backend.*/
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/podcast/updateTranscriptionStatus"), builder =>
+        {
+            builder.UseMiddleware<RefererMiddleware>();
         });
 
         app.MapControllers();

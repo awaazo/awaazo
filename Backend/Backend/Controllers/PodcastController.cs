@@ -19,8 +19,8 @@ namespace Backend.Controllers;
 [Authorize]
 public class PodcastController : ControllerBase
 {
-    private const int MIN_PAGE=0;
-    private const int DEFAULT_PAGE_SIZE=20;
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 20;
     private readonly IPodcastService _podcastService;
     private readonly IAuthService _authService;
     private readonly ILogger<PodcastController> _logger;
@@ -135,7 +135,7 @@ public class PodcastController : ControllerBase
     /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("myPodcasts")]
-    public async Task<IActionResult> GetMyPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    public async Task<IActionResult> GetMyPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
@@ -148,7 +148,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _podcastService.GetUserPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),user));
+            return Ok(await _podcastService.GetUserPodcastsAsync(page, pageSize, GetDomainUrl(HttpContext), user));
         }
         catch (Exception e)
         {
@@ -167,13 +167,13 @@ public class PodcastController : ControllerBase
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("userPodcasts")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetUserPodcasts(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    public async Task<IActionResult> GetUserPodcasts(Guid userId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserPodcasts));
 
-            return Ok(await _podcastService.GetUserPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),userId));
+            return Ok(await _podcastService.GetUserPodcastsAsync(page, pageSize, GetDomainUrl(HttpContext), userId));
         }
         catch (Exception e)
         {
@@ -191,13 +191,13 @@ public class PodcastController : ControllerBase
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("all")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllPodcasts(int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    public async Task<IActionResult> GetAllPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllPodcasts));
 
-            return Ok(await _podcastService.GetAllPodcastsAsync(page,pageSize, GetDomainUrl(HttpContext)));
+            return Ok(await _podcastService.GetAllPodcastsAsync(page, pageSize, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {
@@ -216,13 +216,13 @@ public class PodcastController : ControllerBase
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("search")]
     [AllowAnonymous]
-    public async Task<IActionResult> SearchPodcast([FromBody] PodcastFilter filter, int page=MIN_PAGE,int pageSize=DEFAULT_PAGE_SIZE)
+    public async Task<IActionResult> SearchPodcast([FromBody] PodcastFilter filter, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchPodcast));
 
-            return Ok(await _podcastService.GetSearchPodcastsAsync(page,pageSize,GetDomainUrl(HttpContext),filter));
+            return Ok(await _podcastService.GetSearchPodcastsAsync(page, pageSize, GetDomainUrl(HttpContext), filter));
         }
         catch (Exception e)
         {
@@ -245,7 +245,7 @@ public class PodcastController : ControllerBase
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPodcastById));
 
-            return Ok(await _podcastService.GetPodcastByIdAsync(GetDomainUrl(HttpContext),podcastId));
+            return Ok(await _podcastService.GetPodcastByIdAsync(GetDomainUrl(HttpContext), podcastId));
         }
         catch (Exception e)
         {
@@ -273,7 +273,7 @@ public class PodcastController : ControllerBase
             string coverArtName = await _podcastService.GetPodcastCoverArtNameAsync(podcastId);
 
             // Return the cover art file from the server
-            return PhysicalFile(GetPodcastCoverArtPath(coverArtName), GetFileType(coverArtName),enableRangeProcessing:false);
+            return PhysicalFile(GetPodcastCoverArtPath(coverArtName), GetFileType(coverArtName), enableRangeProcessing: false);
         }
         catch (Exception e)
         {
@@ -292,16 +292,16 @@ public class PodcastController : ControllerBase
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("byTags")]
     [AllowAnonymous]
-    public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
+    public async Task<ActionResult> GetPodcastsByTags([FromHeader][Required] string[] tags, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPodcastsByTags));
 
             // Return the podcasts that match the given genres
-            return Ok(await _podcastService.GetPodcastsByTagsAsync(page,pageSize,GetDomainUrl(HttpContext),tags));
+            return Ok(await _podcastService.GetPodcastsByTagsAsync(page, pageSize, GetDomainUrl(HttpContext), tags));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetPodcastsByTags));
             return BadRequest(e.Message);
@@ -314,8 +314,10 @@ public class PodcastController : ControllerBase
     /// <param name="podcastId">Id of the podcast to get metrics for.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpGet("{podcastId}/metrics")]
-    public async Task<ActionResult> GetMetrics(Guid podcastId) {
-        try {
+    public async Task<ActionResult> GetMetrics(Guid podcastId)
+    {
+        try
+        {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
 
             // Identify User from JWT Token
@@ -327,7 +329,8 @@ public class PodcastController : ControllerBase
 
             return Ok(await _podcastService.GetMetrics(user, podcastId, GetDomainUrl(HttpContext)));
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
@@ -357,6 +360,8 @@ public class PodcastController : ControllerBase
     #endregion
 
     #region Episode
+
+    #region  Episode CRUD
 
     /// <summary>
     /// Adds an episode to a podcast.
@@ -492,7 +497,7 @@ public class PodcastController : ControllerBase
             string audioName = await _podcastService.GetEpisodeAudioNameAsync(episodeId);
 
             // Return the audio file from the server
-            return PhysicalFile(GetPodcastEpisodeAudioPath(audioName, podcastId), GetFileType(audioName),enableRangeProcessing:true);
+            return PhysicalFile(GetPodcastEpisodeAudioPath(audioName, podcastId), GetFileType(audioName), enableRangeProcessing: true);
         }
         catch (Exception e)
         {
@@ -520,7 +525,7 @@ public class PodcastController : ControllerBase
             string thumbnailName = await _podcastService.GetEpisodeThumbnailNameAsync(episodeId);
 
             // Return the thumbnail file from the server
-            return PhysicalFile(GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId), GetFileType(thumbnailName),enableRangeProcessing:false);
+            return PhysicalFile(GetPodcastEpisodeThumbnailPath(thumbnailName, podcastId), GetFileType(thumbnailName), enableRangeProcessing: false);
         }
         catch (Exception e)
         {
@@ -528,7 +533,35 @@ public class PodcastController : ControllerBase
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetEpisodeThumbnail));
             return BadRequest(e.Message);
         }
-    }
+    } 
+    
+       /// <summary>
+    /// Searches for episodes based on a filter.
+    /// </summary>
+    /// <param name="episodeFilter">The filter to apply.</param>
+    /// <param name="page">The page number to return.</param>
+    /// <param name="pageSize">The number of results per page.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    [HttpPost("episode/search")]
+    [AllowAnonymous]
+    public async Task<IActionResult> SearchEpisode([FromBody] EpisodeFilter episodeFilter, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchEpisode));
+
+            return Ok(await _podcastService.SearchEpisodeAsync(page, pageSize, episodeFilter, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(SearchEpisode));
+            return BadRequest(e.Message);
+        }
+    } 
+
+    #endregion Episode CRUD
+
+    #region Episode Watch History
 
     /// <summary>
     /// This function saves the last watched position on a specific episode
@@ -540,7 +573,8 @@ public class PodcastController : ControllerBase
     /// <param name="request">ListenPosition of the episode in seconds.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/saveWatchHistory")]
-    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request) {
+    public async Task<IActionResult> SaveWatchHistory(Guid episodeId, [FromBody] EpisodeHistorySaveRequest request)
+    {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SaveWatchHistory));
@@ -553,11 +587,11 @@ public class PodcastController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(SaveWatchHistory));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(SaveWatchHistory));
             return BadRequest(e.Message);
         }
     }
-    
+
     /// <summary>
     /// Gets the watch history of a specific episode
     /// </summary>
@@ -578,10 +612,14 @@ public class PodcastController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetWatchHistory));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetWatchHistory));
             return BadRequest(e.Message);
         }
-    }   
+    }
+
+    #endregion Episode Watch History
+
+    #region Adjecent Episodes
 
     /// <summary>
     /// Gets Adjecent Episodes
@@ -598,36 +636,37 @@ public class PodcastController : ControllerBase
 
             return Ok(await _podcastService.GetAdjecentEpisodeAsync(episodeId));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetAdjecentEpisode));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetAdjecentEpisode));
             return BadRequest(e.Message);
         }
     }
 
-    /// <summary>
-    /// Searches for episodes based on a filter.
+
+    
+       /// <summary>
+    /// Gets recent Episodes
     /// </summary>
-    /// <param name="episodeFilter">The filter to apply.</param>
-    /// <param name="page">The page number to return.</param>
-    /// <param name="pageSize">The number of results per page.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
-    [HttpPost("episode/search")]
+    [HttpGet("getRecentEpisodes")]
     [AllowAnonymous]
-    public async Task<IActionResult> SearchEpisode([FromBody] EpisodeFilter episodeFilter,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchEpisode));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
 
-            return Ok(await _podcastService.SearchEpisodeAsync(page,pageSize,episodeFilter,GetDomainUrl(HttpContext)));
+            return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(SearchEpisode));
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
             return BadRequest(e.Message);
         }
     }
+
+    #endregion Adjecent Episodes
 
     #region Episode Chat
 
@@ -650,11 +689,11 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return Ok(await _podcastService.GetEpisodeChatAsync(page,pageSize,episodeId,user,GetDomainUrl(HttpContext)));
+            return Ok(await _podcastService.GetEpisodeChatAsync(page, pageSize, episodeId, user, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeChat));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetEpisodeChat));
             return BadRequest(e.Message);
         }
     }
@@ -670,14 +709,14 @@ public class PodcastController : ControllerBase
     /// - Prompt: The prompt to add to the episode chat.
     /// </remarks>
     [HttpPost("addEpisodeChat")]
-    public async Task<IActionResult> AddEpisodeChat([FromBody]  PromptEpisodeRequest request)
+    public async Task<IActionResult> AddEpisodeChat([FromBody] PromptEpisodeRequest request)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(AddEpisodeChat));
 
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            
+
             if (user is null)
                 return NotFound("User not found");
 
@@ -685,7 +724,7 @@ public class PodcastController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(AddEpisodeChat));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(AddEpisodeChat));
             return BadRequest(e.Message);
         }
     }
@@ -715,9 +754,9 @@ public class PodcastController : ControllerBase
 
             return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId, seekTime, includeWords));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscript));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetEpisodeTranscript));
             return BadRequest(e.Message);
         }
     }
@@ -741,9 +780,9 @@ public class PodcastController : ControllerBase
 
             return Ok(await _podcastService.GetEpisodeTranscriptTextAsync(episodeId));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(GetEpisodeTranscriptText));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetEpisodeTranscriptText));
             return BadRequest(e.Message);
         }
     }
@@ -766,33 +805,65 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return await _podcastService.EditEpisodeTranscriptLinesAsync(user,episodeId, transcriptLines)?
+            return await _podcastService.EditEpisodeTranscriptLinesAsync(user, episodeId, transcriptLines) ?
                 Ok("Transcript lines edited successfully") : Ok("Failed to edit transcript lines. Transcript may not be ready yet.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e:e, callerName: nameof(EditEpisodeTranscriptLines));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(EditEpisodeTranscriptLines));
             return BadRequest(e.Message);
         }
     }
 
     /// <summary>
-    /// Gets recent Episodes
+    /// Generates the transcript of an episode.
     /// </summary>
+    /// <param name="episodeId">ID of the episode for which the transcript is to be generated.</param>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
-    [HttpGet("getRecentEpisodes")]
-    [AllowAnonymous]
-    public async Task<ActionResult> GetRecentEpisodes(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    /// <remarks>
+    /// This function will start the transcript generation process in the background.
+    /// </remarks>
+    [HttpPost("{episodeId}/generateTranscript")]
+    public async Task<ActionResult> GenerateEpisodeTranscript(Guid episodeId)
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetMetrics));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GenerateEpisodeTranscript));
 
-            return Ok(await _podcastService.GetRecentEpisodes(page, pageSize, GetDomainUrl(HttpContext)));
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if(user is null)
+                return NotFound("User not found");
+
+            return await _podcastService.GenerateEpisodeTranscriptAsync(episodeId, user) ? Ok("Transcript generation started") : Ok("Failed to start transcript generation");
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(GetMetrics));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GenerateEpisodeTranscript));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Updates the status of the transcript of an episode.
+    /// </summary>
+    /// <param name="episodeId">ID of the episode for which the transcript status is to be updated.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
+    /// <remarks>
+    /// This function can only be called by the python backend.
+    /// </remarks>
+    [HttpPost("updateTranscriptionStatus/{episodeId}")]
+    [AllowAnonymous]
+    public async Task<ActionResult> UpdateTranscriptionStatus(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(UpdateTranscriptionStatus));
+
+            return await _podcastService.UpdateTranscriptionStatusAsync(episodeId) ? Ok("Transcript status updated") : Ok("Failed to update transcript status");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(UpdateTranscriptionStatus));
             return BadRequest(e.Message);
         }
     }

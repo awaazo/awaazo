@@ -28,14 +28,19 @@ public interface IPodcastService
     public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
     public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
     public Task<bool> SaveWatchHistory(User user, Guid episodeId, double listenPosition);
-    public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);
-    public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
-    public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
     public Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId);
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
     public Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
     public Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl);
+
+    // TRANSCRIPT
+    public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);
+    public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
+    public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
+    public Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user);
+    public Task<bool> UpdateTranscriptionStatusAsync(Guid episodeId);
+
 
     // EPISODE CHAT
     public Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl);
