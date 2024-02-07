@@ -13,7 +13,7 @@ const ForYou: React.FC = () => {
     const fetchPodcasts = async () => {
       setIsLoading(true);
       try {
-        const res = await PodcastHelper.podcastAllPodcastsGet(0, 12);
+        const res = await PodcastHelper.podcastGetRecentPodcasts(0, 12);
         if (res.status === 200) {
           setPodcasts(res.podcasts);
         } else {

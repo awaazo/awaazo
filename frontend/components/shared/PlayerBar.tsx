@@ -33,6 +33,7 @@ import { SaveWatchHistoryRequest } from "../../utilities/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
+import { is } from "cypress/types/bluebird";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -60,8 +61,7 @@ const PlayerBar = () => {
   // Fetch and load audio URL
   useEffect(() => {
     const fetchAudio = async () => {
-      if (isPlaying) togglePlayPause();
-      setIsLoading(true);
+      if (isPlaying) setIsLoading(true);
       try {
         const url = await getEpisodePlaying(episode.podcastId, episode.id);
         setAudioUrl(url);
@@ -72,7 +72,9 @@ const PlayerBar = () => {
       }
     };
 
-    if (isEpisodeLoaded) fetchAudio();
+    if (isEpisodeLoaded) {
+      fetchAudio();
+    }
   }, [episode]);
 
   useEffect(() => {
@@ -82,6 +84,8 @@ const PlayerBar = () => {
       audioRef.current.addEventListener("loadedmetadata", () => {
         setDuration(audioRef.current.duration);
       });
+      setIsPlaying(false);
+      setIsPlaying(true);
     }
   }, [audioUrl]);
 
