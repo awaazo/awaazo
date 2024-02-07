@@ -25,7 +25,7 @@ import EditPodcastForm from "./EditPodcast";
 import MyEpisodes from "./MyEpisodes";
 import { useEffect, useState } from "react";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { Episode, Metrics } from "../../utilities/Interfaces";
+import { Episode, Metrics } from "../../types/Interfaces";
 import { GiHeptagram } from "react-icons/gi";
 
 const PodcastInfo = ({ podcastId }) => {

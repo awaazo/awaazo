@@ -24,7 +24,7 @@ import { BellIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-import { Notification } from "../../utilities/Interfaces";
+import { Notification } from "../../types/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
 

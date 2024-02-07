@@ -2,7 +2,7 @@
 import React, { useState, useEffect, FormEvent, useCallback } from "react";
 import { Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Button, FormControl, Textarea, Text, VStack, Switch } from "@chakra-ui/react";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistCreateRequest } from "../../utilities/Requests";
+import { PlaylistCreateRequest } from "../../types/Requests";
 import ImageAdder from "../tools/ImageAdder";
 import awaazoFace from "../../styles/images/awaazoFace.png";
 
