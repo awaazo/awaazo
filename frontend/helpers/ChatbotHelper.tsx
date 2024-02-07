@@ -13,22 +13,30 @@ export default class ChatbotHelper {
     }
   }
 
-  public static async getEpisodeChat(
+  public static getEpisodeChat = async (
     episodeId: string,
     page: number,
     pageSize: number
-  ): Promise<GetChatbotResponse> {
-    if (!episodeId || page <= 0 || pageSize <= 0) {
-      throw new Error("Invalid parameters for getEpisodeChat");
-    }
+  ): Promise<GetChatbotResponse> => {
     const options = {
       method: "GET",
-      headers: { accept: "*/*", "Content-Type": "application/json" },
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
       url: EndpointHelper.getEpisodeChatEndpoint(episodeId, page, pageSize),
       withCredentials: true,
+      cache: false,
     };
-    return this.requestWrapper<GetChatbotResponse>(axios(options));
-  }
+
+    try {
+      const response = await axios(options);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return error.response.data;
+    }
+  };
 
   public static async addEpisodeChat(
     episodeId: string,

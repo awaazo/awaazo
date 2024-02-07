@@ -12,17 +12,26 @@ const ChatBot = () => {
   const [newMessage, setNewMessage] = useState("");
 
   const fetchMessages = useCallback(async () => {
-    if (!state.currentEpisodeId) return;
-
+    if (!state.currentEpisodeId) {
+      console.log("No currentEpisodeId, returning early.");
+      return;
+    }
+  
     try {
-      const response = await ChatbotHelper.getEpisodeChat(state.currentEpisodeId, 1, 10);
-      setMessages(response.messages || []);
+      const response = await ChatbotHelper.getEpisodeChat(state.currentEpisodeId, 1, 20);
+      console.log("epid:", state.currentEpisodeId);
+      console.log("Response received:", response);
+      if (!response || !response.messages) {
+        console.error("Invalid or empty response:", response);
+        return;
+      }
+      setMessages(response.messages);
       console.log("Messages fetched:", response.messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   }, [state.currentEpisodeId]);
-
+  
   useEffect(() => {
     setIsOpen(state.isOpen);
     fetchMessages();

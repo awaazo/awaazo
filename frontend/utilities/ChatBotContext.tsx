@@ -4,7 +4,7 @@ import { Chatbot } from "../types/Interfaces";
 interface ChatBotState {
   isOpen: boolean;
   currentEpisodeId: string | null;
-  Chatbot: Chatbot[]
+  Chatbot: Chatbot[];
 }
 
 interface ChatBotContextProps {
@@ -12,14 +12,12 @@ interface ChatBotContextProps {
   dispatch: React.Dispatch<any>;
 }
 
-const ChatBotContext = createContext<ChatBotContextProps | undefined>(
-  undefined,
-);
+const ChatBotContext = createContext<ChatBotContextProps | undefined>(undefined);
 
 const initialState: ChatBotState = {
   isOpen: false,
   currentEpisodeId: null,
-  Chatbot: [] as Chatbot[],  
+  Chatbot: [] as Chatbot[],
 };
 
 interface ChatBotProviderProps {
@@ -43,16 +41,10 @@ const chatBotReducer = (state: ChatBotState, action: any) => {
   }
 };
 
-export const ChatBotProvider: React.FC<ChatBotProviderProps> = ({
-  children,
-}) => {
+export const ChatBotProvider: React.FC<ChatBotProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(chatBotReducer, initialState);
 
-  return (
-    <ChatBotContext.Provider value={{ state, dispatch }}>
-      {children}
-    </ChatBotContext.Provider>
-  );
+  return <ChatBotContext.Provider value={{ state, dispatch }}>{children}</ChatBotContext.Provider>;
 };
 
 export const useChatBot = () => {

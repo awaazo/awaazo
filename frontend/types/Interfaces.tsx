@@ -261,5 +261,5 @@ export interface Chatbot{
   isPrompt: boolean;
   username: string;
   avatarUrl: string;
-  sentAt: Date
+  sentAt: Date;
 }
