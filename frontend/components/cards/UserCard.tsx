@@ -6,7 +6,6 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { use } from "chai";
 import Link from "next/link";
 
 // Define the UserCard component

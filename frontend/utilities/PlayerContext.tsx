@@ -6,7 +6,7 @@ import React, {
   useRef,
   ReactNode,
 } from "react";
-import { Episode } from "./Interfaces";
+import { Episode } from "../types/Interfaces";
 
 interface PlayerState {
   episode: Episode;

@@ -14,7 +14,7 @@ import {
   PodcastSearchRequest,
   EpisodeSearchRequest,
   editTranscriptLinesRequest,
-} from "../utilities/Requests";
+} from "../types/Requests";
 import {
   BaseResponse,
   CreatePodcastResponse,
@@ -32,7 +32,7 @@ import {
   SearchEpisodeResponse,
   GetTranscriptResponse,
   GetTranscriptTextResponse,
-} from "../utilities/Responses";
+} from "../types/Responses";
 
 export default class PodcastHelper {
   static getUserProfile() {
@@ -774,7 +774,7 @@ export default class PodcastHelper {
    * @returns A GetTranscriptResponse object with the server's response.
    */
   public static getTranscript = async (
-    episodeId
+    episodeId,
   ): Promise<GetTranscriptResponse> => {
     const options = {
       method: "GET",
