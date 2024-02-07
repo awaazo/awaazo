@@ -15,7 +15,7 @@ import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../types/Interfaces";
 import router from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const MyPlaylist = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);

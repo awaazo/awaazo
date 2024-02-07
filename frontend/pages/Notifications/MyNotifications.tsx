@@ -5,7 +5,7 @@ import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Box, Button, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const NotificationsPage = () => {
   const router = useRouter();

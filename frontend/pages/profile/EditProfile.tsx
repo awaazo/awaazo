@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import ChangePassWordForm from "../../components/profile/MyProfile/ChangePasswordForm";
 import GenreSelector from "../../components/tools/GenreSelector";
 import { FaKey } from 'react-icons/fa';
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const EditProfile = () => {
   const [bio, setBio] = useState("");

@@ -6,7 +6,7 @@ import MyEpisodes from "../../components/profile/MyProfile/MyEpisodes";
 import Podcasts from "../../components/profile/MyProfile/MyPodcasts";
 import MyPlaylists from "../../components/profile/MyProfile/MyPlaylists";
 
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const MyProfile = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });

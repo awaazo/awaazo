@@ -6,7 +6,7 @@ import { UserMenuInfo, Podcast } from "../../types/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const Creatorhub = () => {
   // Page refs

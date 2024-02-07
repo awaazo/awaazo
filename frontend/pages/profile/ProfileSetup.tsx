@@ -8,7 +8,7 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserMenuInfo } from "../../types/Interfaces";
 import ImageAdder from "../../components/tools/ImageAdder";
 import GenreSelector from "../../components/tools/GenreSelector";
-import withAuth from "../../utilities/AuthHOC";
+import withAuth from "../../utilities/authHOC";
 
 const ProfileSetup: React.FC = () => {
   const mainPage = "/";
