@@ -173,5 +173,7 @@ export interface GetMetricsResponse extends BaseResponse {
 //#endregion
 
 export interface GetChatbotResponse extends BaseResponse {
-  chatbot: Chatbot;
+  episodeId:string;
+  userId:string;
+  messages: Chatbot[];
 }

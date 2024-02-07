@@ -1,47 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Box, IconButton, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar, Flex } from "@chakra-ui/react";
 import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
-import { IoIosCloseCircle } from "react-icons/io";
+import { IoIosCloseCircle, IoMdSend } from "react-icons/io";
+import ChatbotHelper from "../../helpers/ChatbotHelper";
 import { useChatBot } from "../../utilities/ChatBotContext";
-import { IoMdSend } from "react-icons/io";
-
-const fetchChatGPTResponse = async (userMessage) => {
-  const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
-  // Check if the API key is present
-  if (!API_KEY) {
-    console.error("OpenAI API key not found. Make sure to set it in your .env.local file.");
-  }
-
-  const systemMessage = {
-    role: "system",
-    content: "Answer the question breifly and shortly",
-  };
-  const apiRequestBody = {
-    model: "gpt-3.5-turbo",
-    messages: [systemMessage, { role: "user", content: userMessage }],
-    max_tokens: 50,
-  };
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(apiRequestBody),
-  });
-  const data = await response.json();
-  return data.choices[0].message.content;
-};
 
 const ChatBot = () => {
   const { state, dispatch } = useChatBot();
-  const [isOpen, setIsOpen] = useState(state.isOpen);
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  useEffect(() => {
-    console.log("Current Episode ID:", state.currentEpisodeId);
+
+  const fetchMessages = useCallback(async () => {
+    if (!state.currentEpisodeId) return;
+
+    try {
+      const response = await ChatbotHelper.getEpisodeChat(state.currentEpisodeId, 1, 10);
+      setMessages(response.messages || []);
+      console.log("Messages fetched:", response.messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
   }, [state.currentEpisodeId]);
+
+  useEffect(() => {
+    setIsOpen(state.isOpen);
+    fetchMessages();
+  }, [state.isOpen, state.currentEpisodeId, fetchMessages]);
 
   const toggleChatBot = () => {
     const newIsOpen = !isOpen;
@@ -50,24 +35,27 @@ const ChatBot = () => {
   };
 
   const sendMessage = async () => {
-    if (newMessage.trim()) {
-      const updatedMessages = [...messages, { text: newMessage, isBot: false }];
-      setMessages(updatedMessages);
-      setNewMessage("");
-      const botResponse = await fetchChatGPTResponse(newMessage);
+    if (!newMessage.trim()) return;
 
-      const updatedMessagesWithBot = [...updatedMessages, { text: botResponse, isBot: true }];
-      setMessages(updatedMessagesWithBot);
+    try {
+      await ChatbotHelper.addEpisodeChat(state.currentEpisodeId, newMessage);
+      setNewMessage("");
+      console.log("Message sent:", newMessage);
+      fetchMessages();
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
-  const handlePredefinedQuestionClick = (question) => {
-    setNewMessage(question);
+
+  const handlePredefinedQuestionClick = (question) => setNewMessage(question);
+  const handleInputChange = (e) => setNewMessage(e.target.value);
+
+  const handleEnterPress = (e) => {
+    if (e.key === "Enter") sendMessage();
   };
-  React.useEffect(() => {
-    setIsOpen(state.isOpen);
-    console.log("current episode ID:" + state.currentEpisodeId);
-  }, [state.isOpen]);
+
   const playerBarHeight = "200px";
+
   return (
     <Box
       position="fixed"
@@ -83,8 +71,8 @@ const ChatBot = () => {
       bg="rgba(255, 255, 255, 0.04)"
       backdropFilter="blur(50px)"
       outline={"2px solid rgba(255, 255, 255, 0.06)"}
-      roundedTopLeft="30px"
-      roundedBottomLeft="30px"
+      roundedTopLeft="10px"
+      roundedBottomLeft="10px"
     >
       {isOpen && (
         <Box>
@@ -106,13 +94,13 @@ const ChatBot = () => {
           </Text>
           <VStack spacing={"20px"} overflowY="auto" height="calc(100% - 3rem)" paddingY="4" mt={"20px"}>
             {messages.map((message, index) => (
-              <Box key={index} alignSelf={message.isBot ? "flex-start" : "flex-end"} maxWidth="80%" fontWeight="bold" color={message.isBot ? "#ffffff" : "#8b8b8b"} borderRadius="lg">
+              <Box key={index} alignSelf={message.isPrompt? "flex-start" : "flex-end"} maxWidth="80%" fontWeight="bold" color={message.isPrompt ? "#ffffff" : "#8b8b8b"} borderRadius="lg">
                 <HStack alignItems="flex-start">
-                  {message.isBot && <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="28px" mr="5px" style={{ alignSelf: "flex-start" }} />}
-                  <Text fontSize="sm" mt={!message.isBot ? "4px" : "0px"}>
-                    {message.text}
+                  {message.isPrompt && <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="28px" mr="2px" style={{ alignSelf: "flex-start" }} />}
+                  <Text fontSize="sm" mt={!message.isPrompt ? "4px" : "0px"}>
+                    {message.message}
                   </Text>
-                  {!message.isBot && <Avatar src={"asdsad"} boxSize={"28px"} mr="5px" borderRadius="full" style={{ alignSelf: "flex-start" }} />}
+                  {!message.isPrompt && <Avatar src={message.avatarUrl} boxSize={"28px"} mr="5px" borderRadius="full" style={{ alignSelf: "flex-start" }} />}
                 </HStack>
               </Box>
             ))}
@@ -125,18 +113,18 @@ const ChatBot = () => {
                 <br />
                 Things you can ask:
               </Text>
-              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about food")}>
-                What is the timp stamp where they talked about food
+              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}>
+                What is the timp stamp where they talked about
               </Button>
-              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about Lasagna?")}>
-                What did the podcaster think about Lasagna?
+              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
+                What did the podcaster think about
               </Button>
             </VStack>
             <InputGroup>
               <Input
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Ask me anything about this episide..."
+                onChange={handleInputChange}
+                placeholder="Ask me anything about this episode..."
                 fontSize={"13px"}
                 bg="#3636363A"
                 borderRadius="45px"
@@ -145,11 +133,7 @@ const ChatBot = () => {
                 _focus={{ bg: "#181818", boxShadow: "none", borderColor: "brand.100" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    sendMessage();
-                  }
-                }}
+                onKeyDown={handleEnterPress}
               />
               <Button variant={"ghost"} width="3em" height="3em" rounded={"full"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage}>
                 <IoMdSend size={"30px"} />
