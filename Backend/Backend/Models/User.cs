@@ -46,10 +46,6 @@ public class User : BaseEntity
     [Required]
     public string Password { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Stripe Id for the customer
-    /// </summary>
-    public string StripeId { get; set; } = string.Empty;
 
     /// <summary>
     /// URL for user's PFP
