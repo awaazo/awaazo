@@ -46,6 +46,8 @@ public class AppDbContext : DbContext
 
 
     public virtual DbSet<Points> Points { get; set; }
+
+    public virtual DbSet<Withdrawals> Withdrawals { get; set; }
     
     /// <summary>
     /// Maps to the Soundex function in the database.
