@@ -36,6 +36,6 @@ public interface ISocialService
     // Points
     public Task<string> GiftPoints(int quantity, Guid episodeId, User user);
 
-    public Task<bool> ConfirmPaymentWebhook(HttpContext httpContext);
+    public Task<bool> ConfirmPointPayment(Guid pointId);
 
 }

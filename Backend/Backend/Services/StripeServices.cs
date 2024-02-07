@@ -18,7 +18,8 @@ namespace Backend.Services
         }
         public async Task<string> CreatePaymentSession(int points,Guid pointId)
         {
-
+            Dictionary<string, string> meta = new Dictionary<string, string>();
+            meta.Add("id", pointId.ToString());
             var options = new SessionCreateOptions()
             {
 
@@ -41,9 +42,9 @@ namespace Backend.Services
 
                 },
                 Mode = "payment",
-                SuccessUrl = _configuration["jwt:Audience"],
-                CancelUrl = _configuration["jwt:Audience"],
-                ClientReferenceId = pointId.ToString()
+                SuccessUrl = _configuration["jwt:Audience"]+"/success/?pointId="+pointId,
+                CancelUrl = _configuration["jwt:Audience"]+"/failure",
+                Metadata = meta
                
             };
 

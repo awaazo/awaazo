@@ -542,51 +542,42 @@ public class SocialService : ISocialService
         Guid PointId = Guid.NewGuid();
         
         await _db.Points.AddAsync(new Points { Id = PointId, EpisodeId = episodeId, UserId = user.Id, PointCount = points, Amount = points * POINT_CONVERSION });
-
+        
+        // Save Changes to the DB
+        await _db.SaveChangesAsync();
+        
         // Create a stripe payment link for user
-       
         return await _stripeServices.CreatePaymentSession(points, PointId);
 
     }
 
-    public async Task<bool> ConfirmPaymentWebhook(HttpContext httpContext)
+    /// <summary>
+    /// Get the Point Id and confirm the payment
+    /// </summary>
+    /// <param name="pointId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+
+    public async Task<bool> ConfirmPointPayment(Guid pointId)
     {
-        var json = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
-        var stripeEvent = EventUtility.ConstructEvent(json,
-                    httpContext.Request.Headers["Stripe-Signature"], _configuration["jwt:PublishableKey"] );
+        // Find the point associated with payment
+        Points? points = await _db.Points.FirstOrDefaultAsync(u => u.Id == pointId);
 
-        // check if payment have succeded
-        if(stripeEvent.Type == Events.PaymentIntentSucceeded)
+        // Check if the state is illegal or not
+        if (points == null)
         {
-            Session? session = stripeEvent.Data.Object as Session;
-            if(session == null)
-            {
-                throw new Exception("Illegal State");
-            }
-            Points? points = await _db.Points.FirstOrDefaultAsync(u => u.Id == Guid.Parse(session.ClientReferenceId));
-
-            // Check if the state is illegal or not
-            if (points == null)
-            {
-                throw new Exception("Illegal State");
-            }
-
-            // if all checks pass Update the success bool to true
-            points.Success = true;
-
-            // Update the boolean value
-            _db.Update(points);
-
-            // Save changes to the Database
-            return await _db.SaveChangesAsync() > 0;
+            throw new Exception("Illegal State");
         }
 
-        return false;
-        
+        // if all checks pass Update the success bool to true
+        points.Success = true;
 
+        // Update the boolean value
+        _db.Update(points);
+
+        // Save changes to the Database
+        return await _db.SaveChangesAsync() > 0;
     }
-
-
 
     #endregion
 }

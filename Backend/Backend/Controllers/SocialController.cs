@@ -311,7 +311,14 @@ public class SocialController : ControllerBase
 
 
     #region Points
-    [HttpPost("{episodeId}/points")]    
+
+    /// <summary>
+    /// Generate link to Gift the Podcaster
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/giftpoints")]    
     public async Task<IActionResult> GiftPoints(Guid episodeId,int points)
     {
         try
@@ -333,17 +340,30 @@ public class SocialController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
-    [HttpPost("webhook/points")]
-    [AllowAnonymous]
-    public async Task<IActionResult> ConfirmPayment()
+    /// <summary>
+    /// Confirm payment after successfully processed by stripe
+    /// </summary>
+    /// <param name="pointId"></param>
+    /// <returns></returns>
+    [HttpPost("{pointId}/confirmPoints")]
+    public async Task<IActionResult> ConfirmPayment(Guid pointId)
     {
         try
         {
   
             this.LogDebugControllerAPICall(_logger, callerName: nameof(ConfirmPayment));
 
-            return Ok(await _socialService.ConfirmPaymentWebhook(HttpContext));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+
+
+            return Ok(await _socialService.ConfirmPointPayment(pointId) ? "Payment Confirmed" : "Payment Not Confirmed");
 
         }
         catch(Exception e)
