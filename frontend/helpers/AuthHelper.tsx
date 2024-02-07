@@ -1,11 +1,7 @@
 import axios from "axios";
 import { BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../utilities/Responses";
 import EndpointHelper from "./EndpointHelper";
-import RestHelper, { UserInfo } from "./RestHelper";
 import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../utilities/Requests";
-import { data } from "cypress/types/jquery";
-import { UserMenuInfo } from "../utilities/Interfaces";
-
 
 
 /**
@@ -208,6 +204,82 @@ export default class AuthHelper {
             }
         }
     }
+
+    public static forgotPassword = async (email: string): Promise<BaseResponse> => {
+        // Create the request options.
+        const options = {
+            method: 'POST',
+            url: EndpointHelper.getForgotPasswordEndpoint(),
+            headers: {
+                accept: '*/*',
+                "Content-Type": "application/json" // Ensure this line is correctly set
+            },
+            data: JSON.stringify({ email }), // Make sure the email is correctly formatted as JSON
+            withCredentials: true
+        };
+        try {
+            console.debug("Sending the following getForgotPasswordEndpoint...");
+            console.debug(options);
+    
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+    
+            console.debug("Received the following getForgotPasswordEndpoint...");
+            console.debug(requestResponse);
+    
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText
+            };
+        } catch (error) {
+            console.error("Error in forgotPassword:", error);
+            return {
+                status: error.response ? error.response.status : 500,
+                message: error.response ? error.response.statusText : "An unknown error occurred"
+            };
+        }
+    }
+
+    public static checkEmail = async (email: string): Promise<BaseResponse> => {
+        // Create the request options.
+        const options =
+        {
+            method: 'GET',
+            url: EndpointHelper.getCheckEmailEndpoint(),
+            data: { email: email },
+            headers:
+            {
+                accept: '*/*',
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        }
+        try {
+            console.debug("Sending the following getCheckEmailEndpoint...");
+            console.debug(options);
+
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following getCheckEmailEndpoint...");
+            console.debug(requestResponse);
+
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText
+            }
+        }
+        catch (error) {
+
+            return {
+                status: error.response.status,
+                message: error.response.statusText
+            }
+        }
+    }
+
 
     /**
      * Sends a Google SSO request to the backend.

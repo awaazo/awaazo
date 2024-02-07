@@ -134,7 +134,7 @@ const Login: React.FC = () => {
           </ButtonGroup>
 
           <Text color="gray.400" fontSize="sm" mb={1} align={"left"}>
-            <Box as="a" href="/auth/ForgotPassword" mb={1}>
+            <Box as="a" href="/auth/ForgotPassword" mb={1} color={"brand.100"} fontWeight="semibold">
               Forgot password?
             </Box>
           </Text>

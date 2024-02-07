@@ -58,8 +58,22 @@ export default class EndpointHelper {
    */
   static getGoogleSSOEndpoint = () => {
     return this.getBackendAddress() + "/auth/googleSSO";
-    return this.getBackendAddress() + "/auth/googleSSO";
   };
+
+  /**
+   * Returns the password reset endpoint.
+   * @returns The Password Reset Endpoint
+   * */
+
+  static getForgotPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/auth/sentForgotPasswordEmail";
+  };
+
+  static getCheckEmailEndpoint = () => {
+    return this.getBackendAddress() + "/auth/CheckEmail";
+  }
+
+
 
   // --------------------------------
   // PROFILE ENDPOINTS
