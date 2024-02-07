@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { SessionProvider } from "next-auth/react";
 import { MemoryRouter } from "react-router-dom";
-import Signup from "../pages/auth/Signup";
+import Signup from "../components/auth/Signup";
 import "jest-webextension-mock";
 
 // Mock Next.js' router to prevent issues
