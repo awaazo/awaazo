@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import SocialHelper from "../../helpers/SocialHelper";
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 
 const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
   const [likes, setLikes] = useState(initialLikes);
@@ -56,7 +56,7 @@ const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
       </Button>
     </Tooltip>
     {showLoginPrompt && (
-      <LoginPrompt
+      <AuthPrompt
         isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
         infoMessage="To like an Episode, you must be logged in. Please log in or create an account."

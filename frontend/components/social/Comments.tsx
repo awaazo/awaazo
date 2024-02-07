@@ -6,7 +6,7 @@ import { FaComments, FaClock, FaPaperPlane, FaTrash, FaReply } from "react-icons
 import { Comment, User } from "../../types/Interfaces";
 import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./Likes";
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 
 // CommentComponent is a component that displays comments and allows users to add new comments, reply to comments, and like/unlike comments
 const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
@@ -226,7 +226,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments, showCount }) => {
         </ModalContent>
       </Modal>
       {showLoginPrompt && (
-        <LoginPrompt
+        <AuthPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
           infoMessage="Login To add a Reply or a Comment."

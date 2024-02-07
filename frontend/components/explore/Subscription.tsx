@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import SubscribeHelper from "../../helpers/SubscribeHelper";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { BaseResponse } from "../../types/Responses";
-
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 
 const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, currentUserID }) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
@@ -87,7 +86,7 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
         </Button>
       </Tooltip>
       {showLoginPrompt && (
-        <LoginPrompt
+        <AuthPrompt
           isOpen={true}
           onClose={() => setShowLoginPrompt(false)}
           infoMessage="To Subscribe to a Podcast, you must be logged in. Please log in or create an account."

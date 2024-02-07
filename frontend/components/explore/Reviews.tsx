@@ -18,7 +18,7 @@ import {
   PodcastRatingRequest,
   PodcastReviewRequest,
 } from "../../types/Requests";
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
 // Component for displaying and adding reviews
@@ -226,7 +226,7 @@ const Reviews = ({ podcast , currentUserID, updatePodcastData }) => {
           <Text>(No reviews have been posted yet)</Text>
         </Flex>
       )} {showLoginPrompt && (
-        <LoginPrompt
+        <AuthPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
           infoMessage="You must be logged in to write a Review. Please log in or create an account."

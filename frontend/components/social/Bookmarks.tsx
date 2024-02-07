@@ -4,9 +4,8 @@ import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
 import { convertTime } from "../../utilities/CommonUtils";
 import { EpisodeBookmarkRequest } from "../../types/Requests";
-
 import AuthHelper from "../../helpers/AuthHelper";
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 
 
 
@@ -127,7 +126,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
       )}
 
       {showLoginPrompt && (
-        <LoginPrompt
+        <AuthPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
           infoMessage="Login to add a Bookmark"
