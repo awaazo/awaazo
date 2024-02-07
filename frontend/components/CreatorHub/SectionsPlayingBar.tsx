@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, IconButton, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Text, Menu, MenuButton, MenuList, MenuItem, Tooltip, Icon, Button, HStack } from "@chakra-ui/react";
 import { FaPlay, FaPause} from "react-icons/fa";
 import EndpointHelper from "../../helpers/EndpointHelper";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { TbKeyframeFilled } from "react-icons/tb";
 
 const SectionsPlayingBar = ({ podcastId, episodeId, sections, onEndChange, isAdding }) => {

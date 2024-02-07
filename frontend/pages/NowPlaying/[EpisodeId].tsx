@@ -10,7 +10,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { sliderSettings } from "../../utilities/CommonUtils";
+import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
 

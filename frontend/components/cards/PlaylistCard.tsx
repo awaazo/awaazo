@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { RiPlayList2Fill } from "react-icons/ri";
 import Link from "next/link";
 

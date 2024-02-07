@@ -25,7 +25,7 @@ import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
 import Comments from "../social/Comments";
 import Likes from "../social/Likes";
 import Bookmarks from "../social/Bookmarks";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";

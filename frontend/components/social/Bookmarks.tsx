@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { Button, Icon, Tooltip, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, Textarea, VStack, Text, Input, useBreakpointValue } from "@chakra-ui/react";
 import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { EpisodeBookmarkRequest } from "../../types/Requests";
 import AuthHelper from "../../helpers/AuthHelper";
 import AuthPrompt from "../auth/AuthPrompt";

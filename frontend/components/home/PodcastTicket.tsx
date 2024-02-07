@@ -2,7 +2,7 @@ import { Box, VStack, Image, Text, IconButton, useColorModeValue, HStack, Icon }
 import { FaPlay, FaClock, FaHeart } from "react-icons/fa";
 import { Episode } from "../../types/Interfaces";
 import { usePlayer } from "../../utilities/PlayerContext";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
   const { thumbnailUrl, episodeName, podcastName, duration, likes } = episode;

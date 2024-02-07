@@ -5,7 +5,7 @@ import SectionsPlayingBar from "./SectionsPlayingBar";
 import SectionHelper from "../../helpers/SectionHelper";
 import { Section } from "../../types/Interfaces";
 import { SectionAddRequest } from "../../types/Requests";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 
 const ManageSections = ({ episodeId, podcastId }) => {
   const [sections, setSections] = useState<Section[]>(null);

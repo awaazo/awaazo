@@ -30,7 +30,7 @@ import { Episode, Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";

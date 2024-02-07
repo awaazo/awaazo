@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import SectionHelper from "../../helpers/SectionHelper";
 import { Episode } from "../../types/Interfaces";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 
 interface SectionsProps {

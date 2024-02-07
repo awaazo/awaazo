@@ -1,6 +1,6 @@
 import { Box, IconButton, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import {convertTime} from '../../utilities/CommonUtils'
+import {convertTime} from '../../utilities/commonUtils'
 
 const AnnotationList = ({ annotations, deleteAnnotation }) => {
   return (

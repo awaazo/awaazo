@@ -5,7 +5,7 @@ import { BsExplicitFill } from "react-icons/bs";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/Likes";
 import CommentComponent from "../social/Comments";
-import { convertTime } from "../../utilities/CommonUtils";
+import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
 
 // Component to display an episode

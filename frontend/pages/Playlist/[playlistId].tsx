@@ -13,7 +13,7 @@ import type { Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../../components/cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
-import { formatSecToDurationString } from "../../utilities/CommonUtils";
+import { formatSecToDurationString } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
