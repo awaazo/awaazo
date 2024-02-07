@@ -47,6 +47,7 @@ public class User : BaseEntity
     public string Password { get; set; } = string.Empty;
 
 
+
     /// <summary>
     /// URL for user's PFP
     /// </summary>

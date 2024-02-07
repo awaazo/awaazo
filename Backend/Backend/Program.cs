@@ -39,6 +39,8 @@ public class Program
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
         builder.Services.AddScoped<IAnnotationService, AnnotationService>();
+        builder.Services.AddScoped<IWalletServices, WalletServices>();
+
 
 
 
@@ -52,6 +54,8 @@ public class Program
         builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<IStripeServices, StripeServices>();
         StripeConfiguration.ApiKey = config["StripeOptions:SecretKey"];
+
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
