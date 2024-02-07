@@ -16,9 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AuthHelper from "../../helpers/AuthHelper";
-import { PodcastCreateRequest } from "../../utilities/Requests";
+import { PodcastCreateRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { UserMenuInfo } from "../../utilities/Interfaces";
+import { UserMenuInfo } from "../../types/Interfaces";
 import CreatePodcastHeader from "../../components/CreatePodcastHeader";
 import ImageAdder from "../../components/tools/ImageAdder";
 import GenreSelector from "../../components/tools/GenreSelector";

@@ -14,7 +14,7 @@ import {
   useBreakpointValue,
   Button,
 } from "@chakra-ui/react";
-import { UserProfile } from "../../../utilities/Interfaces";
+import { UserProfile } from "../../../types/Interfaces";
 import { useSession } from "next-auth/react";
 
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";

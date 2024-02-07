@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
+import { Box, Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
 import Logo from "../../public/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { RegisterRequest } from "../../utilities/Requests";
+import { RegisterRequest } from "../../types/Requests";
 import { FaGoogle } from "react-icons/fa";
 import { isEmail } from "validator";
 
@@ -34,7 +34,7 @@ const SignUp: React.FC = () => {
     return age;
   };
   const age = calculateAge(dateOfBirth);
-  
+
   const handleGoogleSignUp = async () => {
     setGoogleSignUpClicked(true);
     signIn("google");
@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignUpError(null);
-    
+
     if (!email || !isEmail(email)) {
       setSignUpError("Please enter a valid email address.");
       return;
@@ -66,7 +66,7 @@ const SignUp: React.FC = () => {
       setSignUpError("Passwords do not match.");
       return;
     }
-    
+
     if (age < 8) {
       setSignUpError("You're too young to be on Awaazo, come back in a couple of years!");
       return;
@@ -75,7 +75,7 @@ const SignUp: React.FC = () => {
       setSignUpError("Centenarian? Impressive! But Awaazo is for the young at heart.");
       return;
     }
-    
+
     const registerRequest: RegisterRequest = {
       email: email,
       password: password,
@@ -83,8 +83,6 @@ const SignUp: React.FC = () => {
       dateOfBirth: dateOfBirth,
       gender: "None",
     };
-
-    
 
     try {
       const response = await AuthHelper.authRegisterRequest(registerRequest);
@@ -99,16 +97,16 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <Flex minHeight="100vh" align="center" justify="center">
-      <Box p={6} bg={"rgba(0, 0, 0, 0.3)"} border="3px solid rgba(255, 255, 255, 0.05)" backdropFilter="blur(10px)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.2)" borderRadius="3xl" maxW="400px" w="full" textAlign="center">
+    <>
+      <Container variant={"authBox"}>
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
-        <Text fontSize="lg" fontWeight="bold" color="white" mb={1} align={"left"} textColor={"brand.100"}>
+        <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
           Sign Up to Awaazo
         </Text>
-        <Text fontSize="sm" color="gray.400" mb={6} align={"left"}>
-          Join Awaazo and transform podcasting with AI brilliance Create, Connect, Captivate!
+        <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
+          Join Awaazo and transform podcasting.
         </Text>
 
         {signUpError && (
@@ -144,7 +142,7 @@ const SignUp: React.FC = () => {
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
-            <Button id="loginBtn" type="submit" color="black" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Button id="loginBtn" type="submit" color="white" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
               Sign Up
             </Button>
 
@@ -170,8 +168,8 @@ const SignUp: React.FC = () => {
             </Text>
           </Stack>
         </form>
-      </Box>
-    </Flex>
+      </Container>
+    </>
   );
 };
 

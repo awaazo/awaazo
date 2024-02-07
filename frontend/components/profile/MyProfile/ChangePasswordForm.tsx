@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, FormControl, Heading, Input, InputGroup, Stack, Text } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
-import { ChangePasswordRequest } from "../../../utilities/Requests";
+import { ChangePasswordRequest } from "../../../types/Requests";
 
 const ChangePasswordForm: React.FC = () => {
   const [changePasswordError, setChangePasswordError] = useState<string | null>("");

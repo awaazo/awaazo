@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { EpisodeEditRequest } from "../../utilities/Requests";
+import { EpisodeEditRequest } from "../../types/Requests";
 
 /**
  * Component for editing an episode
