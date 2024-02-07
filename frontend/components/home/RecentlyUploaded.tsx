@@ -8,7 +8,7 @@ import {
   Spinner,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { Episode, Podcast } from "../../utilities/Interfaces";
+import { Episode } from "../../types/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastTicket from "./PodcastTicket";
 
