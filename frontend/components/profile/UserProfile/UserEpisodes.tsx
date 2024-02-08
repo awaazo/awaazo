@@ -19,7 +19,7 @@ import {
 import NextLink from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
-import { Podcast, Episode } from "../../../utilities/Interfaces";
+import { Podcast, Episode } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import EpisodeCard from "../../cards/EpisodeCard";
 import { usePlayer } from "../../../utilities/PlayerContext";

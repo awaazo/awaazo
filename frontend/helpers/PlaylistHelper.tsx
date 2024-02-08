@@ -1,7 +1,7 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse } from "../utilities/Responses";
-import { PlaylistCreateRequest, PlaylistEditRequest } from "../utilities/Requests";
+import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse } from "../types/Responses";
+import { PlaylistCreateRequest, PlaylistEditRequest } from "../types/Requests";
 
 export default class PlaylistHelper {
   static getUserProfile() {

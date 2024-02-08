@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Playlist } from "../../../utilities/Interfaces";
+import { Playlist } from "../../../types/Interfaces";
 import PlaylistHelper from "../../../helpers/PlaylistHelper";
 import PlaylistCard from "../../cards/PlaylistCard";
 

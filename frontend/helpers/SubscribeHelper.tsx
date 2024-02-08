@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import EndpointHelper from '../helpers/EndpointHelper';
-import { BaseResponse } from '../utilities/Responses';
+import { BaseResponse } from '../types/Responses';
 import axios from 'axios';
 
 export default class SubscribeHelper{
