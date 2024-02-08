@@ -89,7 +89,7 @@ const subscribeComponent = ({ PodcastId, initialIsSubscribed, podcasterId, curre
         <AuthPrompt
           isOpen={true}
           onClose={() => setShowLoginPrompt(false)}
-          infoMessage="To Subscribe to a Podcast, you must be logged in. Please log in or create an account."
+          infoMessage="Login to Subscribe to a Podcast."
         />
       )}
     </>
