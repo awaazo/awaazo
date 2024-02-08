@@ -63,17 +63,14 @@ const ChatBot = () => {
     if (e.key === "Enter") sendMessage();
   };
 
-  const playerBarHeight = "200px";
-
   return (
     <Box
       position="fixed"
       right="0"
-      top="4em"
+      top="5em"
       transition="width 0.2s ease-in-out"
-      bottom={playerBarHeight}
       w={isOpen ? "32%" : "0"}
-      h={`calc(100vh - ${playerBarHeight})`}
+      h="calc(88vh - 5em)"
       overflow="hidden"
       p={isOpen ? "20px" : "0"}
       zIndex="1000"
@@ -95,39 +92,38 @@ const ChatBot = () => {
             Episode Title
           </Text>
           <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
-            Episode Title
+            Episode Title :{state.currentEpisodeId}
           </Text>
-          {/* testing episode ID: to remove during production */}
           <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
             Episode ID: {state.currentEpisodeId}
           </Text>
-          <VStack spacing={"20px"} overflowY="auto" height="calc(100% - 3rem)" paddingY="4" mt={"20px"}>
+          <VStack spacing={"1em"} overflowY="auto" height="50vh"  paddingY="4" mt={"20px"}>
             {messages.map((message, index) => (
-              <Box key={index} alignSelf={message.isPrompt? "flex-start" : "flex-end"} maxWidth="80%" fontWeight="bold" color={message.isPrompt ? "#ffffff" : "#8b8b8b"} borderRadius="lg">
+              <Box key={index} alignSelf={message.isPrompt?  "flex-end": "flex-start"} maxWidth="90%"  color={message.isPrompt ?"#8b8b8b" : "#ffffff" } borderRadius="lg">
                 <HStack alignItems="flex-start">
-                  {message.isPrompt && <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="28px" mr="2px" style={{ alignSelf: "flex-start" }} />}
+                  {!message.isPrompt && <Avatar src={awaazo_bird_aihelper_logo.src}  w="30px" h="30px" boxSize={"30px"} rounded={""}  borderRadius="full" />}
                   <Text fontSize="sm" mt={!message.isPrompt ? "4px" : "0px"}>
                     {message.message}
                   </Text>
-                  {!message.isPrompt && <Avatar src={message.avatarUrl} boxSize={"28px"} mr="5px" borderRadius="full" style={{ alignSelf: "flex-start" }} />}
+                  {message.isPrompt &&  <Avatar src={message.avatarUrl}  w="30px" h="30px" mr="2px" style={{ alignSelf: "flex-start" }} /> }
                 </HStack>
               </Box>
             ))}
           </VStack>
 
           <Box position="absolute" bottom="0" left="0" right="0" p="30px" borderColor="gray.700">
-            <VStack spacing="2" align="center" padding="2em">
-              <Text textAlign="center" fontSize={"14px"} padding={"1em"}>
-                Chat with your host, AUTHORNAME.
-                <br />
+            <VStack spacing="2" align="left" pb="1em">
+              <Text textAlign="left" fontSize={"14px"} pb="0.3em">
                 Things you can ask:
               </Text>
-              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}>
-                What is the timp stamp where they talked about
-              </Button>
-              <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"normal"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
-                What did the podcaster think about
-              </Button>
+              <HStack spacing={4} overflowX="auto">
+                <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}>
+                  What is the timp stamp where they talked about
+                </Button>
+                <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
+                  What did the podcaster think about
+                </Button>
+              </HStack>
             </VStack>
             <InputGroup>
               <Input
@@ -137,15 +133,14 @@ const ChatBot = () => {
                 fontSize={"13px"}
                 bg="#3636363A"
                 borderRadius="45px"
-                p="30px"
                 border={"2px solid rgba(255, 255, 255, 0.05)"}
                 _focus={{ bg: "#181818", boxShadow: "none", borderColor: "brand.100" }}
                 _placeholder={{ color: "#8b8b8b" }}
                 pr={"50px"}
                 onKeyDown={handleEnterPress}
               />
-              <Button variant={"ghost"} width="3em" height="3em" rounded={"full"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage}>
-                <IoMdSend size={"30px"} />
+              <Button variant={"ghost"} width="3em" height="3em" rounded={"full"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
+                <IoMdSend />
               </Button>
             </InputGroup>
           </Box>

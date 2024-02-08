@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
-import { Chatbot } from "../types/Interfaces";
+import { Chatbot, Episode } from "../types/Interfaces";
 
 interface ChatBotState {
   isOpen: boolean;
   currentEpisodeId: string | null;
   Chatbot: Chatbot[];
+  episode: Episode;
 }
 
 interface ChatBotContextProps {
@@ -18,6 +19,7 @@ const initialState: ChatBotState = {
   isOpen: false,
   currentEpisodeId: null,
   Chatbot: [] as Chatbot[],
+  episode: null,
 };
 
 interface ChatBotProviderProps {
