@@ -162,12 +162,6 @@ public class Program
             builder.UseMiddleware<ValidateUser>();
         });
 
-        /* Add middleware to check if the referer is allowed. This makes sure that only 
-         the python server can access the backend.*/
-        app.UseWhen(c => c.Request.Path.StartsWithSegments("/podcast/updateTranscriptionStatus"), builder =>
-        {
-            builder.UseMiddleware<RefererMiddleware>();
-        });
 
         app.MapControllers();
 

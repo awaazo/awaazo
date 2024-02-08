@@ -2,43 +2,7 @@ import json
 import os
 import whisperx
 import torch
-import requests
 
-def update_transcription_status(episode_id):
-    """
-    Update the transcription status for an episode by sending a POST request to the podcast service.
-
-    Parameters:
-        episode_id (str): The id of the episode to update the transcription status for.
-
-    Returns:
-        None
-    """
-    try:
-        print('------------ Updating Transcription Status ------------')
-
-        # Define the endpoints
-        endpoints = ['localhost:32773', 'backend:32773','localhost:7126']
-        protocols = ['http', 'https']
-
-        # Go through each endpoint and protocol
-        for endpoint in endpoints:
-            for prot in protocols:
-                try:
-                    # Send a POST request to the podcast service to update the transcription status
-                    response = requests.post(f'{prot}://{endpoint}/podcast/updateTranscriptionStatus/{episode_id}',data='', headers={'Accept': '*/*', 'Referer': 'http://localhost:8500'}, verify=False)
-                    
-                    # If the status code is 200, the transcription status was updated successfully
-                    if response.status_code == 200:
-                        print('Transcription status updated')
-                        return
-                    else:
-                        print(f'Error updating transcription status: {response.status_code}')
-                
-                except Exception as e:
-                    print(f"Error processing transcript 1")
-    except Exception as e:
-        print(f"Error processing transcript: {e}")
 
 def process_transcript(transcript):
     """
@@ -168,7 +132,3 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
             f.write('Error\n')
             f.write(str(e))
             f.close()
-    finally:
-        # Update the transcription status
-        update_transcription_status(episode_id)
-

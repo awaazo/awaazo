@@ -843,30 +843,7 @@ public class PodcastController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Updates the status of the transcript of an episode.
-    /// </summary>
-    /// <param name="episodeId">ID of the episode for which the transcript status is to be updated.</param>
-    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
-    /// <remarks>
-    /// This function can only be called by the python backend.
-    /// </remarks>
-    [HttpPost("updateTranscriptionStatus/{episodeId}")]
-    [AllowAnonymous]
-    public async Task<ActionResult> UpdateTranscriptionStatus(Guid episodeId)
-    {
-        try
-        {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(UpdateTranscriptionStatus));
 
-            return await _podcastService.UpdateTranscriptionStatusAsync(episodeId) ? Ok("Transcript status updated") : Ok("Failed to update transcript status");
-        }
-        catch (Exception e)
-        {
-            this.LogErrorAPICall(_logger, e: e, callerName: nameof(UpdateTranscriptionStatus));
-            return BadRequest(e.Message);
-        }
-    }
 
     #endregion Transcript
 

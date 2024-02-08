@@ -562,7 +562,6 @@ public class PodcastService : IPodcastService
             ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
             CreatedAt = DateTime.Now,
-            IsTranscriptReady = false,
         };
 
         // Check if the episode is explicit and the podcast is not
@@ -589,10 +588,7 @@ public class PodcastService : IPodcastService
 
             using var httpClient = new HttpClient();
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var resp  = await httpClient.PostAsync(url, content);
-
-            if (resp.StatusCode == HttpStatusCode.OK)
-                episode.TranscriptStatus = TranscriptStatus.InProgress;
+            await httpClient.PostAsync(url, content);
         }
         catch (Exception)
         {
@@ -636,7 +632,6 @@ public class PodcastService : IPodcastService
         episode.Description = request.Description;
         episode.IsExplicit = request.IsExplicit;
         episode.UpdatedAt = DateTime.Now;
-        episode.IsTranscriptReady = false;
 
         // Update the episode audio if it was changed
         if (request.AudioFile != null)
@@ -679,10 +674,7 @@ public class PodcastService : IPodcastService
 
                 using var httpClient = new HttpClient();
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var resp = await httpClient.PostAsync(url, content);
-
-                if (resp.StatusCode == HttpStatusCode.OK)
-                    episode.TranscriptStatus = TranscriptStatus.InProgress;
+                await httpClient.PostAsync(url, content);
             }
             catch (Exception)
             {
@@ -840,7 +832,10 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
             .Include(e => e.Comments).ThenInclude(c => c.Likes)
-            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+            .Where(e => e.Id == episodeId)
+            .FirstOrDefaultAsync(e => e.Id == episodeId)
+             ?? throw new Exception("Episode does not exist for the given ID.");
+
 
         // Return the episode response
         return new EpisodeResponse(episode, domainUrl);
@@ -1089,41 +1084,6 @@ public class PodcastService : IPodcastService
         return true;
     }
 
-
-    /// <summary>
-    /// Updates the transcription status for the given episode.
-    /// </summary>
-    /// <param name="episodeId">Id of the episode for which to update the transcription status</param>
-    /// <returns>True if the transcription status was updated successfully, false otherwise</returns>  
-    /// <exception cref="Exception"></exception>
-    public async Task<bool> UpdateTranscriptionStatusAsync(Guid episodeId)
-    {
-        // Check if the episode exists, if it does retrieve it.
-        Episode episode = await _db.Episodes
-        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
-
-        // Get the transcription status
-        TranscriptStatus status = GetTranscriptStatus(episodeId, episode.PodcastId);
-
-        // If the transcript is not ready, or the transcript file does not exist, update the transcript status
-        if (status != TranscriptStatus.Ready || !File.Exists(GetTranscriptPath(episodeId, episode.PodcastId)))
-        {
-            // Set the status
-            episode.TranscriptStatus = status;
-            episode.IsTranscriptReady = false;
-        }
-        else
-        {
-            // If the transcription is successful, set the status to ready
-            episode.TranscriptStatus = TranscriptStatus.Ready;
-            episode.IsTranscriptReady = true;
-        }
-
-        // Update the episode in the database
-        _db.Episodes.Update(episode);
-        return await _db.SaveChangesAsync() > 0;
-    }
-
     /// <summary>
     /// Generates a transcript for the given episode.
     /// </summary>
@@ -1151,20 +1111,12 @@ public class PodcastService : IPodcastService
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             var resp = await httpClient.PostAsync(url, content);
 
-            if(resp.StatusCode == HttpStatusCode.OK)
-            {
-                // Update the episode's transcript status
-                episode.TranscriptStatus = TranscriptStatus.InProgress;
-                episode.IsTranscriptReady = false;
-                _db.Episodes.Update(episode);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            else
-                throw new Exception("An error occured while generating the transcript: "+resp.Content.ReadAsStringAsync().Result);
+            return resp.StatusCode == HttpStatusCode.OK;
         }
         else
             throw new Exception("User does not have permission to generate transcript for this episode.");
     }
+
 
 
     #endregion Transcription

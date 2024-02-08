@@ -39,7 +39,6 @@ public interface IPodcastService
     public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
     public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
     public Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user);
-    public Task<bool> UpdateTranscriptionStatusAsync(Guid episodeId);
 
 
     // EPISODE CHAT
