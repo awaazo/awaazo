@@ -24,17 +24,17 @@ RUN apt-get clean \
 RUN python3 -m venv venv && . venv/bin/activate 
 
 # Install PyTorch dependencies for GPU
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 && pip3 purge
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 && pip cache purge
 
 
 # Install all dependencies
-RUN pip3 install -r requirements.txt && pip3 purge
+RUN pip3 install -r requirements.txt && pip cache purge
 
 # Install rvc dependencies
-RUN pip3 install -r rvc_service/requirements.txt && pip3 purge
+RUN pip3 install -r rvc_service/requirements.txt && pip cache purge
 
 # Install text_to_speech dependencies
-RUN pip3 install -r text_to_speech_service/requirements.txt && pip3 purge
+RUN pip3 install -r text_to_speech_service/requirements.txt && pip cache purge
 
 # Expose port 8000
 EXPOSE 8000
