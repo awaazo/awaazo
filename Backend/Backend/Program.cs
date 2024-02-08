@@ -117,12 +117,14 @@ public class Program
         });
 
 
+
+
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithOrigins("http://localhost:3000", "https://localhost:3000",
                 "http://localhost:3500", "https://localhost:3500",
-                "https://*.awaazo.com/*")
+                "https://*.awaazo.com/*","http://localhost:8500", "http://py:8000")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -159,6 +161,7 @@ public class Program
         {
             builder.UseMiddleware<ValidateUser>();
         });
+
 
         app.MapControllers();
 

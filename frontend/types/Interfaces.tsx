@@ -25,6 +25,8 @@ export interface Episode {
   releaseDate: Date;
   isExplicit?: boolean;
   playCount?: number;
+  isTranscriptionReady: boolean;
+  transcriptionStatus: string;
   likes: {
     count: number;
     isLiked: boolean;
