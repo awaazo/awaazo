@@ -1124,6 +1124,13 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Generates a transcript for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to generate the transcript</param>
+    /// <param name="user">User who is generating the transcript</param>
+    /// <returns>True if the transcript was generated successfully, false otherwise</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user)
     {
         // Check if the episode exists, if it does retrieve it.

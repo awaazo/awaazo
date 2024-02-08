@@ -35,7 +35,8 @@ public class EpisodeResponse
         if (includeComments) 
             Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
         PodcastName = e.Podcast.Name;
-
+        IsTranscriptReady = e.IsTranscriptReady;
+        TranscriptStatus = e.TranscriptStatus.ToString();
     }
     
     public Guid Id { get; set; } = Guid.Empty;
@@ -50,6 +51,16 @@ public class EpisodeResponse
     public string ThumbnailUrl { get; set; } = string.Empty;
     public int Likes { get; set; } = 0;
     
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public bool IsTranscriptReady { get; set; } = false;
+
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public string TranscriptStatus { get; set; } = "None";
+
     public List<CommentResponse> Comments { get; set; } = new();
 
     public string PodcastName { get; set; } = string.Empty;
