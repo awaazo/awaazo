@@ -24,8 +24,8 @@ import {
 } from "@chakra-ui/icons";
 import AuthHelper from "../../helpers/AuthHelper";
 import Notifications from "../notification/Notifications";
-import { UserMenuInfo } from "../../utilities/Interfaces";
-import { GoogleSSORequest } from "../../utilities/Requests";
+import { UserMenuInfo } from "../../types/Interfaces";
+import { GoogleSSORequest } from "../../types/Requests";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import { useRouter } from "next/router";
 

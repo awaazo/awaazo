@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Box, SimpleGrid, Flex, Text, VStack, useColorMode, useBreakpointValue } from "@chakra-ui/react";
-import { PodcastByTagsRequest } from "../../../utilities/Requests";
-import { Podcast } from "../../../utilities/Interfaces";
+import { PodcastByTagsRequest } from "../../../types/Requests";
+import { Podcast } from "../../../types/Interfaces";
 import { useRouter } from "next/router";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../../components/cards/PodcastCard";
