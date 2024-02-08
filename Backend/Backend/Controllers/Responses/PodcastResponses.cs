@@ -31,6 +31,7 @@ public class EpisodeResponse
         PlayCount = e.PlayCount;
         AudioUrl = domainUrl + string.Format("podcast/{0}/{1}/getAudio", e.PodcastId, e.Id);
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
+        TotalPoints = e.Points.Where(u => u.Success = true).Sum(u => u.PointCount);
         Likes = e.Likes.Count;
         if (includeComments) 
             Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
@@ -49,7 +50,8 @@ public class EpisodeResponse
     public string AudioUrl { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
     public int Likes { get; set; } = 0;
-    
+    public int TotalPoints { get; set; } = 0;
+
     public List<CommentResponse> Comments { get; set; } = new();
 
     public string PodcastName { get; set; } = string.Empty;
