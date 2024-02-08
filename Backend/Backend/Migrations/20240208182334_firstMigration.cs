@@ -219,8 +219,6 @@ namespace Backend.Migrations
                     Audio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<double>(type: "float", nullable: false),
-                    IsTranscriptReady = table.Column<bool>(type: "bit", nullable: false),
-                    TranscriptStatus = table.Column<int>(type: "int", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsExplicit = table.Column<bool>(type: "bit", nullable: false),
                     PlayCount = table.Column<decimal>(type: "decimal(20,0)", nullable: false),

@@ -223,9 +223,6 @@ namespace Backend.Migrations
                     b.Property<bool>("IsExplicit")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsTranscriptReady")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("PlayCount")
                         .HasColumnType("decimal(20,0)");
 
@@ -238,9 +235,6 @@ namespace Backend.Migrations
                     b.Property<string>("Thumbnail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TranscriptStatus")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

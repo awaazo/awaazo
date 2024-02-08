@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240207195949_firstMigration")]
+    [Migration("20240208182334_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -226,9 +226,6 @@ namespace Backend.Migrations
                     b.Property<bool>("IsExplicit")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsTranscriptReady")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("PlayCount")
                         .HasColumnType("decimal(20,0)");
 
@@ -241,9 +238,6 @@ namespace Backend.Migrations
                     b.Property<string>("Thumbnail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TranscriptStatus")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
