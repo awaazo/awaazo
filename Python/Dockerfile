@@ -10,7 +10,6 @@ ADD . /app
 
 # Install Python3.9 & ffmpeg
 RUN \
---mount=type=cache,target=/var/cache/apt \
 apt-get -y update && apt-get install -y python3.9 \
 ffmpeg \
 python3-pip \
