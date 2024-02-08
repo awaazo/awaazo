@@ -185,3 +185,9 @@ export interface SaveWatchHistoryRequest {
   listenPosition: number;
 }
 //#endregion
+
+
+export interface ChatbotMessageRequest {
+  episodeId: string;
+  prompt: string ;
+}

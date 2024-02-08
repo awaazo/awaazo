@@ -252,3 +252,14 @@ export interface MySubscriptions {
   totalRatings?: number;
   ratings?: PodcastRating[];
 }
+
+export interface Chatbot{
+  id: string;
+  userId: string;
+  episodeId: string;
+  message: string;
+  isPrompt: boolean;
+  username: string;
+  avatarUrl: string;
+  sentAt: Date;
+}
