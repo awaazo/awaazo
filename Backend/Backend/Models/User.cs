@@ -162,7 +162,8 @@ public class User : BaseEntity
     /// <summary>
     /// Withdrawls done by the User
     /// </summary>
-    public ICollection<Withdrawals> Withdrawals { get; } = new List<Withdrawals>(); 
+    public ICollection<Transactions> Transactions { get; } = new List<Transactions>();
+
 
     /// <summary>
     /// Gender enum.

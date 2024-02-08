@@ -541,7 +541,7 @@ public class SocialService : ISocialService
         // If all is good then add points to the DB
         Guid PointId = Guid.NewGuid();
         
-        await _db.Points.AddAsync(new Points { Id = PointId, EpisodeId = episodeId, UserId = user.Id, PointCount = points, Amount = points * POINT_CONVERSION });
+        await _db.Points.AddAsync(new Points { Id = PointId, EpisodeId = episodeId, UserId = user.Id, PointCount = points,CreatedAt = DateTime.Now, Amount = points * POINT_CONVERSION });
         
         // Save Changes to the DB
         await _db.SaveChangesAsync();
@@ -561,7 +561,8 @@ public class SocialService : ISocialService
     public async Task<bool> ConfirmPointPayment(Guid pointId)
     {
         // Find the point associated with payment
-        Points? points = await _db.Points.FirstOrDefaultAsync(u => u.Id == pointId);
+        Points? points = await _db.Points.Include(u => u.Episode).ThenInclude(u => u.Podcast).FirstOrDefaultAsync(u => u.Id == pointId);
+
 
         // Check if the state is illegal or not
         if (points == null)
@@ -569,8 +570,15 @@ public class SocialService : ISocialService
             throw new Exception("Illegal State");
         }
 
+        // Transaction Id
+        Guid transactionId = Guid.NewGuid();
+        // Post transaction 
+        await _db.Transactions.AddAsync(new Transactions { Id = transactionId,SenderId = points.UserId,CreatedAt = DateTime.UtcNow ,Amount = points.Amount,UserId = points.Episode.Podcast.PodcasterId,TransactionType= Transactions.Type.Gift});
+
         // if all checks pass Update the success bool to true
         points.Success = true;
+        points.TransactionId = transactionId;
+
 
         // Update the boolean value
         _db.Update(points);

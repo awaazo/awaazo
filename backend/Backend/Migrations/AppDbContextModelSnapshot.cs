@@ -606,6 +606,9 @@ namespace Backend.Migrations
                     b.Property<bool>("Success")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -678,6 +681,37 @@ namespace Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("Backend.Models.Transactions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -802,31 +836,6 @@ namespace Backend.Migrations
                     b.HasIndex("FollowerId");
 
                     b.ToTable("UserFollows");
-                });
-
-            modelBuilder.Entity("Backend.Models.Withdrawals", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Withdrawals");
                 });
 
             modelBuilder.Entity("Backend.Models.Annotation", b =>
@@ -1082,6 +1091,17 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Backend.Models.Transactions", b =>
+                {
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
                     b.HasOne("Backend.Models.Episode", "Episode")
@@ -1110,17 +1130,6 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Follower");
-                });
-
-            modelBuilder.Entity("Backend.Models.Withdrawals", b =>
-                {
-                    b.HasOne("Backend.Models.User", "User")
-                        .WithMany("Withdrawals")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.Annotation", b =>
@@ -1195,9 +1204,9 @@ namespace Backend.Migrations
 
                     b.Navigation("Subscriptions");
 
-                    b.Navigation("UserFollows");
+                    b.Navigation("Transactions");
 
-                    b.Navigation("Withdrawals");
+                    b.Navigation("UserFollows");
                 });
 #pragma warning restore 612, 618
         }

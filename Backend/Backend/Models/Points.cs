@@ -15,19 +15,21 @@ namespace Backend.Models
         /// <summary>
         /// User Id associated with Points
         /// </summary>
-        [Required]
+        
         public Guid UserId { get; set; } = Guid.Empty;
+
 
         /// <summary>
         /// Episode Id associated with points
         /// </summary>
+
         [Required]
         public Guid EpisodeId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Episode with the points
         /// </summary>
-        [Required]
+     
         public Episode Episode { get; set; } = null!;
 
         /// <summary>
@@ -47,5 +49,9 @@ namespace Backend.Models
         /// </summary>
         [Required]
         public bool Success { get; set; } = false;
+
+
+        public Guid TransactionId { get; set; } = Guid.Empty;
+
     }
 }
