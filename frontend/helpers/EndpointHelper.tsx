@@ -131,6 +131,10 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/profile/changePassword";
   };
 
+  static getResetPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/resetPassword";
+  }
+
   static getforgotPasswordEndpoint = () => {
     return this.getBackendAddress() + "/profile/sentForgotPasswordEmail";
   };

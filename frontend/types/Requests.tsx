@@ -27,6 +27,16 @@ export interface ChangePasswordRequest {
 }
 
 /**
+ * Reset Password Request to be sent to the server
+ */
+export interface ResetPasswordRequest {
+    "email": "user@example.com",
+    "token": "string",
+    "newPassword": "string",
+    "confirmNewPassword": "string"
+  }
+
+/**
  * Google SSO Request to be sent to the server
  */
 export interface GoogleSSORequest {

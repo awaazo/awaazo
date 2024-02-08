@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, FormControl, Input, Stack, Text, useToast, Container } from "@chakra-ui/react";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -7,15 +8,30 @@ const ForgotPassword: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    toast({
-      title: "Reset Link Sent",
-      description: "We've sent a password reset link to your email address.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+  
+    try {
+      const response = await AuthHelper.forgotPassword(email);
+      console.log(response);
+      // Directly use response.data for the message if the backend returns plain text
+      const message = response.data || "We've sent a password reset link to your email address.";
+      toast({
+        title: "Reset Link Sent",
+        description: message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error); // Log the error for debugging
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
-
   return (
     <>
       <Container variant={"authBox"}>
