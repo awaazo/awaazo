@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Notification } from "../../utilities/Interfaces";
+import { Notification } from "../../types/Interfaces";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import { Box, Button, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+import withAuth from "../../utilities/authHOC";
 
 const NotificationsPage = () => {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(0);
   const pageSize = 8;
@@ -29,9 +32,7 @@ const NotificationsPage = () => {
         );
       }
     };
-
-    fetchNotifications();
-  }, [page]);
+  }, [page, router]);
 
   const buttonStyle = {
     width: "7em",
@@ -204,4 +205,4 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage;
+export default withAuth(NotificationsPage);

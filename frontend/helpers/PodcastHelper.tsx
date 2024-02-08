@@ -13,7 +13,7 @@ import {
   SaveWatchHistoryRequest,
   PodcastSearchRequest,
   EpisodeSearchRequest,
-} from "../utilities/Requests";
+} from "../types/Requests";
 import {
   BaseResponse,
   CreatePodcastResponse,
@@ -30,7 +30,7 @@ import {
   GetWatchHistoryResponse,
   GetMetricsResponse,
   SearchEpisodeResponse,
-} from "../utilities/Responses";
+} from "../types/Responses";
 
 export default class PodcastHelper {
   static getUserProfile() {

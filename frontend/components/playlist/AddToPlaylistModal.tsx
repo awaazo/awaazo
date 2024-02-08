@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import NexLink from "next/link";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { Playlist } from "../../utilities/Interfaces";
+import { Playlist } from "../../types/Interfaces";
 import CreatePlaylistModal from "./CreatePlaylistModal";
 
 const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {

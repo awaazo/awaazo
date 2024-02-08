@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import  EndpointHelper from './EndpointHelper';
-import { BaseResponse, AddAnnotationResponse, getAnnotationResponse } from "../utilities/Responses";
-import { AnnotationAddRequest } from "../utilities/Requests";
+import { BaseResponse, AddAnnotationResponse, getAnnotationResponse } from "../types/Responses";
+import { AnnotationAddRequest } from "../types/Requests";
 
 export default class AnnotationHelper {
     static getUserProfile() {
