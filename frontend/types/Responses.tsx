@@ -2,6 +2,7 @@ import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Boo
 
 
 export interface BaseResponse {
+  [x: string]: any;
   status: number;
   message: string;
 }
@@ -82,6 +83,10 @@ export interface SearchEpisodeResponse extends BaseResponse {
 }
 
 export interface GetChangePasswordResponse extends BaseResponse {
+  data: string;
+}
+
+export interface GetResetPasswordResponse extends BaseResponse {
   data: string;
 }
 
