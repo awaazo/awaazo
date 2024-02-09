@@ -365,7 +365,6 @@ export default class AuthHelper {
                 data: requestResponse.data
             }
         } catch (error) {
-            console.error("Error in resetPassword:", error);
             return {
                 status: error.response ? error.response.status : 500,
                 message: error.response ? error.response.statusText : "An unknown error occurred",

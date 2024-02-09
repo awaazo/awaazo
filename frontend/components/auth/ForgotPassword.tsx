@@ -11,7 +11,7 @@ const ForgotPassword: React.FC = () => {
 
     try {
       const response = await AuthHelper.forgotPassword(email);
-      // Check if the response explicitly indicates success
+    
       if (response && response.status === 200) {
         const message = response.data || "We've sent a password reset link to your email address.";
         toast({
@@ -22,21 +22,15 @@ const ForgotPassword: React.FC = () => {
           isClosable: true,
         });
       } else {
-        // Handle any other case as a failure to be safe
         throw new Error("Failed to send reset link.");
       }
     } catch (error) {
-      console.error(error); // For debugging
-
       let errorMessage = "The email is not associated to a user.";
-      // Handle specific Axios error response
       if (error.response) {
-        // Use the server's response message if available
         errorMessage = error.response.data || errorMessage;
       }
 
-      // Show error toast
-      toast({
+    toast({
         title: "Error",
         description: errorMessage,
         status: "error",

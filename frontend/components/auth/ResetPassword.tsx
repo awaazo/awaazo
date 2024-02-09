@@ -18,7 +18,6 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      console.error("Passwords do not match.");
       toast({
         title: 'Error',
         description: "Passwords don't match.",
@@ -30,7 +29,6 @@ const ResetPassword = () => {
     }
 
     if (!token || !email) {
-      console.error("Missing token or email.");
       toast({
         title: 'Error',
         description: "Missing token or email in the URL.",
@@ -42,17 +40,14 @@ const ResetPassword = () => {
     }
 
     try {
-      console.log("Attempting to reset password."); // Debugging before the request
       const response = await AuthHelper.resetPassword({
         email: email.toString(),
         token: token.toString(),
         newPassword: password,
         confirmNewPassword: confirmPassword,
       });
-      console.log("Reset Password Response:", response); // Debugging response
 
       if (response.status === 200) {
-        console.log("Password reset successful.");
         toast({
           title: 'Success',
           description: 'Your password has been reset successfully.',
@@ -62,7 +57,6 @@ const ResetPassword = () => {
         });
         window.location.href = 'auth/Login'; // Redirect to login page
       } else {
-        console.error("Failed to reset password, server response:", response);
         toast({
           title: 'Error',
           description: response.message || 'Failed to reset password. Please try again.',
@@ -72,7 +66,6 @@ const ResetPassword = () => {
         });
       }
     } catch (error) {
-      console.error("Error caught during password reset:", error);
       toast({
         title: 'Error',
         description: 'Failed to reset password. Please try again.',
