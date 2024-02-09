@@ -340,7 +340,7 @@ export default class AuthHelper {
     public static resetPassword = async (requestData: { email: string; token: string; newPassword: string; confirmNewPassword: string }): Promise<any> => {
         const options = {
             method: "POST",
-            url: "/profile/resetPassword", // Adjust if you have a different method to get the endpoint
+            url: EndpointHelper.getResetPasswordEndpoint(),
             data: requestData,
             headers: {
                 accept: "*/*",
@@ -349,7 +349,7 @@ export default class AuthHelper {
             withCredentials: true,
             cache: false,
         };
-    
+
         try {
             console.debug("Sending the following resetPasswordRequest...");
             console.debug(options);

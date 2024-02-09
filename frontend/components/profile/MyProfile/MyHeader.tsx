@@ -16,8 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { UserProfile } from "../../../types/Interfaces";
 import { useSession } from "next-auth/react";
-
-import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
+import { FaTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import router from "next/router";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
@@ -107,36 +106,36 @@ export default function Header() {
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.githubUrl}
-              aria-label={"Github Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaGithub />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.twitterUrl}
-              aria-label={"Twitter Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaXTwitter />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.linkedInUrl}
-              aria-label={"Linkedin Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaLinkedinIn />}
-              {...iconProps}
-            />
+          <IconButton
+            as={Link}
+            isExternal
+            href={profile?.githubUrl}
+            aria-label={"Github Account"}
+            colorScheme={"gray"}
+            rounded="full"
+            icon={<FaGithub />}
+            {...iconProps}
+          />
+          <IconButton
+            as={Link}
+            isExternal
+            href={profile?.twitterUrl}
+            aria-label={"Twitter Account"}
+            colorScheme={"gray"}
+            rounded="full"
+            icon={<FaTwitter />} // Corrected icon for Twitter
+            {...iconProps}
+          />
+          <IconButton
+            as={Link}
+            isExternal
+            href={profile?.linkedInUrl}
+            aria-label={"Linkedin Account"}
+            colorScheme={"gray"}
+            rounded="full"
+            icon={<FaLinkedinIn />}
+            {...iconProps}
+          />
           </Box>
         </Flex>
       </VStack>

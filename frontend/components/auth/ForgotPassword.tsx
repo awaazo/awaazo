@@ -8,30 +8,44 @@ const ForgotPassword: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     try {
       const response = await AuthHelper.forgotPassword(email);
-      console.log(response);
-      // Directly use response.data for the message if the backend returns plain text
-      const message = response.data || "We've sent a password reset link to your email address.";
-      toast({
-        title: "Reset Link Sent",
-        description: message,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
+      // Check if the response explicitly indicates success
+      if (response && response.status === 200) {
+        const message = response.data || "We've sent a password reset link to your email address.";
+        toast({
+          title: "Reset Link Sent",
+          description: message,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        // Handle any other case as a failure to be safe
+        throw new Error("Failed to send reset link.");
+      }
     } catch (error) {
-      console.error(error); // Log the error for debugging
+      console.error(error); // For debugging
+
+      let errorMessage = "The email is not associated to a user.";
+      // Handle specific Axios error response
+      if (error.response) {
+        // Use the server's response message if available
+        errorMessage = error.response.data || errorMessage;
+      }
+
+      // Show error toast
       toast({
         title: "Error",
-        description: "An unexpected error occurred. Please try again later.",
+        description: errorMessage,
         status: "error",
         duration: 9000,
         isClosable: true,
       });
     }
   };
+  
   return (
     <>
       <Container variant={"authBox"}>
