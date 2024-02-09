@@ -5,7 +5,6 @@ import {
   Text,
   IconButton,
   useColorModeValue,
-  HStack,
   Icon,
 } from "@chakra-ui/react";
 import { FaPlay, FaClock, FaHeart } from "react-icons/fa";

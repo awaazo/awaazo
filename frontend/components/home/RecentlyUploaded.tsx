@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Episode } from "../../types/Interfaces";
 import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from "@chakra-ui/react";
-import { Podcast } from "../../types/Interfaces";
-
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastTicket from "./PodcastTicket";
 
@@ -50,7 +48,7 @@ const RecentlyUploaded: React.FC = () => {
           }}
         >
           <SimpleGrid columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }} spacing={5}>
-            {podcasts && podcasts.length > 0 ? podcasts.map((podcast) => podcast.episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />)) : <Text>No episodes available</Text>}
+            {episodes && episodes.length > 0 ? episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />) : <Text>No episodes available</Text>}
           </SimpleGrid>
         </HStack>
       )}
