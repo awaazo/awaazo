@@ -1,18 +1,5 @@
-import {
-  UserMenuInfo,
-  UserProfile,
-  Podcast,
-  Episode,
-  userProfileByID,
-  User,
-  Bookmark,
-  Section,
-  Playlist,
-  TranscriptLine,
-  Annotation,
-  WatchHistory,
-  Metrics,
-} from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, TranscriptLine, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
+
 
 export interface BaseResponse {
   status: number;
@@ -189,3 +176,9 @@ export interface GetMetricsResponse extends BaseResponse {
 }
 
 //#endregion
+
+export interface GetChatbotResponse extends BaseResponse {
+  episodeId:string;
+  userId:string;
+  messages: Chatbot[];
+}

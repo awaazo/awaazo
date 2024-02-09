@@ -8,34 +8,33 @@ FROM ubuntu:22.04
 WORKDIR /app
 ADD . /app
 
-# Install Python3.9 & ffmpeg
+# Install Python3.9 & ffmpeg, pip, git, and python3-venv
 RUN \
---mount=type=cache,target=/var/cache/apt \
 apt-get -y update && apt-get install -y python3.9 \
 ffmpeg \
 python3-pip \
-git
+git \
+python3-venv
 
-# Install the python3-venv package
-RUN apt-get install -y python3-venv
+# Remove the apt cache
+RUN apt-get clean \
+&& rm -rf /var/lib/apt/lists/*
 
-# Create a virtual environment
-RUN python3 -m venv venv
-
-# Activate the virtual environment
-RUN . venv/bin/activate
+# Create a virtual environment and activate it
+RUN python3 -m venv venv && . venv/bin/activate 
 
 # Install PyTorch dependencies for GPU
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 && pip cache purge
+
 
 # Install all dependencies
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt && pip cache purge
 
 # Install rvc dependencies
-RUN pip3 install -r rvc_service/requirements.txt
+RUN pip3 install -r rvc_service/requirements.txt && pip cache purge
 
 # Install text_to_speech dependencies
-RUN pip3 install -r text_to_speech_service/requirements.txt
+RUN pip3 install -r text_to_speech_service/requirements.txt && pip cache purge
 
 # Expose port 8000
 EXPOSE 8000
