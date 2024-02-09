@@ -1,5 +1,6 @@
 import axios from "axios";
-import {  GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../types/Responses";
+
+import {  BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../types/Responses";
 import EndpointHelper from "./EndpointHelper";
 import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../types/Requests";
 
@@ -206,6 +207,86 @@ export default class AuthHelper {
         }
     }
 
+    public static forgotPassword = async (email: string): Promise<BaseResponse> => {
+        // Create the request options.
+        const options = {
+            method: 'POST',
+            url: EndpointHelper.getForgotPasswordEndpoint(),
+            headers: {
+                accept: '*/*',
+                "Content-Type": "application/json" // Ensure this line is correctly set
+            },
+            data: JSON.stringify({ email }), // Make sure the email is correctly formatted as JSON
+            withCredentials: true
+        };
+        try {
+            console.debug("Sending the following getForgotPasswordEndpoint...");
+            console.debug(options);
+    
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+    
+            console.debug("Received the following getForgotPasswordEndpoint response data:");
+            console.debug(requestResponse.data); // Log the response data
+    
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+
+            };
+        } catch (error) {
+            console.error("Error in forgotPassword:", error);
+            return {
+                status: error.response ? error.response.status : 500,
+                message: error.response ? error.response.statusText : "An unknown error occurred",
+
+            };
+        }
+    }
+
+    public static checkEmail = async (email: string): Promise<BaseResponse> => {
+        // Create the request options.
+        const options =
+        {
+            method: 'GET',
+            url: EndpointHelper.getCheckEmailEndpoint(),
+            data: { email: email },
+            headers:
+            {
+                accept: '*/*',
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        }
+        try {
+            console.debug("Sending the following getCheckEmailEndpoint...");
+            console.debug(options);
+
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following getCheckEmailEndpoint...");
+            console.debug(requestResponse);
+
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText
+            }
+        }
+        catch (error) {
+
+            return {
+                status: error.response.status,
+                message: error.response.statusText
+            }
+        }
+    }
+
+
+
+
     /**
      * Sends a Google SSO request to the backend.
      * @param requestData GoogleSSORequest
@@ -254,5 +335,42 @@ export default class AuthHelper {
         }
 
     }
+
+
+    public static resetPassword = async (requestData: { email: string; token: string; newPassword: string; confirmNewPassword: string }): Promise<any> => {
+        const options = {
+            method: "POST",
+            url: EndpointHelper.getResetPasswordEndpoint(),
+            data: requestData,
+            headers: {
+                accept: "*/*",
+                "Content-Type": "application/json"
+            },
+            withCredentials: true,
+            cache: false,
+        };
+
+        try {
+            console.debug("Sending the following resetPasswordRequest...");
+            console.debug(options);
+    
+            const requestResponse = await axios(options);
+    
+            console.debug("Received the following resetPasswordResponse...");
+            console.debug(requestResponse);
+    
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+                data: requestResponse.data
+            }
+        } catch (error) {
+            return {
+                status: error.response ? error.response.status : 500,
+                message: error.response ? error.response.statusText : "An unknown error occurred",
+                data: error.response ? error.response.data : {}
+            }
+        }
+    };
 
 }
