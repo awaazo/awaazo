@@ -1,8 +1,12 @@
 using System.Data;
 using AutoMapper.Configuration.Annotations;
 using Backend.Models;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static Backend.Infrastructure.FileStorageHelper;
+using Backend.Infrastructure;
+using Google.Apis.Util;
 
 namespace Backend.Controllers.Responses;
 
@@ -18,9 +22,8 @@ public class EpisodeResponse
     /// <param name="e">The episode.</param>
     /// <param name="domainUrl">The domain URL.</param>
     /// <param name="includeComments">if set to <c>true</c> [include comments].</param>
-    public EpisodeResponse(Episode e,string domainUrl, bool includeComments = true)
+    public EpisodeResponse(Episode e, string domainUrl, bool includeComments = true)
     {
-        //Episode = e;
         Id = e.Id;
         PodcastId = e.PodcastId;
         EpisodeName = e.EpisodeName;
@@ -36,8 +39,18 @@ public class EpisodeResponse
             Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
         PodcastName = e.Podcast.Name;
 
+        // Get the status of the transcript
+        TranscriptStatus status = GetTranscriptStatus(e.Id,e.PodcastId);
+        TranscriptionStatus = status.ToString();
+
+        // Set the IsTranscriptReady property based on the status
+        IsTranscriptReady = status switch
+        {
+            TranscriptStatus.Ready => true,
+            _ => false,
+        };
     }
-    
+
     public Guid Id { get; set; } = Guid.Empty;
     public Guid PodcastId { get; set; } = Guid.Empty;
     public string EpisodeName { get; set; } = string.Empty;
@@ -50,6 +63,16 @@ public class EpisodeResponse
     public string ThumbnailUrl { get; set; } = string.Empty;
     public int Likes { get; set; } = 0;
     
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public bool IsTranscriptReady { get; set; } = false;
+
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public string TranscriptionStatus { get; set; } = "None";
+
     public List<CommentResponse> Comments { get; set; } = new();
 
     public string PodcastName { get; set; } = string.Empty;
