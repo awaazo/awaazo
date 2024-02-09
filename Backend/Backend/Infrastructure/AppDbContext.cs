@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Backend.Infrastructure;
 
@@ -281,7 +282,7 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
     }
-    
+
     public override int SaveChanges()
     {
         var currentTime = DateTime.UtcNow;

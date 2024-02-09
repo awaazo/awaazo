@@ -97,12 +97,11 @@ const Sidebar = () => {
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"
-        top="3em"
+        top="5em"
         zIndex={10}
         transition="width 0.2s ease-in-out"
         roundedTopRight="10px"
         roundedBottomRight="10px"
-        mt={"2em"}
         outline={"2px solid rgba(255, 255, 255, 0.06)"}
       >
         <Flex justify="center" align="center" mb={7}>

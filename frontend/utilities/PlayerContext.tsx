@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useEffect,
-  useRef,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useReducer, useEffect, useRef, ReactNode } from "react";
 import { Episode } from "../types/Interfaces";
 
 interface PlayerState {
@@ -54,11 +47,7 @@ const playerReducer = (state: PlayerState, action: any) => {
     case "ADD_NEXT_QUEUE":
       return {
         ...state,
-        playlist: [
-          ...state.playlist.slice(0, state.currentEpisodeIndex + 1),
-          action.payload,
-          ...state.playlist.slice(state.currentEpisodeIndex + 1),
-        ],
+        playlist: [...state.playlist.slice(0, state.currentEpisodeIndex + 1), action.payload, ...state.playlist.slice(state.currentEpisodeIndex + 1)],
       };
     case "ADD_LATER_QUEUE":
       return {
@@ -85,11 +74,7 @@ const playerReducer = (state: PlayerState, action: any) => {
       const newPlaylist = action.payload.playlistEpisodes;
       return {
         ...state,
-        playlist: [
-          ...state.playlist.slice(0, state.currentEpisodeIndex + 1),
-          ...action.payload.playlistEpisodes,
-          ...state.playlist.slice(state.currentEpisodeIndex + 1),
-        ],
+        playlist: [...state.playlist.slice(0, state.currentEpisodeIndex + 1), ...action.payload.playlistEpisodes, ...state.playlist.slice(state.currentEpisodeIndex + 1)],
       };
     case "ADD_PLAYLIST_LATER":
       return {
@@ -102,8 +87,7 @@ const playerReducer = (state: PlayerState, action: any) => {
       return {
         ...state,
         episode: nextEpisode !== undefined ? nextEpisode : state.episode,
-        currentEpisodeIndex:
-          nextEpisode !== undefined ? nextIndex : state.currentEpisodeIndex,
+        currentEpisodeIndex: nextEpisode !== undefined ? nextIndex : state.currentEpisodeIndex,
       };
     case "PLAY_PREVIOUS":
       const prevIndex = state.currentEpisodeIndex - 1;
@@ -111,8 +95,7 @@ const playerReducer = (state: PlayerState, action: any) => {
       return {
         ...state,
         episode: prevEpisode !== undefined ? prevEpisode : state.episode,
-        currentEpisodeIndex:
-          prevEpisode !== undefined ? prevIndex : state.currentEpisodeIndex,
+        currentEpisodeIndex: prevEpisode !== undefined ? prevIndex : state.currentEpisodeIndex,
       };
     case "SET_CURRENT_INDEX":
       const newEpisode = state.playlist[action.payload];
@@ -123,33 +106,23 @@ const playerReducer = (state: PlayerState, action: any) => {
       };
     case "REMOVE_FROM_QUEUE":
       const episodeToRemove = action.payload;
-      const indexOfEpisodeToRemove = state.playlist.findIndex(
-        (item) => item === episodeToRemove,
-      );
+      const indexOfEpisodeToRemove = state.playlist.findIndex((item) => item === episodeToRemove);
 
       if (indexOfEpisodeToRemove === -1) {
         // Episode not found in the playlist, return the current state
         return state;
       }
 
-      const updatedPlaylist = state.playlist.filter(
-        (_, index) => index !== indexOfEpisodeToRemove,
-      );
+      const updatedPlaylist = state.playlist.filter((_, index) => index !== indexOfEpisodeToRemove);
 
       // If the current episode is being removed
-      const currentIndex =
-        state.currentEpisodeIndex < updatedPlaylist.length
-          ? state.currentEpisodeIndex
-          : state.currentEpisodeIndex - 1;
+      const currentIndex = state.currentEpisodeIndex < updatedPlaylist.length ? state.currentEpisodeIndex : state.currentEpisodeIndex - 1;
 
       return {
         ...state,
         currentEpisodeIndex: currentIndex,
         playlist: updatedPlaylist,
-        episode:
-          currentIndex >= 0 && currentIndex < updatedPlaylist.length
-            ? updatedPlaylist[currentIndex]
-            : null,
+        episode: currentIndex >= 0 && currentIndex < updatedPlaylist.length ? updatedPlaylist[currentIndex] : null,
       };
 
     default:
@@ -159,9 +132,7 @@ const playerReducer = (state: PlayerState, action: any) => {
 
 export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(playerReducer, initialState);
-  const audioRef = useRef<HTMLAudioElement | null>(
-    typeof window !== "undefined" ? new Audio() : null,
-  );
+  const audioRef = useRef<HTMLAudioElement | null>(typeof window !== "undefined" ? new Audio() : null);
 
   useEffect(() => {
     return () => {
@@ -172,11 +143,7 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
     };
   }, [state.episode]);
 
-  return (
-    <PlayerContext.Provider value={{ state, dispatch, audioRef }}>
-      {children}
-    </PlayerContext.Provider>
-  );
+  return <PlayerContext.Provider value={{ state, dispatch, audioRef }}>{children}</PlayerContext.Provider>;
 };
 
 export const usePlayer = () => {
