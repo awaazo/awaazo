@@ -1,30 +1,98 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = Xunit.Assert;
+
 namespace Backend.Tests;
 
 /// <summary>
 /// Tests the AuthService and AuthController classes.
 /// </summary>
 [Collection("Sequential")]
-public class AuthTests : IAsyncLifetime
+public class AuthTests
 {
-    private readonly Mock<Microsoft.Extensions.Logging.ILogger<AuthController>> _IloggerMock;
+    #region variables and initializers
+    
+    private Mock<AppDbContext> _dbContextMock;
+    private Mock<HttpContext> _httpContextMock;
+    private Mock<IAuthService> _authServiceMock;
+    private Mock<DbSet<User>> _user;
+    private Mock<ILogger<AuthController>> _loggerMock;
+    private Mock<HttpRequest> _httpRequestMock;
+    private Mock<IMapper> _mapperMock;
+
+    private AuthController _authController;
+    private AuthService _authService;
+    private EmailService _emailService;
+    private const string DOMAIN = "TestDomain";
+    private IConfiguration _config;
+
+    private const string USERNAME = "username";
+    private const string EMAIL = "test@email.com";
+    private const string PASSWORD = "password";
+
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
     public AuthTests()
     {
-        _IloggerMock = new();
+        // Config
+        _config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
+
+        // Prevent Null objects in case of no test running
+        _dbContextMock = new(new DbContextOptions<AppDbContext>());
+        _httpContextMock = new();
+        _httpRequestMock = new();
+        _loggerMock = new();
+        _mapperMock = new();
+        _authServiceMock = new();
+
+        // VERY SKETCH. Could accidently send real emails if we are not careful
+        _emailService = new(_config);
+        _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
+        _authController = new(_config, _authServiceMock.Object, _loggerMock.Object) 
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = _httpContextMock.Object
+            }
+        };
+
+        MockBasicUtilities();
     }
 
-    public Task InitializeAsync()
-
+    [TestInitialize]
+    public void Initialize()
     {
-        return Task.CompletedTask;
+        // Re-initilize every test
+
+        // Config
+        _config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();       
+
+        _dbContextMock = new(new DbContextOptions<AppDbContext>());
+        _httpContextMock = new();
+        _httpRequestMock = new();
+        _loggerMock = new();
+        _mapperMock = new();
+        _authServiceMock = new();
+
+        // VERY SKETCH. Could accidently send real emails if we are not careful
+        _emailService = new(_config);
+        _authService = new(_dbContextMock.Object, _mapperMock.Object, _config, _emailService);
+        _authController = new(_config, _authServiceMock.Object, _loggerMock.Object)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = _httpContextMock.Object
+            }
+        };
+
+        MockBasicUtilities();
     }
 
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
+    #endregion
 
     #region Test Service
 
@@ -32,142 +100,89 @@ public class AuthTests : IAsyncLifetime
     public void GenerateToken_NullKey_ReturnsException()
     {
         // ARRANGE
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Set the Key to null
-        config["Jwt:Key"] = null;
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config,  new EmailService(config));
-
-        // Exception
-        object exception = new();
+        // So as to not mutate global state
+        // Set Key to null
+        var testConfig = _config;
+        testConfig["Jwt:Key"] = null;
 
         // ACT
         try
         {
-            string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
+            _authService.GenerateToken(Guid.NewGuid(), testConfig, new TimeSpan());
         }
         catch (Exception ex)
         {
-            exception = ex;
+            Assert.Equal("Key is null", ex.Message);
+            return;
         }
 
         // ASSERT
-        Assert.IsType<Exception>(exception);
-        Assert.Equal("Key is null", (exception as Exception)!.Message);
-
+        Assert.Fail("Method did not throw exception");
     }
 
     [Fact]
     public void GenerateToken_NullIssuer_ReturnsException()
     {
         // ARRANGE
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
+        // So as to not mutate global state
         // Set the Issuer to null
-        config["Jwt:Issuer"] = null;
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
-        // Exception
-        object exception = new();
+        var testConfig = _config;
+        testConfig["Jwt:Issuer"] = null;
 
         // ACT
         try
         {
-            string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
+            _authService.GenerateToken(Guid.NewGuid(), testConfig, new TimeSpan());
         }
         catch (Exception ex)
         {
-            exception = ex;
+            Assert.Equal("Issuer is null", ex.Message);
+            return;
         }
 
         // ASSERT
-        Assert.IsType<Exception>(exception);
-        Assert.Equal("Issuer is null", (exception as Exception)!.Message);
+        Assert.Fail("Method did not throw exception");
     }
 
     [Fact]
     public void GenerateToken_NullAudience_ReturnsException()
-
     {
         // ARRANGE
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-
+        // So as to not mutate global state
         // Set the Audience to null
-        config["Jwt:Audience"] = null;
-
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
-        // Exception
-        object exception = new();
+        var testConfig = _config;
+        testConfig["Jwt:Audience"] = null;
 
         // ACT
         try
         {
-            string token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
+            _authService.GenerateToken(Guid.NewGuid(), testConfig, new TimeSpan());
         }
         catch (Exception ex)
         {
-            exception = ex;
+            Assert.Equal("Audience is null", ex.Message);
+            return;
         }
 
         // ASSERT
-        Assert.IsType<Exception>(exception);
-
-        Assert.Equal("Audience is null", (exception as Exception)!.Message);
+        Assert.Fail("Method did not throw exception");
     }
 
     [Fact]
     public void GenerateToken_ValidConfig_ReturnsTokenString()
-
     {
         // ARRANGE
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        string token = "";
 
         // ACT
-        var token = authService.GenerateToken(Guid.NewGuid(), config, new TimeSpan());
+        try
+        {
+            token = _authService.GenerateToken(Guid.NewGuid(), _config, new TimeSpan());
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<string>(token);
@@ -178,42 +193,19 @@ public class AuthTests : IAsyncLifetime
     public async void LoginAsync_InvalidEmail_ReturnsNull()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        var loginRequest = CreateLoginRequest();
+        loginRequest.Email += "Invalid";
+        User? user = null;
 
         // ACT
-        var user = await authService.LoginAsync(loginRequest);
+        try
+        {
+            user = await _authService.LoginAsync(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.Null(user);
@@ -223,43 +215,19 @@ public class AuthTests : IAsyncLifetime
     public async void LoginAsync_InvalidPassword_ReturnsNull()
     {
         // ARRANGE
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX1"
-        };
-
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        var loginRequest = CreateLoginRequest();
+        loginRequest.Password += "Invalid";
+        User? user = null;
 
         // ACT
-
-        var user = await authService.LoginAsync(loginRequest);
+        try
+        {
+            user = await _authService.LoginAsync(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.Null(user);
@@ -270,97 +238,42 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Request
-        LoginRequest loginRequest = new()
-
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        var loginRequest = CreateLoginRequest();
+        User? user = null;
 
         // ACT
-        var user = await authService.LoginAsync(loginRequest);
+        try
+        {
+            user = await _authService.LoginAsync(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user.Username);
+        Assert.Equal(EMAIL, user.Email);
+        Assert.Equal(USERNAME, user.Username);
     }
 
     [Fact]
     public async void RegisterAsync_ExistingEmail_ReturnsNull()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Request
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
-            Gender = "Male"
-
-        };
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        var registerRequest = CreateRegisterRequest();
+        User? user = null;
 
         // ACT
-
-        var user = await authService.RegisterAsync(registerRequest);
-
+        try
+        {
+            user = await _authService.RegisterAsync(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.Null(user);
@@ -369,240 +282,137 @@ public class AuthTests : IAsyncLifetime
     [Fact]
 
     public async void RegisterAsync_InvalidGender_ReturnsUserWithNoneGender()
-
     {
         // ARRANGE
+        string newUsername = USERNAME + "1";
+        string newEmail = EMAIL + "1";
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
+        var registerRequest = CreateRegisterRequest();
+        registerRequest.Email = newEmail;
+        registerRequest.Username = newUsername;
+        registerRequest.Gender = "NotAValidGender";
 
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
+        User? user = null;
 
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        Mock<DbSet<Playlist>> playlists = new[]{
-            new Playlist(){}
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
-
-        // Request
-
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
-            Gender = "NoValidGender"
-        };
-
-        mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
         {
             Id = Guid.NewGuid(),
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-            Username = "XXXXXXXXXXXXXXXXX",
+            Email = newEmail,
+            Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+            Username = newUsername,
             DateOfBirth = DateTime.Now,
             Gender = User.GenderEnum.None,
             CreatedAt = DateTime.Now
         });
 
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
         // ACT
-        var user = await authService.RegisterAsync(registerRequest);
+        try
+        {
+            user = await _authService.RegisterAsync(registerRequest);
+        }
+        catch(Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }       
 
         // ASSERT
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX1", user!.Email);
+        Assert.Equal(newEmail, user!.Email);
         Assert.Equal(User.GenderEnum.None, user.Gender);
     }
 
     [Fact]
     public async void RegisterAsync_ValidUser_ReturnsUser()
-
     {
-        // ARRANGE
+        // ARRANGE       
+        string newUsername = USERNAME + "1";
+        string newEmail = EMAIL + "1";
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
+        var registerRequest = CreateRegisterRequest();
+        registerRequest.Email = newEmail;
+        registerRequest.Username = newUsername;
 
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
+        User? user = null;
 
-        Mock<DbSet<Playlist>> playlists = new[]{
-            new Playlist(){}
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
-
-        // Request
-
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = "XXXXXXXXXXXXXXXXX",
-            Username = "XXXXXXXXXXXXXXXXX11",
-            DateOfBirth = DateTime.Now,
-            Gender = "Male"
-        };
-
-
-        mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(new User()
         {
             Id = Guid.NewGuid(),
-            Email = "XXXXXXXXXXXXXXXXX1",
-            Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-            Username = "XXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
+            Email = newEmail,
+            Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+            Username = newUsername,
+            DateOfBirth = registerRequest.DateOfBirth,
             Gender = User.GenderEnum.Male,
             CreatedAt = DateTime.Now
         });
 
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
         // ACT
-        var user = await authService.RegisterAsync(registerRequest);
-
+        try
+        {
+            user = await _authService.RegisterAsync(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+        
         // ASSERT
-
         Assert.IsType<User>(user);
         Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX1", user!.Email);
+        Assert.Equal(newEmail, user.Email);
         Assert.Equal(User.GenderEnum.Male, user.Gender);
     }
 
     [Fact]
     public async void IdentifyUserAsync_IdentifiedUser_ReturnsUser()
     {
-        // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        Guid guid = Guid.NewGuid();
+        // ARRANGE      
+        User? retrievedUser = null;
+        User storedUser = _user.Object.FirstOrDefault()!;
+        var guid = storedUser.Id;
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
 
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = guid,
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Male
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
         // Request
-        Mock<HttpContext> httpContextMock = new();
-        httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        _httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
         // ACT
-        var user = await authService.IdentifyUserAsync(httpContextMock.Object);
-
-
+        try
+        {
+            retrievedUser = await _authService.IdentifyUserAsync(_authController.HttpContext);
+        }
+        catch(Exception ex) 
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+        
         // ASSERT
-        Assert.IsType<User>(user);
-        Assert.NotNull(user);
-        Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
-        Assert.Equal(User.GenderEnum.Male, user.Gender);
+        Assert.IsType<User>(retrievedUser);
+        Assert.NotNull(retrievedUser);
+        Assert.Equal(storedUser.Email, retrievedUser.Email);
+        Assert.Equal(User.GenderEnum.Male, retrievedUser.Gender);
     }
 
     [Fact]
     public async void IdentifyUserAsync_UnidentifiedUser_ReturnsNull()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
+        User? user = null;
         Guid guid = Guid.NewGuid();
         Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString()) };
 
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-
-                Gender = User.GenderEnum.Male
-
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
         // Request
-
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
         // ACT
-        var user = await authService.IdentifyUserAsync(httpContextMock.Object);
+        try
+        {
+            user = await _authService.IdentifyUserAsync(httpContextMock.Object);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }      
 
         // ASSERT
         Assert.Null(user);
@@ -612,42 +422,25 @@ public class AuthTests : IAsyncLifetime
     public async void IdentifyUserAsync_NoUserId_ReturnsNull()
     {
         // ARRANGE
+        User? user = null;
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
+        // Guid has to be not valid
         Guid guid = Guid.NewGuid();
-        Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString() + "1234NotValid") };
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = guid,
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Male
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        Claim[] claims = new[] { new Claim(ClaimTypes.NameIdentifier, guid.ToString() + "1234NotValid") };      
 
         // Request
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.SetupGet(hc => hc.User.Identity).Returns(new ClaimsIdentity(claims));
 
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
-
         // ACT
-        var user = await authService.IdentifyUserAsync(httpContextMock.Object);
+        try
+        {
+            user = await _authService.IdentifyUserAsync(httpContextMock.Object);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.Null(user);
@@ -657,52 +450,22 @@ public class AuthTests : IAsyncLifetime
     public async void GoogleSSOAsync_ExistingUser_ReturnsUser()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Email = "XXXXXXXXXXXXXXXXX",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "XXXXXXXXXXXXXXXXX",
-                DateOfBirth = DateTime.Now,
-                Gender = User.GenderEnum.Other
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Request
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX",
-            Token = "XXXXXXXXXXXXXXXXXX"
-        };
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        User? user = null;
+        var googleRequest = CreateGoogleRequest();
 
         // ACT
-
-        var user = await authService.GoogleSSOAsync(googleRequest);
-
-
+        try
+        {
+            user = await _authService.GoogleSSOAsync(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+        
         // ASSERT
-        Assert.IsType<User>(user);
         Assert.NotNull(user);
-
+        Assert.IsType<User>(user);
         Assert.Equal("XXXXXXXXXXXXXXXXX", user!.Email);
         Assert.Equal("XXXXXXXXXXXXXXXXX", user.Username);
     }
@@ -711,62 +474,24 @@ public class AuthTests : IAsyncLifetime
     public async void GoogleSSOAsync_NewUser_ReturnsUser()
     {
         // ARRANGE
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-        Mock<DbSet<User>> users = new[]
-        {
-            new User()
-            {
-
-                Id = Guid.NewGuid(),
-
-                Email = "XXXXXXXXXXXXXXXXXNewUser1",
-                Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-                Username = "C",
-                DateOfBirth = DateTime.Now,
-                DisplayName= "XXXXXXXXXXXXXXXXXNew",
-                Avatar= "XXXXXXXXXXXXXXXXX",
-                Gender = User.GenderEnum.Other
-
-            }
-        }.AsQueryable().BuildMockDbSet();
-        Mock<DbSet<Playlist>> playlists = new[]{
-            new Playlist(){}
-        }.AsQueryable().BuildMockDbSet();
-
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-        dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
-
-        // Request
-
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXXNewUser@gmail",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXXNew",
-            Avatar = "XXXXXXXXXXXXXXXXX"
-        };
-
-
-        // Service
-        AuthService authService = new(dbContextMock.Object, mapperMock.Object, config, new EmailService(config));
+        User? user = null;
+        var googleRequest = CreateGoogleRequest();
+        googleRequest.Email = "XXXXXXXXXXXXXXXXXNewUser@gmail";
+        googleRequest.Name = "XXXXXXXXXXXXXXXXXNew";
 
         // ACT
-
-        var user = await authService.GoogleSSOAsync(googleRequest);
-
-
+        try 
+        {
+            user = await _authService.GoogleSSOAsync(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
+       
         // ASSERT
-        Assert.IsType<User>(user);
         Assert.NotNull(user);
-
+        Assert.IsType<User>(user);
         Assert.Equal("XXXXXXXXXXXXXXXXXNewUser@gmail", user!.Email);
         Assert.Equal("XXXXXXXXXXXXXXXXXNewUser", user.Username);
     }
@@ -779,36 +504,24 @@ public class AuthTests : IAsyncLifetime
     public async void Login_ValidUser_ReturnsOkObjectResult()
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        var httpContext = new DefaultHttpContext();
-
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
-
+        IActionResult actionResult = null;
+        _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(new User());
 
         // Create the Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
+        var loginRequest = CreateLoginRequest();
+
+        // Need to have a default httpContext
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
-        IActionResult actionResult = await authController.Login(loginRequest);
+        try
+        {
+            actionResult = await authController.Login(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -819,39 +532,23 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        var httpContext = new DefaultHttpContext();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.LoginAsync(It.IsAny<LoginRequest>())).ReturnsAsync(null as User);
 
         // Create the Request
-        LoginRequest loginRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX"
-        };
+        LoginRequest loginRequest = CreateLoginRequest();
 
         // ACT
-        IActionResult actionResult = await authController.Login(loginRequest);
+        try
+        {
+            actionResult = await _authController.Login(loginRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
-
         Assert.IsType<BadRequestObjectResult>(actionResult);
     }
 
@@ -859,37 +556,24 @@ public class AuthTests : IAsyncLifetime
     public async void Register_NewUser_ReturnsOkObjectResult()
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        HttpContext httpContext = new DefaultHttpContext();
-
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(new User());
 
         // Create the Request
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
-            Gender = "Male",
-            Username = "XXXXXXXXXXXXXXXXX"
-        };
+        var registerRequest = CreateRegisterRequest();
+
+        // Need to have a default httpContext controller
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
-        IActionResult actionResult = await authController.Register(registerRequest);
+        try
+        {
+            actionResult = await authController.Register(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -899,35 +583,22 @@ public class AuthTests : IAsyncLifetime
     public async void Register_InvalidUser_ReturnsBadRequestObjectResult()
     {
         // ARRANGE
-
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.RegisterAsync(It.IsAny<RegisterRequest>())).ReturnsAsync(null as User);
+        
 
         // Create the Request
-
-        RegisterRequest registerRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = "XXXXXXXXXXXXXXXXX",
-            DateOfBirth = DateTime.Now,
-            Gender = "Male",
-            Username = "XXXXXXXXXXXXXXXXX"
-        };
+        var registerRequest = CreateRegisterRequest();
 
         // ACT
-        IActionResult actionResult = await authController.Register(registerRequest);
-
+        try
+        {
+            actionResult = await _authController.Register(registerRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -939,31 +610,20 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        HttpContext httpContext = new DefaultHttpContext();
-        httpContext.Request.Path = "/auth/me";
-        httpContext.Request.Host = new HostString("localhost:5000");
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
-
+        IActionResult? actionResult = null;
+        _httpContextMock.Object.Request.Path = "/auth/me";
+        _httpContextMock.Object.Request.Host = new HostString("localhost:5000");
+        _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(new User());
 
         // ACT
-        IActionResult actionResult = await authController.Me();
+        try
+        {
+            actionResult = await _authController.Me();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -975,21 +635,18 @@ public class AuthTests : IAsyncLifetime
 
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(null as User);
 
         // ACT
-        IActionResult actionResult = await authController.Me();
+        try
+        {
+            actionResult = await _authController.Me();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -999,39 +656,25 @@ public class AuthTests : IAsyncLifetime
     public async void GoogleSSO_ValidUser_ReturnsOkObjectResult()
     {
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-        var httpContext = new DefaultHttpContext();
-
-        // Setup Mocks
-        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
-        authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            }
-        };
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(new User());
+        _authServiceMock.Setup(svc => svc.ValidateGoogleTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
 
         // Create the Request
+        var googleRequest = CreateGoogleRequest();
 
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX",
-            Token = "XXXXXXXXXXXXXXXXXX"
-        };
+        // Need to have a default httpContext
+        AuthController authController = CreateDefaultHttpAuthController();
 
         // ACT
-        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
+        try
+        {
+            actionResult = await authController.GoogleSSO(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<OkObjectResult>(actionResult);
@@ -1042,33 +685,21 @@ public class AuthTests : IAsyncLifetime
     {
 
         // ARRANGE
-
-        // Mocks
-        Mock<IAuthService> authServiceMock = new();
-        Mock<IConfiguration> configurationMock = new();
-
-        // Setup Mocks
-
-        authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
-
-        authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
-
-        // Create Controller
-        AuthController authController = new(configurationMock.Object, authServiceMock.Object, _IloggerMock.Object);
-
+        IActionResult? actionResult = null;
+        _authServiceMock.Setup(svc => svc.GoogleSSOAsync(It.IsAny<GoogleRequest>())).ReturnsAsync(null as User);
 
         // Create the Request
-        GoogleRequest googleRequest = new()
-        {
-            Email = "XXXXXXXXXXXXXXXXX",
-            Name = "XXXXXXXXXXXXXXXXX",
-            Sub = "XXXXXXXXXXXXXXXXX",
-            Avatar = "XXXXXXXXXXXXXXXXX"
-        };
+        GoogleRequest googleRequest = CreateGoogleRequest();
 
         // ACT
-        IActionResult actionResult = await authController.GoogleSSO(googleRequest);
-
+        try
+        {
+            actionResult = await _authController.GoogleSSO(googleRequest);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
+        }
 
         // ASSERT
         Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -1076,4 +707,83 @@ public class AuthTests : IAsyncLifetime
 
     #endregion
 
+    #region Private Methods
+    private void MockBasicUtilities()
+    {
+        var userGuid = Guid.NewGuid();
+        _user = new[]
+        {
+            new User()
+            {
+                Id = userGuid,
+                Email = EMAIL,
+                Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+                Username = USERNAME,
+                DateOfBirth = DateTime.Now,
+                Gender = Models.User.GenderEnum.Male
+            }
+        }.AsQueryable().BuildMockDbSet();
+
+        Mock<DbSet<Playlist>> playlists = new[]{
+            new Playlist(){}
+        }.AsQueryable().BuildMockDbSet();
+
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterRequest>())).Returns(_user.Object.FirstOrDefault()!);
+        _authServiceMock.Setup(svc => svc.GenerateToken(It.IsAny<Guid>(), It.IsAny<IConfiguration>(), It.IsAny<TimeSpan>())).Returns("Token String");
+
+        _dbContextMock.SetupGet(db => db.Users).Returns(_user.Object);
+        _dbContextMock.SetupGet(db => db.Playlists).Returns(playlists.Object);
+
+        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
+
+        _httpContextMock.Setup(ctx => ctx.Request).Returns(_httpRequestMock.Object);
+        _httpRequestMock.Setup(t => t.IsHttps).Returns(true);
+        _httpRequestMock.Setup(t => t.Host).Returns(new HostString(DOMAIN, 1443));       
+    }
+
+    private AuthController CreateDefaultHttpAuthController()
+    {
+        return new AuthController(_config, _authServiceMock.Object, _loggerMock.Object)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+    }
+    
+    private LoginRequest CreateLoginRequest()
+    {
+        return new LoginRequest()
+        {
+            Email = EMAIL,
+            Password = PASSWORD
+        };
+    }
+
+    private RegisterRequest CreateRegisterRequest()
+    {
+        return new RegisterRequest()
+        {
+            Email = EMAIL,
+            Password = PASSWORD,
+            Username = USERNAME,
+            DateOfBirth = DateTime.Now,
+            Gender = User.GenderEnum.Male.ToString()
+        };
+    }
+
+    private GoogleRequest CreateGoogleRequest()
+    {
+        return new GoogleRequest()
+        {
+            Email = "XXXXXXXXXXXXXXXXX",
+            Sub = "XXXXXXXXXXXXXXXXX",
+            Name = "XXXXXXXXXXXXXXXXX",
+            Avatar = "XXXXXXXXXXXXXXXXX",
+            Token = "XXXXXXXXXXXXXXXXXX"
+        };
+    }
+
+    #endregion
 }
