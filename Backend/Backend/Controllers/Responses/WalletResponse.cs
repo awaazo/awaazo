@@ -23,4 +23,16 @@ namespace Backend.Controllers.Responses
         public string Type { get; set; } = string.Empty;
 
     }
+
+    public class Activity 
+    {
+      
+        public double Amount { get; set; } = 0;
+
+        public DateTime date { get; set; } = DateTime.MinValue;
+
+
+       
+    }
+
 }

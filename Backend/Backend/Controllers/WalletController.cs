@@ -91,7 +91,12 @@ namespace Backend.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Gets all the Transactions
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("transactions")]
         public async Task<IActionResult> getUserTransactions(int page= MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
         {
@@ -120,6 +125,39 @@ namespace Backend.Controllers
 
             }
         }
+        /// <summary>
+        /// Gets balance History of Last 5 Days
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Last5DaysBalance")]
+        public async Task<IActionResult> GetLast5DaysBalance()
+        {
+            try
+            {
+
+                this.LogDebugControllerAPICall(_logger, callerName: nameof(GetLast5DaysBalance));
+
+
+                // Identify User from JWT Token
+                User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+                // If User is not found, return 404
+                if (user is null)
+                    return NotFound("User does not exist.");
+
+
+                return Ok(await _walletServices.Last5DaysBalance(user.Id));
+
+            }
+            catch (Exception e)
+            {
+                this.LogErrorAPICall(_logger, e, callerName: nameof(GetLast5DaysBalance));
+                return BadRequest(e.Message);
+
+            }
+        }
+
+
 
     }
 }

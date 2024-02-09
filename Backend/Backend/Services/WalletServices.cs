@@ -3,6 +3,8 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Backend.Controllers.Responses;
+using System.Collections;
+
 namespace Backend.Services
 {
     public class WalletServices : IWalletServices
@@ -72,6 +74,25 @@ namespace Backend.Services
             return response;
 
 
+        }
+
+        /// <summary>
+        /// Gets the last 5 Days Balance
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<List<Activity>> Last5DaysBalance(Guid userId)
+        {
+
+            List<int> numbers = new List<int>() { 0, 1, 2, 3, 4 };
+            List<Activity> activty = new List<Activity>();
+            foreach (var number in numbers)
+            {
+                var date = DateTime.Today.AddDays(-number).Date;
+                activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u => u.CreatedAt < date).SumAsync(u => u.Amount) });
+            }
+            
+            return activty;
         }
 
 
