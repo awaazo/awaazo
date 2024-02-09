@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Login from "../../components/auth/Login";
 import SignUp from "../../components/auth/Signup";
 import ForgotPassword from "../../components/auth/ForgotPassword";
-import ResetPassword from "../../components/auth/ResetPassword"; // Import the component
+import ResetPassword from "../../components/auth/ResetPassword";
 import { Flex } from "@chakra-ui/react";
 
 const AuthPage = () => {
