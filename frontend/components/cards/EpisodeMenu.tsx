@@ -1,20 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  useToast,
-  Box,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useToast, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -23,6 +8,8 @@ import ShareComponent from "../social/Share";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
+import AuthHelper from "../../helpers/AuthHelper";
+import LoginPrompt from "../auth/AuthPrompt";
 
 const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();
@@ -33,10 +20,10 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalClose = () => setIsShareModalOpen(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   // Add to Playlist implementation
-  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
-    useState(false);
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] = useState(false);
 
   // Handlers to open/close the modal:
   const handleAddToPlaylistMenuToggle = () => {
@@ -52,6 +39,19 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setIsMenuOpen(false);
     }
+  };
+
+  const handleAddPlaylistClick = () => {
+    // Check login status before opening the modal
+    AuthHelper.authMeRequest().then((response) => {
+      if (response.status === 401) {
+        console.log("User not logged in");
+        // Handle not logged in state (e.g., show a login prompt)
+        setIsAddToPlaylistModalOpen(false);
+        setShowLoginPrompt(true);
+        return;
+      }
+    });
   };
 
   useEffect(() => {
@@ -113,10 +113,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   // handles Remove from Playlist
   const handleRemovePlaylistMenuToggle = async () => {
     const request = [episode.id];
-    const response = await PlaylistHelper.playlistRemoveEpisodeRequest(
-      request,
-      playlistId,
-    );
+    const response = await PlaylistHelper.playlistRemoveEpisodeRequest(request, playlistId);
     console.log(response);
     if (response.status == 200) {
       window.location.reload();
@@ -128,18 +125,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   return (
     <div ref={menuRef}>
       <Menu isOpen={isMenuOpen}>
-        <MenuButton
-          as={IconButton}
-          aria-label="Options"
-          icon={<IoIosMore />}
-          variant="ghost"
-          fontSize="20px"
-          ml={1}
-          mt={1}
-          _hover={{ boxShadow: "lg" }}
-          onClick={handleMenuToggle}
-          data-cy="2-dots-episode-card"
-        />
+        <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} mt={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} data-cy="2-dots-episode-card" />
         <MenuList
           style={{
             backgroundColor: "rgba(50, 50, 50, 0.8)",
@@ -152,13 +138,12 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               fontWeight: "bold",
             }}
             style={{ backgroundColor: "transparent" }}
-            onClick={handleAddToPlaylistMenuToggle}
+            onClick={() => {
+              handleAddPlaylistClick();
+              handleAddToPlaylistMenuToggle();
+            }}
           >
-            Add to Playlist{" "}
-            <MdOutlinePlaylistAdd
-              size={24}
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Add to Playlist <MdOutlinePlaylistAdd size={24} style={{ marginLeft: "auto", color: "white" }} onClick={handleAddPlaylistClick} />
           </MenuItem>
           {inPlaylist && (
             <MenuItem
@@ -169,11 +154,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               style={{ backgroundColor: "transparent", color: "red" }}
               onClick={() => handleRemovePlaylistMenuToggle()}
             >
-              Remove from Playlist{" "}
-              <MdDelete
-                size={24}
-                style={{ marginLeft: "auto", color: "red" }}
-              />
+              Remove from Playlist <MdDelete size={24} style={{ marginLeft: "auto", color: "red" }} />
             </MenuItem>
           )}
           <MenuDivider />
@@ -187,11 +168,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play "{episode.episodeName}"{" "}
-            <BsPlayFill
-              size="20px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Play "{episode.episodeName}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
           <MenuItem
             onClick={() => handleMenuItemClick("playNext")}
@@ -203,11 +180,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play Next{" "}
-            <TbPlayerTrackNextFilled
-              size="18px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
           <MenuItem
             onClick={() => handleMenuItemClick("playLater")}
@@ -219,11 +192,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               backgroundColor: "transparent",
             }}
           >
-            Play Later{" "}
-            <BsFillSkipForwardFill
-              size="18px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
           <MenuDivider />
           <MenuItem
@@ -232,15 +201,9 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               fontWeight: "bold",
             }}
-            style={{
-              backgroundColor: "transparent",
-            }}
+            backgroundColor="transparent"
           >
-            Share{" "}
-            <MdIosShare
-              size="20px"
-              style={{ marginLeft: "auto", color: "white" }}
-            />
+            Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
         </MenuList>
       </Menu>
@@ -254,11 +217,9 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <AddToPlaylistModal
-        isOpen={isAddToPlaylistModalOpen}
-        onClose={() => setIsAddToPlaylistModalOpen(false)}
-        episode={episode}
-      />
+      <AddToPlaylistModal isOpen={isAddToPlaylistModalOpen} onClose={() => setIsAddToPlaylistModalOpen(false)} episode={episode} />
+      {/* LoginPrompt */}
+      {showLoginPrompt && <LoginPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account." />}
     </div>
   );
 };

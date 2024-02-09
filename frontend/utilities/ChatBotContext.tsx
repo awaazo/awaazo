@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import { Chatbot, Episode } from "../types/Interfaces";
 
 interface ChatBotState {
   isOpen: boolean;
   currentEpisodeId: string | null;
+  Chatbot: Chatbot[];
+  episode: Episode;
 }
 
 interface ChatBotContextProps {
@@ -10,13 +13,13 @@ interface ChatBotContextProps {
   dispatch: React.Dispatch<any>;
 }
 
-const ChatBotContext = createContext<ChatBotContextProps | undefined>(
-  undefined,
-);
+const ChatBotContext = createContext<ChatBotContextProps | undefined>(undefined);
 
 const initialState: ChatBotState = {
   isOpen: false,
   currentEpisodeId: null,
+  Chatbot: [] as Chatbot[],
+  episode: null,
 };
 
 interface ChatBotProviderProps {
@@ -40,16 +43,10 @@ const chatBotReducer = (state: ChatBotState, action: any) => {
   }
 };
 
-export const ChatBotProvider: React.FC<ChatBotProviderProps> = ({
-  children,
-}) => {
+export const ChatBotProvider: React.FC<ChatBotProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(chatBotReducer, initialState);
 
-  return (
-    <ChatBotContext.Provider value={{ state, dispatch }}>
-      {children}
-    </ChatBotContext.Provider>
-  );
+  return <ChatBotContext.Provider value={{ state, dispatch }}>{children}</ChatBotContext.Provider>;
 };
 
 export const useChatBot = () => {

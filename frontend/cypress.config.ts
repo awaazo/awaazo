@@ -10,6 +10,7 @@ export default defineConfig({
       "cypress/e2e/**/Register.cy.tsx",
       "cypress/e2e/**/Login.cy.tsx",
       "cypress/e2e/**/Logout.cy.tsx",
+      "cypress/e2e/**/LoginPrompt.cy.tsx",
       "cypress/e2e/**/EditProfile.cy.tsx",
       "cypress/e2e/**/ChangePassword.cy.tsx",
       "cypress/e2e/**/Podcast.cy.tsx", 

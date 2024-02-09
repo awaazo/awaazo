@@ -29,7 +29,7 @@ import { convertTime } from "../../utilities/commonUtils";
 import { usePalette } from "color-thief-react";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
-import { SaveWatchHistoryRequest } from "../../utilities/Requests";
+import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";

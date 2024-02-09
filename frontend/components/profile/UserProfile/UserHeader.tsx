@@ -20,7 +20,7 @@ import { useSession } from "next-auth/react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import router from "next/router";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
-import { userProfileByID } from "../../../utilities/Interfaces";
+import { userProfileByID } from "../../../types/Interfaces";
 
 const iconProps = {
   variant: "ghost",

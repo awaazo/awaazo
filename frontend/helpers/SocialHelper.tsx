@@ -1,7 +1,7 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, IsLikedResponse } from "../utilities/Responses";
-import { request } from "http";
+import { BaseResponse, IsLikedResponse } from "../types/Responses";
+
 
 export default class SocialHelper {
   static getEpisodeComments() {

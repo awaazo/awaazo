@@ -26,7 +26,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Episode, Playlist } from "../../utilities/Interfaces";
+import { Episode, Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import EpisodeCard from "../cards/EpisodeCard";
 import { RiPlayList2Fill } from "react-icons/ri";
@@ -40,7 +40,7 @@ import { MdDelete, MdIosShare } from "react-icons/md";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
-import { PlaylistEditRequest } from "../../utilities/Requests";
+import { PlaylistEditRequest } from "../../types/Requests";
 import ShareComponent from "../social/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {

@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import SectionHelper from "../../helpers/SectionHelper";
-import { Episode } from "../../utilities/Interfaces";
+import { Episode } from "../../types/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 
