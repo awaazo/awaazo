@@ -33,12 +33,11 @@ import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
-import { is } from "cypress/types/bluebird";
+
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
-  const { episode, currentEpisodeIndex } = state;
-  const [currentIndex, setCurrentIndex] = useState(currentEpisodeIndex);
+  const { episode } = state;
   const isEpisodeLoaded = !!episode;
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
@@ -83,12 +82,11 @@ const PlayerBar = () => {
       audioRef.current.load();
       audioRef.current.addEventListener("loadedmetadata", () => {
         setDuration(audioRef.current.duration);
-      });
-      setIsPlaying(false);
-      setIsPlaying(true);
+        setIsPlaying(true); 
+      }, { once: true }); 
     }
   }, [audioUrl]);
-
+  
   useEffect(() => {
     isPlaying ? audioRef.current.play() : audioRef.current.pause();
   }, [isPlaying]);
