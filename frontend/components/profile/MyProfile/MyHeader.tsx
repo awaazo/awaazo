@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { UserProfile } from "../../../types/Interfaces";
 import { useSession } from "next-auth/react";
-import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa";
+import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
 import router from "next/router";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
@@ -123,7 +123,7 @@ export default function Header() {
             aria-label={"Twitter Account"}
             colorScheme={"gray"}
             rounded="full"
-            icon={<FaXTwitter />} // Corrected icon for Twitter
+            icon={<FaXTwitter />} 
             {...iconProps}
           />
           <IconButton
