@@ -31,7 +31,6 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
       width="100%"
       borderRadius="15px"
       bg={"rgba(0, 0, 0, 0.2)"}
-      backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer" }}
       onClick={isMobile ? handleEpisodeClick : null}
