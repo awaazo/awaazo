@@ -34,10 +34,10 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
 
+
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
-  const { episode, currentEpisodeIndex } = state;
-  const [currentIndex, setCurrentIndex] = useState(currentEpisodeIndex);
+  const { episode } = state;
   const isEpisodeLoaded = !!episode;
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
@@ -60,8 +60,7 @@ const PlayerBar = () => {
   // Fetch and load audio URL
   useEffect(() => {
     const fetchAudio = async () => {
-      if (isPlaying) togglePlayPause();
-      setIsLoading(true);
+      if (isPlaying) setIsLoading(true);
       try {
         const url = await getEpisodePlaying(episode.podcastId, episode.id);
         setAudioUrl(url);
@@ -72,7 +71,9 @@ const PlayerBar = () => {
       }
     };
 
-    if (isEpisodeLoaded) fetchAudio();
+    if (isEpisodeLoaded) {
+      fetchAudio();
+    }
   }, [episode]);
 
   useEffect(() => {
@@ -81,10 +82,11 @@ const PlayerBar = () => {
       audioRef.current.load();
       audioRef.current.addEventListener("loadedmetadata", () => {
         setDuration(audioRef.current.duration);
-      });
+        setIsPlaying(true); 
+      }, { once: true }); 
     }
   }, [audioUrl]);
-
+  
   useEffect(() => {
     isPlaying ? audioRef.current.play() : audioRef.current.pause();
   }, [isPlaying]);
