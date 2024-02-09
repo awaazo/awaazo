@@ -221,7 +221,6 @@ export default function PodcastOverview({ podcast, User }) {
               ) : (
                 podcast.episodes.map((episode, index) => (
                   <EpisodeCard
-                    key={index}
                     episode={episode}
                     inPlaylist={false}
                     playlistId={null}
@@ -291,7 +290,6 @@ export default function PodcastOverview({ podcast, User }) {
               ) : (
                 podcast.episodes.map((episode, index) => (
                   <EpisodeCard
-                    key={index}
                     episode={episode}
                     inPlaylist={false}
                     playlistId={null}

@@ -17,6 +17,7 @@ import {
   GetWatchHistoryResponse,
   GetMetricsResponse,
   SearchEpisodeResponse,
+  AllEpisodeResponse,
 } from "../types/Responses";
 
 export default class PodcastHelper {
@@ -108,6 +109,98 @@ export default class PodcastHelper {
         status: error.response.status,
         message: error.response.statusText,
         myPodcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all getRecentPodcasts from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastGetRecentPodcasts = async (
+    page,
+    pageSize,
+  ): Promise<AllPodcastResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getRecentPodcastsEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+    };
+
+    try {
+      console.debug("Sending the following podcastGetRecentPodcasts...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.log(
+        "Received the following podcastGetRecentPodcasts... \n" +
+          requestResponse,
+      );
+
+      console.debug("Received the following podcastGetRecentPodcasts...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        podcasts: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        podcasts: null,
+      };
+    }
+  };
+
+  /**
+   * Gets all getRecentEpisodes from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static podcastGetRecentEpisodes = async (
+    page,
+    pageSize,
+  ): Promise<AllEpisodeResponse> => {
+    // Create the request options.
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getRecentEpisodesEndpoint(page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following podcastGetRecentEpisodes...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following podcastGetRecentEpisodes...");
+      console.debug(requestResponse);
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        episode: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        episode: null,
       };
     }
   };

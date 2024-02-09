@@ -3,7 +3,7 @@ export interface Podcast {
   coverArtUrl: string;
   name: string;
   podcasterId: string;
-  podcaster: string; 
+  podcaster: string;
   description: string;
   tags: string[];
   isExplicit: boolean;

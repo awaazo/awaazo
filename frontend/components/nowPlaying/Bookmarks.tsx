@@ -6,7 +6,7 @@ import {
   Flex,
   useBreakpointValue,
   Icon,
-  IconButton
+  IconButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Bookmark } from "../../types/Interfaces";
@@ -52,26 +52,25 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
             console.error("Error fetching bookmarks data:", res.message);
           }
         })
-        .catch((error) => console.error("Error fetching bookmarks data:", error));
+        .catch((error) =>
+          console.error("Error fetching bookmarks data:", error),
+        );
     }
   }, [bookmarks]);
 
-
-   // Function to handle the bookmark/delete bookmark action
- const handleDeleteBookmark = (bookmarkId) => {
-  console.log("id: ",bookmarkId);
-  // Send the request to delete bookmark
-  BookmarksHelper.deleteEpisodeBookmark(bookmarkId)
-  .then((response) => {
-    if (response.status === 200) {
-      setDeletedBookmark(bookmarkId);
-      console.log("Bookmark " + bookmarkId + " deleted");
-    } else {
-      console.error("Error deleting bookmark", response.message);
-    }
-  });
-
-};
+  // Function to handle the bookmark/delete bookmark action
+  const handleDeleteBookmark = (bookmarkId) => {
+    console.log("id: ", bookmarkId);
+    // Send the request to delete bookmark
+    BookmarksHelper.deleteEpisodeBookmark(bookmarkId).then((response) => {
+      if (response.status === 200) {
+        setDeletedBookmark(bookmarkId);
+        console.log("Bookmark " + bookmarkId + " deleted");
+      } else {
+        console.error("Error deleting bookmark", response.message);
+      }
+    });
+  };
 
   return (
     <Box
@@ -101,7 +100,14 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
               <Text fontSize={fontSize} color="white">
                 {bookmark.title}
               </Text>
-              <IconButton icon={<Icon as={FaTrash} />} variant={"ghost"} aria-label="Delete Bookmark" data-cy={`delete-bookmark-id:`} onClick={() => handleDeleteBookmark(bookmark.id)} size="md" />
+              <IconButton
+                icon={<Icon as={FaTrash} />}
+                variant={"ghost"}
+                aria-label="Delete Bookmark"
+                data-cy={`delete-bookmark-id:`}
+                onClick={() => handleDeleteBookmark(bookmark.id)}
+                size="md"
+              />
             </Flex>
             <Flex justify="space-between" align="center">
               <Text fontSize={fontSize} color="gray.500">
