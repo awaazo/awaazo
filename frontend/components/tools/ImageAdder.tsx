@@ -1,6 +1,22 @@
 import React, { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import { Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, HStack, IconButton, useDisclosure, VStack, Img } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  HStack,
+  IconButton,
+  useDisclosure,
+  VStack,
+  Img,
+} from "@chakra-ui/react";
 import { AddIcon, MinusIcon, CheckIcon } from "@chakra-ui/icons";
 import { useDropzone } from "react-dropzone";
 
@@ -23,7 +39,7 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
         onOpen();
       }
     },
-    [onOpen]
+    [onOpen],
   );
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
@@ -43,7 +59,17 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
         image.onload = resolve;
       });
 
-      ctx.drawImage(image, croppedAreaPixels.x, croppedAreaPixels.y, croppedAreaPixels.width, croppedAreaPixels.height, 0, 0, croppedAreaPixels.width, croppedAreaPixels.height);
+      ctx.drawImage(
+        image,
+        croppedAreaPixels.x,
+        croppedAreaPixels.y,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height,
+        0,
+        0,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height,
+      );
 
       return new Promise<string>((resolve) => {
         canvas.toBlob((blob) => {
@@ -73,7 +99,7 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
         onOpen();
       }
     },
-    [onOpen]
+    [onOpen],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -95,10 +121,24 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
 
   return (
     <>
-      <Box {...getRootProps()} border="2px dotted gray" borderRadius="2em" textAlign="center" width="15rem" height="15rem" padding="1em" marginBottom="1em">
+      <Box
+        {...getRootProps()}
+        border="2px dotted gray"
+        borderRadius="2em"
+        textAlign="center"
+        width="15rem"
+        height="15rem"
+        padding="1em"
+        marginBottom="1em"
+      >
         <input {...getInputProps()} style={{ display: "none" }} />
         {!imageSrc ? (
-          <VStack justifyContent="center" alignItems="center" height="100%" spacing={4}>
+          <VStack
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+            spacing={4}
+          >
             <Text fontSize="1em" textAlign="center">
               Drag & drop a cover image here, or click to select one
             </Text>
@@ -107,28 +147,65 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
             </Text>
           </VStack>
         ) : (
-          <Img src={imageSrc} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
+          <Img
+            src={imageSrc}
+            alt="Preview"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: "inherit",
+            }}
+          />
         )}
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent maxW="70vw" maxH="70vh">
+        <ModalContent maxW="600px" maxH={"100vh"}>
           <ModalHeader>Crop your image</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             {imageSrc && (
-              <Box width="100%" height="500px" position="relative">
-                <Cropper image={imageSrc} crop={crop} zoom={zoom} aspect={1} onCropChange={setCrop} onCropComplete={onCropComplete} onZoomChange={setZoom} cropShape="rect" showGrid={false} />
+              <Box
+                width="500px"
+                height="500px"
+                minHeight={"70vh"}
+                position="relative"
+              >
+                <Cropper
+                  image={imageSrc}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  cropShape="rect"
+                  showGrid={false}
+                />
                 <HStack justify="center" spacing={4} mt={2}>
-                  <IconButton aria-label="Zoom out" icon={<MinusIcon />} onClick={zoomOut} />
-                  <IconButton aria-label="Zoom in" icon={<AddIcon />} onClick={zoomIn} />
+                  <IconButton
+                    aria-label="Zoom out"
+                    icon={<MinusIcon />}
+                    onClick={zoomOut}
+                  />
+                  <IconButton
+                    aria-label="Zoom in"
+                    icon={<AddIcon />}
+                    onClick={zoomIn}
+                  />
                 </HStack>
               </Box>
             )}
           </ModalBody>
           <ModalFooter>
-            <Button bg="black.100" _hover={{ bg: "brand.100" }} rightIcon={<CheckIcon />} onClick={handleDone}>
+            <Button
+              bg="black.100"
+              _hover={{ bg: "brand.100" }}
+              rightIcon={<CheckIcon />}
+              onClick={handleDone}
+            >
               Done
             </Button>
           </ModalFooter>
