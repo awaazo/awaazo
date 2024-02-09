@@ -20,8 +20,6 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
-
-
     /// <summary>
     /// Current database instance
     /// </summary>
@@ -53,7 +51,6 @@ public class PodcastService : IPodcastService
     /// Maximum audio file is 1GB
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
-
 
     /// <summary>
     /// Maximum request size
@@ -572,7 +569,7 @@ public class PodcastService : IPodcastService
             IsExplicit = request.IsExplicit,
             ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
         };
 
         // Check if the episode is explicit and the podcast is not
@@ -591,7 +588,7 @@ public class PodcastService : IPodcastService
         try
         {
             // Send request to PY server to generate a transcript
-            var url = _pyBaseUrl+"/stt_ingest";
+            var url = _pyBaseUrl + "/stt_ingest";
             var json = $@"{{
                 ""podcast_id"": ""{episode.PodcastId}"",
                 ""episode_id"": ""{episode.Id}""
@@ -677,7 +674,7 @@ public class PodcastService : IPodcastService
                 RemoveTranscript(episodeId, episode.PodcastId);
 
                 // Send request to PY server to generate a transcript
-                var url = _pyBaseUrl+"/stt_ingest";
+                var url = _pyBaseUrl + "/stt_ingest";
                 var json = $@"{{
                     ""podcast_id"": ""{episode.PodcastId}"",
                     ""episode_id"": ""{episode.Id}""
@@ -846,6 +843,7 @@ public class PodcastService : IPodcastService
             .Include(e => e.Points)
             .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
+
         // Return the episode response
         return new EpisodeResponse(episode, domainUrl);
     }
@@ -948,6 +946,8 @@ public class PodcastService : IPodcastService
     }
 
     #endregion Watch History
+
+    #region Transcription
 
     /// <summary>
     /// Gets the transcript for the given episode.
@@ -1091,8 +1091,42 @@ public class PodcastService : IPodcastService
         return true;
     }
 
+    /// <summary>
+    /// Generates a transcript for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to generate the transcript</param>
+    /// <param name="user">User who is generating the transcript</param>
+    /// <returns>True if the transcript was generated successfully, false otherwise</returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Check if the user owns the podcast of the episode
+        if(await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
+        {
+            // Send request to PY server to generate a transcript
+            var url = _pyBaseUrl + "/stt";
+            var json = $@"{{
+                ""podcast_id"": ""{episode.PodcastId}"",
+                ""episode_id"": ""{episode.Id}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var resp = await httpClient.PostAsync(url, content);
+
+            return resp.StatusCode == HttpStatusCode.OK;
+        }
+        else
+            throw new Exception("User does not have permission to generate transcript for this episode.");
+    }
 
 
+
+    #endregion Transcription
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes
@@ -1230,6 +1264,16 @@ public class PodcastService : IPodcastService
 
     #region Episode Chat
 
+    /// <summary>
+    /// Get the episode chat for the given episode.
+    /// </summary>
+    /// <param name="page"> The page of the chat to get.</param>
+    /// <param name="pageSize"> The size of the page to get.</param>
+    /// <param name="episodeId"> The episode ID to get the chat for.</param>
+    /// <param name="user"> The user that is requesting the chat.</param>
+    /// <param name="domainUrl"> The domain URL to use for the response.</param>
+    /// <returns> The episode chat response.</returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
     public async Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
@@ -1238,7 +1282,7 @@ public class PodcastService : IPodcastService
         // Get the episode chat messages
         List<EpisodeChatMessage> chatMessages = await _db.EpisodeChatMessages
             .Where(m => m.EpisodeId == episodeId)
-            .OrderByDescending(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt)
             .Skip(page * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -1247,37 +1291,21 @@ public class PodcastService : IPodcastService
         return new EpisodeChatResponse(chatMessages, user, episodeId, domainUrl);
     }
 
+    /// <summary>
+    /// Prompt the episode chat with a question and get a response.
+    /// </summary>
+    /// <param name="episodeId"> The episode ID to prompt the chat for.</param>
+    /// <param name="user"> The user that is prompting the chat.</param>
+    /// <param name="prompt"> The question to prompt the chat with.</param>
+    /// <param name="domainUrl"> The domain URL to use for the response.</param>
+    /// <returns> The response from the chat.</returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
     public async Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
-        var url = _pyBaseUrl+"/chat";
-        var json = $@"{{
-            ""podcast_id"": ""{episode.PodcastId}"",
-            ""episode_id"": ""{episodeId}"",
-            ""prompt"": ""{prompt}""
-        }}";
-
-        string responseText = string.Empty;
-
-        try
-        {
-            using var httpClient = new HttpClient();
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(url, content);
-
-            // Handle the response here
-            responseText = await response.Content.ReadAsStringAsync();
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-
-        if (string.IsNullOrEmpty(responseText))
-            responseText = "Sorry, but I can't answer your question right now. Please try again later.";
-
+        // Create the prompt message
         EpisodeChatMessage promptMessage = new()
         {
             Id = Guid.NewGuid(),
@@ -1289,22 +1317,57 @@ public class PodcastService : IPodcastService
             UpdatedAt = DateTime.Now
         };
 
+
+        string defaultErrorMsg = "Sorry, but I can't answer your question right now. Please try again later.";
+
+        // Send request to PY server to chat with the episode
+        var url = _pyBaseUrl + "/chat";
+        var json = $@"{{
+            ""podcast_id"": ""{episode.PodcastId}"",
+            ""episode_id"": ""{episodeId}"",
+            ""prompt"": ""{prompt}""
+        }}";
+
+        // Response text from PY server
+        string responseText = string.Empty;
+
+        try
+        {
+            // Send request to PY server to generate a chat response
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync(url, content);
+
+            // If the response is not successful, return the default error message
+            if (!response.IsSuccessStatusCode)
+                responseText = defaultErrorMsg;
+            else
+                responseText = await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        // Create the response message
         EpisodeChatMessage responseMessage = new()
         {
             Id = Guid.NewGuid(),
             EpisodeId = episodeId,
-            UserId = Guid.Empty,
+            UserId = user.Id,
             Message = responseText,
             IsPrompt = false,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
 
+        // Add the messages to the database
         await _db.EpisodeChatMessages.AddAsync(promptMessage);
         await _db.EpisodeChatMessages.AddAsync(responseMessage);
 
+        // Save the changes to the database
         await _db.SaveChangesAsync();
-        
+
         // Return the chat with the messages
         return new EpisodeChatMessageResponse(responseMessage, user, domainUrl);
     }

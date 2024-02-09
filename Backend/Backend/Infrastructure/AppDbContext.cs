@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Backend.Infrastructure;
 

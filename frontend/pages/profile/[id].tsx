@@ -12,7 +12,7 @@ import {
 import { AddIcon, DeleteIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import { MdEdit } from "react-icons/md";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
-import { UserProfile } from "../../utilities/Interfaces";
+import { UserProfile } from "../../types/Interfaces";
 import { useRouter } from "next/router";
 import UserHeader from "../../components/profile/UserProfile/UserHeader";
 import UserEpisodes from "../../components/profile/UserProfile/UserEpisodes";

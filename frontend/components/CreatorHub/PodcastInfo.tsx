@@ -1,11 +1,31 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Flex, Wrap, Box, Text, WrapItem, Button, Tooltip, IconButton, Icon, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, VStack, useDisclosure, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Flex,
+  Wrap,
+  Box,
+  Text,
+  WrapItem,
+  Button,
+  Tooltip,
+  IconButton,
+  Icon,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  VStack,
+  useDisclosure,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { MdEdit } from "react-icons/md";
 import EditPodcastForm from "./EditPodcast";
 import MyEpisodes from "./MyEpisodes";
 import { useEffect, useState } from "react";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { Episode, Metrics } from "../../utilities/Interfaces";
+import { Episode, Metrics } from "../../types/Interfaces";
 import { GiHeptagram } from "react-icons/gi";
 
 const PodcastInfo = ({ podcastId }) => {
@@ -89,9 +109,18 @@ const PodcastInfo = ({ podcastId }) => {
           {/* Display tags */}
           {tags.map((tag, index) => (
             <WrapItem key={index}>
-              <Box bg="brand.200" px={2} py={1} borderRadius="1em" display="flex" alignItems="center">
+              <Box
+                bg="brand.200"
+                px={2}
+                py={1}
+                borderRadius="1em"
+                display="flex"
+                alignItems="center"
+              >
                 <Icon as={GiHeptagram} color="brand.600" />
-                <Text fontSize="sm" ml={2}>{tag}</Text>
+                <Text fontSize="sm" ml={2}>
+                  {tag}
+                </Text>
               </Box>
             </WrapItem>
           ))}
@@ -100,29 +129,83 @@ const PodcastInfo = ({ podcastId }) => {
           {isMobile ? (
             <Box>
               <Tooltip label="Edit Podcast" aria-label="Edit Podcast Tooltip">
-                <IconButton variant="ghost" fontSize="lg" rounded="full" opacity={0.7} color="white" aria-label="Edit Podcast" icon={<Icon as={MdEdit} />} onClick={() => openEditPodcastModal()} />
+                <IconButton
+                  variant="ghost"
+                  fontSize="lg"
+                  rounded="full"
+                  opacity={0.7}
+                  color="white"
+                  aria-label="Edit Podcast"
+                  icon={<Icon as={MdEdit} />}
+                  onClick={() => openEditPodcastModal()}
+                />
               </Tooltip>
             </Box>
           ) : (
-            <Button onClick={() => openEditPodcastModal()} display="flex"  borderRadius="1em" padding="1em" color="white" bg="brand.100" >
-             
+            <Button
+              onClick={() => openEditPodcastModal()}
+              display="flex"
+              borderRadius="1em"
+              padding="1em"
+              color="white"
+              bg="brand.100"
+            >
               <Text fontSize="md"> Edit Podcast</Text>
             </Button>
           )}
           {/* Edit button */}
-          <IconButton onClick={onOpen} disabled={isDeleting} variant="ghost" size={isMobile === true ? "sm" : "lg"} rounded={"full"} opacity={0.7} mr={3} color="red" aria-label="Delete">
-            <DeleteIcon w={isMobile === true ? "5" : "6"} h={isMobile === false ? "5" : "6"} color="#FF6666" data-cy={`podcast-delete`} />
+          <IconButton
+            onClick={onOpen}
+            disabled={isDeleting}
+            variant="ghost"
+            size={isMobile === true ? "sm" : "lg"}
+            rounded={"full"}
+            opacity={0.7}
+            mr={3}
+            color="red"
+            aria-label="Delete"
+          >
+            <DeleteIcon
+              w={isMobile === true ? "5" : "6"}
+              h={isMobile === false ? "5" : "6"}
+              color="#FF6666"
+              data-cy={`podcast-delete`}
+            />
           </IconButton>
         </Box>
       </Flex>
 
       {isMobile ? (
         <Box>
-          <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="0.5em" marginTop="1em" wordBreak="break-word">
+          <Text
+            backgroundColor="rgba(0, 0, 0, 0.1)"
+            backdropFilter="blur(10px)"
+            borderRadius="1em"
+            padding="1em"
+            outline="2px solid rgba(255, 255, 255, 0.1)"
+            marginBottom="0.5em"
+            marginTop="1em"
+            wordBreak="break-word"
+          >
             {description}
           </Text>
-          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
+          <Box
+            backdropFilter="blur(10px)"
+            borderRadius="1em"
+            padding="1em"
+            marginTop="1em"
+            outline="2px solid rgba(255, 255, 255, 0.1)"
+            marginBottom="2em"
+          >
+            <Box
+              backgroundColor="rgba(0, 0, 0, 0.1)"
+              backdropFilter="blur(10px)"
+              borderRadius="1em"
+              padding="2em"
+              marginTop="1em"
+              outline="2px solid rgba(255, 255, 255, 0.1)"
+              marginBottom="2em"
+            >
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
               {/* {metrics && (
@@ -164,17 +247,27 @@ const PodcastInfo = ({ podcastId }) => {
           </Box>
           <>
             <Box display="flex" alignItems="center">
-              <Text fontSize="md" style={{ fontWeight: "bold", paddingLeft: 15 }}>
+              <Text
+                fontSize="md"
+                style={{ fontWeight: "bold", paddingLeft: 15 }}
+              >
                 Episodes:
               </Text>{" "}
             </Box>
 
             {episodes.length === 0 ? (
-              <Text align={"center"} fontSize="md" fontWeight="normal" marginTop="2em">
+              <Text
+                align={"center"}
+                fontSize="md"
+                fontWeight="normal"
+                marginTop="2em"
+              >
                 (This podcast has no episodes yet)
               </Text>
             ) : (
-              episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
+              episodes.map((episode, index) => (
+                <MyEpisodes episode={episode} key={index} />
+              ))
             )}
           </>
         </Box>
@@ -192,10 +285,26 @@ const PodcastInfo = ({ podcastId }) => {
             }}
           >
             {/* Description and statistics */}
-            <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="0.5em" marginTop="1em">
+            <Text
+              backgroundColor="rgba(0, 0, 0, 0.1)"
+              backdropFilter="blur(10px)"
+              borderRadius="1em"
+              padding="2em"
+              outline="2px solid rgba(255, 255, 255, 0.1)"
+              marginBottom="0.5em"
+              marginTop="1em"
+            >
               {description}
             </Text>
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
+            <Box
+              backgroundColor="rgba(0, 0, 0, 0.1)"
+              backdropFilter="blur(10px)"
+              borderRadius="1em"
+              padding="2em"
+              marginTop="1em"
+              outline="2px solid rgba(255, 255, 255, 0.1)"
+              marginBottom="2em"
+            >
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
               {/* {metrics && (
@@ -239,11 +348,18 @@ const PodcastInfo = ({ podcastId }) => {
           {/* Podcast mapping on the right */}
           <Box flex="1" paddingLeft="25px" marginTop="1.5em">
             {episodes.length === 0 ? (
-              <Text align={"center"} fontSize="lg" fontWeight="normal" marginTop="5em">
+              <Text
+                align={"center"}
+                fontSize="lg"
+                fontWeight="normal"
+                marginTop="5em"
+              >
                 (This podcast has no episodes yet)
               </Text>
             ) : (
-              episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
+              episodes.map((episode, index) => (
+                <MyEpisodes episode={episode} key={index} />
+              ))
             )}
           </Box>
         </Flex>
@@ -272,11 +388,24 @@ const PodcastInfo = ({ podcastId }) => {
       {/* Modal for editing a podcast */}
       <Modal isOpen={isModalPodcastOpen} onClose={closeEditPodcastModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent boxShadow="dark-lg" backdropFilter="blur(40px)" display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={"10%"} padding={"2em"}>
+        <ModalContent
+          boxShadow="dark-lg"
+          backdropFilter="blur(40px)"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          marginTop={"10%"}
+          padding={"2em"}
+        >
           <ModalCloseButton />
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <VStack spacing={5} align="center" backgroundColor={"transparent"}>
+              <VStack
+                spacing={5}
+                align="center"
+                backgroundColor={"transparent"}
+              >
                 <Text>Edit Podcast: {podcastName}</Text>
                 <EditPodcastForm podcastId={podcastId} />
               </VStack>

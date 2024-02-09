@@ -127,12 +127,14 @@ public class Program
         });
 
 
+
+
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithOrigins("http://localhost:3000", "https://localhost:3000",
                 "http://localhost:3500", "https://localhost:3500",
-                "https://*.awaazo.com/*")
+                "https://*.awaazo.com/*","http://localhost:8500", "http://py:8000")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -170,6 +172,7 @@ public class Program
             builder.UseMiddleware<ValidateUser>();
         });
 
+
         app.MapControllers();
 
         using (var scope = app.Services.CreateScope())
@@ -177,6 +180,8 @@ public class Program
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             dbContext.Database.Migrate();
         }
+
+        Console.Write("Delete me!");
 
         app.Run();
     }

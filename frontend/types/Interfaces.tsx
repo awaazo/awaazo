@@ -3,7 +3,7 @@ export interface Podcast {
   coverArtUrl: string;
   name: string;
   podcasterId: string;
-  podcaster: string; 
+  podcaster: string;
   description: string;
   tags: string[];
   isExplicit: boolean;
@@ -25,6 +25,8 @@ export interface Episode {
   releaseDate: Date;
   isExplicit?: boolean;
   playCount?: number;
+  isTranscriptionReady: boolean;
+  transcriptionStatus: string;
   likes: {
     count: number;
     isLiked: boolean;
@@ -251,4 +253,15 @@ export interface MySubscriptions {
   averageRating?: number;
   totalRatings?: number;
   ratings?: PodcastRating[];
+}
+
+export interface Chatbot{
+  id: string;
+  userId: string;
+  episodeId: string;
+  message: string;
+  isPrompt: boolean;
+  username: string;
+  avatarUrl: string;
+  sentAt: Date;
 }

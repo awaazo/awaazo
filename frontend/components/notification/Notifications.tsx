@@ -24,7 +24,7 @@ import { BellIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import AuthHelper from "../../helpers/AuthHelper";
-import { Notification } from "../../utilities/Interfaces";
+import { Notification } from "../../types/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
 
@@ -210,13 +210,7 @@ const Notifications = ({ initialNotifcationCount }) => {
           opacity={0.7}
           mr={2}
         />
-        <MenuList
-          minWidth={"400px"}
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          }}
-          backdropFilter={"blur(50px)"}
-        >
+        <MenuList minWidth={"400px"}>
           <Tabs isFitted>
             <TabList mb="1em">
               <Tab>All</Tab>

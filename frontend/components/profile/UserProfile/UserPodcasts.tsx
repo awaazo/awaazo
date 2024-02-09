@@ -20,7 +20,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 import NextLink from "next/link";
-import { Podcast } from "../../../utilities/Interfaces";
+import { Podcast } from "../../../types/Interfaces";
 import AuthHelper from "../../../helpers/AuthHelper";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../cards/PodcastCard";

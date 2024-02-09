@@ -1,10 +1,7 @@
 import axios from "axios";
-import { BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../utilities/Responses";
+import {  GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../types/Responses";
 import EndpointHelper from "./EndpointHelper";
-import RestHelper, { UserInfo } from "./RestHelper";
-import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../utilities/Requests";
-import { data } from "cypress/types/jquery";
-import { UserMenuInfo } from "../utilities/Interfaces";
+import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../types/Requests";
 
 
 

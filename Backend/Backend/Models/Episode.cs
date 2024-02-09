@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
+using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Models;
 
