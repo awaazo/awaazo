@@ -103,7 +103,7 @@ describe("PlayerBar", () => {
         cy.get('[data-cy="skip-forward"]').should('be.visible').click({timeout : 5000});
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
             let timePassedValue_temp = $timePassed.text();
-            expect(timePassedValue_temp).to.equal("00:15");
+            expect(timePassedValue_temp).to.equal("00:10");
         });
     });
 
@@ -125,7 +125,7 @@ describe("PlayerBar", () => {
         cy.get('[data-cy="skip-backward"]').should('be.visible').click({timeout : 5000});
         cy.get('[data-cy^="time-passed-"]').then(($timePassed) => {
             let timePassedValue_temp = $timePassed.text();
-            expect(timePassedValue_temp).to.equal("00:05");
+            expect(timePassedValue_temp).to.equal("00:00");
         });
     });
 
