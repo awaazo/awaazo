@@ -1,7 +1,7 @@
-import Axios from 'axios';
+import axios from 'axios';
 import EndpointHelper from '../helpers/EndpointHelper';
 import { BaseResponse } from '../types/Responses';
-import axios from 'axios';
+
 
 export default class SubscribeHelper{
     static getSubscribe(){
@@ -95,7 +95,7 @@ export default class SubscribeHelper{
         };
 
         try {
-            const response = await Axios(options);
+            const response = await axios(options);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -117,7 +117,7 @@ export default class SubscribeHelper{
         };
 
         try {
-            const response = await Axios(options);
+            const response = await axios(options);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -138,7 +138,7 @@ export default class SubscribeHelper{
         };
 
         try {
-            const response = await Axios(options);
+            const response = await axios(options);
             return response.data;
         } catch (error) {
             console.log(error);

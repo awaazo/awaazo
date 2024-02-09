@@ -1,15 +1,7 @@
-import axios, {
-  AxiosProgressEvent,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from "axios";
+import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
 import { SectionAddRequest } from "../types/Requests";
-import {
-  AddSectionResponse,
-  BaseResponse,
-  getSectionResponse,
-} from "../types/Responses";
+import { AddSectionResponse, BaseResponse, getSectionResponse } from "../types/Responses";
 
 export default class PodcastHelper {
   static getUserProfile() {
@@ -21,10 +13,7 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static sectionCreateRequest = async (
-    requestData: SectionAddRequest,
-    episodeId,
-  ): Promise<AddSectionResponse> => {
+  public static sectionCreateRequest = async (requestData: SectionAddRequest, episodeId): Promise<AddSectionResponse> => {
     // Create the request options.
     const options = {
       method: "POST",
@@ -69,9 +58,7 @@ export default class PodcastHelper {
    * Gets all sections from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static sectionGetRequest = async (
-    episodeId,
-  ): Promise<getSectionResponse> => {
+  public static sectionGetRequest = async (episodeId): Promise<getSectionResponse> => {
     // Create the request options.
     const options = {
       method: "Get",
@@ -113,9 +100,7 @@ export default class PodcastHelper {
    * Deletes a section by sectionId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static sectionDeleteRequest = async (
-    sectionId,
-  ): Promise<BaseResponse> => {
+  public static sectionDeleteRequest = async (sectionId): Promise<BaseResponse> => {
     // Create the request options.
     const options = {
       method: "Delete",

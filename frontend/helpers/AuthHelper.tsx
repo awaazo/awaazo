@@ -1,8 +1,8 @@
 import axios from "axios";
-import { BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse, GetResetPasswordResponse } from "../types/Responses";
-import EndpointHelper from "./EndpointHelper";
-import { GoogleSSORequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from "../types/Requests";
 
+import {  BaseResponse, GoogleSSOResponse, LoginResponse, LogoutResponse, MeResponse, RegisterResponse } from "../types/Responses";
+import EndpointHelper from "./EndpointHelper";
+import { GoogleSSORequest, LoginRequest, RegisterRequest } from "../types/Requests";
 
 
 
