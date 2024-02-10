@@ -529,7 +529,7 @@ public class SocialService : ISocialService
         }
 
         // Check whether the person gifting is different person not the podcaster
-        Episode? ep1 = await _db.Episodes.Include(u => u.Podcast).FirstOrDefaultAsync(u => u.Podcast.PodcasterId == user.Id);
+        Episode? ep1 = await _db.Episodes.Include(u => u.Podcast).FirstOrDefaultAsync(u => u.Podcast.PodcasterId == user.Id && u.Id == episodeId);
 
         // if he is a podcaster then throw an error
         if(ep1 != null)
