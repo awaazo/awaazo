@@ -13,17 +13,22 @@ public class AdminPanelController : ControllerBase
 {
     private readonly AdminPanelService _adminService;
     private readonly IAuthService _authService;
-    public AdminPanelController(AdminPanelService service, IAuthService authService) {
+    private readonly ILogger<AdminPanelController> _logger;
+    public AdminPanelController(AdminPanelService service, IAuthService authService, ILogger<AdminPanelController> logger) {
         _adminService = service;
         _authService = authService;
+        _logger = logger;
     }
 
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers() {
         try {
+            this.LogDebugControllerAPICall(_logger);
+            
             return Ok(await _adminService.GetAllUsers());
         }
         catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
@@ -31,11 +36,14 @@ public class AdminPanelController : ControllerBase
     [HttpPost("ban/{userId}")]
     public async Task<IActionResult> BanUser(Guid userId) {
         try {
+            this.LogDebugControllerAPICall(_logger);
+            
             var admin = await IdentifyAdminAsync();
             await _adminService.BanUser(admin, userId);
             return Ok();
         }
         catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
