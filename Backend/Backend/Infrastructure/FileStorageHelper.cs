@@ -65,22 +65,17 @@ public static class FileStorageHelper
     
     public static bool ValidateAvatar(IFormFile? file, out object? errorObject) {
         errorObject = null;
-        if (file is not null) {
-            string extension = Path.GetExtension(file.FileName);
-            bool ok = false;
-            foreach (var ext in AVATAR_EXTENSIONS) {
-                if (extension == ext) {
-                    ok = true;
-                    break;
-                }
-            }
+        if (file is null)
+            return true;
+        
+        string extension = Path.GetExtension(file.FileName);
 
-            if (!ok) {
-                errorObject = new { Errors = new[] { $"Invalid file extension {extension}" } };
-                return false;
-            }
+        if (AVATAR_EXTENSIONS.Contains(extension))
+            return true;
+        else {
+            errorObject = new { Errors = new[] { $"Invalid file extension {extension}" } };
+            return false;
         }
-        return true;
     }
 
     /// <summary>
