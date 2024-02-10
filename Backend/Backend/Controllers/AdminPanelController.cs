@@ -31,15 +31,19 @@ public class AdminPanelController : ControllerBase
     [HttpPost("ban/{userId}")]
     public async Task<IActionResult> BanUser(Guid userId) {
         try {
-            User? admin = await _authService.IdentifyUserAsync(HttpContext);
-            if (admin is null)
-                throw new InvalidOperationException("Admin user Id cannot be null");
-            
+            var admin = await IdentifyAdminAsync();
             await _adminService.BanUser(admin, userId);
             return Ok();
         }
         catch (Exception e) {
             return BadRequest(e.Message);
         }
-    }    
+    }
+
+    private async Task<User> IdentifyAdminAsync() {
+        User? admin = await _authService.IdentifyUserAsync(HttpContext);
+        if (admin is null)
+            throw new InvalidOperationException("A critical error has occured. Admin is null while route is protected by VerifyAdmin middleware");
+        return admin;
+    }
 }
