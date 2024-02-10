@@ -50,6 +50,8 @@ public static class FileStorageHelper
     /// Identifies the file type for transcript files.
     /// </summary>
     public const string TRANSCRIPT_FILE_TYPE = ".json";
+    
+    public static readonly string[] AVATAR_EXTENSIONS = new[] { ".jpg", ".png", ".jpeg", ".gif"};
 
     public enum TranscriptStatus 
     {
@@ -60,6 +62,21 @@ public static class FileStorageHelper
     };
 
     #region User Profile
+    
+    public static bool ValidateAvatar(IFormFile? file, out object? errorObject) {
+        errorObject = null;
+        if (file is null)
+            return true;
+        
+        string extension = Path.GetExtension(file.FileName);
+
+        if (AVATAR_EXTENSIONS.Contains(extension))
+            return true;
+        else {
+            errorObject = new { Errors = new[] { $"Invalid file extension {extension}" } };
+            return false;
+        }
+    }
 
     /// <summary>
     /// Saves a user avatar and returns the filename stored in the database.
