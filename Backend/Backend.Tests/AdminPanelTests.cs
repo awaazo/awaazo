@@ -45,7 +45,7 @@ public class AdminPanelTests : IAsyncLifetime
             .Build();
 
         // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
+        AdminPanelService adminService = new(dbContextMock.Object, config, new EmailService(config));
 
         // Exception
         Exception? exception = null;
@@ -86,7 +86,7 @@ public class AdminPanelTests : IAsyncLifetime
             .Build();
 
         // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
+        AdminPanelService adminService = new(dbContextMock.Object, config, new EmailService(config));
 
         // Exception
         Exception exception = new();
@@ -133,7 +133,7 @@ public class AdminPanelTests : IAsyncLifetime
             .Build();
 
         // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
+        AdminPanelService adminService = new(dbContextMock.Object, config, new EmailService(config));
 
         // Exception
         Exception? exception = null;
