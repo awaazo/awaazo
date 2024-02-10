@@ -116,7 +116,7 @@ public class User : BaseEntity
     public DateTime? DeletedAt { get; set; } = null;
 
     public Guid DeletedBy { get; set; } = Guid.Empty;
-
+    
     /// <summary>
     /// User's podcasts.
     /// </summary>

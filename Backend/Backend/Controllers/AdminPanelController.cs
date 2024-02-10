@@ -41,7 +41,5 @@ public class AdminPanelController : ControllerBase
         catch (Exception e) {
             return BadRequest(e.Message);
         }
-    }
-    
-    
+    }    
 }
