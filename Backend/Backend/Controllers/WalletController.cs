@@ -129,7 +129,7 @@ namespace Backend.Controllers
         /// Gets balance History of Last 5 Days
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Last5DaysBalance")]
+        [HttpGet("getRecentBalance")]
         public async Task<IActionResult> GetLast5DaysBalance()
         {
             try
