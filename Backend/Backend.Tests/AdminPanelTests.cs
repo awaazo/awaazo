@@ -1,67 +1,74 @@
-﻿namespace Backend.Tests;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using Assert = Xunit.Assert;
+
+namespace Backend.Tests;
 
 [Collection("Sequential")]
-public class AdminPanelTests : IAsyncLifetime
+public class AdminPanelTests
 {
-    private readonly Mock<Microsoft.Extensions.Logging.ILogger<AuthController>> _IloggerMock;
+    private IConfiguration _config;
+    private Mock<AppDbContext> _dbContextMock;
+    private AdminPanelService _adminService;
+    private const string USERNAME = "username";
+    private const string EMAIL = "test@email.com";
+    private const string PASSWORD = "password";
+
     /// <summary>
     /// Initializes a new instance of the AuthTests class.
     /// </summary>
     public AdminPanelTests()
     {
-        _IloggerMock = new();
-    }
-    
-    public Task InitializeAsync()
+        // Config
+        _config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
-    {
-        return Task.CompletedTask;
+        //Mock
+        _dbContextMock = new(new DbContextOptions<AppDbContext>());
+        MockBasicUtilities();
+        _adminService = new(_dbContextMock.Object, _config);
     }
 
-    public Task DisposeAsync()
+    [TestInitialize]
+    public void Initialize()
     {
-        return Task.CompletedTask;
+        // Re-initilize every test
+        // Config
+        _config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
+
+        //Mock
+        _dbContextMock = new(new DbContextOptions<AppDbContext>());
+        _adminService = new(_dbContextMock.Object, _config);
     }
-    
+
     #region Test Service
 
     [Fact]
     public async void GetAllUsers_ReturnsAllUsers()
     {
         // ARRANGE
-
-        // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
+        // Mock     
         Mock<DbSet<User>> users = new[]
         {
-            GenerateRandomUser()
+            GenerateStandardUser()
         }.AsQueryable().BuildMockDbSet();
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
-
-        // Exception
-        Exception? exception = null;
+        _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
         User[]? result = null;
+        
         // ACT
         try
         {
-            result = await adminService.GetAllUsers();
+            result = await _adminService.GetAllUsers();
         }
         catch (Exception ex)
         {
-            exception = ex;
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
         }
 
         // ASSERT
-        Assert.Null(exception);
         Assert.NotNull(result);
         Assert.True(result.Length == 1);
     }
@@ -70,103 +77,82 @@ public class AdminPanelTests : IAsyncLifetime
     public async void BanUser_InvalidUserID_ReturnsException()
     {
         // ARRANGE
-
         // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
         Mock<DbSet<User>> users = new[]
         {
-            GenerateRandomUser()
+            GenerateStandardUser()
         }.AsQueryable().BuildMockDbSet();
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
-
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
-
-        // Exception
-        Exception exception = new();
+        _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
         User[]? result = null;
-        
-        User admin = GenerateRandomUser();
+
+        User admin = GenerateStandardUser();
         admin.IsAdmin = true;
         
         // ACT
         try
         {
-            await adminService.BanUser(admin, Guid.NewGuid());
+            await _adminService.BanUser(admin, Guid.NewGuid());
         }
         catch (InvalidDataException ex)
         {
-            exception = ex;
+            Assert.IsType<InvalidDataException>(ex);
+            return;
         }
 
-        // ASSERT
-        Assert.NotNull(exception);
-        Assert.IsType<InvalidDataException>(exception);
+        Assert.Fail("Test did not throw an exception");
     }
     
     [Fact]
     public async void BanUser_Valid_ReturnsOk()
     {
         // ARRANGE
-
         // Mock
-        Mock<AppDbContext> dbContextMock = new(new DbContextOptions<AppDbContext>());
-        Mock<IMapper> mapperMock = new();
-
         Guid userId = Guid.NewGuid();
-        User userToban = GenerateRandomUser(userId);
+        User userToBan = GenerateStandardUser(userId);
         Mock<DbSet<User>> users = new[]
         {
-            userToban
+            userToBan
         }.AsQueryable().BuildMockDbSet();
-        dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+        _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
-        // Configuration
-        IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Service
-        AdminPanelService adminService = new(dbContextMock.Object, config);
-
-        // Exception
-        Exception? exception = null;
-        User[]? result = null;
-        
-        User admin = GenerateRandomUser();
+        // Exception    
+        User admin = GenerateStandardUser();
         admin.IsAdmin = true;
         
         // ACT
         try
         {
-            await adminService.BanUser(admin, userId);
+            await _adminService.BanUser(admin, userId);
         }
         catch (InvalidDataException ex)
         {
-            exception = ex;
+            Assert.Fail("Method threw exception with this error message: " + ex.Message);
         }
 
         // ASSERT
-        Assert.Null(exception);
-        Assert.NotNull(userToban.DeletedAt);
-        Assert.Equal(admin.Id, userToban.DeletedBy);
+        Assert.NotNull(userToBan.DeletedAt);
+        Assert.Equal(admin.Id, userToBan.DeletedBy);
     } 
     #endregion
     
-    private User GenerateRandomUser(Guid? guid = null) {
+    private User GenerateStandardUser(Guid? guid = null) {
         return new User() {
             Id = guid ?? Guid.NewGuid(),
-            Email = "XXXXXXXXXXXXXXXXX",
-            Password = BCrypt.Net.BCrypt.HashPassword("XXXXXXXXXXXXXXXXX"),
-            Username = "XXXXXXXXXXXXXXXXX",
+            Email = EMAIL,
+            Password = BCrypt.Net.BCrypt.HashPassword(PASSWORD),
+            Username = USERNAME,
             DateOfBirth = DateTime.Now,
             Gender = User.GenderEnum.Other
         };
+    }
+
+    //This is just used since we need to have a userDB created, or the admin controller will complain
+    private void MockBasicUtilities()
+    {
+        Mock<DbSet<User>> users = new[]
+        {
+            GenerateStandardUser()
+        }.AsQueryable().BuildMockDbSet();
+        _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
     }
 }
