@@ -84,11 +84,10 @@ namespace Backend.Services
         public async Task<List<Activity>> Last5DaysBalance(Guid userId)
         {
 
-            List<int> numbers = new List<int>() { 0, 1, 2, 3, 4 };
             List<Activity> activty = new List<Activity>();
-            foreach (var number in numbers)
+            for (int i = 0;i<=4;i++)
             {
-                var date = DateTime.Today.AddDays(-number).Date;
+                var date = DateTime.Today.AddDays(-i).Date;
                 activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u => u.CreatedAt < date).SumAsync(u => u.Amount) });
             }
             
