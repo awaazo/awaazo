@@ -10,6 +10,8 @@ namespace Backend.Services
     {
         private readonly SessionService _sessionService;
         private readonly IConfiguration _configuration;
+        private readonly string ACCEPTED_CURRENCY = "cad";
+      
         public StripeServices(SessionService sessionService, IConfiguration configuration)
         {
             _sessionService = sessionService; 
@@ -28,7 +30,7 @@ namespace Backend.Services
                 {
                     PriceData = new SessionLineItemPriceDataOptions()
                     {
-                        Currency = "cad",
+                        Currency = ACCEPTED_CURRENCY,
                         UnitAmount = Convert.ToInt32(0.1 * 100),
                         ProductData = new SessionLineItemPriceDataProductDataOptions()
                         {
