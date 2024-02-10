@@ -64,6 +64,7 @@ public class AdminPanelService
         
         // Add to db log to retreive history
         AdminEmailLog log = new(_db) {
+            Id = Guid.NewGuid(),
             AdminUserId = admin.Id,
             ToUserId = userId,
             Subject = request.Title,

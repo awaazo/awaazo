@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,8 @@ public class AdminEmailLog : BaseEntity
     public AdminEmailLog(AppDbContext db) {
         _db = db;
     }
+
+    public Guid Id { get; set; } = Guid.Empty;
     
     public Guid AdminUserId { get; set; } = Guid.Empty;
     
