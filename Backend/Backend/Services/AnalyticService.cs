@@ -230,5 +230,68 @@ public class AnalyticService : IAnalyticService
 
     #endregion Audience Age
 
+    #region Watch Time
+
+    public async Task<TimeSpan> GetAverageWatchTimeAsync(Guid podcastOrEpisodeId, User user)
+    {
+        // Check if the podcast exists and the user is the owner
+        Podcast? podcast = await _db.Podcasts
+        .FirstOrDefaultAsync(p => p.Id == podcastOrEpisodeId && p.PodcasterId == user.Id);
+
+        TimeSpan avgWatchTime = TimeSpan.Zero;
+
+/*
+        // Get the average watch time of the audience for the podcast
+        if(podcast is not null)
+        {
+            // Check if there are any interactions for the podcast
+            if(await _db.UserEpisodeInteractions.Include(uei=>uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
+                throw new Exception("No audience data available for the given podcast.");
+
+            // Get the average watch time of the audience for the podcast
+            avgWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Include(uei => uei.Episode)
+                .Where(uei => uei.Episode.PodcastId == podcast.Id)
+                .Select(uei => uei.WatchTime)
+                .AverageAsync());
+        }
+        else
+        {
+            // Check if the episode exists and the user is the owner
+            Episode episode = await _db.Episodes
+            .FirstOrDefaultAsync(e => e.Id == podcastOrEpisodeId && e.Podcast.PodcasterId == user.Id) ?? throw new Exception("Podcast or Episode does not exist for the given ID.");
+
+            // Check if there are any interactions for the episode
+            if(await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
+                throw new Exception("No audience data available for the given episode.");
+
+            // Get the average watch time of the audience for the episode
+            avgWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Where(uei => uei.EpisodeId == episode.Id)
+                .Select(uei => uei.WatchTime)
+                .AverageAsync());
+        }
+
+        */
+        
+        return avgWatchTime;
+    }
+
+    public Task<TimeSpan> GetTotalWatchTimeAsync(Guid podcastOrEpisodeId, User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<WatchTimeRangeResponse> GetWatchTimeRangeInfoAsync(Guid podcastOrEpisodeId, User user, DateTime start, DateTime end)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<WatchTimeRangeResponse>> GetWatchTimeDistributionInfoAsync(Guid podcastOrEpisodeId, User user, uint timeInterval = 1, bool intervalIsInMinutes = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion Watch Time
 
 }

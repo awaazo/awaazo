@@ -1,4 +1,3 @@
-
 namespace Backend.Tests;
 
 /// <summary>
@@ -29,6 +28,8 @@ public class AnalyticServiceTests
     }
 
     #endregion Fixtures
+
+    #region Audience Age Tests
 
     [Fact]
     public async Task GetAverageAudienceAgeAsync_PodcastExistsAndData_ReturnsAverageAge()
@@ -165,7 +166,6 @@ public class AnalyticServiceTests
         var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetAverageAudienceAgeAsync(episodeId, user));
         Assert.Equal("Podcast or Episode does not exist for the given ID.", exception.Message);
     }
-
 
     [Fact]
     public async Task GetAgeRangeInfoAsync_PodcastExistsAndData_ReturnsAgeRangeResponse()
@@ -368,9 +368,6 @@ public class AnalyticServiceTests
         var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetAgeRangeInfoAsync(episodeId, min, max, user));
         Assert.Equal("Minimum age cannot be greater than maximum age.", exception.Message);
     }
-
-
-
 
     [Fact]
     public async Task GetAgeRangeDistributionInfoAsync_PodcastExistsAndData_ReturnsAgeRangeResponseList()
@@ -578,4 +575,5 @@ public class AnalyticServiceTests
         Assert.Equal("Age interval cannot be 0.", exception.Message);
     }
 
+    #endregion Audience Age Tests
 }

@@ -1,5 +1,3 @@
-using Backend.Controllers.Responses;
-
 namespace Backend.Tests;
 
 /// <summary>
@@ -226,4 +224,255 @@ public class AnalyticControllerTests
     }
 
     #endregion Audience Age
+
+    #region Watch Time
+
+    [Fact]
+    public async Task GetAverageWatchTime_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetAverageWatchTimeAsync(podcastOrEpisodeId, user)).ReturnsAsync(TimeSpan.FromMinutes(30));
+
+        // Act
+        var result = await _analyticController.GetAverageWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var watchTime = Assert.IsType<TimeSpan>(okResult.Value);
+        Assert.Equal(TimeSpan.FromMinutes(30), watchTime);
+    }
+
+    [Fact]
+    public async Task GetAverageWatchTime_ReturnsNotFoundResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetAverageWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetAverageWatchTime_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetAverageWatchTimeAsync(podcastOrEpisodeId, user)).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetAverageWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTotalWatchTime_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTotalWatchTimeAsync(podcastOrEpisodeId, user)).ReturnsAsync(TimeSpan.FromMinutes(30));
+
+        // Act
+        var result = await _analyticController.GetTotalWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var watchTime = Assert.IsType<TimeSpan>(okResult.Value);
+        Assert.Equal(TimeSpan.FromMinutes(30), watchTime);
+    }
+
+    [Fact]
+    public async Task GetTotalWatchTime_ReturnsNotFoundResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTotalWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTotalWatchTime_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTotalWatchTimeAsync(podcastOrEpisodeId, user)).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetTotalWatchTime(podcastOrEpisodeId);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeRangeInfo_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        DateTime start = DateTime.Now;
+        DateTime end = DateTime.Now.AddDays(1);
+        WatchTimeRangeResponse watchTimeRangeResponse = new()
+        {
+            Start = start,
+            End = end,
+            Average = TimeSpan.FromMinutes(30)
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, start, end)).ReturnsAsync(watchTimeRangeResponse);
+
+        // Act
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var watchTimeRange = Assert.IsType<WatchTimeRangeResponse>(okResult.Value);
+        Assert.Equal(watchTimeRangeResponse, watchTimeRange);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeRangeInfo_ReturnsNotFoundResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User? user = null;
+        DateTime start = DateTime.Now;
+        DateTime end = DateTime.Now.AddDays(1);
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeRangeInfo_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        DateTime start = DateTime.Now;
+        DateTime end = DateTime.Now.AddDays(1);
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, start, end)).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeDistribution_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        uint timeInterval = 10;
+        bool intervalIsInMinutes = true;
+        List<WatchTimeRangeResponse> watchTimeRangeResponses = new()
+        {
+            new()
+            {
+                Start = DateTime.Now,
+                End = DateTime.Now.AddDays(1),
+                Average = TimeSpan.FromMinutes(30)
+            }
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetWatchTimeDistributionInfoAsync(podcastOrEpisodeId, user, timeInterval, intervalIsInMinutes)).ReturnsAsync(watchTimeRangeResponses);
+
+        // Act
+        var result = await _analyticController.GetWatchTimeDistribution(podcastOrEpisodeId, timeInterval, intervalIsInMinutes);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var watchTimeRanges = Assert.IsType<List<WatchTimeRangeResponse>>(okResult.Value);
+        Assert.Equal(watchTimeRangeResponses, watchTimeRanges);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeDistribution_ReturnsNotFoundResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User? user = null;
+        uint timeInterval = 10;
+        bool intervalIsInMinutes = true;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetWatchTimeDistribution(podcastOrEpisodeId, timeInterval, intervalIsInMinutes);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetWatchTimeDistribution_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        uint timeInterval = 10;
+        bool intervalIsInMinutes = true;
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetWatchTimeDistributionInfoAsync(podcastOrEpisodeId, user, timeInterval, intervalIsInMinutes)).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetWatchTimeDistribution(podcastOrEpisodeId, timeInterval, intervalIsInMinutes);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
+
+    #endregion Watch Time
 }

@@ -30,6 +30,110 @@ public class AnalyticController : ControllerBase
         _logger = logger;
     }
 
+    #region Watch Time
+
+    [HttpGet("{podcastOrEpisodeId}/averageWatchTime")]
+    public async Task<ActionResult> GetAverageWatchTime(Guid podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAverageWatchTime));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetAverageWatchTimeAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetAverageWatchTime));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{podcastOrEpisodeId}/totalWatchTime")]
+    public async Task<ActionResult> GetTotalWatchTime(Guid podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTotalWatchTime));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetTotalWatchTimeAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTotalWatchTime));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{podcastOrEpisodeId}/watchTimeDistribution")]
+    public async Task<ActionResult> GetWatchTimeDistribution(Guid podcastOrEpisodeId, uint timeInterval = 1, bool intervalIsInMinutes = true)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetWatchTimeDistribution));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetWatchTimeDistributionInfoAsync(podcastOrEpisodeId, user, timeInterval, intervalIsInMinutes));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetWatchTimeDistribution));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{podcastOrEpisodeId}/watchTimeRangeInfo")]
+    public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, DateTime startTime, DateTime endTime)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetWatchTimeRangeInfo));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, startTime, endTime));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetWatchTimeRangeInfo));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    #endregion
+
     #region Audience Age
 
     /// <summary>

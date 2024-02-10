@@ -54,3 +54,18 @@ public class AgeRangeResponse
     /// </summary>
     public double Percentage { get; set; } = 0;
 }
+
+/// <summary>
+/// Response for the watch time range
+/// </summary>
+[BindProperties]
+public class WatchTimeRangeResponse
+{
+    public DateTime Start { get; set; } = DateTime.Now;
+    public DateTime End { get; set; } = DateTime.Now;
+    public TimeSpan Average { get; set; } = TimeSpan.Zero;
+    public TimeSpan Total { get; set; } = TimeSpan.Zero;
+    public int Clicks { get; set; } = 0;
+    public double ClicksPercentage { get; set; } = 0;
+    public double WatchTimePercentage { get; set; } = 0;
+}
