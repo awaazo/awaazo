@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using System.Diagnostics.CodeAnalysis;
+using Backend.Models.stats;
 
 namespace Backend.Infrastructure;
 
@@ -44,6 +45,11 @@ public class AppDbContext : DbContext
  
     public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
     public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }
+    
+    ///
+    /// Tables related to statistics more than core functionality
+    ///
+    public virtual DbSet<AdminEmailLog> AdminEmailLogs { get; set; }
     
     /// <summary>
     /// Maps to the Soundex function in the database.
