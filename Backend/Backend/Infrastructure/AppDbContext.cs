@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using System.Diagnostics.CodeAnalysis;
+using Backend.Models.Interfaces;
 
 namespace Backend.Infrastructure;
 
@@ -67,20 +68,26 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-
-
+        
+        // GLOBAL Query filters
+        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+        modelBuilder.Entity<Episode>().HasQueryFilter(e => e.DeletedAt == null);
+        modelBuilder.Entity<Podcast>().HasQueryFilter(p => p.DeletedAt == null);
+        modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
+        modelBuilder.Entity<CommentReply>().HasQueryFilter(cr => cr.DeletedAt == null);
+        
+        // Array conversion for tags and interests
         modelBuilder.Entity<User>()
             .Property(e => e.Interests).
             HasConversion(
             v => string.Join(",", v),
             v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
             );
-        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
 
         modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
-
             v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
 
+        // UserEpisodeInteraction Primary Key definition 
         modelBuilder.Entity<UserEpisodeInteraction>()
             .HasKey(uei => new { uei.UserId, uei.EpisodeId });
 

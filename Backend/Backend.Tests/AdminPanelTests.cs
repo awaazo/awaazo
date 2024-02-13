@@ -61,7 +61,7 @@ public class AdminPanelTests
         // ACT
         try
         {
-            result = await _adminService.GetAllUsers();
+            result = await _adminService.GetAllUsers(false);
         }
         catch (Exception ex)
         {

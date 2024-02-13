@@ -21,11 +21,10 @@ public class AdminPanelController : ControllerBase
     }
 
     [HttpGet("users")]
-    public async Task<IActionResult> GetAllUsers() {
+    public async Task<IActionResult> GetAllUsers(bool? withDeleted) {
         try {
             this.LogDebugControllerAPICall(_logger);
-            
-            return Ok(await _adminService.GetAllUsers());
+            return Ok(await _adminService.GetAllUsers(withDeleted ?? false));
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e);
