@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Backend.Controllers;
 
@@ -305,6 +307,72 @@ public class SocialController : ControllerBase
         }
     }
 
+    #endregion
+
+
+    #region Points
+
+    /// <summary>
+    /// Generate link to Gift the Podcaster
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/giftpoints")]    
+    public async Task<IActionResult> GiftPoints(Guid episodeId,int points)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GiftPoints));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _socialService.GiftPoints(points,episodeId,user));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GiftPoints));
+            return BadRequest(e.Message);
+        }
+    }
+    /// <summary>
+    /// Confirm payment after successfully processed by stripe
+    /// </summary>
+    /// <param name="pointId"></param>
+    /// <returns></returns>
+    [HttpPost("{pointId}/confirmPoints")]
+    public async Task<IActionResult> ConfirmPayment(Guid pointId)
+    {
+        try
+        {
+  
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ConfirmPayment));
+
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+
+
+            return Ok(await _socialService.ConfirmPointPayment(pointId) ? "Payment Confirmed" : "Payment Not Confirmed");
+
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ConfirmPayment));
+            return BadRequest(e.Message);
+
+        }
+    }
     #endregion
 
 }
