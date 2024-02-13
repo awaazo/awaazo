@@ -115,6 +115,10 @@ public class User : BaseEntity
 
     [DefaultValue(false)] public bool IsAdmin { get; set; } = false;
 
+    public DateTime? DeletedAt { get; set; } = null;
+
+    public Guid DeletedBy { get; set; } = Guid.Empty;
+    
     /// <summary>
     /// User's podcasts.
     /// </summary>

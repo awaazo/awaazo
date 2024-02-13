@@ -69,10 +69,13 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 
-        modelBuilder.Entity<User>().Property(e => e.Interests).HasConversion(
+        modelBuilder.Entity<User>()
+            .Property(e => e.Interests).
+            HasConversion(
             v => string.Join(",", v),
             v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
             );
+        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
 
         modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
 

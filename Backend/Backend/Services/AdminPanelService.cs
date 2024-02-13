@@ -1,5 +1,6 @@
 ﻿using Backend.Infrastructure;
 using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;
 
@@ -22,5 +23,20 @@ public class AdminPanelService
             db.Users.Add(newAdmin);
             db.SaveChanges();
         }
+    }
+
+    public Task<User[]> GetAllUsers() {
+        return _db.Users.ToArrayAsync();
+    }
+
+    public async Task BanUser(User admin, Guid userId) {
+        User? user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user is null)
+            throw new InvalidDataException("Invalid user ID");
+        
+        user.DeletedAt = DateTime.Now;
+        user.DeletedBy = admin.Id;
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync();
     }
 }
