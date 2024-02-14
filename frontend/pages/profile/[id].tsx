@@ -20,19 +20,19 @@ export default function userProfile() {
       {isMobile ? (
         <VStack justify="center" align="center" ml={"15px"}>
           <UserHeader userId={userId} />
-          <UserPodcasts userId={userId} />
-          <UserEpisodes userId={userId} />
-          {/* <UserPlaylists userId={userId} /> */}
+          {/* <UserPodcasts userId={userId} /> */}
+          {/* <UserEpisodes userId={userId} /> */}
+          <UserPlaylists userId={userId} />
         </VStack>
       ) : (
         <HStack width="80%" align={"start"} spacing={"15px"}>
           <VStack width="50%" align="start" spacing={"10px"}>
             <UserHeader userId={userId} />
-            <UserPodcasts userId={userId} />
+            {/* <UserPodcasts userId={userId} /> */}
           </VStack>
           <VStack width="50%" align="start">
-            <UserEpisodes userId={userId} />
-            {/* <UserPlaylists userId={userId} /> */}
+            {/* <UserEpisodes userId={userId} /> */}
+            <UserPlaylists userId={userId} />
           </VStack>
         </HStack>
       )}
