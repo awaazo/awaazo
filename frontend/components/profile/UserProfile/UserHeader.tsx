@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Avatar, Heading, Text, VStack,IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue, Button } from "@chakra-ui/react";
-import Link from 'next/link';
+import { Avatar, Heading, Text, VStack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue, Button } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
@@ -12,6 +11,27 @@ const iconProps = {
   isRound: true,
 };
 
+const socials = [
+  {
+    url: "https://github.com/",
+    label: "Github Account",
+    type: "gray",
+    icon: <FaGithub />,
+  },
+  {
+    url: "https://twitter.com/",
+    label: "Twitter Account",
+    type: "twitter",
+    icon: <FaTwitter />,
+  },
+
+  {
+    url: "https://linkedin.com/",
+    label: "LinkedIn Account",
+    type: "linkedin",
+    icon: <FaLinkedin />,
+  },
+];
 
 export default function Header({ userId }) {
   // Form Values
@@ -56,31 +76,19 @@ export default function Header({ userId }) {
           <span>Bio: {user?.bio}</span>
         </Text>
         <HStack>
-          <Button
-            rounded="7px"
-            style={{
-              // styling for number of followers, and when clicked, goes to the followers page
-              border: "solid 1px #CC748C",
-            }}
-          >
+          <Button rounded="7px" border="solid 1px #CC748C">
             420 Subscriptions
           </Button>
-          <Button
-            rounded="7px"
-            style={{
-              // styling for the number of followers, and when clicked, goes to the followers page
-              border: "solid 1px #CC748C",
-            }}
-          >
+          <Button rounded="7px" border="solid 1px #CC748C">
             Subscribed to 69 Podcasts
           </Button>
         </HStack>
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-            <IconButton as={Link} href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
-            <IconButton as={Link} href={user?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
-            <IconButton as={Link} href={user?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
+            <IconButton as={Link} isExternal href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
+            <IconButton as={Link} isExternal href={user?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
+            <IconButton as={Link} isExternal href={user?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
           </Box>
         </Flex>
       </VStack>
