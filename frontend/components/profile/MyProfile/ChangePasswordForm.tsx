@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Button, FormControl, Heading, Input, InputGroup, Stack, Text } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
 import { ChangePasswordRequest } from "../../../types/Requests";
 
@@ -64,7 +63,6 @@ const ChangePasswordForm: React.FC = () => {
     setChangePasswordError(null);
   };
 
-
   return (
     <Box p={3} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <Heading fontSize="2xl" marginBottom="1.5em">
@@ -73,13 +71,12 @@ const ChangePasswordForm: React.FC = () => {
       <form onSubmit={handleChangePassword}>
         <Stack spacing={6} align={"center"}>
           {changePasswordError && <Text color="red.500">{changePasswordError}</Text>}
-        
 
           <FormControl>
-            <InputGroup flexDirection="column" >
+            <InputGroup flexDirection="column">
               <Input type={showOldPassword ? "text" : "password"} id="currentPassword" placeholder="Enter current password" onChange={handlePasswordChange("oldPassword")} borderRadius="1em" marginBottom={4} />
-              <Input type={showNewPassword ? "text" : "password"} id="newPassword" placeholder="Enter new password" onChange={handlePasswordChange("newPassword")} borderRadius="1em" marginBottom={4}/>
-              <Input type={showConfirmPassword ? "text" : "password"} id="confirmNewPassword" placeholder="Confirm new password" onChange={handlePasswordChange("confirmNewPassword")} borderRadius="1em" marginBottom={4}/>
+              <Input type={showNewPassword ? "text" : "password"} id="newPassword" placeholder="Enter new password" onChange={handlePasswordChange("newPassword")} borderRadius="1em" marginBottom={4} />
+              <Input type={showConfirmPassword ? "text" : "password"} id="confirmNewPassword" placeholder="Confirm new password" onChange={handlePasswordChange("confirmNewPassword")} borderRadius="1em" marginBottom={4} />
             </InputGroup>
           </FormControl>
 

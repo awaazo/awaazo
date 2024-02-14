@@ -1,24 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  Avatar,
-  Heading,
-  Text,
-  VStack,
-  Stack,
-  Link,
-  IconButton,
-  Divider,
-  Flex,
-  Box,
-  HStack,
-  useColorModeValue,
-  useBreakpointValue,
-  Button,
-} from "@chakra-ui/react";
+import { Avatar, Heading, Text, VStack,IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue, Button } from "@chakra-ui/react";
+import Link from 'next/link';
 import { useSession } from "next-auth/react";
-// Here we have used react-icons package for the iconS
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-import router from "next/router";
 import UserProfileHelper from "../../../helpers/UserProfileHelper";
 import { userProfileByID } from "../../../types/Interfaces";
 
@@ -28,27 +12,6 @@ const iconProps = {
   isRound: true,
 };
 
-const socials = [
-  {
-    url: "https://github.com/",
-    label: "Github Account",
-    type: "gray",
-    icon: <FaGithub />,
-  },
-  {
-    url: "https://twitter.com/",
-    label: "Twitter Account",
-    type: "twitter",
-    icon: <FaTwitter />,
-  },
-
-  {
-    url: "https://linkedin.com/",
-    label: "LinkedIn Account",
-    type: "linkedin",
-    icon: <FaLinkedin />,
-  },
-];
 
 export default function Header({ userId }) {
   // Form Values
@@ -59,8 +22,6 @@ export default function Header({ userId }) {
   const [profile, setProfile] = useState<userProfileByID>(null);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state to track login status
 
   useEffect(() => {
     console.log(userId);
@@ -78,32 +39,15 @@ export default function Header({ userId }) {
 
   return (
     <>
-      <VStack
-        width={"100%"}
-        spacing={4}
-        px={2}
-        alignItems={{ base: "center", sm: "flex-start" }}
-        marginBottom={"2em"}
-        ml={isMobile ? "25px" : "0px"}
-      >
+      <VStack width={"100%"} spacing={4} px={2} alignItems={{ base: "center", sm: "flex-start" }} marginBottom={"2em"} ml={isMobile ? "25px" : "0px"}>
         <HStack>
-          <Avatar
-            boxShadow="xl"
-            style={{ width: "150px", height: "150px" }}
-            src={user?.avatarUrl}
-          />
+          <Avatar boxShadow="xl" style={{ width: "150px", height: "150px" }} src={user?.avatarUrl} />
           <VStack align="start" spacing={1}>
-            <Heading
-              textAlign={{ base: "center", sm: "left" }}
-              margin="0 auto"
-              fontSize={{ base: "2rem", sm: "2.5rem" }}
-            >
+            <Heading textAlign={{ base: "center", sm: "left" }} margin="0 auto" fontSize={{ base: "2rem", sm: "2.5rem" }}>
               {user?.displayName}
             </Heading>
             <Text fontSize="1.5rem">
-              <span style={{ color: useColorModeValue("pink", "pink") }}>
-                @{user?.username}
-              </span>
+              <span style={{ color: useColorModeValue("pink", "pink") }}>@{user?.username}</span>
             </Text>
           </VStack>
         </HStack>
@@ -134,36 +78,9 @@ export default function Header({ userId }) {
         <Divider />
         <Flex alignItems="center" justify="center" w="100%">
           <Box textAlign="center">
-            <IconButton
-              as={Link}
-              isExternal
-              href={profile?.githubUrl}
-              aria-label={"Github Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaGithub />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={user?.twitterUrl}
-              aria-label={"Twitter Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaTwitter />}
-              {...iconProps}
-            />
-            <IconButton
-              as={Link}
-              isExternal
-              href={user?.linkedInUrl}
-              aria-label={"Linkedin Account"}
-              colorScheme={"gray"}
-              rounded="full"
-              icon={<FaLinkedin />}
-              {...iconProps}
-            />
+            <IconButton as={Link} href={profile?.githubUrl} aria-label={"Github Account"} colorScheme={"gray"} rounded="full" icon={<FaGithub />} {...iconProps} />
+            <IconButton as={Link} href={user?.twitterUrl} aria-label={"Twitter Account"} colorScheme={"gray"} rounded="full" icon={<FaTwitter />} {...iconProps} />
+            <IconButton as={Link} href={user?.linkedInUrl} aria-label={"Linkedin Account"} colorScheme={"gray"} rounded="full" icon={<FaLinkedin />} {...iconProps} />
           </Box>
         </Flex>
       </VStack>

@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Flex,
-  Tooltip,
-  Text,
-  IconButton,
-  Container,
-  Button,
-  VStack,
-  Spinner,
-} from "@chakra-ui/react";
+import { Flex, Tooltip, Text, IconButton, Container, Button, VStack, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Podcast, Episode } from "../../../types/Interfaces";
@@ -79,25 +70,12 @@ export default function MyEpisodes() {
       {/* Display spinner when loading */}
       {isLoading ? (
         <Flex justifyContent="center" alignItems="center" height="100px">
-          <Spinner
-            size="xl"
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-          />
+          <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
         </Flex>
       ) : (
         <>
           {/* Render the heading */}
-          <Container
-            marginBottom="1em"
-            fontSize="1.5em"
-            fontWeight="bold"
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
+          <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
             My Episodes
             <Link href="/CreatorHub/MyPodcasts" passHref>
               <Button
@@ -128,18 +106,9 @@ export default function MyEpisodes() {
           ) : (
             <>
               {/* Render the list of selected episodes */}
-              <VStack
-                spacing={"2px"}
-                w={{ base: "auto", md: "lg" }}
-                minWidth="100%"
-              >
+              <VStack spacing={"2px"} w={{ base: "auto", md: "lg" }} minWidth="100%">
                 {rangeEpisodes.map((episode, index) => (
-                  <EpisodeCard
-                    key={index}
-                    episode={episode}
-                    inPlaylist={false}
-                    playlistId={null}
-                  />
+                  <EpisodeCard key={index} episode={episode} inPlaylist={false} playlistId={null} />
                 ))}
               </VStack>
 
@@ -147,13 +116,7 @@ export default function MyEpisodes() {
               {rangeEpisodes.length < allEpisodes.length && (
                 <Flex justify="center" mt={4} alignSelf={"center"}>
                   <Tooltip label="Load More" placement="top">
-                    <IconButton
-                      aria-label="Load More"
-                      icon={<ChevronDownIcon />}
-                      onClick={handleLoadMoreClick}
-                      size="lg"
-                      variant="outline"
-                    />
+                    <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
                   </Tooltip>
                 </Flex>
               )}

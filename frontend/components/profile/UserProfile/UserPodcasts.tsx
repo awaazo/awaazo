@@ -1,27 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Avatar,
-  Button,
-  Link,
-  Stack,
-  Grid,
-  useBreakpointValue,
-  Text,
-  Flex,
-  IconButton,
-  Tooltip,
-  useColorMode,
-  VStack,
-  Image,
-  Wrap,
-} from "@chakra-ui/react";
-
+import { Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
-import NextLink from "next/link";
 import { Podcast } from "../../../types/Interfaces";
-import AuthHelper from "../../../helpers/AuthHelper";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../cards/PodcastCard";
 
@@ -39,37 +19,20 @@ export default function UserPodcasts({ userId }) {
   useEffect(() => {
     // Check to make sure the user has logged in
 
-    PodcastHelper.podcastUserPodcastsGet(userId, page, pageSize).then(
-      (res2) => {
-        // If logged in, set user, otherwise redirect to login page
-        if (res2.status == 200) {
-          setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
-        } else {
-          setPodcastError("Podcasts cannot be fetched");
-        }
-      },
-    );
+    PodcastHelper.podcastUserPodcastsGet(userId, page, pageSize).then((res2) => {
+      // If logged in, set user, otherwise redirect to login page
+      if (res2.status == 200) {
+        setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
+      } else {
+        setPodcastError("Podcasts cannot be fetched");
+      }
+    });
   }, [userId, page]);
 
   // Function to handle clicking the "Load More" button
   const handleLoadMoreClick = () => {
     setPage((page) => page + 1);
   };
-
-  // const [subscribed, setSubscribe] = useState(false);
-
-  let subscribed = false;
-  let subscribedText = "Subscribe";
-
-  function setSubscribe() {
-    // if (!subscribed){
-    //   subscribed = true;
-    //   subscribedText = "Subscribe";
-    // } else {
-    //   subscribed = false;
-    //   subscribedText = "UnSubscribe";
-    // }
-  }
 
   return (
     <>
@@ -92,20 +55,9 @@ export default function UserPodcasts({ userId }) {
         </Text>
       ) : (
         <>
-          <Grid
-            templateColumns={`repeat(${columns}, 1fr)`}
-            gap={6}
-            placeItems="center"
-          >
+          <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
             {podcasts.map((podcast, index) => (
-              <Stack
-                key={index}
-                spacing={4}
-                direction="column"
-                align="center"
-                height="100%"
-                width="100%"
-              >
+              <Stack key={index} spacing={4} direction="column" align="center" height="100%" width="100%">
                 <PodcastCard podcast={podcast} />
               </Stack>
             ))}
@@ -115,13 +67,7 @@ export default function UserPodcasts({ userId }) {
       {podcasts[(page + 1) * pageSize - 1] != null && (
         <Flex justify="center" mt={4}>
           <Tooltip label="Load More" placement="top">
-            <IconButton
-              aria-label="Load More"
-              icon={<ChevronDownIcon />}
-              onClick={handleLoadMoreClick}
-              size="lg"
-              variant="outline"
-            />
+            <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
           </Tooltip>
         </Flex>
       )}

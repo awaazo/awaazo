@@ -1,8 +1,8 @@
 import React, { useState, useEffect, FC } from "react";
+import { Stack, Flex, Avatar, Text, Box, useColorModeValue, useToken, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Spinner } from "@chakra-ui/react";
+import Link from "next/link";
 import SubscribeHelper from "../../../helpers/SubscribeHelper";
 import { MySubscriptions } from "../../../types/Interfaces";
-import Link from "next/link";
-import { Stack, Flex, Avatar, Text, Box, useColorModeValue, useToken, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Spinner } from "@chakra-ui/react";
 
 const Subscriptions: FC = () => {
   const [subscriptions, setSubscriptions] = useState<MySubscriptions[]>([]);
@@ -106,7 +106,7 @@ const Subscriptions: FC = () => {
             )}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleCloseModal} colorScheme="blue">
+            <Button onClick={handleCloseModal} >
               Close
             </Button>
           </ModalFooter>
