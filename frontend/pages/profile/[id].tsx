@@ -19,19 +19,19 @@ export default function userProfile() {
     <Box display="flex" justifyContent="center" alignItems="center" width={"95%"}>
       {isMobile ? (
         <VStack justify="center" align="center" ml={"15px"}>
-          <UserHeader userId={userId} />
-          {/* <UserPodcasts userId={userId} /> */}
-          {/* <UserEpisodes userId={userId} /> */}
+          {/* <UserHeader userId={userId} /> */}
+          <UserPodcasts userId={userId} />
+          <UserEpisodes userId={userId} />
           <UserPlaylists userId={userId} />
         </VStack>
       ) : (
         <HStack width="80%" align={"start"} spacing={"15px"}>
           <VStack width="50%" align="start" spacing={"10px"}>
-            <UserHeader userId={userId} />
-            {/* <UserPodcasts userId={userId} /> */}
+            {/* <UserHeader userId={userId} /> */}
+            <UserPodcasts userId={userId} />
           </VStack>
           <VStack width="50%" align="start">
-            {/* <UserEpisodes userId={userId} /> */}
+            <UserEpisodes userId={userId} />
             <UserPlaylists userId={userId} />
           </VStack>
         </HStack>
