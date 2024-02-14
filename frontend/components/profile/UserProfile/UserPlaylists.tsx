@@ -1,27 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Tag,
-  Avatar,
-  HStack,
-  Flex,
-  Tooltip,
-  Text,
-  Icon,
-  Link,
-  IconButton,
-  useColorModeValue,
-  Stack,
-  VStack,
-} from "@chakra-ui/react";
-
-import { ChevronDownIcon } from "@chakra-ui/icons";
-
-// Here we have used react-icons package for the icon
-import { FaPlay } from "react-icons/fa";
-import { Podcast, Episode } from "../../../types/Interfaces";
-import PodcastHelper from "../../../helpers/PodcastHelper";
-import { usePlayer } from "../../../utilities/PlayerContext";
+import { Text } from "@chakra-ui/react";
 
 // Define the MyEpisodes component
 export default function UserPlaylists({ userId }) {

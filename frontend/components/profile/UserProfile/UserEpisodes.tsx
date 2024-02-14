@@ -1,22 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Tag,
-  Avatar,
-  HStack,
-  Flex,
-  Tooltip,
-  Text,
-  Icon,
-  Link,
-  IconButton,
-  useColorModeValue,
-  Stack,
-  Button,
-  VStack,
-} from "@chakra-ui/react";
-
-import NextLink from "next/link";
+import { Flex, Tooltip, Text, IconButton, VStack, Box } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 import { Podcast, Episode } from "../../../types/Interfaces";
@@ -37,18 +20,14 @@ export default function UserEpisodes({ userId }) {
   const [range, setRange] = useState(0);
 
   useEffect(() => {
-    // Check to make sure the user has logged in
-
-    PodcastHelper.podcastUserPodcastsGet(userId, page, pageSize).then(
-      (res2) => {
-        // If logged in, set user, otherwise redirect to login page
-        if (res2.status == 200) {
-          setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
-        } else {
-          setPodcastError("Podcasts cannot be fetched");
-        }
-      },
-    );
+    PodcastHelper.podcastUserPodcastsGet(userId, page, pageSize).then((res2) => {
+      // If logged in, set user, otherwise redirect to login page
+      if (res2.status == 200) {
+        setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
+      } else {
+        setPodcastError("Podcasts cannot be fetched");
+      }
+    });
   }, [userId, page]);
 
   // Form errors
@@ -83,49 +62,25 @@ export default function UserEpisodes({ userId }) {
   return (
     <>
       {/* Render the heading */}
-      <div
-        style={{
-          marginBottom: "1em",
-          fontSize: "1.5em",
-          fontWeight: "bold",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <Box marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
         Episodes:
-      </div>
+      </Box>
       {rangeEpisodes && rangeEpisodes.length == 0 ? (
         <Text mt={"50px"} mb={"50px"} fontSize={"18px"} textAlign={"center"}>
           This user has not uploaded any episodes yet
         </Text>
       ) : (
         <>
-          {/* Render the list of selected episodes */}
-          {/* Render the list of selected episodes */}
-          <VStack
-            spacing={"2px"}
-            w={{ base: "auto", md: "lg" }}
-            minWidth="100%"
-          >
+
+          <VStack spacing={"2px"} w={{ base: "auto", md: "lg" }} minWidth="100%">
             {rangeEpisodes.map((episode, index) => (
-              <EpisodeCard
-                episode={episode}
-                inPlaylist={false}
-                playlistId={null}
-              />
+              <EpisodeCard episode={episode} inPlaylist={false} playlistId={null} />
             ))}
           </VStack>
           {rangeEpisodes.length < allEpisodes.length && (
             <Flex justify="center" mt={4}>
               <Tooltip label="Load More" placement="top">
-                <IconButton
-                  aria-label="Load More"
-                  icon={<ChevronDownIcon />}
-                  onClick={handleLoadMoreClick}
-                  size="lg"
-                  variant="outline"
-                />
+                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
               </Tooltip>
             </Flex>
           )}
