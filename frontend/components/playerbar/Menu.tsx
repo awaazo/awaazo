@@ -1,52 +1,20 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Menu,
-  MenuButton,
-  IconButton,
-  Input,
-  Textarea,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  useToast,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Button,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-} from "@chakra-ui/react";
-import { BsFillSkipForwardFill } from "react-icons/bs";
+import React, { useState } from "react";
+import { Box, Menu, MenuButton, IconButton, MenuList, MenuItem, MenuDivider, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
-
 import Link from "next/link";
-
 import { usePlayer } from "../../utilities/PlayerContext";
-import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { PlaylistEditRequest } from "../../types/Requests";
-import { useRouter } from "next/router";
-import { CgPlayList, CgPlayListSearch } from "react-icons/cg";
+import { CgPlayListSearch } from "react-icons/cg";
 import { FaDeleteLeft } from "react-icons/fa6";
 import ShareComponent from "../social/Share";
 import { CiMenuKebab } from "react-icons/ci";
 import ViewQueueModal from "../playlist/ViewQueueModal";
-import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
-
-  const { onOpen, onClose, isOpen } = useDisclosure();
-
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalClose = () => setIsShareModalOpen(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
@@ -101,10 +69,11 @@ const PlayerMenu = ({ episode }) => {
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               fontWeight: "bold",
             }}
-            style={{
-              backgroundColor: "transparent",
+            backgroundColor="transparent"
+            onClick={() => {
+              handleAddPlaylistClick();
+              onAddToPlaylistModalOpen();
             }}
-            onClick={() => {handleAddPlaylistClick() ; onAddToPlaylistModalOpen(); }}
           >
             Add to Playlist
             <MdOutlinePlaylistAdd size="20px" style={{ marginLeft: "auto", color: "white" }} />
@@ -115,9 +84,7 @@ const PlayerMenu = ({ episode }) => {
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               fontWeight: "bold",
             }}
-            style={{
-              backgroundColor: "transparent",
-            }}
+            backgroundColor="transparent"
             onClick={onQueueModalOpen}
           >
             View Queue
@@ -128,9 +95,7 @@ const PlayerMenu = ({ episode }) => {
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               fontWeight: "bold",
             }}
-            style={{
-              backgroundColor: "transparent",
-            }}
+            backgroundColor="transparent"
             onClick={handleRemoveFromQueue}
           >
             Remove from Queue
@@ -142,9 +107,7 @@ const PlayerMenu = ({ episode }) => {
                 backgroundColor: "rgba(255, 255, 255, 0.8)",
                 fontWeight: "bold",
               }}
-              style={{
-                backgroundColor: "transparent",
-              }}
+              backgroundColor="transparent"
             >
               Go to Podcast Page
               <MdOutlinePodcasts size="18px" style={{ marginLeft: "auto", color: "white" }} />
@@ -158,9 +121,7 @@ const PlayerMenu = ({ episode }) => {
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               fontWeight: "bold",
             }}
-            style={{
-              backgroundColor: "transparent",
-            }}
+            backgroundColor="transparent"
           >
             Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
@@ -178,15 +139,8 @@ const PlayerMenu = ({ episode }) => {
       </Modal>
       <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
       <AddToPlaylistModal episode={episode} isOpen={isAddToPlaylistModalOpen} onClose={onAddToPlaylistModalClose} />
-      {/* LoginPrompt */}
-      {showLoginPrompt && (
-          <LoginPrompt
-            isOpen={showLoginPrompt}
-            onClose={() => setShowLoginPrompt(false)}
-            infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account."
-          />
-        )}
-      </Box>
+      {showLoginPrompt && <LoginPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account." />}
+    </Box>
   );
 };
 

@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Flex,
-  Tooltip,
-  Text,
-  IconButton,
-  Container,
-  VStack,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Tooltip, Text, IconButton, Container, VStack, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Playlist } from "../../../types/Interfaces";
@@ -41,24 +33,10 @@ export default function MyPlaylists() {
   return (
     <>
       {/* Render the heading */}
-      <Container
-        marginBottom="1em"
-        fontSize="1.5em"
-        fontWeight="bold"
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-      >
+      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
         My Playlists
         <Link href="/Playlist/MyPlaylists" passHref>
-          <Button
-            style={{
-              fontWeight: "bold",
-              marginRight: "0",
-              borderRadius: "10em",
-              borderColor: "rgba(158, 202, 237, 0.6)",
-            }}
-          >
+          <Button fontWeight="bold" marginRight="0" borderRadius="10em" borderColor="rgba(158, 202, 237, 0.6)">
             Manage Playlists
           </Button>
         </Link>
@@ -70,11 +48,7 @@ export default function MyPlaylists() {
       ) : (
         <>
           {/* Render the list of selected episodes */}
-          <VStack
-            spacing={"2px"}
-            w={{ base: "auto", md: "lg" }}
-            minWidth="100%"
-          >
+          <VStack spacing={"2px"} w={{ base: "auto", md: "lg" }} minWidth="100%">
             {playlists.map((playlist, index) => (
               <PlaylistCard playlist={playlist} />
             ))}
@@ -82,13 +56,7 @@ export default function MyPlaylists() {
           {playlists[(page + 1) * pageSize - 1] != null && (
             <Flex justify="center" mt={4} alignSelf={"center"}>
               <Tooltip label="Load More" placement="top">
-                <IconButton
-                  aria-label="Load More"
-                  icon={<ChevronDownIcon />}
-                  onClick={handleLoadMoreClick}
-                  size="lg"
-                  variant="outline"
-                />
+                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
               </Tooltip>
             </Flex>
           )}

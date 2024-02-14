@@ -34,7 +34,6 @@ import { convertTime } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";
 import { FaPlay } from "react-icons/fa";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
-import { CgPlayList } from "react-icons/cg";
 import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdIosShare } from "react-icons/md";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
@@ -263,8 +262,6 @@ const PlaylistOverview = ({ episode, playlistId }) => {
     );
   };
 
-
-
   return (
     <VStack spacing="4" align="stretch">
       {playlist && (
@@ -365,21 +362,14 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                   <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
                     <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
                       <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
-                      <MenuList
-                        style={{
-                          backgroundColor: "rgba(50, 50, 50, 0.8)",
-                          backdropFilter: "blur(4px)",
-                        }}
-                      >
+                      <MenuList backgroundColor="rgba(50, 50, 50, 0.8)" backdropFilter="blur(4px)">
                         <MenuItem
                           onClick={() => handlePlaylistClick()}
                           _hover={{
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
                           }}
-                          style={{
-                            backgroundColor: "transparent",
-                          }}
+                          backgroundColor="transparent"
                         >
                           Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
@@ -389,9 +379,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
                           }}
-                          style={{
-                            backgroundColor: "transparent",
-                          }}
+                          backgroundColor="transparent"
                         >
                           Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
@@ -401,9 +389,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
                           }}
-                          style={{
-                            backgroundColor: "transparent",
-                          }}
+                          backgroundColor="transparent"
                         >
                           Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>
@@ -414,9 +400,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             fontWeight: "bold",
                           }}
-                          style={{
-                            backgroundColor: "transparent",
-                          }}
+                          backgroundColor="transparent"
                         >
                           Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
                         </MenuItem>

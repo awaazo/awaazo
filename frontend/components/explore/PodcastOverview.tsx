@@ -11,7 +11,6 @@ import {
   WrapItem,
   Button, 
 } from "@chakra-ui/react";
-
 import EpisodeCard from "../cards/EpisodeCard";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
