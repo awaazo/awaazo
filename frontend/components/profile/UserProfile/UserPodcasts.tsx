@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
+import { Box,Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Podcast } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
@@ -36,18 +36,16 @@ export default function UserPodcasts({ userId }) {
 
   return (
     <>
-      <div
-        style={{
-          marginBottom: "1em",
-          fontSize: "1.5em",
-          fontWeight: "bold",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+      <Box
+        marginBottom="1em"
+        fontSize="1.5em"
+        fontWeight="bold"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
       >
         Podcasts:
-      </div>
+      </Box>
 
       {podcasts && podcasts.length == 0 ? (
         <Text mt={"50px"} fontSize={"18px"} textAlign={"center"}>
