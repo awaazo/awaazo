@@ -22,7 +22,7 @@ export default function userProfile() {
           <UserHeader userId={userId} />
           <UserPodcasts userId={userId} />
           <UserEpisodes userId={userId} />
-          <UserPlaylists userId={userId} />
+          {/* <UserPlaylists userId={userId} /> */}
         </VStack>
       ) : (
         <HStack width="80%" align={"start"} spacing={"15px"}>
@@ -32,7 +32,7 @@ export default function userProfile() {
           </VStack>
           <VStack width="50%" align="start">
             <UserEpisodes userId={userId} />
-            <UserPlaylists userId={userId} />
+            {/* <UserPlaylists userId={userId} /> */}
           </VStack>
         </HStack>
       )}
