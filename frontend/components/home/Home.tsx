@@ -1,17 +1,11 @@
 import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
-import ExploreGenresSection from "./ExploreGenres";
+import ExploreGenresSection from "../explore/ExploreGenres";
 import ForYou from "./ForYou";
 
 const Home = () => {
   return (
     <Box px={["1em", "2em", "4em"]} minH="100vh">
-      <Box mb={4}>
-        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
-          Explore Genres
-        </Text>
-        <ExploreGenresSection />
-      </Box>
       <Box mb={4}>
         <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
           Recently Uploaded

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { Box, SimpleGrid, Flex, Text, VStack, useColorMode, useBreakpointValue } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text, useBreakpointValue } from "@chakra-ui/react";
 import { PodcastByTagsRequest } from "../../../types/Requests";
 import { Podcast } from "../../../types/Interfaces";
 import { useRouter } from "next/router";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../../components/cards/PodcastCard";
-import ExploreGenresSection from "../../../components/home/ExploreGenres";
+import ExploreGenresSection from "../../../components/explore/ExploreGenres";
 
 export default function MyPodcast() {
   const router = useRouter();
