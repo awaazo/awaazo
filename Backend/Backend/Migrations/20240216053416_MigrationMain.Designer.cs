@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240210054547_adminEmailLogs")]
-    partial class adminEmailLogs
+    [Migration("20240216053416_MigrationMain")]
+    partial class MigrationMain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -588,6 +588,43 @@ namespace Backend.Migrations
                     b.ToTable("PodcastRatings");
                 });
 
+            modelBuilder.Entity("Backend.Models.Points", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PointCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EpisodeId");
+
+                    b.ToTable("Points");
+                });
+
             modelBuilder.Entity("Backend.Models.Sponsor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -647,6 +684,37 @@ namespace Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("Backend.Models.Transactions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -1038,6 +1106,17 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Backend.Models.Points", b =>
+                {
+                    b.HasOne("Backend.Models.Episode", "Episode")
+                        .WithMany("Points")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+                });
+
             modelBuilder.Entity("Backend.Models.Sponsor", b =>
                 {
                     b.HasOne("Backend.Models.Annotation", "Annotation")
@@ -1057,6 +1136,17 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Subscriptions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.Transactions", b =>
+                {
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Transactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1125,6 +1215,8 @@ namespace Backend.Migrations
 
                     b.Navigation("PlaylistEpisodes");
 
+                    b.Navigation("Points");
+
                     b.Navigation("Sponsors");
 
                     b.Navigation("episodeSections");
@@ -1163,6 +1255,8 @@ namespace Backend.Migrations
                     b.Navigation("Ratings");
 
                     b.Navigation("Subscriptions");
+
+                    b.Navigation("Transactions");
 
                     b.Navigation("UserFollows");
                 });
