@@ -1,4 +1,5 @@
-﻿using Backend.Models;
+﻿using Backend.Controllers.Requests;
+using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,35 @@ public class AdminPanelController : ControllerBase
         }
     }
 
+    [HttpPost("email/{userId}")]
+    public async Task<IActionResult> EmailUser(Guid userId, [FromBody] AdminEmailUserRequest request) {
+        try {
+            User? admin = await _authService.IdentifyUserAsync(HttpContext);
+            if (admin is null)
+                throw new InvalidOperationException("Admin user Id cannot be null");
+            
+            await _adminService.EmailUser(admin, userId, request);
+            return Ok();
+        }
+        catch (Exception e) {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("emailLogs")]
+    public async Task<IActionResult> EmailLogs([FromQuery(Name = "page")] uint page) {
+        try {
+            User? admin = await _authService.IdentifyUserAsync(HttpContext);
+            if (admin is null)
+                throw new InvalidOperationException("Admin user Id cannot be null");
+
+            return Ok(await _adminService.EmailLogs(admin, (int)page));
+        }
+        catch (Exception e) {
+            return BadRequest(e.Message);
+        }   
+    }
+    
     [HttpPost("ban/{userId}")]
     public async Task<IActionResult> BanUser(Guid userId) {
         try {
