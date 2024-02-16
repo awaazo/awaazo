@@ -27,7 +27,7 @@ public class AdminPanelTests
         //Mock
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
         MockBasicUtilities();
-        _adminService = new(_dbContextMock.Object, _config);
+        _adminService = new(_dbContextMock.Object, _config, new EmailService(_config));
     }
 
     [TestInitialize]
@@ -41,7 +41,7 @@ public class AdminPanelTests
 
         //Mock
         _dbContextMock = new(new DbContextOptions<AppDbContext>());
-        _adminService = new(_dbContextMock.Object, _config);
+        _adminService = new(_dbContextMock.Object, _config, new EmailService(_config));
     }
 
     #region Test Service
@@ -56,6 +56,17 @@ public class AdminPanelTests
             GenerateStandardUser()
         }.AsQueryable().BuildMockDbSet();
         _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        // Service
+        AdminPanelService adminService = new(_dbContextMock.Object, config, new EmailService(config));
+
+        // Exception
+        Exception? exception = null;
         User[]? result = null;
         
         // ACT
@@ -83,6 +94,17 @@ public class AdminPanelTests
             GenerateStandardUser()
         }.AsQueryable().BuildMockDbSet();
         _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
+
+        // Configuration
+        IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        // Service
+        AdminPanelService adminService = new(_dbContextMock.Object, config, new EmailService(config));
+
+        // Exception
+        Exception exception = new();
         User[]? result = null;
 
         User admin = GenerateStandardUser();
@@ -115,7 +137,13 @@ public class AdminPanelTests
         }.AsQueryable().BuildMockDbSet();
         _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
-        // Exception    
+        // Service
+        AdminPanelService adminService = new(_dbContextMock.Object, _config, new EmailService(_config));
+
+        // Exception
+        Exception? exception = null;
+        User[]? result = null;
+        
         User admin = GenerateStandardUser();
         admin.IsAdmin = true;
         
