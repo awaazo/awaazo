@@ -115,6 +115,49 @@ public class AdminPanelTests
         }.AsQueryable().BuildMockDbSet();
         _dbContextMock.SetupGet(db => db.Users).Returns(users.Object);
 
+        var podcast = new Podcast() {
+            Podcaster = userToBan,
+            PodcasterId = userToBan.Id
+        };
+        Mock<DbSet<Podcast>> podcasts = new[]
+        {
+            podcast
+        }.AsQueryable().BuildMockDbSet();
+        _dbContextMock.SetupGet(db => db.Podcasts).Returns(podcasts.Object);
+
+        var episode = new Episode() {
+            Podcast = podcast,
+            PodcastId = podcast.Id,
+        };
+        Mock<DbSet<Episode>> episodes = new[]
+        {
+            episode
+        }.AsQueryable().BuildMockDbSet();
+        _dbContextMock.SetupGet(db => db.Episodes).Returns(episodes.Object);
+
+        var comment = new Comment() {
+            User = userToBan,
+            UserId = userToBan.Id,
+        };
+        Mock<DbSet<Comment>> comments = new[]
+        {
+            comment
+        }.AsQueryable().BuildMockDbSet();
+        _dbContextMock.SetupGet(db => db.Comments).Returns(comments.Object);
+
+        var commentreply = new CommentReply() {
+            User = userToBan,
+            UserId = userToBan.Id,
+            ReplyToCommentId = comment.Id,
+            ReplyToComment = comment
+        };
+        Mock<DbSet<CommentReply>> commentReplies = new[]
+        {
+            commentreply
+        }.AsQueryable().BuildMockDbSet();
+        _dbContextMock.SetupGet(db => db.CommentReplies).Returns(commentReplies.Object);
+
+
         // Exception    
         User admin = GenerateStandardUser();
         admin.IsAdmin = true;
@@ -132,6 +175,18 @@ public class AdminPanelTests
         // ASSERT
         Assert.NotNull(userToBan.DeletedAt);
         Assert.Equal(admin.Id, userToBan.DeletedBy);
+        
+        Assert.NotNull(podcast.DeletedAt);
+        Assert.Equal(admin.Id, podcast.DeletedBy);
+        
+        Assert.NotNull(episode.DeletedAt);
+        Assert.Equal(admin.Id, episode.DeletedBy);       
+        
+        Assert.NotNull(comment.DeletedAt);
+        Assert.Equal(admin.Id, comment.DeletedBy);       
+        
+        Assert.NotNull(commentreply.DeletedAt);
+        Assert.Equal(admin.Id, commentreply.DeletedBy);       
     } 
     #endregion
     
