@@ -1,6 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
-import ExploreGenresSection from "../explore/ExploreGenres";
 import ForYou from "./ForYou";
 
 const Home = () => {

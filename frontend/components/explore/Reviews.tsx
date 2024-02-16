@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   Avatar,
-  useColorMode,
   useBreakpointValue,
   Text,
   Textarea,
