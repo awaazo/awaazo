@@ -36,7 +36,7 @@ export interface Episode {
   sections?: Section[];
   annotations: Annotation[];
   sponsors: Sponsor[];
-  transcript?: TranscriptLine[];
+  transcript?:Transcript[];
 }
 
 export interface Playlist {
@@ -264,4 +264,20 @@ export interface Chatbot{
   username: string;
   avatarUrl: string;
   sentAt: Date;
+}
+
+export interface Transcript {
+  id: number,
+  seek: number,
+  start: number,
+  end: number,
+  text: string,
+  speaker: string,
+  words: {
+    start: number,
+    end: number,
+    word: string,
+    score: number,
+    speaker: string
+  }[];
 }
