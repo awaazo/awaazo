@@ -1,6 +1,6 @@
 import * as paths from '../../../fixtures/file_paths.json';
 
-describe('Mobile Test', () => {
+describe('Mobile Login', () => {
     context('Mobile resolution', () => {
         beforeEach(() =>{
             cy.viewport(414, 896)

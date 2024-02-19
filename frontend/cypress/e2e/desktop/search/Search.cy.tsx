@@ -34,7 +34,7 @@ describe('Search', () => {
         cy.login(null, 'dummyRegister@email.com', 'password123');
         cy.get('[href="/Explore/Search"]').click();
         cy.get('.chakra-input').should('be.visible').type('testUsername{enter}');
-        cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="user-card-NewUsername"]').should('be.visible').click({ timeout: 5000 });
         cy.contains("@NewUsername").should('be.visible');
     });
     
@@ -45,7 +45,7 @@ describe('Search', () => {
         cy.get('[href="/Explore/Search"]').click();
         cy.get('.chakra-input').should('be.visible').type('testUsername{enter}');
         cy.intercept("GET", "/profile/*").as("profile");
-        cy.get('[data-cy="user-card-TestDisplayName"]').should('be.visible').click({ timeout: 5000 });
+        cy.get('[data-cy="user-card-NewUsername"]').should('be.visible').click({ timeout: 5000 });
         cy.contains("@NewUsername").should('be.visible');
         cy.wait(400);
         cy.get('[data-cy="podcast-name:F2 Legends"').should('be.visible');
