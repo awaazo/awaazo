@@ -884,6 +884,7 @@ public class PodcastService : IPodcastService
         // Make sure the listen position is not negative
         if (listenPosition < 0)
             throw new Exception("Listen position cannot be negative.");
+
         // Make sure the listen position is not greater than the duration of the episode
         if (listenPosition > episode.Duration)
             throw new Exception("Listen position cannot be greater than the duration of the episode.");
@@ -901,18 +902,29 @@ public class PodcastService : IPodcastService
                 UserId = user.Id,
                 DateListened = DateTime.Now,
                 LastListenPosition = listenPosition,
-                HasListened = true
+                HasListened = true,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                TotalListenTime = TimeSpan.FromSeconds(listenPosition)
             };
+
+            // Add the interaction to the database
             await _db.UserEpisodeInteractions.AddAsync(interaction);
         }
         else
         {
+            interaction.TotalListenTime = interaction.TotalListenTime.Add(TimeSpan.FromSeconds(Math.Abs(listenPosition - interaction.LastListenPosition)));
             interaction.DateListened = DateTime.Now;
             interaction.LastListenPosition = listenPosition;
             interaction.HasListened = true;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
             _db.UserEpisodeInteractions.Update(interaction);
         }
 
+        // Save the changes to the database
         return await _db.SaveChangesAsync() > 0;
     }
 
@@ -931,11 +943,40 @@ public class PodcastService : IPodcastService
         UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
             .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
 
-        // If the interaction does not exist, return 0
+        // If the interaction does not exist, create a new one.
         if (interaction is null)
-            return new() { ListenPosition = 0 };
+        {
+            interaction = new()
+            {
+                EpisodeId = episode.Id,
+                UserId = user.Id,
+                DateListened = DateTime.Now,
+                LastListenPosition = 0,
+                HasListened = false,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Add the interaction to the database   
+            await _db.UserEpisodeInteractions.AddAsync(interaction);
+        }
         else
-            return new() { ListenPosition = interaction.LastListenPosition };
+        {
+            interaction.DateListened = DateTime.Now;
+            interaction.HasListened = true;
+            interaction.Clicks++;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
+            _db.UserEpisodeInteractions.Update(interaction);
+        }
+        
+        // Save the changes to the database
+        await _db.SaveChangesAsync();
+
+        // Return the listen position
+        return new() { ListenPosition = interaction.LastListenPosition };
     }
 
     #endregion Watch History

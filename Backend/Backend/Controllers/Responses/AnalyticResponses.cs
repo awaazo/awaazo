@@ -61,11 +61,32 @@ public class AgeRangeResponse
 [BindProperties]
 public class WatchTimeRangeResponse
 {
-    public DateTime Start { get; set; } = DateTime.Now;
-    public DateTime End { get; set; } = DateTime.Now;
-    public TimeSpan Average { get; set; } = TimeSpan.Zero;
-    public TimeSpan Total { get; set; } = TimeSpan.Zero;
-    public int Clicks { get; set; } = 0;
+
+    public WatchTimeRangeResponse(List<UserEpisodeInteraction> interactions, int totalClicks, TimeSpan totalWatchTime)
+    {   
+        // Set the min and max watch time 
+        MinWatchTime = interactions.Min(i => i.TotalListenTime);
+        MaxWatchTime = interactions.Max(i => i.TotalListenTime);
+
+        // Set the total watch time and clicks
+        TotalWatchTime = TimeSpan.FromTicks(interactions.Sum(i => i.TotalListenTime.Ticks));
+        TotalClicks = interactions.Sum(i => i.Clicks);
+        
+        // Set the watch time and clicks percentage
+        ClicksPercentage = (double)TotalClicks / totalClicks * 100;
+        WatchTimePercentage = (double)TotalWatchTime.TotalMinutes / totalWatchTime.TotalMinutes * 100;
+    
+        // Set the average watch time and clicks
+        AverageWatchTime = TotalWatchTime / interactions.Count;
+        AverageClicks = (double)TotalClicks / interactions.Count;
+    }
+
+    public TimeSpan MinWatchTime { get; set; } = TimeSpan.Zero;
+    public TimeSpan MaxWatchTime { get; set; } = TimeSpan.Zero;
+    public TimeSpan AverageWatchTime { get; set; } = TimeSpan.Zero;
+    public double AverageClicks { get; set; } = 0;
+    public TimeSpan TotalWatchTime { get; set; } = TimeSpan.Zero;
+    public int TotalClicks { get; set; } = 0;
     public double ClicksPercentage { get; set; } = 0;
     public double WatchTimePercentage { get; set; } = 0;
 }

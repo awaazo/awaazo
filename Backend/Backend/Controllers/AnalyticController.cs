@@ -30,6 +30,88 @@ public class AnalyticController : ControllerBase
         _logger = logger;
     }
 
+    #region User Interaction
+
+    [HttpGet("{podcastOrEpisodeId}/userInteractionTotal")]
+    public async Task<ActionResult> GetUserInteractionTotal(Guid podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionTotal));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok();
+            //return Ok(await _analyticService.GetUserInteractionTotalAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionTotal));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{podcastOrEpisodeId}/userInteractionAverage")]
+    public async Task<ActionResult> GetUserInteractionAverage(Guid podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionAverage));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok();
+            //return Ok(await _analyticService.GetUserInteractionAverageAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionAverage));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{podcastOrEpisodeId}/userInteractionDistribution")]
+    public async Task<ActionResult> GetUserInteractionDistribution(Guid podcastOrEpisodeId, uint timeInterval = 1, bool intervalIsInMinutes = true)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionDistribution));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok();
+            //return Ok(await _analyticService.GetUserInteractionDistributionInfoAsync(podcastOrEpisodeId, user, timeInterval, intervalIsInMinutes));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionDistribution));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    #endregion User Interaction
+
     #region Watch Time
 
     [HttpGet("{podcastOrEpisodeId}/averageWatchTime")]
@@ -108,7 +190,7 @@ public class AnalyticController : ControllerBase
     }
 
     [HttpGet("{podcastOrEpisodeId}/watchTimeRangeInfo")]
-    public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, DateTime startTime, DateTime endTime)
+    public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, TimeSpan minTime, TimeSpan maxTime)
     {
         try
         {
@@ -122,7 +204,7 @@ public class AnalyticController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _analyticService.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, startTime, endTime));
+            return Ok(await _analyticService.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minTime, maxTime));
         }
         catch (Exception ex)
         {
