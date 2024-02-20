@@ -45,6 +45,7 @@ public class Program
 
 
         builder.Services.AddScoped<ValidateUser>();
+        builder.Services.AddScoped<ValidateAdmin>();
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
