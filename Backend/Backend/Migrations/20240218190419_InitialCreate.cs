@@ -6,11 +6,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class firstMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AdminEmailLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AdminUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BodyIsHtml = table.Column<bool>(type: "bit", nullable: false),
+                    Delivered = table.Column<bool>(type: "bit", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ToUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdminEmailLogs", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "EpisodeChatMessages",
                 columns: table => new
@@ -62,6 +82,9 @@ namespace Backend.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     IsPodcaster = table.Column<bool>(type: "bit", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -183,6 +206,29 @@ namespace Backend.Migrations
                     table.PrimaryKey("PK_Subscriptions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Subscriptions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    TransactionType = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -406,6 +452,31 @@ namespace Backend.Migrations
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Points",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PointCount = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Success = table.Column<bool>(type: "bit", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Points", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Points_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -656,6 +727,11 @@ namespace Backend.Migrations
                 column: "PodcasterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Points_EpisodeId",
+                table: "Points",
+                column: "EpisodeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sponsors_AnnotationId",
                 table: "Sponsors",
                 column: "AnnotationId",
@@ -669,6 +745,11 @@ namespace Backend.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_UserId",
                 table: "Subscriptions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_UserId",
+                table: "Transactions",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -691,6 +772,9 @@ namespace Backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AdminEmailLogs");
+
             migrationBuilder.DropTable(
                 name: "Bookmarks");
 
@@ -728,10 +812,16 @@ namespace Backend.Migrations
                 name: "PodcastRatings");
 
             migrationBuilder.DropTable(
+                name: "Points");
+
+            migrationBuilder.DropTable(
                 name: "Sponsors");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "UserEpisodeInteractions");

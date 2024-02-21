@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { RiRobot2Fill } from "react-icons/ri";
 import { useChatBot } from "../../utilities/ChatBotContext";
-import LoginPrompt from "../auth/AuthPrompt";
+import AuthPrompt from "../auth/AuthPrompt";
 import AuthHelper from "../../helpers/AuthHelper";
 
 const ChatBotButton = ({ episodeId }) => {
@@ -12,7 +12,6 @@ const ChatBotButton = ({ episodeId }) => {
   const handleClick = () => {
     AuthHelper.authMeRequest().then((response) => {
       if (response.status == 401){
-        //Not logged in, prompt user to sign in.
         setShowLoginPrompt(true);
         return;
       }else{
@@ -30,7 +29,7 @@ const ChatBotButton = ({ episodeId }) => {
         </Button>
       </Tooltip>
       {showLoginPrompt && (
-        <LoginPrompt
+        <AuthPrompt
           isOpen={showLoginPrompt}
           onClose={() => setShowLoginPrompt(false)}
           infoMessage="Login to chat and ask about the episode"

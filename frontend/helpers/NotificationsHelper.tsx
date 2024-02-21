@@ -1,4 +1,4 @@
-import Axios from "axios";
+import axios from "axios";
 import EndpointHelper from "../helpers/EndpointHelper";
 import { BaseResponse } from "../types/Responses";
 
@@ -20,7 +20,7 @@ export default class NotificationHelper {
     };
 
     try {
-      const response = await Axios(options);
+      const response = await axios(options);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -44,7 +44,7 @@ export default class NotificationHelper {
     };
 
     try {
-      const response = await Axios(options);
+      const response = await axios(options);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ export default class NotificationHelper {
     };
 
     try {
-      const response = await Axios(options);
+      const response = await axios(options);
       console.log("NotificationCount response.data:", response.data); // Add this line
       return response.data;
     } catch (error) {

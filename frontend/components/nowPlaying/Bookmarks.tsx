@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Text,
-  VStack,
-  Flex,
-  useBreakpointValue,
-  Icon,
-  IconButton
-} from "@chakra-ui/react";
+import { Box, Text, VStack, Flex, useBreakpointValue, Icon, IconButton } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Bookmark } from "../../types/Interfaces";
 import { convertTime } from "../../utilities/commonUtils";
@@ -35,9 +27,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
             console.error("Error fetching bookmarks data:", res.message);
           }
         })
-        .catch((error) =>
-          console.error("Error fetching bookmarks data:", error),
-        );
+        .catch((error) => console.error("Error fetching bookmarks data:", error));
     }
   }, [episodeId]);
 
@@ -56,31 +46,22 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
     }
   }, [bookmarks]);
 
-
-   // Function to handle the bookmark/delete bookmark action
- const handleDeleteBookmark = (bookmarkId) => {
-  console.log("id: ",bookmarkId);
-  // Send the request to delete bookmark
-  BookmarksHelper.deleteEpisodeBookmark(bookmarkId)
-  .then((response) => {
-    if (response.status === 200) {
-      setDeletedBookmark(bookmarkId);
-      console.log("Bookmark " + bookmarkId + " deleted");
-    } else {
-      console.error("Error deleting bookmark", response.message);
-    }
-  });
-
-};
+  // Function to handle the bookmark/delete bookmark action
+  const handleDeleteBookmark = (bookmarkId) => {
+    console.log("id: ", bookmarkId);
+    // Send the request to delete bookmark
+    BookmarksHelper.deleteEpisodeBookmark(bookmarkId).then((response) => {
+      if (response.status === 200) {
+        setDeletedBookmark(bookmarkId);
+        console.log("Bookmark " + bookmarkId + " deleted");
+      } else {
+        console.error("Error deleting bookmark", response.message);
+      }
+    });
+  };
 
   return (
-    <Box
-      border="3px solid rgba(255, 255, 255, 0.05)"
-      width="100%"
-      height="100%"
-      p={2}
-      borderRadius="1.1em"
-    >
+    <Box border="3px solid rgba(255, 255, 255, 0.05)" width="100%" height="100%" p={2} borderRadius="1.1em">
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={CiBookmark} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
@@ -89,14 +70,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
       </Flex>
       <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
         {bookmarks?.map((bookmark, index) => (
-          <Box
-            key={index}
-            bg="rgba(255, 255, 255, 0.02)"
-            borderRadius="2xl"
-            p={4}
-            _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}
-            w="100%"
-          >
+          <Box key={index} bg="rgba(255, 255, 255, 0.02)" borderRadius="2xl" p={4} _hover={{ bg: "rgba(255, 255, 255, 0.05)" }} w="100%">
             <Flex justify="space-between" align="center">
               <Text fontSize={fontSize} color="white">
                 {bookmark.title}

@@ -1,20 +1,10 @@
-import {
-  Box,
-  Flex,
-  IconButton,
-  Tag,
-  useColorModeValue,
-  useColorMode,
-  useBreakpointValue,
-  Text,
-  Image,
-  Icon,
-} from "@chakra-ui/react";
+import { Box, Flex, IconButton, Tag, useColorModeValue, useColorMode, useBreakpointValue, Text, Image, Icon } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/Likes";
 import CommentComponent from "../social/Comments";
 import { BsExplicitFill } from "react-icons/bs";
+import { convertTime } from "../../utilities/commonUtils";
 
 // Component to display an episode
 const Episode = ({ episode }) => {
@@ -25,15 +15,7 @@ const Episode = ({ episode }) => {
     dispatch({ type: "SET_EPISODE", payload: episode });
   };
 
-  const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  // Format duration in minutes and seconds
-  const formatDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
 
   return (
     <Flex
@@ -46,7 +28,8 @@ const Episode = ({ episode }) => {
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(4px)"
       boxShadow="sm"
-      style={{ cursor: "pointer", transition: "transform 0.3s" }}
+      cursor="pointer"
+      transition="transform 0.3s"
       onClick={() => handleEpisodeClick()}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
@@ -56,76 +39,32 @@ const Episode = ({ episode }) => {
       }}
     >
       <Box data-cy={`episode-name-${episode.episodeName}`} position="relative" mr={5}>
-        <Image
-          boxSize={isMobile ? "0px" : "125px"}
-          src={episode.thumbnailUrl}
-          borderRadius="10%"
-          marginLeft={isMobile ? "0px" : "20px"}
-          mt={1}
-        />
-        {!isMobile && (
-          <IconButton
-            aria-label="Play"
-            icon={<FaPlay />}
-            position="absolute"
-            left="60%"
-            top="50%"
-            transform="translate(-50%, -50%)"
-            variant="ghost"
-            fontSize="25px"
-            shadow={"md"}
-            _hover={{ boxShadow: "lg" }}
-          />
-        )}
+        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
+        {!isMobile && <IconButton aria-label="Play" icon={<FaPlay />} position="absolute" left="60%" top="50%" transform="translate(-50%, -50%)" variant="ghost" fontSize="25px" shadow={"md"} _hover={{ boxShadow: "lg" }} />}
       </Box>
       <Flex direction="column" flex={1}>
         {/* Episode Name */}
         <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"}>
           {episode.episodeName}
-          {episode.isExplicit && (
-            <Icon
-              as={BsExplicitFill}
-              boxSize={isMobile ? "10px" : "16px"}
-              ml={4}
-            />
-          )}
+          {episode.isExplicit && <Icon as={BsExplicitFill} boxSize={isMobile ? "10px" : "16px"} ml={4} />}
           <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
         </Text>
         {/* Episode Details */}
-        <Flex
-          direction="column"
-          fontSize="sm"
-          color={useColorModeValue("gray.500", "gray.400")}
-        >
+        <Flex direction="column" fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {formatDuration(episode.duration)}
+            Duration: {convertTime(episode.duration)}
           </Text>
         </Flex>
       </Flex>
 
       {/* Edit and Delete Buttons */}
-      <Flex
-        alignItems="flex-start"
-        style={{ marginRight: "15px" }}
-        data-cy={`comments-on-${episode.episodeName}-${episode.comments.length}`}
-      >
-        <CommentComponent
-          episodeIdOrCommentId={episode.id}
-          initialComments={episode.comments.length}
-          showCount={true}
-        />
-        <div
-          style={{ marginTop: "4px", marginLeft: "4px" }}
-          data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}
-        >
-          <LikeComponent
-            episodeOrCommentId={episode.id}
-            initialLikes={episode.likes}
-            showCount={true}
-          />
-        </div>
+      <Flex alignItems="flex-start" style={{ marginRight: "15px" }} data-cy={`comments-on-${episode.episodeName}-${episode.comments.length}`}>
+        <CommentComponent episodeIdOrCommentId={episode.id} initialComments={episode.comments.length} showCount={true} />
+        <Box marginTop="4px" marginLeft="4px" data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}>
+          <LikeComponent episodeOrCommentId={episode.id} initialLikes={episode.likes} showCount={true} />
+        </Box>
       </Flex>
     </Flex>
   );

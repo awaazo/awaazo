@@ -20,8 +20,6 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
-
-
     /// <summary>
     /// Current database instance
     /// </summary>
@@ -53,7 +51,6 @@ public class PodcastService : IPodcastService
     /// Maximum audio file is 1GB
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
-
 
     /// <summary>
     /// Maximum request size
@@ -201,6 +198,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.Id == podcastId)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -240,6 +238,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
@@ -269,6 +268,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(filter.SearchTerm))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
@@ -361,7 +361,9 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
+
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -394,6 +396,7 @@ public class PodcastService : IPodcastService
             .Include(p => p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings).ThenInclude(r => r.User)
+            .Include(p => p.Episodes).ThenInclude(r => r.Points)
             .Skip(page * pageSize)
             .Take(pageSize)
             .Select(p => new PodcastResponse(p, domainUrl))
@@ -411,6 +414,7 @@ public class PodcastService : IPodcastService
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Include(p => p.Episodes).ThenInclude(e => e.Points)
                 .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(comment => comment.Likes)
                 .FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
@@ -501,6 +505,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -564,7 +569,7 @@ public class PodcastService : IPodcastService
             IsExplicit = request.IsExplicit,
             ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
         };
 
         // Check if the episode is explicit and the podcast is not
@@ -583,7 +588,7 @@ public class PodcastService : IPodcastService
         try
         {
             // Send request to PY server to generate a transcript
-            var url = _pyBaseUrl+"/stt_ingest";
+            var url = _pyBaseUrl + "/stt_ingest";
             var json = $@"{{
                 ""podcast_id"": ""{episode.PodcastId}"",
                 ""episode_id"": ""{episode.Id}""
@@ -669,7 +674,7 @@ public class PodcastService : IPodcastService
                 RemoveTranscript(episodeId, episode.PodcastId);
 
                 // Send request to PY server to generate a transcript
-                var url = _pyBaseUrl+"/stt_ingest";
+                var url = _pyBaseUrl + "/stt_ingest";
                 var json = $@"{{
                     ""podcast_id"": ""{episode.PodcastId}"",
                     ""episode_id"": ""{episode.Id}""
@@ -835,7 +840,9 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
             .Include(e => e.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
             .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
 
         // Return the episode response
         return new EpisodeResponse(episode, domainUrl);
@@ -939,6 +946,8 @@ public class PodcastService : IPodcastService
     }
 
     #endregion Watch History
+
+    #region Transcription
 
     /// <summary>
     /// Gets the transcript for the given episode.
@@ -1082,8 +1091,42 @@ public class PodcastService : IPodcastService
         return true;
     }
 
+    /// <summary>
+    /// Generates a transcript for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to generate the transcript</param>
+    /// <param name="user">User who is generating the transcript</param>
+    /// <returns>True if the transcript was generated successfully, false otherwise</returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Check if the user owns the podcast of the episode
+        if(await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
+        {
+            // Send request to PY server to generate a transcript
+            var url = _pyBaseUrl + "/stt";
+            var json = $@"{{
+                ""podcast_id"": ""{episode.PodcastId}"",
+                ""episode_id"": ""{episode.Id}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var resp = await httpClient.PostAsync(url, content);
+
+            return resp.StatusCode == HttpStatusCode.OK;
+        }
+        else
+            throw new Exception("User does not have permission to generate transcript for this episode.");
+    }
 
 
+
+    #endregion Transcription
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes
@@ -1139,6 +1182,7 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
             .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
 
         // Filter on Episode Length
@@ -1197,6 +1241,7 @@ public class PodcastService : IPodcastService
         .Include(e => e.Comments).ThenInclude(c => c.User)
         .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Points)
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(e => new EpisodeResponse(e, domainUrl, true))
@@ -1207,6 +1252,8 @@ public class PodcastService : IPodcastService
 
 
     #endregion Episode
+
+
 
     #region Private Method
 
@@ -1271,10 +1318,10 @@ public class PodcastService : IPodcastService
         };
 
 
-        string defaultErrorMsg ="Sorry, but I can't answer your question right now. Please try again later."; 
+        string defaultErrorMsg = "Sorry, but I can't answer your question right now. Please try again later.";
 
         // Send request to PY server to chat with the episode
-        var url = _pyBaseUrl+"/chat";
+        var url = _pyBaseUrl + "/chat";
         var json = $@"{{
             ""podcast_id"": ""{episode.PodcastId}"",
             ""episode_id"": ""{episodeId}"",
@@ -1285,7 +1332,7 @@ public class PodcastService : IPodcastService
         string responseText = string.Empty;
 
         try
-        {   
+        {
             // Send request to PY server to generate a chat response
             using var httpClient = new HttpClient();
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -1298,7 +1345,7 @@ public class PodcastService : IPodcastService
                 responseText = await response.Content.ReadAsStringAsync();
         }
         catch (Exception)
-        {   
+        {
             throw;
         }
 
@@ -1319,8 +1366,8 @@ public class PodcastService : IPodcastService
         await _db.EpisodeChatMessages.AddAsync(responseMessage);
 
         // Save the changes to the database
-        await _db.SaveChangesAsync();   
-        
+        await _db.SaveChangesAsync();
+
         // Return the chat with the messages
         return new EpisodeChatMessageResponse(responseMessage, user, domainUrl);
     }

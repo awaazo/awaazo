@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { Box,  useDisclosure,  useBreakpointValue, Grid,  Spinner} from "@chakra-ui/react";
+import {
+  Box,
+  useDisclosure,
+  useBreakpointValue,
+  Grid,
+  Spinner,
+} from "@chakra-ui/react";
 import CoverArt from "../../components/nowPlaying/CoverArt";
 import Sections from "../../components/nowPlaying/Sections";
 import PodCue from "../../components/nowPlaying/PodCue";
@@ -13,7 +19,6 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import { sliderSettings } from "../../utilities/commonUtils";
 import { useRouter } from "next/router";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
-
 
 const NowPlaying = () => {
   const router = useRouter();
@@ -28,79 +33,78 @@ const NowPlaying = () => {
   const [annotations, setAnnotations] = useState([]);
   const [tabIndex, setTabIndex] = useState(0);
 
-  
-    // Function to open drawer to the add/edit form
-    const handleOpenForm = (index = null) => {
-      setTabIndex(1);
-      if (index !== null) {
-        setSelectedAnnotation({ ...annotations[index], index });
-      } else {
-        setSelectedAnnotation(null);
+  // Function to open drawer to the add/edit form
+  const handleOpenForm = (index = null) => {
+    setTabIndex(1);
+    if (index !== null) {
+      setSelectedAnnotation({ ...annotations[index], index });
+    } else {
+      setSelectedAnnotation(null);
+    }
+    onOpen();
+  };
+
+  const fetchAnnotations = async () => {
+    if (EpisodeId) {
+      try {
+        const response = await AnnotationHelper.getAnnotationsRequest(
+          EpisodeId,
+        );
+        if (response.status === 200) {
+          setAnnotations(response.annotations);
+        } else {
+          console.error("Failed to fetch annotations:", response.message);
+        }
+      } catch (error) {
+        console.error("Error fetching annotations:", error);
       }
-      onOpen();
-    };
+    }
+  };
 
-
-    const fetchAnnotations = async () => {
-      if (EpisodeId) {
-        try {
-          const response = await AnnotationHelper.getAnnotationsRequest(EpisodeId);
+  useEffect(() => {
+    const fetchEpisode = async () => {
+      setIsLoading(true); // Start loading
+      try {
+        if (EpisodeId) {
+          const response = await PodcastHelper.getEpisodeById(EpisodeId);
           if (response.status === 200) {
-            setAnnotations(response.annotations);
+            setEpisode(response.episode);
           } else {
-            console.error('Failed to fetch annotations:', response.message);
+            console.error("Error fetching episode data:", response.message);
+            // Set error state here if needed
           }
-        } catch (error) {
-          console.error('Error fetching annotations:', error);
         }
+        fetchAnnotations();
+      } catch (error) {
+        console.error("Error fetching episode data:", error);
+        // Set error state here
+      } finally {
+        setIsLoading(false); // Stop loading
       }
     };
 
-  
-    useEffect(() => {
-      const fetchEpisode = async () => {
-        setIsLoading(true); // Start loading
-        try {
-          if (EpisodeId) {
-            const response = await PodcastHelper.getEpisodeById(EpisodeId);
-            if (response.status === 200) {
-              setEpisode(response.episode);
-            } else {
-              console.error("Error fetching episode data:", response.message);
-              // Set error state here if needed
-            }
-          }
-          fetchAnnotations();
-        } catch (error) {
-          console.error("Error fetching episode data:", error);
-          // Set error state here
-        } finally {
-          setIsLoading(false); // Stop loading
-        }
-      };
-    
-      fetchEpisode();
-    }, [EpisodeId]);
-    
-  
+    fetchEpisode();
+  }, [EpisodeId]);
 
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
-    
 
   const handleDeleteAnnotation = async (annotationId) => {
     try {
-      const response = await AnnotationHelper.deleteAnnotationRequest(annotationId);
+      const response = await AnnotationHelper.deleteAnnotationRequest(
+        annotationId,
+      );
       if (response.status === 200) {
-        console.log('Annotation deleted successfully');
+        console.log("Annotation deleted successfully");
       } else {
-        console.error('Failed to delete annotation:', response.message);
+        console.error("Failed to delete annotation:", response.message);
       }
     } catch (error) {
-      console.error('Error deleting annotation:', error);
+      console.error("Error deleting annotation:", error);
     }
-    setAnnotations(prevAnnotations => prevAnnotations.filter(ann => ann.id !== annotationId));
+    setAnnotations((prevAnnotations) =>
+      prevAnnotations.filter((ann) => ann.id !== annotationId),
+    );
   };
-
 
   useEffect(() => {
     if (episode) {
@@ -109,10 +113,7 @@ const NowPlaying = () => {
           component: <CoverArt episodeId={episode.id} />,
           inSlider: false,
         },
-        {
-          component: <Transcripts episodeId={episode.id} />,
-          inSlider: true,
-        },
+
         // { component: <AwaazoBirdBot />, inSlider: false },
         {
           component: <Sections episodeId={episode.id} />,
@@ -123,8 +124,8 @@ const NowPlaying = () => {
           inSlider: true,
         },
         {
-          component: <PodCue cues={annotations} />, 
-          inSlider: false, 
+          component: <PodCue cues={annotations} />,
+          inSlider: false,
         },
 
         // DO NOT REMOVE
@@ -143,8 +144,6 @@ const NowPlaying = () => {
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-
-
   return (
     <Box
       w="100vw"
@@ -153,12 +152,23 @@ const NowPlaying = () => {
       flexDirection="column"
       overflow="hidden"
     >
-          {/* If isLoading is true, display the Spinner */}
-    {isLoading && (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-        <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
-      </Box>
-    )}
+      {/* If isLoading is true, display the Spinner */}
+      {isLoading && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+          />
+        </Box>
+      )}
       {/* //bgColor={palette || null} */}
       {isMobile ? (
         <Slider {...sliderSettings}>
@@ -202,10 +212,8 @@ const NowPlaying = () => {
           </Grid>
         </Box>
       )}
-      
-
-  </Box>
-);
+    </Box>
+  );
 };
 
 export default NowPlaying;

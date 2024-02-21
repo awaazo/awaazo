@@ -9,9 +9,8 @@ import {
   Image,
   Wrap,
   WrapItem,
-  Button, // Add Button import
+  Button, 
 } from "@chakra-ui/react";
-
 import EpisodeCard from "../cards/EpisodeCard";
 import Reviews from "../explore/Reviews";
 import Subscription from "../explore/Subscription";
@@ -221,7 +220,6 @@ export default function PodcastOverview({ podcast, User }) {
               ) : (
                 podcast.episodes.map((episode, index) => (
                   <EpisodeCard
-                    key={index}
                     episode={episode}
                     inPlaylist={false}
                     playlistId={null}
@@ -291,7 +289,6 @@ export default function PodcastOverview({ podcast, User }) {
               ) : (
                 podcast.episodes.map((episode, index) => (
                   <EpisodeCard
-                    key={index}
                     episode={episode}
                     inPlaylist={false}
                     playlistId={null}

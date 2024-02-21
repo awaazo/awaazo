@@ -3,6 +3,7 @@ import os
 import whisperx
 import torch
 
+
 def process_transcript(transcript):
     """
     Process a transcript by adding a seek time and an id to each line.
@@ -67,6 +68,8 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         # Get the file name
         file_name = audio_path.split(f'.{ext}')[0]
 
+        episode_id = file_name.split('/')[-1]
+
         # Define the transcript file path
         transcript_file_path = f'{file_name}.json'
         
@@ -120,6 +123,7 @@ def create_transcript_whisperx(audio_path,  model_name="base", batch_size=4, com
         os.remove(status_file_path)
 
         print('------------ WhisperX Transcript Created ------------')
+
 
     except Exception as e:
         # If an error occurs, update the status file with the error message

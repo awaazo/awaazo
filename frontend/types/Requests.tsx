@@ -27,6 +27,16 @@ export interface ChangePasswordRequest {
 }
 
 /**
+ * Reset Password Request to be sent to the server
+ */
+export interface ResetPasswordRequest {
+    "email": "user@example.com",
+    "token": "string",
+    "newPassword": "string",
+    "confirmNewPassword": "string"
+  }
+
+/**
  * Google SSO Request to be sent to the server
  */
 export interface GoogleSSORequest {
@@ -186,6 +196,12 @@ export interface SaveWatchHistoryRequest {
 }
 //#endregion
 
+
+export interface ChatbotMessageRequest {
+  episodeId: string;
+  prompt: string ;
+}
+
 //#region Episode editTrasncriptLines Request
 export interface editTranscriptLinesRequest {
   id: number,
@@ -203,4 +219,3 @@ export interface editTranscriptLinesRequest {
   }[];
 }
 //#endregion
-

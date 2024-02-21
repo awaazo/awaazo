@@ -1,20 +1,5 @@
-using Backend.Controllers;
-using Backend.Controllers.Requests;
-using Backend.Controllers.Responses;
-using Backend.Models;
-using Backend.Services;
-using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockQueryable.Moq;
-using Moq;
 using Assert = Xunit.Assert;
-using InvalidDataException = System.IO.InvalidDataException;
 
 namespace Backend.Tests;
 
@@ -467,6 +452,7 @@ public class ProfileTests
     {
         var coverImage = new Mock<IFormFile>();
         coverImage.Setup(file => file.ContentType).Returns("image/png");
+        coverImage.Setup(file => file.FileName).Returns("test.png");
         ProfileSetupRequest request = new ProfileSetupRequest();
         request.Avatar = coverImage.Object;
         request.DisplayName = "TestDisplayName";
@@ -480,6 +466,7 @@ public class ProfileTests
     {
         var coverImage = new Mock<IFormFile>();
         coverImage.Setup(file => file.ContentType).Returns("image/png");
+        coverImage.Setup(file => file.FileName).Returns("test.png");
         ProfileEditRequest request = new ProfileEditRequest();
         request.Avatar = coverImage.Object;
         request.DisplayName = "TestDisplayName";

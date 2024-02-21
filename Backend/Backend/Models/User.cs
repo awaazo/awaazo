@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
+using Backend.Models.Interfaces;
 using Newtonsoft.Json;
 
 namespace Backend.Models;
@@ -8,7 +9,7 @@ namespace Backend.Models;
 /// <summary>
 /// User model.
 /// </summary>
-public class User : BaseEntity
+public class User : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Default Avatar name given if the user has yet to complete his profile setup.
@@ -45,6 +46,8 @@ public class User : BaseEntity
     /// </summary>
     [Required]
     public string Password { get; set; } = string.Empty;
+
+
 
     /// <summary>
     /// URL for user's PFP
@@ -111,6 +114,12 @@ public class User : BaseEntity
     /// </summary>
     public bool IsPodcaster { get; set; }
 
+    [DefaultValue(false)] public bool IsAdmin { get; set; } = false;
+
+    public DateTime? DeletedAt { get; set; } = null;
+
+    public Guid DeletedBy { get; set; } = Guid.Empty;
+    
     /// <summary>
     /// User's podcasts.
     /// </summary>
@@ -156,6 +165,12 @@ public class User : BaseEntity
     public ICollection<Notification> Notifications {  get; } = new List<Notification>();
 
     public ICollection<Playlist> Playlists { get; } = new List<Playlist>();
+
+    /// <summary>
+    /// Withdrawls done by the User
+    /// </summary>
+    public ICollection<Transactions> Transactions { get; } = new List<Transactions>();
+
 
     /// <summary>
     /// Gender enum.
