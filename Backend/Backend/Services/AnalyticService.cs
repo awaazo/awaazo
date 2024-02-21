@@ -262,7 +262,7 @@ public class AnalyticService : IAnalyticService
             TimeSpan totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
 
             // Get the total amount of clicks for the podcast
@@ -272,7 +272,7 @@ public class AnalyticService : IAnalyticService
                 .SumAsync();
 
             // Get the average watch time of the audience for the podcast
-            avgWatchTime = totalWatchTime / totalClicks;
+            avgWatchTime = TimeSpan.FromSeconds((double) totalWatchTime.TotalSeconds / totalClicks);
         }
         else
         {
@@ -332,7 +332,7 @@ public class AnalyticService : IAnalyticService
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
         }
         else
@@ -348,7 +348,7 @@ public class AnalyticService : IAnalyticService
             // Get the total watch time of the audience for the episode
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
         }
 
@@ -391,7 +391,7 @@ public class AnalyticService : IAnalyticService
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
 
             // Get the total amount of clicks for the podcast
@@ -421,7 +421,7 @@ public class AnalyticService : IAnalyticService
             // Get the total watch time of the audience for the episode
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
 
             // Get the total amount of clicks for the episode
@@ -459,6 +459,9 @@ public class AnalyticService : IAnalyticService
         if (timeInterval == 0)
             throw new Exception("Time interval cannot be 0.");
 
+        if (intervalIsInMinutes)
+            timeInterval *= 60;
+
         // Check if the podcast exists and the user is the owner
         Podcast? podcast = await _db.Podcasts
             .FirstOrDefaultAsync(p => p.Id == podcastOrEpisodeId && p.PodcasterId == user.Id);
@@ -469,11 +472,15 @@ public class AnalyticService : IAnalyticService
 
         if(podcast is not null)
         {
+            // Check if there are any interactions for the podcast
+            if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
+                throw new Exception("No audience data available for the given podcast.");
+
             // Get the total watch time of the audience for the podcast
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
 
             // Get the total amount of clicks for the podcast
@@ -487,7 +494,7 @@ public class AnalyticService : IAnalyticService
             watchTimeRangeResponses = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
-                .GroupBy(uei => (uei.TotalListenTime.TotalMinutes - (uei.TotalListenTime.TotalMinutes % timeInterval)) / timeInterval)
+                .GroupBy(uei => (uei.TotalListenTime.TotalSeconds - (uei.TotalListenTime.TotalSeconds % timeInterval)) / timeInterval)
                 .OrderByDescending(g => g.Count())
                 .OrderBy(g => g.Key)
                 .Select(g => new WatchTimeRangeResponse(g.ToList(), totalClicks, totalWatchTime))
@@ -499,10 +506,14 @@ public class AnalyticService : IAnalyticService
             Episode episode = await _db.Episodes
                 .FirstOrDefaultAsync(e => e.Id == podcastOrEpisodeId && e.Podcast.PodcasterId == user.Id) ?? throw new Exception("Podcast or Episode does not exist for the given ID.");
             
+            // Check if there are any interactions for the episode
+            if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
+                throw new Exception("No audience data available for the given episode.");
+
             // Get the total watch time of the audience for the episode
             totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
                 .SumAsync());
             
             // Get the total amount of clicks for the episode
@@ -514,7 +525,7 @@ public class AnalyticService : IAnalyticService
             // Get the watch time range of the audience for the episode
             watchTimeRangeResponses = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
-                .GroupBy(uei => (uei.TotalListenTime.TotalMinutes - (uei.TotalListenTime.TotalMinutes % timeInterval)) / timeInterval)
+                .GroupBy(uei => (uei.TotalListenTime.TotalSeconds - (uei.TotalListenTime.TotalSeconds % timeInterval)) / timeInterval)
                 .OrderByDescending(g => g.Count())
                 .OrderBy(g => g.Key)
                 .Select(g => new WatchTimeRangeResponse(g.ToList(), totalClicks, totalWatchTime))

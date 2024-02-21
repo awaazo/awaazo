@@ -114,6 +114,13 @@ public class AnalyticController : ControllerBase
 
     #region Watch Time
 
+    /// <summary>
+    /// Get the average watch time of a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <returns>The average watch time of the podcast or episode.</returns>
+    /// <response code="200">Returns the average watch time of the podcast or episode.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
     [HttpGet("{podcastOrEpisodeId}/averageWatchTime")]
     public async Task<ActionResult> GetAverageWatchTime(Guid podcastOrEpisodeId)
     {
@@ -139,6 +146,13 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the total watch time of a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <returns>The total watch time of the podcast or episode.</returns>
+    /// <response code="200">Returns the total watch time of the podcast or episode.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
     [HttpGet("{podcastOrEpisodeId}/totalWatchTime")]
     public async Task<ActionResult> GetTotalWatchTime(Guid podcastOrEpisodeId)
     {
@@ -162,8 +176,17 @@ public class AnalyticController : ControllerBase
 
             return BadRequest(ex.Message);
         }
-    }
+    }   
 
+    /// <summary>
+    /// Get the watch time range of a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="timeInterval">The time interval for the distribution.</param>
+    /// <param name="intervalIsInMinutes">Whether the interval is in minutes or not.</param>
+    /// <returns>The watch time range of the podcast or episode.</returns>
+    /// <response code="200">Returns the watch time range of the podcast or episode.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
     [HttpGet("{podcastOrEpisodeId}/watchTimeDistribution")]
     public async Task<ActionResult> GetWatchTimeDistribution(Guid podcastOrEpisodeId, uint timeInterval = 1, bool intervalIsInMinutes = true)
     {
@@ -189,6 +212,15 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the watch time range of a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="minTime">The minimum time of the range.</param>
+    /// <param name="maxTime">The maximum time of the range.</param>
+    /// <returns>The watch time range of the podcast or episode.</returns>
+    /// <response code="200">Returns the watch time range of the podcast or episode.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
     [HttpGet("{podcastOrEpisodeId}/watchTimeRangeInfo")]
     public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, TimeSpan minTime, TimeSpan maxTime)
     {

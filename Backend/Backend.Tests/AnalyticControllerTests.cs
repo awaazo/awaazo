@@ -343,20 +343,19 @@ public class AnalyticControllerTests
         // Arrange
         Guid podcastOrEpisodeId = Guid.NewGuid();
         User user = new();
-        DateTime start = DateTime.Now;
-        DateTime end = DateTime.Now.AddDays(1);
+        TimeSpan minWatchTime = TimeSpan.FromMinutes(10);
+        TimeSpan maxWatchTime = TimeSpan.FromMinutes(40);
         WatchTimeRangeResponse watchTimeRangeResponse = new()
         {
-            Start = start,
-            End = end,
-            Average = TimeSpan.FromMinutes(30)
+            MinWatchTime = minWatchTime,
+            MaxWatchTime = maxWatchTime
         };
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
-        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, start, end)).ReturnsAsync(watchTimeRangeResponse);
+        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minWatchTime, maxWatchTime)).ReturnsAsync(watchTimeRangeResponse);
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime, maxWatchTime);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -370,13 +369,13 @@ public class AnalyticControllerTests
         // Arrange
         Guid podcastOrEpisodeId = Guid.NewGuid();
         User? user = null;
-        DateTime start = DateTime.Now;
-        DateTime end = DateTime.Now.AddDays(1);
+        TimeSpan minWatchTime = TimeSpan.FromMinutes(10);
+        TimeSpan maxWatchTime = TimeSpan.FromMinutes(40);
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime, maxWatchTime);
 
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -389,15 +388,15 @@ public class AnalyticControllerTests
         // Arrange
         Guid podcastOrEpisodeId = Guid.NewGuid();
         User user = new();
-        DateTime start = DateTime.Now;
-        DateTime end = DateTime.Now.AddDays(1);
+        TimeSpan minWatchTime = TimeSpan.FromMinutes(10);
+        TimeSpan maxWatchTime = TimeSpan.FromMinutes(40);
         string errorMessage = "Error Message";
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
-        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, start, end)).ThrowsAsync(new Exception(errorMessage));
+        _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minWatchTime,maxWatchTime)).ThrowsAsync(new Exception(errorMessage));
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, start, end);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime,maxWatchTime);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -416,9 +415,9 @@ public class AnalyticControllerTests
         {
             new()
             {
-                Start = DateTime.Now,
-                End = DateTime.Now.AddDays(1),
-                Average = TimeSpan.FromMinutes(30)
+                MinWatchTime = TimeSpan.FromMinutes(10),
+                MaxWatchTime = TimeSpan.FromMinutes(20),
+                TotalWatchTime = TimeSpan.FromMinutes(30),
             }
         };
 
