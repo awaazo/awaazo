@@ -54,8 +54,22 @@ export default class EndpointHelper {
    */
   static getGoogleSSOEndpoint = () => {
     return this.getBackendAddress() + "/auth/googleSSO";
-    return this.getBackendAddress() + "/auth/googleSSO";
   };
+
+  /**
+   * Returns the password reset endpoint.
+   * @returns The Password Reset Endpoint
+   * */
+
+  static getForgotPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/auth/sentForgotPasswordEmail";
+  };
+
+  static getCheckEmailEndpoint = () => {
+    return this.getBackendAddress() + "/auth/CheckEmail";
+  }
+
+
 
   // --------------------------------
   // PROFILE ENDPOINTS
@@ -104,6 +118,10 @@ export default class EndpointHelper {
   static getChangePasswordEndpoint = () => {
     return this.getBackendAddress() + "/profile/changePassword";
   };
+
+  static getResetPasswordEndpoint = () => {
+    return this.getBackendAddress() + "/profile/resetPassword";
+  }
 
   static getforgotPasswordEndpoint = () => {
     return this.getBackendAddress() + "/profile/sentForgotPasswordEmail";
@@ -540,15 +558,37 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/playlist/getLikedEpisodesPlaylist";
   };
 
+// --------------------------------
+  // TRANSCRIPT ENDPOINTS
   // --------------------------------
-  // TRANSCRIPT ENDPOINT
-  // --------------------------------
-  /**
-   * Returns the Episode Transcript endpoint.
-   * @returns The Episode Transcript Endpoint
+    /**
+   * Returns the Episode get transcript Endpoint.
+   * @returns The Episode get transcript Endpoint
    * */
-  static getTranscriptEndpoint = (episodeId: string) => {
-    return this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript";
+    static getTranscriptEndpoint = (episodeId) => {
+      return (
+        this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscript"
+      );
+    };
+
+     /**
+   * Returns the Episode get transcript Endpoint.
+   * @returns The Episode get transcript Endpoint
+   * */
+     static getTranscriptTextEndpoint = (episodeId) => {
+      return (
+        this.getBackendAddress() + "/podcast/" + episodeId + "/getTranscriptText"
+      );
+    };
+
+  /**
+   * Returns the Episode edit transcript lines endpoint.
+   * @returns The Episode edit transcript lines Endpoint
+   * */
+  static editTranscriptLinesEndpoint = (episodeId) => {
+    return (
+      this.getBackendAddress() + "/podcast/" + episodeId + "/editTranscriptLines"
+    );
   };
 
   // --------------------------------

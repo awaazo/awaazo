@@ -1,25 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  List,
-  ListItem,
-  Avatar,
-  HStack,
-  VStack,
-  Text,
-  Box,
-  Badge,
-  Button,
-  Divider,
-} from "@chakra-ui/react";
+import { IconButton, Menu, MenuButton, MenuList, Tabs, TabList, TabPanels, Tab, TabPanel, List, ListItem, Avatar, HStack, VStack, Text, Box, Badge, Button, Divider } from "@chakra-ui/react";
 import { BellIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
@@ -31,13 +11,10 @@ import Pusher from "pusher-js";
 const Notifications = ({ initialNotifcationCount }) => {
   console.log("Initial count" + initialNotifcationCount);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [notificationCount, setNotificationCount] = useState(
-    initialNotifcationCount,
-  );
+  const [notificationCount, setNotificationCount] = useState(initialNotifcationCount);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [page, setPage] = useState(0);
-  const pageSize = 6;
 
   useEffect(() => {
     setNotificationCount(initialNotifcationCount);
@@ -46,19 +23,13 @@ const Notifications = ({ initialNotifcationCount }) => {
   useEffect(() => {
     const fetchUserId = async () => {
       const userResponse = await AuthHelper.authMeRequest();
-      if (
-        userResponse &&
-        userResponse.userMenuInfo &&
-        userResponse.userMenuInfo.id
-      ) {
+      if (userResponse && userResponse.userMenuInfo && userResponse.userMenuInfo.id) {
         setUserId(userResponse.userMenuInfo.id);
         console.log("User data fetched:", userResponse.userMenuInfo);
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
           cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
         });
-        const channel = pusher.subscribe(
-          "user-" + userResponse.userMenuInfo.id,
-        );
+        const channel = pusher.subscribe("user-" + userResponse.userMenuInfo.id);
         channel.bind("notification", function (data) {
           // Handle the incoming notification data here
           console.log("Received new notification:", data);
@@ -80,10 +51,7 @@ const Notifications = ({ initialNotifcationCount }) => {
       if (Array.isArray(response)) {
         setNotifications(response);
       } else {
-        console.error(
-          "Failed to fetch notifications:",
-          response.message || "No error message available",
-        );
+        console.error("Failed to fetch notifications:", response.message || "No error message available");
       }
     };
 
@@ -93,18 +61,11 @@ const Notifications = ({ initialNotifcationCount }) => {
   const fetchNotificationCount = async () => {
     const response = await NotificationHelper.NotificationCount();
     console.log(response);
-    if (
-      response !== null &&
-      response !== undefined &&
-      typeof response === "number"
-    ) {
+    if (response !== null && response !== undefined && typeof response === "number") {
       setNotificationCount(response);
       console.log(notificationCount);
     } else {
-      console.error(
-        "Failed to fetch notification count:",
-        response.message || "No error message available",
-      );
+      console.error("Failed to fetch notification count:", response.message || "No error message available");
     }
   };
 
@@ -134,31 +95,16 @@ const Notifications = ({ initialNotifcationCount }) => {
         {filteredNotifications.map((notification) => (
           <Link href={`/Explore/${notification.link}`} key={notification.id}>
             <ListItem p={"2"} width={"100%"}>
-              <HStack
-                spacing={"15px"}
-                bg={notification.isRead ? "gray.550" : "gray.750"}
-                borderRadius={"10px"}
-                padding={"5px"}
-              >
+              <HStack spacing={"15px"} bg={notification.isRead ? "gray.550" : "gray.750"} borderRadius={"10px"} padding={"5px"}>
                 <Avatar src={notification.media} boxSize="50px" />
                 <VStack align="start" spacing={"0"} flex="1">
-                  <Text
-                    color="blue.400"
-                    fontWeight="bold"
-                    textDecoration="underline"
-                    fontSize="16px"
-                  >
+                  <Text color="blue.400" fontWeight="bold" textDecoration="underline" fontSize="16px">
                     {notification.title}
                   </Text>
                   <Text fontWeight="bold" fontSize="16px">
                     {notification.message}
                   </Text>
-                  <Text
-                    fontSize="14px"
-                    color="gray.400"
-                  >{`Created: ${formatDistanceToNow(
-                    new Date(notification.createdAt),
-                  )} ago`}</Text>
+                  <Text fontSize="14px" color="gray.400">{`Created: ${formatDistanceToNow(new Date(notification.createdAt))} ago`}</Text>
                 </VStack>
               </HStack>
               <Divider mt={"5px"} />
@@ -192,8 +138,7 @@ const Notifications = ({ initialNotifcationCount }) => {
                     borderRadius: "full",
                     fontSize: "md",
                     color: "white",
-                    background:
-                      "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
+                    background: "linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)",
                     backgroundSize: "300% 300%",
                     animation: "Gradient 10s infinite linear",
                   }}

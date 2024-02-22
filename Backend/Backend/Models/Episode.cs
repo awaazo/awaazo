@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Backend.Models.Interfaces;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Models;
@@ -9,7 +10,7 @@ namespace Backend.Models;
 /// <summary>
 /// Podcast episode.
 /// </summary>
-public class Episode : BaseEntity
+public class Episode : BaseEntity, ISoftDeletable
 {
     public Episode()
     {
@@ -91,6 +92,14 @@ public class Episode : BaseEntity
     /// Playlist Episodes for this episode
     /// </summary>
     public ICollection<PlaylistEpisode> PlaylistEpisodes { get; } = new List<PlaylistEpisode>();
+
+    /// <summary>
+    /// Points collected by an episode
+    /// </summary>
+    public ICollection<Points> Points { get; } = new List<Points>();
+
+    public DateTime? DeletedAt { get; set; }
+    public Guid DeletedBy { get; set; }
 }
 
 /// <summary>

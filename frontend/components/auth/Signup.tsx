@@ -82,6 +82,7 @@ const SignUp: React.FC = () => {
       username: username,
       dateOfBirth: dateOfBirth,
       gender: "None",
+      
     };
 
     try {

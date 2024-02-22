@@ -198,6 +198,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.Id == podcastId)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -237,6 +238,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
@@ -266,6 +268,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(filter.SearchTerm))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
@@ -358,7 +361,9 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
+
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -391,6 +396,7 @@ public class PodcastService : IPodcastService
             .Include(p => p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings).ThenInclude(r => r.User)
+            .Include(p => p.Episodes).ThenInclude(r => r.Points)
             .Skip(page * pageSize)
             .Take(pageSize)
             .Select(p => new PodcastResponse(p, domainUrl))
@@ -408,6 +414,7 @@ public class PodcastService : IPodcastService
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Include(p => p.Episodes).ThenInclude(e => e.Points)
                 .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(comment => comment.Likes)
                 .FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
@@ -498,6 +505,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -832,9 +840,8 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
             .Include(e => e.Comments).ThenInclude(c => c.Likes)
-            .Where(e => e.Id == episodeId)
-            .FirstOrDefaultAsync(e => e.Id == episodeId)
-             ?? throw new Exception("Episode does not exist for the given ID.");
+            .Include(e => e.Points)
+            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
 
         // Return the episode response
@@ -1216,6 +1223,7 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
             .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
 
         // Filter on Episode Length
@@ -1274,6 +1282,7 @@ public class PodcastService : IPodcastService
         .Include(e => e.Comments).ThenInclude(c => c.User)
         .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Points)
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(e => new EpisodeResponse(e, domainUrl, true))
@@ -1284,6 +1293,8 @@ public class PodcastService : IPodcastService
 
 
     #endregion Episode
+
+
 
     #region Private Method
 

@@ -116,14 +116,16 @@ const ChatBot = () => {
               <Text textAlign="left" fontSize={"14px"} pb="0.3em">
                 Things you can ask:
               </Text>
-              <HStack spacing={4} overflowX="auto">
-                <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}>
-                  What is the timp stamp where they talked about
-                </Button>
-                <Button borderRadius={"25px"} width={"auto"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
-                  What did the podcaster think about
-                </Button>
-              </HStack>
+            
+                <VStack spacing={"1em"} overflowY="auto"  paddingY="1" >
+                  <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}>
+                    What is the timestamp where they talked about  
+                  </Button>
+                  <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
+                    What did the podcaster think about 
+                  </Button>
+                </VStack>
+           
             </VStack>
             <InputGroup>
               <Input

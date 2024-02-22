@@ -1,7 +1,10 @@
+using Azure.Core;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Backend.Services;
 
@@ -10,18 +13,34 @@ namespace Backend.Services;
 /// </summary>
 public class SocialService : ISocialService
 {
+
+    private const double POINT_CONVERSION = 0.1;
+
     /// <summary>
     /// Current DB instance
     /// </summary>
     private readonly AppDbContext _db;
 
     /// <summary>
-    /// Default Constructor
+    /// Stripe Service Instance
     /// </summary>
-    /// <param name="db"></param>
-    public SocialService(AppDbContext db)
+    /// 
+    private readonly IStripeServices _stripeServices;
+
+
+    private readonly IConfiguration _configuration;
+    
+  /// <summary>
+  /// Default Constructor
+  /// </summary>
+  /// <param name="db"></param>
+  /// <param name="stripeServices"></param>
+  /// <param name="configuration"></param>
+    public SocialService(AppDbContext db,IStripeServices stripeServices,IConfiguration configuration)
     {
         _db = db;
+        _stripeServices = stripeServices;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -478,6 +497,93 @@ public class SocialService : ISocialService
         }
 
         // Return the status
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    #endregion
+
+
+    #region Points
+
+    /// <summary>
+    /// Endpoints to gift Points to a particular episode
+    /// </summary>
+    /// <param name="points"></param>
+    /// <param name="episodeId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+
+    public async Task<string> GiftPoints(int points, Guid episodeId, User user)
+    {
+        // Check whether the point is greater then zero or Not
+        if(points <= 0)
+        {
+            throw new Exception("No of Points should be Greater then zero");
+
+        }
+        // Limit the points to 200
+        if(points > 200)
+        {
+            throw new Exception("You cant gift more then 200 points");
+        }
+
+        // Check whether the person gifting is different person not the podcaster
+        Episode? ep1 = await _db.Episodes.Include(u => u.Podcast).FirstOrDefaultAsync(u => u.Podcast.PodcasterId == user.Id && u.Id == episodeId);
+
+        // if he is a podcaster then throw an error
+        if(ep1 != null)
+        {
+            throw new Exception("You cant gift points to yourself");
+
+        }
+
+        // If all is good then add points to the DB
+        Guid PointId = Guid.NewGuid();
+        
+        await _db.Points.AddAsync(new Points { Id = PointId, EpisodeId = episodeId, UserId = user.Id, PointCount = points,CreatedAt = DateTime.Now, Amount = points * POINT_CONVERSION });
+        
+        // Save Changes to the DB
+        await _db.SaveChangesAsync();
+        
+        // Create a stripe payment link for user
+        return await _stripeServices.CreatePaymentSession(points, PointId);
+
+    }
+
+    /// <summary>
+    /// Get the Point Id and confirm the payment
+    /// </summary>
+    /// <param name="pointId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+
+    public async Task<bool> ConfirmPointPayment(Guid pointId)
+    {
+        // Find the point associated with payment
+        Points? points = await _db.Points.Include(u => u.Episode).ThenInclude(u => u.Podcast).FirstOrDefaultAsync(u => u.Id == pointId);
+
+
+        // Check if the state is illegal or not
+        if (points == null)
+        {
+            throw new Exception("Illegal State");
+        }
+
+        // Transaction Id
+        Guid transactionId = Guid.NewGuid();
+        // Post transaction 
+        await _db.Transactions.AddAsync(new Transactions { Id = transactionId,SenderId = points.UserId,CreatedAt = DateTime.UtcNow ,Amount = points.Amount,UserId = points.Episode.Podcast.PodcasterId,TransactionType= Transactions.Type.Gift});
+
+        // if all checks pass Update the success bool to true
+        points.Success = true;
+        points.TransactionId = transactionId;
+
+
+        // Update the boolean value
+        _db.Update(points);
+
+        // Save changes to the Database
         return await _db.SaveChangesAsync() > 0;
     }
 

@@ -452,6 +452,7 @@ public class ProfileTests
     {
         var coverImage = new Mock<IFormFile>();
         coverImage.Setup(file => file.ContentType).Returns("image/png");
+        coverImage.Setup(file => file.FileName).Returns("test.png");
         ProfileSetupRequest request = new ProfileSetupRequest();
         request.Avatar = coverImage.Object;
         request.DisplayName = "TestDisplayName";
@@ -465,6 +466,7 @@ public class ProfileTests
     {
         var coverImage = new Mock<IFormFile>();
         coverImage.Setup(file => file.ContentType).Returns("image/png");
+        coverImage.Setup(file => file.FileName).Returns("test.png");
         ProfileEditRequest request = new ProfileEditRequest();
         request.Avatar = coverImage.Object;
         request.DisplayName = "TestDisplayName";

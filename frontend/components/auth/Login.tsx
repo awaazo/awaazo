@@ -112,7 +112,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = "Get into the new age of po
             </Button>
           </ButtonGroup>
           <Text color="brand.300" fontSize="sm" mb={1} align={"center"}>
-            <Box as="a" href="/auth/ForgotPassword" mb={1}>
+            <Box as="a" href="/auth/ForgotPassword" mb={1}  color={"brand.100"} fontWeight="semibold">
               Forgot password?
             </Box>
           </Text>

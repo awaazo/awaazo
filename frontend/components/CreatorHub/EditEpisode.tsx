@@ -1,15 +1,5 @@
 import React, { useCallback, useState, FormEvent, useEffect } from "react";
-import {
-  FormControl,
-  Button,
-  Textarea,
-  Box,
-  VStack,
-  Input,
-  IconButton,
-  Switch,
-  Text,
-} from "@chakra-ui/react";
+import { FormControl, Button, Textarea, Box, VStack, Input, IconButton, Switch, Text } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { EpisodeEditRequest } from "../../types/Requests";
@@ -43,11 +33,9 @@ export default function EditEpisodeForm({ episode }) {
 
   // Form values
   const [episodeName, setEpisodeName] = useState("");
-  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] =
-    useState<number>(0);
+  const [episodeNameCharacterCount, setEpisodeNameCharacterCount] = useState<number>(0);
   const [description, setDescription] = useState("");
-  const [descriptionCharacterCount, setDescriptionCharacterCount] =
-    useState<number>(0);
+  const [descriptionCharacterCount, setDescriptionCharacterCount] = useState<number>(0);
   const [isExplicit, setIsExplicit] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -92,10 +80,7 @@ export default function EditEpisodeForm({ episode }) {
     };
 
     // Send the request
-    const response = await PodcastHelper.podcastEpisodeEditRequest(
-      request,
-      episode.id,
-    );
+    const response = await PodcastHelper.podcastEpisodeEditRequest(request, episode.id);
     console.log(response);
 
     if (response.status === 200) {
@@ -115,9 +100,7 @@ export default function EditEpisodeForm({ episode }) {
   };
 
   // Ensures episode description is not longer than 250 characters
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDesc = e.target.value.slice(0, 250);
     setDescription(newDesc);
     setDescriptionCharacterCount(newDesc.length);
@@ -138,10 +121,7 @@ export default function EditEpisodeForm({ episode }) {
               }}
             >
               <img
-                src={
-                  coverImage ||
-                  "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"
-                }
+                src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"}
                 alt="Cover Photo"
                 style={{
                   width: "150px",
@@ -162,14 +142,7 @@ export default function EditEpisodeForm({ episode }) {
               >
                 <IconButton
                   aria-label="Upload Cover Photo"
-                  icon={
-                    <img
-                      src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png"
-                      alt="Upload Icon"
-                      width="25px"
-                      height="25px"
-                    />
-                  }
+                  icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
                   size="sm"
                   variant="outline"
                   borderRadius="full"
@@ -196,113 +169,42 @@ export default function EditEpisodeForm({ episode }) {
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
               <FormControl position="relative">
-                <Input
-                  value={episodeName}
-                  onChange={handleEpisodeNameChange}
-                  placeholder="Enter episode name..."
-                  data-cy={`episode-name-input`}
-                  rounded="lg"
-                  pr="50px"
-                />
-                <Text
-                  position="absolute"
-                  right="8px"
-                  bottom="8px"
-                  fontSize="sm"
-                  color="gray.500"
-                >
+                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." data-cy={`episode-name-input`} rounded="lg" pr="50px" />
+                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                   {episodeNameCharacterCount}/25
                 </Text>
               </FormControl>
 
               {/* Description Textarea */}
               <FormControl position="relative">
-                <Textarea
-                  value={description}
-                  onChange={handleDescriptionChange}
-                  placeholder="Enter episode description..."
-                />
-                <Text
-                  position="absolute"
-                  right="8px"
-                  bottom="8px"
-                  fontSize="sm"
-                  color="gray.500"
-                >
+                <Textarea value={description} onChange={handleDescriptionChange} placeholder="Enter episode description..." />
+                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                   {descriptionCharacterCount}/250
                 </Text>
               </FormControl>
 
               {/* Genre Selection */}
-              <FormControl
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
+              <FormControl display="flex" alignItems="center" justifyContent="center">
                 <Switch
                   id="explicitToggle"
                   colorScheme="purple"
                   isChecked={isExplicit}
                   onChange={() => setIsExplicit(!isExplicit)}
-                  opacity={0.9} // Setting the opacity to 0.7 to make it slightly faded
+                  opacity={0.9}
                 >
                   Explicit
                 </Switch>
               </FormControl>
 
               {/* File Upload */}
-              <Box
-                {...getRootProps()}
-                border="2px dashed gray"
-                borderRadius="md"
-                p={4}
-                textAlign="center"
-                width="300px"
-              >
+              <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" width="300px">
                 <input {...getInputProps()} />
-                {file ? (
-                  <p>{file.name}</p>
-                ) : (
-                  <p>Drag & drop a podcast file here, or click to select one</p>
-                )}
+                {file ? <p>{file.name}</p> : <p>Drag & drop a podcast file here, or click to select one</p>}
               </Box>
 
-              {/* Update Button */}
-              <Button
-                id="createBtn"
-                type="submit"
-                fontSize="md"
-                borderRadius={"full"}
-                minWidth={"200px"}
-                color={"white"}
-                marginTop={"15px"}
-                marginBottom={"10px"}
-                padding={"20px"}
-                // semi transparent white outline
-                outline={"1px solid rgba(255, 255, 255, 0.6)"}
-                style={{
-                  background:
-                    "linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)",
-                  backgroundSize: "300% 300%",
-                  animation: "Gradient 10s infinite linear",
-                }}
-              >
+              <Button id="createBtn" type="submit" variant="gradient">
                 Update
-                <style jsx>{`
-                  @keyframes Gradient {
-                    0% {
-                      background-position: 100% 0%;
-                    }
-                    50% {
-                      background-position: 0% 100%;
-                    }
-                    100% {
-                      background-position: 100% 0%;
-                    }
-                  }
-                `}</style>
               </Button>
-              {/* Update Button */}
             </VStack>
           </form>
         </VStack>
@@ -310,5 +212,3 @@ export default function EditEpisodeForm({ episode }) {
     </>
   );
 }
-
-

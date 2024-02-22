@@ -4,7 +4,6 @@ import { Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, Moda
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistCreateRequest } from "../../types/Requests";
 import ImageAdder from "../tools/ImageAdder";
-import awaazoFace from "../../styles/images/awaazoFace.png";
 
 
 const CreatePlaylistModal = ({ handleReload, isOpen, onClose }) => {

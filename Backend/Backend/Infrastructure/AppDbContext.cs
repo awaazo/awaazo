@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using System.Diagnostics.CodeAnalysis;
+using Backend.Models.Interfaces;
+using Backend.Models.stats;
 
 namespace Backend.Infrastructure;
 
@@ -12,7 +14,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-    
+
     public AppDbContext(string connectionString) : base(new DbContextOptionsBuilder<AppDbContext>()
         .UseSqlServer(connectionString)
         .Options)
@@ -31,20 +33,29 @@ public class AppDbContext : DbContext
     public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
     public virtual DbSet<PodcastFollow>? PodcastFollows { get; set; }
     public virtual DbSet<Subscription>? Subscriptions { get; set; }
-    public virtual DbSet<EpisodeLike> EpisodeLikes  { get; set; }
-    public virtual DbSet<CommentLike> CommentLikes {get;set;}
-    public virtual DbSet<CommentReplyLike> CommentReplyLikes {get;set;}
+    public virtual DbSet<EpisodeLike> EpisodeLikes { get; set; }
+    public virtual DbSet<CommentLike> CommentLikes { get; set; }
+    public virtual DbSet<CommentReplyLike> CommentReplyLikes { get; set; }
     //public virtual DbSet<PlaylistElement> PlaylistElements { get; set; }
     public virtual DbSet<Playlist> Playlists { get; set; }
-    public virtual DbSet<PlaylistEpisode> PlaylistEpisodes {get;set;}
+    public virtual DbSet<PlaylistEpisode> PlaylistEpisodes { get; set; }
     public virtual DbSet<Notification>? Notifications { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
     public virtual DbSet<EpisodeSections> EpisodeSections { get; set; }
- 
+
     public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
     public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }
     
+    public virtual DbSet<Points> Points { get; set; }
+
+    public virtual DbSet<Transactions> Transactions { get; set; }
+    
+    ///
+    /// Tables related to statistics more than core functionality
+    ///
+    public virtual DbSet<AdminEmailLog> AdminEmailLogs { get; set; }
+
     /// <summary>
     /// Maps to the Soundex function in the database.
     /// No need to implement on server as it will be used in db.
@@ -62,17 +73,26 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-
-
-        modelBuilder.Entity<User>().Property(e => e.Interests).HasConversion(
+        
+        // GLOBAL Query filters
+        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+        modelBuilder.Entity<Episode>().HasQueryFilter(e => e.DeletedAt == null);
+        modelBuilder.Entity<Podcast>().HasQueryFilter(p => p.DeletedAt == null);
+        modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
+        modelBuilder.Entity<CommentReply>().HasQueryFilter(cr => cr.DeletedAt == null);
+        
+        // Array conversion for tags and interests
+        modelBuilder.Entity<User>()
+            .Property(e => e.Interests).
+            HasConversion(
             v => string.Join(",", v),
             v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
             );
 
         modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
-
             v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
 
+        // UserEpisodeInteraction Primary Key definition 
         modelBuilder.Entity<UserEpisodeInteraction>()
             .HasKey(uei => new { uei.UserId, uei.EpisodeId });
 
@@ -89,7 +109,7 @@ public class AppDbContext : DbContext
             .WithOne(e => e.Podcast)
             .HasForeignKey(e => e.PodcastId)
             .IsRequired();
-        
+
 
         // User 1-to-many Bookmark
         modelBuilder.Entity<User>()
@@ -97,14 +117,14 @@ public class AppDbContext : DbContext
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+
         // Episode 1-to-many Bookmark
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.Bookmarks)
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
-            .OnDelete(DeleteBehavior.Restrict); 
-        
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Episode 1-to-many Annotation
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.Annotations)
@@ -117,28 +137,28 @@ public class AppDbContext : DbContext
             .HasOne(e => e.MediaLink)
             .WithOne(e => e.Annotation)
             .HasForeignKey<MediaLink>(e => e.AnnotationId);
-        
+
         // Podcast follow many-to-1 User (podcast relation is not needed)
         modelBuilder.Entity<User>()
             .HasMany(e => e.PodcastFollows)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
-        
+
         // User follow follow many-to-1 User (podcast relation is not needed)
         modelBuilder.Entity<User>()
             .HasMany(e => e.UserFollows)
             .WithOne(e => e.Follower)
             .HasForeignKey(e => e.FollowerId)
             .IsRequired();
-        
+
         // Subscription many-to-1 user
         modelBuilder.Entity<User>()
             .HasMany(e => e.Subscriptions)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
-        
+
         // Podcast rating many-to-1 user
         modelBuilder.Entity<User>()
             .HasMany(e => e.Ratings)
@@ -146,7 +166,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
-        
+
         // User 1-to-many UserEpisodeInteraction 
         modelBuilder.Entity<User>()
             .HasMany(e => e.EpisodeInteractions)
@@ -199,35 +219,37 @@ public class AppDbContext : DbContext
             .WithOne(l => l.CommentReply)
             .HasForeignKey(l => l.CommentReplyId)
             .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);        
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Comment 1-to-many CommentReply
         modelBuilder.Entity<Comment>()
             .HasMany(c => c.Comments)
-            .WithOne(c1=>c1.ReplyToComment)
-            .HasForeignKey(c1=>c1.ReplyToCommentId)
+            .WithOne(c1 => c1.ReplyToComment)
+            .HasForeignKey(c1 => c1.ReplyToCommentId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Episode 1-to-many Comments
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.Comments)
-            .WithOne(c=>c.Episode)
-            .HasForeignKey(c=>c.EpisodeId)
+            .WithOne(c => c.Episode)
+            .HasForeignKey(c => c.EpisodeId)
             .IsRequired();
 
         // User 1-to-many Comments
         modelBuilder.Entity<User>()
             .HasMany(u => u.Comments)
-            .WithOne(c=>c.User)
-            .HasForeignKey(c=>c.UserId)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
+
+
 
         // User 1-to-many CommentReplies
         modelBuilder.Entity<User>()
             .HasMany(u => u.CommentReplies)
-            .WithOne(c=>c.User)
-            .HasForeignKey(c=>c.UserId)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
 
@@ -273,8 +295,8 @@ public class AppDbContext : DbContext
         // Episode 1-to-many PlaylistEpisodes
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.PlaylistEpisodes)
-            .WithOne(pe=>pe.Episode)
-            .HasForeignKey(pe=>pe.EpisodeId)
+            .WithOne(pe => pe.Episode)
+            .HasForeignKey(pe => pe.EpisodeId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 

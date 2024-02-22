@@ -1,7 +1,8 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, TranscriptLine, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
 
 
 export interface BaseResponse {
+  [x: string]: any;
   status: number;
   message: string;
 }
@@ -85,6 +86,10 @@ export interface GetChangePasswordResponse extends BaseResponse {
   data: string;
 }
 
+export interface GetResetPasswordResponse extends BaseResponse {
+  data: string;
+}
+
 //#endregion
 
 //#region Podcast Responses
@@ -158,10 +163,15 @@ export interface GetPlaylistEpisodesResponse extends BaseResponse {
 
 //#region Transcript Response
 export interface GetTranscriptResponse extends BaseResponse {
-  transcript: TranscriptLine;
+  transcript: Transcript;
 }
 
 //#endregion
+
+//#region Transcript Response
+export interface GetTranscriptTextResponse extends BaseResponse {
+  text: string;
+}
 
 //#region Watch History Response
 export interface GetWatchHistoryResponse extends BaseResponse {

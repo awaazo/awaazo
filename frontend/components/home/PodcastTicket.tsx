@@ -1,12 +1,4 @@
-import {
-  Box,
-  VStack,
-  Image,
-  Text,
-  IconButton,
-  useColorModeValue,
-  Icon,
-} from "@chakra-ui/react";
+import { Box, VStack, Image, Text, IconButton, useColorModeValue, Icon } from "@chakra-ui/react";
 import { FaPlay, FaClock, FaHeart } from "react-icons/fa";
 import { Episode } from "../../types/Interfaces";
 import { usePlayer } from "../../utilities/PlayerContext";
@@ -37,19 +29,8 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
       cursor="pointer"
       role="group"
     >
-      <Box
-        position="relative"
-        width="120px"
-        height="120px"
-        borderRadius="20px"
-        overflow="hidden"
-      >
-        <Image
-          src={thumbnailUrl}
-          alt={episodeName}
-          objectFit="cover"
-          boxSize="full"
-        />
+      <Box position="relative" width="120px" height="120px" borderRadius="20px" overflow="hidden">
+        <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" boxSize="full" />
         <Box position="absolute" top="0" left="0" w="full" h="full">
           <IconButton
             aria-label="Play"
@@ -100,12 +81,7 @@ const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       {/* Bottom: Episode Info */}
       <VStack spacing={0} align="center" w="full">
-        <Text
-          fontWeight="bold"
-          noOfLines={1}
-          textAlign="left"
-          data-cy={`ticket-episode-${episode.episodeName}`}
-        >
+        <Text fontWeight="bold" noOfLines={1} textAlign="left" data-cy={`ticket-episode-${episode.episodeName}`}>
           {episodeName}
         </Text>
         <Text fontSize="sm" color="gray.500" noOfLines={1} textAlign="left">

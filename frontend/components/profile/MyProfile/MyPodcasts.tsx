@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Box,
-  Avatar,
   Button,
   Stack,
   Grid,
@@ -58,20 +56,6 @@ export default function Podcasts() {
     setPage((page) => page + 1);
   };
 
-  // const [subscribed, setSubscribe] = useState(false);
-
-  let subscribed = false;
-  let subscribedText = "Subscribe";
-
-  function setSubscribe() {
-    // if (!subscribed){
-    //   subscribed = true;
-    //   subscribedText = "Subscribe";
-    // } else {
-    //   subscribed = false;
-    //   subscribedText = "UnSubscribe";
-    // }
-  }
 
   return (
     <>
