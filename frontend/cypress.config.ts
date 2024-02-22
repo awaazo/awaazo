@@ -25,7 +25,8 @@ export default defineConfig({
       "cypress/e2e/**/Playlists.cy.tsx",
       "cypress/e2e/**/MobileRegister.cy.tsx",
       "cypress/e2e/**/MobileLogin.cy.tsx",
-      "cypress/e2e/**/MobileLogout.cy.tsx"
+      "cypress/e2e/**/MobileLogout.cy.tsx",
+      "cypress/e2e/**/MobileEditProfile.cy.tsx"
     ],
     setupNodeEvents(on, config) {
       // implement node event listeners here
