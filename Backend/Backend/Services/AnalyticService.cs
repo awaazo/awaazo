@@ -770,22 +770,33 @@ public class AnalyticService : IAnalyticService
 
         return getLessClicked ?
             _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserInteractions)
+            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
             .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.UserInteractions.Sum(uei => uei.Clicks)))
+            .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
             .Take(count)
             .Select(p => new PodcastResponse(p, domainUrl))
             .ToListAsync()
             :
             _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserInteractions)
+            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
             .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.UserInteractions.Sum(uei => uei.Clicks)))
+            .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
             .Take(count)
             .Select(p => new PodcastResponse(p, domainUrl))
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Get the top clicked episodes for a podcast.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of episodes to get.</param>
+    /// <param name="getLessClicked">Whether to get the less clicked episodes.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <returns>The top clicked episodes for the podcast.</returns>
+    /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
+    /// <exception cref="Exception">Thrown when the podcast does not exist for the given ID.</exception>
     public async Task<List<EpisodeResponse>> GetTopClickedEpisodesAsync(Guid podcastId, int count, bool getLessClicked, User user, string domainUrl)
     {
         if (count <= 0)
@@ -796,50 +807,93 @@ public class AnalyticService : IAnalyticService
 
         return getLessClicked ?
             await _db.Episodes
-            .Include(e => e.UserInteractions)
+            .Include(e => e.UserEpisodeInteractions)
             .Include(e => e.Podcast)
             .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderBy(e => e.UserInteractions.Sum(uei => uei.Clicks))
+            .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
             .Take(count)
             .Select(e => new EpisodeResponse(e, domainUrl,false))
             .ToListAsync()
             :
             await _db.Episodes
-            .Include(e => e.UserInteractions)
+            .Include(e => e.UserEpisodeInteractions)
             .Include(e => e.Podcast)
             .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderByDescending(e => e.UserInteractions.Sum(uei => uei.Clicks))
+            .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
             .Take(count)
             .Select(e => new EpisodeResponse(e, domainUrl,false))
             .ToListAsync();
     }
 
-    public Task<List<PodcastResponse>> GetTopWatchedPodcastsAsync(int count, bool getLessWatched, User user, string domainUrl)
+    /// <summary>
+    /// Get the top watched podcasts for a user.
+    /// </summary>
+    /// <param name="count">The number of podcasts to get.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <returns>The top watched podcasts for the user.</returns>
+    /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
+    public async Task<List<PodcastResponse>> GetTopWatchedPodcastsAsync(int count, bool getLessWatched, User user, string domainUrl)
     {
         if (count <= 0)
             throw new Exception("Count cannot be less than or equal to 0.");
 
         return getLessWatched ?
-            _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserInteractions)
+            await _db.Podcasts
+            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
             .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.UserInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+            .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
             .Take(count)
             .Select(p => new PodcastResponse(p, domainUrl))
             .ToListAsync()
             :
-            _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserInteractions)
+            await _db.Podcasts
+            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
             .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.UserInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+            .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
             .Take(count)
             .Select(p => new PodcastResponse(p, domainUrl))
             .ToListAsync();
     }
 
-    public Task<List<EpisodeResponse>> GetTopWatchedEpisodesAsync(Guid podcastId, int count, bool getLessWatched, User user, string domainUrl)
+    /// <summary>
+    /// Get the top watched episodes for a podcast.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of episodes to get.</param>
+    /// <param name="getLessWatched">Whether to get the less watched episodes.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <returns>The top watched episodes for the podcast.</returns>
+    /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
+    /// <exception cref="Exception">Thrown when the podcast does not exist for the given ID.</exception>
+    public async Task<List<EpisodeResponse>> GetTopWatchedEpisodesAsync(Guid podcastId, int count, bool getLessWatched, User user, string domainUrl)
     {
-        throw new NotImplementedException();
+        if (count <= 0)
+            throw new Exception("Count cannot be less than or equal to 0.");
+
+        if (!await _db.Podcasts.AnyAsync(p => p.Id == podcastId && p.PodcasterId == user.Id))
+            throw new Exception("Podcast does not exist for the given ID.");
+
+        return getLessWatched ?
+            await _db.Episodes
+            .Include(e => e.UserEpisodeInteractions)
+            .Include(e => e.Podcast)
+            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+            .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+            .Take(count)
+            .Select(e => new EpisodeResponse(e, domainUrl,false))
+            .ToListAsync()
+            :
+            await _db.Episodes
+            .Include(e => e.UserEpisodeInteractions)
+            .Include(e => e.Podcast)
+            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+            .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+            .Take(count)
+            .Select(e => new EpisodeResponse(e, domainUrl,false))
+            .ToListAsync();
     }
 
     #endregion User Engagement Metrics

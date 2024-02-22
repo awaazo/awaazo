@@ -157,7 +157,7 @@ public class AppDbContext : DbContext
 
         // Episode 1-to-many UserEpisodeInteraction
         modelBuilder.Entity<Episode>()
-            .HasMany(e => e.UserInteractions)
+            .HasMany(e => e.UserEpisodeInteractions)
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired()

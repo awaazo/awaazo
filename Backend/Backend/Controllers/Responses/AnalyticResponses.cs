@@ -10,8 +10,12 @@ namespace Backend.Controllers.Responses;
 public class AgeRangeResponse
 {
     /// <summary>
-    /// Default constructor
+    /// Constructor for the age range response
     /// </summary>
+    /// <param name="interactions">The interactions to get the age range from</param>
+    /// <param name="totalCount">The total count of the interactions</param>
+    /// <returns>The age range response</returns>
+    /// <remarks>Calculates the age range, average, count, and percentage of the interactions</remarks>
     public AgeRangeResponse(List<UserEpisodeInteraction> interactions, uint totalCount)
     {
         Count = (uint)interactions.Count;
@@ -147,6 +151,14 @@ public class UserEngagementMetricsResponse
     {
     }
 
+    /// <summary>
+    /// Constructor for the user engagement metrics response
+    /// </summary>
+    /// <param name="interactions">The interactions to get the user engagement metrics from</param>
+    /// <param name="commentsCount">The total comments count</param>
+    /// <param name="likesCount">The total likes count</param>
+    /// <returns>The user engagement metrics response</returns>
+    /// <remarks>Calculates the total clicks, watch time, comments, and likes, as well as the average clicks, watch time, comments, and likes</remarks>
     public UserEngagementMetricsResponse(List<UserEpisodeInteraction> interactions, int commentsCount, int likesCount)
     {
         // Set the total clicks, watch time, comments, and likes

@@ -65,6 +65,16 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the top commented podcasts or episodes.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessCommented">Whether to get the less commented podcasts or episodes.</param>
+    /// <returns>The top commented podcasts or episodes.</returns>
+    /// <response code="200">Returns the top commented podcasts or episodes.</response>
+    /// <response code="404">If the top commented podcasts or episodes cannot be found.</response>
+    /// <response code="400">If the user does not exist.</response>
     [HttpGet("getMostCommented")]
     public async Task<ActionResult> GetTopCommented(Guid? podcastId, int count = 5, bool getLessCommented = false)
     {
@@ -92,6 +102,16 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the top liked podcasts or episodes.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessLiked">Whether to get the less liked podcasts or episodes.</param>
+    /// <returns>The top liked podcasts or episodes.</returns>
+    /// <response code="200">Returns the top liked podcasts or episodes.</response>
+    /// <response code="404">If the top liked podcasts or episodes cannot be found.</response>
+    /// <response code="400">If the user does not exist.</response>
     [HttpGet("getMostLiked")]
     public async Task<ActionResult> GetTopLiked(Guid? podcastId, int count = 5, bool getLessLiked = false)
     {
@@ -119,6 +139,16 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the top clicked podcasts or episodes.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessClicked">Whether to get the less clicked podcasts or episodes.</param>
+    /// <returns>The top clicked podcasts or episodes.</returns>
+    /// <response code="200">Returns the top clicked podcasts or episodes.</response>
+    /// <response code="404">If the top clicked podcasts or episodes cannot be found.</response>
+    /// <response code="400">If the user does not exist.</response>
     [HttpGet("getMostClicked")]
     public async Task<ActionResult> GetTopClicked(Guid? podcastId, int count = 5, bool getLessClicked = false)
     {
@@ -146,6 +176,16 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the top watched podcasts or episodes.
+    /// </summary>
+    /// <param name="podcastId">The ID of the podcast.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts or episodes.</param>
+    /// <returns>The top watched podcasts or episodes.</returns>
+    /// <response code="200">Returns the top watched podcasts or episodes.</response>
+    /// <response code="404">If the top watched podcasts or episodes cannot be found.</response>
+    /// <response code="400">If the user does not exist.</response>
     [HttpGet("getMostWatched")]
     public async Task<ActionResult> GetTopWatched(Guid? podcastId, int count = 5, bool getLessWatched = false)
     {
