@@ -489,6 +489,7 @@ namespace Backend.Migrations
                 name: "UserEpisodeInteractions",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HasListened = table.Column<bool>(type: "bit", nullable: false),
@@ -502,7 +503,7 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserEpisodeInteractions", x => new { x.UserId, x.EpisodeId });
+                    table.PrimaryKey("PK_UserEpisodeInteractions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserEpisodeInteractions_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
@@ -765,6 +766,11 @@ namespace Backend.Migrations
                 name: "IX_UserEpisodeInteractions_EpisodeId",
                 table: "UserEpisodeInteractions",
                 column: "EpisodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserEpisodeInteractions_UserId",
+                table: "UserEpisodeInteractions",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserFollows_FollowerId",

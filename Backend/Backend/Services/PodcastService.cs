@@ -780,7 +780,9 @@ public class PodcastService : IPodcastService
     public async Task<bool> DeleteEpisodeAsync(Guid episodeId, User user)
     {
         // Check if the episode exists and is owned by the user
-        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+        Episode episode = await _db.Episodes
+            .Include(e=>e.UserEpisodeInteractions)
+            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
 
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id) ?? throw new Exception("Episode podcast does not exist and/or it is not owned by user.");
