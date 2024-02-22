@@ -1184,9 +1184,9 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
                     b.HasOne("Backend.Models.Episode", "Episode")
-                        .WithMany()
+                        .WithMany("UserEpisodeInteractions")
                         .HasForeignKey("EpisodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
@@ -1245,6 +1245,8 @@ namespace Backend.Migrations
                     b.Navigation("Points");
 
                     b.Navigation("Sponsors");
+
+                    b.Navigation("UserEpisodeInteractions");
 
                     b.Navigation("episodeSections");
                 });

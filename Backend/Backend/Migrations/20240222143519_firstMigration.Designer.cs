@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240221040449_firstMigration")]
+    [Migration("20240222143519_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -830,6 +830,9 @@ namespace Backend.Migrations
                     b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Clicks")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -844,6 +847,9 @@ namespace Backend.Migrations
 
                     b.Property<double>("LastListenPosition")
                         .HasColumnType("float");
+
+                    b.Property<TimeSpan>("TotalListenTime")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -1181,9 +1187,9 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
                     b.HasOne("Backend.Models.Episode", "Episode")
-                        .WithMany()
+                        .WithMany("UserEpisodeInteractions")
                         .HasForeignKey("EpisodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
@@ -1242,6 +1248,8 @@ namespace Backend.Migrations
                     b.Navigation("Points");
 
                     b.Navigation("Sponsors");
+
+                    b.Navigation("UserEpisodeInteractions");
 
                     b.Navigation("episodeSections");
                 });

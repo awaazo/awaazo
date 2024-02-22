@@ -493,6 +493,8 @@ namespace Backend.Migrations
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HasListened = table.Column<bool>(type: "bit", nullable: false),
                     HasLiked = table.Column<bool>(type: "bit", nullable: false),
+                    Clicks = table.Column<int>(type: "int", nullable: false),
+                    TotalListenTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     LastListenPosition = table.Column<double>(type: "float", nullable: false),
                     DateListened = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -505,8 +507,7 @@ namespace Backend.Migrations
                         name: "FK_UserEpisodeInteractions_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
                         principalTable: "Episodes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserEpisodeInteractions_Users_UserId",
                         column: x => x.UserId,
