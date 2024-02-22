@@ -17,6 +17,13 @@ namespace Backend.Controllers.Responses;
 public class EpisodeResponse
 {
     /// <summary>
+    /// Empty constructor for the episode response
+    /// </summary>
+    public EpisodeResponse()
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EpisodeResponse"/> class.
     /// </summary>
     /// <param name="e">The episode.</param>
@@ -86,6 +93,13 @@ public class EpisodeResponse
 [BindProperties]
 public class PodcastResponse
 {
+    /// <summary>
+    /// Empty constructor for the podcast response
+    /// </summary>
+    public PodcastResponse()
+    {
+    }
+
     public PodcastResponse(Podcast p, string domainUrl)
     {
         Id = p.Id;

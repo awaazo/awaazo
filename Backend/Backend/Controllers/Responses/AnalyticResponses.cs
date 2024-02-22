@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers.Responses;
 
-
 /// <summary>
 /// Response for the average audience age
 /// </summary>
@@ -133,4 +132,81 @@ public class WatchTimeRangeResponse
     /// The percentage of the total watch time
     /// </summary>
     public double WatchTimePercentage { get; set; } = 0;
+}
+
+/// <summary>
+/// Response for the user engagement metrics
+/// </summary>
+[BindProperties]
+public class UserEngagementMetricsResponse
+{   
+    /// <summary>
+    /// Default empty constructor
+    /// </summary>
+    public UserEngagementMetricsResponse()
+    {
+    }
+
+    public UserEngagementMetricsResponse(List<UserEpisodeInteraction> interactions, int commentsCount, int likesCount)
+    {
+        // Set the total clicks, watch time, comments, and likes
+        TotalClicks = interactions.Sum(i => i.Clicks);
+        TotalWatchTime = TimeSpan.FromTicks(interactions.Sum(i => i.TotalListenTime.Ticks));
+        TotalComments = commentsCount;
+        TotalLikes = likesCount;
+
+        // Set the total listeners
+        TotalListeners = interactions.Select(i => i.UserId).Distinct().Count();
+
+        // Set the average clicks, watch time, comments, and likes
+        AverageClicks = (double)TotalClicks / TotalListeners;
+        AverageWatchTime = TotalWatchTime / TotalListeners;
+        CommentsPercentage = (double)TotalComments / TotalListeners * 100;
+        LikesPercentage = (double)TotalLikes / TotalListeners * 100;
+    }
+
+    /// <summary>
+    /// The total clicks of the interactions
+    /// </summary>
+    public int TotalClicks { get; set; } = 0;
+
+    /// <summary>
+    /// The average clicks per user.
+    /// </summary>
+    public double AverageClicks { get; set; } = 0;
+
+    /// <summary>
+    /// The total watch time of the interactions
+    /// </summary>
+    public TimeSpan TotalWatchTime { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// The average watch time per user.
+    /// </summary>
+    public TimeSpan AverageWatchTime { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// The total number of comments.
+    /// </summary>
+    public int TotalComments { get; set; } = 0;
+
+    /// <summary>
+    /// The percentage of viewers who dropped a comment.
+    /// </summary>
+    public double CommentsPercentage { get; set; } = 0;
+    
+    /// <summary>
+    /// The total number of likes.
+    /// </summary>
+    public int TotalLikes { get; set; } = 0;
+
+    /// <summary>
+    /// The percentage of viewers who dropped a like.
+    /// </summary>
+    public double LikesPercentage { get; set; } = 0;
+
+    /// <summary>
+    /// The total number of listeners.
+    /// </summary>
+    public int TotalListeners { get; set; } = 0;
 }

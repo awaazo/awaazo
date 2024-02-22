@@ -67,6 +67,7 @@ public class Episode : BaseEntity
 
     public ulong PlayCount { get; set; } = 0;
 
+    public ICollection<UserEpisodeInteraction> UserInteractions { get; } = new List<UserEpisodeInteraction>();
 
     public ICollection<EpisodeSections> episodeSections = new List<EpisodeSections>();
 

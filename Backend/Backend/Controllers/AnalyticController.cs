@@ -2,6 +2,7 @@ using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend.Infrastructure.ControllerHelper;
 
 namespace Backend.Controllers;
 
@@ -32,13 +33,20 @@ public class AnalyticController : ControllerBase
 
     #region User Interaction
 
-    [HttpGet("{podcastOrEpisodeId}/userInteractionTotal")]
-    public async Task<ActionResult> GetUserInteractionTotal(Guid podcastOrEpisodeId)
+    /// <summary>
+    /// Get the user interaction metrics for a podcast.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <returns>The user interaction metrics for the podcast or episode.</returns>
+    /// <response code="200">Returns the user interaction metrics for the podcast or episode.</response>
+    /// <response code="404">If the user interaction metrics for the podcast or episode cannot be found.</response>
+    [HttpGet("{podcastOrEpisodeId}/userEngagementMetrics")]
+    public async Task<ActionResult> GetUserEngagementMetrics(Guid podcastOrEpisodeId)
     {
         try
         {
             // Log the message
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionTotal));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserEngagementMetrics));
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -47,24 +55,23 @@ public class AnalyticController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok();
-            //return Ok(await _analyticService.GetUserInteractionTotalAsync(podcastOrEpisodeId, user));
+            return Ok(await _analyticService.GetUserEngagementMetricsAsync(podcastOrEpisodeId, user));
         }
         catch (Exception ex)
         {
-            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionTotal));
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserEngagementMetrics));
 
             return BadRequest(ex.Message);
         }
     }
 
-    [HttpGet("{podcastOrEpisodeId}/userInteractionAverage")]
-    public async Task<ActionResult> GetUserInteractionAverage(Guid podcastOrEpisodeId)
+    [HttpGet("getMostCommented")]
+    public async Task<ActionResult> GetTopCommented(Guid? podcastId, int count = 5, bool getLessCommented = false)
     {
         try
         {
             // Log the message
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionAverage));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopCommented));
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -73,24 +80,25 @@ public class AnalyticController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok();
-            //return Ok(await _analyticService.GetUserInteractionAverageAsync(podcastOrEpisodeId, user));
+            return podcastId is null?
+                Ok(await _analyticService.GetTopCommentedPodcastsAsync(count, getLessCommented, user, GetDomainUrl(HttpContext))) :
+                Ok(await _analyticService.GetTopCommentedEpisodesAsync(podcastId.Value, count, getLessCommented, user, GetDomainUrl(HttpContext)));
         }
         catch (Exception ex)
         {
-            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionAverage));
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopCommented));
 
             return BadRequest(ex.Message);
         }
     }
 
-    [HttpGet("{podcastOrEpisodeId}/userInteractionDistribution")]
-    public async Task<ActionResult> GetUserInteractionDistribution(Guid podcastOrEpisodeId, uint timeInterval = 1, bool intervalIsInMinutes = true)
+    [HttpGet("getMostLiked")]
+    public async Task<ActionResult> GetTopLiked(Guid? podcastId, int count = 5, bool getLessLiked = false)
     {
         try
         {
             // Log the message
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserInteractionDistribution));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopLiked));
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -99,12 +107,67 @@ public class AnalyticController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok();
-            //return Ok(await _analyticService.GetUserInteractionDistributionInfoAsync(podcastOrEpisodeId, user, timeInterval, intervalIsInMinutes));
+            return podcastId is null?
+                Ok(await _analyticService.GetTopLikedPodcastsAsync(count, getLessLiked, user, GetDomainUrl(HttpContext))) :
+                Ok(await _analyticService.GetTopLikedEpisodesAsync(podcastId.Value, count, getLessLiked, user, GetDomainUrl(HttpContext)));
         }
         catch (Exception ex)
         {
-            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserInteractionDistribution));
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopLiked));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("getMostClicked")]
+    public async Task<ActionResult> GetTopClicked(Guid? podcastId, int count = 5, bool getLessClicked = false)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopClicked));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return podcastId is null?
+                Ok(await _analyticService.GetTopClickedPodcastsAsync(count, getLessClicked, user, GetDomainUrl(HttpContext))) :
+                Ok(await _analyticService.GetTopClickedEpisodesAsync(podcastId.Value, count, getLessClicked, user, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopClicked));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("getMostWatched")]
+    public async Task<ActionResult> GetTopWatched(Guid? podcastId, int count = 5, bool getLessWatched = false)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopWatched));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return podcastId is null?
+                Ok(await _analyticService.GetTopWatchedPodcastsAsync(count, getLessWatched, user, GetDomainUrl(HttpContext))) :
+                Ok(await _analyticService.GetTopWatchedEpisodesAsync(podcastId.Value, count, getLessWatched, user, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopWatched));
 
             return BadRequest(ex.Message);
         }

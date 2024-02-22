@@ -474,4 +474,396 @@ public class AnalyticControllerTests
     }
 
     #endregion Watch Time
+
+    #region User Engagement Metrics 
+
+    [Fact]
+    public async Task GetUserEngagementMetrics_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        UserEngagementMetricsResponse userEngagementMetricsResponse = new()
+        {
+            TotalComments = 10,
+            TotalLikes = 20,
+            TotalClicks = 30,
+            TotalWatchTime = TimeSpan.FromMinutes(40)
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetUserEngagementMetricsAsync(podcastOrEpisodeId, user)).ReturnsAsync(userEngagementMetricsResponse);
+
+        // Act
+        var result = await _analyticController.GetUserEngagementMetrics(podcastOrEpisodeId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var userEngagementMetrics = Assert.IsType<UserEngagementMetricsResponse>(okResult.Value);
+        Assert.Equal(userEngagementMetricsResponse, userEngagementMetrics);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetrics_ReturnsNotFoundResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetUserEngagementMetrics(podcastOrEpisodeId);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetrics_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastOrEpisodeId = Guid.NewGuid();
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetUserEngagementMetricsAsync(podcastOrEpisodeId, user)).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetUserEngagementMetrics(podcastOrEpisodeId);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
+
+
+    [Fact]
+    public async Task GetTopCommented_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessCommented = false;
+        User user = new();
+        List<EpisodeResponse> episodeResponses = new()
+        {
+            new(),
+            new()
+        };
+        List<PodcastResponse> podcastResponses = new()
+        {
+            new(),
+            new()
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, It.IsAny<string>())).ReturnsAsync(episodeResponses);
+        _analyticServiceMock.Setup(service => service.GetTopCommentedPodcastsAsync(count, getLessCommented, user, It.IsAny<string>())).ReturnsAsync(podcastResponses);
+
+        // Act
+        var result1 = await _analyticController.GetTopCommented(podcastId, count, getLessCommented);
+        var result2 = await _analyticController.GetTopCommented(null, count, getLessCommented);
+
+        // Assert
+        var okResult1 = Assert.IsType<OkObjectResult>(result1);
+        var episodes = Assert.IsType<List<EpisodeResponse>>(okResult1.Value);
+        Assert.Equal(episodeResponses, episodes);
+
+        var okResult2 = Assert.IsType<OkObjectResult>(result2);
+        var podcasts = Assert.IsType<List<PodcastResponse>>(okResult2.Value);
+        Assert.Equal(podcastResponses, podcasts);
+    }
+
+    [Fact]
+    public async Task GetTopCommented_ReturnsNotFoundResult()
+    {
+        // Arrange
+        int count = 10;
+        bool getLessCommented = false;
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTopCommented(Guid.NewGuid(), count, getLessCommented);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTopCommented_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessCommented = false;
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+        _analyticServiceMock.Setup(service => service.GetTopCommentedPodcastsAsync(count, getLessCommented, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result1 = await _analyticController.GetTopCommented(podcastId, count, getLessCommented);
+        var result2 = await _analyticController.GetTopCommented(null, count, getLessCommented);
+
+        // Assert
+        var badRequestResult1 = Assert.IsType<BadRequestObjectResult>(result1);
+        Assert.Equal(errorMessage, badRequestResult1.Value);
+
+        var badRequestResult2 = Assert.IsType<BadRequestObjectResult>(result2);
+        Assert.Equal(errorMessage, badRequestResult2.Value);
+    }
+
+    [Fact]
+    public async Task GetTopLiked_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessLiked = false;
+        User user = new();
+        List<EpisodeResponse> episodeResponses = new()
+        {
+            new(),
+            new()
+        };
+        List<PodcastResponse> podcastResponses = new()
+        {
+            new(),
+            new()
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, It.IsAny<string>())).ReturnsAsync(episodeResponses);
+        _analyticServiceMock.Setup(service => service.GetTopLikedPodcastsAsync(count, getLessLiked, user, It.IsAny<string>())).ReturnsAsync(podcastResponses);
+
+        // Act
+        var result1 = await _analyticController.GetTopLiked(podcastId, count, getLessLiked);
+        var result2 = await _analyticController.GetTopLiked(null, count, getLessLiked);
+
+        // Assert
+        var okResult1 = Assert.IsType<OkObjectResult>(result1);
+        var episodes = Assert.IsType<List<EpisodeResponse>>(okResult1.Value);
+        Assert.Equal(episodeResponses, episodes);
+
+        var okResult2 = Assert.IsType<OkObjectResult>(result2);
+        var podcasts = Assert.IsType<List<PodcastResponse>>(okResult2.Value);
+        Assert.Equal(podcastResponses, podcasts);
+    }
+
+    [Fact]
+    public async Task GetTopLiked_ReturnsNotFoundResult()
+    {
+        // Arrange
+        int count = 10;
+        bool getLessLiked = false;
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTopLiked(Guid.NewGuid(), count, getLessLiked);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTopLiked_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessLiked = false;
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+        _analyticServiceMock.Setup(service => service.GetTopLikedPodcastsAsync(count, getLessLiked, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result1 = await _analyticController.GetTopLiked(podcastId, count, getLessLiked);
+        var result2 = await _analyticController.GetTopLiked(null, count, getLessLiked);
+
+        // Assert
+        var badRequestResult1 = Assert.IsType<BadRequestObjectResult>(result1);
+        Assert.Equal(errorMessage, badRequestResult1.Value);
+
+        var badRequestResult2 = Assert.IsType<BadRequestObjectResult>(result2);
+        Assert.Equal(errorMessage, badRequestResult2.Value);
+    }
+
+    [Fact]
+    public async Task GetTopClicked_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessClicked = false;
+        User user = new();
+        List<EpisodeResponse> episodeResponses = new()
+        {
+            new(),
+            new()
+        };
+        List<PodcastResponse> podcastResponses = new()
+        {
+            new(),
+            new()
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, It.IsAny<string>())).ReturnsAsync(episodeResponses);
+        _analyticServiceMock.Setup(service => service.GetTopClickedPodcastsAsync(count, getLessClicked, user, It.IsAny<string>())).ReturnsAsync(podcastResponses);
+
+        // Act
+        var result1 = await _analyticController.GetTopClicked(podcastId, count, getLessClicked);
+        var result2 = await _analyticController.GetTopClicked(null, count, getLessClicked);
+
+        // Assert
+        var okResult1 = Assert.IsType<OkObjectResult>(result1);
+        var episodes = Assert.IsType<List<EpisodeResponse>>(okResult1.Value);
+        Assert.Equal(episodeResponses, episodes);
+
+        var okResult2 = Assert.IsType<OkObjectResult>(result2);
+        var podcasts = Assert.IsType<List<PodcastResponse>>(okResult2.Value);
+        Assert.Equal(podcastResponses, podcasts);
+    }
+
+    [Fact]
+    public async Task GetTopClicked_ReturnsNotFoundResult()
+    {
+        // Arrange
+        int count = 10;
+        bool getLessClicked = false;
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTopClicked(Guid.NewGuid(), count, getLessClicked);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTopClicked_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessClicked = false;
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+        _analyticServiceMock.Setup(service => service.GetTopClickedPodcastsAsync(count, getLessClicked, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result1 = await _analyticController.GetTopClicked(podcastId, count, getLessClicked);
+        var result2 = await _analyticController.GetTopClicked(null, count, getLessClicked);
+
+        // Assert
+        var badRequestResult1 = Assert.IsType<BadRequestObjectResult>(result1);
+        Assert.Equal(errorMessage, badRequestResult1.Value);
+
+        var badRequestResult2 = Assert.IsType<BadRequestObjectResult>(result2);
+        Assert.Equal(errorMessage, badRequestResult2.Value);
+    }
+
+    [Fact]
+    public async Task GetTopWatched_ReturnsOkResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessWatched = false;
+        User user = new();
+        List<EpisodeResponse> episodeResponses = new()
+        {
+            new(),
+            new()
+        };
+        List<PodcastResponse> podcastResponses = new()
+        {
+            new(),
+            new()
+        };
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopWatchedEpisodesAsync(podcastId, count, getLessWatched, user, It.IsAny<string>())).ReturnsAsync(episodeResponses);
+        _analyticServiceMock.Setup(service => service.GetTopWatchedPodcastsAsync(count, getLessWatched, user, It.IsAny<string>())).ReturnsAsync(podcastResponses);
+
+        // Act
+        var result1 = await _analyticController.GetTopWatched(podcastId, count, getLessWatched);
+        var result2 = await _analyticController.GetTopWatched(null, count, getLessWatched);
+
+        // Assert
+        var okResult1 = Assert.IsType<OkObjectResult>(result1);
+        var episodes = Assert.IsType<List<EpisodeResponse>>(okResult1.Value);
+        Assert.Equal(episodeResponses, episodes);
+
+        var okResult2 = Assert.IsType<OkObjectResult>(result2);
+        var podcasts = Assert.IsType<List<PodcastResponse>>(okResult2.Value);
+        Assert.Equal(podcastResponses, podcasts);
+    }
+
+    [Fact]
+    public async Task GetTopWatched_ReturnsNotFoundResult()
+    {
+        // Arrange
+        int count = 10;
+        bool getLessWatched = false;
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTopWatched(Guid.NewGuid(), count, getLessWatched);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTopWatched_ReturnsBadRequestResult()
+    {
+        // Arrange
+        Guid podcastId = Guid.NewGuid();
+        int count = 10;
+        bool getLessWatched = false;
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopWatchedEpisodesAsync(podcastId, count, getLessWatched, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+        _analyticServiceMock.Setup(service => service.GetTopWatchedPodcastsAsync(count, getLessWatched, user, It.IsAny<string>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result1 = await _analyticController.GetTopWatched(podcastId, count, getLessWatched);
+        var result2 = await _analyticController.GetTopWatched(null, count, getLessWatched);
+
+        // Assert
+        var badRequestResult1 = Assert.IsType<BadRequestObjectResult>(result1);
+        Assert.Equal(errorMessage, badRequestResult1.Value);
+
+        var badRequestResult2 = Assert.IsType<BadRequestObjectResult>(result2);
+        Assert.Equal(errorMessage, badRequestResult2.Value);
+    }
+
+    #endregion User Engagement Metrics
+
 }

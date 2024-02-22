@@ -1296,4 +1296,1187 @@ public class AnalyticServiceTests
 
     #endregion Watch Time Tests
 
+    #region User Interaction Tests
+
+    // GetUserEngagementMetricsAsync
+
+    [Fact]
+    public async Task GetUserEngagementMetricsAsync_PodcastExistsAndData_ReturnsUserEngagementMetricsResponse()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        Guid podcastId = Guid.NewGuid();
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId },
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId },
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, TotalListenTime = TimeSpan.FromSeconds(50), Clicks = 5 },
+            new UserEpisodeInteraction { User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, TotalListenTime = TimeSpan.FromSeconds(100), Clicks = 10 },
+            new UserEpisodeInteraction { User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, TotalListenTime = TimeSpan.FromSeconds(150), Clicks = 15 },
+            new UserEpisodeInteraction { User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, TotalListenTime = TimeSpan.FromSeconds(200), Clicks = 20 },
+            new UserEpisodeInteraction { User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, TotalListenTime = TimeSpan.FromSeconds(250), Clicks = 25 }
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 3" }
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { podcast }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+
+        UserEngagementMetricsResponse expectedUserEngagementMetricsResponse = new()
+        {
+            TotalWatchTime = TimeSpan.FromSeconds(userEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)),
+            TotalClicks = userEpisodeInteractions.Sum(uei => uei.Clicks),
+            TotalComments = comments.Count,
+            TotalLikes = episodeLikes.Count,
+            TotalListeners = userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            AverageWatchTime = TimeSpan.FromSeconds(userEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)) / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            AverageClicks = userEpisodeInteractions.Sum(uei => uei.Clicks) / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            CommentsPercentage = (double)comments.Count / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count() * 100,
+            LikesPercentage = (double)episodeLikes.Count / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count() * 100
+        };
+
+        // Act
+        UserEngagementMetricsResponse userEngagementMetricsResponse = await _analyticService.GetUserEngagementMetricsAsync(podcastId, user);
+
+        // Assert
+        Assert.Equal(userEngagementMetricsResponse.TotalWatchTime, expectedUserEngagementMetricsResponse.TotalWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.TotalClicks, expectedUserEngagementMetricsResponse.TotalClicks);
+        Assert.Equal(userEngagementMetricsResponse.TotalComments, expectedUserEngagementMetricsResponse.TotalComments);
+        Assert.Equal(userEngagementMetricsResponse.TotalLikes, expectedUserEngagementMetricsResponse.TotalLikes);
+        Assert.Equal(userEngagementMetricsResponse.TotalListeners, expectedUserEngagementMetricsResponse.TotalListeners);
+        Assert.Equal(userEngagementMetricsResponse.AverageWatchTime, expectedUserEngagementMetricsResponse.AverageWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.AverageClicks, expectedUserEngagementMetricsResponse.AverageClicks);
+        Assert.Equal(userEngagementMetricsResponse.CommentsPercentage, expectedUserEngagementMetricsResponse.CommentsPercentage);
+        Assert.Equal(userEngagementMetricsResponse.LikesPercentage, expectedUserEngagementMetricsResponse.LikesPercentage);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetricsAsync_PodcastExistsAndNoData_ReturnsUserEngagementMetricsResponse()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        Guid podcastId = Guid.NewGuid();
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId },
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId },
+            new Episode { Id = Guid.NewGuid(), Podcast = podcast, PodcastId = podcastId }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new() { };
+
+        List<Comment> comments = new() { };
+
+        List<EpisodeLike> episodeLikes = new() { };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { podcast }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        UserEngagementMetricsResponse expectedUserEngagementMetricsResponse = new()
+        {
+            TotalWatchTime = TimeSpan.FromSeconds(0),
+            TotalClicks = 0,
+            TotalComments = 0,
+            TotalLikes = 0,
+            TotalListeners = 0,
+            AverageWatchTime = TimeSpan.FromSeconds(0),
+            AverageClicks = 0,
+            CommentsPercentage = 0,
+            LikesPercentage = 0
+        };
+
+        // Act
+        UserEngagementMetricsResponse userEngagementMetricsResponse = await _analyticService.GetUserEngagementMetricsAsync(podcastId, user);
+
+        // Assert
+        Assert.Equal(userEngagementMetricsResponse.TotalWatchTime, expectedUserEngagementMetricsResponse.TotalWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.TotalClicks, expectedUserEngagementMetricsResponse.TotalClicks);
+        Assert.Equal(userEngagementMetricsResponse.TotalComments, expectedUserEngagementMetricsResponse.TotalComments);
+        Assert.Equal(userEngagementMetricsResponse.TotalLikes, expectedUserEngagementMetricsResponse.TotalLikes);
+        Assert.Equal(userEngagementMetricsResponse.TotalListeners, expectedUserEngagementMetricsResponse.TotalListeners);
+        Assert.Equal(userEngagementMetricsResponse.AverageWatchTime, expectedUserEngagementMetricsResponse.AverageWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.AverageClicks, expectedUserEngagementMetricsResponse.AverageClicks);
+        Assert.Equal(userEngagementMetricsResponse.CommentsPercentage, expectedUserEngagementMetricsResponse.CommentsPercentage);
+        Assert.Equal(userEngagementMetricsResponse.LikesPercentage, expectedUserEngagementMetricsResponse.LikesPercentage);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetricsAsync_EpisodeExistsAndData_ReturnsUserEngagementMetricsResponse()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        Guid episodeId = Guid.NewGuid();
+
+        Episode episode = new() { Id = episodeId, Podcast = new Podcast { PodcasterId = user.Id } };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { User = user, Episode = episode, EpisodeId = episodeId, TotalListenTime = TimeSpan.FromSeconds(50), Clicks = 5 },
+            new UserEpisodeInteraction { User = user, Episode = episode, EpisodeId = episodeId, TotalListenTime = TimeSpan.FromSeconds(100), Clicks = 10 },
+            new UserEpisodeInteraction { User = user, Episode = episode, EpisodeId = episodeId, TotalListenTime = TimeSpan.FromSeconds(150), Clicks = 15 },
+            new UserEpisodeInteraction { User = user, Episode = episode, EpisodeId = episodeId, TotalListenTime = TimeSpan.FromSeconds(200), Clicks = 20 },
+            new UserEpisodeInteraction { User = user, Episode = episode, EpisodeId = episodeId, TotalListenTime = TimeSpan.FromSeconds(250), Clicks = 25 }
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episode, EpisodeId = episodeId, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episode, EpisodeId = episodeId, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episode, EpisodeId = episodeId, Text = "Comment 3" }
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = episode, EpisodeId = episodeId },
+            new EpisodeLike { UserId = user.Id, Episode = episode, EpisodeId = episodeId },
+            new EpisodeLike { UserId = user.Id, Episode = episode, EpisodeId = episodeId }
+        };
+
+        Podcast podcast = new() { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { podcast }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(new[] { episode }));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        UserEngagementMetricsResponse expectedUserEngagementMetricsResponse = new()
+        {
+            TotalWatchTime = TimeSpan.FromSeconds(userEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)),
+            TotalClicks = userEpisodeInteractions.Sum(uei => uei.Clicks),
+            TotalComments = comments.Count,
+            TotalLikes = episodeLikes.Count,
+            TotalListeners = userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            AverageWatchTime = TimeSpan.FromSeconds(userEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)) / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            AverageClicks = userEpisodeInteractions.Sum(uei => uei.Clicks) / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count(),
+            CommentsPercentage = (double)comments.Count / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count() * 100,
+            LikesPercentage = (double)episodeLikes.Count / userEpisodeInteractions.Select(uei => uei.UserId).Distinct().Count() * 100
+        };
+
+        // Act
+        UserEngagementMetricsResponse userEngagementMetricsResponse = await _analyticService.GetUserEngagementMetricsAsync(episodeId, user);
+
+        // Assert
+        Assert.Equal(userEngagementMetricsResponse.TotalWatchTime, expectedUserEngagementMetricsResponse.TotalWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.TotalClicks, expectedUserEngagementMetricsResponse.TotalClicks);
+        Assert.Equal(userEngagementMetricsResponse.TotalComments, expectedUserEngagementMetricsResponse.TotalComments);
+        Assert.Equal(userEngagementMetricsResponse.TotalLikes, expectedUserEngagementMetricsResponse.TotalLikes);
+        Assert.Equal(userEngagementMetricsResponse.TotalListeners, expectedUserEngagementMetricsResponse.TotalListeners);
+        Assert.Equal(userEngagementMetricsResponse.AverageWatchTime, expectedUserEngagementMetricsResponse.AverageWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.AverageClicks, expectedUserEngagementMetricsResponse.AverageClicks);
+        Assert.Equal(userEngagementMetricsResponse.CommentsPercentage, expectedUserEngagementMetricsResponse.CommentsPercentage);
+        Assert.Equal(userEngagementMetricsResponse.LikesPercentage, expectedUserEngagementMetricsResponse.LikesPercentage);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetricsAsync_EpisodeExistsAndNoData_ReturnsUserEngagementMetricsResponse()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        Guid episodeId = Guid.NewGuid();
+
+        Episode episode = new() { Id = episodeId, Podcast = new Podcast { PodcasterId = user.Id } };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new() { };
+
+        List<Comment> comments = new() { };
+
+        List<EpisodeLike> episodeLikes = new() { };
+
+        Podcast podcast = new() { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { podcast }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(new[] { episode }));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        UserEngagementMetricsResponse expectedUserEngagementMetricsResponse = new()
+        {
+            TotalWatchTime = TimeSpan.FromSeconds(0),
+            TotalClicks = 0,
+            TotalComments = 0,
+            TotalLikes = 0,
+            TotalListeners = 0,
+            AverageWatchTime = TimeSpan.FromSeconds(0),
+            AverageClicks = 0,
+            CommentsPercentage = 0,
+            LikesPercentage = 0
+        };
+
+        // Act
+        UserEngagementMetricsResponse userEngagementMetricsResponse = await _analyticService.GetUserEngagementMetricsAsync(episodeId, user);
+
+        // Assert
+        Assert.Equal(userEngagementMetricsResponse.TotalWatchTime, expectedUserEngagementMetricsResponse.TotalWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.TotalClicks, expectedUserEngagementMetricsResponse.TotalClicks);
+        Assert.Equal(userEngagementMetricsResponse.TotalComments, expectedUserEngagementMetricsResponse.TotalComments);
+        Assert.Equal(userEngagementMetricsResponse.TotalLikes, expectedUserEngagementMetricsResponse.TotalLikes);
+        Assert.Equal(userEngagementMetricsResponse.TotalListeners, expectedUserEngagementMetricsResponse.TotalListeners);
+        Assert.Equal(userEngagementMetricsResponse.AverageWatchTime, expectedUserEngagementMetricsResponse.AverageWatchTime);
+        Assert.Equal(userEngagementMetricsResponse.AverageClicks, expectedUserEngagementMetricsResponse.AverageClicks);
+        Assert.Equal(userEngagementMetricsResponse.CommentsPercentage, expectedUserEngagementMetricsResponse.CommentsPercentage);
+        Assert.Equal(userEngagementMetricsResponse.LikesPercentage, expectedUserEngagementMetricsResponse.LikesPercentage);
+    }
+
+    [Fact]
+    public async Task GetUserEngagementMetricsAsync_EpisodeAndPodcastDoesNotExist_ThrowsNotFoundException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        Guid episodeId = Guid.NewGuid();
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetUserEngagementMetricsAsync(episodeId, user));
+        Assert.Equal("Podcast or Episode does not exist for the given ID.", exception.Message);
+    }
+
+    // GetTopCommentedPodcastsAsync
+
+    [Fact]
+    public async Task GetTopCommentedPodcastsAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(Array.Empty<Comment>()));
+
+        // Act
+        List<PodcastResponse> topCommentedPodcastResponses = await _analyticService.GetTopCommentedPodcastsAsync(count, getLessCommented, user, domainUrl);
+
+        // Assert
+        Assert.Empty(topCommentedPodcastResponses);
+    }
+
+    [Fact]
+    public async Task GetTopCommentedPodcastsAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = -5;
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopCommentedPodcastsAsync(count, getLessCommented, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopCommentedPodcastsAsync_Data_ReturnsTopCommentedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 3" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 4" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 5" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 6" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 7" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 8" }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(Array.Empty<EpisodeLike>()));
+
+        List<PodcastResponse> expectedTopCommentedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[2].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[0].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topCommentedPodcastResponses = await _analyticService.GetTopCommentedPodcastsAsync(count, getLessCommented, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topCommentedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topCommentedPodcastResponses[i].Id, expectedTopCommentedPodcastResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopCommentedPodcastsAsync_Data_ReturnsLessCommentedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessCommented = true;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 3" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 4" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Text = "Comment 5" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 6" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 7" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Text = "Comment 8" }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(Array.Empty<EpisodeLike>()));
+        _dbContextMock.Setup(db => db.PodcastFollows).Returns(CreateMockDbSet(Array.Empty<PodcastFollow>()));
+
+        List<PodcastResponse> expectedTopCommentedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[0].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[2].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topCommentedPodcastResponses = await _analyticService.GetTopCommentedPodcastsAsync(count, getLessCommented, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topCommentedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topCommentedPodcastResponses[i].Id, expectedTopCommentedPodcastResponses[i].Id);
+        }
+    }
+
+    // GetTopCommentedEpisodesAsync
+
+    [Fact]
+    public async Task GetTopCommentedEpisodesAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new [] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(Array.Empty<Comment>()));
+        
+        // Act
+        List<EpisodeResponse> topCommentedEpisodeResponses = await _analyticService.GetTopCommentedEpisodesAsync(podcastId,count, getLessCommented, user, domainUrl);
+
+        // Assert
+        Assert.Empty(topCommentedEpisodeResponses);
+    }
+
+    [Fact]
+    public async Task GetTopCommentedEpisodesAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = -5;
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopCommentedEpisodesAsync_Data_ReturnsTopCommentedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessCommented = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast }, 
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 3" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 4" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 5" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 6" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 7" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 8" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 9" },
+        };
+
+        episodes[0].Comments.Add(comments[0]);
+        episodes[0].Comments.Add(comments[1]);
+        episodes[1].Comments.Add(comments[2]);
+        episodes[1].Comments.Add(comments[3]);
+        episodes[1].Comments.Add(comments[4]);
+        episodes[2].Comments.Add(comments[5]);
+        episodes[2].Comments.Add(comments[6]);
+        episodes[2].Comments.Add(comments[7]);
+        episodes[2].Comments.Add(comments[8]);
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+
+        List<EpisodeResponse> expectedTopCommentedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[2].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[0].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topCommentedEpisodeResponses = await _analyticService.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topCommentedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topCommentedEpisodeResponses[i].Id, expectedTopCommentedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopCommentedEpisodesAsync_Data_ReturnsLessCommentedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessCommented = true;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+        };
+
+        List<Comment> comments = new()
+        {
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, Text = "Comment 1" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[0], EpisodeId = episodes[0].Id, Text = "Comment 2" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 3" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 4" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[1], EpisodeId = episodes[1].Id, Text = "Comment 5" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 6" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 7" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 8" },
+            new Comment { Id = Guid.NewGuid(), User = user, Episode = episodes[2], EpisodeId = episodes[2].Id, Text = "Comment 9" },
+        };
+
+        episodes[0].Comments.Add(comments[0]);
+        episodes[0].Comments.Add(comments[1]);
+        episodes[1].Comments.Add(comments[2]);
+        episodes[1].Comments.Add(comments[3]);
+        episodes[1].Comments.Add(comments[4]);
+        episodes[2].Comments.Add(comments[5]);
+        episodes[2].Comments.Add(comments[6]);
+        episodes[2].Comments.Add(comments[7]);
+        episodes[2].Comments.Add(comments[8]);
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(comments.ToArray()));
+
+        List<EpisodeResponse> expectedTopCommentedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[0].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[2].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topCommentedEpisodeResponses = await _analyticService.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topCommentedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topCommentedEpisodeResponses[i].Id, expectedTopCommentedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopCommentedEpisodesAsync_PodcastDoesNotExist_ThrowsNotFoundException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessCommented = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.Comments).Returns(CreateMockDbSet(Array.Empty<Comment>()));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopCommentedEpisodesAsync(podcastId, count, getLessCommented, user, domainUrl));
+        Assert.Equal("Podcast does not exist for the given ID.", exception.Message);
+    }
+
+    // GetTopLikedPodcastsAsync
+
+    [Fact]
+    public async Task GetTopLikedPodcastsAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(Array.Empty<EpisodeLike>()));
+
+        // Act
+        List<PodcastResponse> topLikedPodcastResponses = await _analyticService.GetTopLikedPodcastsAsync(count, getLessLiked, user, domainUrl);
+
+        // Assert
+        Assert.Empty(topLikedPodcastResponses);
+    }
+
+    [Fact]
+    public async Task GetTopLikedPodcastsAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = -5;
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopLikedPodcastsAsync(count, getLessLiked, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopLikedPodcastsAsync_Data_ReturnsTopLikedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        List<PodcastResponse> expectedTopLikedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[2].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[0].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topLikedPodcastResponses = await _analyticService.GetTopLikedPodcastsAsync(count, getLessLiked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topLikedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topLikedPodcastResponses[i].Id, expectedTopLikedPodcastResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopLikedPodcastsAsync_Data_ReturnsLessLikedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        bool getLessLiked = true;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));   
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        List<PodcastResponse> expectedTopLikedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[0].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[2].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topLikedPodcastResponses = await _analyticService.GetTopLikedPodcastsAsync(count, getLessLiked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topLikedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topLikedPodcastResponses[i].Id, expectedTopLikedPodcastResponses[i].Id);
+        }
+    }
+
+    // GetTopLikedEpisodesAsync
+
+    [Fact]
+    public async Task GetTopLikedEpisodesAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(Array.Empty<EpisodeLike>()));
+
+        // Act
+        List<EpisodeResponse> topLikedEpisodeResponses = await _analyticService.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, domainUrl);
+
+        // Assert
+        Assert.Empty(topLikedEpisodeResponses);
+    }
+
+    [Fact]
+    public async Task GetTopLikedEpisodesAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = -5;
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopLikedEpisodesAsync_Data_ReturnsTopLikedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessLiked = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id }
+        };
+
+        episodes[0].Likes.Add(episodeLikes[0]);
+        episodes[0].Likes.Add(episodeLikes[1]);
+        episodes[1].Likes.Add(episodeLikes[2]);
+        episodes[1].Likes.Add(episodeLikes[3]);
+        episodes[1].Likes.Add(episodeLikes[4]);
+        episodes[2].Likes.Add(episodeLikes[5]);
+        episodes[2].Likes.Add(episodeLikes[6]);
+        episodes[2].Likes.Add(episodeLikes[7]);
+        episodes[2].Likes.Add(episodeLikes[8]);
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        List<EpisodeResponse> expectedTopLikedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[2].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[0].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topLikedEpisodeResponses = await _analyticService.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topLikedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topLikedEpisodeResponses[i].Id, expectedTopLikedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopLikedEpisodesAsync_Data_ReturnsLessLikedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessLiked = true;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+        };
+
+        List<EpisodeLike> episodeLikes = new()
+        {
+            new EpisodeLike { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id },
+            new EpisodeLike { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id }
+        };
+
+        episodes[0].Likes.Add(episodeLikes[0]);
+        episodes[0].Likes.Add(episodeLikes[1]);
+        episodes[1].Likes.Add(episodeLikes[2]);
+        episodes[1].Likes.Add(episodeLikes[3]);
+        episodes[1].Likes.Add(episodeLikes[4]);
+        episodes[2].Likes.Add(episodeLikes[5]);
+        episodes[2].Likes.Add(episodeLikes[6]);
+        episodes[2].Likes.Add(episodeLikes[7]);
+        episodes[2].Likes.Add(episodeLikes[8]);
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(episodeLikes.ToArray()));
+
+        List<EpisodeResponse> expectedTopLikedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[0].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[2].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topLikedEpisodeResponses = await _analyticService.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topLikedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topLikedEpisodeResponses[i].Id, expectedTopLikedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopLikedEpisodesAsync_PodcastDoesNotExist_ThrowsNotFoundException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessLiked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.EpisodeLikes).Returns(CreateMockDbSet(Array.Empty<EpisodeLike>()));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopLikedEpisodesAsync(podcastId, count, getLessLiked, user, domainUrl));
+        Assert.Equal("Podcast does not exist for the given ID.", exception.Message);
+    }
+
+    // GetTopClickedPodcastsAsync
+
+    [Fact]
+    public async Task GetTopClickedPodcastsAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        int count = 5;
+        bool getLessClicked = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+
+        // Act
+        List<PodcastResponse> topClickedPodcastResponses = await _analyticService.GetTopClickedPodcastsAsync(count, getLessClicked,user,domainUrl);
+
+        // Assert
+        Assert.Empty(topClickedPodcastResponses);
+    }
+
+    [Fact]
+    public async Task GetTopClickedPodcastsAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        int count = -5;
+        bool getLessClicked = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopClickedPodcastsAsync(count, getLessClicked, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopClickedPodcastsAsync_Data_ReturnsTopClickedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        int count = 5;
+        bool getLessClicked = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Clicks = 5 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Clicks = 4 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Clicks = 3 }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        List<PodcastResponse> expectedTopClickedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[0].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[2].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topClickedPodcastResponses = await _analyticService.GetTopClickedPodcastsAsync(count, getLessClicked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topClickedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topClickedPodcastResponses[i].Id, expectedTopClickedPodcastResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopClickedPodcastsAsync_Data_ReturnsLessClickedPodcasts()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        int count = 5;
+        bool getLessClicked = true;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = Guid.NewGuid() }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[0], PodcastId = podcasts[0].Id }, EpisodeId = podcasts[0].Id, Clicks = 5 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[1], PodcastId = podcasts[1].Id }, EpisodeId = podcasts[1].Id, Clicks = 4 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = new Episode { Podcast = podcasts[2], PodcastId = podcasts[2].Id }, EpisodeId = podcasts[2].Id, Clicks = 3 }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        List<PodcastResponse> expectedTopClickedPodcastResponses = new()
+        {
+            new PodcastResponse { Id = podcasts[2].Id},
+            new PodcastResponse { Id = podcasts[1].Id},
+            new PodcastResponse { Id = podcasts[0].Id}
+        };
+
+        // Act
+        List<PodcastResponse> topClickedPodcastResponses = await _analyticService.GetTopClickedPodcastsAsync(count, getLessClicked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topClickedPodcastResponses.Count; i++)
+        {
+            Assert.Equal(topClickedPodcastResponses[i].Id, expectedTopClickedPodcastResponses[i].Id);
+        }
+    }
+
+    // GetTopClickedEpisodesAsync
+
+    [Fact]
+    public async Task GetTopClickedEpisodesAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessClicked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+
+        // Act
+        List<EpisodeResponse> topClickedEpisodeResponses = await _analyticService.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, domainUrl);
+
+        // Assert
+        Assert.Empty(topClickedEpisodeResponses);
+    }
+
+    [Fact]
+    public async Task GetTopClickedEpisodesAsync_NegativeCount_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessClicked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = -5;
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, domainUrl));
+        Assert.Equal("Count cannot be less than or equal to 0.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopClickedEpisodeAsync_Data_ReturnsTopClickedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessClicked = false;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id, Clicks = 5 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id, Clicks = 4 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id, Clicks = 3 }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { new Podcast { Id = podcastId, PodcasterId = user.Id } } ));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        List<EpisodeResponse> expectedTopClickedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[0].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[2].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topClickedEpisodeResponses = await _analyticService.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topClickedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topClickedEpisodeResponses[i].Id, expectedTopClickedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopClickedEpisodeAsync_Data_ReturnsLessClickedEpisodes()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessClicked = true;
+        string domainUrl = "XXXXXXXXXXXXXXXXXXXXX";
+        int count = 5;
+
+        Podcast podcast = new() { Id = podcastId, PodcasterId = user.Id };
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcastId, Podcast = podcast },
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id, Clicks = 5 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id, Clicks = 4 },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id, Clicks = 3 }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(new[] { podcast }));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        List<EpisodeResponse> expectedTopClickedEpisodeResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[2].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[0].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> topClickedEpisodeResponses = await _analyticService.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, domainUrl);
+
+        // Assert
+        for (int i = 0; i < topClickedEpisodeResponses.Count; i++)
+        {
+            Assert.Equal(topClickedEpisodeResponses[i].Id, expectedTopClickedEpisodeResponses[i].Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetTopClickedEpisodeAsync_PodcastDoesNotExist_ThrowsNotFoundException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        Guid podcastId = Guid.NewGuid();
+        bool getLessClicked = false;
+        string domainUrl = "http://localhost:5000";
+        int count = 5;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopClickedEpisodesAsync(podcastId, count, getLessClicked, user, domainUrl));
+        Assert.Equal("Podcast does not exist for the given ID.", exception.Message);
+    }
+
+    #endregion User Interaction Tests
+
 }
