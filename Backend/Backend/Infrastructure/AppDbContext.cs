@@ -175,6 +175,14 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
+        // Episode 1-to-many UserEpisodeInteraction
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.UserEpisodeInteractions)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
         modelBuilder.Entity<User>()
             .HasMany(e => e.Bookmarks)
             .WithOne(b => b.User)

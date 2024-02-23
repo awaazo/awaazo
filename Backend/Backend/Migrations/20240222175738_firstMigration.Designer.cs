@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240221040449_firstMigration")]
+    [Migration("20240222175738_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -824,17 +824,21 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EpisodeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Clicks")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateListened")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HasLiked")
                         .HasColumnType("bit");
@@ -845,12 +849,20 @@ namespace Backend.Migrations
                     b.Property<double>("LastListenPosition")
                         .HasColumnType("float");
 
+                    b.Property<TimeSpan>("TotalListenTime")
+                        .HasColumnType("time");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "EpisodeId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("EpisodeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserEpisodeInteractions");
                 });
@@ -1181,15 +1193,15 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
                     b.HasOne("Backend.Models.Episode", "Episode")
-                        .WithMany()
+                        .WithMany("UserEpisodeInteractions")
                         .HasForeignKey("EpisodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("EpisodeInteractions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Episode");
@@ -1242,6 +1254,8 @@ namespace Backend.Migrations
                     b.Navigation("Points");
 
                     b.Navigation("Sponsors");
+
+                    b.Navigation("UserEpisodeInteractions");
 
                     b.Navigation("episodeSections");
                 });
