@@ -417,6 +417,7 @@ public class PlaylistControllerTests
         var result = await _playlistController.GetUserPlaylists(userId, page, pageSize);
 
         // Assert
+        Assert.IsType<OkObjectResult>(result);
         Assert.True(result != null);
     }
 
@@ -478,7 +479,7 @@ public class PlaylistControllerTests
         var result = await _playlistController.GetAllPlaylists(page, pageSize);
 
         // Assert
-
+        Assert.IsType<OkObjectResult>(result);
         Assert.True(result != null);
     }
 
@@ -543,6 +544,7 @@ public class PlaylistControllerTests
         var result = await _playlistController.SearchPlaylists(searchTerm, page, pageSize);
 
         // Assert
+        Assert.IsType<OkObjectResult>(result);
         Assert.True(result != null);
     }
 
@@ -604,6 +606,7 @@ public class PlaylistControllerTests
         var result = await _playlistController.GetPlaylist(playlistId);
 
         // Assert
+        Assert.IsType<OkObjectResult>(result);
         Assert.True(result != null);
     }
 
