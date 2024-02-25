@@ -336,11 +336,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="pageSize">Size of the page</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns></returns>
-    public async Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User user, int page, int pageSize, string domainUrl)
+    public async Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User? user, int page, int pageSize, string domainUrl)
     {
         // Get all playlists 
         return await _db.Playlists
-            .Where(p => p.Privacy == PrivacyEnum.Public || p.UserId == user.Id)
+            .Where(p => p.Privacy == PrivacyEnum.Public || (user != null && p.UserId == user.Id))
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(p => p.User)
