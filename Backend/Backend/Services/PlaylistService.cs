@@ -285,11 +285,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="user">Current user</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns>Playlist info with all playlist episodes.</returns>
-    public async Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User user, string domainUrl)
+    public async Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User? user, string domainUrl)
     {
         // Get the playlist
         return await _db.Playlists
-            .Where(p => p.Id == playlistId && (p.Privacy == PrivacyEnum.Public || p.UserId == user.Id))
+            .Where(p => p.Id == playlistId && (p.Privacy == PrivacyEnum.Public || (user != null && p.UserId == user.Id)))
             .Include(p => p.User)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Likes)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Podcast)

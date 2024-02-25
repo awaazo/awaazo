@@ -315,6 +315,7 @@ public class PlaylistController : ControllerBase
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPlaylist(Guid playlistId)
     {
         try
@@ -323,8 +324,6 @@ public class PlaylistController : ControllerBase
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Get the user playlist episodes.
             return Ok(await _playlistService.GetPlaylistEpisodesAsync(playlistId,user,GetDomainUrl(HttpContext)));
@@ -374,15 +373,8 @@ public class PlaylistController : ControllerBase
     public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
     {
         try
-        {
+        {   
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPlaylistCoverArt));
-
-            // Identify User from JWT Token
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            // If User is not found, return 404
-            if (user is null)
-                return NotFound("User does not exist.");
 
             // Get the name of the cover art file
             string coverArtName = await _playlistService.GetPlaylistCoverArtNameAsync(playlistId);

@@ -16,7 +16,7 @@ public interface IPlaylistService
     public Task<bool> AddEpisodesToPlaylistAsync(Guid playlistId, Guid[] episodeIds, User user);
     public Task<bool> RemoveEpisodesFromPlaylistAsync(Guid playlistId, Guid[] episodeIds, User user);
     public Task<PlaylistResponse> GetLikedEpisodesPlaylist(User user, string domainUrl);
-    public Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User user, string domainUrl);
+    public Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User? user, string domainUrl);
     public Task<List<PlaylistInfoResponse>> GetUserPlaylistsAsync(Guid userId, User user, int page, int pageSize, string domainUrl);
     public Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User user, int page, int pageSize, string domainUrl);
     public Task<List<PlaylistInfoResponse>> SearchPlaylistsAsync(string searchTerm, User user, int page, int pageSize, string domainUrl);
