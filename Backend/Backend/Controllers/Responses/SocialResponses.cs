@@ -45,6 +45,49 @@ public class CommentResponse
 }
 
 [BindProperties]
+public class EpisodeCommentResponse
+{
+    public EpisodeCommentResponse()
+    {
+        Id = Guid.Empty;
+        User = new();
+        EpisodeId = Guid.Empty;
+        Likes = 0;
+        Text = string.Empty;
+        DateCreated = DateTime.Now;
+        NoOfReplies = 0;
+    }
+    public EpisodeCommentResponse(Comment comment, string domainUrl)
+    {
+        Id = comment.Id;
+        User = new UserMenuInfoResponse(comment.User, domainUrl);
+        EpisodeId = comment.EpisodeId;
+        Text = comment.Text;
+        DateCreated = comment.CreatedAt;
+        Likes = comment.Likes.Count;
+        NoOfReplies = comment.Comments.Count();
+    }
+
+
+    public Guid Id { get; set; }
+    public UserMenuInfoResponse User { get; set; }
+    public Guid EpisodeId { get; set; }
+    public int Likes { get; set; }
+    public string Text { get; set; }
+    public DateTime DateCreated { get; set; }
+    public int NoOfReplies { get; set; }
+
+    public static CommentResponse? FromComment(Comment? comment, string domainUrl)
+    {
+        return comment is null ? null : new CommentResponse(comment, domainUrl);
+    }
+
+
+}
+
+
+
+[BindProperties]
 public class CommentReplyResponse
 {
     public CommentReplyResponse()
@@ -71,6 +114,8 @@ public class CommentReplyResponse
     public string Text { get; set; }
     public DateTime DateCreated {get;set;}
 }
+
+
 
 /// <summary>
 /// Rating Response to be sent to the client.
