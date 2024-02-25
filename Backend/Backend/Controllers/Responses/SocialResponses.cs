@@ -27,7 +27,7 @@ public class CommentResponse
         EpisodeId = comment.EpisodeId;
         Text = comment.Text;
         DateCreated = comment.CreatedAt;
-        Likes = comment.Likes.Count;
+        Likes = comment.Likes.Count();
         Replies = comment.Comments.Select(c => new CommentReplyResponse(c,domainUrl)).ToList();
     }
 
@@ -64,7 +64,7 @@ public class EpisodeCommentResponse
         EpisodeId = comment.EpisodeId;
         Text = comment.Text;
         DateCreated = comment.CreatedAt;
-        Likes = comment.Likes.Count;
+        Likes = comment.Likes.Count();
         NoOfReplies = comment.Comments.Count();
     }
 
@@ -105,7 +105,7 @@ public class CommentReplyResponse
         User = new UserMenuInfoResponse(comment.User, domainUrl);
         Text = comment.Text;
         DateCreated = comment.CreatedAt;
-        Likes = comment.Likes.Count;
+        Likes = comment.Likes.Count();
     }
 
     public Guid Id { get; set; }

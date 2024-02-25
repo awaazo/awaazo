@@ -356,18 +356,34 @@ public class SocialService : ISocialService
         // Save the changes and return the status.
         return await _db.SaveChangesAsync() > 0;
     }
+    /// <summary>
+    /// Gets Comment for each Episode =
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
     public async Task<List<EpisodeCommentResponse>> GetEpisodeCommentsAsync(Guid episodeId,int page,int pageSize,string domainUrl)
     {
-        List<EpisodeCommentResponse> comments = await _db.Comments.Include(u => u.User).Include(u => u.Comments)
+        List<EpisodeCommentResponse> comments = await _db.Comments.Include(u => u.User).Include(u => u.Comments).Include(u => u.Likes)
             .Where(u => u.EpisodeId == episodeId).Skip(page * pageSize).Take(pageSize).Select(u => new EpisodeCommentResponse(u,domainUrl)).ToListAsync();
 
         return comments;
         
     }
+    /// <summary>
+    /// Gets Replies to each comment
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
 
     public async Task<List<CommentReplyResponse>> GetCommentReplyAsync(Guid commentId, int page, int pageSize,string domainUrl)
     {
-        List<CommentReplyResponse> replies = await _db.CommentReplies.Include(u => u.User).Where(u => u.ReplyToCommentId == commentId).Select(u => new CommentReplyResponse(u,domainUrl)).Skip(page * pageSize).Take(pageSize).ToListAsync();
+        List<CommentReplyResponse> replies = await _db.CommentReplies.Include(u => u.User).Include(u => u.Likes).Where(u => u.ReplyToCommentId == commentId).Select(u => new CommentReplyResponse(u,domainUrl)).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
         return replies;
     }

@@ -66,6 +66,13 @@ public class SocialController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get Replies of each comment
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
     [HttpGet("{commentId}/getReplies")]
     public async Task<IActionResult> GetCommentReplies(Guid commentId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
