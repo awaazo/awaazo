@@ -227,6 +227,7 @@ public class PlaylistController : ControllerBase
     /// <param name="pageSize">Size of the current page.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{userId}/getUserPlaylists")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetUserPlaylists(Guid userId, int page=MIN_PAGE, int pageSize=DEFAULT_PAGE_SIZE)
     {
         try
@@ -235,8 +236,6 @@ public class PlaylistController : ControllerBase
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Get the user playlists.
             return Ok(await _playlistService.GetUserPlaylistsAsync(userId,user,page,pageSize,GetDomainUrl(HttpContext)));
