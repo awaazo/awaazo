@@ -370,6 +370,7 @@ public class PlaylistController : ControllerBase
     /// <param name="playlistId">Id of the Playlist.</param>    
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}/getCoverArt")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
     {
         try
