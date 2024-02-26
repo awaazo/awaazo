@@ -31,9 +31,8 @@ import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import ChatBot from "./ChatBotButton";
+import ChatBot from "../panel/ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
-
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -80,13 +79,17 @@ const PlayerBar = () => {
     if (audioUrl) {
       audioRef.current.src = audioUrl;
       audioRef.current.load();
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        setDuration(audioRef.current.duration);
-        setIsPlaying(true); 
-      }, { once: true }); 
+      audioRef.current.addEventListener(
+        "loadedmetadata",
+        () => {
+          setDuration(audioRef.current.duration);
+          setIsPlaying(true);
+        },
+        { once: true },
+      );
     }
   }, [audioUrl]);
-  
+
   useEffect(() => {
     isPlaying ? audioRef.current.play() : audioRef.current.pause();
   }, [isPlaying]);

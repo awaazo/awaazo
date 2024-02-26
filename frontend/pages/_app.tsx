@@ -9,9 +9,8 @@ import Navbar from "../components/shared/Navbar";
 import AppTheme from "../styles/AppTheme";
 import { useRouter } from "next/router";
 import ColorModeFix from "../styles/ColorModeFix";
-import { ChatBotProvider } from "../utilities/ChatBotContext";
-import  ChatBot  from "../components/shared/ChatBot";
-
+import { PanelProvider } from "../utilities/PanelContext";
+import Panel from "../components/panel/Panel";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   ColorModeFix();
@@ -19,7 +18,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [showPlayerBar, setShowPlayerBar] = useState(true);
   const [showNavbar, setShowNavbar] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [showChatBot, setShowChatBot] = useState(true);
+  const [showPanel, setShowPanel] = useState(true);
 
   useEffect(() => {
     const path = router.pathname;
@@ -30,7 +29,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     ];
     const hideNavbarOnPaths = ["/auth/"];
     const hideSidebarOnPaths = ["/auth/", "/profile/ProfileSetup"];
-    const hideChatBotOnPaths = [
+    const hidePanelOnPaths = [
       "/auth/",
       "/profile/ProfileSetup",
       "/CreatorHub/",
@@ -43,14 +42,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const shouldHideSidebar = hideSidebarOnPaths.some((p) =>
       path.startsWith(p),
     );
-    const shouldHideChatBot = hideChatBotOnPaths.some((p) =>
-      path.startsWith(p),
-    );
+    const shouldHidePanel = hidePanelOnPaths.some((p) => path.startsWith(p));
 
     setShowPlayerBar(!shouldHidePlayerBar);
     setShowNavbar(!shouldHideNavbar);
     setShowSidebar(!shouldHideSidebar);
-    setShowChatBot(!shouldHideChatBot);
+    setShowPanel(!shouldHidePanel);
   }, [router.pathname]);
 
   return (
@@ -70,20 +67,18 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       />
       <SessionProvider session={session}>
         <PlayerProvider>
-          <ChatBotProvider>
+          <PanelProvider>
             <Flex>
               {showSidebar && <Sidebar />}
-              <Box  zIndex={"1"}>
-              {showChatBot && <ChatBot />}
-              </Box>
+              <Box zIndex={"1"}>{showPanel && <Panel />}</Box>
               <Box flex="1">
                 {showNavbar && <Navbar />}
                 <Component {...pageProps} />
-                <Box h="100px" zIndex={"2"}/>
+                <Box h="100px" zIndex={"2"} />
                 {showPlayerBar && <PlayerBar />}
               </Box>
             </Flex>
-          </ChatBotProvider>
+          </PanelProvider>
         </PlayerProvider>
       </SessionProvider>
     </ChakraProvider>
