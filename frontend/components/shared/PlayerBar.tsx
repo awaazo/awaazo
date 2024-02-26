@@ -33,6 +33,7 @@ import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "./ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
+import Tipjar from "../social/Tipjar";
 
 
 const PlayerBar = () => {
@@ -425,11 +426,12 @@ const PlayerBar = () => {
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
-              <ChatBot episodeId={episode?.id} />
-              <Bookmarks
+              
+              {/* <Bookmarks
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
-              />
+              /> */}
+              <Tipjar episodeId={isEpisodeLoaded ? episode.id : "default-id"} />
               <Likes
                 episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
                 initialLikes={isEpisodeLoaded ? episode.likes : 0}
@@ -475,6 +477,7 @@ const PlayerBar = () => {
             )}
           </Flex>
         )}
+        <ChatBot episodeId={episode?.id} />
       </Flex>
     </Box>
   );

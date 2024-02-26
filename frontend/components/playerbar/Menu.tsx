@@ -61,6 +61,7 @@ const PlayerMenu = ({ episode }) => {
   };
 
   return (
+
     <Box style={{ position: "relative", zIndex: 9999 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
         <MenuButton as={IconButton} aria-label="Options" icon={<CiMenuKebab />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
