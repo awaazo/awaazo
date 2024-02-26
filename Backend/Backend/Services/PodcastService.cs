@@ -526,7 +526,7 @@ public class PodcastService : IPodcastService
     /// <param name="podcastId"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
+    public async Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
     {
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
@@ -613,7 +613,9 @@ public class PodcastService : IPodcastService
         // Send Notification to All the Subscribed Users
         await _notificationService.AddEpisodeNotification(podcastId, episode, _db);
 
-        return await _db.SaveChangesAsync() > 0;
+        await _db.SaveChangesAsync();
+
+        return episode.Id;
     }
 
     /// <summary>
@@ -727,6 +729,36 @@ public class PodcastService : IPodcastService
             podcast.IsExplicit = true;
             _db.Podcasts.Update(podcast);
         }
+
+        // Save the changes to the database and return status
+        _db.Episodes.Update(episode);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user){
+        // Get the episode and make sure its owned by the user
+        Episode episode = await _db.Episodes
+            .Include(e=>e.Podcast)
+            .FirstOrDefaultAsync(e => e.Id == episodeId && e.Podcast.PodcasterId == user.Id) ?? throw new Exception("Episode does not exist and/or it is not owned by user.");
+
+        // Check if the episode audio was provided
+        if (request.AudioFile == null)
+            throw new Exception("Audio file is required.");
+
+        // Check if the episode audio is an audio file
+        if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
+            throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
+
+        // Check if the episode audio is smaller than 1GB
+        if (request.AudioFile.Length > MAX_AUDIO_SIZE)
+            throw new Exception($"Audio file must be smaller than {MAX_AUDIO_SIZE}GB.");
+
+        // Append the new audio to the episode audio
+        episode.Audio = await AppendPodcastEpisodeAudio(episode.Id, episode.PodcastId, episode.Audio, request.AudioFile);
+
+        // Find and Save the duration of the audio in seconds
+        var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
+        episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Save the changes to the database and return status
         _db.Episodes.Update(episode);

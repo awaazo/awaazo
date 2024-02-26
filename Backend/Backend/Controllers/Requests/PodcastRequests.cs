@@ -57,6 +57,13 @@ public class EditEpisodeRequest : CreateEpisodeRequest
     public new IFormFile? Thumbnail { get; set; }
 }
 
+[BindProperties]
+public class AddEpisodeAudioRequest{
+
+    [Required]
+    public IFormFile? AudioFile { get; set; }
+}
+
 /// <summary>
 /// Request to save the current listen position of an episode
 /// </summary>

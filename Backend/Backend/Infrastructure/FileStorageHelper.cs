@@ -242,6 +242,39 @@ public static class FileStorageHelper
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0]);
     }
 
+    public static async Task<string> AppendPodcastEpisodeAudio(Guid episodeId, Guid podcastId, string audioName, IFormFile audioFile)
+    {
+        string audioPath = GetPodcastEpisodeAudioPath(audioName, podcastId);
+        string audioPath_temp = audioPath + ".temp";
+
+        if (File.Exists(audioPath))
+        {
+            using FileStream fileStream = Create(audioPath_temp);
+            using MemoryStream memoryStream = new MemoryStream();
+            await audioFile.CopyToAsync(memoryStream);
+            byte[] buff = await ReadAllBytesAsync(audioPath);
+            await fileStream.WriteAsync(buff,0,buff.Length);
+            buff = memoryStream.ToArray();
+            await fileStream.WriteAsync(buff,0,buff.Length);
+
+            // Close both streams
+            fileStream.Close();
+            memoryStream.Close();
+
+            // Delete the original file
+            File.Delete(audioPath);
+
+            // Rename the temp file to the original file
+            File.Move(audioPath_temp, audioPath);
+
+            // Delete the temp file
+            File.Delete(audioPath_temp);
+        }
+
+        return string.Format("{0}{1}{2}", audioName, FILE_SPLIT_KEY, audioFile.ContentType);
+        //return await SavePodcastEpisodeAudio(episodeId.ToString(), audioFile
+    }
+
     /// <summary>
     /// Saves a podcast episode audio and returns the filename stored in the database.
     /// </summary>

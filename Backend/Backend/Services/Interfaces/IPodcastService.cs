@@ -21,8 +21,9 @@ public interface IPodcastService
 
     // EPISODES
 
-    public Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
+    public Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
     public Task<bool> EditEpisodeAsync(EditEpisodeRequest request, Guid podcastId, User user);
+    public Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user);
     public Task<bool> DeleteEpisodeAsync(Guid episodeId, User user);
     public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl);
     public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);

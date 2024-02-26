@@ -1,6 +1,6 @@
 import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeAddRequest, PodcastCreateRequest, PodcastEditRequest, PodcastByTagsRequest, EpisodeEditRequest, SaveWatchHistoryRequest, PodcastSearchRequest, EpisodeSearchRequest, editTranscriptLinesRequest } from "../types/Requests";
+import { EpisodeAddRequest, PodcastCreateRequest, PodcastEditRequest, PodcastByTagsRequest, EpisodeEditRequest, SaveWatchHistoryRequest, PodcastSearchRequest, EpisodeSearchRequest, editTranscriptLinesRequest, EpisodeAddAudioRequest } from "../types/Requests";
 import {
   BaseResponse,
   CreatePodcastResponse,
@@ -19,6 +19,7 @@ import {
   GetMetricsResponse,
   SearchEpisodeResponse,
   AllEpisodeResponse,
+  EpisodeAddAudioResponse,
 } from "../types/Responses";
 
 export default class PodcastHelper {
@@ -429,9 +430,10 @@ export default class PodcastHelper {
    */
   public static episodeAddRequest = async (
     requestData: EpisodeAddRequest,
-    podcastId,
+    podcastId: string,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
   ): Promise<CreateEpisodeResponse> => {
+    
     // Create the request options.
     const options: AxiosRequestConfig = {
       method: "POST",
@@ -471,6 +473,54 @@ export default class PodcastHelper {
       };
     }
   };
+
+  public static episodeAddAudioRequest = async (
+    requestData: EpisodeAddAudioRequest,
+    episodeId: string,
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
+  ): Promise<EpisodeAddAudioResponse> => {
+
+    // Create the request options.
+    const options: AxiosRequestConfig = {
+      method: "POST",
+      data: requestData,
+      url: EndpointHelper.getPodcastEpisodeAddAudioEndpoint(episodeId),
+      headers: {
+        accept: "*/*",
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+      onUploadProgress,
+    };
+
+    try {
+      console.debug("Sending the following episodeAddAudioRequest...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse: AxiosResponse = await axios(options);
+
+      console.debug("Received the following episodeAddAudioResponse...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        data: requestResponse.data,
+      };
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        data: error.response.data,
+      };
+    }
+  }
+
+    
 
   /**
    * Gets a podcast by podcastId from the server.

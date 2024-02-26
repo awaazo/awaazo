@@ -385,7 +385,8 @@ public class PodcastController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return await _podcastService.CreateEpisodeAsync(request, podcastId, user) ? Ok("Episode added to podcast.") : Ok("Failed to add episode to podcast.");
+            Guid episodeId = await _podcastService.CreateEpisodeAsync(request, podcastId, user);
+            return Ok(episodeId);
         }
         catch (Exception e)
         {
@@ -424,6 +425,32 @@ public class PodcastController : ControllerBase
             // If error occurs, return BadRequest
             this.LogErrorAPICall(_logger, e, callerName: nameof(EditEpisode));
             return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("{episodeId}/addEpisodeAudio")]
+    [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
+    [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]
+    public async Task<ActionResult> AddEpisodeAudio(Guid episodeId, [FromForm] AddEpisodeAudioRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddEpisodeAudio));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return await _podcastService.AddEpisodeAudioAsync(request, episodeId, user) ? Ok("Episode audio added.") : Ok("Failed to add episode audio.");
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            this.LogErrorAPICall(_logger, e, callerName: nameof(AddEpisodeAudio));
+            return BadRequest(e.Message + " " + e.StackTrace);
         }
     }
 
