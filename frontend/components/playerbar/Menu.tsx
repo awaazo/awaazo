@@ -1,7 +1,7 @@
 // PlaylistMenu.tsx
 import React, { useState } from "react";
 import { Box, Menu, MenuButton, IconButton, MenuList, MenuItem, MenuDivider, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
-import { MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
+import { MdBookmark, MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
 import Link from "next/link";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { CgPlayListSearch } from "react-icons/cg";
@@ -12,6 +12,9 @@ import ViewQueueModal from "../playlist/ViewQueueModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
+import Bookmarks from "../social/Bookmarks";
+import { FaBookmark } from "react-icons/fa";
+
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
@@ -49,6 +52,9 @@ const PlayerMenu = ({ episode }) => {
       }
     });
   };
+  const { state } = usePlayer();
+  const isEpisodeLoaded = !!episode;
+  const [position, setPosition] = useState(0);
 
   const handleRemoveFromQueue = () => {
     dispatch({ type: "REMOVE_FROM_QUEUE", payload: episode });
@@ -78,6 +84,14 @@ const PlayerMenu = ({ episode }) => {
             Add to Playlist
             <MdOutlinePlaylistAdd size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
+
+          <MenuItem>
+            <Bookmarks
+              episodeId={isEpisodeLoaded ? episode.id : "default-id"}
+              selectedTimestamp={isEpisodeLoaded ? position : 0}
+            />
+          </MenuItem>
+
           <MenuDivider />
           <MenuItem
             _hover={{
