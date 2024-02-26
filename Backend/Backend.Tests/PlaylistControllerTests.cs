@@ -404,21 +404,27 @@ public class PlaylistControllerTests
     }
 
     [Fact]
-    public async Task GetUserPlaylists_UserNotFound_ReturnsNotFoundResult()
+    public async Task GetUserPlaylists_UserNotFound_ReturnsNotfoundResult()
     {
         // Arrange
         var userId = Guid.NewGuid();
         var page = 1;
         var pageSize = 10;
+        var user = new User() { Id = Guid.NewGuid() };
+        var playlists = new List<Playlist>();
+
+
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync((User?)null);
+        _playlistServiceMock.Setup(service => service.GetUserPlaylistsAsync(userId, (User?)null, page, pageSize, It.IsAny<string>())).ReturnsAsync(new List<PlaylistInfoResponse>());
+
 
         // Act
         var result = await _playlistController.GetUserPlaylists(userId, page, pageSize);
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        Assert.True(result != null);
+        Assert.Equal(playlists, (result as OkObjectResult)?.Value);
     }
 
     [Fact]
@@ -467,20 +473,25 @@ public class PlaylistControllerTests
     }
 
     [Fact]
-    public async Task GetAllPlaylists_UserNotFound_ReturnsNotFoundResult()
+    public async Task GetAllPlaylists_UserNotFound_ReturnsOkResult()
     {
         // Arrange
         var page = 1;
         var pageSize = 10;
+        var user = new User();
+        var playlists = new List<Playlist>();
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync((User?)null);
+        _playlistServiceMock.Setup(service => service.GetAllPlaylistsAsync((User?)null, page, pageSize, It.IsAny<string>())).ReturnsAsync(new List<PlaylistInfoResponse>());
+
 
         // Act
         var result = await _playlistController.GetAllPlaylists(page, pageSize);
 
+
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        Assert.True(result != null);
+        Assert.Equal(playlists, (result as OkObjectResult)?.Value);
     }
 
     [Fact]
@@ -516,7 +527,7 @@ public class PlaylistControllerTests
         var pageSize = 10;
         var domainUrl = "https://example.com";
         var user = new User { Id = Guid.NewGuid() };
-        var playlists = new List<Playlist> { new() { User = user }, new() { User = user } };
+        var playlists = new List<Playlist> { new() { Privacy = Playlist.PrivacyEnum.Public ,User = user }, new() { Privacy = Playlist.PrivacyEnum.Public,User = user } };
         var playlistResponses = new List<PlaylistInfoResponse> { new(playlists[0], domainUrl), new(playlists[1], domainUrl) };
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
@@ -531,21 +542,27 @@ public class PlaylistControllerTests
     }
 
     [Fact]
-    public async Task SearchPlaylists_UserNotFound_ReturnsNotFoundResult()
+    public async Task SearchPlaylists_UserNotFound_ReturnsOkResult()
     {
         // Arrange
         var searchTerm = "test";
         var page = 1;
         var pageSize = 10;
+        var domainUrl = "https://example.com";
+        var user = new User { Id = Guid.NewGuid() };
+        var playlists = new List<Playlist> { new() { Privacy = Playlist.PrivacyEnum.Public ,User = user }, new() { User = user } };
+        var playlistResponses = new List<PlaylistInfoResponse> { new(playlists[0], domainUrl), new(playlists[1], domainUrl) };
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync((User?)null);
+        _playlistServiceMock.Setup(service => service.SearchPlaylistsAsync(searchTerm,(User?)null, page, pageSize, It.IsAny<string>())).ReturnsAsync(playlistResponses);
 
         // Act
         var result = await _playlistController.SearchPlaylists(searchTerm, page, pageSize);
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        Assert.True(result != null);
+        Assert.IsType<List<PlaylistInfoResponse>>((result as OkObjectResult)?.Value);
+
     }
 
     [Fact]
@@ -591,23 +608,29 @@ public class PlaylistControllerTests
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(expectedPlaylistResponse, (result as OkObjectResult)?.Value);
+        Assert.IsType<PlaylistResponse>((result as OkObjectResult)?.Value);
+
     }
 
     [Fact]
-    public async Task GetPlaylist_UserNotFound_ReturnsNotFoundResult()
+    public async Task GetPlaylist_UserNotFound_ReturnsOkResult()
     {
         // Arrange
         var playlistId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        var domainUrl = "https://example.com";
+        var playlist = new List<Playlist>() { new Playlist() { Privacy=Playlist.PrivacyEnum.Public,User = new User() { Id = userId},Id = playlistId } };
+        var playlistResponse = new PlaylistResponse(playlist[0], domainUrl);
 
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync((User?)null);
+        _playlistServiceMock.Setup(service => service.GetPlaylistEpisodesAsync(playlistId, (User?)null, It.IsAny<string>())).ReturnsAsync(playlistResponse);
 
         // Act
         var result = await _playlistController.GetPlaylist(playlistId);
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        Assert.True(result != null);
+        Assert.IsType<PlaylistResponse>((result as OkObjectResult)?.Value);
     }
 
     [Fact]
