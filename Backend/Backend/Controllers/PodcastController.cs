@@ -428,6 +428,13 @@ public class PodcastController : ControllerBase
         }
     }
 
+
+    /// <summary>
+    /// Adds audio to an episode of a podcast by Id.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode to add audio to.</param>
+    /// <param name="request">Request object containing the episode audio details.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
     [HttpPost("{episodeId}/addEpisodeAudio")]
     [RequestFormLimits(ValueLengthLimit = PodcastService.MAX_REQUEST_SIZE, MultipartBodyLengthLimit = PodcastService.MAX_REQUEST_SIZE)]
     [RequestSizeLimit(PodcastService.MAX_REQUEST_SIZE)]

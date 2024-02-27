@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Backend.Migrations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Backend.Models.Podcast;
 
 namespace Backend.Controllers.Requests;
@@ -47,6 +49,23 @@ public class CreateEpisodeRequest
 
     [Required]
     public IFormFile? Thumbnail { get; set; }
+
+    public bool IsFullEpisode()
+    {
+        try
+        {
+            if (AudioFile is null)
+                return true;
+            else if (!AudioFile.FileName.Contains("<##>"))
+                return true;
+            else
+                return AudioFile!.FileName.Split("<##>")[1].Split('/')[0] == AudioFile!.FileName.Split("<##>")[1].Split('/')[1];
+        }
+        catch
+        {
+            return true;
+        }
+    }
 }
 
 [BindProperties]
@@ -62,6 +81,23 @@ public class AddEpisodeAudioRequest{
 
     [Required]
     public IFormFile? AudioFile { get; set; }
+
+    public bool IsFullEpisode()
+    {
+        try
+        {
+            if (AudioFile is null)
+                return true;
+            else if (!AudioFile.FileName.Contains("<##>"))
+                return true;
+            else
+                return AudioFile!.FileName.Split("<##>")[1].Split('/')[0] == AudioFile!.FileName.Split("<##>")[1].Split('/')[1];
+        }
+        catch
+        {
+            return true;
+        }
+    }
 }
 
 /// <summary>
