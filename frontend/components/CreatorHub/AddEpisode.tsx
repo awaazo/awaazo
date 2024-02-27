@@ -29,11 +29,11 @@ const AddEpisodeForm = ({ podcastId }) => {
   const [serverError, setServerError] = useState(false);
 
   // Upload percentage states
-  const [totalFileSize, setTotalFileSize] = useState<number>(0);
-  const [uploadedFileSize, setUploadedFileSize] = useState<number>(0);
-  const [currentUploadedFileSize, setCurrentUploadedFileSize] = useState<number>(0);
+  let totalRequestSize = 0;
+  let uploadedFileSize = 0;
 
   const MAXIMUM_FILE_SIZE = 80000000; // 80MB
+  const MIN_REQUEST_SIZE = 1249807; // ~1.2MB
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -78,7 +78,8 @@ const AddEpisodeForm = ({ podcastId }) => {
     // Create an array of requests if the file is too large
     const requests: EpisodeAddRequest[] = [];
 
-    setTotalFileSize(file.size);
+    totalRequestSize = ((file.size + MIN_REQUEST_SIZE) as number);
+    uploadedFileSize = 0;    
 
     // Create request object
     const request: EpisodeAddRequest = {
@@ -102,6 +103,9 @@ const AddEpisodeForm = ({ podcastId }) => {
       const numberOfChunks = Math.ceil(file.size / MAXIMUM_FILE_SIZE);
       const chunks = [];
 
+      // Add the MIN_REQUEST_SIZE for each request
+      totalRequestSize = ((totalRequestSize + (numberOfChunks * MIN_REQUEST_SIZE) - MIN_REQUEST_SIZE) as number);
+
       // Track the start and end of the file
       let start = 0;
       let end = MAXIMUM_FILE_SIZE;
@@ -124,17 +128,12 @@ const AddEpisodeForm = ({ podcastId }) => {
         start = end;
         end = start + MAXIMUM_FILE_SIZE;
       }
-
-      console.log(chunks);
       console.log("Number of chunks: " + chunks.length);
     }
     else {
       console.log("File small enough to upload in one go.");
       requests.push(request);
     }
-
-    console.log(requests);
-
 
     setServerError(false);
     setUploadModalOpen(true);
@@ -144,9 +143,6 @@ const AddEpisodeForm = ({ podcastId }) => {
 
     // Send the requests
     for (let i = 0; i < requests.length; i++) {
-      console.log("Sending request " + i);
-      console.log(requests[i]);
-
       if (i === 0) {
         // Add the episode and get the episode ID
         response = await PodcastHelper.episodeAddRequest(requests[i], podcastId, onUploadProgress);
@@ -156,8 +152,6 @@ const AddEpisodeForm = ({ podcastId }) => {
         // Add the audio chunks to the episode
         response = await PodcastHelper.episodeAddAudioRequest(requests[i], episodeId, onUploadProgress);
       }
-
-      console.log(response);
 
       if (response.status !== 200) {
         setServerError(true);
@@ -170,15 +164,17 @@ const AddEpisodeForm = ({ podcastId }) => {
 
   // Define the progress callback
   const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
-    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
 
-    console.log(progressEvent)
+    // Calculate the progress percentage
+    const progress = Math.round(((progressEvent.loaded + uploadedFileSize) / totalRequestSize) * 100);
 
+    // If the file has been fully uploaded, update the uploaded file size
+    if (progressEvent.loaded === progressEvent.total) {
+      uploadedFileSize = (uploadedFileSize + progressEvent.total) as number;
+    }
 
+    // Update the progress state
     setUploadProgress(progress);
-
-    console.log("Progress: " + progress+"%"+ " Loaded: "+progressEvent.loaded+" Total: "+progressEvent.total);
-    console.log(progress);
   };
 
   // Ensures episode name is not longer than 25 characters
