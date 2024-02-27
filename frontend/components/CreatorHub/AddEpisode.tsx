@@ -31,6 +31,8 @@ const AddEpisodeForm = ({ podcastId }) => {
   // Upload percentage states
   let totalRequestSize = 0;
   let uploadedFileSize = 0;
+  let totalRequestsCount = 1;
+  let currentRequestCount = 1;
 
   const MAXIMUM_FILE_SIZE = 80000000; // 80MB
   const MIN_REQUEST_SIZE = 1249807; // ~1.2MB
@@ -129,10 +131,14 @@ const AddEpisodeForm = ({ podcastId }) => {
         end = start + MAXIMUM_FILE_SIZE;
       }
       console.log("Number of chunks: " + chunks.length);
+      totalRequestsCount = numberOfChunks;
+      currentRequestCount = 1;
     }
     else {
       console.log("File small enough to upload in one go.");
       requests.push(request);
+      totalRequestsCount = 1;
+      currentRequestCount = 1;
     }
 
     setServerError(false);
@@ -166,12 +172,21 @@ const AddEpisodeForm = ({ podcastId }) => {
   const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
 
     // Calculate the progress percentage
-    const progress = Math.round(((progressEvent.loaded + uploadedFileSize) / totalRequestSize) * 100);
+    let progress = Math.round(((progressEvent.loaded + uploadedFileSize) / totalRequestSize) * 100);
 
     // If the file has been fully uploaded, update the uploaded file size
     if (progressEvent.loaded === progressEvent.total) {
       uploadedFileSize = (uploadedFileSize + progressEvent.total) as number;
+      console.log("progressEvent.total: " + progressEvent.total);
+
+      currentRequestCount++;
+
+      if (currentRequestCount > totalRequestsCount) {
+        progress = 100;
+      }
     }
+
+    console.log("Uploaded: " + uploadedFileSize + " / " + totalRequestSize + " - " + progress + "%");
 
     // Update the progress state
     setUploadProgress(progress);
