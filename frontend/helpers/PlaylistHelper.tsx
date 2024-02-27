@@ -63,43 +63,45 @@ export default class PlaylistHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static playlistEditRequest = async (requestData: PlaylistEditRequest, playlistId): Promise<PlaylistDataResponse> => {
-    // Create the request options.
+  public static playlistEditRequest = async (requestData: PlaylistEditRequest, playlistId, coverArtFile?: File): Promise<PlaylistDataResponse> => {
+    const formData = new FormData();
+    formData.append("name", requestData.name);
+    formData.append("description", requestData.description);
+    formData.append("privacy", requestData.privacy);
+    if (coverArtFile) {
+      formData.append("coverArt", coverArtFile);
+    }
+  
     const options = {
       method: "POST",
-      data: requestData,
+      data: formData,
       url: EndpointHelper.getEditPlaylistEndpoint(playlistId),
       headers: {
-        accept: "*/*",
         "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
       cache: false,
     };
-
+  
     try {
       console.debug("Sending the following playlistEditRequest...");
       console.debug(options);
-
-      console.log(options);
-      // Send the request and wait for the response.
+  
       const requestResponse = await axios(options);
-
+  
       console.debug("Received the following playlistEditRequest...");
       console.debug(requestResponse);
-
-      // Return the response.
+  
       return {
         status: requestResponse.status,
         message: requestResponse.statusText,
         data: requestResponse.data,
       };
     } catch (error) {
-      // Return the error.
       return {
-        status: error.response.status,
-        message: error.response.statusText,
-        data: error.response.data,
+        status: error.response ? error.response.status : 500,
+        message: error.response ? error.response.statusText : "An error occurred",
+        data: error.response ? error.response.data : {},
       };
     }
   };

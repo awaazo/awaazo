@@ -139,7 +139,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       coverArt: playlistCoverArt,
     };
 
-    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
+    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id, playlistCoverArt);
     if (response.status === 200) {
       toast({
         position: "top",
@@ -311,6 +311,10 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             <FormControl mt={4}>
               <FormLabel>Description</FormLabel>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Playlist Cover</FormLabel>
+              <Input type="file" accept="image/*" onChange={(e) => setPlaylistCoverArt(e.target.files ? e.target.files[0] : null)} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
