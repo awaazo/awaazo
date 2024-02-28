@@ -42,6 +42,8 @@ public class Program
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
         builder.Services.AddScoped<IAnnotationService, AnnotationService>();
         builder.Services.AddScoped<IWalletServices, WalletServices>();
+        builder.Services.AddScoped<AdminPanelService>();
+        builder.Services.AddScoped<ReportService>();
 
 
 
