@@ -129,6 +129,10 @@ export interface EpisodeEditRequest {
   isExplicit: boolean;
 }
 
+export interface EpisodeAddAudioRequest{
+  audioFile: File;
+}
+
 //#endregion
 
 //#region Episode Bookmark Requests
