@@ -120,6 +120,10 @@ const NowPlaying = () => {
           inSlider: true,
         },
         {
+          component: <Transcripts episodeId={episode.id} />,
+          inSlider: true,
+        },
+        {
           component: <Bookmarks episodeId={episode.id} />,
           inSlider: true,
         },
