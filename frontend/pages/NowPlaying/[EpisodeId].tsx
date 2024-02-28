@@ -10,7 +10,7 @@ import {
 import CoverArt from "../../components/nowPlaying/CoverArt";
 import Sections from "../../components/nowPlaying/Sections";
 import PodCue from "../../components/nowPlaying/PodCue";
-import Transcripts from "../../components/nowPlaying/Transcripts";
+import Transcript from "../../components/nowPlaying/Transcript";
 import Bookmarks from "../../components/nowPlaying/Bookmarks";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -120,7 +120,7 @@ const NowPlaying = () => {
           inSlider: true,
         },
         {
-          component: <Transcripts episodeId={episode.id} />,
+          component: <Transcript episodeId={episode.id} />,
           inSlider: true,
         },
         {

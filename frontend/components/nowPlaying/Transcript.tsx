@@ -16,16 +16,16 @@ interface TranscriptProps {
   episodeId: string;
 }
 
-const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
+const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [transcripts, setTranscripts] = useState(null);
+  const [transcript, setTranscript] = useState(null);
 
   useEffect(() => {
     if (episodeId) {
       PodcastHelper.getTranscript(episodeId)
         .then((res) => {
           if (res.status === 200) {
-            setTranscripts(res.transcript);
+            setTranscript(res.transcript);
           } else {
             console.error("Error fetching transcripts data:", res.message);
           }
@@ -71,4 +71,4 @@ const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
   );
 };
 
-export default Transcripts;
+export default Transcript;
