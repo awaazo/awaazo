@@ -1,7 +1,7 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse } from "../types/Responses";
-import { PlaylistCreateRequest, PlaylistEditRequest } from "../types/Requests";
+import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse, confirmPaymentResponse, createPaymentResponse } from "../types/Responses";
+import { PlaylistCreateRequest, PlaylistEditRequest, confirmPayment, createPayment } from "../types/Requests";
 
 export default class PlaylistHelper {
     static getUserProfile() {
@@ -9,35 +9,31 @@ export default class PlaylistHelper {
     }
 
     /**
-     * Creates a new playlist request to the server.
+     * Creates a new  payment request to the server.
      * @param requestData Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static playlistCreateRequest = async (
-        requestData: PlaylistCreateRequest,
-    ): Promise<PlaylistDataResponse> => {
-
-
+    public static createPayment = async (
+        requestData: createPayment,
+    ): Promise<createPaymentResponse> => {
         const options = {
             method: "POST",
-            data: requestData,
-            url: EndpointHelper.getCreatePlaylistEndpoint(),
+            url: EndpointHelper.createPaymentEndpoint(requestData.episodeId,requestData.points),
             headers: {
-                accept: "*/*",
-                "Content-Type": "multipart/form-data",
+                accept: "*/*"
             },
             withCredentials: true,
             cache: false,
         };
         try {
-            console.debug("Sending the following playlistCreateRequest...");
+            console.debug("Sending the CreatePayment Request...");
             console.debug(options);
 
             console.log(options);
             // Send the request and wait for the response.
             const requestResponse = await axios(options);
 
-            console.debug("Received the following playlistCreateRequest...");
+            console.debug("Received the following CreatePaymentRequest...");
             console.debug(requestResponse);
             console.log(requestResponse);
 
@@ -45,7 +41,7 @@ export default class PlaylistHelper {
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
-                data: requestResponse.data,
+                data : requestResponse.data,
             };
         } catch (error) {
             console.log(error);
@@ -63,29 +59,28 @@ export default class PlaylistHelper {
      * @param requestData Request data to be sent to the server.
      * @returns A BaseResponse object with the server's response.
      */
-    public static playlistEditRequest = async (requestData: PlaylistEditRequest, playlistId): Promise<PlaylistDataResponse> => {
+    public static confirmPayment = async (requestData: confirmPayment): Promise<confirmPaymentResponse> => {
         // Create the request options.
         const options = {
             method: "POST",
             data: requestData,
-            url: EndpointHelper.getEditPlaylistEndpoint(playlistId),
+            url: EndpointHelper.confirmPaymentEndpoint(requestData.pointId),
             headers: {
-                accept: "*/*",
-                "Content-Type": "multipart/form-data",
+                accept: "*/*"
             },
             withCredentials: true,
             cache: false,
         };
 
         try {
-            console.debug("Sending the following playlistEditRequest...");
+            console.debug("Sending the following confirmPaymentRequest...");
             console.debug(options);
 
             console.log(options);
             // Send the request and wait for the response.
             const requestResponse = await axios(options);
 
-            console.debug("Received the following playlistEditRequest...");
+            console.debug("Received the following confirmPaymentRequest...");
             console.debug(requestResponse);
 
             // Return the response.

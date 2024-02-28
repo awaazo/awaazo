@@ -192,3 +192,12 @@ export interface GetChatbotResponse extends BaseResponse {
   userId:string;
   messages: Chatbot[];
 }
+
+
+export interface createPaymentResponse extends BaseResponse {
+  data : string
+}
+
+export interface confirmPaymentResponse extends BaseResponse{
+  data : string
+}

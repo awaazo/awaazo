@@ -659,4 +659,22 @@ export default class EndpointHelper {
   static getAddEpisodeChatEndpoint = () => {
     return this.getBackendAddress() + "/podcast/addEpisodeChat";
   };
+
+
+  // --------------------------------
+  // Payment Endpoints ENDPOINTS
+  // --------------------------------
+
+  static createPaymentEndpoint = (episodeId: string, points :number) => {
+    return this.getBackendAddress() + "/social/"+episodeId+"/giftpoints?points="+points;
+  }
+
+  static confirmPaymentEndpoint = (pointId : string) => {
+    return this.getBackendAddress() + "/social/"+pointId+"/confirmPoints"; 
+  }
+ 
 }
+
+
+
+
