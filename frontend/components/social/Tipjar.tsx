@@ -134,7 +134,9 @@ const Tipjar = ({ episodeId }) => {
 
   return (
     <>
-      <Tooltip label="Tip" aria-label="Tip tooltip">
+      <Tooltip label="Gift" aria-label="Tip tooltip">
+        
+        
         <Button
           padding={"0px"}
           m={1}
@@ -143,8 +145,9 @@ const Tipjar = ({ episodeId }) => {
             checkAuthentication();
             setModalOpen(true);
           }}
-        >
-          <Icon as={PiCurrencyDollarSimpleFill} boxSize={"20px"} />
+      
+        > 
+          <Icon as={PiCurrencyDollarSimpleFill} boxSize={"20px"} />    
         </Button>
       </Tooltip>
 
