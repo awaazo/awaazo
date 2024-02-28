@@ -604,6 +604,11 @@ public class SocialService : ISocialService
             throw new Exception("Illegal State");
         }
 
+        if(points.Success == true)
+        {
+            throw new Exception("Already Confirmed this Payment");
+        }
+
         // Transaction Id
         Guid transactionId = Guid.NewGuid();
         // Post transaction 

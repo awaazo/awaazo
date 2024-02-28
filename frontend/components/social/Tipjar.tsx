@@ -38,14 +38,24 @@ const Tipjar = ({ episodeId }) => {
   const [customPoints, setCustomPoints] = useState("");
 
   useEffect(() => {
-
     const checkQueryParameter = async () =>{
         if (success != null) {
           // Confirm payment
           setModalOpen(true);
           setShowStack(false);
-          const response = await PaymentHelper.confirmPayment({pointId : success.toString()});
-          setPaymentSuccess("Thank you for Supporting !");
+
+          try{
+            const response = await PaymentHelper.confirmPayment({pointId : success.toString()});
+            if(response.status == 200){
+              setPaymentSuccess("Thank you for Supporting !");
+            }
+            else{
+              setPaymentSuccess(response.data);
+            }
+          }
+          catch(error){
+            console.log("Error While Confirming the Payment");
+          }
         }
         if (failure != null) {
           setModalOpen(true);
