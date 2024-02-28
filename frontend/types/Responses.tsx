@@ -116,6 +116,10 @@ export interface EditEpisodeResponse extends BaseResponse {
   data: string;
 }
 
+export interface EpisodeAddAudioResponse extends BaseResponse {
+  data: string;
+}
+
 export interface GetMyEpisodeResponse extends BaseResponse {
   episode: Episode;
 }

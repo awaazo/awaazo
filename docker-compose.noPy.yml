@@ -1,0 +1,78 @@
+# Comment: How to install CUDA on your system with a CUDA-enabled NVIDIA GPU
+#
+# Prerequisites:
+# - CUDA-enabled NVIDIA GPU
+# - NVIDIA driver installed
+#
+# Steps to install CUDA:
+# 1. Check the CUDA compatibility of your GPU by referring to the NVIDIA CUDA documentation: 
+#    [CUDA GPU Support](https://developer.nvidia.com/cuda-gpus)
+# 2. Download the CUDA Toolkit from the NVIDIA CUDA Toolkit download page: 
+#    [CUDA Toolkit Downloads](https://developer.nvidia.com/cuda-downloads)
+# 3. Follow the installation instructions provided by NVIDIA for your specific operating system:
+#    - Windows: [CUDA Installation Guide for Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html)
+#    - Linux: [CUDA Installation Guide for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+#    - macOS: [CUDA Installation Guide for macOS](https://docs.nvidia.com/cuda/cuda-installation-guide-mac-os-x/index.html)
+# 4. After successful installation, verify the CUDA installation by running the following command in the terminal:
+#    ```
+#    nvcc --version
+#    ```
+#    This should display the CUDA version information.
+#
+# Note: Make sure to carefully follow the installation instructions provided by NVIDIA to ensure a successful installation.
+# Command to clear cache and dangling images and containers: docker system prune -a  
+
+version: '3.8'
+
+services:
+
+  # DATABASE (MSSQL)
+  sql:
+    platform: linux/amd64
+    image: "mcr.microsoft.com/mssql/server:latest"
+    container_name: sql_server
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "y"
+      SA_PASSWORD: "MyPass@word" # For local dev ONLY. DO NOT SHARE ANY CREDENTIALS
+    volumes:
+      - "//c/mount/sql:/var/opt/mssql/data"
+    restart: on-failure:5
+
+  # BACKEND ASP.NET Server
+  backend:
+    platform: linux/amd64
+    build:
+      context: Backend/Backend/.
+      target: final
+    container_name: backend_server
+    ports:
+      - "32773:80"
+    links:
+      - sql:database
+      - sql:sql_server
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - "//c/backend_server/ServerFiles:/app/ServerFiles"
+    depends_on:
+      - sql 
+    restart: on-failure:5
+
+  # FRONTEND SERVER
+  frontend:
+    platform: linux/amd64
+    build: 
+      context: frontend/.
+    container_name: frontend_server
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3500:3500"
+    links:
+      - backend:backend_server
+    depends_on:
+      - backend
+    restart: on-failure:5

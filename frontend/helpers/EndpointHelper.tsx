@@ -325,6 +325,15 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/edit";
   };
 
+  /**
+   * Returns the Episode by podcast id endpoint.
+   * @param episodeId The episode id
+   * @returns The Episode get endpoint
+   */
+  static getPodcastEpisodeAddAudioEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/addEpisodeAudio";
+  };
+
   // --------------------------------
   // SOCIAL ENDPOINTS
   // --------------------------------
