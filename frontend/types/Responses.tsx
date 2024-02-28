@@ -1,5 +1,20 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
-
+import {
+  UserMenuInfo,
+  UserProfile,
+  Podcast,
+  Episode,
+  userProfileByID,
+  User,
+  Bookmark,
+  Section,
+  Playlist,
+  Transcript,
+  Annotation,
+  WatchHistory,
+  Metrics,
+  Chatbot,
+  Reply,
+} from "./Interfaces";
 
 export interface BaseResponse {
   [x: string]: any;
@@ -112,6 +127,12 @@ export interface NotificationResponse extends BaseResponse {
 }
 
 //#region Social Responses
+export interface GetCommentsResponse extends BaseResponse {
+  comments: Comment[];
+}
+export interface GetRepliesResponse extends BaseResponse {
+  replies: Reply[];
+}
 export interface IsLikedResponse extends BaseResponse {
   isLiked: boolean;
 }
@@ -188,7 +209,7 @@ export interface GetMetricsResponse extends BaseResponse {
 //#endregion
 
 export interface GetChatbotResponse extends BaseResponse {
-  episodeId:string;
-  userId:string;
+  episodeId: string;
+  userId: string;
   messages: Chatbot[];
 }

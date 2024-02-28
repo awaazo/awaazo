@@ -29,11 +29,21 @@ interface PanelProviderProps {
 }
 
 const PanelReducer = (state: PanelState, action: any) => {
+  const removeContent = () => {
+    return { content: null };
+  };
   switch (action.type) {
     case "TOGGLE_PANEL":
       return {
         ...state,
         isOpen: !state.isOpen,
+        content: action.payload,
+      };
+    case "OPEN_PANEL":
+      removeContent();
+      return {
+        ...state,
+        isOpen: true,
         content: action.payload,
       };
     case "SET_EPISODE_ID":

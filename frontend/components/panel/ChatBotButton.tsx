@@ -15,7 +15,7 @@ const ChatBotButton = ({ episodeId }) => {
         setShowLoginPrompt(true);
         return;
       } else {
-        dispatch({ type: "TOGGLE_PANEL", payload: "ChatBot" });
+        dispatch({ type: "OPEN_PANEL", payload: "ChatBot" });
         dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
       }
     });

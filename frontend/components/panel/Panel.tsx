@@ -15,11 +15,11 @@ import {
 import { usePanel } from "../../utilities/PanelContext";
 import { IoIosCloseCircle } from "react-icons/io";
 import ChatBot from "./ChatBot";
+import Comments from "../social/Comments";
 
 const Panel = () => {
   const { state, dispatch } = usePanel();
 
-  console.log(state);
   const togglePanel = () => {
     dispatch({ type: "TOGGLE_PANEL", payload: null });
   };
@@ -55,16 +55,22 @@ const Panel = () => {
               _hover={{ background: "transparent" }}
               _active={{ background: "transparent" }}
             />
+            <Text fontSize={"24px"} fontWeight={"bold"} ml={"10px"} mt={"2px"}>
+              {state.content}
+            </Text>
           </Flex>
           <Box>
-            {state.content == "ChatBot" && (
+            {state.content == "ChatBot" && state.currentEpisodeId != null && (
               <>
                 <ChatBot episodeId={state.currentEpisodeId} />{" "}
               </>
             )}
-            {state.content == "Comments" && (
+            {state.content == "Comments" && state.currentEpisodeId != null && (
               <>
-                <ChatBot episodeId={state.currentEpisodeId} />{" "}
+                <Comments
+                  episodeIdOrCommentId={state.currentEpisodeId}
+                  initialComments={0}
+                />{" "}
               </>
             )}
           </Box>

@@ -33,6 +33,7 @@ import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ChatBot from "../panel/ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
+import CommentButton from "../social/CommentButton";
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -438,10 +439,8 @@ const PlayerBar = () => {
                 initialLikes={isEpisodeLoaded ? episode.likes : 0}
                 showCount={false}
               />
-              <Comments
-                episodeIdOrCommentId={
-                  isEpisodeLoaded ? episode.id : "default-id"
-                }
+              <CommentButton
+                episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 initialComments={isEpisodeLoaded ? episode.comments.length : 0}
                 showCount={false}
               />
