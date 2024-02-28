@@ -441,7 +441,7 @@ const PlayerBar = () => {
               />
               <CommentButton
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
-                initialComments={isEpisodeLoaded ? episode.comments.length : 0}
+                initialComments={0}
                 showCount={false}
               />
             </Flex>
