@@ -327,6 +327,14 @@ public class AppDbContext : DbContext
 
             ((BaseEntity)entry.Entity).UpdatedAt = currentTime;
         }
+        
+        // Check for soft delete
+        var softDeleteEntries = ChangeTracker.Entries()
+            .Where(e => e.Entity is ISoftDeletable && e.State == EntityState.Deleted);
+        foreach (var entityEntry in softDeleteEntries) {
+            entityEntry.State = EntityState.Modified;
+            entityEntry.CurrentValues[nameof(ISoftDeletable.DeletedAt)] = currentTime;
+        }
 
         return base.SaveChanges();
     }

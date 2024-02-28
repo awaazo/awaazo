@@ -60,7 +60,7 @@ public class ReportService
         if (report is null) {
             throw new InvalidOperationException("Invalid report ID");
         }
-        await DeleteReportedEntity(report.TargetEntityName, report.TargetId);
+        await DeleteReportedEntity(admin.Id, report.TargetEntityName, report.TargetId);
         report.Status = Models.Report.ReportStatus.Resolved;
         report.DeletedBy = admin.Id;       
         _db.Reports.Remove(report); // Soft deleted
@@ -89,41 +89,46 @@ public class ReportService
         };
     }
     
-    private async Task DeleteReportedEntity(string entityName, Guid id) {
+    private async Task DeleteReportedEntity(Guid deletedBy, string entityName, Guid id) {
         switch (entityName) {
             case nameof(User):
                 User? user = await _db.Users.FindAsync(id);
                 if (user is not null) {
                     user.DeletedAt = DateTime.Now;
-                    _db.Users.Update(user);
+                    user.DeletedBy = deletedBy;
+                    _db.Users.Remove(user);
                 }
                 break;
             case nameof(Podcast):
                 Podcast? podcast = await _db.Podcasts.FindAsync(id);
                 if (podcast is not null) {
                     podcast.DeletedAt = DateTime.Now;
-                    _db.Podcasts.Update(podcast);
+                    podcast.DeletedBy = deletedBy;
+                    _db.Podcasts.Remove(podcast);
                 }
                 break;
             case nameof(Episode):
                 Episode? episode = await _db.Episodes.FindAsync(id);
                 if (episode is not null) {
                     episode.DeletedAt = DateTime.Now;
-                    _db.Episodes.Update(episode);
+                    episode.DeletedBy = deletedBy;
+                    _db.Episodes.Remove(episode);
                 }
                 break;
             case nameof(Comment):
                 Comment? comment = await _db.Comments.FindAsync(id);
                 if (comment is not null) {
                     comment.DeletedAt = DateTime.Now;
-                    _db.Comments.Update(comment);
+                    comment.DeletedBy = deletedBy;
+                    _db.Comments.Remove(comment);
                 }
                 break;
             case nameof(CommentReply):
                 CommentReply? commentReply = await _db.CommentReplies.FindAsync(id);
                 if (commentReply is not null) {
                     commentReply.DeletedAt = DateTime.Now;
-                    _db.CommentReplies.Update(commentReply);
+                    commentReply.DeletedBy = deletedBy;
+                    _db.CommentReplies.Remove(commentReply);
                 }
                 break;
             default:
