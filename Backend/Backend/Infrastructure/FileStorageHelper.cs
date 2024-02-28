@@ -1,6 +1,7 @@
 using static System.IO.Directory;
 using static System.IO.Path;
 using static System.IO.File;
+using System;
 
 namespace Backend.Infrastructure;
 
@@ -240,6 +241,52 @@ public static class FileStorageHelper
     public static string GetPodcastPath(string coverArtName)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0]);
+    }
+
+    /// <summary>
+    /// Appends an audio chunk to a podcast episode audio and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="podcastId"> The podcast id. </param>
+    /// <param name="audioName"> The audio name. </param>
+    /// <param name="audioFile"> The audio file. </param>
+    /// <returns> The filename stored in the database. </returns>
+    public static async Task<string> AppendPodcastEpisodeAudio(Guid podcastId, string audioName, IFormFile audioFile)
+    {
+        // Get the audio path
+        string audioPath = GetPodcastEpisodeAudioPath(audioName, podcastId);
+        
+        // Create a temp file path
+        string audioPath_temp = audioPath + ".temp";
+
+        // Check if the file exists
+        if (File.Exists(audioPath))
+        {   
+            // Open the file and the memory stream
+            using FileStream fileStream = Create(audioPath_temp);
+            using MemoryStream memoryStream = new ();
+
+            // Append the audio file to the memory stream and then to the file stream
+            await audioFile.CopyToAsync(memoryStream);
+            byte[] buff = await ReadAllBytesAsync(audioPath);
+            await fileStream.WriteAsync(buff);
+            buff = memoryStream.ToArray();
+            await fileStream.WriteAsync(buff);
+
+            // Close both streams
+            fileStream.Close();
+            memoryStream.Close();
+
+            // Delete the original file
+            File.Delete(audioPath);
+
+            // Rename the temp file to the original file
+            File.Move(audioPath_temp, audioPath);
+
+            // Delete the temp file
+            File.Delete(audioPath_temp);
+        }
+
+        return string.Format("{0}{1}{2}", audioName, FILE_SPLIT_KEY, audioFile.ContentType);
     }
 
     /// <summary>
