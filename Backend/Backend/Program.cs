@@ -168,10 +168,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
-        {
-            builder.UseMiddleware<ValidateUser>();
-        });
+      
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/bookmark"), builder =>
         {
             builder.UseMiddleware<ValidateUser>();
