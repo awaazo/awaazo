@@ -55,6 +55,7 @@ public class AppDbContext : DbContext
     /// Tables related to statistics more than core functionality
     ///
     public virtual DbSet<AdminEmailLog> AdminEmailLogs { get; set; }
+    public virtual DbSet<Report> Reports { get; set; }
 
     /// <summary>
     /// Maps to the Soundex function in the database.
@@ -80,6 +81,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Podcast>().HasQueryFilter(p => p.DeletedAt == null);
         modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
         modelBuilder.Entity<CommentReply>().HasQueryFilter(cr => cr.DeletedAt == null);
+        modelBuilder.Entity<Report>().HasQueryFilter(r => r.DeletedAt == null);
         
         // Array conversion for tags and interests
         modelBuilder.Entity<User>()
