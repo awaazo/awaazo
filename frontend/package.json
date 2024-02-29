@@ -65,6 +65,7 @@
         "@types/react": "^18.2.22",
         "jest-fetch-mock": "^3.0.3",
         "jest-webextension-mock": "^3.8.9",
+        "prettier": "^3.2.5",
         "typescript": "^5.2.2"
     }
 }
