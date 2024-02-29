@@ -24,7 +24,8 @@ const TransactionCard = (transactions: Transaction) => {
           <Avatar
             size={"md"}
             src={avatar}
-            bg="rgba(255, 255, 255, 0.2)"
+            
+ 
             backdropFilter="blur(10px)"
           />
 

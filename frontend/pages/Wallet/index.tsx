@@ -7,6 +7,7 @@ import {
 import React, { useState } from "react";
 import Withdraw from "../../components/wallet/Withdraw";
 import Transactions from "../../components/wallet/Transactions";
+import Last5DaysBalance from "../../components/wallet/Last5DaysBalace";
 
 const Wallet = () => {
   return (
@@ -15,19 +16,21 @@ const Wallet = () => {
 
       <HStack width="80%" align={"start"} spacing={"15px"}>
         <Box
-          w="80%"
+        maxH="400px"
+          w="100%"
           borderWidth="1px"
           borderRadius="lg"
           p={8}
-          mb={8}
+          mb={2}
           justifyItems={"left"}
         >
           <Text fontSize={["xl", "2xl"]} fontWeight="bold">
             Last 5 Day's Balance
           </Text>
+          <Last5DaysBalance/>
         </Box>
         <Box
-          w="80%"
+          w="100%"
           borderWidth="1px"
           borderRadius="lg"
           p={8}
@@ -39,7 +42,7 @@ const Wallet = () => {
           </Text>
         </Box>
         <Box
-          w="80%"
+          w="100%"
           borderWidth="1px"
           borderRadius="lg"
           p={8}
@@ -61,7 +64,7 @@ const Wallet = () => {
           justifyItems={"left"}
         >
           <Text fontSize={["xl", "2xl"]} fontWeight="bold">
-            Gifted Episodes
+            Most Gifted Podcasts
           </Text>
         </Box>
 

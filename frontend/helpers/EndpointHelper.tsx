@@ -688,6 +688,9 @@ export default class EndpointHelper {
     return this.getBackendAddress()+"/profile/"+userId+"/avatar";
   }
   
+  static getLast5DaysBalance = () =>{
+    return this.getBackendAddress()+"/wallet/getRecentBalance";
+  }
 
  
 

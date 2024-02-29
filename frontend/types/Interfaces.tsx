@@ -301,3 +301,8 @@ export interface Transaction{
   senderName : string,
   type : string
 }
+
+export interface Balance {
+  amount: number,
+  date : string
+}

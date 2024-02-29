@@ -1,4 +1,4 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot, Transaction } from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot, Transaction, Balance } from "./Interfaces";
 
 
 export interface BaseResponse {
@@ -211,4 +211,8 @@ export interface WithdrawResponse extends BaseResponse{
 
 export interface TransactionResponse extends BaseResponse{
   data : Transaction[]
+}
+
+export interface Last5DaysBalanceResponse extends BaseResponse{
+  data : Balance[]
 }

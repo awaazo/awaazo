@@ -1,6 +1,6 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, PlaylistDataResponse, TransactionResponse, WithdrawResponse, confirmPaymentResponse, createPaymentResponse, getUserBalance } from "../types/Responses";
+import { BaseResponse, GetPlaylistEpisodesResponse, GetPlaylistsResponse, Last5DaysBalanceResponse, PlaylistDataResponse, TransactionResponse, WithdrawResponse, confirmPaymentResponse, createPaymentResponse, getUserBalance } from "../types/Responses";
 import { PlaylistCreateRequest, PlaylistEditRequest, confirmPayment, createPayment } from "../types/Requests";
 import UserProfileHelper from "./UserProfileHelper";
 import { Transaction } from "../types/Interfaces";
@@ -230,6 +230,55 @@ export default class PaymentHelper {
             }));
 
             console.debug("Received the following GetAllTransactions...");
+            
+
+            // Return the response.
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText,
+                data : requestResponse.data
+            };
+        } catch (error) {
+            // Return the error.
+            return {
+                status: error.response.status,
+                message: error.response.statusText,
+                data : error.response.data
+            };
+        }
+    };
+
+
+    /**
+     * Gets All the Transactions
+     * @param requestData Request data to be sent to the server.
+     * @returns A BaseResponse object with the server's response.
+     */
+    public static GetLast5DaysBalance = async (): Promise<Last5DaysBalanceResponse> => {
+        // Create the request options.
+        const options = {
+            method: "GET",
+            url: EndpointHelper.getLast5DaysBalance(),
+            headers: {
+                accept: "*/*",
+                "Content-Type": "application/json",
+            },
+            withCredentials: true,
+            cache: false,
+        };
+
+        try {
+            console.debug("Sending the following GetLast5DaysBalance...");
+            console.debug(options);
+
+            console.log(options);
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+            
+    
+            console.debug("Received the following GetLast5DaysBalanced...");
+
+
             
 
             // Return the response.
