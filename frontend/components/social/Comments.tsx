@@ -1,35 +1,7 @@
 import { useState, useEffect } from "react";
 import SocialHelper from "../../helpers/SocialHelper";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import {
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Textarea,
-  VStack,
-  useDisclosure,
-  Icon,
-  Avatar,
-  Text,
-  HStack,
-  Box,
-  Tooltip,
-  Input,
-  useBreakpointValue,
-  IconButton,
-} from "@chakra-ui/react";
-import {
-  FaComments,
-  FaClock,
-  FaPaperPlane,
-  FaTrash,
-  FaReply,
-} from "react-icons/fa";
-import { Comment } from "../../types/Interfaces";
+import { Button, Textarea, VStack, Icon, Avatar, Text, HStack, Box, Tooltip, Input, useBreakpointValue, IconButton } from "@chakra-ui/react";
+import { FaClock, FaPaperPlane, FaTrash, FaReply } from "react-icons/fa";
 import AuthHelper from "../../helpers/AuthHelper";
 import LikeComponent from "./Likes";
 import AuthPrompt from "../auth/AuthPrompt";
@@ -58,11 +30,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
           setUser(response.userMenuInfo);
         }
       });
-      const response = await SocialHelper.getComments(
-        episodeIdOrCommentId,
-        commentPage,
-        10,
-      );
+      const response = await SocialHelper.getComments(episodeIdOrCommentId, commentPage, 10);
 
       if (response.status === 200) {
         if (response) {
@@ -112,10 +80,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
   // Add a new comment
   const handleAddComment = async () => {
     if (newComment.trim()) {
-      const response = await SocialHelper.postEpisodeComment(
-        newComment,
-        episodeIdOrCommentId,
-      );
+      const response = await SocialHelper.postEpisodeComment(newComment, episodeIdOrCommentId);
       if (response.status === 200) {
         // Update the UI to reflect the new comment
         setNoOfComments((noOfComments) => noOfComments + 1);
@@ -137,10 +102,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     const commentId = comment.id;
     const updatedComments = [...comments];
 
-    const response = await SocialHelper.postEpisodeComment(
-      replyTexts[index],
-      commentId,
-    );
+    const response = await SocialHelper.postEpisodeComment(replyTexts[index], commentId);
     if (response.status === 200) {
       // Update the UI to reflect the new reply
       setReplyChange((replyChange) => replyChange + 1);
@@ -171,26 +133,10 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
 
   return (
     <>
-      <VStack
-        spacing={5}
-        onScroll={handleScroll}
-        align="start"
-        maxHeight="60vh"
-        width="100%"
-        overflowY="auto"
-        mt={"50px"}
-      >
+      <VStack spacing={5} onScroll={handleScroll}  maxHeight="60vh" width="100%" overflowY="auto" mt={"50px"}>
         {comments && comments.length > 0 ? (
           comments.map((comment, index) => (
-            <Box
-              key={index}
-              p={3}
-              borderRadius="md"
-              boxShadow="sm"
-              bg={"gray.550"}
-              _hover={{ transition: "0.3s" }}
-              width="100%"
-            >
+            <Box key={index} p={3} borderRadius="md" boxShadow="sm" bg={"gray.550"} _hover={{ transition: "0.3s" }} width="100%">
               <HStack spacing={5}>
                 <Avatar src={comment.user.avatarUrl} />
                 <VStack align="start" spacing={1} flex="1">
@@ -204,20 +150,9 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                       </Text>
                     </VStack>
                     <HStack spacing={2}>
-                      <LikeComponent
-                        episodeOrCommentId={comment.id}
-                        initialLikes={comment.likes}
-                        showCount={true}
-                      />
+                      <LikeComponent episodeOrCommentId={comment.id} initialLikes={comment.likes} showCount={true} />
                       {user && user.id === comment.user.id ? (
-                        <IconButton
-                          icon={<Icon as={FaTrash} />}
-                          variant={"ghost"}
-                          aria-label="Delete Comment"
-                          data-cy={`delete-comment-id:`}
-                          onClick={() => handleDeleteComment(comment.id, true)}
-                          size="md"
-                        />
+                        <IconButton icon={<Icon as={FaTrash} />} variant={"ghost"} aria-label="Delete Comment" data-cy={`delete-comment-id:`} onClick={() => handleDeleteComment(comment.id, true)} size="md" />
                       ) : null}
                     </HStack>
                   </HStack>
@@ -232,34 +167,14 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
               <VStack align="start" spacing={2} mt={3} pl={8}>
                 {replies[comment.id] &&
                   replies[comment.id].map((reply, replyIndex) => (
-                    <Box
-                      key={index}
-                      bg="gray.650"
-                      p={2}
-                      borderRadius="md"
-                      width="100%"
-                    >
+                    <Box key={index} bg="gray.650" p={2} borderRadius="md" width="100%">
                       <HStack spacing={5} flex={1}>
                         <Avatar src={reply.user.avatarUrl} />
                         <VStack align="start" spacing={1} flex="1">
                           <Text fontWeight="bold">{reply.user.username}:</Text>
-                          <Text whiteSpace="pre-line">
-                            {reply.text.replace(/(.{40})/g, "$1\n")}
-                          </Text>
+                          <Text whiteSpace="pre-line">{reply.text.replace(/(.{40})/g, "$1\n")}</Text>
                         </VStack>
-                        <HStack spacing={2}>
-                          {user.id === reply.user.id ? (
-                            <IconButton
-                              icon={<Icon as={FaTrash} />}
-                              variant={"ghost"}
-                              aria-label="Delete Reply"
-                              onClick={() =>
-                                handleDeleteComment(reply.id, false)
-                              }
-                              size="sm"
-                            />
-                          ) : null}
-                        </HStack>
+                        <HStack spacing={2}>{user.id === reply.user.id ? <IconButton icon={<Icon as={FaTrash} />} variant={"ghost"} aria-label="Delete Reply" onClick={() => handleDeleteComment(reply.id, false)} size="sm" /> : null}</HStack>
                       </HStack>
 
                       <HStack spacing={1} p={2} borderRadius="md">
@@ -287,17 +202,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                         setReplyTexts(updatedReplyTexts);
                       }}
                     />
-                    <Tooltip
-                      label="Reply to this comment"
-                      aria-label="Reply tooltip"
-                    >
-                      <IconButton
-                        icon={<Icon as={FaReply} />}
-                        onClick={() => handleReply(index)}
-                        aria-label="Reply to Comment"
-                        size="sm"
-                        data-cy={`reply-button`}
-                      />
+                    <Tooltip label="Reply to this comment" aria-label="Reply tooltip">
+                      <IconButton icon={<Icon as={FaReply} />} onClick={() => handleReply(index)} aria-label="Reply to Comment" size="sm" data-cy={`reply-button`} />
                     </Tooltip>
                   </HStack>
                 </Box>
@@ -309,31 +215,15 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
             No comments yet. Be the first!
           </Text>
         )}
-      </VStack>
-      <VStack position="fixed" bottom="0" width="100%" pr={"40px"} pb={"20px"}>
-        <Textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment..."
-          borderRadius={"1em"}
-        />
-        <Button
-          leftIcon={<Icon as={FaPaperPlane} />}
-          onClick={handleAddComment}
-          zIndex="1"
-          variant="gradient"
-        >
+      
+      <VStack position="fixed" bottom="0" width="100%" p={"20px"}>
+        <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Add a comment..." borderRadius={"1em"} />
+        <Button leftIcon={<Icon as={FaPaperPlane} />} onClick={handleAddComment} zIndex="1" variant="gradient">
           Add Comment
         </Button>
       </VStack>
-
-      {showLoginPrompt && (
-        <AuthPrompt
-          isOpen={showLoginPrompt}
-          onClose={() => setShowLoginPrompt(false)}
-          infoMessage="Login To add a Reply or a Comment."
-        />
-      )}
+      </VStack>
+      {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="Login To add a Reply or a Comment." />}
     </>
   );
 };

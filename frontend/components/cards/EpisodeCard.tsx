@@ -13,10 +13,9 @@ import { FaPlay } from "react-icons/fa";
 import { BsExplicitFill } from "react-icons/bs";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/Likes";
-import CommentComponent from "../social/Comments";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
-import CommentButton from "../social/CommentButton";
+import CommentButton from "../panel/CommentButton";
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {

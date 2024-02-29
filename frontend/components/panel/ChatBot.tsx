@@ -1,21 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  Box,
-  IconButton,
-  VStack,
-  Text,
-  Input,
-  Button,
-  Image,
-  InputGroup,
-  HStack,
-  Avatar,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar } from "@chakra-ui/react";
 import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
-import { IoIosCloseCircle, IoMdSend } from "react-icons/io";
+import { IoMdSend } from "react-icons/io";
 import ChatbotHelper from "../../helpers/ChatbotHelper";
-import { usePanel } from "../../utilities/PanelContext";
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([]);
@@ -69,20 +56,10 @@ const ChatBot = ({ episodeId }) => {
   return (
     <Box>
       <Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mt={"-0.5em"}
-        >
+        <Box display="flex" alignItems="center" justifyContent="center" mt={"-0.5em"}>
           <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
         </Box>
-        <Text
-          textAlign="center"
-          fontSize="xl"
-          fontWeight="bold"
-          paddingTop={"1em"}
-        >
+        <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
           Episode Title
         </Text>
         <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
@@ -91,57 +68,21 @@ const ChatBot = ({ episodeId }) => {
         <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
           Episode ID: {episodeId}
         </Text>
-        <VStack
-          spacing={"1em"}
-          overflowY="auto"
-          height="50vh"
-          paddingY="4"
-          mt={"20px"}
-        >
+        <VStack spacing={"1em"} overflowY="auto" height="50vh" paddingY="4" mt={"20px"}>
           {messages.map((message, index) => (
-            <Box
-              key={index}
-              alignSelf={message.isPrompt ? "flex-end" : "flex-start"}
-              maxWidth="90%"
-              color={message.isPrompt ? "#8b8b8b" : "#ffffff"}
-              borderRadius="lg"
-            >
+            <Box key={index} alignSelf={message.isPrompt ? "flex-end" : "flex-start"} maxWidth="90%" color={message.isPrompt ? "#8b8b8b" : "#ffffff"} borderRadius="lg">
               <HStack alignItems="flex-start">
-                {!message.isPrompt && (
-                  <Avatar
-                    src={awaazo_bird_aihelper_logo.src}
-                    w="30px"
-                    h="30px"
-                    boxSize={"30px"}
-                    rounded={""}
-                    borderRadius="full"
-                  />
-                )}
+                {!message.isPrompt && <Avatar src={awaazo_bird_aihelper_logo.src} w="30px" h="30px" boxSize={"30px"} rounded={""} borderRadius="full" />}
                 <Text fontSize="sm" mt={!message.isPrompt ? "4px" : "0px"}>
                   {message.message}
                 </Text>
-                {message.isPrompt && (
-                  <Avatar
-                    src={message.avatarUrl}
-                    w="30px"
-                    h="30px"
-                    mr="2px"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-                )}
+                {message.isPrompt && <Avatar src={message.avatarUrl} w="30px" h="30px" mr="2px" style={{ alignSelf: "flex-start" }} />}
               </HStack>
             </Box>
           ))}
         </VStack>
 
-        <Box
-          position="absolute"
-          bottom="0"
-          left="0"
-          right="0"
-          p="30px"
-          borderColor="gray.700"
-        >
+        <Box position="absolute" bottom="0" left="0" right="0" p="30px" borderColor="gray.700">
           <VStack spacing="2" align="left" pb="1em">
             <Text textAlign="left" fontSize={"14px"} pb="0.3em">
               Things you can ask:
@@ -154,26 +95,11 @@ const ChatBot = ({ episodeId }) => {
                 fontSize={"12px"}
                 fontWeight={"light"}
                 border={"2px solid rgba(255, 255, 255, 0.05)"}
-                onClick={() =>
-                  handlePredefinedQuestionClick(
-                    "What is the timp stamp where they talked about ...",
-                  )
-                }
+                onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}
               >
                 What is the timestamp where they talked about
               </Button>
-              <Button
-                borderRadius={"25px"}
-                width={"fit-content"}
-                fontSize={"12px"}
-                fontWeight={"light"}
-                border={"2px solid rgba(255, 255, 255, 0.05)"}
-                onClick={() =>
-                  handlePredefinedQuestionClick(
-                    "What did the podcaster think about ...",
-                  )
-                }
-              >
+              <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
                 What did the podcaster think about
               </Button>
             </VStack>
@@ -196,19 +122,7 @@ const ChatBot = ({ episodeId }) => {
               pr={"50px"}
               onKeyDown={handleEnterPress}
             />
-            <Button
-              variant={"ghost"}
-              width="3em"
-              height="3em"
-              rounded={"full"}
-              position="absolute"
-              zIndex={"50"}
-              right="5px"
-              top="50%"
-              transform="translateY(-50%)"
-              onClick={sendMessage}
-              p="0"
-            >
+            <Button variant={"ghost"} width="3em" height="3em" rounded={"full"} position="absolute" zIndex={"50"} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
               <IoMdSend />
             </Button>
           </InputGroup>

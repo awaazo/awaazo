@@ -22,7 +22,6 @@ import {
   FaStepBackward,
 } from "react-icons/fa";
 import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
-import Comments from "../social/Comments";
 import Likes from "../social/Likes";
 import Bookmarks from "../social/Bookmarks";
 import { convertTime } from "../../utilities/commonUtils";
@@ -31,9 +30,11 @@ import EndpointHelper from "../../helpers/EndpointHelper";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { SaveWatchHistoryRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import ChatBot from "../panel/ChatBotButton";
 import PlayerMenu from "../playerbar/Menu";
-import CommentButton from "../social/CommentButton";
+import ChatBotButton from "../panel/ChatBotButton";
+import CommentButton from "../panel/CommentButton";
+import BookmarksButton from "../panel/BookmarksButton";
+
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer();
@@ -429,8 +430,8 @@ const PlayerBar = () => {
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
-              <ChatBot episodeId={episode?.id} />
-              <Bookmarks
+              <ChatBotButton episodeId={episode?.id} />
+              <BookmarksButton
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
               />

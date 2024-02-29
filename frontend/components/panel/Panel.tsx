@@ -1,21 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-  Box,
-  IconButton,
-  VStack,
-  Text,
-  Input,
-  Button,
-  Image,
-  InputGroup,
-  HStack,
-  Avatar,
-  Flex,
-} from "@chakra-ui/react";
+import React from "react";
+import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
 import { usePanel } from "../../utilities/PanelContext";
 import { IoIosCloseCircle } from "react-icons/io";
 import ChatBot from "./ChatBot";
 import Comments from "../social/Comments";
+import Bookmarks from "../social/Bookmarks";
+
 
 const Panel = () => {
   const { state, dispatch } = usePanel();
@@ -44,34 +34,20 @@ const Panel = () => {
       {state.isOpen && (
         <Box>
           <Flex>
-            <IconButton
-              display="flex"
-              aria-label="Close chatbot"
-              icon={<IoIosCloseCircle />}
-              onClick={togglePanel}
-              fontSize="30px"
-              variant="ghost"
-              color="#FFFFFF6B"
-              _hover={{ background: "transparent" }}
-              _active={{ background: "transparent" }}
-            />
+            <IconButton display="flex" aria-label="Close chatbot" icon={<IoIosCloseCircle />} onClick={togglePanel} fontSize="30px" variant="ghost" color="#FFFFFF6B" _hover={{ background: "transparent" }} _active={{ background: "transparent" }} />
             <Text fontSize={"24px"} fontWeight={"bold"} ml={"10px"} mt={"2px"}>
               {state.content}
             </Text>
           </Flex>
           <Box>
-            {state.content == "ChatBot" && state.currentEpisodeId != null && (
-              <>
-                <ChatBot episodeId={state.currentEpisodeId} />{" "}
-              </>
+            {state.content === "ChatBot" && state.currentEpisodeId && (
+              <ChatBot episodeId={state.currentEpisodeId} />
             )}
-            {state.content == "Comments" && state.currentEpisodeId != null && (
-              <>
-                <Comments
-                  episodeIdOrCommentId={state.currentEpisodeId}
-                  initialComments={0}
-                />{" "}
-              </>
+            {state.content === "Comments" && state.currentEpisodeId && (
+              <Comments episodeIdOrCommentId={state.currentEpisodeId} initialComments={0} />
+            )}
+             {state.content === "Bookmarks" && state.currentEpisodeId && (
+              <Bookmarks episodeId={state.currentEpisodeId} selectedTimestamp={null} />
             )}
           </Box>
         </Box>
