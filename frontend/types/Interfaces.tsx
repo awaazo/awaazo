@@ -291,3 +291,13 @@ export interface Transcript {
     speaker: string
   }[];
 }
+
+export interface Transaction{
+  amount:number,
+  username : string,
+  date : Date,
+  userId :string,
+  senderId : string,
+  senderName : string,
+  type : string
+}

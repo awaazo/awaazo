@@ -672,7 +672,26 @@ export default class EndpointHelper {
   static confirmPaymentEndpoint = (pointId : string) => {
     return this.getBackendAddress() + "/social/"+pointId+"/confirmPoints"; 
   }
+
+  static getUserBalanceEndpoint = () =>{
+    return this.getBackendAddress()+"/wallet/balance";
+  }
+
+  static withdrawBalanceEndpoint = (amount:number) =>{
+    return this.getBackendAddress()+"/wallet/withdraw?Amount="+amount;
+  }
+  static getAllTransactionEndpoint = (page,pageSize) =>{
+    return this.getBackendAddress()+"/wallet/transactions?page="+page+"&pageSize="+pageSize;
+  }
+
+  static getUserAvatar = (userId:string) =>{
+    return this.getBackendAddress()+"/profile/"+userId+"/avatar";
+  }
+  
+
  
+
+
 }
 
 
