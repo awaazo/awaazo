@@ -285,11 +285,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="user">Current user</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns>Playlist info with all playlist episodes.</returns>
-    public async Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User user, string domainUrl)
+    public async Task<PlaylistResponse> GetPlaylistEpisodesAsync(Guid playlistId, User? user, string domainUrl)
     {
         // Get the playlist
         return await _db.Playlists
-            .Where(p => p.Id == playlistId && (p.Privacy == PrivacyEnum.Public || p.UserId == user.Id))
+            .Where(p => p.Id == playlistId && (p.Privacy == PrivacyEnum.Public || (user != null && p.UserId == user.Id)))
             .Include(p => p.User)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Likes)
             .Include(p => p.PlaylistEpisodes).ThenInclude(pe => pe.Episode).ThenInclude(e => e.Podcast)
@@ -311,11 +311,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="pageSize">Size of the page</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns></returns>
-    public async Task<List<PlaylistInfoResponse>> GetUserPlaylistsAsync(Guid userId, User user, int page, int pageSize, string domainUrl)
+    public async Task<List<PlaylistInfoResponse>> GetUserPlaylistsAsync(Guid userId, User? user, int page, int pageSize, string domainUrl)
     {
         // Get all playlists for the user
         return await _db.Playlists
-            .Where(p => p.UserId == userId && (p.Privacy == PrivacyEnum.Public || userId == user.Id))
+            .Where(p => p.UserId == userId && (p.Privacy == PrivacyEnum.Public || (user != null && userId == user.Id)))
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(p => p.User)
@@ -336,11 +336,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="pageSize">Size of the page</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns></returns>
-    public async Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User user, int page, int pageSize, string domainUrl)
+    public async Task<List<PlaylistInfoResponse>> GetAllPlaylistsAsync(User? user, int page, int pageSize, string domainUrl)
     {
         // Get all playlists 
         return await _db.Playlists
-            .Where(p => p.Privacy == PrivacyEnum.Public || p.UserId == user.Id)
+            .Where(p => p.Privacy == PrivacyEnum.Public || (user != null && p.UserId == user.Id))
             .Skip(page * pageSize)
             .Take(pageSize)
             .Include(p => p.User)
@@ -362,11 +362,11 @@ public class PlaylistService : IPlaylistService
     /// <param name="pageSize">Size of the page</param>
     /// <param name="domainUrl">App domain name</param>
     /// <returns></returns>
-    public async Task<List<PlaylistInfoResponse>> SearchPlaylistsAsync(string searchTerm, User user, int page, int pageSize, string domainUrl)
+    public async Task<List<PlaylistInfoResponse>> SearchPlaylistsAsync(string searchTerm, User? user, int page, int pageSize, string domainUrl)
     {
         // Get all playlists 
         return await _db.Playlists
-            .Where(p => (p.Privacy == PrivacyEnum.Public || p.UserId == user.Id) 
+            .Where(p => (p.Privacy == PrivacyEnum.Public || (user != null && p.UserId == user.Id)) 
                 && ((AppDbContext.Soundex(searchTerm) == AppDbContext.Soundex(p.Name)) 
                 || (AppDbContext.Soundex(searchTerm) == AppDbContext.Soundex(p.Description))))
             .Skip(page * pageSize)
