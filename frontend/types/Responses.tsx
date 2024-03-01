@@ -1,4 +1,4 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
+import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot, Transaction, Balance } from "./Interfaces";
 
 
 export interface BaseResponse {
@@ -195,4 +195,28 @@ export interface GetChatbotResponse extends BaseResponse {
   episodeId:string;
   userId:string;
   messages: Chatbot[];
+}
+
+
+export interface createPaymentResponse extends BaseResponse {
+  data : string
+}
+
+export interface confirmPaymentResponse extends BaseResponse{
+  data : string
+}
+
+export interface getUserBalance extends BaseResponse {
+  data : number
+}
+export interface WithdrawResponse extends BaseResponse{
+  data : string
+}
+
+export interface TransactionResponse extends BaseResponse{
+  data : Transaction[]
+}
+
+export interface Last5DaysBalanceResponse extends BaseResponse{
+  data : Balance[]
 }

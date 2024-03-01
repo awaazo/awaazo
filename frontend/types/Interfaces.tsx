@@ -12,6 +12,7 @@ export interface Podcast {
   episodes: Episode[];
   averageRating?: number;
   monthlyListeners: number;
+  totalPodcastPoints: number;
 }
 
 export interface Episode {
@@ -37,6 +38,7 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?:Transcript[];
+  totalPoints:number
 }
 
 export interface Playlist {
@@ -290,4 +292,19 @@ export interface Transcript {
     score: number,
     speaker: string
   }[];
+}
+
+export interface Transaction{
+  amount:number,
+  username : string,
+  date : Date,
+  userId :string,
+  senderId : string,
+  senderName : string,
+  type : string
+}
+
+export interface Balance {
+  amount: number,
+  date : string
 }
