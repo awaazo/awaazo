@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { FaHome, FaPlus, FaSearch, FaUser } from "react-icons/fa";
+import { FaHome, FaPlus, FaSearch } from "react-icons/fa";
 import { VscLibrary } from "react-icons/vsc";
 import Logo from "../../public/logo_white.svg";
 import { useRouter } from "next/router";

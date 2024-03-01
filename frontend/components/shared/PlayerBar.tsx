@@ -4,7 +4,6 @@ import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTr
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
-import Bookmarks from '../interactionHub/Bookmarks'
 import { convertTime } from '../../utilities/commonUtils'
 import { usePalette } from 'color-thief-react'
 import EndpointHelper from '../../helpers/EndpointHelper'
