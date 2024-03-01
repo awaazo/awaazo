@@ -431,7 +431,7 @@ const PlayerBar = () => {
                 episodeId={isEpisodeLoaded ? episode.id : "default-id"}
                 selectedTimestamp={isEpisodeLoaded ? position : 0}
               /> */}
-              <Tipjar episodeId={isEpisodeLoaded ? episode.id : "default-id"} />
+              <Tipjar episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
               <Likes
                 episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
                 initialLikes={isEpisodeLoaded ? episode.likes : 0}
