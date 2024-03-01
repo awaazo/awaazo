@@ -222,7 +222,7 @@ export default function PodcastOverview({ podcast, User }) {
                   <EpisodeCard
                     episode={episode}
                     inPlaylist={false}
-                    playlistId={null}
+                    playlistId={null} inWallet={false}                    
                   />
                 ))
               )}
@@ -291,8 +291,7 @@ export default function PodcastOverview({ podcast, User }) {
                   <EpisodeCard
                     episode={episode}
                     inPlaylist={false}
-                    playlistId={null}
-                  />
+                    playlistId={null} inWallet={false}                  />
                 ))
               )}
             </div>
