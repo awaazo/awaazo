@@ -97,7 +97,7 @@ const Sidebar = () => {
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"
-        top="5em"
+        mt="5em"
         zIndex={10}
         transition="width 0.2s ease-in-out"
         roundedTopRight="10px"
