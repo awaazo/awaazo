@@ -25,7 +25,7 @@ import AuthHelper from "../../helpers/AuthHelper";
 import AuthPrompt from "../auth/AuthPrompt";
 import { useRouter } from "next/router";
 
-const Tipjar = ({ episodeId }) => {
+const Tipjar = ({ episodeId, totalPoint }) => {
   const router = useRouter();
   const { success, failure } = router.query;
   const [isModalOpen, setModalOpen] = useState(false);
@@ -38,31 +38,30 @@ const Tipjar = ({ episodeId }) => {
   const [customPoints, setCustomPoints] = useState("");
 
   useEffect(() => {
-    const checkQueryParameter = async () =>{
-        if (success != null) {
-          // Confirm payment
-          setModalOpen(true);
-          setShowStack(false);
+    const checkQueryParameter = async () => {
+      if (success != null) {
+        // Confirm payment
+        setModalOpen(true);
+        setShowStack(false);
 
-          try{
-            const response = await PaymentHelper.confirmPayment({pointId : success.toString()});
-            if(response.status == 200){
-              setPaymentSuccess("Thank you for Supporting !");
-            }
-            else{
-              setPaymentSuccess(response.data);
-            }
+        try {
+          const response = await PaymentHelper.confirmPayment({
+            pointId: success.toString(),
+          });
+          if (response.status == 200) {
+            setPaymentSuccess("Thank you for Supporting !");
+          } else {
+            setPaymentSuccess(response.data);
           }
-          catch(error){
-            console.log("Error While Confirming the Payment");
-          }
+        } catch (error) {
+          console.log("Error While Confirming the Payment");
         }
-        if (failure != null) {
-          setModalOpen(true);
-          setPaymentError("Error While Processing the Payment");
-        }
-    }
-
+      }
+      if (failure != null) {
+        setModalOpen(true);
+        setPaymentError("Error While Processing the Payment");
+      }
+    };
 
     checkQueryParameter();
   }, [router.query]);
@@ -101,7 +100,10 @@ const Tipjar = ({ episodeId }) => {
     }
 
     try {
-      const response = await PaymentHelper.createPayment( {episodeId : episodeId, points : numericPoints });
+      const response = await PaymentHelper.createPayment({
+        episodeId: episodeId,
+        points: numericPoints,
+      });
       if (response.status === 200) {
         window.location.href = response.data;
         setModalOpen(false);
@@ -113,7 +115,6 @@ const Tipjar = ({ episodeId }) => {
         console.error("Error processing tip:");
       }
     } catch (error) {
-      
       console.error("Error processing tip:", error);
     }
   };
@@ -135,20 +136,31 @@ const Tipjar = ({ episodeId }) => {
   return (
     <>
       <Tooltip label="Gift" aria-label="Tip tooltip">
-        
-        
-        <Button
-          padding={"0px"}
-          m={1}
-          variant={"ghost"}
-          onClick={() => {
-            checkAuthentication();
-            setModalOpen(true);
-          }}
-      
-        > 
-          <Icon as={PiCurrencyDollarSimpleFill} boxSize={"20px"} />    
-        </Button>
+        {totalPoint != null ? (
+          <Button
+            padding={"0px"}
+            m={1}
+            variant={"ghost"}
+            onClick={() => {
+              checkAuthentication();
+            }}
+            leftIcon={<Icon as={PiCurrencyDollarSimpleFill} boxSize={"20px"} />}
+          >
+            {totalPoint}
+          </Button>
+        ) : (
+          <Button
+            padding={"0px"}
+            m={1}
+            variant={"ghost"}
+            onClick={() => {
+              checkAuthentication();
+              setModalOpen(true);
+            }}
+          >
+            <Icon as={PiCurrencyDollarSimpleFill} boxSize={"20px"} />
+          </Button>
+        )}
       </Tooltip>
 
       {isLoggedIn && (

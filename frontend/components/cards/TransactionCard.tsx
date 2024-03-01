@@ -18,16 +18,10 @@ const TransactionCard = (transactions: Transaction) => {
   }, []);
 
   return (
-    <Box p="4" borderRadius="md" mb="4">
+    <Box p="4" borderRadius="md" mb="4" width={"100%"}>
       <Flex justify="space-between" align="center">
         <HStack>
-          <Avatar
-            size={"md"}
-            src={avatar}
-            
- 
-            backdropFilter="blur(10px)"
-          />
+          <Avatar size={"md"} src={avatar} backdropFilter="blur(10px)" />
 
           <Box ml={2}>
             <Text fontWeight="bold" fontSize="lg">
@@ -63,7 +57,7 @@ const TransactionCard = (transactions: Transaction) => {
           </Box>
         </HStack>
         <Text fontWeight="bold" fontSize="lg">
-          {transactions.type == "Gift" ? `+ ${transactions.amount} CAD` : <></>}
+          {transactions.type == "Gift" ? `+${transactions.amount} CAD` : <></>}
           {transactions.type == "Withdraw" ? (
             `${transactions.amount} CAD`
           ) : (

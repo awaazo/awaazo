@@ -30,7 +30,8 @@ const Withdraw = () => {
         const response = await PaymentHelper.getUserBalanceRequest();
         console.log("Fetching Balance");
         if (response.status == 200) {
-          setBalance(response.data);
+          
+          setBalance(Number(response.data.toFixed(2)));
         } else {
           window.location.href = "/";
         }

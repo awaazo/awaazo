@@ -4,6 +4,7 @@ using Backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Backend.Controllers.Responses;
 using System.Collections;
+using System.Drawing.Printing;
 
 namespace Backend.Services
 {
@@ -43,7 +44,7 @@ namespace Backend.Services
             }
 
             // If all the checks have passed then Proceed with withdrawal
-            await _db.AddAsync(new Transactions() { Amount = -amount,TransactionType = Transactions.Type.Withdraw,UserId = userId, CreatedAt = DateTime.UtcNow });
+            await _db.AddAsync(new Transactions() { Amount = -amount,TransactionType = Transactions.Type.Withdraw,UserId = userId, CreatedAt = DateTime.Now });
 
             // Save the changes to the database
             return await _db.SaveChangesAsync() > 0;
@@ -87,14 +88,84 @@ namespace Backend.Services
             List<Activity> activty = new List<Activity>();
             for (int i = 0;i<=4;i++)
             {
-                var date = DateTime.Today.AddDays(-i).Date;
-                activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u => u.CreatedAt < date).SumAsync(u => u.Amount) });
+                var date = DateTime.Today.AddDays(-i +1).Date;
+                activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u => u.CreatedAt <= date).SumAsync(u => u.Amount) });
             }
             
             return activty;
         }
+        /// <summary>
+        /// Gets last 5 days Earning
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<List<Activity>> Last5DaysEarning(Guid userId)
+        {
+            List<Activity> activty = new List<Activity>();
+            for (int i = 0; i <= 4; i++)
+            {
+
+                var date = DateTime.Today.AddDays(-i).Date;
+                var nextDate = DateTime.Today.AddDays(-i + 1).Date;
+                activty.Add(new Activity() { date = date, Amount = await _db.Transactions.Where(u => u.TransactionType == Transactions.Type.Gift && u.CreatedAt >= date && u.CreatedAt < nextDate).SumAsync(u => u.Amount) });
+                var lower = DateTime.Today.AddDays(-i).Date;
 
 
+            }
+            return activty;
+
+        }
+
+        /// <summary>
+        /// Gives list of episode in descending order of total points
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="domainUrl"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        
+        public async Task<List<EpisodeResponse>> MostGiftedEpisodes(Guid userId,string domainUrl,int page, int pageSize)
+        {
+            List<EpisodeResponse> episodeList = await _db.Episodes
+            .Include(e => e.Podcast)
+            .Include(e => e.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.User)
+            .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
+            .Where(u => u.Podcast.PodcasterId== userId)
+            .Select(u => new EpisodeResponse(u, domainUrl,false))
+            .ToListAsync();
+
+            episodeList = episodeList.Skip(page * pageSize).Take(pageSize).OrderByDescending(u => u.TotalPoints).ToList();
+
+            return episodeList;
+
+        }
+
+        public async Task<List<PodcastResponse>> MostGiftedPodcasts(Guid userId,string domainUrl,int page,int pageSize)
+        {
+            // Check if the user has any podcasts, if they do retrieve them.
+            List<PodcastResponse> podcastResponses = await _db.Podcasts
+            .Include(p => p.Podcaster)
+            .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+            .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
+            .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+            .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+            .Include(p => p.Episodes).ThenInclude(e => e.Points)
+            .Include(p => p.Ratings).ThenInclude(r => r.User)
+            .Where(p => p.PodcasterId == userId)
+            .Select(p => new PodcastResponse(p, domainUrl))
+            .ToListAsync();
+
+            podcastResponses = podcastResponses.Skip(page * pageSize).Take(pageSize).OrderByDescending(u => u.TotalPodcastPoints).ToList();
+
+            return podcastResponses;
+        }
+       
 
     }
 }

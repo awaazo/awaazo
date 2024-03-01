@@ -692,6 +692,18 @@ export default class EndpointHelper {
     return this.getBackendAddress()+"/wallet/getRecentBalance";
   }
 
+  static getLast5DaysEarning = () =>{
+    return this.getBackendAddress()+"/wallet/getRecentEarning";
+
+  }
+
+  static getHighestEarningEpisode =(page,pageSize) =>{
+    return this.getBackendAddress() +"/wallet/topEarningEpisodes?page="+page+"&pageSize="+pageSize;
+  }
+  static getHighestEarningPodcast =(page,pageSize) =>{
+    return this.getBackendAddress() +"/wallet/topEarningPodcasts?page="+page+"&pageSize="+pageSize;
+  }
+
  
 
 
