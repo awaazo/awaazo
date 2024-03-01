@@ -12,10 +12,10 @@ import {
 import { FaPlay } from "react-icons/fa";
 import { BsExplicitFill } from "react-icons/bs";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/Likes";
+import LikeComponent from "../interactionHub/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
-import CommentButton from "../social/buttons/CommentButton";
+import CommentButton from "../interactionHub/buttons/CommentButton";
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {

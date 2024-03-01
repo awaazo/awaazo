@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/Likes";
-import CommentComponent from "../social/Comments";
+import LikeComponent from "../interactionHub/Likes";
+import CommentComponent from "../interactionHub/Comments";
 import { BsExplicitFill } from "react-icons/bs";
 import { convertTime } from "../../utilities/commonUtils";
 

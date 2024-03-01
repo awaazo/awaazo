@@ -2,9 +2,9 @@ import React from "react";
 import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
 import { usePanel } from "../../utilities/PanelContext";
 import { IoIosCloseCircle } from "react-icons/io";
-import ChatBot from "../social/ChatBot";
-import Comments from "../social/Comments";
-import Bookmarks from "../social/Bookmarks";
+import ChatBot from "../interactionHub/ChatBot";
+import Comments from "../interactionHub/Comments";
+import Bookmarks from "../interactionHub/Bookmarks";
 
 
 const Panel = () => {

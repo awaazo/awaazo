@@ -34,7 +34,7 @@ import PlaylistHelper from "../../helpers/PlaylistHelper";
 import ImageAdder from "../tools/ImageAdder";
 
 import { useRouter } from "next/router";
-import ShareComponent from "../social/Share";
+import ShareComponent from "../interactionHub/Share";
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer();
