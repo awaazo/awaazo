@@ -22,6 +22,7 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
+  Switch,
 } from "@chakra-ui/react";
 import { IoIosMore } from "react-icons/io";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -49,6 +50,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
   const onShareModalClose = () => setIsShareModalOpen(false);
+  const [privacy, setPrivacy] = useState(playlist.privacy);
 
   // Function to handle deletion of the playlist
   const handleDelete = async (id) => {
@@ -131,14 +133,14 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       });
       return;
     }
-
+  
     const request = {
       name: name,
       description: description,
-      privacy: "false",
+      privacy: privacy,
       coverArt: playlistCoverArt,
     };
-
+  
     const response = await PlaylistHelper.playlistEditRequest(request, playlist.id, playlistCoverArt);
     if (response.status === 200) {
       toast({
@@ -153,8 +155,10 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         name: name,
         description: description,
         privacy: privacy,
+        lastUpdated: new Date().toISOString(), // Update the lastUpdated field
         // Include other updated fields if applicable
       };
+      window.dispatchEvent(new CustomEvent('playlistUpdated', { detail: updatedPlaylist }));
       // Update the parent component's state
       onUpdate(updatedPlaylist);
     } else {
@@ -169,8 +173,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     closeEditModal();
   };
 
-  const [privacy, setPrivacy] = useState("Public");
-  //const [isPrivate, setIsPrivate] = useState(playlist.privacy);
+
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -315,6 +318,12 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             <FormControl mt={4}>
               <FormLabel>Playlist Cover</FormLabel>
               <Input type="file" accept="image/*" onChange={(e) => setPlaylistCoverArt(e.target.files ? e.target.files[0] : null)} />
+            </FormControl>
+            <FormControl display="flex" alignItems="center" mt={4}>
+              <FormLabel htmlFor="privacy-switch" mb="0">
+                Privacy
+              </FormLabel>
+              <Switch ml={6} id="privacy-switch" isChecked={privacy === "Private"} onChange={(e) => setPrivacy(e.target.checked ? "Private" : "Public")} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
