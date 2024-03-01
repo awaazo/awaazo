@@ -16,6 +16,7 @@ const BookmarksButtton = ({ episodeId, selectedTimestamp}) => {
           setShowLoginPrompt(true);
           return;
         } else {
+          
           dispatch({ type: "OPEN_PANEL", payload: "Bookmarks" });
           dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
           dispatch({ type: "SET_SELECTED_TIMESTAMP", payload: selectedTimestamp });

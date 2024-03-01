@@ -47,7 +47,7 @@ const Panel = () => {
               <Comments episodeIdOrCommentId={state.currentEpisodeId} initialComments={0} />
             )}
              {state.content === "Bookmarks" && state.currentEpisodeId && (
-              <Bookmarks episodeId={state.currentEpisodeId} selectedTimestamp={null} />
+              <Bookmarks episodeId={state.currentEpisodeId} selectedTimestamp={state.selectedTimestamp} />
             )}
           </Box>
         </Box>
