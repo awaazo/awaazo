@@ -89,7 +89,7 @@ namespace Backend.Services
             for (int i = 0;i<=4;i++)
             {
                 var date = DateTime.Today.AddDays(-i +1).Date;
-                activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u => u.CreatedAt <= date).SumAsync(u => u.Amount) });
+                activty.Add(new Activity() { date = date , Amount =  await _db.Transactions.Where(u =>u.UserId == userId && u.CreatedAt <= date).SumAsync(u => u.Amount) });
             }
             
             return activty;
@@ -107,7 +107,7 @@ namespace Backend.Services
 
                 var date = DateTime.Today.AddDays(-i).Date;
                 var nextDate = DateTime.Today.AddDays(-i + 1).Date;
-                activty.Add(new Activity() { date = date, Amount = await _db.Transactions.Where(u => u.TransactionType == Transactions.Type.Gift && u.CreatedAt >= date && u.CreatedAt < nextDate).SumAsync(u => u.Amount) });
+                activty.Add(new Activity() { date = date, Amount = await _db.Transactions.Where(u => u.TransactionType == Transactions.Type.Gift && u.UserId == userId && u.CreatedAt >= date && u.CreatedAt < nextDate).SumAsync(u => u.Amount) });
                 var lower = DateTime.Today.AddDays(-i).Date;
 
 
