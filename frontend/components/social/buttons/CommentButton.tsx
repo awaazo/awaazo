@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
-import { usePanel } from "../../utilities/PanelContext";
+import { usePanel } from "../../../utilities/PanelContext";
 import { FaComments } from "react-icons/fa";
 
 const CommentsButton = ({ episodeId, initialComments, showCount }) => {

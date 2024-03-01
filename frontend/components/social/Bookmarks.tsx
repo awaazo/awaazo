@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { Box, Button, Icon, FormControl, Textarea, VStack, HStack, Text, Input } from "@chakra-ui/react";
+import { Box, Button, Icon, FormControl, Textarea, VStack, HStack, Text, Input, FormHelperText } from "@chakra-ui/react";
 import { MdBookmarkAdd } from "react-icons/md";
 import BookmarksHelper from "../../helpers/BookmarksHelper";
 import { convertTime } from "../../utilities/commonUtils";
@@ -59,17 +59,17 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
           </HStack>
         </Box>
         <VStack position="fixed" bottom="0" width="100%" p={"20px"}>
-          <FormControl>
-            <Input placeholder="Enter A Title" rounded="xl" value={formData.title} onChange={handleChange("title")} />
-            <Text fontSize="sm" color="gray.500">
-              {characterCounts.title}/{MAX_CHARS.title} Characters
-            </Text>
+          <FormControl isInvalid={characterCounts.title > MAX_CHARS.title}>
+            <Input placeholder="Enter A Title" rounded="xl" value={formData.title} onChange={handleChange("title")} maxLength={MAX_CHARS.title} />
+            <FormHelperText textAlign="right">
+              {characterCounts.title}/{MAX_CHARS.title}
+            </FormHelperText>
           </FormControl>
-          <FormControl>
-            <Textarea placeholder="Enter A Note" value={formData.note} onChange={handleChange("note")} />
-            <Text fontSize="sm" color="gray.500">
-              {characterCounts.note}/{MAX_CHARS.note} Characters
-            </Text>
+          <FormControl isInvalid={characterCounts.note > MAX_CHARS.note}>
+            <Textarea placeholder="Enter A Note" value={formData.note} onChange={handleChange("note")} maxLength={MAX_CHARS.note} h="10rem" />
+            <FormHelperText textAlign="right">
+              {characterCounts.note}/{MAX_CHARS.note}
+            </FormHelperText>
           </FormControl>
 
           <Button leftIcon={<Icon as={MdBookmarkAdd} />} onClick={handleBookmark} variant="gradient">

@@ -10,7 +10,7 @@ import AppTheme from "../styles/AppTheme";
 import { useRouter } from "next/router";
 import ColorModeFix from "../styles/ColorModeFix";
 import { PanelProvider } from "../utilities/PanelContext";
-import Panel from "../components/panel/Panel";
+import Panel from "../components/shared/Panel";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   ColorModeFix();

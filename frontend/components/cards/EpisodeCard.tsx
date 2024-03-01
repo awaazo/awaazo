@@ -15,7 +15,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../social/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
-import CommentButton from "../panel/CommentButton";
+import CommentButton from "../social/buttons/CommentButton";
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {

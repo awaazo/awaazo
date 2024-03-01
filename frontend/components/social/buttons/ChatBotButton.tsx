@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { RiRobot2Fill } from "react-icons/ri";
-import { usePanel } from "../../utilities/PanelContext";
-import AuthPrompt from "../auth/AuthPrompt";
-import AuthHelper from "../../helpers/AuthHelper";
+import { usePanel } from "../../../utilities/PanelContext";
+import AuthPrompt from "../../auth/AuthPrompt";
+import AuthHelper from "../../../helpers/AuthHelper";
 
 const ChatBotButton = ({ episodeId }) => {
   const { dispatch } = usePanel();

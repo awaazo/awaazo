@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button,  Tooltip } from "@chakra-ui/react";
-import { usePanel } from "../../utilities/PanelContext";
+import { usePanel } from "../../../utilities/PanelContext";
 import { MdBookmark } from "react-icons/md";
-import AuthPrompt from "../auth/AuthPrompt";
-import AuthHelper from "../../helpers/AuthHelper";
+import AuthPrompt from "../../auth/AuthPrompt";
+import AuthHelper from "../../../helpers/AuthHelper";
 
 const BookmarksButtton = ({ episodeId, selectedTimestamp}) => {
     const { dispatch } = usePanel();
