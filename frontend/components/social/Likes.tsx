@@ -49,7 +49,7 @@ const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
         variant="ghost"
         p={2}
         onClick={handleLike}
-        
+        data-cy="like-button-index:"
         leftIcon={showCount ? <Icon as={FaHeart} color={isLiked ? "brand.100" : "white"} /> : null}
       >
         {showCount ? likes : <Icon as={FaHeart} color={isLiked ? "brand.100" : "white"} />}
