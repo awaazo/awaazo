@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, SimpleGrid, Spinner, Flex } from "@chakra-ui/react";
+import { Box, Text, Spinner, Flex } from "@chakra-ui/react";
 import { Podcast } from "../../types/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../cards/PodcastCard";

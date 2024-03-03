@@ -1,175 +1,154 @@
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Image,
-  Text,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  useBreakpointValue,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  FaPlay,
-  FaPause,
-  FaVolumeUp,
-  FaVolumeMute,
-  FaStepForward,
-  FaStepBackward,
-} from "react-icons/fa";
-import { TbRewindBackward10, TbRewindForward10 } from "react-icons/tb";
-import Comments from "../social/Comments";
-import Likes from "../social/Likes";
-import Bookmarks from "../social/Bookmarks";
-import { convertTime } from "../../utilities/commonUtils";
-import { usePalette } from "color-thief-react";
-import EndpointHelper from "../../helpers/EndpointHelper";
-import { usePlayer } from "../../utilities/PlayerContext";
-import { SaveWatchHistoryRequest } from "../../types/Requests";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import ChatBot from "./ChatBotButton";
-import PlayerMenu from "../playerbar/Menu";
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
+import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
+import Likes from '../interactionHub/Likes'
+import { convertTime } from '../../utilities/commonUtils'
+import { usePalette } from 'color-thief-react'
+import EndpointHelper from '../../helpers/EndpointHelper'
+import { usePlayer } from '../../utilities/PlayerContext'
+import { SaveWatchHistoryRequest } from '../../types/Requests'
+import PodcastHelper from '../../helpers/PodcastHelper'
+import PlayerMenu from '../playerbar/Menu'
+import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
+import CommentButton from '../interactionHub/buttons/CommentButton'
+import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
 import Tipjar from "../social/Tipjar";
 
 
 const PlayerBar = () => {
-  const { state, dispatch, audioRef } = usePlayer();
-  const { episode } = state;
-  const isEpisodeLoaded = !!episode;
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [position, setPosition] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [audioUrl, setAudioUrl] = useState("");
-  const [duration, setDuration] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [volume, setVolume] = useState(100);
-  const [isMuted, setIsMuted] = useState(false);
+  const { state, dispatch, audioRef } = usePlayer()
+  const { episode } = state
+  const isEpisodeLoaded = !!episode
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [position, setPosition] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [playbackSpeed, setPlaybackSpeed] = useState(1)
+  const [audioUrl, setAudioUrl] = useState('')
+  const [duration, setDuration] = useState(0)
+  const [volume, setVolume] = useState(100)
+  const [isMuted, setIsMuted] = useState(false)
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const isTablet = useBreakpointValue({ base: true, md: true, lg: false });
+  const isMobile = useBreakpointValue({ base: true, md: false })
+  const isTablet = useBreakpointValue({ base: true, md: true, lg: false })
 
   const getEpisodePlaying = async (podcastId, episodeId) => {
-    return EndpointHelper.getPodcastEpisodePlayEndpoint(podcastId, episodeId);
-  };
+    return EndpointHelper.getPodcastEpisodePlayEndpoint(podcastId, episodeId)
+  }
 
   // Effect Hooks
   // Fetch and load audio URL
   useEffect(() => {
     const fetchAudio = async () => {
-      if (isPlaying) setIsLoading(true);
+      if (isPlaying) setIsLoading(true)
       try {
-        const url = await getEpisodePlaying(episode.podcastId, episode.id);
-        setAudioUrl(url);
+        const url = await getEpisodePlaying(episode.podcastId, episode.id)
+        setAudioUrl(url)
       } catch (error) {
-        console.error("Error fetching episode:", error);
+        console.error('Error fetching episode:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
     if (isEpisodeLoaded) {
-      fetchAudio();
+      fetchAudio()
     }
-  }, [episode]);
+  }, [episode])
 
   useEffect(() => {
     if (audioUrl) {
-      audioRef.current.src = audioUrl;
-      audioRef.current.load();
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        setDuration(audioRef.current.duration);
-        setIsPlaying(true); 
-      }, { once: true }); 
+      audioRef.current.src = audioUrl
+      audioRef.current.load()
+      audioRef.current.addEventListener(
+        'loadedmetadata',
+        () => {
+          setDuration(audioRef.current.duration)
+          setIsPlaying(true)
+        },
+        { once: true }
+      )
     }
-  }, [audioUrl]);
-  
-  useEffect(() => {
-    isPlaying ? audioRef.current.play() : audioRef.current.pause();
-  }, [isPlaying]);
+  }, [audioUrl])
 
   useEffect(() => {
-    audioRef.current.muted = isMuted;
-  }, [isMuted]);
+    isPlaying ? audioRef.current.play() : audioRef.current.pause()
+  }, [isPlaying])
 
   useEffect(() => {
-    audioRef.current.playbackRate = playbackSpeed;
-  }, [playbackSpeed]);
+    audioRef.current.muted = isMuted
+  }, [isMuted])
 
   useEffect(() => {
-    const audio = audioRef.current;
+    audioRef.current.playbackRate = playbackSpeed
+  }, [playbackSpeed])
+
+  useEffect(() => {
+    const audio = audioRef.current
     const setAudioData = () => {
-      setDuration(audio.duration);
-    };
+      setDuration(audio.duration)
+    }
     const updatePosition = () => {
-      dispatch({ type: "SET_CT", payload: audio.currentTime });
-      setPosition(audio.currentTime);
-    };
-    audio.addEventListener("loadedmetadata", setAudioData);
-    audio.addEventListener("timeupdate", updatePosition);
+      dispatch({ type: 'SET_CT', payload: audio.currentTime })
+      setPosition(audio.currentTime)
+    }
+    audio.addEventListener('loadedmetadata', setAudioData)
+    audio.addEventListener('timeupdate', updatePosition)
     return () => {
-      audio.removeEventListener("loadedmetadata", setAudioData);
-      audio.removeEventListener("timeupdate", updatePosition);
-    };
-  }, []);
+      audio.removeEventListener('loadedmetadata', setAudioData)
+      audio.removeEventListener('timeupdate', updatePosition)
+    }
+  }, [])
 
-  const togglePlayPause = () => setIsPlaying(!isPlaying);
-  const toggleLike = () => setIsLiked(!isLiked);
+  const togglePlayPause = () => setIsPlaying(!isPlaying)
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-    setVolume(isMuted ? 30 : 0);
-  };
+    setIsMuted(!isMuted)
+    setVolume(isMuted ? 30 : 0)
+  }
 
   const handleSeek = (newValue) => {
-    const seekTime = Number(newValue);
-    audioRef.current.currentTime = seekTime;
-    setPosition(seekTime);
-  };
+    const seekTime = Number(newValue)
+    audioRef.current.currentTime = seekTime
+    setPosition(seekTime)
+  }
 
-  const skipAmount = 10;
+  const skipAmount = 10
   const skipForward = () => {
-    const newPosition = Math.min(position + skipAmount, duration);
-    audioRef.current.currentTime = newPosition;
-    setPosition(newPosition);
-  };
+    const newPosition = Math.min(position + skipAmount, duration)
+    audioRef.current.currentTime = newPosition
+    setPosition(newPosition)
+  }
 
   const skipBackward = () => {
-    const newPosition = Math.max(position - skipAmount, 0);
-    audioRef.current.currentTime = newPosition;
-    setPosition(newPosition);
-  };
+    const newPosition = Math.max(position - skipAmount, 0)
+    audioRef.current.currentTime = newPosition
+    setPosition(newPosition)
+  }
 
   const playNext = () => {
-    dispatch({ type: "PLAY_NEXT" });
-  };
+    dispatch({ type: 'PLAY_NEXT' })
+  }
 
   const playPrevious = () => {
-    const currentTime = audioRef.current.currentTime;
+    const currentTime = audioRef.current.currentTime
 
     if (currentTime > 5) {
       // If current time is more than 5 seconds, reset time to 0
-      audioRef.current.currentTime = 0;
+      audioRef.current.currentTime = 0
     } else {
       // Otherwise, dispatch the "PLAY_PREVIOUS" action
-      dispatch({ type: "PLAY_PREVIOUS" });
+      dispatch({ type: 'PLAY_PREVIOUS' })
     }
-  };
+  }
 
-  const timeLeft = isEpisodeLoaded
-    ? convertTime(Math.max(episode.duration - position, 0))
-    : "0:00";
+  const timeLeft = isEpisodeLoaded ? convertTime(Math.max(episode.duration - position, 0)) : '0:00'
 
-  const thumbnailUrl = isEpisodeLoaded
-    ? episode.thumbnailUrl
-    : "/awaazo_bird_aihelper_logo.svg";
-  const { data: palette } = usePalette(thumbnailUrl, 2, "rgbArray", {
-    crossOrigin: "Anonymous",
+  const thumbnailUrl = isEpisodeLoaded ? episode.thumbnailUrl : '/awaazo_bird_aihelper_logo.svg'
+  const { data: palette } = usePalette(thumbnailUrl, 2, 'rgbArray', {
+    crossOrigin: 'Anonymous',
     quality: 10,
-  });
+  })
 
   useEffect(() => {
     //remove 'if (episode)' when refreshing the page will keep the episode
@@ -179,96 +158,76 @@ const PlayerBar = () => {
           .then((res) => {
             if (res.status === 200) {
               if (res.watchHistory.listenPosition >= 0) {
-                console.log(
-                  "listenPosition loaded: " + res.watchHistory.listenPosition,
-                );
-                audioRef.current.currentTime = res.watchHistory.listenPosition;
+                console.log('listenPosition loaded: ' + res.watchHistory.listenPosition)
+                audioRef.current.currentTime = res.watchHistory.listenPosition
               } else {
-                console.log(
-                  "listenPosition loaded: " + res.watchHistory.listenPosition,
-                );
-                audioRef.current.currentTime = 0;
+                console.log('listenPosition loaded: ' + res.watchHistory.listenPosition)
+                audioRef.current.currentTime = 0
               }
             } else {
-              console.error("Error fetching watch history data:", res.message);
+              console.error('Error fetching watch history data:', res.message)
             }
           })
-          .catch((error) =>
-            console.error("Error fetching watch history data:", error),
-          );
-      };
+          .catch((error) => console.error('Error fetching watch history data:', error))
+      }
       // Call the function to load the watch history
-      loadWatchHistory();
+      loadWatchHistory()
 
       const handleBeforeUnload = async () => {
         const request: SaveWatchHistoryRequest = {
           listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
-        };
-        if (audioRef.current && isEpisodeLoaded) {
-          await PodcastHelper.saveWatchHistory(episode.id, request).then(
-            (response) => {
-              if (response.status === 200) {
-                console.log("Saved Episode Watch History");
-                console.log(
-                  "listenPosition saved: " + audioRef.current.currentTime,
-                );
-              } else {
-                console.error(
-                  "Error saving the episode watch history:",
-                  response.message,
-                );
-              }
-            },
-          );
         }
-      };
+        if (audioRef.current && isEpisodeLoaded) {
+          await PodcastHelper.saveWatchHistory(episode.id, request).then((response) => {
+            if (response.status === 200) {
+              console.log('Saved Episode Watch History')
+              console.log('listenPosition saved: ' + audioRef.current.currentTime)
+            } else {
+              console.error('Error saving the episode watch history:', response.message)
+            }
+          })
+        }
+      }
 
-      if (typeof window !== "undefined") {
-        window.addEventListener("beforeunload", handleBeforeUnload);
+      if (typeof window !== 'undefined') {
+        window.addEventListener('beforeunload', handleBeforeUnload)
       }
     }
-  }, [episode]);
+  }, [episode])
 
   //Saves watch history every 30 seconds
   useEffect(() => {
     const saveHistoryAtInterval = async () => {
       const request: SaveWatchHistoryRequest = {
         listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
-      };
+      }
       if (audioRef.current && episode !== null) {
         try {
-          await PodcastHelper.saveWatchHistory(episode.id, request).then(
-            (response) => {
-              if (response.status === 200) {
-                console.log("Saved Episode Watch History");
-                console.log(
-                  "listenPosition saved: " + audioRef.current.currentTime,
-                );
-              } else {
-                console.error(
-                  "Error saving the episode watch history:",
-                  response.message,
-                );
-              }
-            },
-          );
+          await PodcastHelper.saveWatchHistory(episode.id, request).then((response) => {
+            if (response.status === 200) {
+              console.log('Saved Episode Watch History')
+              console.log('listenPosition saved: ' + audioRef.current.currentTime)
+            } else {
+              console.error('Error saving the episode watch history:', response.message)
+            }
+          })
         } catch (error) {
-          console.error("Error saving the episode watch history:", error);
+          console.error('Error saving the episode watch history:', error)
         }
       }
-    };
+    }
 
     const interval = setInterval(() => {
-      saveHistoryAtInterval();
-    }, 30000);
+      saveHistoryAtInterval()
+    }, 30000)
 
-    return () => clearInterval(interval);
-  }, [episode]);
+    return () => clearInterval(interval)
+  }, [episode])
 
   return (
     <Box
-      maxWidth={isMobile ? "100%" : "97%"}
-      padding={isMobile ? "0.5em" : "1em"}
+      maxWidth={isMobile ? '100%' : '97%'}
+      padding={isMobile ? '0.5em' : '1em'}
       bg="rgba(255, 255, 255, 0.04)"
       backdropFilter="blur(50px)"
       position="fixed"
@@ -276,84 +235,43 @@ const PlayerBar = () => {
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
-      bottom={isMobile ? "55px" : "0.1px"}
+      bottom={isMobile ? '55px' : '0.1px'}
       borderTopLeftRadius="10px"
       borderTopRightRadius="10px"
-      border={"2px solid rgba(255, 255, 255, 0.03)"}
+      border={'2px solid rgba(255, 255, 255, 0.03)'}
     >
       <Flex
         flexDirection="row"
-        justifyContent={isEpisodeLoaded ? "space-between" : "flex-start"} // Updated justifyContent
-        mr={isEpisodeLoaded ? "15px" : "0px"}
+        justifyContent={isEpisodeLoaded ? 'space-between' : 'flex-start'} // Updated justifyContent
+        mr={isEpisodeLoaded ? '15px' : '0px'}
         alignItems="center"
       >
         {/* Episode Info */}
         <Flex alignItems="center" ml={2}>
           {isEpisodeLoaded ? (
             <Link href={`/NowPlaying/${episode.id}`} shallow>
-              <Image
-                boxSize={isMobile ? "30px" : "40px"}
-                src={episode.thumbnailUrl}
-                borderRadius="base"
-                mr={4}
-                objectFit="cover"
-                cursor="pointer"
-              />
+              <Image boxSize={isMobile ? '30px' : '40px'} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
             </Link>
           ) : (
-            <Image
-              boxSize={isMobile ? "30px" : "40px"}
-              src="/awaazo_bird_aihelper_logo.svg"
-              borderRadius="full"
-              mr={4}
-              objectFit="cover"
-            />
+            <Image boxSize={isMobile ? '30px' : '40px'} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
           )}
-          <Box maxWidth={isMobile ? "75%" : "100%"}>
-            <Text
-              fontWeight="bold"
-              fontSize={isMobile ? "sm" : "md"}
-              isTruncated
-            >
-              {isEpisodeLoaded ? episode.episodeName : "Not Playing"}
+          <Box maxWidth={isMobile ? '75%' : '100%'}>
+            <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>
+              {isEpisodeLoaded ? episode.episodeName : 'Not Playing'}
             </Text>
-            <Text
-              fontSize={isMobile ? "xs" : "sm"}
-              color="gray.500"
-              isTruncated
-            >
-              {isEpisodeLoaded ? episode.podcastName : ""}{" "}
+            <Text fontSize={isMobile ? 'xs' : 'sm'} color="gray.500" isTruncated>
+              {isEpisodeLoaded ? episode.podcastName : ''}{' '}
             </Text>
           </Box>
         </Flex>
 
-        <HStack
-          flexDirection="column"
-          width={isEpisodeLoaded ? "45%" : "75%"}
-          alignItems="center"
-        >
+        <HStack flexDirection="column" width={isEpisodeLoaded ? '45%' : '75%'} alignItems="center">
           {/* Player Controls */}
           <Flex alignItems="center" mb="5px">
+            <IconButton aria-label="Previous Episode" icon={<FaStepBackward />} variant="ghost" size="sm" onClick={playPrevious} mr={2} data-cy={`play-previous`} />
+            <IconButton aria-label="Skip Backward" icon={<TbRewindBackward10 size={'20px'} />} variant="ghost" size="sm" onClick={skipBackward} mr={4} data-cy={`skip-backward`} />
             <IconButton
-              aria-label="Previous Episode"
-              icon={<FaStepBackward />}
-              variant="ghost"
-              size="sm"
-              onClick={playPrevious}
-              mr={2}
-              data-cy={`play-previous`}
-            />
-            <IconButton
-              aria-label="Skip Backward"
-              icon={<TbRewindBackward10 size={"20px"} />}
-              variant="ghost"
-              size="sm"
-              onClick={skipBackward}
-              mr={4}
-              data-cy={`skip-backward`}
-            />
-            <IconButton
-              aria-label={isPlaying ? "Pause" : "Play"}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
               icon={isPlaying ? <FaPause /> : <FaPlay />}
               variant="gradient"
               minWidth="2.5em"
@@ -362,58 +280,24 @@ const PlayerBar = () => {
               mr={4}
               data-cy={`play-pause-button`}
             />
-            <IconButton
-              aria-label=" Skip Forward"
-              icon={<TbRewindForward10 size={"20px"} />}
-              variant="ghost"
-              size="sm"
-              onClick={skipForward}
-              mr={2}
-              data-cy={`skip-forward`}
-            />
-            <IconButton
-              aria-label=" Next Episode"
-              icon={<FaStepForward />}
-              variant="ghost"
-              size="sm"
-              onClick={playNext}
-              data-cy={`play-next`}
-            />
+            <IconButton aria-label=" Skip Forward" icon={<TbRewindForward10 size={'20px'} />} variant="ghost" size="sm" onClick={skipForward} mr={2} data-cy={`skip-forward`} />
+            <IconButton aria-label=" Next Episode" icon={<FaStepForward />} variant="ghost" size="sm" onClick={playNext} data-cy={`play-next`} />
           </Flex>
 
           {/* Slider */}
           {!isMobile && (
-            <Flex
-              width={isEpisodeLoaded ? "100%" : "65%"}
-              mx={4}
-              alignItems="center"
-            >
-              <Text
-                data-cy={`time-passed-${convertTime(position)}`}
-                mr={3}
-                fontSize="xs"
-                fontWeight="medium"
-              >
+            <Flex width={isEpisodeLoaded ? '100%' : '65%'} mx={4} alignItems="center">
+              <Text data-cy={`time-passed-${convertTime(position)}`} mr={3} fontSize="xs" fontWeight="medium">
                 {convertTime(position)}
               </Text>
-              <Slider
-                aria-label="Track Timeline"
-                value={position}
-                max={duration}
-                onChange={(val) => handleSeek(val)}
-              >
+              <Slider aria-label="Track Timeline" value={position} max={duration} onChange={(val) => handleSeek(val)}>
                 <SliderTrack bg="transparent"></SliderTrack>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
               </Slider>
 
-              <Text
-                data-cy={`time-left-${timeLeft}`}
-                ml={3}
-                fontSize="xs"
-                fontWeight="medium"
-              >
+              <Text data-cy={`time-left-${timeLeft}`} ml={3} fontSize="xs" fontWeight="medium">
                 {timeLeft}
               </Text>
             </Flex>
@@ -426,44 +310,27 @@ const PlayerBar = () => {
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
-              
-              {/* <Bookmarks
-                episodeId={isEpisodeLoaded ? episode.id : "default-id"}
-                selectedTimestamp={isEpisodeLoaded ? position : 0}
-              /> */}
+
               <Tipjar episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
-              <Likes
-                episodeOrCommentId={isEpisodeLoaded ? episode.id : "default-id"}
-                initialLikes={isEpisodeLoaded ? episode.likes : 0}
-                showCount={false}
-              />
-              <Comments
-                episodeIdOrCommentId={
-                  isEpisodeLoaded ? episode.id : "default-id"
-                }
-                initialComments={isEpisodeLoaded ? episode.comments.length : 0}
-                showCount={false}
-              />
+              <ChatBotButton episodeId={episode?.id} />
+              <BookmarksButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} selectedTimestamp={isEpisodeLoaded ? position : 0} />
+              <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
+              <CommentButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} initialComments={0} showCount={false} />
+
             </Flex>
 
             {/* Volume Control Section */}
             {!isTablet && (
               <Box display="contents" alignItems="center">
-                <IconButton
-                  aria-label={isMuted ? "Unmute" : "Mute"}
-                  icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleMute}
-                />
+                <IconButton aria-label={isMuted ? 'Unmute' : 'Mute'} icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />} variant="ghost" size="sm" onClick={toggleMute} />
                 <Slider
                   aria-label="Volume"
                   value={isMuted ? 0 : volume}
                   isDisabled={isMuted}
                   onChange={(val) => {
-                    setVolume(val);
-                    setIsMuted(val === 0);
-                    audioRef.current.volume = val / 100;
+                    setVolume(val)
+                    setIsMuted(val === 0)
+                    audioRef.current.volume = val / 100
                   }}
                   mx={2}
                   width="5rem"
@@ -480,7 +347,7 @@ const PlayerBar = () => {
         <ChatBot episodeId={episode?.id} />
       </Flex>
     </Box>
-  );
-};
+  )
+}
 
-export default PlayerBar;
+export default PlayerBar

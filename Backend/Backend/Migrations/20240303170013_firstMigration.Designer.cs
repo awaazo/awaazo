@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240222175738_firstMigration")]
+    [Migration("20240303170013_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -649,6 +649,42 @@ namespace Backend.Migrations
                     b.ToTable("Points");
                 });
 
+            modelBuilder.Entity("Backend.Models.Report", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid>("ReportedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetEntityName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("Backend.Models.Sponsor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -824,8 +860,10 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserEpisodeInteraction", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Clicks")
@@ -836,9 +874,6 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("DateListened")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EpisodeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("HasLiked")
                         .HasColumnType("bit");
@@ -855,14 +890,9 @@ namespace Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "EpisodeId");
 
                     b.HasIndex("EpisodeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserEpisodeInteractions");
                 });
@@ -1195,13 +1225,13 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Episode", "Episode")
                         .WithMany("UserEpisodeInteractions")
                         .HasForeignKey("EpisodeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("EpisodeInteractions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Episode");

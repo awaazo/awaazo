@@ -32,7 +32,6 @@ export interface Episode {
     count: number;
     isLiked: boolean;
   };
-  comments: Comment[];
   bookmarks?: Bookmark[];
   sections?: Section[];
   annotations: Annotation[];
@@ -66,13 +65,13 @@ export interface Section {
 }
 
 export interface Comment {
-  id: number;
+  id: string;
   user: User;
   episodeId: string;
   text: string;
   dateCreated: Date;
-  likes: Like[];
-  replies: Reply[];
+  likes: number;
+  noOfReplies: number;
 }
 
 export interface Like {
@@ -121,18 +120,18 @@ export interface WatchHistory {
 }
 
 export interface Transcript {
-  id: number,
-  seek: number,
-  start: number,
-  end: number,
-  text: string,
-  speaker: string,
+  id: number;
+  seek: number;
+  start: number;
+  end: number;
+  text: string;
+  speaker: string;
   words: {
-    start: number,
-    end: number,
-    word: string,
-    score: number,
-    speaker: string
+    start: number;
+    end: number;
+    word: string;
+    score: number;
+    speaker: string;
   }[];
 }
 
@@ -160,6 +159,7 @@ export interface User {
   gender: "male" | "female" | "other" | "prefer not to say";
   isPodcaster: boolean;
   podcasts?: Podcast[];
+  isAdmin: boolean;
 }
 
 export interface PodcastFollow {
@@ -268,7 +268,7 @@ export interface MySubscriptions {
   ratings?: PodcastRating[];
 }
 
-export interface Chatbot{
+export interface Chatbot {
   id: string;
   userId: string;
   episodeId: string;
@@ -280,18 +280,18 @@ export interface Chatbot{
 }
 
 export interface Transcript {
-  id: number,
-  seek: number,
-  start: number,
-  end: number,
-  text: string,
-  speaker: string,
+  id: number;
+  seek: number;
+  start: number;
+  end: number;
+  text: string;
+  speaker: string;
   words: {
-    start: number,
-    end: number,
-    word: string,
-    score: number,
-    speaker: string
+    start: number;
+    end: number;
+    word: string;
+    score: number;
+    speaker: string;
   }[];
 }
 

@@ -12,11 +12,12 @@ import {
 import { FaPlay } from "react-icons/fa";
 import { BsExplicitFill } from "react-icons/bs";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/Likes";
-import CommentComponent from "../social/Comments";
+import LikeComponent from "../interactionHub/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
+import CommentButton from "../interactionHub/buttons/CommentButton";
 import Tipjar from "../social/Tipjar";
+
 
 // Component to display an episode
 const EpisodeCard = ({ episode, inPlaylist, playlistId, inWallet }) => {
@@ -94,34 +95,37 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId, inWallet }) => {
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
+
         {/* Make sure Point is only rendered when inWallet is true */}
         {inWallet != null && inWallet == true ? (
           <Tipjar episodeId={episode.id} totalPoint={episode.totalPoints} />
         ) : (
           <>
-            <CommentComponent
-              episodeIdOrCommentId={episode.id}
-              initialComments={episode.comments.length}
-              showCount={true}
-            />
-            <Box
-              marginTop="4px"
-              marginLeft="4px"
-              data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}
-            >
-              <LikeComponent
-                episodeOrCommentId={episode.id}
-                initialLikes={episode.likes}
-                showCount={true}
-              />
-            </Box>
-            <EpisodeMenu
-              episode={episode}
-              inPlaylist={inPlaylist}
-              playlistId={playlistId}
-            />
-          </>
-        )}
+
+        <CommentButton
+          episodeId={episode.id}
+          initialComments={episode.comments.length}
+          showCount={true}
+        />
+        <Box
+          marginTop="4px"
+          marginLeft="4px"
+          data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}
+        >
+          <LikeComponent
+            episodeOrCommentId={episode.id}
+            initialLikes={episode.likes}
+            showCount={true}
+          />
+        </Box>
+        <EpisodeMenu
+          episode={episode}
+          inPlaylist={inPlaylist}
+          playlistId={playlistId}
+        />
+                </>
+              )}
+
       </Flex>
     </Flex>
   );

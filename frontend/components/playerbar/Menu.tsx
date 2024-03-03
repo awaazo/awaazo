@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { CgPlayListSearch } from "react-icons/cg";
 import { FaDeleteLeft } from "react-icons/fa6";
-import ShareComponent from "../social/Share";
+import ShareComponent from "../interactionHub/Share";
 import { CiMenuKebab } from "react-icons/ci";
 import ViewQueueModal from "../playlist/ViewQueueModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";

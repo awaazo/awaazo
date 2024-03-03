@@ -64,6 +64,24 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TargetEntityName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TargetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReportedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -489,7 +507,6 @@ namespace Backend.Migrations
                 name: "UserEpisodeInteractions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HasListened = table.Column<bool>(type: "bit", nullable: false),
@@ -503,7 +520,7 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserEpisodeInteractions", x => x.Id);
+                    table.PrimaryKey("PK_UserEpisodeInteractions", x => new { x.UserId, x.EpisodeId });
                     table.ForeignKey(
                         name: "FK_UserEpisodeInteractions_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
@@ -768,11 +785,6 @@ namespace Backend.Migrations
                 column: "EpisodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserEpisodeInteractions_UserId",
-                table: "UserEpisodeInteractions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserFollows_FollowerId",
                 table: "UserFollows",
                 column: "FollowerId");
@@ -828,6 +840,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Points");
+
+            migrationBuilder.DropTable(
+                name: "Reports");
 
             migrationBuilder.DropTable(
                 name: "Sponsors");
