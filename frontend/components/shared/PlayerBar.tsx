@@ -344,7 +344,7 @@ const PlayerBar = () => {
             )}
           </Flex>
         )}
-        <ChatBot episodeId={episode?.id} />
+        
       </Flex>
     </Box>
   )
