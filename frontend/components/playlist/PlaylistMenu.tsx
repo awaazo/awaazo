@@ -1,5 +1,5 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Menu,
@@ -179,6 +179,17 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
 
+  const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+    try {
+      const response = await fetch(addedImageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "avatar.jpg", { type: blob.type });
+      setPlaylistCoverArt(file);
+    } catch (error) {
+      console.error("Error converting image URL to File:", error);
+    }
+  }, []);
+
   return (
     <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
@@ -306,24 +317,23 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Edit Playlist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {/* <ImageAdder onImageAdded={handleImageAdded} /> */}
+       
+          
+              <ImageAdder onImageAdded={handleImageAdded} /> 
+           
             <FormControl>
-              <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100" />
+              <Input placeholder="Playlist Name" value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100" />
             </FormControl>
+
             <FormControl mt={4}>
-              <FormLabel>Description</FormLabel>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
+              <Textarea placeholder="Playlist Description" value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
             </FormControl>
-            <FormControl mt={4}>
-              <FormLabel>Playlist Cover</FormLabel>
-              <Input type="file" accept="image/*" onChange={(e) => setPlaylistCoverArt(e.target.files ? e.target.files[0] : null)} />
-            </FormControl>
-            <FormControl display="flex" alignItems="center" mt={4}>
+
+            <FormControl display="flex" alignItems="center" justifyContent="center" mt={4}>
               <FormLabel htmlFor="privacy-switch" mb="0">
-                Privacy
+                Private:
               </FormLabel>
-              <Switch ml={6} id="privacy-switch" isChecked={privacy === "Private"} onChange={(e) => setPrivacy(e.target.checked ? "Private" : "Public")} />
+              <Switch  id="privacy-switch" isChecked={privacy === "Private"} onChange={(e) => setPrivacy(e.target.checked ? "Private" : "Public")} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
