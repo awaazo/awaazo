@@ -45,11 +45,11 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
-          Transcripts
+          Transcript
         </Text>
       </Flex>
-      {/* <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
-        {transcripts?.map((transcript, index) => (
+      <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
+        {transcript?.map((transcript, index) => (
           <Box
             key={index}
             bg="rgba(255, 255, 255, 0.02)"
@@ -66,7 +66,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
             </Flex>
           </Box>
         ))}
-      </VStack> */}
+      </VStack>
     </Box>
   );
 };
