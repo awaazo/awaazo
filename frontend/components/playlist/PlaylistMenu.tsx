@@ -1,5 +1,5 @@
 // PlaylistMenu.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Menu,
@@ -22,6 +22,7 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
+  Switch,
 } from "@chakra-ui/react";
 import { IoIosMore } from "react-icons/io";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
@@ -49,6 +50,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const onShareModalOpen = () => setIsShareModalOpen(true);
   const onShareModalClose = () => setIsShareModalOpen(false);
+  const [privacy, setPrivacy] = useState(playlist.privacy);
 
   // Function to handle deletion of the playlist
   const handleDelete = async (id) => {
@@ -131,15 +133,15 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       });
       return;
     }
-
+  
     const request = {
       name: name,
       description: description,
-      privacy: "false",
+      privacy: privacy,
       coverArt: playlistCoverArt,
     };
-
-    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
+  
+    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id, playlistCoverArt);
     if (response.status === 200) {
       toast({
         position: "top",
@@ -153,8 +155,10 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         name: name,
         description: description,
         privacy: privacy,
+        lastUpdated: new Date().toISOString(), // Update the lastUpdated field
         // Include other updated fields if applicable
       };
+      window.dispatchEvent(new CustomEvent('playlistUpdated', { detail: updatedPlaylist }));
       // Update the parent component's state
       onUpdate(updatedPlaylist);
     } else {
@@ -169,12 +173,22 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     closeEditModal();
   };
 
-  const [privacy, setPrivacy] = useState("Public");
-  //const [isPrivate, setIsPrivate] = useState(playlist.privacy);
+
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleImageAdded = useCallback(async (addedImageUrl: string) => {
+    try {
+      const response = await fetch(addedImageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "avatar.jpg", { type: blob.type });
+      setPlaylistCoverArt(file);
+    } catch (error) {
+      console.error("Error converting image URL to File:", error);
+    }
+  }, []);
 
   return (
     <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
@@ -303,14 +317,23 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Edit Playlist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {/* <ImageAdder onImageAdded={handleImageAdded} /> */}
+       
+          
+              <ImageAdder onImageAdded={handleImageAdded} /> 
+           
             <FormControl>
-              <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100" />
+              <Input placeholder="Playlist Name" value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100" />
             </FormControl>
+
             <FormControl mt={4}>
-              <FormLabel>Description</FormLabel>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
+              <Textarea placeholder="Playlist Description" value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
+            </FormControl>
+
+            <FormControl display="flex" alignItems="center" justifyContent="center" mt={4}>
+              <FormLabel htmlFor="privacy-switch" mb="0">
+                Private:
+              </FormLabel>
+              <Switch  id="privacy-switch" isChecked={privacy === "Private"} onChange={(e) => setPrivacy(e.target.checked ? "Private" : "Public")} />
             </FormControl>
           </ModalBody>
           <ModalFooter>

@@ -51,6 +51,7 @@ export interface Playlist {
   updatedAt: Date;
   playlistEpisodes: Episode[];
   coverArt: string;
+  lastUpdated: string;
 }
 
 export interface Section {
