@@ -40,7 +40,7 @@ import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { FiEdit } from "react-icons/fi";
 import { PlaylistEditRequest } from "../../types/Requests";
-import ShareComponent from "../social/Share";
+import ShareComponent from "../interactionHub/Share";
 
 const PlaylistOverview = ({ episode, playlistId }) => {
   const { dispatch } = usePlayer();

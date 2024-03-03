@@ -166,7 +166,7 @@ describe("PlayerBar", () => {
         cy.get('textarea[placeholder="Add a comment..."]').should('be.visible').type("Love the episode! Half Life 3 when???");
         cy.contains('Add Comment').click();
         cy.contains('Love the episode! Half Life 3 when???');
-        cy.get('.chakra-modal__close-btn').click();
+        cy.get('.css-k008qs > .chakra-button').click();
         cy.logout();
         cy.login(null, "testRegister@email.com", "password123");
         cy.get('[data-cy="ticket-episode-Has science gone too far?"]').should('be.visible').last().click({ timeout: 5000 });

@@ -1,5 +1,5 @@
 import { Box, VStack, Image, Text, IconButton, useColorModeValue, Icon } from "@chakra-ui/react";
-import { FaPlay, FaClock, FaHeart } from "react-icons/fa";
+import { FaPlay, FaClock} from "react-icons/fa";
 import { Episode } from "../../types/Interfaces";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { convertTime } from "../../utilities/commonUtils";
