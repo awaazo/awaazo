@@ -1,7 +1,7 @@
 // PlaylistMenu.tsx
 import React, { useState } from "react";
 import { Box, Menu, MenuButton, IconButton, MenuList, MenuItem, MenuDivider, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
-import { MdBookmark, MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
+import { MdIosShare, MdOutlinePlaylistAdd, MdOutlinePodcasts } from "react-icons/md";
 import Link from "next/link";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { CgPlayListSearch } from "react-icons/cg";
@@ -12,8 +12,8 @@ import ViewQueueModal from "../playlist/ViewQueueModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
-import Bookmarks from "../social/Bookmarks";
-import { FaBookmark } from "react-icons/fa";
+import Bookmarks from "../interactionHub/Bookmarks";
+
 
 
 const PlayerMenu = ({ episode }) => {

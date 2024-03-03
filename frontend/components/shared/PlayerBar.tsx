@@ -14,7 +14,7 @@ import PlayerMenu from '../playerbar/Menu'
 import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
-import Tipjar from "../social/Tipjar";
+import Tipjar from "../interactionHub/Tipjar";
 
 
 const PlayerBar = () => {

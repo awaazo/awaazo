@@ -88,23 +88,7 @@ const NowPlaying = () => {
 
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
 
-  const handleDeleteAnnotation = async (annotationId) => {
-    try {
-      const response = await AnnotationHelper.deleteAnnotationRequest(
-        annotationId,
-      );
-      if (response.status === 200) {
-        console.log("Annotation deleted successfully");
-      } else {
-        console.error("Failed to delete annotation:", response.message);
-      }
-    } catch (error) {
-      console.error("Error deleting annotation:", error);
-    }
-    setAnnotations((prevAnnotations) =>
-      prevAnnotations.filter((ann) => ann.id !== annotationId),
-    );
-  };
+
 
   useEffect(() => {
     if (episode) {

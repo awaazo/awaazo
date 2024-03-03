@@ -16,7 +16,7 @@ import LikeComponent from "../interactionHub/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
 import CommentButton from "../interactionHub/buttons/CommentButton";
-import Tipjar from "../social/Tipjar";
+import Tipjar from "../interactionHub/Tipjar";
 
 
 // Component to display an episode
