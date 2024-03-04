@@ -44,8 +44,8 @@ namespace Backend.Services
 
                 },
                 Mode = "payment",
-                SuccessUrl = _configuration["jwt:Audience"]+"/success/?pointId="+pointId,
-                CancelUrl = _configuration["jwt:Audience"]+"/failure",
+                SuccessUrl = _configuration["jwt:Audience"]+"?success="+pointId,
+                CancelUrl = _configuration["jwt:Audience"]+"?failure=123",
                 Metadata = meta
                
             };

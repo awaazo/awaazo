@@ -16,9 +16,11 @@ import LikeComponent from "../interactionHub/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
 import CommentButton from "../interactionHub/buttons/CommentButton";
+import Tipjar from "../interactionHub/Tipjar";
+
 
 // Component to display an episode
-const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
+const EpisodeCard = ({ episode, inPlaylist, playlistId, inWallet }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
 
@@ -93,6 +95,13 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
+
+        {/* Make sure Point is only rendered when inWallet is true */}
+        {inWallet != null && inWallet == true ? (
+          <Tipjar episodeId={episode.id} totalPoint={episode.totalPoints} />
+        ) : (
+          <>
+
         <CommentButton
           episodeId={episode.id}
           initialComments={episode.comments.length}
@@ -114,6 +123,9 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
           inPlaylist={inPlaylist}
           playlistId={playlistId}
         />
+                </>
+              )}
+
       </Flex>
     </Flex>
   );

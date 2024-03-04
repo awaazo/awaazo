@@ -604,10 +604,15 @@ public class SocialService : ISocialService
             throw new Exception("Illegal State");
         }
 
+        if(points.Success == true)
+        {
+            throw new Exception("Already Confirmed this Payment");
+        }
+
         // Transaction Id
         Guid transactionId = Guid.NewGuid();
         // Post transaction 
-        await _db.Transactions.AddAsync(new Transactions { Id = transactionId,SenderId = points.UserId,CreatedAt = DateTime.UtcNow ,Amount = points.Amount,UserId = points.Episode.Podcast.PodcasterId,TransactionType= Transactions.Type.Gift});
+        await _db.Transactions.AddAsync(new Transactions { Id = transactionId,SenderId = points.UserId,CreatedAt = DateTime.Now ,Amount = points.Amount,UserId = points.Episode.Podcast.PodcasterId,TransactionType= Transactions.Type.Gift});
 
         // if all checks pass Update the success bool to true
         points.Success = true;

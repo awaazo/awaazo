@@ -852,4 +852,56 @@ export default class EndpointHelper {
   static getAddEpisodeChatEndpoint = () => {
     return this.getBackendAddress() + "/podcast/addEpisodeChat";
   };
+
+
+  // --------------------------------
+  // Payment Endpoints ENDPOINTS
+  // --------------------------------
+
+  static createPaymentEndpoint = (episodeId: string, points :number) => {
+    return this.getBackendAddress() + "/social/"+episodeId+"/giftpoints?points="+points;
+  }
+
+  static confirmPaymentEndpoint = (pointId : string) => {
+    return this.getBackendAddress() + "/social/"+pointId+"/confirmPoints"; 
+  }
+
+  static getUserBalanceEndpoint = () =>{
+    return this.getBackendAddress()+"/wallet/balance";
+  }
+
+  static withdrawBalanceEndpoint = (amount:number) =>{
+    return this.getBackendAddress()+"/wallet/withdraw?Amount="+amount;
+  }
+  static getAllTransactionEndpoint = (page,pageSize) =>{
+    return this.getBackendAddress()+"/wallet/transactions?page="+page+"&pageSize="+pageSize;
+  }
+
+  static getUserAvatar = (userId:string) =>{
+    return this.getBackendAddress()+"/profile/"+userId+"/avatar";
+  }
+  
+  static getLast5DaysBalance = () =>{
+    return this.getBackendAddress()+"/wallet/getRecentBalance";
+  }
+
+  static getLast5DaysEarning = () =>{
+    return this.getBackendAddress()+"/wallet/getRecentEarning";
+
+  }
+
+  static getHighestEarningEpisode =(page,pageSize) =>{
+    return this.getBackendAddress() +"/wallet/topEarningEpisodes?page="+page+"&pageSize="+pageSize;
+  }
+  static getHighestEarningPodcast =(page,pageSize) =>{
+    return this.getBackendAddress() +"/wallet/topEarningPodcasts?page="+page+"&pageSize="+pageSize;
+  }
+
+ 
+
+
 }
+
+
+
+

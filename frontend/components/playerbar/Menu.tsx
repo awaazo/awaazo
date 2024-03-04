@@ -12,6 +12,9 @@ import ViewQueueModal from "../playlist/ViewQueueModal";
 import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
+import Bookmarks from "../interactionHub/Bookmarks";
+
+
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer();
@@ -49,12 +52,16 @@ const PlayerMenu = ({ episode }) => {
       }
     });
   };
+  const { state } = usePlayer();
+  const isEpisodeLoaded = !!episode;
+  const [position, setPosition] = useState(0);
 
   const handleRemoveFromQueue = () => {
     dispatch({ type: "REMOVE_FROM_QUEUE", payload: episode });
   };
 
   return (
+
     <Box style={{ position: "relative", zIndex: 9999 }} data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
         <MenuButton as={IconButton} aria-label="Options" icon={<CiMenuKebab />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
@@ -78,6 +85,14 @@ const PlayerMenu = ({ episode }) => {
             Add to Playlist
             <MdOutlinePlaylistAdd size="20px" style={{ marginLeft: "auto", color: "white" }} />
           </MenuItem>
+
+          <MenuItem>
+            <Bookmarks
+              episodeId={isEpisodeLoaded ? episode.id : "default-id"}
+              selectedTimestamp={isEpisodeLoaded ? position : 0}
+            />
+          </MenuItem>
+
           <MenuDivider />
           <MenuItem
             _hover={{

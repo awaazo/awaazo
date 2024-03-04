@@ -1,3 +1,4 @@
+
 import {
   UserMenuInfo,
   UserProfile,
@@ -14,7 +15,10 @@ import {
   Metrics,
   Chatbot,
   Reply,
+  Transaction,
+  Balance
 } from "./Interfaces";
+
 
 export interface BaseResponse {
   [x: string]: any;
@@ -217,3 +221,27 @@ export interface GetChatbotResponse extends BaseResponse {
   userId: string;
   messages: Chatbot[];
 }
+
+export interface createPaymentResponse extends BaseResponse {
+  data : string
+}
+
+export interface confirmPaymentResponse extends BaseResponse{
+  data : string
+}
+
+export interface getUserBalance extends BaseResponse {
+  data : number
+}
+export interface WithdrawResponse extends BaseResponse{
+  data : string
+}
+
+export interface TransactionResponse extends BaseResponse{
+  data : Transaction[]
+}
+
+export interface Last5DaysBalanceResponse extends BaseResponse{
+  data : Balance[]
+}
+

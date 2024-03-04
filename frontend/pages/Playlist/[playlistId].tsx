@@ -135,7 +135,7 @@ export default function Playlist() {
                 <EpisodeCard
                   episode={episode}
                   inPlaylist={true}
-                  playlistId={playlist.id}
+                  playlistId={playlist.id} inWallet={false}                  
                 />
               ))
             ) : (

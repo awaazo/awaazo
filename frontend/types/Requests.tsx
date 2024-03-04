@@ -223,3 +223,16 @@ export interface editTranscriptLinesRequest {
   }[];
 }
 //#endregion
+
+//#region Payment Request
+export interface createPayment {
+  episodeId : string,
+  points : number
+}
+
+export interface confirmPayment{
+  pointId:string
+}
+
+//# end Region
+
