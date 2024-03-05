@@ -58,9 +58,9 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
           >
             <Flex justify="space-between" align="center">
               <Text fontSize={fontSize} color="white">
-                {transcript.text}
+                {transcript && transcript.text ? transcript.text : 'This episode has no transcript text available.'}
               </Text>
-              <Text color="gray.400">{transcript.speaker}</Text>
+              <Text color="gray.400">{transcript && transcript.speaker ? transcript.speaker : 'no speaker available'}</Text>
             </Flex>
           </Box>
 
