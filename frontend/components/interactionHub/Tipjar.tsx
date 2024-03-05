@@ -128,4 +128,4 @@ const Tipjar = ({ episodeId, totalPoint }) => {
     </>
   )
 }
-export default Tipjar
+export default Tipjar;
