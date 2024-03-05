@@ -49,9 +49,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
         </Text>
       </Flex>
       <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
-        {transcript?.map((transcript, index) => (
           <Box
-            key={index}
             bg="rgba(255, 255, 255, 0.02)"
             borderRadius="2xl"
             p={4}
@@ -65,7 +63,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
               <Text color="gray.400">{transcript.speaker}</Text>
             </Flex>
           </Box>
-        ))}
+
       </VStack>
     </Box>
   );
