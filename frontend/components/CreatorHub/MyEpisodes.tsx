@@ -25,10 +25,11 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
-import { FaLinesLeaning } from "react-icons/fa6";
+import { FaFileLines, FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "./EditEpisode";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
+import ManageTranscript from "./ManageTranscript";
 import { convertTime } from "../../utilities/commonUtils";
 import { FaList } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
@@ -141,6 +142,25 @@ const Episode = ({ episode }) => {
   };
   //----------------------------------------------------------------------
 
+  // Transcript Modal
+  //----------------------------------------------------------------------
+
+  // State for managing modal visibility and the current episode for transcripts
+  const [isModalTranscriptOpen, setIsModalTranscriptOpen] = useState(false);
+
+  // Function to open the transcript modal
+  const openTranscriptModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalTranscriptOpen(true);
+  };
+
+  // Function to close the transcript modal
+  const closeTranscriptModal = () => {
+    setIsModalTranscriptOpen(false);
+    setCurrentEpisode(null);
+  };
+  //----------------------------------------------------------------------
+
   // For delete pop up
   const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
   const { isOpen: isAnnotationDrawerOpen, onOpen: onOpenAnnotationDrawer, onClose: onCloseAnnotationDrawer } = useDisclosure();
@@ -218,6 +238,20 @@ const Episode = ({ episode }) => {
               onClick={() => openSectionsModal(episode)}
             />
           </Tooltip>
+          <Tooltip label="Transcript" aria-label="Transcript Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="transcript-button"
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Transcript"
+              icon={<Icon as={FaFileLines} />}
+              onClick={() => openTranscriptModal(episode)}
+            />
+          </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
             <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
@@ -278,6 +312,22 @@ const Episode = ({ episode }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <Modal isOpen={isModalTranscriptOpen} onClose={closeTranscriptModal}>
+  <ModalOverlay backdropFilter="blur(10px)" />
+  <ModalContent minWidth={"50%"} padding={"2em"}>
+    <ModalCloseButton />
+    <ModalBody>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <VStack align="center" backgroundColor={"transparent"}>
+          <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
+          {/* Assuming there's a component for managing transcripts similar to ManageSections */}
+          <ManageTranscript episodeId={episode.id} />
+        </VStack>
+      </Box>
+    </ModalBody>
+  </ModalContent>
+</Modal>
 
       <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
         <ModalOverlay />
