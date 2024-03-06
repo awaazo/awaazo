@@ -322,7 +322,7 @@ const Episode = ({ episode }) => {
         <VStack align="center" backgroundColor={"transparent"}>
           <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
           {/* Assuming there's a component for managing transcripts similar to ManageSections */}
-          <ManageTranscript episodeId={episode.id} />
+          <ManageTranscript episodeId={episode.id} podcastId={episode.podcastId} />
         </VStack>
       </Box>
     </ModalBody>
