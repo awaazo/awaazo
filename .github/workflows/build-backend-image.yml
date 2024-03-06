@@ -28,6 +28,20 @@ jobs:
           run: |
             touch appsettings.json
             echo $settings > appsettings.json
+
+        # Install .NET 6 to build the new migrations
+        - name: Setup .NET for Migrations
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: 6.0.x
+
+        # Delete the old migration folder
+        - name: Delete Any Existing Migrations
+          run: rm -rf Backend/Backend/Migrations
+
+        # Create the new migration
+        - name: Create New Migration
+          run: dotnet ef migrations add ${{ steps.extract_branch.outputs.branch }}_Migration -o Migrations
         
           # Login to Container registy
         - name: Log in to the Container registry
