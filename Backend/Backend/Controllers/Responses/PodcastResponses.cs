@@ -116,6 +116,7 @@ public class PodcastResponse
         Episodes = p.Episodes.Select(e => new EpisodeResponse(e, domainUrl)).ToList();
         Ratings = p.Ratings.Select(r => new RatingResponse(r, domainUrl)).ToList();
         TotalRatings = (ulong)Ratings.Where(r => r.Rating != 0).Count();
+        TotalPodcastPoints = Episodes.Sum(u => u.TotalPoints);
         if (TotalRatings > 0)
             AverageRating = (float)Ratings.Where(r => r.Rating != 0).Average(r => r.Rating);
     }
@@ -131,6 +132,8 @@ public class PodcastResponse
     public List<EpisodeResponse> Episodes { get; set; } = new List<EpisodeResponse>();
     public float AverageRating { get; set; } = 0;
     public ulong TotalRatings { get; set; } = 0;
+
+    public int TotalPodcastPoints { get; set; } = 0;
     public List<RatingResponse> Ratings { get; set; } = new List<RatingResponse>();
 }
 

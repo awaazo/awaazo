@@ -124,4 +124,5 @@ public class AdminPanelService
     public Task<AdminEmailLog[]> EmailLogs(User admin, int page) {
         return _db.AdminEmailLogs.Skip(page * EmailLogsPerPage).Take(EmailLogsPerPage).ToArrayAsync();
     }
+    
 }

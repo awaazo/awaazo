@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using static Backend.Infrastructure.ControllerHelper;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 
@@ -17,6 +18,10 @@ namespace Backend.Controllers;
 [Authorize]
 public class SocialController : ControllerBase
 {
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 10;
+
+
     private readonly IAuthService _authService;
     private readonly ISocialService _socialService;
     private readonly ILogger<SocialController> _logger;
@@ -35,6 +40,60 @@ public class SocialController : ControllerBase
     }
 
     #region Comment
+
+    /// <summary>
+    /// Gets comment for a specific episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("{episodeId}/getComments")]
+    public async Task<IActionResult> GetComments(Guid episodeId,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddComment));
+
+
+            return Ok(await _socialService.GetEpisodeCommentsAsync(episodeId, page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddComment));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get Replies of each comment
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("{commentId}/getReplies")]
+    public async Task<IActionResult> GetCommentReplies(Guid commentId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddComment));
+
+
+            return Ok(await _socialService.GetCommentReplyAsync(commentId, page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddComment));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+
+
 
     /// <summary>
     /// Adds a comment to the episode or comment for the current user.

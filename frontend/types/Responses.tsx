@@ -1,4 +1,23 @@
-import { UserMenuInfo, UserProfile, Podcast, Episode, userProfileByID, User, Bookmark, Section, Playlist, Transcript, Annotation, WatchHistory, Metrics , Chatbot } from "./Interfaces";
+
+import {
+  UserMenuInfo,
+  UserProfile,
+  Podcast,
+  Episode,
+  userProfileByID,
+  User,
+  Bookmark,
+  Section,
+  Playlist,
+  Transcript,
+  Annotation,
+  WatchHistory,
+  Metrics,
+  Chatbot,
+  Reply,
+  Transaction,
+  Balance
+} from "./Interfaces";
 
 
 export interface BaseResponse {
@@ -101,6 +120,10 @@ export interface EditEpisodeResponse extends BaseResponse {
   data: string;
 }
 
+export interface EpisodeAddAudioResponse extends BaseResponse {
+  data: string;
+}
+
 export interface GetMyEpisodeResponse extends BaseResponse {
   episode: Episode;
 }
@@ -112,6 +135,12 @@ export interface NotificationResponse extends BaseResponse {
 }
 
 //#region Social Responses
+export interface GetCommentsResponse extends BaseResponse {
+  comments: Comment[];
+}
+export interface GetRepliesResponse extends BaseResponse {
+  replies: Reply[];
+}
 export interface IsLikedResponse extends BaseResponse {
   isLiked: boolean;
 }
@@ -188,7 +217,31 @@ export interface GetMetricsResponse extends BaseResponse {
 //#endregion
 
 export interface GetChatbotResponse extends BaseResponse {
-  episodeId:string;
-  userId:string;
+  episodeId: string;
+  userId: string;
   messages: Chatbot[];
 }
+
+export interface createPaymentResponse extends BaseResponse {
+  data : string
+}
+
+export interface confirmPaymentResponse extends BaseResponse{
+  data : string
+}
+
+export interface getUserBalance extends BaseResponse {
+  data : number
+}
+export interface WithdrawResponse extends BaseResponse{
+  data : string
+}
+
+export interface TransactionResponse extends BaseResponse{
+  data : Transaction[]
+}
+
+export interface Last5DaysBalanceResponse extends BaseResponse{
+  data : Balance[]
+}
+

@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { RiRobot2Fill } from "react-icons/ri";
-import { useChatBot } from "../../utilities/ChatBotContext";
-import AuthPrompt from "../auth/AuthPrompt";
-import AuthHelper from "../../helpers/AuthHelper";
+import { usePanel } from "../../../utilities/PanelContext";
+import AuthPrompt from "../../auth/AuthPrompt";
+import AuthHelper from "../../../helpers/AuthHelper";
 
 const ChatBotButton = ({ episodeId }) => {
-  const { dispatch } = useChatBot();
+  const { dispatch } = usePanel();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const handleClick = () => {
     AuthHelper.authMeRequest().then((response) => {
-      if (response.status == 401){
+      if (response.status == 401) {
         setShowLoginPrompt(true);
         return;
-      }else{
-        dispatch({ type: "TOGGLE_CHAT" });
+      } else {
+        dispatch({ type: "OPEN_PANEL", payload: "ChatBot" });
         dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
       }
     });
