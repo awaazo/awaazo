@@ -41,7 +41,7 @@ jobs:
 
         # Create the new migration
         - name: Create New Migration
-          run: dotnet ef migrations add ${{ steps.extract_branch.outputs.branch }}_Migration -o Migrations
+          run: dotnet ef migrations add new_Migration -o Migrations
         
           # Login to Container registy
         - name: Log in to the Container registry
