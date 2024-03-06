@@ -41,7 +41,11 @@ jobs:
 
         # Create the new migration
         - name: Create New Migration
-          run: dotnet ef migrations add new_Migration -o Migrations
+          run: |
+            cd Backend/Backend
+            dotnet tool install --global dotnet-ef
+            dotnet tool restore
+            dotnet ef migrations add new_Migration -o Migrations
         
           # Login to Container registy
         - name: Log in to the Container registry
