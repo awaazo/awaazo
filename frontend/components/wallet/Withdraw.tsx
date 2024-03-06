@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -13,10 +14,8 @@ import {
   Icon,
   ModalFooter,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import PaymentHelper from "../../helpers/PaymentHelper";
 import { PiCurrencyDollarSimpleFill } from "react-icons/pi";
-
 const Withdraw = () => {
   const [balance, setBalance] = useState<number>(0);
   const [withdrawError, setWithdrawError] = useState<string>(null);
