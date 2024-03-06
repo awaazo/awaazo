@@ -1,5 +1,6 @@
+import  { useEffect, useState } from "react";
 import { Flex, IconButton, Tooltip, VStack } from "@chakra-ui/react";
-import react, { useEffect, useState } from "react";
+
 import { Episode } from "../../types/Interfaces";
 import PaymentHelper from "../../helpers/PaymentHelper";
 import EpisodeCard from "../cards/EpisodeCard";

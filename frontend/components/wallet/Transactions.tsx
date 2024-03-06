@@ -1,14 +1,10 @@
+import  { useEffect, useState } from "react";
 import {
-  Box,
   Flex,
-  Text,
-  HStack,
-  Avatar,
   VStack,
   Tooltip,
   IconButton,
 } from "@chakra-ui/react";
-import react, { useEffect, useState } from "react";
 import { Transaction } from "../../types/Interfaces";
 import PaymentHelper from "../../helpers/PaymentHelper";
 import TransactionCard from "../cards/TransactionCard";

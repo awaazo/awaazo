@@ -36,6 +36,7 @@ const overrides = {
           animation: "Gradient 10s infinite linear",
           minWidth: "200px",
         },
+    
       },
     },
 
