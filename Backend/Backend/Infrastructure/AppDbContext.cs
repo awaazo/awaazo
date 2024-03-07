@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using System.Diagnostics.CodeAnalysis;
+using Backend.Models.Interfaces;
 using Backend.Models.stats;
 
 namespace Backend.Infrastructure;
@@ -54,6 +55,7 @@ public class AppDbContext : DbContext
     /// Tables related to statistics more than core functionality
     ///
     public virtual DbSet<AdminEmailLog> AdminEmailLogs { get; set; }
+    public virtual DbSet<Report> Reports { get; set; }
 
     /// <summary>
     /// Maps to the Soundex function in the database.
@@ -72,20 +74,27 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-
-
+        
+        // GLOBAL Query filters
+        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+        modelBuilder.Entity<Episode>().HasQueryFilter(e => e.DeletedAt == null);
+        modelBuilder.Entity<Podcast>().HasQueryFilter(p => p.DeletedAt == null);
+        modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
+        modelBuilder.Entity<CommentReply>().HasQueryFilter(cr => cr.DeletedAt == null);
+        modelBuilder.Entity<Report>().HasQueryFilter(r => r.DeletedAt == null);
+        
+        // Array conversion for tags and interests
         modelBuilder.Entity<User>()
             .Property(e => e.Interests).
             HasConversion(
             v => string.Join(",", v),
             v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
             );
-        modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
 
         modelBuilder.Entity<Podcast>().Property(e => e.Tags).HasConversion(
-
             v => string.Join(",", v), v => v.Split(",", StringSplitOptions.RemoveEmptyEntries));
 
+        // UserEpisodeInteraction Primary Key definition 
         modelBuilder.Entity<UserEpisodeInteraction>()
             .HasKey(uei => new { uei.UserId, uei.EpisodeId });
 
@@ -165,6 +174,14 @@ public class AppDbContext : DbContext
             .HasMany(e => e.EpisodeInteractions)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        // Episode 1-to-many UserEpisodeInteraction
+        modelBuilder.Entity<Episode>()
+            .HasMany(e => e.UserEpisodeInteractions)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
@@ -309,6 +326,14 @@ public class AppDbContext : DbContext
             }
 
             ((BaseEntity)entry.Entity).UpdatedAt = currentTime;
+        }
+        
+        // Check for soft delete
+        var softDeleteEntries = ChangeTracker.Entries()
+            .Where(e => e.Entity is ISoftDeletable && e.State == EntityState.Deleted);
+        foreach (var entityEntry in softDeleteEntries) {
+            entityEntry.State = EntityState.Modified;
+            entityEntry.CurrentValues[nameof(ISoftDeletable.DeletedAt)] = currentTime;
         }
 
         return base.SaveChanges();

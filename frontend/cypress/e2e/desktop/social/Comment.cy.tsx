@@ -51,8 +51,9 @@ describe('Comment', () => {
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
         cy.get('Input[placeholder="Reply to this comment..."]').should('be.visible').first().type("No! I was testing stuff using Cypress!");
         cy.get('[data-cy="reply-button"]').should('be.visible').first().click();
-        cy.get('.chakra-modal__close-btn').scrollIntoView().should('be.visible').click();
+        cy.get('.css-k008qs > .chakra-button').scrollIntoView().should('be.visible').click();
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
+        cy.get('button').contains('Load Replies').should('be.visible').click( {timeout: 5000} );
         cy.contains('No! I was testing stuff using Cypress!')
     });
 
@@ -71,7 +72,7 @@ describe('Comment', () => {
         cy.get('[data-cy="podcast-name:f2-legends"]').should('be.visible').click( {timeout:5000} )
         cy.wait(1000);
         cy.get('[data-cy="playerbar-comment-button"]').should('be.visible').first().click({ timeout: 5000 })
-        cy.get('[data-cy="delete-comment-id:"]').should('be.visible').first().click({ timeout: 5000 })
+        cy.get('[data-cy="delete-comment-id:"]').scrollIntoView().should('be.visible').first().click({ timeout: 5000 })
         cy.should('not.contain', 'No! I was testing stuff using Cypress!')
     })
 

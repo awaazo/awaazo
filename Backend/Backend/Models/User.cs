@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
+using Backend.Models.Interfaces;
 using Newtonsoft.Json;
 
 namespace Backend.Models;
@@ -8,7 +9,7 @@ namespace Backend.Models;
 /// <summary>
 /// User model.
 /// </summary>
-public class User : BaseEntity
+public class User : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Default Avatar name given if the user has yet to complete his profile setup.

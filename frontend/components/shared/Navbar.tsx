@@ -209,6 +209,9 @@ export default function Navbar() {
           <Link href="/CreatorHub" passHref>
             <MenuItem>CreatorHub</MenuItem>
           </Link>
+          <Link href="/Wallet" passHref>
+            <MenuItem>Wallet</MenuItem>
+          </Link>
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
@@ -219,6 +222,8 @@ export default function Navbar() {
             Logout
           </MenuItem>
         </MenuGroup>
+
+
       </MenuList>
     </Menu>
   );

@@ -12,6 +12,7 @@ export interface Podcast {
   episodes: Episode[];
   averageRating?: number;
   monthlyListeners: number;
+  totalPodcastPoints: number;
 }
 
 export interface Episode {
@@ -31,12 +32,12 @@ export interface Episode {
     count: number;
     isLiked: boolean;
   };
-  comments: Comment[];
   bookmarks?: Bookmark[];
   sections?: Section[];
   annotations: Annotation[];
   sponsors: Sponsor[];
-  transcript?: TranscriptLine[];
+  transcript?:Transcript[];
+  totalPoints:number
 }
 
 export interface Playlist {
@@ -52,6 +53,7 @@ export interface Playlist {
   updatedAt: Date;
   playlistEpisodes: Episode[];
   coverArt: string;
+  lastUpdated: string;
 }
 
 export interface Section {
@@ -63,13 +65,13 @@ export interface Section {
 }
 
 export interface Comment {
-  id: number;
+  id: string;
   user: User;
   episodeId: string;
   text: string;
   dateCreated: Date;
-  likes: Like[];
-  replies: Reply[];
+  likes: number;
+  noOfReplies: number;
 }
 
 export interface Like {
@@ -117,10 +119,20 @@ export interface WatchHistory {
   listenPosition: number;
 }
 
-export interface TranscriptLine {
-  timestamp: number;
+export interface Transcript {
+  id: number;
+  seek: number;
+  start: number;
+  end: number;
   text: string;
   speaker: string;
+  words: {
+    start: number;
+    end: number;
+    word: string;
+    score: number;
+    speaker: string;
+  }[];
 }
 
 export interface Metrics {
@@ -147,6 +159,7 @@ export interface User {
   gender: "male" | "female" | "other" | "prefer not to say";
   isPodcaster: boolean;
   podcasts?: Podcast[];
+  isAdmin: boolean;
 }
 
 export interface PodcastFollow {
@@ -255,7 +268,7 @@ export interface MySubscriptions {
   ratings?: PodcastRating[];
 }
 
-export interface Chatbot{
+export interface Chatbot {
   id: string;
   userId: string;
   episodeId: string;
@@ -264,4 +277,35 @@ export interface Chatbot{
   username: string;
   avatarUrl: string;
   sentAt: Date;
+}
+
+export interface Transcript {
+  id: number;
+  seek: number;
+  start: number;
+  end: number;
+  text: string;
+  speaker: string;
+  words: {
+    start: number;
+    end: number;
+    word: string;
+    score: number;
+    speaker: string;
+  }[];
+}
+
+export interface Transaction{
+  amount:number,
+  username : string,
+  date : Date,
+  userId :string,
+  senderId : string,
+  senderName : string,
+  type : string
+}
+
+export interface Balance {
+  amount: number,
+  date : string
 }

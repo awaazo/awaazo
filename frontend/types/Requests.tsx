@@ -129,6 +129,10 @@ export interface EpisodeEditRequest {
   isExplicit: boolean;
 }
 
+export interface EpisodeAddAudioRequest{
+  audioFile: File;
+}
+
 //#endregion
 
 //#region Episode Bookmark Requests
@@ -201,3 +205,34 @@ export interface ChatbotMessageRequest {
   episodeId: string;
   prompt: string ;
 }
+
+//#region Episode editTrasncriptLines Request
+export interface editTranscriptLinesRequest {
+  id: number,
+  seek: number,
+  start: number,
+  end: number,
+  text: string,
+  speaker: string,
+  words: {
+    start: number,
+    end: number,
+    word: string,
+    score: number,
+    speaker: string
+  }[];
+}
+//#endregion
+
+//#region Payment Request
+export interface createPayment {
+  episodeId : string,
+  points : number
+}
+
+export interface confirmPayment{
+  pointId:string
+}
+
+//# end Region
+

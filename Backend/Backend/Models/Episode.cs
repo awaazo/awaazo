@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Backend.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Backend.Models.Interfaces;
 using static Backend.Infrastructure.FileStorageHelper;
 
 namespace Backend.Models;
@@ -8,9 +10,8 @@ namespace Backend.Models;
 /// <summary>
 /// Podcast episode.
 /// </summary>
-public class Episode : BaseEntity
+public class Episode : BaseEntity, ISoftDeletable
 {
-
     public Episode()
     {
         EpisodeName = string.Empty;
@@ -58,12 +59,16 @@ public class Episode : BaseEntity
     /// </summary>
     public double Duration { get; set; } = 0;
 
+    /// <summary>
+    /// The date the episode was released
+    /// </summary> 
     public DateTime ReleaseDate { get; set; } = DateTime.Now;
 
     public bool IsExplicit { get; set; } = false;
 
     public ulong PlayCount { get; set; } = 0;
 
+    public ICollection<UserEpisodeInteraction> UserEpisodeInteractions { get; } = new List<UserEpisodeInteraction>();
 
     public ICollection<EpisodeSections> episodeSections = new List<EpisodeSections>();
 
@@ -92,28 +97,74 @@ public class Episode : BaseEntity
     /// Points collected by an episode
     /// </summary>
     public ICollection<Points> Points { get; } = new List<Points>();
+
+    public DateTime? DeletedAt { get; set; }
+    public Guid DeletedBy { get; set; }
 }
 
+/// <summary>
+/// User interaction with an episode
+/// </summary>
+[PrimaryKey(nameof(UserId), nameof(EpisodeId))]
 public class UserEpisodeInteraction : BaseEntity
 {
+    /// <summary>
+    /// ID of the user who interacted with the episode  
+    /// </summary>
+    [Required]
     public Guid UserId { get; set; }
 
+    /// <summary>
+    /// The user who interacted with the episode
+    /// </summary>
     public User User { get; set; } = null!;
     
+    /// <summary>
+    /// ID of the episode that the user interacted with
+    /// </summary>
+    [Required]
     public Guid EpisodeId { get; set; }
 
+    /// <summary>
+    /// The episode that the user interacted with
+    /// </summary>
     public Episode Episode { get; set; } = null!;
 
+    /// <summary>
+    /// Whether the user has listened to the episode
+    /// </summary>
     [DefaultValue(false)]
     public bool HasListened { get; set; }
 
+    /// <summary>
+    /// Whether the user has liked the episode
+    /// </summary>
     [DefaultValue(false)]
     public bool HasLiked { get; set; }
 
+    /// <summary>
+    /// The number of times the user has clicked on the episode
+    /// </summary>
+    [DefaultValue(0)]
+    public int Clicks { get; set; }
+
+    /// <summary>
+    /// The total time the user has listened to the episode
+    /// </summary>
+    [DefaultValue("00:00:00")]
+    public TimeSpan TotalListenTime { get; set; }
+
+    /// <summary>
+    /// The last position the user listened to
+    /// </summary> 
+    [DefaultValue(0.0)]
     public double LastListenPosition { get; set; }
 
+    /// <summary>
+    /// The date the user last listened to the episode
+    /// </summary>
+    [DefaultValue("01/01/0001 00:00:00")]
     public DateTime DateListened { get; set; }
-
 }
 
 public class EpisodeSections

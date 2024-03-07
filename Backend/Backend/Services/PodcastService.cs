@@ -526,7 +526,7 @@ public class PodcastService : IPodcastService
     /// <param name="podcastId"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
+    public async Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
     {
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
@@ -587,16 +587,20 @@ public class PodcastService : IPodcastService
 
         try
         {
-            // Send request to PY server to generate a transcript
-            var url = _pyBaseUrl + "/stt_ingest";
-            var json = $@"{{
+            if (request.IsFullEpisode())
+            {
+
+                // Send request to PY server to generate a transcript
+                var url = _pyBaseUrl + "/stt_ingest";
+                var json = $@"{{
                 ""podcast_id"": ""{episode.PodcastId}"",
                 ""episode_id"": ""{episode.Id}""
-            }}";
+                }}";
 
-            using var httpClient = new HttpClient();
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            await httpClient.PostAsync(url, content);
+                using var httpClient = new HttpClient();
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await httpClient.PostAsync(url, content);
+            }
         }
         catch (Exception)
         {
@@ -613,7 +617,9 @@ public class PodcastService : IPodcastService
         // Send Notification to All the Subscribed Users
         await _notificationService.AddEpisodeNotification(podcastId, episode, _db);
 
-        return await _db.SaveChangesAsync() > 0;
+        await _db.SaveChangesAsync();
+
+        return episode.Id;
     }
 
     /// <summary>
@@ -670,24 +676,28 @@ public class PodcastService : IPodcastService
 
             try
             {
-                // Remove the old episode transcript
-                RemoveTranscript(episodeId, episode.PodcastId);
+                if (request.IsFullEpisode())
+                {
+                    // Remove the old episode transcript
+                    RemoveTranscript(episodeId, episode.PodcastId);
 
-                // Send request to PY server to generate a transcript
-                var url = _pyBaseUrl + "/stt_ingest";
-                var json = $@"{{
+                    // Send request to PY server to generate a transcript
+                    var url = _pyBaseUrl + "/stt_ingest";
+                    var json = $@"{{
                     ""podcast_id"": ""{episode.PodcastId}"",
                     ""episode_id"": ""{episode.Id}""
-                }}";
+                    }}";
 
-                using var httpClient = new HttpClient();
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                await httpClient.PostAsync(url, content);
+                    using var httpClient = new HttpClient();
+                    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                    await httpClient.PostAsync(url, content);
+                }
             }
             catch (Exception)
             {
                 // TODO: Log if any error happens here
             }
+
 
             // Find and Save the duration of the audio in seconds
             var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
@@ -727,6 +737,73 @@ public class PodcastService : IPodcastService
             podcast.IsExplicit = true;
             _db.Podcasts.Update(podcast);
         }
+
+        // Save the changes to the database and return status
+        _db.Episodes.Update(episode);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Adds audio to an existing episode for the specified podcast.
+    /// </summary>
+    /// <param name="request"> The request object </param>
+    /// <param name="episodeId"> The episode ID </param>
+    /// <param name="user"> The user object </param>
+    /// <returns> A boolean indicating success </returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist or is not owned by the user </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is not provided </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is not an audio file </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is larger than 1GB </exception>
+    public async Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user)
+    {
+        // Get the episode and make sure its owned by the user
+        Episode episode = await _db.Episodes
+            .Include(e => e.Podcast)
+            .FirstOrDefaultAsync(e => e.Id == episodeId && e.Podcast.PodcasterId == user.Id) ?? throw new Exception("Episode does not exist and/or it is not owned by user.");
+
+        // Check if the episode audio was provided
+        if (request.AudioFile == null)
+            throw new Exception("Audio file is required.");
+
+        // Check if the episode audio is an audio file
+        if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
+            throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
+
+        // Check if the episode audio is smaller than 1GB
+        if (request.AudioFile.Length > MAX_AUDIO_SIZE)
+            throw new Exception($"Audio file must be smaller than {MAX_AUDIO_SIZE}GB.");
+
+        // Append the new audio to the episode audio
+        episode.Audio = await AppendPodcastEpisodeAudio(episode.PodcastId, episode.Audio, request.AudioFile);
+
+        try
+        {
+            if (request.IsFullEpisode())
+            {
+                // Remove the old episode transcript
+                RemoveTranscript(episodeId, episode.PodcastId);
+
+                // Send request to PY server to generate a transcript
+                var url = _pyBaseUrl + "/stt_ingest";
+                var json = $@"{{
+                    ""podcast_id"": ""{episode.PodcastId}"",
+                    ""episode_id"": ""{episode.Id}""
+                    }}";
+
+                using var httpClient = new HttpClient();
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await httpClient.PostAsync(url, content);
+            }
+        }
+        catch (Exception)
+        {
+            // TODO: Log if any error happens here
+        }
+
+
+        // Find and Save the duration of the audio in seconds
+        var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
+        episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Save the changes to the database and return status
         _db.Episodes.Update(episode);
@@ -780,7 +857,9 @@ public class PodcastService : IPodcastService
     public async Task<bool> DeleteEpisodeAsync(Guid episodeId, User user)
     {
         // Check if the episode exists and is owned by the user
-        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+        Episode episode = await _db.Episodes
+            .Include(e => e.UserEpisodeInteractions)
+            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
 
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id) ?? throw new Exception("Episode podcast does not exist and/or it is not owned by user.");
@@ -891,6 +970,7 @@ public class PodcastService : IPodcastService
         // Make sure the listen position is not negative
         if (listenPosition < 0)
             throw new Exception("Listen position cannot be negative.");
+
         // Make sure the listen position is not greater than the duration of the episode
         if (listenPosition > episode.Duration)
             throw new Exception("Listen position cannot be greater than the duration of the episode.");
@@ -908,18 +988,29 @@ public class PodcastService : IPodcastService
                 UserId = user.Id,
                 DateListened = DateTime.Now,
                 LastListenPosition = listenPosition,
-                HasListened = true
+                HasListened = true,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                TotalListenTime = TimeSpan.FromSeconds(listenPosition)
             };
+
+            // Add the interaction to the database
             await _db.UserEpisodeInteractions.AddAsync(interaction);
         }
         else
         {
+            interaction.TotalListenTime = interaction.TotalListenTime.Add(TimeSpan.FromSeconds(Math.Abs(listenPosition - interaction.LastListenPosition)));
             interaction.DateListened = DateTime.Now;
             interaction.LastListenPosition = listenPosition;
             interaction.HasListened = true;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
             _db.UserEpisodeInteractions.Update(interaction);
         }
 
+        // Save the changes to the database
         return await _db.SaveChangesAsync() > 0;
     }
 
@@ -938,11 +1029,40 @@ public class PodcastService : IPodcastService
         UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
             .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
 
-        // If the interaction does not exist, return 0
+        // If the interaction does not exist, create a new one.
         if (interaction is null)
-            return new() { ListenPosition = 0 };
+        {
+            interaction = new()
+            {
+                EpisodeId = episode.Id,
+                UserId = user.Id,
+                DateListened = DateTime.Now,
+                LastListenPosition = 0,
+                HasListened = false,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Add the interaction to the database   
+            await _db.UserEpisodeInteractions.AddAsync(interaction);
+        }
         else
-            return new() { ListenPosition = interaction.LastListenPosition };
+        {
+            interaction.DateListened = DateTime.Now;
+            interaction.HasListened = true;
+            interaction.Clicks++;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
+            _db.UserEpisodeInteractions.Update(interaction);
+        }
+
+        // Save the changes to the database
+        await _db.SaveChangesAsync();
+
+        // Return the listen position
+        return new() { ListenPosition = interaction.LastListenPosition };
     }
 
     #endregion Watch History
@@ -1105,7 +1225,7 @@ public class PodcastService : IPodcastService
         .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
         // Check if the user owns the podcast of the episode
-        if(await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
+        if (await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
         {
             // Send request to PY server to generate a transcript
             var url = _pyBaseUrl + "/stt";

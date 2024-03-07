@@ -29,6 +29,8 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.WriteIndented = true;
         });
+
+        builder.Services.AddScoped<IAnalyticService, AnalyticService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -40,11 +42,14 @@ public class Program
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
         builder.Services.AddScoped<IAnnotationService, AnnotationService>();
         builder.Services.AddScoped<IWalletServices, WalletServices>();
+        builder.Services.AddScoped<AdminPanelService>();
+        builder.Services.AddScoped<ReportService>();
 
 
 
 
         builder.Services.AddScoped<ValidateUser>();
+        builder.Services.AddScoped<ValidateAdmin>();
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
@@ -163,10 +168,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
-        {
-            builder.UseMiddleware<ValidateUser>();
-        });
+      
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/bookmark"), builder =>
         {
             builder.UseMiddleware<ValidateUser>();

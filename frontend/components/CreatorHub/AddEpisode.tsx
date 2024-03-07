@@ -1,12 +1,13 @@
 import React, { useCallback, useState, FormEvent } from "react";
 import { useRouter } from 'next/router';
-import { FormControl, Button, Textarea, Box, VStack, Image, Input, IconButton, Flex, Switch, Text, Center, Heading, Modal, ModalContent, ModalCloseButton, ModalOverlay, Spinner } from "@chakra-ui/react";
+import { FormControl, Button, Textarea, Box, VStack, Image, Input,  Flex, Switch, Text, Center,  Modal, ModalContent, ModalOverlay, Spinner } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { UserMenuInfo, Podcast } from "../../types/Interfaces";
+import { UserMenuInfo} from "../../types/Interfaces";
 import { EpisodeAddRequest } from "../../types/Requests";
 import { AxiosProgressEvent } from "axios";
 import ImageAdder from "../tools/ImageAdder";
+import { v4 as uuidv4 } from 'uuid';
 
 const AddEpisodeForm = ({ podcastId }) => {
   const router = useRouter();
@@ -26,6 +27,15 @@ const AddEpisodeForm = ({ podcastId }) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const [serverError, setServerError] = useState(false);
+
+  // Upload percentage states
+  let totalRequestSize = 0;
+  let uploadedFileSize = 0;
+  let totalRequestsCount = 1;
+  let currentRequestCount = 1;
+
+  const MAXIMUM_FILE_SIZE = 80000000; // 80MB
+  const MIN_REQUEST_SIZE = 1249807; // ~1.2MB
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -66,6 +76,13 @@ const AddEpisodeForm = ({ podcastId }) => {
       return;
     }
     setLoading(true);
+
+    // Create an array of requests if the file is too large
+    const requests: EpisodeAddRequest[] = [];
+
+    totalRequestSize = ((file.size + MIN_REQUEST_SIZE) as number);
+    uploadedFileSize = 0;    
+
     // Create request object
     const request: EpisodeAddRequest = {
       audioFile: file,
@@ -75,26 +92,104 @@ const AddEpisodeForm = ({ podcastId }) => {
       episodeName: episodeName,
     };
 
+    // Check if the file is too large and split it into chunks if necessary
+    if (file.size > MAXIMUM_FILE_SIZE) {
+      console.log("File too large");
+      console.log(file.size);
+
+      // Preserving the original file information, such as the MIME type and last modified date
+      const originalMimeType = file.type;
+      const lastModified = file.lastModified;
+
+      // Split the file into chunks
+      const numberOfChunks = Math.ceil(file.size / MAXIMUM_FILE_SIZE);
+      const chunks = [];
+
+      // Add the MIN_REQUEST_SIZE for each request
+      totalRequestSize = ((totalRequestSize + (numberOfChunks * MIN_REQUEST_SIZE) - MIN_REQUEST_SIZE) as number);
+
+      // Track the start and end of the file
+      let start = 0;
+      let end = MAXIMUM_FILE_SIZE;
+
+      // Generate a unique ID for the file, which will be used to identify the chunks on the server
+      const id = uuidv4();
+
+      // Track the chunk number to reconstruct the file on the server in the correct order
+      let chunkNumber = 1;
+
+      // Loop through the file, creating chunks
+      while (start < file.size) {
+        // Slice the file into a chunk, based on the start and end, and create a new file object with the chunk data
+        chunks.push(new File([file.slice(start, end)], id + "<##>" + chunkNumber + "/" + numberOfChunks, { type: originalMimeType, lastModified: lastModified }));
+
+        requests.push({ audioFile: chunks[chunkNumber - 1], description: description, thumbnail: coverImageFile, isExplicit: isExplicit, episodeName: episodeName } as EpisodeAddRequest);
+
+        // Increment the chunk number and move the start and end to the next chunk
+        chunkNumber++;
+        start = end;
+        end = start + MAXIMUM_FILE_SIZE;
+      }
+      console.log("Number of chunks: " + chunks.length);
+      totalRequestsCount = numberOfChunks;
+      currentRequestCount = 1;
+    }
+    else {
+      console.log("File small enough to upload in one go.");
+      requests.push(request);
+      totalRequestsCount = 1;
+      currentRequestCount = 1;
+    }
+
     setServerError(false);
     setUploadModalOpen(true);
-    // Send the request
-    const response = await PodcastHelper.episodeAddRequest(request, podcastId, onUploadProgress);
-    console.log(response);
+
+    let response: any;
+    let episodeId: string;
+
+    // Send the requests
+    for (let i = 0; i < requests.length; i++) {
+      if (i === 0) {
+        // Add the episode and get the episode ID
+        response = await PodcastHelper.episodeAddRequest(requests[i], podcastId, onUploadProgress);
+        episodeId = response.data;
+      }
+      else {
+        // Add the audio chunks to the episode
+        response = await PodcastHelper.episodeAddAudioRequest(requests[i], episodeId, onUploadProgress);
+      }
+
+      if (response.status !== 200) {
+        setServerError(true);
+        setAddError(response.data);
+      }
+    }
 
     setLoading(false);
-
-    if (response.status === 200) {
-    } else {
-      setServerError(true);
-      setAddError(response.data);
-    }
   };
 
   // Define the progress callback
   const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
-    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+
+    // Calculate the progress percentage
+    let progress = Math.round(((progressEvent.loaded + uploadedFileSize) / totalRequestSize) * 100);
+
+    // If the file has been fully uploaded, update the uploaded file size
+    if (progressEvent.loaded === progressEvent.total) {
+      uploadedFileSize = (uploadedFileSize + progressEvent.total) as number;
+      console.log("progressEvent.total: " + progressEvent.total);
+
+      currentRequestCount++;
+
+      if (currentRequestCount > totalRequestsCount) {
+        progress = 100;
+      }
+    }
+
+    console.log("Uploaded: " + uploadedFileSize + " / " + totalRequestSize + " - " + progress + "%");
+
+    // Update the progress state
     setUploadProgress(progress);
-    console.log(progress);
   };
 
   // Ensures episode name is not longer than 25 characters
@@ -224,7 +319,7 @@ const AddEpisodeForm = ({ podcastId }) => {
                     </Text>
                   </Box>
                   {uploadProgress === 100 && (
-                    <Button onClick={() => window.location.reload()} alignSelf="center"  variant="gradient">
+                    <Button onClick={() => window.location.reload()} alignSelf="center" variant="gradient">
                       Finish
                     </Button>
                   )}

@@ -40,7 +40,7 @@ describe("Notification", () => {
             paths.never_gonna_give_you_up,
             "f2",
         );
-        cy.wait(500);
+        cy.wait(5000);
         cy.get('body').then(($body) => {
             if ($body.text().includes('An episode with the same name already exists for this podcast.')) {
                 expect(true).to.be.true;

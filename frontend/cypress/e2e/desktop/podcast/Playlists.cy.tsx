@@ -131,7 +131,7 @@ describe("Playlists", () => {
 
     it("Should show me my Liked Episodes", function () {
         cy.get('[href="/Explore/Search"]').click();
-        cy.get('.chakra-input').should('be.visible').type('has{enter}');
+        cy.get('.chakra-input__group > .chakra-input').should('be.visible').type('has{enter}');
         cy.wait(500);
         cy.get('[data-cy="like-button-index:"]').should('be.visible').first().click( {timeout:5000} )
         cy.visit('/profile/MyProfile').url().should('include', '/profile/MyProfile');
