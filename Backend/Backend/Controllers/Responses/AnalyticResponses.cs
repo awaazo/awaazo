@@ -224,13 +224,23 @@ public class UserEngagementMetricsResponse
     public int TotalListeners { get; set; } = 0;
 }
 
+/// <summary>
+/// Response for the genre user engagement
+/// </summary>
 [BindProperties]
 public class GenreUserEngagementResponse
 {
+    /// <summary>
+    /// Default empty constructor
+    /// </summary>
     public GenreUserEngagementResponse()
     {
     }
 
+    /// <summary>
+    /// Constructor for the genre user engagement response
+    /// </summary>
+    /// <param name="interactions">The interactions to get the genre user engagement from</param>
     public GenreUserEngagementResponse(List<UserEpisodeInteraction> interactions)
     {
         // Set the total clicks, watch time, and episodes watched
@@ -268,11 +278,38 @@ public class GenreUserEngagementResponse
         PercentageOfTotalWatchTime = (double)WatchTime.TotalSeconds / totalWatchTime * 100;
     }
 
+    /// <summary>
+    /// The most popular genre
+    /// </summary>
     public string Genre { get; set; } = "";
+
+    /// <summary>
+    /// The total clicks for the most popular genre
+    /// </summary>
     public int Clicks { get; set; } = 0;
+
+    /// <summary>
+    /// The percentage of total clicks for the most popular genre
+    /// </summary>
     public double PercentageOfTotalClicks { get; set; }
+
+    /// <summary>
+    /// The total watch time for the most popular genre
+    /// </summary>
     public TimeSpan WatchTime { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// The percentage of total watch time for the most popular genre
+    /// </summary>
     public double PercentageOfTotalWatchTime { get; set; }
+
+    /// <summary>
+    /// The number of episodes watched for the most popular genre
+    /// </summary> 
     public int NumberOfEpisodesWatched { get; set; } = 0;
+
+    /// <summary>
+    /// The number of likes for the most popular genre
+    /// </summary>
     public int NumberOfLikes { get; set; } = 0;
 }

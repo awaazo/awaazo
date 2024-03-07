@@ -896,13 +896,17 @@ public class AnalyticService : IAnalyticService
             .ToListAsync();
     }
 
-
-
-
-
-
-
-
+    #endregion User Engagement Metrics
+    
+    /// <summary>
+    /// Get the average watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The average watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
     public async Task<TimeSpan> GetUserAverageWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
     {
         // Check if the podcast or episode exists
@@ -976,6 +980,15 @@ public class AnalyticService : IAnalyticService
         return avgWatchTime;
     }
 
+    /// <summary>
+    /// Get the total watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The total watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
     public async Task<TimeSpan> GetUserTotalWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
     {
         // Check if the podcast or episode exists
@@ -1025,6 +1038,15 @@ public class AnalyticService : IAnalyticService
         return totalWatchTime;
     }
 
+    /// <summary>
+    /// Get the total watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The total watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
     public async Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize)
     {
         // Check if the count is less than or equal to 0
@@ -1059,6 +1081,17 @@ public class AnalyticService : IAnalyticService
         return topWatchedEpisodes;
     }
 
+    /// <summary>
+    /// Get the top watched podcasts for a user.
+    /// </summary>
+    /// <param name="count">The number of podcasts to get.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <returns>The top watched podcasts for the user.</returns>
+    /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
     public async Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize)
     {
         // Check if the count is less than or equal to 0
@@ -1093,15 +1126,13 @@ public class AnalyticService : IAnalyticService
         return topWatchedPodcasts;
     }
 
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    /// Get the top Genre by user.
+    /// </summary>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The top genre by user.</returns>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
     public async Task<GenreUserEngagementResponse> GetTopGenreByUserAsync(User user)
     {
         // Get all the interactions for the user
@@ -1118,6 +1149,16 @@ public class AnalyticService : IAnalyticService
         return new GenreUserEngagementResponse(interactions);
     }
 
+    /// <summary>
+    /// Get the user listening history.
+    /// </summary>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The user listening history.</returns>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
     public async Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize)
     {
         return await _db.UserEpisodeInteractions
@@ -1129,6 +1170,4 @@ public class AnalyticService : IAnalyticService
             .Select(uei => new EpisodeResponse(uei.Episode, domainUrl,false))
             .ToListAsync();
     }
-
-    #endregion User Engagement Metrics
 }

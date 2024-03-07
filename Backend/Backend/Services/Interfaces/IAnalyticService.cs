@@ -42,6 +42,4 @@ public interface IAnalyticService
     // User Listening History
     public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize);
 
-
-
 }

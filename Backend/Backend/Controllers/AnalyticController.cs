@@ -504,6 +504,14 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the total watch time of a user for a podcast, episode or for all content.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode. Or null if neither</param>
+    /// <returns>The total watch time of the user for the podcast, episode or for all content.</returns>
+    /// <response code="200">Returns the total watch time of the user for the podcast, episode or for all content.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
+    /// <response code="404">If the user does not exist.</response>
     [HttpGet("userTotalWatchTime")]
     public async Task<ActionResult> GetUserTotalWatchTime(Guid? podcastOrEpisodeId)
     {
@@ -529,6 +537,17 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get the top watched podcasts or episodes by a user.
+    /// </summary>
+    /// <param name="isEpisodes">Whether to get the top watched episodes or podcasts.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts or episodes.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The top watched podcasts or episodes by the user.</returns>
+    /// <response code="200">Returns the top watched podcasts or episodes by the user.</response>
+    /// <response code="404">If the user does not exist.</response>
     [HttpGet("topWatched")]
     public async Task<ActionResult> GetTopWatched(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE )
     {
@@ -559,6 +578,15 @@ public class AnalyticController : ControllerBase
 
     #endregion User Watch Time
 
+    #region User Listening Habits
+
+    /// <summary>
+    /// Get the top genre by user.
+    /// </summary>
+    /// <returns>The top genre by user.</returns>
+    /// <response code="200">Returns the top genre by user.</response>
+    /// <response code="404">If the user does not exist.</response>
+    /// <response code="400">If an error occurs.</response>
     [HttpGet("topGenre")]
     public async Task<ActionResult> GetTopGenre()
     {
@@ -584,6 +612,19 @@ public class AnalyticController : ControllerBase
         }
     }
 
+    #endregion User Listening Habits
+
+    #region User Listening History
+
+    /// <summary>
+    /// Get the listening history of a user.
+    /// </summary>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The listening history of the user.</returns>
+    /// <response code="200">Returns the listening history of the user.</response>
+    /// <response code="404">If the user does not exist.</response>
+    /// <response code="400">If an error occurs.</response>
     [HttpGet("listeningHistory")]
     public async Task<ActionResult> GetListeningHistory(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
@@ -609,7 +650,7 @@ public class AnalyticController : ControllerBase
         }
     }
 
-
+    #endregion User Listening History
 
     #endregion Listener Analytics
 }
