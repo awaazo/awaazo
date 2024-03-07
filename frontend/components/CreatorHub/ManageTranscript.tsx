@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Flex, Text, IconButton, Input, Tooltip, HStack, FormControl } from "@chakra-ui/react";
-import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import TranscriptPlayingBar from "./TranscriptPlayingBar";
-import SectionHelper from "../../helpers/SectionHelper";
-import { Section } from "../../types/Interfaces";
-import { SectionAddRequest } from "../../types/Requests";
-import { convertTime } from "../../utilities/commonUtils";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
 const ManageTranscript = ({ episodeId, podcastId }) => {

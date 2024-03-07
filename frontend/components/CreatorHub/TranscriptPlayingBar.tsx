@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, IconButton, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Text, Menu, MenuButton, MenuList, MenuItem, Tooltip, Icon, Button, HStack } from "@chakra-ui/react";
+import { Box, IconButton, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Text } from "@chakra-ui/react";
 import { FaPlay, FaPause} from "react-icons/fa";
 import EndpointHelper from "../../helpers/EndpointHelper";
 import { convertTime } from "../../utilities/commonUtils";
-import { TbKeyframeFilled } from "react-icons/tb";
 
 const TranscriptPlayingBar = ({ podcastId, episodeId }) => {
   const [audioUrl, setAudioUrl] = useState("");
@@ -12,7 +11,6 @@ const TranscriptPlayingBar = ({ podcastId, episodeId }) => {
   const audioRef = useRef(new Audio());
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [endBookmarkPosition, setEndBookmarkPosition] = useState(0);
 
   // Function to fetch episode URL
   const getEpisodePlaying = async (podcastId, episodeId) => {
@@ -33,13 +31,6 @@ const TranscriptPlayingBar = ({ podcastId, episodeId }) => {
 
     fetchAudio();
   }, [podcastId, episodeId]);
-
-//   useEffect(() => {
-//     const lastSectionEndTime = sections?.length > 0 ? sections[sections.length - 1].end : 0;
-//     setEndBookmarkPosition((lastSectionEndTime / duration) * 100);
-//     setCurrentTime(isAdding ? lastSectionEndTime : 0);
-//     audioRef.current.currentTime = isAdding ? lastSectionEndTime : 0;
-//   }, [isAdding, sections]);
 
   useEffect(() => {
     console.log("Audio URL:", audioUrl);
@@ -99,28 +90,6 @@ const TranscriptPlayingBar = ({ podcastId, episodeId }) => {
     setCurrentTime(value);
   };
 
-  // Handles displaying teh section title
-  const [showSectionTitle, setShowSectionTitle] = useState(false);
-
-  const handleMouseEnter = () => {
-    setShowSectionTitle(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowSectionTitle(false);
-  };
-
-//   // Handles End Changes
-//   const handleEndChange = () => {
-//     const lastSectionEndTime = sections.length > 0 ? sections[sections.length - 1].end : 0;
-//     if (currentTime > lastSectionEndTime) {
-//       onEndChange(currentTime);
-//       setEndBookmarkPosition((currentTime / duration) * 100);
-//     } else {
-//       console.log("End time must be after the end of the last section");
-//     }
-//   };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -137,8 +106,6 @@ const TranscriptPlayingBar = ({ podcastId, episodeId }) => {
               value={currentTime}
               minWidth={"100px"}
               onChange={(value) => handleSeek(value)}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
             >
               <SliderTrack>
                 <SliderFilledTrack bg="brand.100" />
