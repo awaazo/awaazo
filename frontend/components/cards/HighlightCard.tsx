@@ -1,63 +1,80 @@
-import { Box, Image, Text, HStack, VStack, Button, useBreakpointValue, Icon } from "@chakra-ui/react";
+import { Box, Image, Text, IconButton, VStack, useBreakpointValue } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { Highlight } from "../../types/Interfaces";
-import { FaPlay } from "react-icons/fa";
-import { usePlayer } from "../../utilities/PlayerContext";
-import { convertTime } from "../../utilities/commonUtils";
+import { FaPlay, FaPause, FaHeart, FaCommentDots, FaShare } from "react-icons/fa";
 import LikeComponent from "../interactionHub/Likes";
-import commentButton from "../interactionHub/buttons/CommentButton";
+import CommentButton from "../interactionHub/buttons/CommentButton";
 
 const HighlightCard = ({ highlight }) => {
-  const { dispatch } = usePlayer();
-  const { id, thumbnailUrl, episodeName, podcastName, duration, likes } = highlight;
+  const [isPlaying, setIsPlaying] = useState(false);
+  // Adjusted to use properties from the Highlight interface
+  const { id, thumbnailUrl, episodeName, highlightName, duration, likes, comments } = highlight;
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const handleEpisodeClick = () => {
-    dispatch({
-      type: "PLAY_NOW_QUEUE",
-      payload: {
-        id,
-        thumbnailUrl,
-        episodeName,
-        podcastName,
-        duration,
-      },
-    });
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+    // Toggle play/pause for the highlight. Actual implementation will depend on player integration.
+  };
+
+  // Mocking interaction as there's no backend yet
+  const handleLike = () => {
+    // Placeholder for like interaction
+  };
+
+  const handleComment = () => {
+    // Placeholder for comment interaction
+  };
+
+  const handleShare = () => {
+    // Placeholder for share interaction
   };
 
   return (
-    <HStack
-      p={2}
-      spacing={4}
-      alignItems="center"
-      borderRadius="26px"
-      bg={"rgba(0, 0, 0, 0.2)"}
-      boxShadow="md"
-      style={{ cursor: "pointer" }}
-      onClick={handleEpisodeClick}
+    <Box
+      position="relative"
+      height="100vh" // Full-screen view for each highlight
+      width="full"
     >
       <Image
-        boxSize={isMobile ? "0px" : "120px"}
         src={thumbnailUrl}
-        borderRadius="10%"
+        alt={`Highlight from ${episodeName}: ${highlightName}`}
+        fit="cover"
+        w="full"
+        h="full"
+        position="absolute"
+        zIndex="-1"
+        opacity="0.5"
       />
-      <VStack spacing={1} alignItems="flex-start">
-        <Text fontWeight="bold">{episodeName}</Text>
-        <Text fontSize="sm">{podcastName}</Text>
-        <HStack>
-          <Text fontSize="sm">{convertTime(duration)}</Text>
-          <LikeComponent likes={likes} />
-          <commentButton />
-        </HStack>
-      </VStack>
-      <Button
-        aria-label="Play"
-        variant="ghost"
-        size="lg"
-        colorScheme="brand"
-        onClick={handleEpisodeClick}
+      <VStack
+        justifyContent="center"
+        alignItems="center"
+        height="full"
+        spacing={4}
+        p={4}
+        position="relative"
       >
-        <Icon as={FaPlay} />
-      </Button>
-    </HStack>
+        <Text fontSize="2xl" fontWeight="bold" color="white">{highlightName}</Text>
+        <Text fontSize="lg" color="whiteAlpha.800">{episodeName}</Text>
+        <IconButton
+          icon={isPlaying ? <FaPause /> : <FaPlay />}
+          aria-label={isPlaying ? "Pause highlight" : "Play highlight"}
+          colorScheme="teal"
+          variant="solid"
+          isRound
+          size="lg"
+          onClick={togglePlay}
+          zIndex="1"
+        />
+        <VStack>
+          <IconButton icon={<FaHeart />} aria-label="Like" colorScheme="red" variant="ghost" onClick={handleLike} />
+          <Text fontSize="sm" color="white">{`${likes.count} Likes`}</Text>
+          <IconButton icon={<FaCommentDots />} aria-label="Comment" colorScheme="blue" variant="ghost" onClick={handleComment} />
+          <Text fontSize="sm" color="white">{`${comments} Comments`}</Text>
+          <IconButton icon={<FaShare />} aria-label="Share" colorScheme="green" variant="ghost" onClick={handleShare} />
+        </VStack>
+      </VStack>
+    </Box>
   );
-}
+};
+
+export default HighlightCard;

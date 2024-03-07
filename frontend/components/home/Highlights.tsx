@@ -1,12 +1,16 @@
-import { Spinner, VStack, useBreakpointValue, Text, HStack, SimpleGrid } from "@chakra-ui/react";
+import { Spinner, VStack, Text, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import { Highlight } from "../../types/Interfaces";
-import PodcastHelper from "../../helpers/PodcastHelper";
+import HighlightTicket from "./HighlightTicket"; // Ensure this component exists and is imported correctly
 
-
+// Mock Data for demonstration
+const mockHighlights = [
+    { id: 1, title: "Highlight 1", description: "This is the first highlight" },
+    { id: 2, title: "Highlight 2", description: "This is the second highlight" },
+    // Add more mock data as needed
+];
 
 const HighLights: React.FC = () => {
-    const [highlights, setHighlights] = useState<Highlight[]>([]);
+    const [highlights, setHighlights] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -14,46 +18,48 @@ const HighLights: React.FC = () => {
         const fetchHighlights = async () => {
             setIsLoading(true);
             try {
-                const res = await PodcastHelper.podcastGetHighlights(0, 12);
-                if (res.status === 200) {
-                    setHighlights(res.highlights);
-                } else {
-                    throw new Error("Failed to load highlights");
-                }
+                // Simulate fetching data
+                setTimeout(() => {
+                    setHighlights(mockHighlights);
+                    setIsLoading(false);
+                }, 1000); // Simulated network request delay
             } catch (err) {
-                setError(err.message || "An error occurred while fetching highlights");
-            } finally {
+                setError("An error occurred while fetching highlights");
                 setIsLoading(false);
             }
         };
 
         fetchHighlights();
     }, []);
-    
+
+    if (isLoading) {
+        return <Spinner size="xl" />;
+    }
+
+    if (error) {
+        return <Text color="red.500">{error}</Text>;
+    }
+
     return (
         <VStack spacing={4} align="stretch">
-            {isLoading ? (
-                <Spinner size="xl" />
-            ) : error ? (
-                <Text color="red.500">{error}</Text>
-            ) : (
-                <HStack
-                    spacing={4}
-                    overflowX="auto"
-                    css={{
-                        "&::-webkit-scrollbar": {
-                            display: "none",
-                        },
-                    }}
-                >
-                    <SimpleGrid columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }} spacing={5}>
-                        {highlights && highlights.length > 0 ? highlights.map((highlight) => <HighlightTicket key={highlight.id} highlight={highlight} />) : <Text>No highlights available</Text>}
-                    </SimpleGrid>
-                </HStack>
-            )}
+            <Box
+                overflowX="auto"
+                css={{
+                    "&::-webkit-scrollbar": {
+                        display: "none",
+                    },
+                }}
+            >
+                {highlights && highlights.length > 0 ? (
+                    highlights.map((highlight) => (
+                        <HighlightTicket key={highlight.id} highlight={highlight} />
+                    ))
+                ) : (
+                    <Text>No highlights available</Text>
+                )}
+            </Box>
         </VStack>
     );
 };
 
 export default HighLights;
-
