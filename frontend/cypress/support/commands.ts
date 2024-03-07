@@ -255,6 +255,17 @@ Cypress.Commands.add('cleanup', () => {
   cy.get('body').should("not.contain", "Edit Podcast");
 });
 
+Cypress.Commands.add('mobile_cleanup', () => {
+  cy.login(null, "mobileRegister@email.com", "password123");
+  cy.wait(750);
+  cy.visit('/CreatorHub')
+  cy.get('[data-cy="podcast-delete"]').should('exist').click({ timeout: 12000 });
+  cy.wait(1000);
+  cy.contains("Button", "Delete").should('exist').click({ timeout: 12000 });
+  cy.url().should("include", "/CreatorHub");
+  cy.get('body').should("not.contain", "Edit Podcast");
+});
+
 
 Cypress.Commands.add('console_error_hack', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {

@@ -8,7 +8,7 @@ describe('Mobile Register', () => {
             cy.visit('/');
         });
 
-        it('Should go to homescreenregister a new user using the mobile interface', () => {
+        it('Should go to home screen register a new user using the mobile interface', () => {
             cy.register_user(
             "mobileRegister@email.com",
             "MobileUsername",
