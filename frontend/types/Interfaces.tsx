@@ -13,6 +13,7 @@ export interface Podcast {
   averageRating?: number;
   monthlyListeners: number;
   totalPodcastPoints: number;
+  highlights: Highlight[];
 }
 
 export interface Episode {
@@ -37,7 +38,34 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?:Transcript[];
-  totalPoints:number
+  totalPoints:number;
+  highlights: Highlight[];
+}
+
+export interface Highlight {
+  id: string;
+  podcastId: string;
+  podcastName: string;
+  episodeId: string;
+  episodeName: string;
+  thumbnailUrl: string;
+  highlightName: string;
+  description: string;
+  duration: number;
+  releaseDate: Date;
+  isExplicit: boolean;
+  playCount: number;
+  likes: {
+    count: number;
+    isLiked: boolean;
+  };
+  comments: number;
+  bookmarks: number;
+  totalPoints: number;
+  annotations: Annotation[];
+  sponsors: Sponsor[];
+  transcript?:Transcript[];
+
 }
 
 export interface Playlist {

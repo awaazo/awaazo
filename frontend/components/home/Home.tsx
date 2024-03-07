@@ -1,6 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
 import ForYou from "./ForYou";
+import HighLights from "./Highlights";
 
 const Home = () => {
   return (
@@ -16,6 +17,12 @@ const Home = () => {
           Podcasts For You
         </Text>
         <ForYou />
+      </Box>
+      <Box mb={4}>
+        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
+          Podcasts Highlights
+        </Text>
+        <HighLights />
       </Box>
     </Box>
   );
