@@ -1,3 +1,5 @@
+using Stripe;
+
 namespace Backend.Tests;
 
 /// <summary>
@@ -3470,6 +3472,80 @@ public class AnalyticServiceTests
         {
             Assert.Equal(userListeningHistoryResponses[i].Id, expectedUserListeningHistoryResponses[i].Id);
         }
+    }
+
+    // GetTopGenreByUserAsync
+
+    [Fact]
+    public async Task GetTopGenreByUserAsync_NoData_ThrowsException()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Exception>(() => _analyticService.GetTopGenreByUserAsync(user));
+        Assert.Equal("No data available for the given user.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetTopGenreByUserAsync_Data_ReturnGenreUserEngagementResponse()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+
+        string[] genre1 = new string[] { "Comedy", "Drama" };
+        string[] genre2 = new string[] { "Comedy", "Animals" };
+        string[] genre3 = new string[] { "MyNameIs", "Jeff" };
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id, Tags = genre1 },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id, Tags = genre2 },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id, Tags = genre3}
+        };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[0].Id, Podcast = podcasts[0] },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[1].Id, Podcast = podcasts[1] },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[2].Id, Podcast = podcasts[2] }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id, TotalListenTime = TimeSpan.FromSeconds(5), HasLiked = true, Clicks = 5},
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id, TotalListenTime = TimeSpan.FromSeconds(3), HasLiked = true, Clicks = 3},
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id, TotalListenTime = TimeSpan.FromSeconds(4), Clicks = 4}
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        GenreUserEngagementResponse expectedGenreUserEngagementResponse = new()
+        {
+            Genre = "Comedy",
+            WatchTime = TimeSpan.FromSeconds(9),
+            NumberOfLikes = 1,
+            NumberOfEpisodesWatched = 2,
+            PercentageOfTotalWatchTime = 75,
+            Clicks = 9,
+            PercentageOfTotalClicks = 75
+        };
+
+        // Act
+        GenreUserEngagementResponse genreUserEngagementResponse = await _analyticService.GetTopGenreByUserAsync(user);
+
+        // Assert
+        Assert.Equal(expectedGenreUserEngagementResponse.Genre, genreUserEngagementResponse.Genre);
+        Assert.Equal(expectedGenreUserEngagementResponse.WatchTime, genreUserEngagementResponse.WatchTime);
+        Assert.Equal(expectedGenreUserEngagementResponse.NumberOfLikes, genreUserEngagementResponse.NumberOfLikes);
+        Assert.Equal(expectedGenreUserEngagementResponse.NumberOfEpisodesWatched, genreUserEngagementResponse.NumberOfEpisodesWatched);
+        Assert.Equal(expectedGenreUserEngagementResponse.PercentageOfTotalWatchTime, genreUserEngagementResponse.PercentageOfTotalWatchTime);
     }
 
 }

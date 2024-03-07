@@ -1002,8 +1002,8 @@ public class AnalyticControllerTests
         _analyticServiceMock.Setup(service => service.GetTopWatchedPodcastsByUserAsync(count, getLessWatched, user, It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(podcastResponses);
 
         // Act
-        var result1 = await _analyticController.GetTopWatchedByUser(true, count, getLessWatched,1,10);
-        var result2 = await _analyticController.GetTopWatchedByUser(false, count, getLessWatched,1,10);
+        var result1 = await _analyticController.GetTopWatched(true, count, getLessWatched,1,10);
+        var result2 = await _analyticController.GetTopWatched(false, count, getLessWatched,1,10);
 
         // Assert
         var okResult1 = Assert.IsType<OkObjectResult>(result1);
@@ -1074,7 +1074,60 @@ public class AnalyticControllerTests
         Assert.Equal(errorMessage, badRequestResult.Value);
     }
 
+    [Fact]
+    public async Task GetTopGenre_ReturnsOkResult()
+    {
+        // Arrange
+        User user = new();
+        GenreUserEngagementResponse genreResponses = new()
+        {
+            Genre = "Genre",
+            WatchTime = TimeSpan.FromMinutes(30)
+        };
 
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopGenreByUserAsync(It.IsAny<User>())).ReturnsAsync(genreResponses);
 
+        // Act
+        var result = await _analyticController.GetTopGenre();
 
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var genre = Assert.IsType<GenreUserEngagementResponse>(okResult.Value);
+        Assert.Equal(genreResponses, genre);
+    }
+
+    [Fact]
+    public async Task GetTopGenre_ReturnsNotFoundResult()
+    {
+        // Arrange
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetTopGenre();
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTopGenre_ReturnsBadRequestResult()
+    {
+        // Arrange
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetTopGenreByUserAsync(It.IsAny<User>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetTopGenre();
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
 }

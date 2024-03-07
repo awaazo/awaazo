@@ -530,12 +530,12 @@ public class AnalyticController : ControllerBase
     }
 
     [HttpGet("topWatched")]
-    public async Task<ActionResult> GetTopWatchedByUser(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE )
+    public async Task<ActionResult> GetTopWatched(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE )
     {
         try
         {
             // Log the message
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopWatchedByUser));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopWatched));
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -551,7 +551,7 @@ public class AnalyticController : ControllerBase
         }
         catch (Exception ex)
         {
-            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopWatchedByUser));
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopWatched));
 
             return BadRequest(ex.Message);
         }
@@ -559,6 +559,32 @@ public class AnalyticController : ControllerBase
 
     #endregion User Watch Time
 
+    [HttpGet("topGenre")]
+    public async Task<ActionResult> GetTopGenre()
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopGenre));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetTopGenreByUserAsync(user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopGenre));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("listeningHistory")]
     public async Task<ActionResult> GetListeningHistory(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
     {
         try
@@ -582,6 +608,8 @@ public class AnalyticController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+
 
     #endregion Listener Analytics
 }

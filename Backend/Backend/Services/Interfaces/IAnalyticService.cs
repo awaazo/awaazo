@@ -37,7 +37,7 @@ public interface IAnalyticService
     public Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize);
 
     // User Listening Habits
-    public Task<bool> GetTopGenreByUserAsync(User user, string domainUrl);
+    public Task<GenreUserEngagementResponse> GetTopGenreByUserAsync(User user);
 
     // User Listening History
     public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize);

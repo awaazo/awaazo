@@ -1,5 +1,6 @@
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace Backend.Controllers.Responses;
 
@@ -221,4 +222,57 @@ public class UserEngagementMetricsResponse
     /// The total number of listeners.
     /// </summary>
     public int TotalListeners { get; set; } = 0;
+}
+
+[BindProperties]
+public class GenreUserEngagementResponse
+{
+    public GenreUserEngagementResponse()
+    {
+    }
+
+    public GenreUserEngagementResponse(List<UserEpisodeInteraction> interactions)
+    {
+        // Set the total clicks, watch time, and episodes watched
+        int totalClicks = interactions.Sum(i => i.Clicks);
+        int totalWatchTime = (int)interactions.Sum(i => i.TotalListenTime.TotalSeconds);
+
+        Dictionary<string,int> genreOccurences = new();
+
+        // Get the occurences of each genre in the interactions
+        foreach (UserEpisodeInteraction interaction in interactions)
+        {
+            string[] tags = interaction.Episode.Podcast.Tags;
+
+            foreach (string tag in tags)
+                if (genreOccurences.ContainsKey(tag))
+                    genreOccurences[tag] += 1;
+                else
+                    genreOccurences.Add(tag,1);
+        }
+
+        // Get the number of occurences of the most popular genre
+        int maxOccurences = genreOccurences.Values.Max();
+
+        // Set the genre to the most popular genre
+        Genre = genreOccurences.FirstOrDefault(x => x.Value == maxOccurences).Key;
+
+        // Set the Clicks, WatchTime, Number of Likes and Number of Episodes Watched for the most popular genre
+        Clicks = interactions.Where(i => i.Episode.Podcast.Tags.Contains(Genre)).Sum(i => i.Clicks);
+        WatchTime = TimeSpan.FromSeconds(interactions.Where(i => i.Episode.Podcast.Tags.Contains(Genre)).Sum(i => i.TotalListenTime.TotalSeconds));
+        NumberOfLikes = interactions.Where(i => i.Episode.Podcast.Tags.Contains(Genre) && i.HasLiked).Sum(i =>1);
+        NumberOfEpisodesWatched = interactions.Where(i => i.Episode.Podcast.Tags.Contains(Genre)).Count();
+
+        // Set the percentage of total clicks and watch time for the most popular genre
+        PercentageOfTotalClicks = (double)Clicks / totalClicks * 100;
+        PercentageOfTotalWatchTime = (double)WatchTime.TotalSeconds / totalWatchTime * 100;
+    }
+
+    public string Genre { get; set; } = "";
+    public int Clicks { get; set; } = 0;
+    public double PercentageOfTotalClicks { get; set; }
+    public TimeSpan WatchTime { get; set; } = TimeSpan.Zero;
+    public double PercentageOfTotalWatchTime { get; set; }
+    public int NumberOfEpisodesWatched { get; set; } = 0;
+    public int NumberOfLikes { get; set; } = 0;
 }

@@ -1102,9 +1102,20 @@ public class AnalyticService : IAnalyticService
 
 
 
-    public Task<bool> GetTopGenreByUserAsync(User user, string domainUrl)
+    public async Task<GenreUserEngagementResponse> GetTopGenreByUserAsync(User user)
     {
-        throw new NotImplementedException();
+        // Get all the interactions for the user
+        List<UserEpisodeInteraction> interactions = await _db.UserEpisodeInteractions
+            .Include(uei => uei.Episode).ThenInclude(e => e.Podcast)
+            .Where(uei => uei.UserId == user.Id)
+            .ToListAsync();
+
+        // Check if the user has any interactions
+        if (interactions.Count == 0)
+            throw new Exception("No data available for the given user.");
+        
+        // Get the top genre by user
+        return new GenreUserEngagementResponse(interactions);
     }
 
     public async Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize)
