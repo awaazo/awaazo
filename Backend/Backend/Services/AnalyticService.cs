@@ -896,5 +896,35 @@ public class AnalyticService : IAnalyticService
             .ToListAsync();
     }
 
+    public Task<TimeSpan> GetUserAverageWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<TimeSpan> GetUserTotalWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page = 1, int pageSize = 10)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page = 1, int pageSize = 10)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> GetTopGenreByUserAsync(User user, string domainUrl)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page = 1, int pageSize = 10)
+    {
+        throw new NotImplementedException();
+    }
+
     #endregion User Engagement Metrics
 }
