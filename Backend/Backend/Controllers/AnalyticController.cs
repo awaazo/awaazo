@@ -559,5 +559,29 @@ public class AnalyticController : ControllerBase
 
     #endregion User Watch Time
 
+    public async Task<ActionResult> GetListeningHistory(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetListeningHistory));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetUserListeningHistoryAsync(user, GetDomainUrl(HttpContext), page, pageSize));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetListeningHistory));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
     #endregion Listener Analytics
 }

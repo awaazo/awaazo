@@ -33,14 +33,14 @@ public interface IAnalyticService
     // User Watch Time 
     public Task<TimeSpan> GetUserAverageWatchTimeAsync(Guid? podcastOrEpisodeId, User user);
     public Task<TimeSpan> GetUserTotalWatchTimeAsync(Guid? podcastOrEpisodeId, User user);
-    public Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page = 1, int pageSize = 10);
-    public Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page = 1, int pageSize = 10);
+    public Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize);
+    public Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize);
 
     // User Listening Habits
     public Task<bool> GetTopGenreByUserAsync(User user, string domainUrl);
 
     // User Listening History
-    public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page = 1, int pageSize = 10);
+    public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize);
 
 
 

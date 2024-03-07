@@ -3399,4 +3399,77 @@ public class AnalyticServiceTests
     }
 
 
+    // GetUserListeningHistoryAsync
+
+    [Fact]
+    public async Task GetUserListeningHistoryAsync_NoData_ReturnsEmptyList()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        string domainUrl = "http://localhost:5000";
+        int skip = 0;
+        int take = 10;
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(Array.Empty<Podcast>()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(Array.Empty<Episode>()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(Array.Empty<UserEpisodeInteraction>()));
+
+        // Act
+        List<EpisodeResponse> userListeningHistoryResponses = await _analyticService.GetUserListeningHistoryAsync(user, domainUrl, skip, take);
+
+        // Assert
+        Assert.Empty(userListeningHistoryResponses);
+    }
+
+    [Fact]
+    public async Task GetUserListeningHistoryAsync_Data_ReturnsUserListeningHistory()
+    {
+        // Arrange
+        User user = new() { Id = Guid.NewGuid() };
+        string domainUrl = "http://localhost:5000";
+        int skip = 0;
+        int take = 10;
+
+        List<Podcast> podcasts = new()
+        {
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id },
+            new Podcast { Id = Guid.NewGuid(), PodcasterId = user.Id }
+        };
+
+        List<Episode> episodes = new()
+        {
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[0].Id, Podcast = podcasts[0] },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[1].Id, Podcast = podcasts[1] },
+            new Episode { Id = Guid.NewGuid(), PodcastId = podcasts[2].Id, Podcast = podcasts[2] }
+        };
+
+        List<UserEpisodeInteraction> userEpisodeInteractions = new()
+        {
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[0], EpisodeId = episodes[0].Id, TotalListenTime = TimeSpan.FromSeconds(5), DateListened = DateTime.Now },
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[2], EpisodeId = episodes[2].Id, TotalListenTime = TimeSpan.FromSeconds(3), DateListened = DateTime.Now - TimeSpan.FromDays(2)},
+            new UserEpisodeInteraction { UserId = user.Id, Episode = episodes[1], EpisodeId = episodes[1].Id, TotalListenTime = TimeSpan.FromSeconds(4), DateListened = DateTime.Now - TimeSpan.FromDays(1) }
+        };
+
+        _dbContextMock.Setup(db => db.Podcasts).Returns(CreateMockDbSet(podcasts.ToArray()));
+        _dbContextMock.Setup(db => db.Episodes).Returns(CreateMockDbSet(episodes.ToArray()));
+        _dbContextMock.Setup(db => db.UserEpisodeInteractions).Returns(CreateMockDbSet(userEpisodeInteractions.ToArray()));
+
+        List<EpisodeResponse> expectedUserListeningHistoryResponses = new()
+        {
+            new EpisodeResponse { Id = episodes[0].Id},
+            new EpisodeResponse { Id = episodes[1].Id},
+            new EpisodeResponse { Id = episodes[2].Id}
+        };
+
+        // Act
+        List<EpisodeResponse> userListeningHistoryResponses = await _analyticService.GetUserListeningHistoryAsync(user, domainUrl, skip, take);
+
+        // Assert
+        for (int i = 0; i < userListeningHistoryResponses.Count; i++)
+        {
+            Assert.Equal(userListeningHistoryResponses[i].Id, expectedUserListeningHistoryResponses[i].Id);
+        }
+    }
+
 }

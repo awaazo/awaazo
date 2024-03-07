@@ -1017,7 +1017,62 @@ public class AnalyticControllerTests
 
     
 
+    [Fact]
+    public async Task GetListeningHistory_ReturnsOkResult()
+    {
+        // Arrange
+        User user = new();
+        List<EpisodeResponse> listeningHistoryResponses = new()
+        {
+            new(),
+            new()
+        };
 
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetUserListeningHistoryAsync(It.IsAny<User>(),It.IsAny<string>(),It.IsAny<int>(),It.IsAny<int>())).ReturnsAsync(listeningHistoryResponses);
+
+        // Act
+        var result = await _analyticController.GetListeningHistory(0,10);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var listeningHistory = Assert.IsType<List<EpisodeResponse>>(okResult.Value);
+        Assert.Equal(listeningHistoryResponses, listeningHistory);
+    }
+
+    [Fact]
+    public async Task GetListeningHistory_ReturnsNotFoundResult()
+    {
+        // Arrange
+        User? user = null;
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+
+        // Act
+        var result = await _analyticController.GetListeningHistory(0,10);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User does not exist.", notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task GetListeningHistory_ReturnsBadRequestResult()
+    {
+        // Arrange
+        User user = new();
+        string errorMessage = "Error Message";
+
+        _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
+        _analyticServiceMock.Setup(service => service.GetUserListeningHistoryAsync(It.IsAny<User>(),It.IsAny<string>(),It.IsAny<int>(),It.IsAny<int>())).ThrowsAsync(new Exception(errorMessage));
+
+        // Act
+        var result = await _analyticController.GetListeningHistory(0,10);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(errorMessage, badRequestResult.Value);
+    }
 
 
 

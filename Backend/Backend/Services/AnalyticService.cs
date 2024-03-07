@@ -1107,9 +1107,16 @@ public class AnalyticService : IAnalyticService
         throw new NotImplementedException();
     }
 
-    public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page = 1, int pageSize = 10)
+    public async Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize)
     {
-        throw new NotImplementedException();
+        return await _db.UserEpisodeInteractions
+            .Include(uei => uei.Episode)
+            .Where(uei => uei.UserId == user.Id)
+            .OrderByDescending(uei => uei.DateListened)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(uei => new EpisodeResponse(uei.Episode, domainUrl,false))
+            .ToListAsync();
     }
 
     #endregion User Engagement Metrics
