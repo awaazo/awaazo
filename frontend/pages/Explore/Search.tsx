@@ -379,7 +379,7 @@ export default function MyPodcast() {
               ) : episodes.length > 0 ? (
                 <SimpleGrid columns={1} spacing={5} width="100%">
                   {episodes.map((episode) => (
-                    <EpisodeCard episode={episode} inPlaylist={false} playlistId={null} key={episode.id} />
+                    <EpisodeCard episode={episode} inPlaylist={false} playlistId={null} key={episode.id} inWallet={false} />
                   ))}
                 </SimpleGrid>
               ) : (

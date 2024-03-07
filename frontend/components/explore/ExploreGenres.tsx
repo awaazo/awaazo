@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Image, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import techImage from "../../styles/images/genres/tech.png";
 import medImage from "../../styles/images/genres/med.png";

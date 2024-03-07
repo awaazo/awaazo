@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { FaHome, FaPlus, FaSearch, FaUser } from "react-icons/fa";
+import { FaHome, FaPlus, FaSearch } from "react-icons/fa";
 import { VscLibrary } from "react-icons/vsc";
 import Logo from "../../public/logo_white.svg";
 import { useRouter } from "next/router";
@@ -23,6 +23,28 @@ const Sidebar = () => {
   const handleReload = () => {
     setReload(!reload);
   };
+  useEffect(() => {
+    const handlePlaylistUpdate = (event) => {
+      console.log('Event received', event.detail);
+      const updatedPlaylist = event.detail;
+      setPlaylists((currentPlaylists) => {
+        const newPlaylists = currentPlaylists.map((playlist) => {
+          if (playlist.id === updatedPlaylist.id) {
+            return { ...playlist, ...updatedPlaylist };
+          }
+          return playlist;
+        });
+        console.log('Updated playlists', newPlaylists);
+        return newPlaylists;
+      });
+    };
+  
+    window.addEventListener('playlistUpdated', handlePlaylistUpdate);
+  
+    return () => {
+      window.removeEventListener('playlistUpdated', handlePlaylistUpdate);
+    };
+  }, []);
 
   const handleAddPlaylistClick = () => {
     console.log("Clicked");
@@ -40,6 +62,7 @@ const Sidebar = () => {
       }
     });
   };
+
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
@@ -97,7 +120,7 @@ const Sidebar = () => {
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"
-        top="5em"
+        mt="5em"
         zIndex={10}
         transition="width 0.2s ease-in-out"
         roundedTopRight="10px"
@@ -169,7 +192,7 @@ const Sidebar = () => {
                 {userPlaylists.map((playlist) => (
                   <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                     <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
-                      <Image src={playlist.coverArt} alt="Playlist" boxSize={collapsed ? "24px" : "12"} objectFit="cover" mr={collapsed ? "0" : "2"} borderRadius="8" />
+                      <Image src={`${playlist.coverArt}?v=${playlist.lastUpdated}`} alt="Playlist" boxSize={collapsed ? "24px" : "12"} objectFit="cover" mr={collapsed ? "0" : "2"} borderRadius="8" key={playlist.lastUpdated}/>
                       {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
                     </Flex>
                   </Link>
