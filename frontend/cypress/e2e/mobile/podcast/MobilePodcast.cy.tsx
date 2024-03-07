@@ -24,7 +24,7 @@ describe('Mobile Podcast', () => {
             cy.contains('Required.').should('exist');
         });
 
-        it.only('Should clean up the suite by deleting the podcasts', () => {
+        it('Should clean up the suite by deleting the podcasts', () => {
             { skipBeforeEach: true }
             cy.mobile_cleanup();
         });
