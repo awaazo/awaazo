@@ -14,6 +14,9 @@ namespace Backend.Controllers;
 [Authorize]
 public class AnalyticController : ControllerBase
 {
+
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 20;
     private readonly IAuthService _authService;
     private readonly IAnalyticService _analyticService;
     private readonly ILogger<AnalyticController> _logger;
@@ -527,7 +530,7 @@ public class AnalyticController : ControllerBase
     }
 
     [HttpGet("topWatched")]
-    public async Task<ActionResult> GetTopWatchedByUser(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = 0, int pageSize = 10 )
+    public async Task<ActionResult> GetTopWatchedByUser(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE )
     {
         try
         {
