@@ -897,4 +897,277 @@ public class AnalyticService : IAnalyticService
     }
 
     #endregion User Engagement Metrics
+    
+    /// <summary>
+    /// Get the average watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The average watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    public async Task<TimeSpan> GetUserAverageWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
+    {
+        // Check if the podcast or episode exists
+        bool isPodcast = await _db.Podcasts.AnyAsync(p => p.Id == podcastOrEpisodeId);
+        bool isEpisode = await _db.Episodes.AnyAsync(e => e.Id == podcastOrEpisodeId);
+
+        TimeSpan avgWatchTime = TimeSpan.Zero;
+        int totalClicks = 0;
+        TimeSpan totalWatchTime = TimeSpan.Zero;
+
+        if(isPodcast)
+        {
+            // Check if there are any interactions for the podcast
+            if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcastOrEpisodeId) == false)
+                throw new Exception("No data available for the given podcast.");
+
+            // Get the total watch time of the user for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Include(uei => uei.Episode)
+                .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+
+            // Get the total amount of clicks for the podcast   
+            totalClicks = await _db.UserEpisodeInteractions
+                .Include(uei => uei.Episode)
+                .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.Clicks)
+                .SumAsync();
+        }
+        else if(isEpisode)
+        {
+            // Check if there are any interactions for the episode
+            if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == podcastOrEpisodeId && uei.Clicks!=0 && uei.UserId == user.Id) == false)
+                throw new Exception("No data available for the given episode.");
+
+            // Get the total watch time of the user for the episode
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+
+            // Get the total amount of clicks for the episode
+            totalClicks = await _db.UserEpisodeInteractions
+                .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.Clicks)
+                .SumAsync();
+        }
+        else
+        {
+            // Check if the user has any interactions
+            if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.UserId == user.Id && uei.Clicks!=0) == false)
+                throw new Exception("No data available for the given user.");
+
+            // Get the total watch time of the user
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Where(uei => uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+
+            // Get the total amount of clicks for the user
+            totalClicks = await _db.UserEpisodeInteractions
+                .Where(uei => uei.UserId == user.Id)
+                .Select(uei => uei.Clicks)
+                .SumAsync();
+        }
+
+        // Calculate the average watch time
+        avgWatchTime = TimeSpan.FromSeconds(totalWatchTime.TotalSeconds / totalClicks);
+
+        return avgWatchTime;
+    }
+
+    /// <summary>
+    /// Get the total watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The total watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    public async Task<TimeSpan> GetUserTotalWatchTimeAsync(Guid? podcastOrEpisodeId, User user)
+    {
+        // Check if the podcast or episode exists
+        bool isPodcast = await _db.Podcasts.AnyAsync(p => p.Id == podcastOrEpisodeId);
+        bool isEpisode = await _db.Episodes.AnyAsync(e => e.Id == podcastOrEpisodeId);
+
+        TimeSpan totalWatchTime = TimeSpan.Zero;
+
+        if(isPodcast)
+        {
+            // Check if there are any interactions for the podcast
+            if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcastOrEpisodeId) == false)
+                throw new Exception("No data available for the given podcast.");
+
+            // Get the total watch time of the user for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Include(uei => uei.Episode)
+                .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+        }
+        else if(isEpisode)
+        {
+            // Check if there are any interactions for the episode
+            if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == podcastOrEpisodeId) == false)
+                throw new Exception("No data available for the given episode.");
+
+            // Get the total watch time of the user for the episode
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+        }
+        else
+        {
+            // Check if the user has any interactions
+            if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.UserId == user.Id) == false)
+                throw new Exception("No data available for the given user.");
+
+            // Get the total watch time of the user
+            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+                .Where(uei => uei.UserId == user.Id)
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .SumAsync());
+        }
+
+        return totalWatchTime;
+    }
+
+    /// <summary>
+    /// Get the total watch time of a user for a podcast or episode.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The total watch time of the user for the podcast or episode.</returns>
+    /// <exception cref="Exception">Thrown when the podcast or episode does not exist.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    public async Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize)
+    {
+        // Check if the count is less than or equal to 0
+        if (count <= 0)
+            throw new Exception("Count cannot be less than or equal to 0.");
+
+        List<EpisodeResponse> topWatchedEpisodes;
+
+        if (getLessWatched)
+        {
+            topWatchedEpisodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Where(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id))
+                .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToListAsync();
+        }
+        else
+        {
+            topWatchedEpisodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Where(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id))
+                .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToListAsync();
+        }
+
+        return topWatchedEpisodes;
+    }
+
+    /// <summary>
+    /// Get the top watched podcasts for a user.
+    /// </summary>
+    /// <param name="count">The number of podcasts to get.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts.</param>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <returns>The top watched podcasts for the user.</returns>
+    /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    public async Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize)
+    {
+        // Check if the count is less than or equal to 0
+        if (count <= 0)
+            throw new Exception("Count cannot be less than or equal to 0.");
+
+        List<PodcastResponse> topWatchedPodcasts;
+
+        if (getLessWatched)
+        {
+            topWatchedPodcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.Episodes.Any(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id)))
+                .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToListAsync();
+        }
+        else
+        {
+            topWatchedPodcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.Episodes.Any(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id)))
+                .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToListAsync();
+        }
+
+        return topWatchedPodcasts;
+    }
+
+    /// <summary>
+    /// Get the top Genre by user.
+    /// </summary>
+    /// <param name="user">The user making the request.</param>
+    /// <returns>The top genre by user.</returns>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    public async Task<GenreUserEngagementResponse> GetTopGenreByUserAsync(User user)
+    {
+        // Get all the interactions for the user
+        List<UserEpisodeInteraction> interactions = await _db.UserEpisodeInteractions
+            .Include(uei => uei.Episode).ThenInclude(e => e.Podcast)
+            .Where(uei => uei.UserId == user.Id)
+            .ToListAsync();
+
+        // Check if the user has any interactions
+        if (interactions.Count == 0)
+            throw new Exception("No data available for the given user.");
+        
+        // Get the top genre by user
+        return new GenreUserEngagementResponse(interactions);
+    }
+
+    /// <summary>
+    /// Get the user listening history.
+    /// </summary>
+    /// <param name="user">The user making the request.</param>
+    /// <param name="domainUrl">The domain URL.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The user listening history.</returns>
+    /// <exception cref="Exception">Thrown when there is no data available for the given user.</exception>
+    /// <exception cref="Exception">Thrown when there is no data available for the given podcast or episode.</exception>
+    public async Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize)
+    {
+        return await _db.UserEpisodeInteractions
+            .Include(uei => uei.Episode)
+            .Where(uei => uei.UserId == user.Id)
+            .OrderByDescending(uei => uei.DateListened)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(uei => new EpisodeResponse(uei.Episode, domainUrl,false))
+            .ToListAsync();
+    }
 }
