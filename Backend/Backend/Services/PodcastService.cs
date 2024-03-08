@@ -1075,11 +1075,12 @@ public class PodcastService : IPodcastService
     public async Task<List<History>> GetUserWatchHistory(int page, int pageSize, User user)
     {
         // Gets User Interaction from the db and cast it to History
-        List<History> history = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).Skip(page * pageSize).Take(page).Select(u => new History(u)).ToListAsync();
+        List<History> history = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).Skip(page * pageSize).Take(pageSize).Select(u => new History(u)).ToListAsync();
 
-
+       
         // Return the List
         return history;
+
     }
 
     /// <summary>
