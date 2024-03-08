@@ -704,6 +704,31 @@ public class PodcastController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Delete the whole history associated by the User
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpDelete("deleteAllWatchHistory")]
+    public async Task<IActionResult> DeleteAllWatchHistory(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeleteAllWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.DeleteAllWatchHistory(user) ? "Successfully Cleared the History" : "Error while Deleting the History");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(DeleteAllWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
 
 
     #endregion Episode Watch History

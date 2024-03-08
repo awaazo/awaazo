@@ -38,6 +38,7 @@ public interface IPodcastService
     public Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl);
     public Task<List<History>> GetUserWatchHistory (int page,int pageSize,User user);
     public Task<bool> DeleteWatchHistory(User user,Guid episodeId);
+    public Task<bool> DeleteAllWatchHistory(User user);
 
 
 

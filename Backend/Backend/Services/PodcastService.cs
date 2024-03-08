@@ -1106,8 +1106,22 @@ public class PodcastService : IPodcastService
         // return whether the history have been successfully deleted  or not
         return await _db.SaveChangesAsync() > 0;
 
+   
     }
+    /// <summary>
+    /// Clears whole history of a user
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteAllWatchHistory(User user) 
+    {
+        List<UserEpisodeInteraction> userEpisodeInteractions = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).ToListAsync();
 
+        _db.UserEpisodeInteractions.RemoveRange(userEpisodeInteractions);
+
+        return await _db.SaveChangesAsync() > 0;
+
+    }
     #endregion Watch History
 
     #region Transcription
