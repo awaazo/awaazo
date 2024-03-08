@@ -1065,6 +1065,49 @@ public class PodcastService : IPodcastService
         return new() { ListenPosition = interaction.LastListenPosition };
     }
 
+    /// <summary>
+    /// Gets LoggedIn Users History
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<List<History>> GetUserWatchHistory(int page, int pageSize, User user)
+    {
+        // Gets User Interaction from the db and cast it to History
+        List<History> history = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).Skip(page * pageSize).Take(page).Select(u => new History(u)).ToListAsync();
+
+
+        // Return the List
+        return history;
+    }
+
+    /// <summary>
+    /// Deletes the Watch History for the User
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="user"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteWatchHistory( User user, Guid episodeId)
+    {
+        UserEpisodeInteraction? userEpisodeInteraction = await _db.UserEpisodeInteractions.FirstOrDefaultAsync( u => u.UserId == user.Id &&  u.EpisodeId == episodeId);
+        
+        // If the History doesnot Exist throw an error
+        if(userEpisodeInteraction == null)
+        {
+            throw new Exception("History Does not Exist");
+        }
+
+        // If all the checks have passed then remove the object from DB
+        _db.UserEpisodeInteractions.Remove(userEpisodeInteraction);
+
+        // return whether the history have been successfully deleted  or not
+        return await _db.SaveChangesAsync() > 0;
+
+    }
+
     #endregion Watch History
 
     #region Transcription
