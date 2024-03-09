@@ -29,4 +29,17 @@ public interface IAnalyticService
     public Task<List<EpisodeResponse>>  GetTopClickedEpisodesAsync(Guid podcastId, int count, bool getLessClicked, User user, string domainUrl);
     public Task<List<PodcastResponse>>  GetTopWatchedPodcastsAsync(int count, bool getLessWatched, User user, string domainUrl);
     public Task<List<EpisodeResponse>>  GetTopWatchedEpisodesAsync(Guid podcastId, int count, bool getLessWatched, User user, string domainUrl);
+
+    // User Watch Time 
+    public Task<TimeSpan> GetUserAverageWatchTimeAsync(Guid? podcastOrEpisodeId, User user);
+    public Task<TimeSpan> GetUserTotalWatchTimeAsync(Guid? podcastOrEpisodeId, User user);
+    public Task<List<EpisodeResponse>> GetTopWatchedEpisodesByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize);
+    public Task<List<PodcastResponse>> GetTopWatchedPodcastsByUserAsync(int count, bool getLessWatched, User user, string domainUrl, int page, int pageSize);
+
+    // User Listening Habits
+    public Task<GenreUserEngagementResponse> GetTopGenreByUserAsync(User user);
+
+    // User Listening History
+    public Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize);
+
 }

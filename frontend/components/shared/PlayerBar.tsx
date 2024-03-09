@@ -14,7 +14,7 @@ import PlayerMenu from '../playerbar/Menu'
 import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
-import Tipjar from "../interactionHub/Tipjar";
+import TipjarButton from '../interactionHub/buttons/TipjarButton'
 
 
 const PlayerBar = () => {
@@ -311,7 +311,7 @@ const PlayerBar = () => {
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
 
-              <Tipjar episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
+              <TipjarButton episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
               <ChatBotButton episodeId={episode?.id} />
               <BookmarksButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} selectedTimestamp={isEpisodeLoaded ? position : 0} />
               <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />

@@ -57,7 +57,7 @@ services:
     ports:
       - "8500:8000"
     volumes:
-      - "//c/backend_server/ServerFiles:/app/ServerFiles"
+      - "//c/backend_server/ServerFiles:/home/myuser/code/ServerFiles"
 
   # BACKEND ASP.NET Server
   backend:

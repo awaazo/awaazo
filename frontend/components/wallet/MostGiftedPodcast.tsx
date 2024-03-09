@@ -1,8 +1,7 @@
+import  { useEffect, useState } from "react";
 import { Flex, IconButton, Tooltip, VStack } from "@chakra-ui/react";
-import react, { useEffect, useState } from "react";
 import { Podcast } from "../../types/Interfaces";
 import PaymentHelper from "../../helpers/PaymentHelper";
-import PodcastCard from "../cards/PodcastCard";
 import WalletPodcastCard from "../cards/WalletPodcastCard";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
