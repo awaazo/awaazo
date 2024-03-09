@@ -651,6 +651,86 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the Users Watch History
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("UserWatchHistory")]
+    public async Task<IActionResult> GetUserWatchHistory(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetUserWatchHistory(page,pageSize,user));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetUserWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+    /// <summary>
+    /// Delete specific episode from the Watch History
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpDelete("{episodeId}/deleteWatchHistory")]
+    public async Task<IActionResult> DeleteWatchHistory(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeleteWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.DeleteWatchHistory(user,episodeId) ? "Successfully Deleted the History" : "Error while Deleting the History");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetUserWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+    /// <summary>
+    /// Delete the whole history associated by the User
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpDelete("deleteAllWatchHistory")]
+    public async Task<IActionResult> DeleteAllWatchHistory(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(DeleteAllWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.DeleteAllWatchHistory(user) ? "Successfully Cleared the History" : "Error while Deleting the History");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(DeleteAllWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+
     #endregion Episode Watch History
 
     #region Adjecent Episodes
