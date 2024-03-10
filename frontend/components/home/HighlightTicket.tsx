@@ -26,7 +26,8 @@ const HighlightTicket: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
             align="center"
             justify="center"
             bg="blackAlpha.500"
-            height="100vh" // Fullscreen for immersive experience
+            height="600px" 
+            width="400px" 
             position="relative"
             onClick={handleEpisodeClick} // Navigate on click
         >

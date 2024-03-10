@@ -31,7 +31,7 @@ import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
 import ManageTranscript from "./ManageTranscript";
 import { convertTime } from "../../utilities/commonUtils";
-import { FaList } from "react-icons/fa";
+import { FaList, FaCaretSquareRight } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
@@ -210,6 +210,20 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
+          <Tooltip label="Highlights" aria-label="Highlights Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="highlights-button"
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Highlights"
+              icon={<Icon as={FaCaretSquareRight} />}
+              onClick={() => handleOpenForm(episode)}
+            />
+          </Tooltip>
           <Tooltip label="Annotations" aria-label="Annotations Tooltip">
             <IconButton
               variant="ghost"

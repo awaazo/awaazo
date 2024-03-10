@@ -1,4 +1,4 @@
-import { Spinner, VStack, Text, Box } from "@chakra-ui/react";
+import { Spinner, Text, HStack, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import HighlightTicket from "./HighlightTicket"; // Ensure this component exists and is imported correctly
 
@@ -6,6 +6,12 @@ import HighlightTicket from "./HighlightTicket"; // Ensure this component exists
 const mockHighlights = [
     { id: 1, title: "Highlight 1", description: "This is the first highlight" },
     { id: 2, title: "Highlight 2", description: "This is the second highlight" },
+    { id: 3, title: "Highlight 3", description: "This is the third highlight" },
+    { id: 4, title: "Highlight 4", description: "This is the fourth highlight" },
+    { id: 5, title: "Highlight 5", description: "This is the fifth highlight" },
+    { id: 6, title: "Highlight 6", description: "This is the sixth highlight" },
+    { id: 7, title: "Highlight 7", description: "This is the seventh highlight" },
+    { id: 8, title: "Highlight 8", description: "This is the eighth highlight" },
     // Add more mock data as needed
 ];
 
@@ -41,15 +47,8 @@ const HighLights: React.FC = () => {
     }
 
     return (
-        <VStack spacing={4} align="stretch">
-            <Box
-                overflowX="auto"
-                css={{
-                    "&::-webkit-scrollbar": {
-                        display: "none",
-                    },
-                }}
-            >
+        <Box overflowX="auto" css={{ "&::-webkit-scrollbar": { display: "none" } }}>
+            <HStack spacing={4} align="stretch">
                 {highlights && highlights.length > 0 ? (
                     highlights.map((highlight) => (
                         <HighlightTicket key={highlight.id} highlight={highlight} />
@@ -57,8 +56,8 @@ const HighLights: React.FC = () => {
                 ) : (
                     <Text>No highlights available</Text>
                 )}
-            </Box>
-        </VStack>
+            </HStack>
+        </Box>
     );
 };
 
