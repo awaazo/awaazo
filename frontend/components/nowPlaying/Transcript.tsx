@@ -8,7 +8,6 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { convertTime } from "../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
@@ -16,16 +15,16 @@ interface TranscriptProps {
   episodeId: string;
 }
 
-const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
+const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [transcripts, setTranscripts] = useState(null);
+  const [transcript, setTranscript] = useState(null);
 
   useEffect(() => {
     if (episodeId) {
       PodcastHelper.getTranscript(episodeId)
         .then((res) => {
           if (res.status === 200) {
-            setTranscripts(res.transcript);
+            setTranscript(res.transcript);
           } else {
             console.error("Error fetching transcripts data:", res.message);
           }
@@ -45,13 +44,11 @@ const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
-          Transcripts
+          Transcript
         </Text>
       </Flex>
-      {/* <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
-        {transcripts?.map((transcript, index) => (
+      <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
           <Box
-            key={index}
             bg="rgba(255, 255, 255, 0.02)"
             borderRadius="2xl"
             p={4}
@@ -60,15 +57,15 @@ const Transcripts: React.FC<TranscriptProps> = ({ episodeId }) => {
           >
             <Flex justify="space-between" align="center">
               <Text fontSize={fontSize} color="white">
-                {transcript.text}
+                {transcript && transcript.text ? transcript.text : 'This episode has no transcript text available.'}
               </Text>
-              <Text color="gray.400">{transcript.speaker}</Text>
+              <Text color="gray.400">{transcript && transcript.speaker ? transcript.speaker : 'no speaker available'}</Text>
             </Flex>
           </Box>
-        ))}
-      </VStack> */}
+
+      </VStack>
     </Box>
   );
 };
 
-export default Transcripts;
+export default Transcript;
