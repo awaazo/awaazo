@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Backend.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static Backend.Models.Podcast;
@@ -144,3 +146,40 @@ public class EpisodeFilter
     public float? MinEpisodeLength { get; set;}
 
 }
+
+
+public class History
+{
+    public History(UserEpisodeInteraction episodeInteraction)
+    {
+        EpisodeId = episodeInteraction.EpisodeId;
+        HasListened = episodeInteraction.HasListened;
+        HasLiked = episodeInteraction.HasLiked;
+        Clicks = episodeInteraction.Clicks;
+        TotalListenTime = episodeInteraction.TotalListenTime;
+        LastListenPosition = episodeInteraction.LastListenPosition;
+        DateListened = episodeInteraction.DateListened;
+    }
+    [Required]
+    public Guid EpisodeId { get; set; }
+
+    [DefaultValue(false)]
+    public bool HasListened { get; set; }
+
+    [DefaultValue(false)]
+    public bool HasLiked { get; set; }
+
+    [DefaultValue(0)]
+    public int Clicks { get; set; }
+
+    [DefaultValue("00:00:00")]
+    public TimeSpan TotalListenTime { get; set; }
+
+    [DefaultValue(0.0)]
+    public double LastListenPosition { get; set; }
+
+    [DefaultValue("01/01/0001 00:00:00")]
+    public DateTime DateListened { get; set; }
+
+}
+

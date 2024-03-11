@@ -19,6 +19,8 @@ public interface IPodcastService
     public Task<List<PodcastResponse>> GetPodcastsByTagsAsync(int page, int pageSize, string domainUrl, string[] tags);
     public Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl);
 
+    
+
     // EPISODES
 
     public Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
@@ -34,6 +36,11 @@ public interface IPodcastService
     public Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
     public Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl);
+    public Task<List<History>> GetUserWatchHistory (int page,int pageSize,User user);
+    public Task<bool> DeleteWatchHistory(User user,Guid episodeId);
+    public Task<bool> DeleteAllWatchHistory(User user);
+
+
 
     // TRANSCRIPT
     public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);

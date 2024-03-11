@@ -14,6 +14,9 @@ namespace Backend.Controllers;
 [Authorize]
 public class AnalyticController : ControllerBase
 {
+
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 20;
     private readonly IAuthService _authService;
     private readonly IAnalyticService _analyticService;
     private readonly ILogger<AnalyticController> _logger;
@@ -30,6 +33,8 @@ public class AnalyticController : ControllerBase
         _authService = authService;
         _logger = logger;
     }
+
+    #region Podcaster Analytics
 
     #region User Interaction
 
@@ -459,4 +464,193 @@ public class AnalyticController : ControllerBase
     }
 
     #endregion Audience Age
+
+    #endregion Podcaster Analytics
+
+    #region Listener Analytics
+
+    #region User Watch Time
+
+    /// <summary>
+    /// Get the average watch time of a user for a podcast, episode or for all content.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode. Or null if neither</param>
+    /// <returns>The average watch time of the user for the podcast, episode or for all content.</returns>
+    /// <response code="200">Returns the average watch time of the user for the podcast, episode or for all content.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>  
+    /// <response code="404">If the user does not exist.</response>
+    [HttpGet("userAverageWatchTime")]
+    public async Task<ActionResult> GetUserAverageWatchTime(Guid? podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserAverageWatchTime));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetUserAverageWatchTimeAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserAverageWatchTime));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get the total watch time of a user for a podcast, episode or for all content.
+    /// </summary>
+    /// <param name="podcastOrEpisodeId">The ID of the podcast or episode. Or null if neither</param>
+    /// <returns>The total watch time of the user for the podcast, episode or for all content.</returns>
+    /// <response code="200">Returns the total watch time of the user for the podcast, episode or for all content.</response>
+    /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
+    /// <response code="404">If the user does not exist.</response>
+    [HttpGet("userTotalWatchTime")]
+    public async Task<ActionResult> GetUserTotalWatchTime(Guid? podcastOrEpisodeId)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserTotalWatchTime));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetUserTotalWatchTimeAsync(podcastOrEpisodeId, user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetUserTotalWatchTime));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get the top watched podcasts or episodes by a user.
+    /// </summary>
+    /// <param name="isEpisodes">Whether to get the top watched episodes or podcasts.</param>
+    /// <param name="count">The number of podcasts or episodes to return.</param>
+    /// <param name="getLessWatched">Whether to get the less watched podcasts or episodes.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The top watched podcasts or episodes by the user.</returns>
+    /// <response code="200">Returns the top watched podcasts or episodes by the user.</response>
+    /// <response code="404">If the user does not exist.</response>
+    [HttpGet("topWatched")]
+    public async Task<ActionResult> GetTopWatched(bool isEpisodes=false, int count = 5, bool getLessWatched = false, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE )
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopWatched));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return isEpisodes ?
+                Ok(await _analyticService.GetTopWatchedEpisodesByUserAsync(count, getLessWatched, user, GetDomainUrl(HttpContext), page, pageSize)) :
+                Ok(await _analyticService.GetTopWatchedPodcastsByUserAsync(count, getLessWatched, user, GetDomainUrl(HttpContext), page, pageSize));
+                
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopWatched));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    #endregion User Watch Time
+
+    #region User Listening Habits
+
+    /// <summary>
+    /// Get the top genre by user.
+    /// </summary>
+    /// <returns>The top genre by user.</returns>
+    /// <response code="200">Returns the top genre by user.</response>
+    /// <response code="404">If the user does not exist.</response>
+    /// <response code="400">If an error occurs.</response>
+    [HttpGet("topGenre")]
+    public async Task<ActionResult> GetTopGenre()
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetTopGenre));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetTopGenreByUserAsync(user));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetTopGenre));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    #endregion User Listening Habits
+
+    #region User Listening History
+
+    /// <summary>
+    /// Get the listening history of a user.
+    /// </summary>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <returns>The listening history of the user.</returns>
+    /// <response code="200">Returns the listening history of the user.</response>
+    /// <response code="404">If the user does not exist.</response>
+    /// <response code="400">If an error occurs.</response>
+    [HttpGet("listeningHistory")]
+    public async Task<ActionResult> GetListeningHistory(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Log the message
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetListeningHistory));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _analyticService.GetUserListeningHistoryAsync(user, GetDomainUrl(HttpContext), page, pageSize));
+        }
+        catch (Exception ex)
+        {
+            this.LogErrorAPICall(_logger, ex, callerName: nameof(GetListeningHistory));
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    #endregion User Listening History
+
+    #endregion Listener Analytics
 }
