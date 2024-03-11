@@ -27,7 +27,7 @@ describe('Mobile Playerbar', () => {
             })
         });
 
-        it.only('Should test the functionality of the play/pause button', () => {
+        it('Should test the functionality of the play/pause button', () => {
             cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
                 timeout: 5000,
             });
@@ -49,7 +49,7 @@ describe('Mobile Playerbar', () => {
             cy.get('[data-cy="play-pause-button"]').should('be.visible').click({ timeout: 5000 });
         });
 
-        it.only('Should test functioanlity of skip forward and backward button', () => {
+        it('Should test functioanlity of skip forward and backward button', () => {
             cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
             timeout: 5000,
             });
