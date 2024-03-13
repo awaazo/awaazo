@@ -183,3 +183,43 @@ public class History
 
 }
 
+#region Highlight Requests
+
+public class HighlightRequest
+{
+    public HighlightRequest(Highlight highlight)
+    {
+        HighlightId = highlight.HighlightId;
+        EpisodeId = highlight.EpisodeId;
+        UserId = highlight.UserId;
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
+    }
+
+    [Required]
+    public Guid HighlightId { get; set; }
+
+    [Required]
+    public Guid EpisodeId { get; set; }
+
+    [Required]
+    public Guid UserId { get; set; }
+
+    [DefaultValue(0)]
+    public double StartTime { get; set; }
+
+    [DefaultValue(0)]
+    public double EndTime { get; set; }
+
+    [DefaultValue("No Title Given")]
+    public string Title { get; set; }
+
+    [DefaultValue("")]
+    public string Description { get; set; }
+
+}
+
+#endregion
+

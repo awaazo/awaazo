@@ -1428,12 +1428,21 @@ public class PodcastService : IPodcastService
         return episodeResponses;
     }
 
+    #region Highlights
+
+    public async Task<List<HighlightResponse>> CreateHighlight()
+    {
+
+    }
+
+
+    #endregion
+
+
 
     #endregion Episode
 
-
-
-    #region Private Method
+    #region Private Methods
 
     private async Task<FFMpegCore.IMediaAnalysis> GetMediaAnalysis(string audioName, Guid podcastId)
     {
@@ -1553,4 +1562,5 @@ public class PodcastService : IPodcastService
     #endregion Episode Chat
 
     #endregion
+
 }

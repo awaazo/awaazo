@@ -961,5 +961,70 @@ public class PodcastController : ControllerBase
 
     #endregion Transcript
 
+    #region Highlights
+
+    [HttpPost("AddHighlight")]
+    public async Task<IActionResult> AddHighlight([FromBody] HighlightRequest)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SaveWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return null;
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(SaveWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("RemoveHighlight")]
+    public async Task<IActionResult> RemoveHighlight([FromBody] HighlightRequest)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SaveWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return null;
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(SaveWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("GetAllUserHighlights")]
+    public async Task<IActionResult> GetAllUserHighlights([FromBody] HighlightRequest)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(SaveWatchHistory));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return null;
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(SaveWatchHistory));
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
+
+    #endregion
+
 }

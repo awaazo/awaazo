@@ -345,3 +345,52 @@ public class PodcastMetricsResponse
         public uint TotalUnknown { get; set; } = 0;
     }
 }
+
+#region Highlights
+
+[BindProperties]
+public class HighlightResponse
+{
+    
+    public HighlightResponse()
+    {
+
+    }
+
+    public HighlightResponse(Highlight higlight)
+    {
+        EpisodeId = higlight.EpisodeId;
+        StartTime = higlight.StartTime;
+        EndTime = higlight.EndTime;
+        Title = higlight.Title;
+        Description = higlight.Description;
+    }
+
+    /// <summary>
+    /// Id of the episode attached to this Highlight
+    /// </summary>
+    public Guid EpisodeId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// StartTime of the Highlight
+    /// </summary>
+    public double StartTime { get; set; } = 0;
+
+    /// <summary>
+    /// EndTime of the Highlight
+    /// </summary>
+    public double EndTime { get; set; } = 0;
+
+    /// <summary>
+    /// Title of the Highlight 
+    /// </summary>
+    public string Title { get; set; } = "No Title Given";
+
+    /// <summary>
+    /// Description of the Highlight
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+}
+
+
+#endregion

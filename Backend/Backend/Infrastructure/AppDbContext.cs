@@ -43,13 +43,11 @@ public class AppDbContext : DbContext
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<CommentReply> CommentReplies { get; set; }
     public virtual DbSet<EpisodeSections> EpisodeSections { get; set; }
-
     public virtual DbSet<ForgetPasswordToken> ForgetPasswordTokens { get; set; }
-    public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }
-    
+    public virtual DbSet<EpisodeChatMessage> EpisodeChatMessages { get; set; }  
     public virtual DbSet<Points> Points { get; set; }
-
     public virtual DbSet<Transactions> Transactions { get; set; }
+    public virtual DbSet<Highlight> Highlights { get; set; }
     
     ///
     /// Tables related to statistics more than core functionality
@@ -245,8 +243,6 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
 
-
-
         // User 1-to-many CommentReplies
         modelBuilder.Entity<User>()
             .HasMany(u => u.CommentReplies)
@@ -270,7 +266,6 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
 
-
         // Episode 1-to-many Com
         modelBuilder.Entity<Episode>()
             .HasMany(e => e.episodeSections)
@@ -278,9 +273,6 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-
-
 
 
 
