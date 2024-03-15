@@ -2,9 +2,12 @@
 
 describe('Change Password', () => {
 
+    beforeEach(() =>{
+      cy.console_error_hack();
+      cy.login(null, "testRegister@email.com", "password123");
+    });
+
     it('Should not change password if the current password is wrong', () => {
-        cy.console_error_hack();
-        cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
           timeout: 12000,
         });
@@ -13,8 +16,6 @@ describe('Change Password', () => {
     });
 
     it('Should not change password if the new password and confirm new password dont match', () => {
-        cy.console_error_hack();
-        cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
           timeout: 12000,
         });
@@ -23,8 +24,6 @@ describe('Change Password', () => {
     });
 
     it('Should not change password if the new passwords dont meet password requirements', () => {
-        cy.console_error_hack();
-        cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
           timeout: 12000,
         });
@@ -33,8 +32,6 @@ describe('Change Password', () => {
     });
 
     it('Should successfully change password', () => {
-        cy.console_error_hack();
-        cy.login(null, "testRegister@email.com", "password123");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
           timeout: 12000,
         });
@@ -46,6 +43,7 @@ describe('Change Password', () => {
     });
 
     it('Should successfully change password to the old for testing purposes', () => {
+      { skipBeforeEach: true }
         cy.console_error_hack();
         cy.login(null, "testRegister@email.com", "password321");
         cy.get('button[aria-label="loggedInMenu"]').scrollIntoView().should("be.visible", {
