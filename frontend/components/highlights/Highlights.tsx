@@ -20,6 +20,21 @@ const HighLights: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // const fetchHighlights = async () => {
+    //     setIsLoading(true);
+    //     try {
+    //         // Example URL with pagination and sorting parameters
+    //         const response = await fetch(`/api/highlights?page=${currentPage}&sortBy=relevancy`);
+    //         const data = await response.json();
+    //         setHighlights(data.highlights);
+    //        setTotalPages(data.totalPages); // Assuming the backend provides total pages info
+    //         setIsLoading(false);
+    //     } catch (err) {
+    //         setError("An error occurred while fetching highlights");
+    //         setIsLoading(false);
+    //     }
+    // };
+
     useEffect(() => {
         const fetchHighlights = async () => {
             setIsLoading(true);
@@ -58,6 +73,20 @@ const HighLights: React.FC = () => {
                 )}
             </HStack>
         </Box>
+// return (
+//     <>
+//         {/* Highlights display code */}
+//         <Box>
+//             {currentPage > 1 && (
+//                 <Button onClick={() => setCurrentPage(currentPage - 1)}>Previous</Button>
+//             )}
+//             {currentPage < totalPages && (
+//                 <Button onClick={() => setCurrentPage(currentPage + 1)}>Next</Button>
+//             )}
+//         </Box>
+//     </>
+// );
+
     );    
 };
 
