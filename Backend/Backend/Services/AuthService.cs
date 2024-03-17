@@ -286,7 +286,7 @@ public class AuthService : IAuthService
         _db.Users.Update(newUser);
         await _db.SaveChangesAsync();
         
-        string url = $"{domainUrl}/auth/verifyemail?token={token}";
+        string url = $"{domainUrl}/verifyemail?token={token}";
         
         string awazoEmail = _config["Smtp:Username"]!;
         MailMessage message = new MailMessage()
