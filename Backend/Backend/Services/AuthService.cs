@@ -279,6 +279,41 @@ public class AuthService : IAuthService
         message.To.Add(requestEmail);
         _emailService.Send(message);
     }
+
+    public async Task SendWelcomeEmail(User newUser, string domainUrl) {
+        string token = $"{Guid.NewGuid()}{Guid.NewGuid()}{Guid.NewGuid()}".Replace("-", "");
+        newUser.VerificationToken = token;
+        _db.Users.Update(newUser);
+        await _db.SaveChangesAsync();
+        
+        string url = $"{domainUrl}/auth/verifyemail?token={token}";
+        
+        string awazoEmail = _config["Smtp:Username"]!;
+        MailMessage message = new MailMessage()
+        {
+            From = new MailAddress(awazoEmail),
+            Subject = "Welcome to Awazo!",
+            Body = $"Welcome to Awazo! Click on the link below to verify your email <br /><br />" +
+                 $"<a href=\"{url}\">Click here</a> <br /><br />",
+            IsBodyHtml = true
+        };
+        
+        message.To.Add(newUser.Email);
+        _emailService.Send(message);
+    }
+
+    public async Task VerifyEmail(User? user, string requestToken) {
+        if (user is null)
+            throw new Exception("User not found");
+        
+        if (user.VerificationToken != requestToken)
+            throw new Exception("Invalid token");
+        
+        user.VerificationToken = null;
+        user.IsVerified = true;
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync();
+    }
 }
 
 
