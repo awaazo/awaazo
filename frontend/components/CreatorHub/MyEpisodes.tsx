@@ -35,6 +35,8 @@ import { FaList, FaCaretSquareRight } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
+import highlightForm from "../highlights/highlightForm";
+import highlitList from "../highlights/highlightList";
 
 import { BsExplicitFill } from "react-icons/bs";
 
@@ -161,9 +163,27 @@ const Episode = ({ episode }) => {
   };
   //----------------------------------------------------------------------
 
+  // Highlights Modal
+  //----------------------------------------------------------------------
+  const [isModalHighlightsOpen, setIsModalHighlightsOpen] = useState(false);
+
+  // Function to open the highlights modal
+  const openHighlightsModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalHighlightsOpen(true);
+  };
+
+  // Function to close the highlights modal
+  const closeHighlightsModal = () => {
+    setIsModalHighlightsOpen(false);
+    setCurrentEpisode(null);
+  };
+  //----------------------------------------------------------------------
+
   // For delete pop up
   const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
   const { isOpen: isAnnotationDrawerOpen, onOpen: onOpenAnnotationDrawer, onClose: onCloseAnnotationDrawer } = useDisclosure();
+  const { isOpen: isHighlightDrawerOpen, onOpen: onOpenHighlightDrawer, onClose: onCloseHighlightDrawer } = useDisclosure();
   const [isDeleting, setDeleting] = useState(false);
 
   // Form errors
@@ -210,7 +230,7 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
-          <Tooltip label="Highlights" aria-label="Highlights Tooltip">
+        <Tooltip label="Highlights" aria-label="Highlights Tooltip">
             <IconButton
               variant="ghost"
               data-cy="highlights-button"
@@ -221,7 +241,7 @@ const Episode = ({ episode }) => {
               color="white"
               aria-label="Edit Highlights"
               icon={<Icon as={FaCaretSquareRight} />}
-              onClick={() => handleOpenForm(episode)}
+              onClick={() => openHighlightsModal(episode)}
             />
           </Tooltip>
           <Tooltip label="Annotations" aria-label="Annotations Tooltip">
@@ -327,6 +347,7 @@ const Episode = ({ episode }) => {
         </ModalContent>
       </Modal>
 
+
       <Modal isOpen={isModalTranscriptOpen} onClose={closeTranscriptModal}>
   <ModalOverlay backdropFilter="blur(10px)" />
   <ModalContent minWidth={"50%"} padding={"2em"}>
@@ -342,6 +363,31 @@ const Episode = ({ episode }) => {
     </ModalBody>
   </ModalContent>
 </Modal>
+
+      <Modal isOpen={isModalHighlightsOpen} onClose={closeHighlightsModal}>
+        <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent minWidth={"50%"} padding={"2em"}>
+          <ModalCloseButton />
+          <ModalHeader>Highlights</ModalHeader>
+          <ModalBody>
+            <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
+              <TabList>
+                <Tab>Annotations</Tab>
+                <Tab>Add Annotation</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <highlitList annotations={annotations} deleteAnnotation={handleDeleteAnnotation} />
+                </TabPanel>
+                <TabPanel>
+                  {/* Pass the episode duration to the AnnotationForm */}
+                  <highlightForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} episodeLength={episode.duration} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
         <ModalOverlay />

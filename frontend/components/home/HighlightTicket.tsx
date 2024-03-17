@@ -26,10 +26,11 @@ const HighlightTicket: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
             align="center"
             justify="center"
             bg="blackAlpha.500"
-            height="600px" 
-            width="400px" 
+            height="400px" 
+            width="300px" 
             position="relative"
-            onClick={handleEpisodeClick} // Navigate on click
+            onClick={handleEpisodeClick} 
+            borderRadius= "2xl"
         >
             <Image
                 src={highlight.thumbnailUrl}

@@ -48,11 +48,11 @@ const highlighForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
           break;
       }
       if (response && response.status === 200) {
-        console.log("Annotation Creation Response:", response);
+        console.log("Highlights Creation Response:", response);
         fetchAnnotations();
       }
     } catch (error) {
-      console.error("Error in creating Annotation:", error);
+      console.error("Error creating Highlights:", error);
     }
   };
 

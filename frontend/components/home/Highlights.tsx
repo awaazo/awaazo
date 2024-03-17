@@ -47,8 +47,8 @@ const HighLights: React.FC = () => {
     }
 
     return (
-        <Box overflowX="auto" css={{ "&::-webkit-scrollbar": { display: "none" } }}>
-            <HStack spacing={4} align="stretch">
+        <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "block" } }}>
+            <HStack spacing={4} align="stretch" css={{ width: "fit-content" }}>
                 {highlights && highlights.length > 0 ? (
                     highlights.map((highlight) => (
                         <HighlightTicket key={highlight.id} highlight={highlight} />
@@ -58,7 +58,7 @@ const HighLights: React.FC = () => {
                 )}
             </HStack>
         </Box>
-    );
+    );    
 };
 
 export default HighLights;
