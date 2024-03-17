@@ -13248,10 +13248,31 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
           Transcript
         </Text>
       </Flex>
-      <Box overflowY="auto" mb={4} maxH="15vh" p={3} ref={transcriptBoxRef}>
-        <Text fontSize={fontSize} color="white">
-          {visibleWords.map((word, index) => `${word.word} `)}
-        </Text>
+      <Box 
+        overflowY="auto" 
+        mb={4} maxH="15vh" 
+        p={3} 
+        ref={transcriptBoxRef}
+        sx={{
+          '&::-webkit-scrollbar': {
+            display: 'none', // Hide scrollbar for Chrome, Safari, and newer Edge
+          },
+          scrollbarWidth: 'none', // Hide scrollbar for Firefox
+          '-ms-overflow-style': 'none',  // Hide scrollbar for IE 10+
+          pointerEvents: 'none', // Disable pointer events so that user can't scroll up
+        }}
+      >
+
+        <Text className="transcript-text" fontSize={fontSize} color="white">
+    {visibleWords.map((word, index) => (
+      <span
+        key={index}
+        className="text-appear"
+      >
+        {word.word}{' '}
+      </span>
+    ))}
+  </Text>
       </Box>
     </Box>
   );
