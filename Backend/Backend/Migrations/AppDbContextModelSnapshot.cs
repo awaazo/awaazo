@@ -825,6 +825,9 @@ namespace Backend.Migrations
                     b.Property<bool>("IsPodcaster")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LinkedInUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -841,6 +844,9 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WebsiteUrl")
