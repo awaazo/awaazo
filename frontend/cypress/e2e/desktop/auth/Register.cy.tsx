@@ -1,4 +1,4 @@
-import * as paths from "../../fixtures/file_paths.json";
+import * as paths from '../../../fixtures/file_paths.json';
 
 describe("Register", () => {
   beforeEach(() => {
@@ -39,12 +39,15 @@ describe("Register", () => {
     cy.get('body').then(($body) => {
       if ($body.text().includes('An Account with that Email and/or Username already exists. Please Login or use a different Email address.')) {
           expect(true).to.be.true;
-      }else{   
-        cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
-        cy.url().should('include', '/');
-        cy.wait(250);
-        cy.visit("/profile/MyProfile", { timeout: 5000 });
-        cy.contains('DummyDisplayBio');
+        }else{
+          if ($body.text().includes('An Account with that Email and/or Username already exists. Please Login or use a different Email address.')) {
+            expect(true).to.be.true;
+          }   
+          cy.setup_user(paths.dummy, 'DummyDisplayName', 'DummyDisplayBio');
+          cy.url().should('include', '/');
+          cy.wait(1000);
+          cy.visit("/profile/MyProfile", { timeout: 5000 });
+          cy.contains('DummyDisplayBio');
       }
     });
   });
