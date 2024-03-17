@@ -39,7 +39,8 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
 
   useEffect(() => {
     const updateVisibleWords = () => {
-      if (transcript.text && audioRef.current) {
+      if (transcript && audioRef.current) {
+        if (transcript.text) {
         const currentTime = audioRef.current.currentTime;
         let wordsToShow = [];
         // Iterate through each segment of the transcript
@@ -56,6 +57,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
         });
         // Update the state to show all words up to the current time
         setVisibleWords(wordsToShow);
+        }
       }
     };
 
