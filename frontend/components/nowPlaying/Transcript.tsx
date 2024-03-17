@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Text,
@@ -13183,6 +13183,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
   const [transcript, setTranscript] = useState(null);
   const [visibleWords, setVisibleWords] = useState([]);
   const { state, dispatch, audioRef } = usePlayer();
+  const transcriptBoxRef = useRef(null);
 
   useEffect(() => {
     if (episodeId) {
@@ -13201,7 +13202,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
 
   useEffect(() => {
     const updateVisibleWords = () => {
-      if (transcript.length > 0 && audioRef.current) {
+      if (transcript && audioRef.current) {
         const currentTime = audioRef.current.currentTime;
         let wordsToShow = [];
         // Iterate through each segment of the transcript
@@ -13221,10 +13222,17 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
       }
     };
 
-    const interval = setInterval(updateVisibleWords, 500); // Update visible words every 500ms
+    const interval = setInterval(updateVisibleWords, 10); // Update visible words every 500ms
 
     return () => clearInterval(interval);
   }, [transcript, audioRef]);
+
+  //scrollbar follows down as the text progresses
+  useEffect(() => {
+    if (transcriptBoxRef.current) {
+      transcriptBoxRef.current.scrollTop = transcriptBoxRef.current.scrollHeight;
+    }
+  }, [visibleWords]); // Depend on visibleWords to trigger the scroll
 
   return (
     <Box
@@ -13240,11 +13248,11 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
           Transcript
         </Text>
       </Flex>
-      <Flex direction="row" wrap="wrap" overflowY="auto" mb={4} maxH="100vh" p={3}>
+      <Box overflowY="auto" mb={4} maxH="15vh" p={3} ref={transcriptBoxRef}>
         <Text fontSize={fontSize} color="white">
           {visibleWords.map((word, index) => `${word.word} `)}
         </Text>
-      </Flex>
+      </Box>
     </Box>
   );
 };
