@@ -35,8 +35,8 @@ import { FaList, FaCaretSquareRight } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
-import highlightForm from "../highlights/highlightForm";
-import highlitList from "../highlights/highlightList";
+import HighlightForm from "../highlights/highlightForm";
+import HighlightList from "../highlights/highlightList";
 
 import { BsExplicitFill } from "react-icons/bs";
 
@@ -377,11 +377,11 @@ const Episode = ({ episode }) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <highlitList annotations={annotations} deleteAnnotation={handleDeleteAnnotation} />
+                  <HighlightList annotations={annotations} deleteAnnotation={handleDeleteAnnotation} />
                 </TabPanel>
                 <TabPanel>
                   {/* Pass the episode duration to the AnnotationForm */}
-                  <highlightForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} episodeLength={episode.duration} />
+                  <HighlightForm episodeId={episode.id} fetchAnnotations={fetchAnnotations} episodeLength={episode.duration} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

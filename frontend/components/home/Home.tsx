@@ -1,7 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
 import ForYou from "./ForYou";
-import HighLights from "./Highlights";
+import HighLights from "../highlights/Highlights";
 
 const Home = () => {
   return (
