@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, Stack, Text, Textarea } from "@chakra-ui/react";
 import TranscriptPlayingBar from "./TranscriptPlayingBar";
 import PodcastHelper from "../../helpers/PodcastHelper";
 
@@ -57,33 +57,62 @@ const handleTranscript = async () => {
 
 
 return (
-    <>
-     <Flex direction="column" alignItems={"center"} width="100%">
-         <TranscriptPlayingBar episodeId={episodeId} podcastId={podcastId} />
-         <Box mt={4} width="100%" alignItems={"center"}>
-            <Flex justify="space-between" w="100%" alignItems="center">
-              <Text fontSize="xl" fontWeight="bold" mb={1} mt={1}>
-                Transcript
+
+     <>
+      <Box
+        p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {/* <form onSubmit={handleCreate}> */}
+          <Stack spacing={6} align={"center"}>
+            {/* {createError && <Text color="red.500">{createError}</Text>} */}
+
+            <FormControl position="relative">
+              <Textarea
+                id="description"
+                placeholder="What's the Podcast about?"
+                value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur suscipit convallis turpis, in dignissim dui. Phasellus maximus a dui vitae vestibulum. Nam odio dui, fringilla sit amet condimentum eget, euismod rhoncus tortor. Fusce ornare scelerisque libero. Pellentesque dictum euismod imperdiet. Maecenas tempor fermentum neque ac ultrices. Suspendisse ultricies ultrices nibh at dapibus. Nam com"
+                // onChange={handleDescriptionChange}
+                style={{
+                  width: "100%",
+                  height: "100px",
+                  padding: "12px",
+                  fontSize: "16px",
+                  borderRadius: "18px",
+                }}
+                resize="vertical"
+              />
+              <Text
+                position="absolute"
+                right="8px"
+                bottom="8px"
+                fontSize="sm"
+                color="gray.500"
+              >
+                {/* {descriptionCharacterCount}/250 */}
               </Text>
-            </Flex>
-          {transcript && transcript.text ? (
-              <Flex align="center" justify="space-between" p={2} border="1px" borderColor="gray.200" borderRadius="md" mt={2} width="100%" bg="rgba(0, 0, 0, 0.1)">
-                <Box>
-                  <Text fontWeight="bold">{transcript.text}</Text>
-                </Box>
-              </Flex>
-          ) : (
-            <Text textAlign="center" mt={4}>
-              This episode has no transcript yet.
-            </Text>
-          )}
-        </Box>
-        <Button variant="gradient" onClick={handleTranscript}>
-        Update Transcript
-      </Button>
-     </Flex>
+            </FormControl>
+
+      
+            <Button
+              variant="gradient"
+              id="createBtn"
+              type="submit"
+              minWidth={"200px"}
+              marginTop={"3"}
+              w={"12rem"}
+            >
+              Start Broadcasting
+            </Button>
+          </Stack>
+        {/* </form> */}
+      </Box>
     </>
-    );
+);
+
 };
 
 export default ManageTranscript;
