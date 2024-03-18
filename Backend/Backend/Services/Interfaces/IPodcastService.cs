@@ -53,4 +53,8 @@ public interface IPodcastService
     public Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl);
     public Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl);
 
+    
+    // Recommendation
+    public Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl);
+
 }
