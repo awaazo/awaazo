@@ -10,25 +10,37 @@ import {
 import { LuBookCopy } from "react-icons/lu";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { usePlayer } from '../../utilities/PlayerContext';
+import { Transcript } from "../../types/Interfaces";
+import { set } from "lodash";
 
 interface TranscriptProps {
   episodeId: string;
 }
 
 
-const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
+const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
-  const [transcript, setTranscript] = useState(null);
+  const [transcription, setTranscript] = useState<Transcript>();
   const [visibleWords, setVisibleWords] = useState([]);
   const { state, dispatch, audioRef } = usePlayer();
+  const [nextSeekTime, setNextSeekTime] = useState(0); // Time to seek to when clicking on a word
+  const [minSeekTime, setMinSeekTime] = useState(0); // Time to seek to when clicking on a word
   const transcriptBoxRef = useRef(null);
+  var seeking = false;
 
   useEffect(() => {
     if (episodeId) {
-      PodcastHelper.getTranscript(episodeId)
+      PodcastHelper.getTranscript(episodeId, 0)
         .then((res) => {
           if (res.status === 200) {
+
             setTranscript(res.transcript);
+
+            setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
+            setMinSeekTime(Math.min(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)),0));
+
+            console.log("Next seek time:" + nextSeekTime);
+            console.log("Min seek time:" + minSeekTime);
           } else {
             console.error("Error fetching transcripts data:", res.message);
           }
@@ -39,25 +51,55 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
 
   useEffect(() => {
     const updateVisibleWords = () => {
-      if (transcript && audioRef.current) {
-        if (transcript.text) {
-        const currentTime = audioRef.current.currentTime;
-        let wordsToShow = [];
-        // Iterate through each segment of the transcript
-        transcript.forEach(segment => {
-          // For each segment, check if the current time is past the segment's start time
-          if (currentTime >= segment.start) {
-            // For each word in the segment, add it if the current time is past the word's start time
-            segment.words.forEach(word => {
-              if (currentTime >= word.start) {
-                wordsToShow.push(word);
+
+      // If there is a transcript and the audio is playing, update the visible words
+      if (transcription && audioRef.current) {
+
+        // Re-fetch the transcript if the audio has seeked to a new time
+        if (!seeking && (audioRef.current.currentTime > nextSeekTime || audioRef.current.currentTime < minSeekTime)) {
+          seeking = true;
+          PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime)
+            .then((res) => {
+              if (res.status === 200) {
+
+                setTranscript(res.transcript);
+
+                setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
+                setMinSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)));
+
+                console.log("Next seek time:" + nextSeekTime);
+                console.log("Min seek time:" + minSeekTime);
+                console.log("Current time:" + audioRef.current.currentTime);
+                seeking = false;
+              } else {
+                console.error("Error fetching transcripts data:", res.message);
               }
-            });
-          }
-        });
-        // Update the state to show all words up to the current time
-        setVisibleWords(wordsToShow);
+            })
+            .catch((error) => console.error("Error fetching transcripts data:", error));
+
         }
+
+        if (transcription.lines.length > 0) {
+
+          const currentTime = audioRef.current.currentTime;
+          let wordsToShow = [];
+          // Iterate through each segment of the transcript
+          transcription.lines.forEach(segment => {
+            // For each segment, check if the current time is past the segment's start time
+            if (currentTime >= segment.start) {
+              // For each word in the segment, add it if the current time is past the word's start time
+              segment.words.forEach(word => {
+                if (currentTime >= word.start) {
+                  wordsToShow.push(word);
+                }
+              });
+            }
+
+          });
+          // Update the state to show all words up to the current time
+          setVisibleWords(wordsToShow);
+        }
+
       }
     };
 
@@ -67,7 +109,7 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
       clearInterval(interval);
       setVisibleWords([]);
     }
-  }, [transcript, audioRef]);
+  }, [transcription, audioRef]);
 
   //scrollbar follows down as the text progresses
   useEffect(() => {
@@ -90,10 +132,10 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
           Transcript
         </Text>
       </Flex>
-      <Box 
-        overflowY="auto" 
-        mb={4} maxH="15vh" 
-        p={3} 
+      <Box
+        overflowY="auto"
+        mb={4} maxH="15vh"
+        p={3}
         ref={transcriptBoxRef}
         sx={{
           '&::-webkit-scrollbar': {
@@ -104,25 +146,25 @@ const Transcript: React.FC<TranscriptProps> = ({ episodeId }) => {
           pointerEvents: 'none', // Disable pointer events so that user can't scroll up
         }}
       >
-        {transcript && visibleWords.length > 0 ? (
-        <Text className="transcript-text" fontSize={fontSize} color="white">
-    {visibleWords.map((word, index) => (
-      <span
-        key={index}
-        className="text-appear"
-      >
-        {word.word}{' '}
-      </span>
-    ))}
-    </Text>
-        ):(
+        {(transcription !== undefined && transcription.status === "Ready") || visibleWords.length > 0 ? (
+          <Text className="transcript-text" fontSize={fontSize} color="white">
+            {visibleWords.map((word, index) => (
+              <span
+                key={index}
+                className="text-appear"
+              >
+                {word.word}{' '}
+              </span>
+            ))}
+          </Text>
+        ) : (
           <Text fontSize={fontSize} color="white">
-          No transcript available.
-        </Text>
-      )}
+            Transcription not available at the moment.
+          </Text>
+        )}
       </Box>
     </Box>
   );
 };
 
-export default Transcript;
+export default TranscriptComp;

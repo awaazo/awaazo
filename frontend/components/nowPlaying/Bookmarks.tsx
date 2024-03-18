@@ -31,20 +31,20 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
     }
   }, [episodeId]);
 
-  //fetch bookmarks every time a bookmark has been added/deleted
-  useEffect(() => {
-    if (episodeId) {
-      BookmarksHelper.getAllBookmarks(episodeId)
-        .then((res) => {
-          if (res.status === 200) {
-            setBookmarks(res.bookmarks);
-          } else {
-            console.error("Error fetching bookmarks data:", res.message);
-          }
-        })
-        .catch((error) => console.error("Error fetching bookmarks data:", error));
-    }
-  }, [bookmarks]);
+  // //fetch bookmarks every time a bookmark has been added/deleted
+  // useEffect(() => {
+  //   if (episodeId) {
+  //     BookmarksHelper.getAllBookmarks(episodeId)
+  //       .then((res) => {
+  //         if (res.status === 200) {
+  //           setBookmarks(res.bookmarks);
+  //         } else {
+  //           console.error("Error fetching bookmarks data:", res.message);
+  //         }
+  //       })
+  //       .catch((error) => console.error("Error fetching bookmarks data:", error));
+  //   }
+  // }, [bookmarks]);
 
   // Function to handle the bookmark/delete bookmark action
   const handleDeleteBookmark = (bookmarkId) => {

@@ -871,13 +871,19 @@ export default class PodcastHelper {
    * Gets an episode transcript by episodeId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static getTranscript = async (episodeId): Promise<GetTranscriptResponse> => {
+  public static getTranscript = async (episodeId, seekTime): Promise<GetTranscriptResponse> => {
     const options = {
       method: "GET",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
       },
+      params: {
+      
+        "includeWords": "true",
+        "seekTime": seekTime,
+      },
+
       url: EndpointHelper.getTranscriptEndpoint(episodeId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
