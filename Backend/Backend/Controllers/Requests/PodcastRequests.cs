@@ -213,3 +213,55 @@ public class ModelResult
 }
 
 
+#region Highlight Requests
+
+/// <summary>
+/// Basic HighlightRequest
+/// </summary>
+public class HighlightRequest
+{
+
+    public HighlightRequest()
+    {
+    }
+
+    public HighlightRequest(Highlight highlight)
+    {
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
+    }
+
+    [DefaultValue(0)]
+    public double StartTime { get; set; }
+
+    [DefaultValue(0)]
+    public double EndTime { get; set; }
+
+    [DefaultValue("No Title Given")]
+    [MaxLength(50)]
+    public string Title { get; set; }
+
+    [DefaultValue("")]
+    [MaxLength(500)]
+    public string Description { get; set; }
+
+}
+
+/// <summary>
+/// EditHighlight Request. 
+/// </summary>
+public class EditHighlightRequest
+{
+    [DefaultValue("No Title Given")]
+    [MaxLength(50)]
+    public string? Title { get; set; }
+
+    [DefaultValue("")]
+    [MaxLength(500)]
+    public string? Description { get; set; }
+}
+
+#endregion
+
