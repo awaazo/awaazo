@@ -1,4 +1,4 @@
-import * as paths from "../../fixtures/file_paths.json";
+import * as paths from '../../../fixtures/file_paths.json';
 
 describe("Episode_Create", () => {
   beforeEach(() => {
