@@ -843,6 +843,8 @@ public class PodcastController : ControllerBase
         }
     }
 
+
+
     #endregion Episode Chat
 
     #region Transcript
@@ -960,6 +962,31 @@ public class PodcastController : ControllerBase
 
 
     #endregion Transcript
+
+    #region Recommeded Episode
+
+
+    [HttpGet("getRecommendedEpisodes")]
+    public async Task<IActionResult> GetRecommendedEpisodes()
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRecommendedEpisodes));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            if (user is null)
+                return NotFound("User not found");
+
+            return Ok(await _podcastService.GetRecommendedEpisodes(user,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetRecommendedEpisodes));
+            return BadRequest(e.Message);
+        }
+    }
+    #endregion
 
     #endregion
 }

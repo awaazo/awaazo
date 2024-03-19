@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
 using FFMpegCore.Enums;
+using Microsoft.ML;
+using Microsoft.ML.Trainers;
 using System.Net;
 
 namespace Backend.Services;
@@ -26,6 +28,11 @@ public class PodcastService : IPodcastService
     private readonly AppDbContext _db;
 
     private readonly INotificationService _notificationService;
+
+    /// <summary>
+    /// Ml Context
+    /// </summary>
+    private readonly MLContext _mLContext;
 
     /// <summary>
     /// Python Server Base Url
@@ -57,11 +64,18 @@ public class PodcastService : IPodcastService
     /// </summary>
     public const int MAX_REQUEST_SIZE = 1005242880;
 
+    /// <summary>
+    /// Threshold for ML
+    /// </summary>
+    public const double THRESHOLD = 30;
+
 
     public PodcastService(AppDbContext db, INotificationService notificationService, IConfiguration configuration)
     {
         _db = db;
         _notificationService = notificationService;
+        _mLContext = new MLContext(0);
+
 
         // Set the default url for the python server
         _pyBaseUrl = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ?
@@ -1420,6 +1434,68 @@ public class PodcastService : IPodcastService
         return episodeResponses;
     }
 
+    public async Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl)
+    {
+        List<EpisodeRating> episodeInteractions = await _db.UserEpisodeInteractions.Select(u => new EpisodeRating(u)).ToListAsync();
+
+        // Load the Data
+        IDataView trainingDataView = _mLContext.Data.LoadFromEnumerable<EpisodeRating>(episodeInteractions);
+
+        // Convert Guid to a numeric Key
+        var estimator = _mLContext.Transforms.Conversion.MapValueToKey(new[] {
+                new  InputOutputColumnPair("userIdEncoded", "UserId"),
+                new  InputOutputColumnPair("episodeIdEncoded", "EpisodeId")
+                },
+                 keyOrdinality: Microsoft.ML.Transforms.ValueToKeyMappingEstimator
+                     .KeyOrdinality.ByValue, addKeyValueAnnotationsAsText: true);
+
+        // Transform the userID
+        var options = new MatrixFactorizationTrainer.Options
+        {
+            MatrixColumnIndexColumnName = "userIdEncoded",
+            MatrixRowIndexColumnName = "episodeIdEncoded",
+            LabelColumnName = "TotalListenTime",
+            NumberOfIterations = 20,
+            ApproximationRank = 100
+        };
+
+
+        // Define the trainer.
+        var trainerEstimator = estimator.Append(_mLContext.Recommendation().Trainers.MatrixFactorization(options));
+
+      
+        // Train the model.
+        var model = trainerEstimator.Fit(trainingDataView);
+
+        // Create Prediction Engine
+        var prediction = _mLContext.Model.CreatePredictionEngine<EpisodeRating, ModelResult>(model);
+
+        // Get all the Episodes
+        List<Episode> episode = await _db.Episodes.Include(u => u.Podcast).ToListAsync();
+
+        List<Episode> list = new List<Episode>();
+        
+        // Loop through all the Episodes
+        foreach (var item in episode)
+        {
+            //Predict for each Episode
+            ModelResult result = prediction.Predict(new EpisodeRating { EpisodeId = item.Id.ToString(), UserId = user.Id.ToString() });
+            
+            // If score Greater then threshold then Add it to the list
+            if(result.Score > THRESHOLD)
+            {
+                list.Add(item);
+            }
+            
+        }
+
+        List<EpisodeResponse> response = list.Select(u => new EpisodeResponse(u,domainUrl)).ToList();
+        
+        // Return the List
+        return response;
+
+
+    }
 
     #endregion Episode
 
