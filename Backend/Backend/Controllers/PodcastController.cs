@@ -966,6 +966,12 @@ public class PodcastController : ControllerBase
 
     #region Highlights
 
+    /// <summary>
+    /// Creates a highlight of the given episode. Highlight has a maximum duration of 15 seconds
+    /// </summary>
+    /// <param name="highlightRequest"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpPost("{episodeId}/CreateHighlight")]
     public async Task<IActionResult> CreateHighlight([FromForm] HighlightRequest highlightRequest, Guid episodeId)
     {
@@ -988,6 +994,12 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Allows users to edit the title and description of a given Highligh if it belongs to them
+    /// </summary>
+    /// <param name="highlightRequest"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
     [HttpPost("{highlightId}/EditHighlight")]
     public async Task<IActionResult> EditHighlight([FromForm] EditHighlightRequest highlightRequest, Guid highlightId)
     {
@@ -1008,6 +1020,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Allows users to delete their own highlights
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
     [HttpPost("{highlightId}/RemoveHighlight")]
     public async Task<IActionResult> RemoveHighlight(Guid highlightId)
     {
@@ -1028,6 +1045,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Allows users to get all the highlighs associated with a given user
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     [HttpGet("{userId}/GetAllUserHighlights")]
     public async Task<IActionResult> GetAllUserHighlights(Guid userId)
     {
@@ -1049,6 +1071,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets all the highlights associated with a given episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
     [HttpGet("{episodeId}/GetAllEpisodeHighlights")]
     public async Task<IActionResult> GetAllEpisodeHighlights(Guid episodeId)
     {
@@ -1070,6 +1097,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the audio file of a given highlight
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
     [HttpGet("{highlightId}/GetHighlightAudio")]
     public async Task<IActionResult> GetHighlightAudio(Guid highlightId)
     {
