@@ -345,3 +345,60 @@ public class PodcastMetricsResponse
         public uint TotalUnknown { get; set; } = 0;
     }
 }
+
+#region Highlights
+
+/// <summary>
+/// Basic Highlight Response object for the frontend
+/// </summary>
+[BindProperties]
+public class HighlightResponse
+{
+    
+    public HighlightResponse()
+    {
+
+    }
+
+    public HighlightResponse(Highlight highlight)
+    {
+        EpisodeId = highlight.EpisodeId;
+        UserId = highlight.UserId;
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
+    }
+
+    /// <summary>
+    /// Id of the episode attached to this Highlight
+    /// </summary>
+    public Guid EpisodeId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Id of the user who created this Highlight
+    /// </summary>
+    public Guid UserId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// StartTime of the Highlight
+    /// </summary>
+    public double StartTime { get; set; } = 0;
+
+    /// <summary>
+    /// EndTime of the Highlight
+    /// </summary>
+    public double EndTime { get; set; } = 0;
+
+    /// <summary>
+    /// Title of the Highlight 
+    /// </summary>
+    public string Title { get; set; } = "No Title Given";
+
+    /// <summary>
+    /// Description of the Highlight
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+}
+
+#endregion
