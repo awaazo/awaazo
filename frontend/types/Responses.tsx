@@ -1,4 +1,3 @@
-
 import {
   UserMenuInfo,
   UserProfile,
@@ -16,38 +15,38 @@ import {
   Chatbot,
   Reply,
   Transaction,
-  Balance
-} from "./Interfaces";
-
+  Balance,
+  Email,
+} from './Interfaces'
 
 export interface BaseResponse {
-  [x: string]: any;
-  status: number;
-  message: string;
+  [x: string]: any
+  status: number
+  message: string
 }
 
 //#region Auth Responses
 
 export interface LoginResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface RegisterResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface GoogleSSOResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface LogoutResponse extends BaseResponse {}
 
 export interface MeResponse extends BaseResponse {
-  userMenuInfo: UserMenuInfo;
+  userMenuInfo: UserMenuInfo
 }
 
 export interface SearchProfilesResponse extends BaseResponse {
-  users: User[];
+  users: User[]
 }
 
 //#endregion
@@ -55,193 +54,207 @@ export interface SearchProfilesResponse extends BaseResponse {
 //#region User Profile Responses
 
 export interface UserProfileResponse extends BaseResponse {
-  userProfile: UserProfile;
+  userProfile: UserProfile
 }
 
 export interface UserProfileByIdResponse extends BaseResponse {
-  userProfileByID: userProfileByID;
+  userProfileByID: userProfileByID
 }
 
 //#endregion
 
 //#region Podcast Responses
 export interface CreatePodcastResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface EditPodcastResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface MyPodcastResponse extends BaseResponse {
-  myPodcasts: Podcast[];
+  myPodcasts: Podcast[]
 }
 
 export interface AllPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
+  podcasts: Podcast[]
 }
 
 export interface AllEpisodeResponse extends BaseResponse {
-  episode: Episode[];
+  episode: Episode[]
 }
 
 export interface ByTagsPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
+  podcasts: Podcast[]
 }
 
 export interface SearchPodcastResponse extends BaseResponse {
-  podcasts: Podcast[];
+  podcasts: Podcast[]
 }
 
 export interface GetMyPodcastResponse extends BaseResponse {
-  podcast: Podcast;
+  podcast: Podcast
 }
 
 export interface SearchEpisodeResponse extends BaseResponse {
-  episodes: Episode[];
+  episodes: Episode[]
 }
 
 export interface GetChangePasswordResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface GetResetPasswordResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 //#endregion
 
 //#region Podcast Responses
 export interface CreateEpisodeResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface EditEpisodeResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface EpisodeAddAudioResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface GetMyEpisodeResponse extends BaseResponse {
-  episode: Episode;
+  episode: Episode
 }
 
 //#endregion
 
 export interface NotificationResponse extends BaseResponse {
-  notifications: Notification[];
+  notifications: Notification[]
 }
 
 //#region Social Responses
 export interface GetCommentsResponse extends BaseResponse {
-  comments: Comment[];
+  comments: Comment[]
 }
 export interface GetRepliesResponse extends BaseResponse {
-  replies: Reply[];
+  replies: Reply[]
 }
 export interface IsLikedResponse extends BaseResponse {
-  isLiked: boolean;
+  isLiked: boolean
 }
 
 //#endregion
 
 //#region Episode Bookmark Responses
 export interface GetBookmarksResponse extends BaseResponse {
-  bookmarks: Bookmark[];
+  bookmarks: Bookmark[]
 }
 
 //#endregion
 
 //#region Social Responses
 export interface AddSectionResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface getSectionResponse extends BaseResponse {
-  sections: Section[];
+  sections: Section[]
 }
 
 //#endregion
 
 //#region Annotation Responses
 export interface AddAnnotationResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface getAnnotationResponse extends BaseResponse {
-  annotations: Annotation[];
+  annotations: Annotation[]
 }
 //#endregion
 
 //#region Playlist Responses
 export interface PlaylistDataResponse extends BaseResponse {
-  data: string;
+  data: string
 }
 
 export interface GetPlaylistsResponse extends BaseResponse {
-  playlists: Playlist[];
+  playlists: Playlist[]
 }
 
 export interface GetPlaylistEpisodesResponse extends BaseResponse {
-  playlist: Playlist;
+  playlist: Playlist
 }
 
 //#endregion
 
 //#region Transcript Response
 export interface GetTranscriptResponse extends BaseResponse {
-  transcript: Transcript;
+  transcript: Transcript
 }
 
 //#endregion
 
 //#region Transcript Response
 export interface GetTranscriptTextResponse extends BaseResponse {
-  text: string;
+  text: string
 }
 
 //#region Watch History Response
 export interface GetWatchHistoryResponse extends BaseResponse {
-  watchHistory: WatchHistory;
+  watchHistory: WatchHistory
 }
 
 //#endregion
 
 //#region Metrics Responses
 export interface GetMetricsResponse extends BaseResponse {
-  metrics: Metrics;
+  metrics: Metrics
+}
+
+//#endregion
+
+//#region Admin Responses
+export interface GetUsersResponse extends BaseResponse {
+  users: User[]
+}
+
+export interface GetEmailLogs extends BaseResponse {
+  emails: Email[]
+}
+
+export interface GetReports extends BaseResponse {
+  report: String
 }
 
 //#endregion
 
 export interface GetChatbotResponse extends BaseResponse {
-  episodeId: string;
-  userId: string;
-  messages: Chatbot[];
+  episodeId: string
+  userId: string
+  messages: Chatbot[]
 }
 
 export interface createPaymentResponse extends BaseResponse {
-  data : string
+  data: string
 }
 
-export interface confirmPaymentResponse extends BaseResponse{
-  data : string
+export interface confirmPaymentResponse extends BaseResponse {
+  data: string
 }
 
 export interface getUserBalance extends BaseResponse {
-  data : number
+  data: number
 }
-export interface WithdrawResponse extends BaseResponse{
-  data : string
-}
-
-export interface TransactionResponse extends BaseResponse{
-  data : Transaction[]
+export interface WithdrawResponse extends BaseResponse {
+  data: string
 }
 
-export interface Last5DaysBalanceResponse extends BaseResponse{
-  data : Balance[]
+export interface TransactionResponse extends BaseResponse {
+  data: Transaction[]
 }
 
+export interface Last5DaysBalanceResponse extends BaseResponse {
+  data: Balance[]
+}
