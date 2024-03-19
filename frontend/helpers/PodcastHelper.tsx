@@ -790,7 +790,7 @@ export default class PodcastHelper {
     requestData: editTranscriptLinesRequest,
   ): Promise<BaseResponse> => {
     const options = {
-      method: "GET",
+      method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
@@ -871,13 +871,69 @@ export default class PodcastHelper {
    * Gets an episode transcript by episodeId from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static getTranscript = async (episodeId): Promise<GetTranscriptResponse> => {
+  public static getTranscript = async (episodeId, seekTime): Promise<GetTranscriptResponse> => {
+    if (seekTime < 0) {
+      seekTime = 0;
+    }
     const options = {
       method: "GET",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
       },
+      params: {
+      
+        "includeWords": "true",
+        "seekTime": seekTime,
+      },
+
+      url: EndpointHelper.getTranscriptEndpoint(episodeId),
+      withCredentials: true, // This will send the session cookie with the request
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getTrasncript...");
+      console.debug(options);
+
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getTranscript...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        transcript: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        transcript: null,
+      };
+    }
+  };
+
+
+  /**
+   * Gets an episode transcript by episodeId from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static getTranscriptFull = async (episodeId: string): Promise<GetTranscriptResponse> => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      params: {
+      
+        "includeWords": "false",
+      },
+
       url: EndpointHelper.getTranscriptEndpoint(episodeId),
       withCredentials: true, // This will send the session cookie with the request
       cache: false,
