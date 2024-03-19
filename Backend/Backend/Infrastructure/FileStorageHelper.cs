@@ -2,6 +2,9 @@ using static System.IO.Directory;
 using static System.IO.Path;
 using static System.IO.File;
 using System;
+using FFMpegCore;
+using Backend.Controllers.Requests;
+using Backend.Models;
 
 namespace Backend.Infrastructure;
 
@@ -43,6 +46,11 @@ public static class FileStorageHelper
     public const string PLAYLIST_DIR_NAME = "Playlist";
 
     /// <summary>
+    /// Dir where all highlights are stored. 
+    /// </summary>
+    public const string HIGHLIGHT_DIR_NAME = "Highlight";
+
+    /// <summary>
     /// Identifies if the file is a transcription status file.
     /// </summary>
     public const string STATUS_ID = "_status.txt";
@@ -51,7 +59,18 @@ public static class FileStorageHelper
     /// Identifies the file type for transcript files.
     /// </summary>
     public const string TRANSCRIPT_FILE_TYPE = ".json";
-    
+
+    /// <summary>
+    /// Identifies the file type for Highlights
+    /// </summary>
+    public const string HIGHLIGHT_FILE_TYPE = ".mp3";
+
+    /// <summary>
+    /// This is for use with the File Content type
+    /// </summary>
+    public const string FORMATTED_HIGHLIGHT_FILE_TYPE = "audio/mp3";
+
+
     public static readonly string[] AVATAR_EXTENSIONS = new[] { ".jpg", ".png", ".jpeg", ".gif"};
 
     public enum TranscriptStatus 
@@ -621,6 +640,88 @@ public static class FileStorageHelper
 
     }
 
+
+    #endregion
+
+    #region Highlights
+
+    /// <summary>
+    /// Saves a given highlight to the file System. Reuquires both the highlight model and its associated
+    /// episode model. Stores files C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3 format
+    /// </summary>
+    /// <param name="highlight"></param>
+    /// <param name="episode"></param>
+    /// <returns></returns>
+    public static string SaveHighlightFile(Highlight highlight, Episode episode)
+    {
+        var highlightId = highlight.HighlightId.ToString();
+
+        // File name in the file System ex: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\FileName
+        string highlightFileFullPath = GetHighlightPath(highlight.EpisodeId.ToString(),
+                                                    highlight.UserId.ToString(),
+                                                    highlight.HighlightId.ToString());
+
+        var highlightFileName = highlightId + highlightFileFullPath.Split(highlight.HighlightId.ToString()).Last();
+
+        string dirPath = highlightFileFullPath.Split(highlight.HighlightId.ToString())[0];
+
+        string episodeFilePath = GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId);
+
+
+        // Create directory should it not exist
+        if (!Directory.Exists(dirPath))
+        {
+            CreateDirectory(dirPath);
+        }
+
+        // Create the Highlight File
+        FFMpegArguments.FromFileInput(episodeFilePath)
+               .OutputToFile(highlightFileFullPath, true, options => options
+                   .Seek(TimeSpan.FromSeconds(highlight.StartTime))
+                   .EndSeek(TimeSpan.FromSeconds(highlight.EndTime))).ProcessSynchronously();
+
+        return highlightFileName;
+    }
+
+    /// <summary>
+    /// Removes the given Highlight File from the file directory.
+    /// </summary>
+    /// <param name="highlight"></param>
+    public static void RemoveHighlightFile(Highlight highlight)
+    {
+        var filePath = GetHighlightPath(highlight.EpisodeId, highlight.UserId, highlight.HighlightId);
+
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with Guid values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    public static string GetHighlightPath(Guid episodeId, Guid userId, Guid highlightId)
+    {
+        return GetHighlightPath(episodeId.ToString(), userId.ToString(), highlightId.ToString());
+    }
+
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with string values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    public static string GetHighlightPath(string episodeId, string userId, string highlightId)
+    {
+        return Combine(GetCurrentDirectory(), BASE_DIR, HIGHLIGHT_DIR_NAME, episodeId, userId, highlightId + HIGHLIGHT_FILE_TYPE);
+    }
 
     #endregion
 

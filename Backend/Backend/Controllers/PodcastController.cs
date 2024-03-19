@@ -8,6 +8,7 @@ using static Backend.Infrastructure.FileStorageHelper;
 using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Responses;
+using Azure.Core;
 
 namespace Backend.Controllers;
 
@@ -530,6 +531,8 @@ public class PodcastController : ControllerBase
             // Get the name of the audio file
             string audioName = await _podcastService.GetEpisodeAudioNameAsync(episodeId);
 
+            var test = GetFileType(audioName);
+
             // Return the audio file from the server
             return PhysicalFile(GetPodcastEpisodeAudioPath(audioName, podcastId), GetFileType(audioName), enableRangeProcessing: true);
         }
@@ -988,5 +991,168 @@ public class PodcastController : ControllerBase
     }
     #endregion
 
+    #region Highlights
+
+    /// <summary>
+    /// Creates a highlight of the given episode. Highlight has a maximum duration of 15 seconds
+    /// </summary>
+    /// <param name="highlightRequest"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/CreateHighlight")]
+    public async Task<IActionResult> CreateHighlight([FromForm] HighlightRequest highlightRequest, Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(CreateHighlight));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var response = await _podcastService.CreateHighlightAsync(highlightRequest, episodeId, user);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(CreateHighlight));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Allows users to edit the title and description of a given Highligh if it belongs to them
+    /// </summary>
+    /// <param name="highlightRequest"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    [HttpPost("{highlightId}/EditHighlight")]
+    public async Task<IActionResult> EditHighlight([FromForm] EditHighlightRequest highlightRequest, Guid highlightId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditHighlight));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return await _podcastService.EditHighlightAsync(highlightRequest, highlightId, user) ? Ok("Highlight changed") : Ok("Failed to edit highlight");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(EditHighlight));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Allows users to delete their own highlights
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    [HttpPost("{highlightId}/RemoveHighlight")]
+    public async Task<IActionResult> RemoveHighlight(Guid highlightId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(RemoveHighlight));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            return await _podcastService.RemoveHighlightAsync(highlightId, user) ? Ok("Highlight Deleted") : Ok("Failed to Delete highlight");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(RemoveHighlight));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Allows users to get all the highlighs associated with a given user
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    [HttpGet("{userId}/GetAllUserHighlights")]
+    public async Task<IActionResult> GetAllUserHighlights(Guid userId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllUserHighlights));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var results = await _podcastService.GetAllUserHighlightsAsync(userId);
+            return Ok(results);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetAllUserHighlights));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets all the highlights associated with a given episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpGet("{episodeId}/GetAllEpisodeHighlights")]
+    public async Task<IActionResult> GetAllEpisodeHighlights(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllEpisodeHighlights));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var results = await _podcastService.GetAllEpisodeHighlightsAsync(episodeId);
+            return Ok(results);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetAllEpisodeHighlights));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets the audio file of a given highlight
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    [HttpGet("{highlightId}/GetHighlightAudio")]
+    public async Task<IActionResult> GetHighlightAudio(Guid highlightId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetHighlightAudio));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            Dictionary<string, string> guids = await _podcastService.GetHighlightAudioAysnc(highlightId);
+
+            return PhysicalFile(GetHighlightPath(guids[nameof(Episode)], guids[nameof(User)], highlightId.ToString()), FORMATTED_HIGHLIGHT_FILE_TYPE, enableRangeProcessing: true);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetHighlightAudio));
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
+
+    #endregion
+
 }
