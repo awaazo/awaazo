@@ -11,7 +11,6 @@ import { LuBookCopy } from "react-icons/lu";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { usePlayer } from '../../utilities/PlayerContext';
 import { Transcript } from "../../types/Interfaces";
-import { set } from "lodash";
 
 interface TranscriptProps {
   episodeId: string;
@@ -27,7 +26,6 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
   const [nextSeekTime, setNextSeekTime] = useState(0); // Time to seek to when clicking on a word
   const [minSeekTime, setMinSeekTime] = useState(0); // Time to seek to when clicking on a word
   const transcriptBoxRef = useRef(null);
-  var sections = [];
   var seeking = false;
 
   useEffect(() => {
@@ -42,8 +40,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
             setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
             setMinSeekTime(Math.min(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)),0));
 
-            console.log("Next seek time:" + nextSeekTime);
-            console.log("Min seek time:" + minSeekTime);
+    
           } else {
             console.error("Error fetching transcripts data:", res.message);
           }
@@ -60,24 +57,26 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
         
         // Re-fetch the transcript if the audio has seeked to a new time
         if (!seeking && (audioRef.current.currentTime > nextSeekTime || audioRef.current.currentTime < minSeekTime)) {
+          
+          // Set seeking to true before fetching the new transcript
           seeking = true;
           PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime-5)
             .then((res) => {
               if (res.status === 200) {
 
+                // Set the new transcript
                 setTranscript(res.transcript);
                 
-                
+                // Set the new transcript lines
                 setTranscriptLines(res.transcript.lines);
-                console.log("Transcript lines: ", transcriptLines);
-
+                
+                // Set the next seek time to the maximum seek time in the new transcript
                 setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
                 setMinSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)));
 
-                console.log("Next seek time:" + nextSeekTime);
-                console.log("Min seek time:" + minSeekTime);
-                console.log("Current time:" + audioRef.current.currentTime);
+                // Set seeking to false after fetching the new transcript
                 seeking = false;
+
               } else {
                 console.error("Error fetching transcripts data:", res.message);
               }
