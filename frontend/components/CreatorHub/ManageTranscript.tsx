@@ -1,89 +1,184 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, Input, LinkOverlay, Stack, Text, Textarea } from "@chakra-ui/react";
 import TranscriptPlayingBar from "./TranscriptPlayingBar";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import { editTranscriptLinesRequest } from "../../types/Requests";
+import { Transcript, TranscriptLine, TranscriptWord } from "../../types/Interfaces";
+
 
 const ManageTranscript = ({ episodeId, podcastId }) => {
-    
-  const [transcript, setTranscript] = useState(null);
 
-  useEffect(() => {
-    if (episodeId) {
-      PodcastHelper.getTranscript(episodeId)
-        .then((res) => {
-          if (res.status === 200) {
-            setTranscript(res.transcript);
-          } else {
-            console.error("Error fetching transcripts data:", res.message);
-          }
-        })
-        .catch((error) => console.error("Error fetching transcripts data:", error));
-    }
-  }, [episodeId]);
+    const [transcript, setTranscript] = useState<Transcript>(null);
+    const [transcriptLines, setTranscriptLines] = useState<TranscriptLine[]>(null);
 
 
 
-const handleTranscript = async () => {
-    const request = {
-        id: 0,
-        seek: 0,
-        start: 0,
-        end: 0,
-        text: "string",
-        speaker: "string",
-        words: [
-        {
-            start: 0,
-            end: 0,
-            word: "string",
-            score: 0,
-            speaker: "string"
+    useEffect(() => {
+        if (episodeId) {
+            PodcastHelper.getTranscriptFull(episodeId)
+                .then((res) => {
+                    if (res.status === 200) {
+                        // Set the transcript and transcript lines
+                        setTranscript(res.transcript);
+                        setTranscriptLines(res.transcript.lines);
+                    } else {
+                        console.error("Error fetching transcripts data:", res.message);
+                    }
+                })
+                .catch((error) => console.error("Error fetching transcripts data:", error));
         }
-        ]
+    }, [episodeId]);
+
+
+    // State to track the currently edited word
+    const [editState, setEditState] = useState({ textIndex: null, wordIndex: null, value: '' });
+
+    const handleWordChange = (e, lineIndex, wordIndex) => {
+        setEditState({ ...editState, value: e.target.value });
     };
 
-    try {
-        const response = await PodcastHelper.editTranscriptLines(episodeId, request);
-        if (response.status === 200) {
-          console.log("Updated Transcript");
-        } else {
-          console.error("Error editing transcript:", response.message);
+    const saveWord = (lineIndex, wordIndex) => {
+
+
+        if (transcriptLines) {
+
+            // Update the word in the transcript
+            const updatedTranscript = transcriptLines.map((line, lineId) => {
+
+                // If the line is the one being edited, update the word
+                if (lineId === lineIndex) {
+
+                    // Split the line into words and update the word at the specified index
+                    const updatedWords = line.text.split(' ').map((word, index) => {
+                        if (index === wordIndex) {
+                            return editState.value;
+                        }
+                        return word;
+                    });
+
+                    // Update the line text based on the modified words
+                    line.text = updatedWords.join(' ');
+                }
+                return line;
+            });
+            
+            // Get the start time of the line being edited
+            const startTime = transcriptLines[lineIndex].start;
+            console.log("startTime: " + startTime);
+
+            // Get the original text of the line being edited with the words as an array
+            PodcastHelper.getTranscript(episodeId,startTime)
+                .then((res) => {
+                    if (res.status === 200) {
+
+                        // Update the word in the transcript
+                        var newLine = res.transcript.lines[lineIndex];
+                        newLine.text = updatedTranscript[lineIndex].text;
+                        newLine.words[wordIndex].word = editState.value;
+                        newLine.words[wordIndex].score = 1;
+
+
+                        // Save the updated line
+                        saveTranscriptLine([newLine]);
+
+
+                    } else {
+                        console.error("Error fetching transcripts data:", res.message);
+                    }
+                })
+                .catch((error) => console.error("Error fetching transcripts data:", error));
+
+
         }
-      } catch (error) {
-        console.error("Error editing transcript:", error);
-      }
 
-  };
+    };
 
 
-return (
-    <>
-     <Flex direction="column" alignItems={"center"} width="100%">
-         <TranscriptPlayingBar episodeId={episodeId} podcastId={podcastId} />
-         <Box mt={4} width="100%" alignItems={"center"}>
-            <Flex justify="space-between" w="100%" alignItems="center">
-              <Text fontSize="xl" fontWeight="bold" mb={1} mt={1}>
-                Transcript
-              </Text>
-            </Flex>
-          {transcript && transcript.text ? (
-              <Flex align="center" justify="space-between" p={2} border="1px" borderColor="gray.200" borderRadius="md" mt={2} width="100%" bg="rgba(0, 0, 0, 0.1)">
-                <Box>
-                  <Text fontWeight="bold">{transcript.text}</Text>
-                </Box>
-              </Flex>
-          ) : (
-            <Text textAlign="center" mt={4}>
-              This episode has no transcript yet.
-            </Text>
-          )}
+    const saveTranscriptLine = (lines) => {
+        if (transcript) {
+
+            const request: editTranscriptLinesRequest = lines.map((line) => ({
+                id: line.id,
+                seek: line.seek,
+                start: line.start,
+                end: line.end,
+                text: line.text,
+                speaker: line.speaker,
+                words: line.words.map((word) => ({
+                    start: word.start,
+                    end: word.end,
+                    word: word.word,
+                    score: word.score,
+                    speaker: word.speaker
+                }))
+            }));
+
+            // Send the request to update transcript
+            PodcastHelper.editTranscriptLines(episodeId, request).then((response) => {
+                if (response.status === 200) {
+                    console.log("transcript updated");
+                } else {
+                    console.error("Error editing transcript", response.message);
+                }
+            });
+        }
+    };
+
+    return (
+        <Box>
+            <Box
+                style={{
+                    width: '100vh',
+                    height: '70vh',
+                    overflowY: 'scroll',
+                    padding: '10px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                }}
+            >
+                {transcriptLines && transcriptLines[0].text ?
+                    (
+                        transcriptLines.map((line, lineIndex) => (
+                            <Box key={lineIndex} style={{ marginBottom: '10px' }}>
+
+                                {line.text.split(' ').map((word, wordIndex) => (
+
+                                    editState.textIndex === lineIndex && editState.wordIndex === wordIndex ? (
+                                        <Input
+                                            value={editState.value}
+                                            onChange={(e) => handleWordChange(e, lineIndex, wordIndex)}
+                                            onBlur={() => saveWord(lineIndex, wordIndex)}
+                                            autoFocus
+                                            key={wordIndex}
+                                            size="sm"
+                                        />
+                                    ) : (
+                                        <span
+                                            onClick={() => setEditState({ textIndex: lineIndex, wordIndex, value: word })}
+                                            style={{ marginRight: '5px', cursor: 'pointer', display: 'inline-block' }}
+                                            key={wordIndex}
+                                        >
+                                            {word}
+                                        </span>
+                                    )
+                                ))}
+                            </Box>
+                        ))) : (
+                        <span>No transcript available</span>
+                    )
+                }
+            </Box>
+            <Box
+                style={{
+                    textAlign: 'center',
+                    marginTop: '10px'
+                }}
+            >
+
+            </Box>
         </Box>
-        <Button variant="gradient" onClick={handleTranscript}>
-        Update Transcript
-      </Button>
-     </Flex>
-    </>
     );
+
 };
 
 export default ManageTranscript;
