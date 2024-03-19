@@ -1434,7 +1434,17 @@ public class PodcastService : IPodcastService
 
     #region Highlights
 
-    public async Task<bool> CreateHighlightAsync(CreateHighlightRequest request, Guid episodeId, User user)
+    /// <summary>
+    /// Creates a Highlight in the database by taking a clip from the given start and end times.
+    /// The file name is stored in the database and the file itself if stored in the file system in this format:
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="episodeId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user)
     {       
         var currentEpisodeHighlights = await _db.Highlights.Where(h => episodeId == h.EpisodeId).ToListAsync();
         var episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
@@ -1498,9 +1508,18 @@ public class PodcastService : IPodcastService
 
         // Save Highlight
         await _db.Highlights.AddAsync(highlight);
-        return await _db.SaveChangesAsync() > 0;
+        await _db.SaveChangesAsync();
+        return new HighlightResponse(highlight);
     }
 
+    /// <summary>
+    /// Allows the user to edit his own Highlights, but only the title and the description
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="highlightId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user)
     {
         var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
@@ -1528,6 +1547,13 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Removes the given Highlight from the database and the file system. Uses a soft delete Function.
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<bool> RemoveHighlightAsync(Guid highlightId, User user)
     {
         var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
@@ -1545,6 +1571,12 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
+    /// <summary>
+    /// Gets all the Highlights from a given user
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId)
     {
         var highlights = await _db.Highlights
@@ -1555,6 +1587,12 @@ public class PodcastService : IPodcastService
         return highlights;
     }
 
+    /// <summary>
+    /// Gets all the Highlights from a given episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId)
     {
         var highlights = await _db.Highlights
@@ -1565,6 +1603,12 @@ public class PodcastService : IPodcastService
         return highlights;
     }
 
+    /// <summary>
+    /// Returns the audio file stored in the File system. Uses the highlightId to do this.
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId)
     {
         var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Highlight does not exist");

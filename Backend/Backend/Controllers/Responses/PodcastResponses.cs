@@ -348,6 +348,9 @@ public class PodcastMetricsResponse
 
 #region Highlights
 
+/// <summary>
+/// Basic Highlight Response object for the frontend
+/// </summary>
 [BindProperties]
 public class HighlightResponse
 {
@@ -357,19 +360,25 @@ public class HighlightResponse
 
     }
 
-    public HighlightResponse(Highlight higlight)
+    public HighlightResponse(Highlight highlight)
     {
-        EpisodeId = higlight.EpisodeId;
-        StartTime = higlight.StartTime;
-        EndTime = higlight.EndTime;
-        Title = higlight.Title;
-        Description = higlight.Description;
+        EpisodeId = highlight.EpisodeId;
+        UserId = highlight.UserId;
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
     }
 
     /// <summary>
     /// Id of the episode attached to this Highlight
     /// </summary>
     public Guid EpisodeId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Id of the user who created this Highlight
+    /// </summary>
+    public Guid UserId { get; set; } = Guid.Empty;
 
     /// <summary>
     /// StartTime of the Highlight

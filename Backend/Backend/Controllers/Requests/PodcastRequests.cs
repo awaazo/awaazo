@@ -185,14 +185,17 @@ public class History
 
 #region Highlight Requests
 
-public class CreateHighlightRequest
+/// <summary>
+/// Basic HighlightRequest
+/// </summary>
+public class HighlightRequest
 {
 
-    public CreateHighlightRequest()
+    public HighlightRequest()
     {
     }
 
-    public CreateHighlightRequest(Highlight highlight)
+    public HighlightRequest(Highlight highlight)
     {
         StartTime = highlight.StartTime;
         EndTime = highlight.EndTime;
@@ -216,6 +219,9 @@ public class CreateHighlightRequest
 
 }
 
+/// <summary>
+/// EditHighlight Request. 
+/// </summary>
 public class EditHighlightRequest
 {
     [DefaultValue("No Title Given")]

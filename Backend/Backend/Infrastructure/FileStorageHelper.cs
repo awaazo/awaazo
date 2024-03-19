@@ -645,6 +645,13 @@ public static class FileStorageHelper
 
     #region Highlights
 
+    /// <summary>
+    /// Saves a given highlight to the file System. Reuquires both the highlight model and its associated
+    /// episode model. Stores files C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3 format
+    /// </summary>
+    /// <param name="highlight"></param>
+    /// <param name="episode"></param>
+    /// <returns></returns>
     public static string SaveHighlightFile(Highlight highlight, Episode episode)
     {
         var highlightId = highlight.HighlightId.ToString();
@@ -676,6 +683,10 @@ public static class FileStorageHelper
         return highlightFileName;
     }
 
+    /// <summary>
+    /// Removes the given Highlight File from the file directory.
+    /// </summary>
+    /// <param name="highlight"></param>
     public static void RemoveHighlightFile(Highlight highlight)
     {
         var filePath = GetHighlightPath(highlight.EpisodeId, highlight.UserId, highlight.HighlightId);
@@ -686,11 +697,27 @@ public static class FileStorageHelper
         }
     }
 
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with Guid values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
     public static string GetHighlightPath(Guid episodeId, Guid userId, Guid highlightId)
     {
         return GetHighlightPath(episodeId.ToString(), userId.ToString(), highlightId.ToString());
     }
 
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with string values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
     public static string GetHighlightPath(string episodeId, string userId, string highlightId)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, HIGHLIGHT_DIR_NAME, episodeId, userId, highlightId + HIGHLIGHT_FILE_TYPE);

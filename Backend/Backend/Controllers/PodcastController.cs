@@ -967,7 +967,7 @@ public class PodcastController : ControllerBase
     #region Highlights
 
     [HttpPost("{episodeId}/CreateHighlight")]
-    public async Task<IActionResult> CreateHighlight([FromForm] CreateHighlightRequest highlightRequest, Guid episodeId)
+    public async Task<IActionResult> CreateHighlight([FromForm] HighlightRequest highlightRequest, Guid episodeId)
     {
         try
         {
@@ -977,7 +977,9 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return await _podcastService.CreateHighlightAsync(highlightRequest, episodeId, user) ? Ok("Highlight created") : Ok("Failed to create highlight");
+            var response = await _podcastService.CreateHighlightAsync(highlightRequest, episodeId, user);
+
+            return Ok(response);
         }
         catch (Exception e)
         {

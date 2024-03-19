@@ -55,7 +55,7 @@ public interface IPodcastService
 
 
     // HIGHLIGHT
-    public Task<bool> CreateHighlightAsync(CreateHighlightRequest request, Guid episodeId, User user);
+    public Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user);
     public Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user);
     public Task<bool> RemoveHighlightAsync(Guid highlightId, User user);
     public Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId);
