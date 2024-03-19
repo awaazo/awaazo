@@ -1,17 +1,16 @@
-﻿using System.Text.Json;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using FFMpegCore.Arguments;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
-using FFMpegCore.Enums;
 using System.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace Backend.Services;
 
@@ -56,6 +55,11 @@ public class PodcastService : IPodcastService
     /// Maximum request size
     /// </summary>
     public const int MAX_REQUEST_SIZE = 1005242880;
+
+    /// <summary>
+    /// Maximum duration of a highlight
+    /// </summary>
+    public const int MAX_HIGHLIGHT_DURATION = 15;
 
 
     public PodcastService(AppDbContext db, INotificationService notificationService, IConfiguration configuration)
@@ -1430,14 +1434,152 @@ public class PodcastService : IPodcastService
 
     #region Highlights
 
-    public async Task<List<HighlightResponse>> CreateHighlight()
-    {
+    public async Task<bool> CreateHighlightAsync(CreateHighlightRequest request, Guid episodeId, User user)
+    {       
+        var currentEpisodeHighlights = await _db.Highlights.Where(h => episodeId == h.EpisodeId).ToListAsync();
+        var episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
 
+        // Check if StartTime is valid (with a bit of leeway)
+        if (Math.Floor(request.StartTime) < 0 || request.StartTime >= Math.Floor(episode.Duration))
+        {
+            throw new Exception("Invalid startTime for Highlight");
+        }
+
+        // Check if EndTime is valid (with a bit of leeway)
+        if (request.EndTime < 1 || request.EndTime > episode.Duration)
+        {
+            throw new Exception("Invalid Endtime for Highlight");
+        }
+
+        // Check if the Highlight Length is more than max duration
+        if (Math.Floor(request.EndTime - request.StartTime) > MAX_HIGHLIGHT_DURATION)
+        {
+            throw new Exception($"Your highlight length is over {MAX_HIGHLIGHT_DURATION} seconds");
+        }
+
+        // Check if user already made 3 highlights for this episode
+        if (currentEpisodeHighlights.Count >= 3)
+        {
+            throw new Exception("You have already created 3 highlights on this episode");
+        }
+
+        // Check if Highlight name already exists for the current Episode
+        foreach (var _highlight in currentEpisodeHighlights)
+        {
+            if (_highlight.Title == request.Title)
+            {
+                throw new Exception("There already exists a Highlight with that name attached to this episode");
+            }
+        }
+
+        // Get path of the audio
+        string inputFilePath = GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId);
+
+        // Get path where Highlights will be stored
+        var highlightId = Guid.NewGuid();
+        string highlightFilePath = GetHighlightPath(episodeId.ToString(),
+                                                    highlightId.ToString(),
+                                                    user.Id.ToString());
+
+        // Create Highlight
+        var highlight = new Highlight()
+        {
+            HighlightId = highlightId,
+            EpisodeId = episodeId,
+            UserId = user.Id,
+            StartTime = request.StartTime,
+            EndTime = request.EndTime,
+            Title = request.Title,
+            Description = request.Description,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+        highlight.Audio = SaveHighlightFile(highlight, episode);
+
+        // Save Highlight
+        await _db.Highlights.AddAsync(highlight);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
+        var updatedHighlight = highlight;
+
+        // Users can only edit their own highlights
+        if (user.Id != highlight!.UserId)
+        {
+            throw new Exception("Users can only edit their own highlights");
+        }
+        
+        // Title is changed
+        if (request.Title != "No Title Given" || request.Title != highlight.Title)
+        {
+            updatedHighlight.Title = request.Title ?? throw new Exception("Title on request was somehow null");
+        }
+
+        // Description is changed
+        if (request.Description != highlight.Description || !request.Description.IsNullOrEmpty())
+        {
+            updatedHighlight.Description = request.Description ?? throw new Exception("Description on request was somehow null");
+        }
+
+        _db.Highlights.Update(updatedHighlight);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> RemoveHighlightAsync(Guid highlightId, User user)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
+        
+        // Users can only delete their own highlights
+        if (user.Id != highlight!.UserId)
+        {
+            throw new Exception("Users can only delete their own highlights");
+        }
+        
+        // Remove from FileStorage
+        RemoveHighlightFile(highlight);
+
+        _db.Highlights.Remove(highlight);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    public async Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId)
+    {
+        var highlights = await _db.Highlights
+                                    .Where(h => h.UserId == userId)
+                                    .Select(h => new HighlightResponse(h))
+                                    .ToListAsync() ?? throw new Exception("User has no Highlights");
+
+        return highlights;
+    }
+
+    public async Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId)
+    {
+        var highlights = await _db.Highlights
+                                    .Where(h => h.EpisodeId == episodeId)
+                                    .Select(h => new HighlightResponse(h))
+                                    .ToListAsync() ?? throw new Exception("Epsiode has no Highlights");
+
+        return highlights;
+    }
+
+    public async Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Highlight does not exist");
+
+        var guids = new Dictionary<string, string>()
+        {
+            {nameof(Episode), highlight.EpisodeId.ToString()},
+            {nameof(User), highlight.UserId.ToString()}
+        };
+
+        return guids;
     }
 
 
     #endregion
-
 
 
     #endregion Episode

@@ -80,6 +80,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
         modelBuilder.Entity<CommentReply>().HasQueryFilter(cr => cr.DeletedAt == null);
         modelBuilder.Entity<Report>().HasQueryFilter(r => r.DeletedAt == null);
+        modelBuilder.Entity<Highlight>().HasQueryFilter(h => h.DeletedAt == null);
         
         // Array conversion for tags and interests
         modelBuilder.Entity<User>()

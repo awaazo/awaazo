@@ -185,27 +185,20 @@ public class History
 
 #region Highlight Requests
 
-public class HighlightRequest
+public class CreateHighlightRequest
 {
-    public HighlightRequest(Highlight highlight)
+
+    public CreateHighlightRequest()
     {
-        HighlightId = highlight.HighlightId;
-        EpisodeId = highlight.EpisodeId;
-        UserId = highlight.UserId;
+    }
+
+    public CreateHighlightRequest(Highlight highlight)
+    {
         StartTime = highlight.StartTime;
         EndTime = highlight.EndTime;
         Title = highlight.Title;
         Description = highlight.Description;
     }
-
-    [Required]
-    public Guid HighlightId { get; set; }
-
-    [Required]
-    public Guid EpisodeId { get; set; }
-
-    [Required]
-    public Guid UserId { get; set; }
 
     [DefaultValue(0)]
     public double StartTime { get; set; }
@@ -214,11 +207,24 @@ public class HighlightRequest
     public double EndTime { get; set; }
 
     [DefaultValue("No Title Given")]
+    [MaxLength(50)]
     public string Title { get; set; }
 
     [DefaultValue("")]
+    [MaxLength(500)]
     public string Description { get; set; }
 
+}
+
+public class EditHighlightRequest
+{
+    [DefaultValue("No Title Given")]
+    [MaxLength(50)]
+    public string? Title { get; set; }
+
+    [DefaultValue("")]
+    [MaxLength(500)]
+    public string? Description { get; set; }
 }
 
 #endregion

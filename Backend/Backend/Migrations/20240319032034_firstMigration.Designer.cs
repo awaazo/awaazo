@@ -12,9 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240304191244_InitialCreate")]
-    partial class InitialCreate
-    [Migration("20240306173423_firstMigration")]
+    [Migration("20240319032034_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -368,6 +366,53 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ForgetPasswordTokens");
+                });
+
+            modelBuilder.Entity("Backend.Models.Highlight", b =>
+                {
+                    b.Property<Guid>("HighlightId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Audio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("EndTime")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("EpisodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("StartTime")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("HighlightId");
+
+                    b.ToTable("Highlights");
                 });
 
             modelBuilder.Entity("Backend.Models.MediaLink", b =>

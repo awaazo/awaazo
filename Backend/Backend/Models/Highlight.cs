@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Models.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Models
@@ -6,7 +7,7 @@ namespace Backend.Models
     /// <summary>
     /// Represents the Episode Highlight
     /// </summary>
-    public class Highlight : BaseEntity
+    public class Highlight : BaseEntity, ISoftDeletable
     {
         /// <summary>
         /// ID of Highlight
@@ -51,5 +52,15 @@ namespace Backend.Models
         /// The location for the highlight audio
         /// </summary>
         public string Audio { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Soft delete Neccesseties
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
+
+        /// <summary>
+        /// Soft delete Neccesseties
+        /// </summary>
+        public Guid DeletedBy { get; set; }
     }  
 }
