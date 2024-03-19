@@ -21,11 +21,13 @@ interface TranscriptProps {
 const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
   const [transcription, setTranscript] = useState<Transcript>();
+  const [transcriptLines, setTranscriptLines] = useState([]); 
   const [visibleWords, setVisibleWords] = useState([]);
   const { state, dispatch, audioRef } = usePlayer();
   const [nextSeekTime, setNextSeekTime] = useState(0); // Time to seek to when clicking on a word
   const [minSeekTime, setMinSeekTime] = useState(0); // Time to seek to when clicking on a word
   const transcriptBoxRef = useRef(null);
+  var sections = [];
   var seeking = false;
 
   useEffect(() => {
@@ -35,6 +37,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
           if (res.status === 200) {
 
             setTranscript(res.transcript);
+            setTranscriptLines(res.transcript.lines);
 
             setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
             setMinSeekTime(Math.min(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)),0));
@@ -54,15 +57,19 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
 
       // If there is a transcript and the audio is playing, update the visible words
       if (transcription && audioRef.current) {
-
+        
         // Re-fetch the transcript if the audio has seeked to a new time
         if (!seeking && (audioRef.current.currentTime > nextSeekTime || audioRef.current.currentTime < minSeekTime)) {
           seeking = true;
-          PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime)
+          PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime-5)
             .then((res) => {
               if (res.status === 200) {
 
                 setTranscript(res.transcript);
+                
+                
+                setTranscriptLines(res.transcript.lines);
+                console.log("Transcript lines: ", transcriptLines);
 
                 setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
                 setMinSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)));
@@ -79,12 +86,12 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
 
         }
 
-        if (transcription.lines.length > 0) {
+        if (transcriptLines.length > 0) {
 
           const currentTime = audioRef.current.currentTime;
           let wordsToShow = [];
           // Iterate through each segment of the transcript
-          transcription.lines.forEach(segment => {
+          transcriptLines.forEach(segment => {
             // For each segment, check if the current time is past the segment's start time
             if (currentTime >= segment.start) {
               // For each word in the segment, add it if the current time is past the word's start time
