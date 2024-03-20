@@ -308,19 +308,27 @@ export interface Chatbot {
 }
 
 export interface Transcript {
+  episodeId: string;
+  status: string;
+  lines: TranscriptLine[];
+}
+
+export interface TranscriptLine {
   id: number;
   seek: number;
   start: number;
   end: number;
   text: string;
   speaker: string;
-  words: {
-    start: number;
-    end: number;
-    word: string;
-    score: number;
-    speaker: string;
-  }[];
+  words: TranscriptWord[];
+}
+
+export interface TranscriptWord {
+  start: number;
+  end: number;
+  word: string;
+  score: number;
+  speaker: string;
 }
 
 export interface Transaction{

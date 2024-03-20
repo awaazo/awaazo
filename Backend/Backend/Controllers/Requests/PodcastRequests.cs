@@ -1,6 +1,7 @@
 ﻿using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.ML.Data;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -182,4 +183,85 @@ public class History
     public DateTime DateListened { get; set; }
 
 }
+
+public class EpisodeRating
+{
+    public EpisodeRating(UserEpisodeInteraction userEpisodeInteraction)
+    {
+        UserId = userEpisodeInteraction.UserId.ToString();
+        EpisodeId = userEpisodeInteraction.EpisodeId.ToString();
+        TotalListenTime = (float)userEpisodeInteraction.TotalListenTime.TotalSeconds;
+
+    }
+    public EpisodeRating()
+    {
+
+    }
+    [LoadColumn(0)]
+    public string UserId;
+    [LoadColumn(1)]
+    public string EpisodeId;
+    [LoadColumn(2)]
+    public float TotalListenTime ;
+}
+
+
+public class ModelResult
+{
+    public float TotalListenTime;
+    public float Score;
+}
+
+
+#region Highlight Requests
+
+/// <summary>
+/// Basic HighlightRequest
+/// </summary>
+public class HighlightRequest
+{
+
+    public HighlightRequest()
+    {
+    }
+
+    public HighlightRequest(Highlight highlight)
+    {
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
+    }
+
+    [DefaultValue(0)]
+    public double StartTime { get; set; }
+
+    [DefaultValue(0)]
+    public double EndTime { get; set; }
+
+    [DefaultValue("No Title Given")]
+    [MaxLength(50)]
+    public string Title { get; set; }
+
+    [DefaultValue("")]
+    [MaxLength(500)]
+    public string Description { get; set; }
+
+}
+
+/// <summary>
+/// EditHighlight Request. 
+/// </summary>
+public class EditHighlightRequest
+{
+    [DefaultValue("No Title Given")]
+    [MaxLength(50)]
+    public string? Title { get; set; }
+
+    [DefaultValue("")]
+    [MaxLength(500)]
+    public string? Description { get; set; }
+}
+
+#endregion
 

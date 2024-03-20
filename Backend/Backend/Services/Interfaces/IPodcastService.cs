@@ -53,4 +53,17 @@ public interface IPodcastService
     public Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl);
     public Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl);
 
+    
+    // Recommendation
+    public Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl);
+
+
+    // HIGHLIGHT
+    public Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user);
+    public Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user);
+    public Task<bool> RemoveHighlightAsync(Guid highlightId, User user);
+    public Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId);
+    public Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId);
+    public Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId);
+
 }
