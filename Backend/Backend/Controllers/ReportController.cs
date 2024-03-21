@@ -1,4 +1,5 @@
-﻿using Backend.Infrastructure;
+﻿using Backend.Controllers.Requests;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,11 +19,14 @@ public class ReportController : ControllerBase
     }
     
     [HttpPost("report")]
-    public async Task<IActionResult> Report([FromBody] Report report) {
+    public async Task<IActionResult> Report([FromBody] ReportRequest report) {
         try {
             this.LogDebugControllerAPICall(_logger);
-            await _service.Report(report);
-            return Ok();
+            
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            return Ok(await _service.Report(report));
         }
         catch (Exception e) {
             this.LogErrorAPICall(_logger, e);
@@ -30,4 +34,5 @@ public class ReportController : ControllerBase
         }
     }
 
+  
 }
