@@ -16,7 +16,8 @@ import {
   Chatbot,
   Reply,
   Transaction,
-  Balance
+  Balance,
+  Highlight
 } from "./Interfaces";
 
 
@@ -164,6 +165,16 @@ export interface getSectionResponse extends BaseResponse {
 }
 
 //#endregion
+
+//#region Highlight Responses
+
+export interface AddHighlightResponse extends BaseResponse {
+  data: string;
+}
+
+export interface GetHighlightResponse extends BaseResponse {
+  highlights: Highlight[];
+}
 
 //#region Annotation Responses
 export interface AddAnnotationResponse extends BaseResponse {

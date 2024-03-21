@@ -897,8 +897,34 @@ export default class EndpointHelper {
     return this.getBackendAddress() +"/wallet/topEarningPodcasts?page="+page+"&pageSize="+pageSize;
   }
 
- 
+  
+  // --------------------------------
+  // Highlights Endpoints 
+  // --------------------------------
 
+  static addHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/Createhighlight";
+  };
+
+  static editHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/GetHighlights";
+  };
+
+  static deleteHighlightsEndpoint = (highlightId: string) => {
+    return this.getBackendAddress() + "/podcast/" + highlightId + "/RemoveHighlight";
+  };
+
+  static getUserHighlightsEndpoint = (userId: string) => {
+    return this.getBackendAddress() + "/podcast/" + userId + "/GetAllUserHighlights";
+  };
+  
+  static getEpisodeHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/GetAllEpisodeHighlights";
+  };
+
+  static getHighlightAudioEndpoint = (highlightId: string) => {
+    return this.getBackendAddress() + "/podcast/" + highlightId + "/GetHighlightAudio";
+  }
 
 }
 

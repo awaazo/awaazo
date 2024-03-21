@@ -1,118 +1,103 @@
-import React, { useState } from "react";
-import { Button, FormControl, FormLabel, Input, VStack, Select, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from "@chakra-ui/react";
-import AnnotationHelper from "../../helpers/AnnotationHelper";
-import {convertTime} from '../../utilities/commonUtils'
+import React, { useState } from 'react';
+import HighlightHelper from '../../helpers/HighlightHelper';
+import { Box, Button, Flex, Text, Input, FormControl,  Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
+import convertTime from '../../utilities/commonUtils';
 
-const highlighForm = ({ episodeId, fetchAnnotations, episodeLength }) => {
-  const [formData, setFormData] = useState({
-    timestamp: "",
-    content: "",
-    videoUrl: "",
-    platformType: "",
-    name: "",
-    website: "",
-    annotationType: "basic",
-  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const HighlightForm = ({ episodeId }) => {
+    const [highlightData, setHighlightData] = useState({
+        episodeId: episodeId,
+        highlightId: '',
+        startTime: '',
+        endTime: '',
+        description: '',
+    });
+    const [message, setMessage] = useState('');
+    const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const handleSliderChange = (value) => {
-    setFormData((prev) => ({ ...prev, timestamp: value.toString() }));
-  };
-
-  const handleSubmit = async () => {
-    const basePayload = {
-      timestamp: Number(formData.timestamp),
-      content: formData.content,
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setHighlightData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
-    let payload;
-    try {
-      let response;
-      switch (formData.annotationType) {
-        case "mediaLink":
-          payload = { ...basePayload, url: formData.videoUrl, platformType: formData.platformType };
-          response = await AnnotationHelper.mediaLinkAnnotationCreateRequest(payload, episodeId);
-          break;
-        case "sponsor":
-          payload = { ...basePayload, name: formData.name, website: formData.website };
-          response = await AnnotationHelper.sponsorAnnotationCreateRequest(payload, episodeId);
-          break;
-        default:
-          payload = { ...basePayload, annotationType: "info" };
-          response = await AnnotationHelper.annotationCreateRequest(payload, episodeId);
-          console.log("API Response:", response);
-          break;
-      }
-      if (response && response.status === 200) {
-        console.log("Highlights Creation Response:", response);
-        fetchAnnotations();
-      }
-    } catch (error) {
-      console.error("Error creating Highlights:", error);
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const formattedData = {
+                EpisodeId: highlightData.episodeId, 
+                HighlightId: highlightData.highlightId,
+                StartTime: highlightData.startTime,
+                EndTime: highlightData.endTime,
+                description: highlightData.description,
+            };
+            const response = await HighlightHelper.highlightCreateRequest(formattedData, highlightData.episodeId);
+            setMessage(response.message);
+            setIsFormVisible(false); // Hide form on successful submission
+        } catch (error) {
+            setMessage('Failed to create highlight.');
+        }
+    };
 
-  return (
-    <VStack spacing={4} align="stretch">
-      <FormControl>
-        <FormLabel>High light Type</FormLabel>
-        <Select name="annotationType" value={formData.annotationType} onChange={handleChange}>
-          <option value="basic">Basic</option>
-          <option value="mediaLink">Media Link</option>
-          <option value="sponsor">Sponsor</option>
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel>Timestamp</FormLabel>
-        <Box w="100%">
-          <Slider min={0} max={episodeLength} step={1} value={Number(formData.timestamp)} onChange={handleSliderChange} >
-            <SliderTrack>
-              <SliderFilledTrack/>
-            </SliderTrack >
-            <SliderThumb boxSize={2}>
-              <Box />
-            </SliderThumb>
-          </Slider>
-          <Text mt={2}>Current timestamp: {convertTime(Number(formData.timestamp))}</Text>
-        </Box>
-      </FormControl>
-      <FormControl>
-        <FormLabel>Content</FormLabel>
-        <Input name="content" value={formData.content} onChange={handleChange} />
-      </FormControl>
-      {formData.annotationType === "mediaLink" && (
-        <>
-          <FormControl>
-            <FormLabel>Video URL</FormLabel>
-            <Input name="videoUrl" value={formData.videoUrl} onChange={handleChange} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Platform Type</FormLabel>
-            <Input name="platformType" value={formData.platformType} onChange={handleChange} />
-          </FormControl>
-        </>
-      )}
-      {formData.annotationType === "sponsor" && (
-        <>
-          <FormControl>
-            <FormLabel>Name</FormLabel>
-            <Input name="name" value={formData.name} onChange={handleChange} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Website</FormLabel>
-            <Input name="website" value={formData.website} onChange={handleChange} />
-          </FormControl>
-        </>
-      )}
-      <Button variant="gradient" onClick={handleSubmit}>
-        Create High Light
-      </Button>
-    </VStack>
-  );
+    const handleDelete = async (highlightId) => {
+        try {
+            const response = await HighlightHelper.highlightDeleteRequest(highlightId);
+            setMessage(response.message);
+        } catch (error) {
+            setMessage('Failed to delete highlight.');
+        }
+    };
+
+    return (
+        <Flex direction="column" alignItems="center" width="100%">
+            <Box mt={4} width="100%" alignItems="center">
+                {isFormVisible ? (
+                    <Box width="100%" p={4} borderWidth="1px" borderRadius="lg">
+                        <Text fontSize="xl" fontWeight="bold" mb={6} mt={1} textAlign="center">
+                            Add/Edit Highlight
+                        </Text>
+                        <form onSubmit={handleSubmit}>
+                            <FormControl>
+                                <Input
+                                    placeholder="Description"
+                                    mb={3}
+                                    name="description"
+                                    value={highlightData.description}
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    placeholder="Start Time"
+                                    mb={3}
+                                    name="startTime"
+                                    value={highlightData.startTime}
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    placeholder="End Time"
+                                    mb={3}
+                                    name="endTime"
+                                    value={highlightData.endTime}
+                                    onChange={handleInputChange}
+                                />
+                            </FormControl>
+                            <Flex justifyContent="space-between" mt={4}>
+                                <Button colorScheme="blue" type="submit">Submit</Button>
+                                <Button colorScheme="red" onClick={() => setIsFormVisible(false)}>Cancel</Button>
+                            </Flex>
+                        </form>
+                    </Box>
+                ) : (
+                    <Button onClick={() => setIsFormVisible(true)} colorScheme="teal" size="md" mb={4}>
+                        Add/Edit Highlight
+                    </Button>
+                )}
+                {message && <Text color="red.500">{message}</Text>}
+                {/* Display highlights and delete button here */}
+            </Box>
+        </Flex>
+    );
 };
 
-export default highlighForm;
+export default HighlightForm;
