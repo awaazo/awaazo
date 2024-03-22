@@ -1,93 +1,62 @@
 import { Spinner, Text, HStack, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import HighlightTicket from "./HighlightTicket"; // Ensure this component exists and is imported correctly
+import HighlightTicket from "./HighlightTicket";
+import HighlightHelper from "../../helpers/HighlightHelper";
 
-// Mock Data for demonstration
-const mockHighlights = [
-    { id: 1, title: "Highlight 1", description: "This is the first highlight" },
-    { id: 2, title: "Highlight 2", description: "This is the second highlight" },
-    { id: 3, title: "Highlight 3", description: "This is the third highlight" },
-    { id: 4, title: "Highlight 4", description: "This is the fourth highlight" },
-    { id: 5, title: "Highlight 5", description: "This is the fifth highlight" },
-    { id: 6, title: "Highlight 6", description: "This is the sixth highlight" },
-    { id: 7, title: "Highlight 7", description: "This is the seventh highlight" },
-    { id: 8, title: "Highlight 8", description: "This is the eighth highlight" },
-    // Add more mock data as needed
-];
+const Highlights = ({ episodeId }) => {
+  const [highlights, setHighlights] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-const HighLights: React.FC = () => {
-    const [highlights, setHighlights] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState("");
+  useEffect(() => {
+    async function fetchHighlights() {
+      if (!episodeId) {
+        // If no episodeId is provided, don't attempt to fetch highlights
+        setError("No episode selected");
+        setIsLoading(false);
+        return;
+      }
 
-    // const fetchHighlights = async () => {
-    //     setIsLoading(true);
-    //     try {
-    //         // Example URL with pagination and sorting parameters
-    //         const response = await fetch(`/api/highlights?page=${currentPage}&sortBy=relevancy`);
-    //         const data = await response.json();
-    //         setHighlights(data.highlights);
-    //        setTotalPages(data.totalPages); // Assuming the backend provides total pages info
-    //         setIsLoading(false);
-    //     } catch (err) {
-    //         setError("An error occurred while fetching highlights");
-    //         setIsLoading(false);
-    //     }
-    // };
-
-    useEffect(() => {
-        const fetchHighlights = async () => {
-            setIsLoading(true);
-            try {
-                // Simulate fetching data
-                setTimeout(() => {
-                    setHighlights(mockHighlights);
-                    setIsLoading(false);
-                }, 1000); // Simulated network request delay
-            } catch (err) {
-                setError("An error occurred while fetching highlights");
-                setIsLoading(false);
-            }
-        };
-
-        fetchHighlights();
-    }, []);
-
-    if (isLoading) {
-        return <Spinner size="xl" />;
+      setIsLoading(true);
+      try {
+        // Assuming getEpisodeHighlights returns an array of highlight objects
+        const response = await HighlightHelper.getEpisodeHighlights(episodeId);
+        // Update based on actual response structure:
+        setHighlights(response); // This might need adjustment depending on your API response structure
+        setError(""); // Clear any previous error
+      } catch (err) {
+        setError("Failed to fetch highlights");
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    if (error) {
-        return <Text color="red.500">{error}</Text>;
-    }
+    fetchHighlights();
+  }, [episodeId]); // Re-fetch when episodeId changes
 
-    return (
-        <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "block" } }}>
-            <HStack spacing={4} align="stretch" css={{ width: "fit-content" }}>
-                {highlights && highlights.length > 0 ? (
-                    highlights.map((highlight) => (
-                        <HighlightTicket key={highlight.id} highlight={highlight} />
-                    ))
-                ) : (
-                    <Text>No highlights available</Text>
-                )}
-            </HStack>
-        </Box>
-// return (
-//     <>
-//         {/* Highlights display code */}
-//         <Box>
-//             {currentPage > 1 && (
-//                 <Button onClick={() => setCurrentPage(currentPage - 1)}>Previous</Button>
-//             )}
-//             {currentPage < totalPages && (
-//                 <Button onClick={() => setCurrentPage(currentPage + 1)}>Next</Button>
-//             )}
-//         </Box>
-//     </>
-// );
+  if (isLoading) {
+    return <Spinner size="xl" />;
+  }
 
-    );    
+  if (error) {
+    return <Text color="red.500">{error}</Text>;
+  }
+
+  return (
+    <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
+      <HStack spacing={4} align="stretch">
+        {highlights.length > 0 ? (
+          highlights.map((highlight) => (
+            <HighlightTicket key={highlight.id} highlight={highlight} fetchHighlights={function (): void {
+                  throw new Error("Function not implemented.");
+              } } />
+          ))
+        ) : (
+          <Text>No highlights available</Text>
+        )}
+      </HStack>
+    </Box>
+  );
 };
 
-export default HighLights;
+export default Highlights;

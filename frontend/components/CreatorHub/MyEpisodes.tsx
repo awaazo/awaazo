@@ -37,8 +37,11 @@ import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
 import HighlightForm from "../highlights/HighlightForm";
 import HighlightList from "../highlights/HighlightList";
+import HighlightHelper from "../../helpers/HighlightHelper";
+
 
 import { BsExplicitFill } from "react-icons/bs";
+import { any } from "cypress/types/bluebird";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
@@ -48,6 +51,7 @@ const Episode = ({ episode }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
   const [episodes, setEpisode] = useState(null);
+  const [highlights, setHighlights] = useState([]);
 
   const handleOpenForm = (index = null) => {
     setTabIndex(1);
@@ -104,6 +108,22 @@ const Episode = ({ episode }) => {
     }
     setAnnotations((prevAnnotations) => prevAnnotations.filter((ann) => ann.id !== annotationId));
   };
+
+
+  // Highlights
+  const fetchHighlights = async () => {
+    try {
+      const fetchedHighlights = await HighlightHelper.getEpisodeHighlights(episode.id);
+      setHighlights(fetchedHighlights);
+    } catch (error) {
+      console.error("Failed to fetch highlights:", error);
+      // Handle error (e.g., set error state, show toast notification, etc.)
+    }
+  };
+
+  useEffect(() => {
+    fetchHighlights(); // Initial fetch when the component mounts or the episode.id changes
+  }, [episode.id]);
 
   // Edit Episode Modal
   //-----------------------------------------------------------------------
@@ -373,10 +393,14 @@ const Episode = ({ episode }) => {
             <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
               <TabList>
                 <Tab>Add Highlight</Tab>
+                <Tab>Highlights</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <HighlightForm />
+                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} />
+                </TabPanel>
+                <TabPanel>
+                  <HighlightList episodeId={episode.id} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

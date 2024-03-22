@@ -1,103 +1,139 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  NumberInput,
+  NumberInputField,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react';
 import HighlightHelper from '../../helpers/HighlightHelper';
-import { Box, Button, Flex, Text, Input, FormControl,  Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
-import convertTime from '../../utilities/commonUtils';
 
+const HighlightForm = ({ episodeId, highlightId, fetchHighlights }) => {
+  const [formData, setFormData] = useState({
+    StartTime: '',
+    EndTime: '',
+    Title: '',
+    Description: '',
+  });
+  const toast = useToast();
 
-const HighlightForm = ({ episodeId }) => {
-    const [highlightData, setHighlightData] = useState({
-        episodeId: episodeId,
-        highlightId: '',
-        startTime: '',
-        endTime: '',
-        description: '',
-    });
-    const [message, setMessage] = useState('');
-    const [isFormVisible, setIsFormVisible] = useState(false);
+  useEffect(() => {
+    if (highlightId) {
+      // Assume a method to fetch a single highlight details if editing
+      // This part is to fill form when editing an existing highlight
+    }
+  }, [highlightId]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setHighlightData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const formattedData = {
-                EpisodeId: highlightData.episodeId, 
-                HighlightId: highlightData.highlightId,
-                StartTime: highlightData.startTime,
-                EndTime: highlightData.endTime,
-                description: highlightData.description,
-            };
-            const response = await HighlightHelper.highlightCreateRequest(formattedData, highlightData.episodeId);
-            setMessage(response.message);
-            setIsFormVisible(false); // Hide form on successful submission
-        } catch (error) {
-            setMessage('Failed to create highlight.');
-        }
-    };
+  const handleSubmit = async () => {
+    let response;
+  
+    if (highlightId) {
+      // Preparing data for editing highlight
+      const editData = {
+        highlightId: highlightId, // This is actually not needed to be sent here based on your HighlightHelper method signature
+        Title: formData.Title,
+        Description: formData.Description,
+      };
+      // Editing highlight
+      response = await HighlightHelper.highlightEditRequest(editData, highlightId);
+    } else {
+      // Preparing data for adding new highlight
+      const addData = {
+        StartTime: parseFloat(formData.StartTime), // Convert string to number
+        EndTime: parseFloat(formData.EndTime), // Convert string to number
+        Title: formData.Title,
+        Description: formData.Description,
+      };
+      // Adding new highlight
+      response = await HighlightHelper.highlightCreateRequest(addData, episodeId);
+    }
+  
+    if (response.status === 200) {
+      toast({
+        title: 'Success',
+        description: highlightId ? 'Highlight updated successfully.' : 'Highlight added successfully.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      fetchHighlights(); // Refresh highlights list
+    } else {
+      toast({
+        title: 'Error',
+        description: response.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+  
 
-    const handleDelete = async (highlightId) => {
-        try {
-            const response = await HighlightHelper.highlightDeleteRequest(highlightId);
-            setMessage(response.message);
-        } catch (error) {
-            setMessage('Failed to delete highlight.');
-        }
-    };
+  const handleDelete = async () => {
+    if (highlightId) {
+      const response = await HighlightHelper.highlightDeleteRequest(highlightId);
+      if (response.status === 200) {
+        toast({
+          title: 'Success',
+          description: 'Highlight deleted successfully.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        fetchHighlights(); // Refresh highlights list
+      } else {
+        toast({
+          title: 'Error',
+          description: response.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  };
 
-    return (
-        <Flex direction="column" alignItems="center" width="100%">
-            <Box mt={4} width="100%" alignItems="center">
-                {isFormVisible ? (
-                    <Box width="100%" p={4} borderWidth="1px" borderRadius="lg">
-                        <Text fontSize="xl" fontWeight="bold" mb={6} mt={1} textAlign="center">
-                            Add/Edit Highlight
-                        </Text>
-                        <form onSubmit={handleSubmit}>
-                            <FormControl>
-                                <Input
-                                    placeholder="Description"
-                                    mb={3}
-                                    name="description"
-                                    value={highlightData.description}
-                                    onChange={handleInputChange}
-                                />
-                                <Input
-                                    placeholder="Start Time"
-                                    mb={3}
-                                    name="startTime"
-                                    value={highlightData.startTime}
-                                    onChange={handleInputChange}
-                                />
-                                <Input
-                                    placeholder="End Time"
-                                    mb={3}
-                                    name="endTime"
-                                    value={highlightData.endTime}
-                                    onChange={handleInputChange}
-                                />
-                            </FormControl>
-                            <Flex justifyContent="space-between" mt={4}>
-                                <Button colorScheme="blue" type="submit">Submit</Button>
-                                <Button colorScheme="red" onClick={() => setIsFormVisible(false)}>Cancel</Button>
-                            </Flex>
-                        </form>
-                    </Box>
-                ) : (
-                    <Button onClick={() => setIsFormVisible(true)} colorScheme="teal" size="md" mb={4}>
-                        Add/Edit Highlight
-                    </Button>
-                )}
-                {message && <Text color="red.500">{message}</Text>}
-                {/* Display highlights and delete button here */}
-            </Box>
-        </Flex>
-    );
+  return (
+    <VStack spacing={4} align="stretch">
+      <FormControl>
+        <FormLabel>Start Time (seconds)</FormLabel>
+        <NumberInput min={0} onChange={(valueString) => setFormData((prev) => ({ ...prev, StartTime: valueString }))}>
+          <NumberInputField name="StartTime" value={formData.StartTime} />
+        </NumberInput>
+      </FormControl>
+      <FormControl>
+        <FormLabel>End Time (seconds)</FormLabel>
+        <NumberInput min={0} onChange={(valueString) => setFormData((prev) => ({ ...prev, EndTime: valueString }))}>
+          <NumberInputField name="EndTime" value={formData.EndTime} />
+        </NumberInput>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Title</FormLabel>
+        <Input name="Title" value={formData.Title} onChange={handleChange} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Description</FormLabel>
+        <Textarea name="Description" value={formData.Description} onChange={handleChange} />
+      </FormControl>
+      <Button colorScheme="blue" onClick={handleSubmit}>
+        {highlightId ? 'Edit Highlight' : 'Add Highlight'}
+      </Button>
+      {highlightId && (
+        <Button colorScheme="red" onClick={handleDelete}>
+          Delete Highlight
+        </Button>
+      )}
+    </VStack>
+  );
 };
 
 export default HighlightForm;

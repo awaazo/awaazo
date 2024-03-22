@@ -196,7 +196,6 @@ export interface PlaylistEditRequest {
 
 //#region  Highlight Requests
 export interface HighlightAddRequest {
-  episodeId: string;
   StartTime: number;
   EndTime: number;
   Title: string;

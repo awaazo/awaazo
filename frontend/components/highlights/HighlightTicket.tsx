@@ -4,20 +4,22 @@ import { Highlight } from "../../types/Interfaces";
 import { FaPlay, FaPause, FaHeart, FaCommentDots, FaShare } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 
-const HighlightTicket: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
+interface HighlightTicketProps {
+    highlight: Highlight;
+    fetchHighlights: () => void;
+  }
+
+  const HighlightTicket: React.FC<HighlightTicketProps> = ({ highlight, fetchHighlights }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const { dispatch } = usePlayer();
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     const handlePlayPauseClick = () => {
         setIsPlaying(!isPlaying);
-        // Here you'd trigger the actual play/pause functionality, potentially via the usePlayer context
-        // For the sake of example, we're toggling state
     };
 
     const handleEpisodeClick = () => {
-        // Navigate to the full episode
-        // This would involve using your routing library (e.g., React Router) to change the view
+ 
     };
 
     return (
@@ -49,7 +51,6 @@ const HighlightTicket: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
                 <Text fontSize="md" color="whiteAlpha.800">
                     {highlight.podcastName}
                 </Text>
-                {/* Controls */}
                 <IconButton
                     aria-label={isPlaying ? "Pause" : "Play"}
                     icon={isPlaying ? <FaPause /> : <FaPlay />}
@@ -59,7 +60,6 @@ const HighlightTicket: React.FC<{ highlight: Highlight }> = ({ highlight }) => {
                     colorScheme="whiteAlpha"
                 />
             </VStack>
-            {/* Engagement Icons */}
             <Box
                 position="absolute"
                 bottom="20px"
