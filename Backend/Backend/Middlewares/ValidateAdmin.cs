@@ -15,7 +15,7 @@ public class ValidateAdmin : IMiddleware
         User? user = await _authService.IdentifyUserAsync(context);
         if (user is null || !user.IsAdmin)
         {
-            context.Response.StatusCode = 400;
+            context.Response.StatusCode = 401;
             await context.Response.WriteAsync("Invalid user or user is not admin");
         }
         
