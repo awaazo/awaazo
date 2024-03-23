@@ -22,7 +22,7 @@ public class AdminPanelService
         if (admin is null) {
             User newAdmin = new User() {
                 Email = config["Admin:Email"],
-                Password = config["Admin:Password"],
+                Password = BCrypt.Net.BCrypt.HashPassword(config["Admin:Password"]),
                 Username = "admin",
                 DisplayName = "Admin",
                 IsAdmin = true,
