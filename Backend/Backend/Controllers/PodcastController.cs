@@ -1151,6 +1151,25 @@ public class PodcastController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
+    [HttpGet("GetRandomHighlights")]
+    public async Task<IActionResult> GetRandomHighlights(int quantity = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRandomHighlights));
+
+            var highlights = await _podcastService.GetRandomHighlightsAsync(quantity);
+
+            return Ok(highlights); 
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetRandomHighlights));
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 
     #endregion
