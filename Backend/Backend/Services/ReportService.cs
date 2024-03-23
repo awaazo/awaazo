@@ -1,4 +1,7 @@
 ﻿using System.Collections.Immutable;
+using System.Text.Json;
+using Backend.Controllers;
+using Backend.Controllers.Requests;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Models.Interfaces;
@@ -10,7 +13,7 @@ public class ReportService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<ReportService> _logger;
-    private static readonly HashSet<string> AcceptableReportTargets = new() {
+    public static readonly HashSet<string> AcceptableReportTargets = new() {
         nameof(User),
         nameof(Podcast),
         nameof(Episode),    
@@ -23,32 +26,39 @@ public class ReportService
         _logger = logger;
     }
     
-    public async Task<ISoftDeletable> Report(Report report) {
+    public async Task<Report> Report(ReportRequest request) {
         // Check if entity is valid 
-        if (!AcceptableReportTargets.Contains(report.TargetEntityName)) {
-            throw new InvalidOperationException("Invalid report target");
+        if (!AcceptableReportTargets.Contains(request.TargetEntityName)) {
+            throw new InvalidOperationException("Invalid report target " + request.TargetEntityName);
         }
         
         // Check that reported by is valid 
-        if (await _db.Users.FindAsync(report.ReportedBy) is null) {
+        if (await _db.Users.FindAsync(request.ReportedBy) is null) {
             throw new InvalidOperationException("Invalid reporter");
         }
         
         // Check that target entity exists
-        var target = await GetReportTargetFromId(report.TargetEntityName, report.TargetId);
+        var target = await GetReportTargetFromId(request.TargetEntityName, request.TargetId);
         if (target is null) {
-            throw new InvalidOperationException("Invalid target entity");
+            throw new InvalidOperationException("Invalid target entity ID " + request.TargetId + " might be deleted?");
         }
         
         // Check if report already exists
-        if (await _db.Reports.AnyAsync(r => r.TargetEntityName == report.TargetEntityName && r.TargetId == report.TargetId && r.ReportedBy == report.ReportedBy)) {
+        if (await _db.Reports.AnyAsync(r => r.TargetEntityName == request.TargetEntityName && r.TargetId == request.TargetId && r.ReportedBy == request.ReportedBy)) {
             throw new InvalidOperationException("Report already exists");
         }
+
+        Report report = new Report {
+            TargetEntityName = request.TargetEntityName,
+            TargetId = request.TargetId,
+            ReportedBy = request.ReportedBy,
+            Reason = request.Reason,
+        };
         await _db.Reports.AddAsync(report);
         _db.Reports.Add(report);
         await _db.SaveChangesAsync();
 
-        return target;
+        return report;
     }
     
     public Task<ImmutableArray<Report>> GetPendingReports() {
