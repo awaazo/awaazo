@@ -331,4 +331,8 @@ public class AppDbContext : DbContext
 
         return base.SaveChanges();
     }
+
+    public override Task<int> SaveChangesAsync(CancellationToken ct = default) {
+        return Task.FromResult(this.SaveChanges());
+    }
 }
