@@ -26,7 +26,7 @@ const Home = () => {
         <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
           Podcasts Highlights
         </Text>
-        <HighLights episodeId={"e69433d1-9537-4995-80b7-c10d8797fe9a"} />
+        <HighLights />
       </Box>
     </Box>
   );

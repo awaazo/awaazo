@@ -203,7 +203,6 @@ export interface HighlightAddRequest {
 }
 
 export interface HighlightEditRequest {
-  highlightId: string;
   Title: string;
   Description: string;
 }

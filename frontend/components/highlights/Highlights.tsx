@@ -2,29 +2,40 @@ import { Spinner, Text, HStack, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import HighlightTicket from "./HighlightTicket";
 import HighlightHelper from "../../helpers/HighlightHelper";
+// import Episode from "../CreatorHub/MyEpisodes";
+import { Episode } from "../../types/Interfaces";
+import axios from "axios";
 
-const Highlights = ({ episodeId }) => {
+const Highlights = () => {
   const [highlights, setHighlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [episodes, setEpisodes] = useState([]);
+
+  useEffect(() => {
+    const fetchEpisodes = async () => {
+      try {
+        const response = await axios.get('http://localhost:32773/podcast/getRecentEpisodes?page=0&pageSize=20');
+        setEpisodes(response.data);
+      } catch (error) {
+        console.error('Error fetching episodes:', error);
+      }
+    };
+
+    fetchEpisodes();
+  }, []);
 
   useEffect(() => {
     async function fetchHighlights() {
-      if (!episodeId) {
-        // If no episodeId is provided, don't attempt to fetch highlights
-        setError("No episode selected");
-        setIsLoading(false);
-        return;
-      }
+      const quantity = 20; // Define the number of random highlights you want to fetch
 
       setIsLoading(true);
       try {
-        // Assuming getEpisodeHighlights returns an array of highlight objects
-        const response = await HighlightHelper.getEpisodeHighlights(episodeId);
-        // Update based on actual response structure:
-        setHighlights(response); // This might need adjustment depending on your API response structure
+        const response = await HighlightHelper.getRandomHighlights(quantity);
+        setHighlights(response); // Assuming the response is directly the array of highlight objects
         setError(""); // Clear any previous error
       } catch (err) {
+        console.error(err); // It's a good practice to log the actual error for debugging purposes
         setError("Failed to fetch highlights");
       } finally {
         setIsLoading(false);
@@ -32,7 +43,7 @@ const Highlights = ({ episodeId }) => {
     }
 
     fetchHighlights();
-  }, [episodeId]); // Re-fetch when episodeId changes
+  }, []); // This effect does not depend on any changing values
 
   if (isLoading) {
     return <Spinner size="xl" />;
@@ -46,16 +57,26 @@ const Highlights = ({ episodeId }) => {
     <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
       <HStack spacing={4} align="stretch">
         {highlights.length > 0 ? (
-          highlights.map((highlight) => (
-            <HighlightTicket key={highlight.id} highlight={highlight} fetchHighlights={function (): void {
-                  throw new Error("Function not implemented.");
-              } } />
-          ))
+          highlights.map((highlight) => {
+            // Find the episode corresponding to this highlight's episodeId
+            const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
+            
+            // Check if correspondingEpisode exists before rendering HighlightTicket
+            if (!correspondingEpisode) {
+              console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
+              return null; // Or handle this scenario appropriately
+            }
+
+            return (
+              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} />
+            );
+          })
         ) : (
           <Text>No highlights available</Text>
         )}
       </HStack>
     </Box>
+
   );
 };
 

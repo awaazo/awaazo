@@ -5,6 +5,16 @@ import { HighlightAddRequest, HighlightEditRequest } from "../types/Requests";
 import { Episode, Highlight, Podcast } from "../types/Interfaces";
 
 export default class HighlightHelper {
+
+    static getBackendAddress = () => {
+        if (
+          process.env.NODE_ENV === "development" ||
+          process.env.NODE_ENV === "test"
+        )
+          return process.env.NEXT_PUBLIC_BASE_URL;
+        else return process.env.NEXT_PUBLIC_BASE_URL;
+      };
+      
     static getUserProfile() {
         throw new Error("Method not implemented.");
     }
@@ -65,28 +75,33 @@ export default class HighlightHelper {
         requestData: HighlightEditRequest,
         highlightId: string,
     ): Promise<BaseResponse> => {
+        // Create a FormData object and append your fields to it
+        const formData = new FormData();
+        formData.append('Title', requestData.Title);
+        formData.append('Description', requestData.Description);
+    
         const options = {
             method: "POST",
             headers: {
                 accept: "*/*",
-                "Content-Type": "application/json",
             },
-            data: requestData,
+            data: formData, // Use FormData object
             url: EndpointHelper.editHighlightsEndpoint(highlightId),
             withCredentials: true,
             cache: false,
         };
-
+    
         try {
             console.debug("Sending highlightEditRequest with the following data:");
             console.debug("URL:", options.url);
-            console.debug("Data:", options.data);
 
+            console.debug("FormData contains: Title and Description");
+    
             const requestResponse = await axios(options);
-
+    
             console.debug("Received the following highlightEditResponse:");
             console.debug(requestResponse);
-
+    
             return {
                 status: requestResponse.status,
                 message: requestResponse.statusText,
@@ -94,23 +109,25 @@ export default class HighlightHelper {
         } catch (error) {
             console.error("Error in highlightEditRequest:");
             console.error("Request URL:", options.url);
-            console.error("Request Data:", options.data);
+            // Note: FormData contents can't be directly logged because it's sent as multipart/form-data
+            console.error("FormData contains: Title and Description");
             if (error.response) {
                 console.error("Error Status:", error.response.status);
                 console.error("Error Response:", error.response.data);
             } else {
                 console.error("Error Details:", error);
             }
-
+    
             return {
                 status: error.response ? error.response.status : 500,
                 message: error.response ? error.response.statusText : "Unknown Error",
             };
         }
     }
+    
 
     public static highlightDeleteRequest = async (
-        highlightId: string,
+        highlightId,
     ): Promise<BaseResponse> => {
         const options = {
             method: "POST",
@@ -266,5 +283,47 @@ export default class HighlightHelper {
             return [];
         }
     }
+
+    public static getHighlightAudioEndpoint = (highlightId: string) => {
+        return this.getBackendAddress() + "/podcast/" + highlightId + "/GetHighlightAudio";
+    };
+
+    public static getRandomHighlights = async (
+        quantity: number,
+    ): Promise<Highlight[]> => {
+        const options = {
+            method: "GET",
+            headers: {
+                accept: "*/*",
+            },
+            url: EndpointHelper.getRandomHighlightsEndpoint(quantity),
+            withCredentials: true,
+            cache: false,
+        };
+    
+        try {
+            console.debug("Sending getRandomHighlights with the following data:");
+            console.debug("URL:", options.url);
+    
+            const requestResponse = await axios(options);
+    
+            console.debug("Received the following getRandomHighlights:");
+            console.debug(requestResponse);
+    
+            return requestResponse.data;
+        } catch (error) {
+            console.error("Error in getRandomHighlights:");
+            console.error("Request URL:", options.url);
+            if (error.response) {
+                console.error("Error Status:", error.response.status);
+                console.error("Error Response:", error.response.data);
+            } else {
+                console.error("Error Details:", error);
+            }
+    
+            return [];
+        }
+    }
+    
 
 }

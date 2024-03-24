@@ -11,6 +11,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import HighlightHelper from '../../helpers/HighlightHelper';
+import { HighlightEditRequest } from '../../types/Requests';
 
 const HighlightForm = ({ episodeId, highlightId, fetchHighlights }) => {
   const [formData, setFormData] = useState({
@@ -23,8 +24,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights }) => {
 
   useEffect(() => {
     if (highlightId) {
-      // Assume a method to fetch a single highlight details if editing
-      // This part is to fill form when editing an existing highlight
     }
   }, [highlightId]);
 
@@ -38,8 +37,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights }) => {
   
     if (highlightId) {
       // Preparing data for editing highlight
-      const editData = {
-        highlightId: highlightId, // This is actually not needed to be sent here based on your HighlightHelper method signature
+      const editData: HighlightEditRequest = {
         Title: formData.Title,
         Description: formData.Description,
       };

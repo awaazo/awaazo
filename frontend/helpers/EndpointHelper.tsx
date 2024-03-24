@@ -2,6 +2,7 @@
  * Provides the appropriate backend endpoints, depending on the environment
  */
 export default class EndpointHelper {
+  
   /**
    * Returns the address of the backend, which will vary
    * depending on the environment.
@@ -907,12 +908,13 @@ export default class EndpointHelper {
   };
 
   static editHighlightsEndpoint = (episodeId: string) => {
-    return this.getBackendAddress() + "/podcast/" + episodeId + "/GetHighlights";
+    return this.getBackendAddress() + "/podcast/" + episodeId + "/EditHighlight";
   };
 
   static deleteHighlightsEndpoint = (highlightId: string) => {
     return this.getBackendAddress() + "/podcast/" + highlightId + "/RemoveHighlight";
   };
+
 
   static getUserHighlightsEndpoint = (userId: string) => {
     return this.getBackendAddress() + "/podcast/" + userId + "/GetAllUserHighlights";
@@ -922,9 +924,15 @@ export default class EndpointHelper {
     return this.getBackendAddress() + "/podcast/" + episodeId + "/GetAllEpisodeHighlights";
   };
 
-  static getHighlightAudioEndpoint = (highlightId: string) => {
-    return this.getBackendAddress() + "/podcast/" + highlightId + "/GetHighlightAudio";
+  public static getHighlightAudioEndpoint(highlightId: string) {
+    // This method constructs the URL for the audio file. Ensure this method returns the correct URL.
+    return `${this.getBackendAddress()}/podcast/${highlightId}/GetHighlightAudio`;
+}
+
+  static getRandomHighlightsEndpoint = (quantity: number) => {
+    return `${this.getBackendAddress()}/podcast/GetRandomHighlights?quantity=${quantity}`;
   }
+  
 
 }
 

@@ -1,86 +1,130 @@
 import React, { useState, useEffect } from 'react';
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import HighlightHelper from '../../helpers/HighlightHelper';
-import { IconButton, Box, Table, Thead, Th, Tr, Tbody, Td } from '@chakra-ui/react';
+import { IconButton, Box, Table, Thead, Th, Tr, Tbody, Td, Input, Button } from '@chakra-ui/react';
 import { HighlightEditRequest } from '../../types/Requests';
 
 const HighlightList = ({ episodeId }) => {
-  const [highlights, setHighlights] = useState([]);
+    const [highlights, setHighlights] = useState([]);
+    const [editingHighlightId, setEditingHighlightId] = useState(null);
+    const [editTitle, setEditTitle] = useState('');
+    const [editDescription, setEditDescription] = useState('');
 
-  const fetchHighlights = async () => {
-    try {
-      const fetchedHighlights = await HighlightHelper.getEpisodeHighlights(episodeId);
-      setHighlights(fetchedHighlights);
-    } catch (error) {
-      console.error("Failed to fetch highlights:", error);
-    }
+    useEffect(() => {
+        const fetchHighlights = async () => {
+            try {
+                const fetchedHighlights = await HighlightHelper.getEpisodeHighlights(episodeId);
+                setHighlights(fetchedHighlights);
+            } catch (error) {
+                console.error("Failed to fetch highlights:", error);
+            }
+        };
+        fetchHighlights();
+    }, [episodeId]);
+
+    const handleEdit = (highlight) => {
+        setEditingHighlightId(highlight.highlightId);
+        setEditTitle(highlight.title);
+        setEditDescription(highlight.description);
+    };
+
+    const handleEditHighlight = async (highlightId) => {
+        console.log("Editing highlight with ID:", highlightId);
+        if (editingHighlightId !== highlightId) {
+            console.error("Editing ID mismatch");
+            return;
+        }
+        console.log("Preparing to edit with title:", editTitle, "and description:", editDescription);
+        const editRequestData = {
+            HighlightId: highlightId,
+            Title: editTitle,
+            Description: editDescription,
+        };
+
+        try {
+            const response = await HighlightHelper.highlightEditRequest(editRequestData, highlightId);
+            console.log("Edit request response:", response);
+
+            if (response.status === 200) {
+                setHighlights(highlights.map(h => h.highlightId === highlightId ? {...h, title: editTitle, description: editDescription} : h));
+                setEditingHighlightId(null); // Exit editing mode
+            } else {
+                console.error("Failed to edit highlight. Response:", response);
+            }
+        } catch (error) {
+            console.error("Error editing highlight:", error);
+        }
+    };
+
+    const handleDeleteHighlight = async (highlightId) => {
+      console.log("Deleting highlight with ID:", highlightId);
+  
+      try {
+          const response = await HighlightHelper.highlightDeleteRequest(highlightId);
+          console.log("Delete request response:", response);
+  
+          if (response.status === 200) {
+             
+          } else {
+              console.error("Failed to delete highlight. Response:", response);
+          }
+      } catch (error) {
+          console.error("Error deleting highlight:", error);
+      }
+  
+      setHighlights((prevHighlights) => prevHighlights.filter((highlight) => highlight.id !== highlightId));
   };
 
-  useEffect(() => {
-    fetchHighlights();
-  }, [episodeId]);
+    const handleCancelEdit = () => {
+        setEditingHighlightId(null);
+    };
 
-  const handleEditHighlight = async (highlightId) => {
-    try {
-        const response = await HighlightHelper.highlightEditRequest(HighlightEditRequest, highlightId);
-        console.log("Edit request response:", response);
-
-        if (response.status === 200) {
-            fetchHighlights();
-        } else {
-            console.error("Failed to edit highlight. Response:", response);
-        }
-    } catch (error) {
-        console.error("Error editing highlight:", error);
-    }
-
-    setHighlights((prevHighlights) => prevHighlights.filter((highlight) => highlight.id !== highlightId));
-  };
-
-  const handleDeleteHighlight = async (highlightId) => {
-    console.log("Deleting highlight with ID:", highlightId);
-
-    try {
-        const response = await HighlightHelper.highlightDeleteRequest(highlightId);
-        console.log("Delete request response:", response);
-
-        if (response.status === 200) {
-            fetchHighlights();
-        } else {
-            console.error("Failed to delete highlight. Response:", response);
-        }
-    } catch (error) {
-        console.error("Error deleting highlight:", error);
-    }
-
-    setHighlights((prevHighlights) => prevHighlights.filter((highlight) => highlight.id !== highlightId));
-};
-
-  return (
-    <Box overflowX="auto">
-    <Table variant="simple" size="sm">
-      <Thead bgColor="gray.100">
-        <Tr>
-          <Th>Title</Th>
-          <Th>Description</Th>
-          <Th>Actions</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-      {highlights.map((highlight) => (
-        <Tr key={highlight.id}>
-          <Td>{highlight.title}</Td>
-          <Td>{highlight.description}</Td>
-          <Td>
-             <IconButton icon={<EditIcon />} size="lg" colorScheme="white" color={'white'} aria-label="Edit Highlight" onClick={() => handleEditHighlight(highlight)} />
-             <IconButton icon={<DeleteIcon />} size="lg" colorScheme="black" color={'white'} aria-label="Delete Highlight" onClick={() => handleDeleteHighlight(highlight.id)} />
-          </Td>        
-        </Tr>
-      ))}
-    </Tbody>
-    </Table>
-    </Box>
-  );
+    return (
+        <Box overflowX="auto">
+            <Table variant="simple" size="sm">
+                <Thead bgColor="gray.100">
+                    <Tr>
+                        <Th>Title</Th>
+                        <Th>Description</Th>
+                        <Th>Actions</Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                {highlights.map((highlight) => (
+                    <Tr key={highlight.highlightId}>
+                        <Td>
+                            {editingHighlightId === highlight.highlightId ? (
+                                <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+                            ) : (
+                                highlight.title
+                            )}
+                        </Td>
+                        <Td>
+                            {editingHighlightId === highlight.highlightId ? (
+                                <Input value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+                            ) : (
+                                highlight.description
+                            )}
+                        </Td>
+                        <Td>
+                            {editingHighlightId === highlight.highlightId ? (
+                                <>
+                                    <IconButton icon={<CheckIcon />} aria-label="Save Changes" onClick={() => handleEditHighlight(highlight.highlightId)}  />
+                                    <IconButton icon={<CloseIcon />} aria-label="Cancel" onClick={handleCancelEdit}  />
+                                </>
+                            ) : (
+                                <>
+                                    <IconButton icon={<EditIcon />} aria-label="Edit Highlight" onClick={() => handleEdit(highlight)} />
+                                    <IconButton icon={<DeleteIcon />} aria-label="Delete Highlight" onClick={() => handleDeleteHighlight(highlight.highlightId)} />
+                                </>
+                            )}
+                        </Td>
+                    </Tr>
+                ))}
+                </Tbody>
+            </Table>
+        </Box>
+    );
 };
 
 export default HighlightList;

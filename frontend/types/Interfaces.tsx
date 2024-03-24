@@ -43,6 +43,7 @@ export interface Episode {
 }
 
 export interface Highlight {
+  highlightId: string;
   id: string;
   podcastId: string;
   podcastName: string;
@@ -65,7 +66,8 @@ export interface Highlight {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?:Transcript[];
-
+  Title: string;
+  Description: string;
 }
 
 export interface Playlist {
