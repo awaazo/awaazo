@@ -58,17 +58,14 @@ const Highlights = () => {
       <HStack spacing={4} align="stretch">
         {highlights.length > 0 ? (
           highlights.map((highlight) => {
-            // Find the episode corresponding to this highlight's episodeId
             const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
-            
-            // Check if correspondingEpisode exists before rendering HighlightTicket
             if (!correspondingEpisode) {
               console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
-              return null; // Or handle this scenario appropriately
+              return null;
             }
 
             return (
-              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} />
+              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} thumbnailUrl={correspondingEpisode.thumbnailUrl}/>
             );
           })
         ) : (

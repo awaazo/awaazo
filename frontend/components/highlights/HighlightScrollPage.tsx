@@ -1,0 +1,45 @@
+// pages/highlightScroll/[episodeId].jsx
+
+import React, {useState} from 'react';
+import { Box, VStack, useBreakpointValue, Text } from '@chakra-ui/react';
+import HighlightTicket from '../highlights/HighlightTicket';
+
+const HighlightScrollPage = ({ highlights }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+   const [episodes, setEpisodes] = useState([]);
+
+  return (
+    <VStack overflowY="scroll" height="100vh" spacing={0}>
+      {highlights.length > 0 ? (
+          highlights.map((highlight) => {
+            const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
+            if (!correspondingEpisode) {
+              console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
+              return null;
+            }
+
+            return (
+              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} thumbnailUrl={correspondingEpisode.thumbnailUrl}/>
+            );
+          })
+        ) : (
+          <Text>No highlights available</Text>
+        )}
+    </VStack>
+  );
+};
+
+// This function gets called at build time on server-side.
+// It may be called again, on a serverless function, if
+// the path has not been generated.
+export async function getStaticProps(context) {
+  // Fetch data from external API
+  // Replace with your actual fetch method
+  const res = await fetch('http://localhost:32773/podcast/GetRandomHighlights?quantity=20');
+  const highlights = await res.json();
+
+  // Pass highlights data to the page via props
+  return { props: { highlights } };
+}
+
+export default HighlightScrollPage;

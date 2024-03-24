@@ -57,23 +57,20 @@ const HighlightList = ({ episodeId }) => {
     };
 
     const handleDeleteHighlight = async (highlightId) => {
-      console.log("Deleting highlight with ID:", highlightId);
-  
-      try {
-          const response = await HighlightHelper.highlightDeleteRequest(highlightId);
-          console.log("Delete request response:", response);
-  
-          if (response.status === 200) {
-             
-          } else {
-              console.error("Failed to delete highlight. Response:", response);
-          }
-      } catch (error) {
-          console.error("Error deleting highlight:", error);
-      }
-  
-      setHighlights((prevHighlights) => prevHighlights.filter((highlight) => highlight.id !== highlightId));
-  };
+        console.log("Deleting highlight with ID:", highlightId);
+        try {
+            const response = await HighlightHelper.highlightDeleteRequest(highlightId);
+            console.log("Delete request response:", response);
+            if (response.status === 200) {
+                setHighlights((prevHighlights) => prevHighlights.filter((highlight) => highlight.highlightId !== highlightId));
+            } else {
+                console.error("Failed to delete highlight. Response:", response);
+            }
+        } catch (error) {
+            console.error("Error deleting highlight:", error);
+        }
+      };
+      
 
     const handleCancelEdit = () => {
         setEditingHighlightId(null);
