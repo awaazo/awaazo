@@ -2,8 +2,6 @@ import { Spinner, Text, HStack, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import HighlightTicket from "./HighlightTicket";
 import HighlightHelper from "../../helpers/HighlightHelper";
-// import Episode from "../CreatorHub/MyEpisodes";
-import { Episode } from "../../types/Interfaces";
 import axios from "axios";
 
 const Highlights = () => {
@@ -27,15 +25,15 @@ const Highlights = () => {
 
   useEffect(() => {
     async function fetchHighlights() {
-      const quantity = 20; // Define the number of random highlights you want to fetch
+      const quantity = 20;
 
       setIsLoading(true);
       try {
         const response = await HighlightHelper.getRandomHighlights(quantity);
-        setHighlights(response); // Assuming the response is directly the array of highlight objects
-        setError(""); // Clear any previous error
+        setHighlights(response); 
+        setError(""); 
       } catch (err) {
-        console.error(err); // It's a good practice to log the actual error for debugging purposes
+        console.error(err); 
         setError("Failed to fetch highlights");
       } finally {
         setIsLoading(false);
@@ -43,7 +41,7 @@ const Highlights = () => {
     }
 
     fetchHighlights();
-  }, []); // This effect does not depend on any changing values
+  }, []); 
 
   if (isLoading) {
     return <Spinner size="xl" />;

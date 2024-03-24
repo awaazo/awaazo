@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import HighlightHelper from '../../helpers/HighlightHelper';
-import { IconButton, Box, Table, Thead, Th, Tr, Tbody, Td, Input, Button } from '@chakra-ui/react';
-import { HighlightEditRequest } from '../../types/Requests';
+import { 
+    IconButton, 
+    Box, 
+    Table, Thead, 
+    Th, 
+    Tr, 
+    Tbody, 
+    Td, 
+    Input 
+} from '@chakra-ui/react';
 
 const HighlightList = ({ episodeId }) => {
     const [highlights, setHighlights] = useState([]);
@@ -40,14 +48,13 @@ const HighlightList = ({ episodeId }) => {
             Title: editTitle,
             Description: editDescription,
         };
-
         try {
             const response = await HighlightHelper.highlightEditRequest(editRequestData, highlightId);
             console.log("Edit request response:", response);
 
             if (response.status === 200) {
                 setHighlights(highlights.map(h => h.highlightId === highlightId ? {...h, title: editTitle, description: editDescription} : h));
-                setEditingHighlightId(null); // Exit editing mode
+                setEditingHighlightId(null); 
             } else {
                 console.error("Failed to edit highlight. Response:", response);
             }

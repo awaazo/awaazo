@@ -5,7 +5,6 @@ import { FaPlay, FaPause, FaHeart, FaCommentDots, FaShare } from "react-icons/fa
 import { usePlayer } from "../../utilities/PlayerContext";
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
-import { usePalette } from "color-thief-react";
 import HighlightHelper from "../../helpers/HighlightHelper";
 
   const HighlightTicket= ({episode, highlight, thumbnailUrl }) => {

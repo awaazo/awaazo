@@ -7,7 +7,6 @@ import {
   VStack,
   Textarea,
   useToast,
-  Box,
   Text,
   RangeSlider,
   RangeSliderTrack,
@@ -46,32 +45,25 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength 
     }));
   };
 
-  const handleDirectInputChange = (name, value) => {
-    // Ensure the value is within the allowed range before updating
-    const timeValue = Math.max(0, Math.min(episodeLength, Number(value)));
-    setFormData((prev) => ({ ...prev, [name]: timeValue.toString() }));
-  };
-
   const handleSubmit = async () => {
     let response;
   
     if (highlightId) {
-      // Preparing data for editing highlight
       const editData: HighlightEditRequest = {
         Title: formData.Title,
         Description: formData.Description,
       };
-      // Editing highlight
+  
       response = await HighlightHelper.highlightEditRequest(editData, highlightId);
     } else {
-      // Preparing data for adding new highlight
+     
       const addData = {
-        StartTime: formData.StartTime, // Convert string to number
-        EndTime: formData.EndTime, // Convert string to number
+        StartTime: formData.StartTime, 
+        EndTime: formData.EndTime, 
         Title: formData.Title,
         Description: formData.Description,
       };
-      // Adding new highlight
+      
       response = await HighlightHelper.highlightCreateRequest(addData, episodeId);
     }
   
@@ -83,7 +75,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength 
         duration: 5000,
         isClosable: true,
       });
-      fetchHighlights(); // Refresh highlights list
+      fetchHighlights(); 
     } else {
       toast({
         title: 'Error',
@@ -107,7 +99,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength 
           duration: 5000,
           isClosable: true,
         });
-        fetchHighlights(); // Refresh highlights list
+        fetchHighlights(); 
       } else {
         toast({
           title: 'Error',
@@ -126,15 +118,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength 
           <FormLabel>Highlight Time Range (seconds)</FormLabel>
           
           <HStack spacing={2}>
-            {/* <Input
-              type="number"
-              value={formData.StartTime}
-              onChange={(e) => handleDirectInputChange('StartTime', e.target.value)}
-              max={episodeLength}
-              min={0}
-              step={1}
-              width="24%"
-            /> */}
           
             <RangeSlider
               aria-label={['start-time', 'end-time']}
@@ -160,16 +143,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength 
               <RangeSliderThumb index={1} />
             </RangeSlider>
             
-{/*   
-            <Input
-              type="number"
-              value={formData.EndTime}
-              onChange={(e) => handleDirectInputChange('EndTime', e.target.value)}
-              max={episodeLength}
-              min={0}
-              step={1}
-              width="24%"
-            /> */}
           </HStack>
             <Text mt={2}>
               Start: {convertTime(Number(formData.StartTime))}, End: {convertTime(Number(formData.EndTime))}
