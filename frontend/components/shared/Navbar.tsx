@@ -1,71 +1,54 @@
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { DefaultSession } from "next-auth";
-import {
-  Box,
-  Flex,
-  Avatar,
-  IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  MenuGroup,
-  useBreakpointValue,
-  Spacer,
-} from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  ArrowBackIcon,
-  ArrowForwardIcon,
-} from "@chakra-ui/icons";
-import AuthHelper from "../../helpers/AuthHelper";
-import Notifications from "../notification/Notifications";
-import { UserMenuInfo } from "../../types/Interfaces";
-import { GoogleSSORequest } from "../../types/Requests";
-import NotificationHelper from "../../helpers/NotificationsHelper";
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
+import { DefaultSession } from 'next-auth'
+import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from '@chakra-ui/react'
+import { HamburgerIcon } from '@chakra-ui/icons'
+import { ArrowL, ArrowR } from '../../public/icons'
+import AuthHelper from '../../helpers/AuthHelper'
+import Notifications from '../notification/Notifications'
+import { UserMenuInfo } from '../../types/Interfaces'
+import { GoogleSSORequest } from '../../types/Requests'
+import NotificationHelper from '../../helpers/NotificationsHelper'
+import { useRouter } from 'next/router'
 
 export default function Navbar() {
-  const loginPage = "/auth/Login";
-  const indexPage = "/";
-  const signupPage = "/auth/Signup";
-  const { data: session, status } = useSession();
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const [searchValue, setSearchValue] = useState("");
-  const router = useRouter();
-  const currentPath = router.pathname;
+  const loginPage = '/auth/Login'
+  const indexPage = '/'
+  const signupPage = '/auth/Signup'
+  const { data: session, status } = useSession()
+  const isMobile = useBreakpointValue({ base: true, md: false })
+  const [searchValue, setSearchValue] = useState('')
+  const router = useRouter()
+  const currentPath = router.pathname
 
   const handleSearchSubmit = () => {
-    const searchlink = "/Explore/Search?searchTerm=" + searchValue;
-    window.location.href = searchlink;
-  };
+    const searchlink = '/Explore/Search?searchTerm=' + searchValue
+    window.location.href = searchlink
+  }
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<UserMenuInfo>({
-    id: "",
-    username: "",
-    avatarUrl: "",
-  });
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [isUserSet, setIsUserSet] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
+    id: '',
+    username: '',
+    avatarUrl: '',
+  })
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
+  const [isUserSet, setIsUserSet] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(0)
   const [navbarStyle, setNavbarStyle] = useState({
-    backgroundColor: "transparent",
-    backdropFilter: "blur(0px)",
-  });
+    backgroundColor: 'transparent',
+    backdropFilter: 'blur(0px)',
+  })
 
   interface SessionExt extends DefaultSession {
     token: {
-      email: string;
-      sub: string;
-      id_token: string;
-      name: string;
-      picture: string;
-    };
+      email: string
+      sub: string
+      id_token: string
+      name: string
+      picture: string
+    }
   }
 
   useEffect(() => {
@@ -73,78 +56,78 @@ export default function Navbar() {
     if (!isUserSet) {
       AuthHelper.authMeRequest().then((response) => {
         if (response.status == 200) {
-          setUser(response.userMenuInfo);
-          setIsUserLoggedIn(true);
-          setIsUserSet(true);
-          setIsLoggedIn(true);
+          setUser(response.userMenuInfo)
+          setIsUserLoggedIn(true)
+          setIsUserSet(true)
+          setIsLoggedIn(true)
         }
-      });
+      })
     }
     // Google User logged in
     if (session !== null && session !== undefined && !isLoggedIn) {
       // Get the session info
-      const currentSession = session as SessionExt;
+      const currentSession = session as SessionExt
       const googleSSORequest: GoogleSSORequest = {
         email: currentSession.token.email,
         sub: currentSession.token.sub,
         token: currentSession.token.id_token,
         avatar: currentSession.token.picture,
         name: currentSession.token.name,
-      };
+      }
 
       AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
         if (response.status == 200) {
           if (!isUserSet) {
             AuthHelper.authMeRequest().then((response) => {
               if (response.status == 200) {
-                setUser(response.userMenuInfo);
-                setIsUserLoggedIn(true);
-                setIsUserSet(true);
-                setIsLoggedIn(true);
+                setUser(response.userMenuInfo)
+                setIsUserLoggedIn(true)
+                setIsUserSet(true)
+                setIsLoggedIn(true)
               }
-            });
+            })
           }
         }
-      });
+      })
     }
-  }, [session, isLoggedIn]);
+  }, [session, isLoggedIn])
 
   const handleLogOut = async () => {
     try {
       // Wait for the logout request to complete
-      await AuthHelper.authLogoutRequest();
-      console.log("Logout successful");
+      await AuthHelper.authLogoutRequest()
+      console.log('Logout successful')
       if (session) {
-        await signOut();
+        await signOut()
       }
 
       // Set Logged In Status to false
-      setIsUserLoggedIn(false);
-      setIsUserSet(false);
+      setIsUserLoggedIn(false)
+      setIsUserSet(false)
 
       // Redirect to the index page
-      window.location.href = indexPage;
+      window.location.href = indexPage
     } catch (error) {
       // Handle any errors that occur during logout
-      console.error("Logout failed", error);
+      console.error('Logout failed', error)
     }
-  };
+  }
   const handleSearchChange = (event) => {
-    setSearchValue(event.target.value);
-  };
+    setSearchValue(event.target.value)
+  }
 
   // Function to handle scroll event
   const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const maxScroll = 100;
-    const opacity = Math.min(scrollY / maxScroll, 1);
-    const blur = Math.min((scrollY / maxScroll) * 25, 25);
+    const scrollY = window.scrollY
+    const maxScroll = 100
+    const opacity = Math.min(scrollY / maxScroll, 1)
+    const blur = Math.min((scrollY / maxScroll) * 25, 25)
 
     setNavbarStyle({
       backgroundColor: `rgba(255, 255, 255, 0)`,
       backdropFilter: `blur(50px)`,
-    });
-  };
+    })
+  }
 
   // useEffect(() => {
   //   // Add scroll event listener when the component mounts
@@ -158,47 +141,24 @@ export default function Navbar() {
 
   useEffect(() => {
     const fetchNotificationCount = async () => {
-      const response = await NotificationHelper.NotificationCount();
-      if (
-        response !== null &&
-        response !== undefined &&
-        typeof response === "number"
-      ) {
-        setNotificationCount(response);
+      const response = await NotificationHelper.NotificationCount()
+      if (response !== null && response !== undefined && typeof response === 'number') {
+        setNotificationCount(response)
       } else {
-        console.error(
-          "Failed to fetch notification count:",
-          response.message || "No error message available",
-        );
+        console.error('Failed to fetch notification count:', response.message || 'No error message available')
       }
-    };
+    }
 
-    fetchNotificationCount();
-  }, []);
+    fetchNotificationCount()
+  }, [])
 
   const UserProfileMenu = () => (
     <Menu>
-      <MenuButton
-        aria-label="loggedInMenu"
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-      >
-        {user.avatarUrl === "" ? (
-          <Avatar
-            size={"sm"}
-            src={""}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-          />
+      <MenuButton aria-label="loggedInMenu" as={Button} rounded={'full'} variant={'link'} cursor={'pointer'}>
+        {user.avatarUrl === '' ? (
+          <Avatar size={'sm'} src={''} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
-          <Avatar
-            size={"sm"}
-            src={user.avatarUrl}
-            boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-            bg="rgba(255, 255, 255, 0.2)"
-            backdropFilter="blur(10px)"
-          />
+          <Avatar size={'sm'} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
         )}
       </MenuButton>
       <MenuList>
@@ -215,81 +175,37 @@ export default function Navbar() {
         </MenuGroup>
         <MenuDivider />
         <MenuGroup>
-          <MenuItem
-            onClick={handleLogOut}
-            style={{ color: "red", fontWeight: "normal" }}
-          >
+          <MenuItem onClick={handleLogOut} style={{ color: 'red', fontWeight: 'normal' }}>
             Logout
           </MenuItem>
         </MenuGroup>
-
-
       </MenuList>
     </Menu>
-  );
+  )
 
   const LoggedOutMenu = () => (
     <Menu>
-      <MenuButton
-        menu-id="menuBtn"
-        aria-label="Menu"
-        data-cy={`navbar-hamburger`}
-        as={Button}
-        variant={"link"}
-        cursor={"pointer"}
-      >
+      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={'link'} cursor={'pointer'}>
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem
-          id="loginBtn"
-          onClick={() => (window.location.href = loginPage)}
-        >
+        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
           Login
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = signupPage)}>
-          Sign up
-        </MenuItem>
+        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
       </MenuList>
     </Menu>
-  );
+  )
 
   return (
     <>
-      <Box
-        p={3}
-        mb={"3em"}
-        width={"100%"}
-        position="sticky"
-        alignSelf="center"
-        alignContent={"center"}
-        alignItems={"center"}
-        top={"0"}
-        zIndex={5}
-        data-testid="navbar-component"
-        style={navbarStyle}
-      >
-        <Box mr={"2em"} ml={"2em"}>
+      <Box p={3} mb={'3em'} width={'100%'} position="sticky" alignSelf="center" alignContent={'center'} alignItems={'center'} top={'0'} zIndex={5} data-testid="navbar-component" style={navbarStyle}>
+        <Box mr={'2em'} ml={'2em'}>
           <Flex justifyContent="space-between">
             <Flex align="center">
-              <IconButton
-                aria-label="Back"
-                icon={<ArrowBackIcon />}
-                onClick={() => window.history.back()}
-                variant="ghost"
-                size="md"
-                mr={2}
-                rounded="full"
-              />
-              <IconButton
-                aria-label="Forward"
-                icon={<ArrowForwardIcon />}
-                onClick={() => window.history.forward()}
-                variant="ghost"
-                size="md"
-                rounded="full"
-              />
+              <IconButton aria-label="Back" icon={<ArrowL />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
+              <IconButton aria-label="Forward" icon={<ArrowR />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
             </Flex>
             <Spacer />
             <Flex align="center" justifyContent="flex-end">
@@ -300,5 +216,5 @@ export default function Navbar() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
