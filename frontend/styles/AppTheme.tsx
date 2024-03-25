@@ -76,9 +76,6 @@ const overrides = {
     },
 
 
-
-
-
     Textarea: {
       baseStyle: {
         maxHeight: "200px",
@@ -161,9 +158,32 @@ const overrides = {
         "50%": { backgroundPosition: "0% 100%" },
         "100%": { backgroundPosition: "100% 0%" },
       },
+      "@font-face": [
+        {
+          fontFamily: "'Neue Montreal'",
+          fontStyle: 'normal',
+          fontWeight: 400,
+          src: `url('/fonts/NeueMontreal-Regular.otf') format('opentype')`
+        },
+        {
+          fontFamily: "'Neue Montreal'",
+          fontStyle: 'normal',
+          fontWeight: 500,
+          src: `url('/fonts/NeueMontreal-Medium.otf') format('opentype')`
+        },
+        {
+          fontFamily: "'Neue Montreal'",
+          fontStyle: 'normal',
+          fontWeight: 700,
+          src: `url('/fonts/NeueMontreal-Bold.otf') format('opentype')`
+        },
+       
+      ],
+
       "*": {
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "'Neue Montreal', sans-serif",
       },
+
     },
   },
   config,

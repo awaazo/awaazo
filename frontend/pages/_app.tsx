@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
-import bg from "../styles/images/bg.png";
 import { SessionProvider } from "next-auth/react";
 import { PlayerProvider } from "../utilities/PlayerContext";
 import PlayerBar from "../components/shared/PlayerBar";
@@ -59,11 +58,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         left="0"
         width="100%"
         height="100vh"
-        backgroundImage={bg.src}
         backgroundSize="cover"
         zIndex="-1"
         minHeight="100vh"
-        bgColor={"black"}
+        bgColor={"#1D1D1D"}
       />
       <SessionProvider session={session}>
         <PlayerProvider>
