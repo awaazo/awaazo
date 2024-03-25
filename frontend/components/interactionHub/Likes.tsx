@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
-import { FaHeart } from "react-icons/fa";
+import { Like } from '../../public/icons';
 import SocialHelper from "../../helpers/SocialHelper";
 import AuthPrompt from "../auth/AuthPrompt";
 
@@ -50,9 +50,9 @@ const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
         p={2}
         onClick={handleLike}
         data-cy="like-button-index:"
-        leftIcon={showCount ? <Icon as={FaHeart} color={isLiked ? "brand.100" : "white"} /> : null}
+        leftIcon={showCount ? <Icon as={Like} color={isLiked ? "brand.100" : "white"} /> : null}
       >
-        {showCount ? likes : <Icon as={FaHeart} color={isLiked ? "brand.100" : "white"} />}
+        {showCount ? likes : <Icon as={Like} color={isLiked ? "brand.100" : "white"} />}
       </Button>
     </Tooltip>
     {showLoginPrompt && (

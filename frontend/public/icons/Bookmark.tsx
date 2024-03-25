@@ -1,6 +1,6 @@
 import * as React from 'react'
 import type { SVGProps } from 'react'
-const SvgBookmarks = (props: SVGProps<SVGSVGElement>) => (
+const SvgBookmark = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 18 18" {...props}>
     <path
       fill="#fff"
@@ -8,4 +8,4 @@ const SvgBookmarks = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
-export default SvgBookmarks
+export default SvgBookmark
