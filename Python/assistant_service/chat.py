@@ -6,6 +6,7 @@ from langchain.prompts import SystemMessagePromptTemplate, ChatPromptTemplate, H
 from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain_groq import ChatGroq
 
 def chat(podcast_id, episode_id, prompt):
     """
@@ -37,9 +38,14 @@ def chat(podcast_id, episode_id, prompt):
         # Load OpenAI API key
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         print(f"Loaded OPENAI_API_KEY...")
+        GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+        print(f"Loaded GROQ_API_KEY")
         
         if not OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
+        
+        if not GROQ_API_KEY:
+            raise ValueError("GROQ_API_KEY not found in environment variables")
 
         persist_directory = f"{BASE_DIR}/{podcast_id}/{episode_id}_vectorstore"
 
@@ -74,11 +80,12 @@ def chat(podcast_id, episode_id, prompt):
 
         qa_prompt = ChatPromptTemplate.from_messages(messages)
         
-        llm = ChatOpenAI(temperature=0.1, streaming=True, max_tokens=100)
+        #llm = ChatOpenAI(temperature=0.1, streaming=True, max_tokens=100)
+        llm = ChatGroq(temperature=0.2, groq_api_key=GROQ_API_KEY, max_tokens=200, model_name="mixtral-8x7b-32768")
         
         qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, callbacks=[StreamingStdOutCallbackHandler()], verbose=True,)
 
-        prompt = f"{prompt} (answer with a maximum of 100 tokens)"
+        prompt = f"{prompt} (answer with a maximum of 200 tokens)"
 
         print(f"Prompt: {prompt}")
 

@@ -32,6 +32,8 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
 
         BASE_DIR = './ServerFiles/Podcasts'
 
+        status_file_path = f'{BASE_DIR}/{podcast_id}/{episode_id}_ingestion_status.txt'
+
         # Load environment variables
         load_dotenv()
         
@@ -46,8 +48,6 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
         if not os.path.exists(f'{BASE_DIR}/{podcast_id}/{episode_id}.json'):
             print(f"Transcript not found at {BASE_DIR}/{podcast_id}/{episode_id}.json")
             raise FileNotFoundError(f"Transcript not found at {BASE_DIR}/{podcast_id}/{episode_id}.json")
-
-        status_file_path = f'{BASE_DIR}/{podcast_id}/{episode_id}_ingestion_status.txt'
 
         # Create a status file to indicate that the ingestion is in progress
         with open(status_file_path, 'w') as f:
