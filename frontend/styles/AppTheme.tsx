@@ -183,7 +183,17 @@ const overrides = {
       "*": {
         fontFamily: "'Neue Montreal', sans-serif",
       },
-
+      "@keyframes appear": {
+        "0%": { opacity: 0 },
+        "100%": { opacity: 1 },
+      },
+      ".text-appear": {
+        animation: "appear 0.5s ease forwards",
+        marginRight: "4px", 
+      },
+      ".transcript-text": {
+        whiteSpace: "pre-wrap",
+      },
     },
   },
 
@@ -200,7 +210,7 @@ const overrides = {
     medium: 500,
     bold: 700,
   },
-  
+
   config,
 };
 
