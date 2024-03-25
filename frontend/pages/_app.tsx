@@ -61,7 +61,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         backgroundSize="cover"
         zIndex="-1"
         minHeight="100vh"
-        bgColor={"#1D1D1D"}
+        bgColor={"az.blackish"}
       />
       <SessionProvider session={session}>
         <PlayerProvider>
