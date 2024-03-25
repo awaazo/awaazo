@@ -186,6 +186,21 @@ const overrides = {
 
     },
   },
+
+  fontSizes: {
+    xl: '24px',
+    lg: '20px',
+    md: '16px',
+    sm: '14px',
+    xs: '12px',
+  },
+
+  fontWeights: {
+    normal: 400,
+    medium: 500,
+    bold: 700,
+  },
+  
   config,
 };
 
