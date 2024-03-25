@@ -13,14 +13,27 @@ const overrides = {
       200: "#8077f9",
       300: "#a29bfb",
     },
+    az: {
+      blue: "#94AFFF",
+      green: "#89DBBD",
+      red: "#FF6A5F",
+      yellow: "#FFD569",
+      offWhite: "#D1D9DE",
+      blackish: "#1D1D1D",
+      greyish: "#818990",
+      darkGrey: "#393939",
+      darkerGrey: "#2D2D2D",
+    },
   },
-
-
-
+  gradients: {
+    darkGradient: "linear-gradient(180deg, #2A2A2A 5.06%, #1D1D1D 100%)",
+    lightGradient: "linear-gradient(200deg, #FFF 22.27%, #D1D9DE 111.44%)",
+    sunset: "linear-gradient(180deg, #FF6B60 21%, #FFD569 100%)",
+    greenToYellow: "linear-gradient(180deg, #89DBBD 0%, #FFD569 99.17%)",
+  },
 
   components: {
 
-    
     Button: {
       baseStyle: {},
       variants: {
