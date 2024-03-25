@@ -13,6 +13,7 @@ export interface Podcast {
   averageRating?: number;
   monthlyListeners: number;
   totalPodcastPoints: number;
+  highlights: Highlight[];
 }
 
 export interface Episode {
@@ -37,7 +38,36 @@ export interface Episode {
   annotations: Annotation[];
   sponsors: Sponsor[];
   transcript?:Transcript[];
-  totalPoints:number
+  totalPoints:number;
+  highlights: Highlight[];
+}
+
+export interface Highlight {
+  highlightId: string;
+  id: string;
+  podcastId: string;
+  podcastName: string;
+  episodeId: string;
+  episodeName: string;
+  thumbnailUrl: string;
+  highlightName: string;
+  description: string;
+  duration: number;
+  releaseDate: Date;
+  isExplicit: boolean;
+  playCount: number;
+  likes: {
+    count: number;
+    isLiked: boolean;
+  };
+  comments: number;
+  bookmarks: number;
+  totalPoints: number;
+  annotations: Annotation[];
+  sponsors: Sponsor[];
+  transcript?:Transcript[];
+  Title: string;
+  Description: string;
 }
 
 export interface Playlist {
@@ -280,19 +310,27 @@ export interface Chatbot {
 }
 
 export interface Transcript {
+  episodeId: string;
+  status: string;
+  lines: TranscriptLine[];
+}
+
+export interface TranscriptLine {
   id: number;
   seek: number;
   start: number;
   end: number;
   text: string;
   speaker: string;
-  words: {
-    start: number;
-    end: number;
-    word: string;
-    score: number;
-    speaker: string;
-  }[];
+  words: TranscriptWord[];
+}
+
+export interface TranscriptWord {
+  start: number;
+  end: number;
+  word: string;
+  score: number;
+  speaker: string;
 }
 
 export interface Transaction{

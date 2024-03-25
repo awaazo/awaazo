@@ -194,6 +194,19 @@ export interface PlaylistEditRequest {
 }
 //#endregion
 
+//#region  Highlight Requests
+export interface HighlightAddRequest {
+  StartTime: number;
+  EndTime: number;
+  Title: string;
+  Description: string;
+}
+
+export interface HighlightEditRequest {
+  Title: string;
+  Description: string;
+}
+
 //#region Episode SaveWatchHistory Request
 export interface SaveWatchHistoryRequest {
   listenPosition: number;
@@ -208,19 +221,19 @@ export interface ChatbotMessageRequest {
 
 //#region Episode editTrasncriptLines Request
 export interface editTranscriptLinesRequest {
-  id: number,
-  seek: number,
-  start: number,
-  end: number,
-  text: string,
-  speaker: string,
-  words: {
-    start: number,
-    end: number,
-    word: string,
-    score: number,
-    speaker: string
-  }[];
+  [key: number]: {
+    start: number;
+    end: number;
+    text: string;
+    speaker: string;
+    words: {
+      start: number;
+      end: number;
+      word: string;
+      score: number;
+      speaker: string;
+    }[];
+  };
 }
 //#endregion
 

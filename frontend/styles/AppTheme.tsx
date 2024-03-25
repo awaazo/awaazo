@@ -194,6 +194,17 @@ const overrides = {
       ".transcript-text": {
         whiteSpace: "pre-wrap",
       },
+      "@keyframes appear": {
+        "0%": { opacity: 0 },
+        "100%": { opacity: 1 },
+      },
+      ".text-appear": {
+        animation: "appear 0.5s ease forwards",
+        marginRight: "4px", // Adjust the spacing as needed
+      },
+      ".transcript-text": {
+        whiteSpace: "pre-wrap",
+      },
     },
   },
 
