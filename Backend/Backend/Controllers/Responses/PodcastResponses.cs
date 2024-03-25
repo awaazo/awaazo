@@ -362,6 +362,7 @@ public class HighlightResponse
 
     public HighlightResponse(Highlight highlight)
     {
+        HighlightId = highlight.HighlightId;
         EpisodeId = highlight.EpisodeId;
         UserId = highlight.UserId;
         StartTime = highlight.StartTime;
@@ -369,6 +370,11 @@ public class HighlightResponse
         Title = highlight.Title;
         Description = highlight.Description;
     }
+
+    /// <summary>
+    /// Id of the Given Episode
+    /// </summary>
+    public Guid HighlightId { get; set; } = Guid.Empty;
 
     /// <summary>
     /// Id of the episode attached to this Highlight
