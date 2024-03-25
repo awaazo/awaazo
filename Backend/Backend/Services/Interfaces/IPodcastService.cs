@@ -65,5 +65,6 @@ public interface IPodcastService
     public Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId);
     public Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId);
     public Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId);
+    public Task<List<HighlightResponse>> GetRandomHighlightsAsync(int quantity);
 
 }

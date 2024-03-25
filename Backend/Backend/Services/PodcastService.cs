@@ -1691,6 +1691,46 @@ public class PodcastService : IPodcastService
         return guids;
     }
 
+    /// <summary>
+    /// Pseudo randomly returns a certain quantity of random Highlights. In reality, since random collections are expensive in SQL, I just
+    /// grab a certain quantity of items starting at a random row, then shuffle them to appear random.
+    /// </summary>
+    /// <param name="quantity"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<HighlightResponse>> GetRandomHighlightsAsync(int quantity)
+    {
+        var rng = new Random();
+        var higlightDBCount = _db.Highlights.Count();
+        var selectedAmount = quantity;
+
+        // if we input too many, just take them all. not realistic really
+        if (selectedAmount > higlightDBCount)
+        {
+            selectedAmount = higlightDBCount;
+        }
+
+        // If selects invalid number
+        if (selectedAmount <= 0)
+        {
+            throw new Exception("You are selecting a 0 or negative amount of highlights");
+        }
+
+        // Upper bound is not inclusive, thus +1
+        int skipped = rng.Next(0, _db.Highlights.Count() - selectedAmount + 1);
+        var highlights = await _db.Highlights.Skip(skipped).Take(selectedAmount).Select(h => new HighlightResponse(h)).ToListAsync();
+
+        // If no highlights in the DB
+        if (highlights.Count == 0)
+        {
+            throw new Exception("There are no highlights in the DB");
+        }
+
+        Shuffle(highlights);
+
+        return highlights;
+    }
+
 
     #endregion
 
@@ -1702,6 +1742,20 @@ public class PodcastService : IPodcastService
     private async Task<FFMpegCore.IMediaAnalysis> GetMediaAnalysis(string audioName, Guid podcastId)
     {
         return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
+    }
+
+    private static void Shuffle<T>(IList<T> list)
+    {
+        var rng = new Random();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 
     #region Episode Chat
