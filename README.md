@@ -5,25 +5,6 @@
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
 
-<br clear="left"/>
-
-<br>
-
-
-
-<div align="center">
-
-[<img src="/docAssets/readme/toc/Overview.svg" alt="Overview" width="180"/>](#overview)
-[<img src="/docAssets/readme/toc/why_awaazo.svg" alt="Why Awaazo" width="180"/>](#what-sets-awaazo-apart)
-[<img src="/docAssets/readme/toc/Core_Features.svg" alt="Core Features" width="180"/>](#core-features)
-
-[<img src="/docAssets/readme/toc/Latest_Release.svg" alt="Demo Video" width="180"/>](#latest-release-demo)
-[<img src="/docAssets/readme/toc/Team_Members.svg" alt="Team Members" width="180"/>](#team-members)
-[<img src="/docAssets/readme/toc/tech_stack.svg" alt="Tech Stack" width="180"/>](#tech-stack)
-
-</div>
-
-
 
 
 
