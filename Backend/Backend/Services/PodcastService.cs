@@ -1,17 +1,19 @@
-﻿using System.Text.Json;
-using Backend.Controllers.Requests;
+﻿using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
-using FFMpegCore.Arguments;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Backend.Models.Podcast;
 using static Backend.Infrastructure.FileStorageHelper;
 using FFMpegCore.Enums;
+using Microsoft.ML;
+using Microsoft.ML.Trainers;
 using System.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace Backend.Services;
 
@@ -20,14 +22,17 @@ namespace Backend.Services;
 /// </summary>
 public class PodcastService : IPodcastService
 {
-
-
     /// <summary>
     /// Current database instance
     /// </summary>
     private readonly AppDbContext _db;
 
     private readonly INotificationService _notificationService;
+
+    /// <summary>
+    /// Ml Context
+    /// </summary>
+    private readonly MLContext _mLContext;
 
     /// <summary>
     /// Python Server Base Url
@@ -54,17 +59,28 @@ public class PodcastService : IPodcastService
     /// </summary>
     private const int MAX_AUDIO_SIZE = 1000000000;
 
-
     /// <summary>
     /// Maximum request size
     /// </summary>
     public const int MAX_REQUEST_SIZE = 1005242880;
+
+    /// <summary>
+    /// Threshold for ML
+    /// </summary>
+    public const double THRESHOLD = 30;
+
+    /// <summary>
+    /// Maximum duration of a highlight
+    /// </summary>
+    public const int MAX_HIGHLIGHT_DURATION = 15;
 
 
     public PodcastService(AppDbContext db, INotificationService notificationService, IConfiguration configuration)
     {
         _db = db;
         _notificationService = notificationService;
+        _mLContext = new MLContext(0);
+
 
         // Set the default url for the python server
         _pyBaseUrl = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ?
@@ -201,6 +217,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.Id == podcastId)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -240,6 +257,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => p.PodcasterId == userId)
         .Skip(page * pageSize)
@@ -269,6 +287,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Where(p => AppDbContext.Soundex(p.Name) == AppDbContext.Soundex(filter.SearchTerm))
         .ToListAsync() ?? throw new Exception("No podcasts found.");
@@ -361,7 +380,9 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
+
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(p => new PodcastResponse(p, domainUrl))
@@ -394,6 +415,7 @@ public class PodcastService : IPodcastService
             .Include(p => p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings).ThenInclude(r => r.User)
+            .Include(p => p.Episodes).ThenInclude(r => r.Points)
             .Skip(page * pageSize)
             .Take(pageSize)
             .Select(p => new PodcastResponse(p, domainUrl))
@@ -411,6 +433,7 @@ public class PodcastService : IPodcastService
         // Check that user owns podcast
         Podcast? podcast = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Include(p => p.Episodes).ThenInclude(e => e.Points)
                 .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(comment => comment.Likes)
                 .FirstOrDefaultAsync(p => p.Id == podcastId);
         if (podcast is null)
@@ -501,6 +524,7 @@ public class PodcastService : IPodcastService
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(p => p.Episodes).ThenInclude(e => e.Points)
         .Include(p => p.Ratings).ThenInclude(r => r.User)
         .Skip(page * pageSize)
         .Take(pageSize)
@@ -521,7 +545,7 @@ public class PodcastService : IPodcastService
     /// <param name="podcastId"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
+    public async Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user)
     {
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id) ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
@@ -564,7 +588,7 @@ public class PodcastService : IPodcastService
             IsExplicit = request.IsExplicit,
             ReleaseDate = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
         };
 
         // Check if the episode is explicit and the podcast is not
@@ -582,16 +606,20 @@ public class PodcastService : IPodcastService
 
         try
         {
-            // Send request to PY server to generate a transcript
-            var url = _pyBaseUrl+"/stt_ingest";
-            var json = $@"{{
+            if (request.IsFullEpisode())
+            {
+
+                // Send request to PY server to generate a transcript
+                var url = _pyBaseUrl + "/stt_ingest";
+                var json = $@"{{
                 ""podcast_id"": ""{episode.PodcastId}"",
                 ""episode_id"": ""{episode.Id}""
-            }}";
+                }}";
 
-            using var httpClient = new HttpClient();
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            await httpClient.PostAsync(url, content);
+                using var httpClient = new HttpClient();
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await httpClient.PostAsync(url, content);
+            }
         }
         catch (Exception)
         {
@@ -608,7 +636,9 @@ public class PodcastService : IPodcastService
         // Send Notification to All the Subscribed Users
         await _notificationService.AddEpisodeNotification(podcastId, episode, _db);
 
-        return await _db.SaveChangesAsync() > 0;
+        await _db.SaveChangesAsync();
+
+        return episode.Id;
     }
 
     /// <summary>
@@ -665,24 +695,28 @@ public class PodcastService : IPodcastService
 
             try
             {
-                // Remove the old episode transcript
-                RemoveTranscript(episodeId, episode.PodcastId);
+                if (request.IsFullEpisode())
+                {
+                    // Remove the old episode transcript
+                    RemoveTranscript(episodeId, episode.PodcastId);
 
-                // Send request to PY server to generate a transcript
-                var url = _pyBaseUrl+"/stt_ingest";
-                var json = $@"{{
+                    // Send request to PY server to generate a transcript
+                    var url = _pyBaseUrl + "/stt_ingest";
+                    var json = $@"{{
                     ""podcast_id"": ""{episode.PodcastId}"",
                     ""episode_id"": ""{episode.Id}""
-                }}";
+                    }}";
 
-                using var httpClient = new HttpClient();
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                await httpClient.PostAsync(url, content);
+                    using var httpClient = new HttpClient();
+                    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                    await httpClient.PostAsync(url, content);
+                }
             }
             catch (Exception)
             {
                 // TODO: Log if any error happens here
             }
+
 
             // Find and Save the duration of the audio in seconds
             var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
@@ -722,6 +756,73 @@ public class PodcastService : IPodcastService
             podcast.IsExplicit = true;
             _db.Podcasts.Update(podcast);
         }
+
+        // Save the changes to the database and return status
+        _db.Episodes.Update(episode);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Adds audio to an existing episode for the specified podcast.
+    /// </summary>
+    /// <param name="request"> The request object </param>
+    /// <param name="episodeId"> The episode ID </param>
+    /// <param name="user"> The user object </param>
+    /// <returns> A boolean indicating success </returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist or is not owned by the user </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is not provided </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is not an audio file </exception>
+    /// <exception cref="Exception"> Throws an exception if the audio file is larger than 1GB </exception>
+    public async Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user)
+    {
+        // Get the episode and make sure its owned by the user
+        Episode episode = await _db.Episodes
+            .Include(e => e.Podcast)
+            .FirstOrDefaultAsync(e => e.Id == episodeId && e.Podcast.PodcasterId == user.Id) ?? throw new Exception("Episode does not exist and/or it is not owned by user.");
+
+        // Check if the episode audio was provided
+        if (request.AudioFile == null)
+            throw new Exception("Audio file is required.");
+
+        // Check if the episode audio is an audio file
+        if (!ALLOWED_AUDIO_FILES.Contains(request.AudioFile.ContentType))
+            throw new Exception("Audio file must be an MP3, WAV, MP4, or MPEG.");
+
+        // Check if the episode audio is smaller than 1GB
+        if (request.AudioFile.Length > MAX_AUDIO_SIZE)
+            throw new Exception($"Audio file must be smaller than {MAX_AUDIO_SIZE}GB.");
+
+        // Append the new audio to the episode audio
+        episode.Audio = await AppendPodcastEpisodeAudio(episode.PodcastId, episode.Audio, request.AudioFile);
+
+        try
+        {
+            if (request.IsFullEpisode())
+            {
+                // Remove the old episode transcript
+                RemoveTranscript(episodeId, episode.PodcastId);
+
+                // Send request to PY server to generate a transcript
+                var url = _pyBaseUrl + "/stt_ingest";
+                var json = $@"{{
+                    ""podcast_id"": ""{episode.PodcastId}"",
+                    ""episode_id"": ""{episode.Id}""
+                    }}";
+
+                using var httpClient = new HttpClient();
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await httpClient.PostAsync(url, content);
+            }
+        }
+        catch (Exception)
+        {
+            // TODO: Log if any error happens here
+        }
+
+
+        // Find and Save the duration of the audio in seconds
+        var mediaInfo = await GetMediaAnalysis(episode.Audio, episode.PodcastId);
+        episode.Duration = mediaInfo.Duration.TotalSeconds;
 
         // Save the changes to the database and return status
         _db.Episodes.Update(episode);
@@ -775,7 +876,9 @@ public class PodcastService : IPodcastService
     public async Task<bool> DeleteEpisodeAsync(Guid episodeId, User user)
     {
         // Check if the episode exists and is owned by the user
-        Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
+        Episode episode = await _db.Episodes
+            .Include(e => e.UserEpisodeInteractions)
+            .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist.");
 
         // Check if the podcast exists
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id) ?? throw new Exception("Episode podcast does not exist and/or it is not owned by user.");
@@ -835,7 +938,9 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
             .Include(e => e.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
             .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
 
         // Return the episode response
         return new EpisodeResponse(episode, domainUrl);
@@ -884,6 +989,7 @@ public class PodcastService : IPodcastService
         // Make sure the listen position is not negative
         if (listenPosition < 0)
             throw new Exception("Listen position cannot be negative.");
+
         // Make sure the listen position is not greater than the duration of the episode
         if (listenPosition > episode.Duration)
             throw new Exception("Listen position cannot be greater than the duration of the episode.");
@@ -901,18 +1007,29 @@ public class PodcastService : IPodcastService
                 UserId = user.Id,
                 DateListened = DateTime.Now,
                 LastListenPosition = listenPosition,
-                HasListened = true
+                HasListened = true,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                TotalListenTime = TimeSpan.FromSeconds(listenPosition)
             };
+
+            // Add the interaction to the database
             await _db.UserEpisodeInteractions.AddAsync(interaction);
         }
         else
         {
+            interaction.TotalListenTime = interaction.TotalListenTime.Add(TimeSpan.FromSeconds(Math.Abs(listenPosition - interaction.LastListenPosition)));
             interaction.DateListened = DateTime.Now;
             interaction.LastListenPosition = listenPosition;
             interaction.HasListened = true;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
             _db.UserEpisodeInteractions.Update(interaction);
         }
 
+        // Save the changes to the database
         return await _db.SaveChangesAsync() > 0;
     }
 
@@ -931,14 +1048,103 @@ public class PodcastService : IPodcastService
         UserEpisodeInteraction? interaction = await _db.UserEpisodeInteractions
             .FirstOrDefaultAsync(uei => uei.EpisodeId == episodeId && uei.UserId == user.Id);
 
-        // If the interaction does not exist, return 0
+        // If the interaction does not exist, create a new one.
         if (interaction is null)
-            return new() { ListenPosition = 0 };
+        {
+            interaction = new()
+            {
+                EpisodeId = episode.Id,
+                UserId = user.Id,
+                DateListened = DateTime.Now,
+                LastListenPosition = 0,
+                HasListened = false,
+                Clicks = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Add the interaction to the database   
+            await _db.UserEpisodeInteractions.AddAsync(interaction);
+        }
         else
-            return new() { ListenPosition = interaction.LastListenPosition };
+        {
+            interaction.DateListened = DateTime.Now;
+            interaction.HasListened = true;
+            interaction.Clicks++;
+            interaction.UpdatedAt = DateTime.Now;
+
+            // Update the interaction in the database
+            _db.UserEpisodeInteractions.Update(interaction);
+        }
+
+        // Save the changes to the database
+        await _db.SaveChangesAsync();
+
+        // Return the listen position
+        return new() { ListenPosition = interaction.LastListenPosition };
     }
 
+    /// <summary>
+    /// Gets LoggedIn Users History
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<List<History>> GetUserWatchHistory(int page, int pageSize, User user)
+    {
+        // Gets User Interaction from the db and cast it to History
+        List<History> history = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).Skip(page * pageSize).Take(pageSize).Select(u => new History(u)).ToListAsync();
+
+       
+        // Return the List
+        return history;
+
+    }
+
+    /// <summary>
+    /// Deletes the Watch History for the User
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="user"></param>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteWatchHistory( User user, Guid episodeId)
+    {
+        UserEpisodeInteraction? userEpisodeInteraction = await _db.UserEpisodeInteractions.FirstOrDefaultAsync( u => u.UserId == user.Id &&  u.EpisodeId == episodeId);
+        
+        // If the History doesnot Exist throw an error
+        if(userEpisodeInteraction == null)
+        {
+            throw new Exception("History Does not Exist");
+        }
+
+        // If all the checks have passed then remove the object from DB
+        _db.UserEpisodeInteractions.Remove(userEpisodeInteraction);
+
+        // return whether the history have been successfully deleted  or not
+        return await _db.SaveChangesAsync() > 0;
+
+   
+    }
+    /// <summary>
+    /// Clears whole history of a user
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteAllWatchHistory(User user) 
+    {
+        List<UserEpisodeInteraction> userEpisodeInteractions = await _db.UserEpisodeInteractions.Where(u => u.UserId == user.Id).ToListAsync();
+
+        _db.UserEpisodeInteractions.RemoveRange(userEpisodeInteractions);
+
+        return await _db.SaveChangesAsync() > 0;
+
+    }
     #endregion Watch History
+
+    #region Transcription
 
     /// <summary>
     /// Gets the transcript for the given episode.
@@ -1082,8 +1288,42 @@ public class PodcastService : IPodcastService
         return true;
     }
 
+    /// <summary>
+    /// Generates a transcript for the given episode.
+    /// </summary>
+    /// <param name="episodeId">Id of the episode for which to generate the transcript</param>
+    /// <param name="user">User who is generating the transcript</param>
+    /// <returns>True if the transcript was generated successfully, false otherwise</returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user)
+    {
+        // Check if the episode exists, if it does retrieve it.
+        Episode episode = await _db.Episodes
+        .FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
+
+        // Check if the user owns the podcast of the episode
+        if (await _db.Podcasts.AnyAsync(p => p.Id == episode.PodcastId && p.PodcasterId == user.Id))
+        {
+            // Send request to PY server to generate a transcript
+            var url = _pyBaseUrl + "/stt";
+            var json = $@"{{
+                ""podcast_id"": ""{episode.PodcastId}"",
+                ""episode_id"": ""{episode.Id}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var resp = await httpClient.PostAsync(url, content);
+
+            return resp.StatusCode == HttpStatusCode.OK;
+        }
+        else
+            throw new Exception("User does not have permission to generate transcript for this episode.");
+    }
 
 
+
+    #endregion Transcription
 
     /// <summary>
     /// Checks for previous and next uploaded Episodes
@@ -1139,6 +1379,7 @@ public class PodcastService : IPodcastService
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.User)
             .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
+            .Include(e => e.Points)
             .Include(e => e.Comments).ThenInclude(c => c.Likes).Where(p => AppDbContext.Soundex(p.EpisodeName) == AppDbContext.Soundex(episodeFilter.SearchTerm)).ToListAsync();
 
         // Filter on Episode Length
@@ -1197,6 +1438,7 @@ public class PodcastService : IPodcastService
         .Include(e => e.Comments).ThenInclude(c => c.User)
         .Include(e => e.Comments).ThenInclude(c => c.Comments).ThenInclude(c => c.Likes)
         .Include(e => e.Comments).ThenInclude(c => c.Likes)
+        .Include(e => e.Points)
         .Skip(page * pageSize)
         .Take(pageSize)
         .Select(e => new EpisodeResponse(e, domainUrl, true))
@@ -1205,18 +1447,337 @@ public class PodcastService : IPodcastService
         return episodeResponses;
     }
 
+    public async Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl)
+    {
+        List<EpisodeRating> episodeInteractions = await _db.UserEpisodeInteractions.Select(u => new EpisodeRating(u)).ToListAsync();
+
+        // Load the Data
+        IDataView trainingDataView = _mLContext.Data.LoadFromEnumerable<EpisodeRating>(episodeInteractions);
+
+        // Convert Guid to a numeric Key
+        var estimator = _mLContext.Transforms.Conversion.MapValueToKey(new[] {
+                new  InputOutputColumnPair("userIdEncoded", "UserId"),
+                new  InputOutputColumnPair("episodeIdEncoded", "EpisodeId")
+                },
+                 keyOrdinality: Microsoft.ML.Transforms.ValueToKeyMappingEstimator
+                     .KeyOrdinality.ByValue, addKeyValueAnnotationsAsText: true);
+
+        // Transform the userID
+        var options = new MatrixFactorizationTrainer.Options
+        {
+            MatrixColumnIndexColumnName = "userIdEncoded",
+            MatrixRowIndexColumnName = "episodeIdEncoded",
+            LabelColumnName = "TotalListenTime",
+            NumberOfIterations = 20,
+            ApproximationRank = 100
+        };
+
+
+        // Define the trainer.
+        var trainerEstimator = estimator.Append(_mLContext.Recommendation().Trainers.MatrixFactorization(options));
+
+      
+        // Train the model.
+        var model = trainerEstimator.Fit(trainingDataView);
+
+        // Create Prediction Engine
+        var prediction = _mLContext.Model.CreatePredictionEngine<EpisodeRating, ModelResult>(model);
+
+        // Get all the Episodes
+        List<Episode> episode = await _db.Episodes.Include(u => u.Podcast).ToListAsync();
+
+        List<Episode> list = new List<Episode>();
+        
+        // Loop through all the Episodes
+        foreach (var item in episode)
+        {
+            //Predict for each Episode
+            ModelResult result = prediction.Predict(new EpisodeRating { EpisodeId = item.Id.ToString(), UserId = user.Id.ToString() });
+            
+            // If score Greater then threshold then Add it to the list
+            if(result.Score > THRESHOLD)
+            {
+                list.Add(item);
+            }
+            
+        }
+
+        List<EpisodeResponse> response = list.Select(u => new EpisodeResponse(u,domainUrl)).ToList();
+        
+        // Return the List
+        return response;
+
+
+    }
+    #region Highlights
+
+    /// <summary>
+    /// Creates a Highlight in the database by taking a clip from the given start and end times.
+    /// The file name is stored in the database and the file itself if stored in the file system in this format:
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="episodeId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user)
+    {       
+        var currentEpisodeHighlights = await _db.Highlights.Where(h => episodeId == h.EpisodeId).ToListAsync();
+        var episode = await _db.Episodes!.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("No episode exist for the given ID.");
+
+        // Check if StartTime is valid (with a bit of leeway)
+        if (Math.Floor(request.StartTime) < 0 || request.StartTime >= Math.Floor(episode.Duration))
+        {
+            throw new Exception("Invalid startTime for Highlight");
+        }
+
+        // Check if EndTime is valid (with a bit of leeway)
+        if (request.EndTime < 1 || request.EndTime > episode.Duration)
+        {
+            throw new Exception("Invalid Endtime for Highlight");
+        }
+
+        // Check if the Highlight Length is more than max duration
+        if (Math.Floor(request.EndTime - request.StartTime) > MAX_HIGHLIGHT_DURATION)
+        {
+            throw new Exception($"Your highlight length is over {MAX_HIGHLIGHT_DURATION} seconds");
+        }
+
+        // Check if user already made 3 highlights for this episode
+        if (currentEpisodeHighlights.Count >= 3)
+        {
+            throw new Exception("You have already created 3 highlights on this episode");
+        }
+
+        // Check if Highlight name already exists for the current Episode
+        foreach (var _highlight in currentEpisodeHighlights)
+        {
+            if (_highlight.Title == request.Title)
+            {
+                throw new Exception("There already exists a Highlight with that name attached to this episode");
+            }
+        }
+
+        // Get path of the audio
+        string inputFilePath = GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId);
+
+        // Get path where Highlights will be stored
+        var highlightId = Guid.NewGuid();
+        string highlightFilePath = GetHighlightPath(episodeId.ToString(),
+                                                    highlightId.ToString(),
+                                                    user.Id.ToString());
+
+        // Create Highlight
+        var highlight = new Highlight()
+        {
+            HighlightId = highlightId,
+            EpisodeId = episodeId,
+            UserId = user.Id,
+            StartTime = request.StartTime,
+            EndTime = request.EndTime,
+            Title = request.Title,
+            Description = request.Description,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+        highlight.Audio = SaveHighlightFile(highlight, episode);
+
+        // Save Highlight
+        await _db.Highlights.AddAsync(highlight);
+        await _db.SaveChangesAsync();
+        return new HighlightResponse(highlight);
+    }
+
+    /// <summary>
+    /// Allows the user to edit his own Highlights, but only the title and the description
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="highlightId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
+        var updatedHighlight = highlight;
+
+        // Users can only edit their own highlights
+        if (user.Id != highlight!.UserId)
+        {
+            throw new Exception("Users can only edit their own highlights");
+        }
+        
+        // Title is changed
+        if (request.Title != "No Title Given" || request.Title != highlight.Title)
+        {
+            updatedHighlight.Title = request.Title ?? throw new Exception("Title on request was somehow null");
+        }
+
+        // Description is changed
+        if (request.Description != highlight.Description || !request.Description.IsNullOrEmpty())
+        {
+            updatedHighlight.Description = request.Description ?? throw new Exception("Description on request was somehow null");
+        }
+
+        _db.Highlights.Update(updatedHighlight);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Removes the given Highlight from the database and the file system. Uses a soft delete Function.
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> RemoveHighlightAsync(Guid highlightId, User user)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Could not find any highlights with that given ID");
+        
+        // Users can only delete their own highlights
+        if (user.Id != highlight!.UserId)
+        {
+            throw new Exception("Users can only delete their own highlights");
+        }
+        
+        // Remove from FileStorage
+        RemoveHighlightFile(highlight);
+
+        _db.Highlights.Remove(highlight);
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Gets all the Highlights from a given user
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId)
+    {
+        var highlights = await _db.Highlights
+                                    .Where(h => h.UserId == userId)
+                                    .Select(h => new HighlightResponse(h))
+                                    .ToListAsync() ?? throw new Exception("User has no Highlights");
+
+        return highlights;
+    }
+
+    /// <summary>
+    /// Gets all the Highlights from a given episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId)
+    {
+        var highlights = await _db.Highlights
+                                    .Where(h => h.EpisodeId == episodeId)
+                                    .Select(h => new HighlightResponse(h))
+                                    .ToListAsync() ?? throw new Exception("Epsiode has no Highlights");
+
+        return highlights;
+    }
+
+    /// <summary>
+    /// Returns the audio file stored in the File system. Uses the highlightId to do this.
+    /// </summary>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId)
+    {
+        var highlight = await _db.Highlights.FirstOrDefaultAsync(h => h.HighlightId == highlightId) ?? throw new Exception("Highlight does not exist");
+
+        var guids = new Dictionary<string, string>()
+        {
+            {nameof(Episode), highlight.EpisodeId.ToString()},
+            {nameof(User), highlight.UserId.ToString()}
+        };
+
+        return guids;
+    }
+
+    /// <summary>
+    /// Pseudo randomly returns a certain quantity of random Highlights. In reality, since random collections are expensive in SQL, I just
+    /// grab a certain quantity of items starting at a random row, then shuffle them to appear random.
+    /// </summary>
+    /// <param name="quantity"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<HighlightResponse>> GetRandomHighlightsAsync(int quantity)
+    {
+        var rng = new Random();
+        var higlightDBCount = _db.Highlights.Count();
+        var selectedAmount = quantity;
+
+        // if we input too many, just take them all. not realistic really
+        if (selectedAmount > higlightDBCount)
+        {
+            selectedAmount = higlightDBCount;
+        }
+
+        // If selects invalid number
+        if (selectedAmount <= 0)
+        {
+            throw new Exception("You are selecting a 0 or negative amount of highlights");
+        }
+
+        // Upper bound is not inclusive, thus +1
+        int skipped = rng.Next(0, _db.Highlights.Count() - selectedAmount + 1);
+        var highlights = await _db.Highlights.Skip(skipped).Take(selectedAmount).Select(h => new HighlightResponse(h)).ToListAsync();
+
+        // If no highlights in the DB
+        if (highlights.Count == 0)
+        {
+            throw new Exception("There are no highlights in the DB");
+        }
+
+        Shuffle(highlights);
+
+        return highlights;
+    }
+
+
+    #endregion
+
 
     #endregion Episode
 
-    #region Private Method
+    #region Private Methods
 
     private async Task<FFMpegCore.IMediaAnalysis> GetMediaAnalysis(string audioName, Guid podcastId)
     {
         return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
     }
 
+    private static void Shuffle<T>(IList<T> list)
+    {
+        var rng = new Random();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
     #region Episode Chat
 
+    /// <summary>
+    /// Get the episode chat for the given episode.
+    /// </summary>
+    /// <param name="page"> The page of the chat to get.</param>
+    /// <param name="pageSize"> The size of the page to get.</param>
+    /// <param name="episodeId"> The episode ID to get the chat for.</param>
+    /// <param name="user"> The user that is requesting the chat.</param>
+    /// <param name="domainUrl"> The domain URL to use for the response.</param>
+    /// <returns> The episode chat response.</returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
     public async Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
@@ -1225,7 +1786,7 @@ public class PodcastService : IPodcastService
         // Get the episode chat messages
         List<EpisodeChatMessage> chatMessages = await _db.EpisodeChatMessages
             .Where(m => m.EpisodeId == episodeId)
-            .OrderByDescending(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt)
             .Skip(page * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -1234,37 +1795,21 @@ public class PodcastService : IPodcastService
         return new EpisodeChatResponse(chatMessages, user, episodeId, domainUrl);
     }
 
+    /// <summary>
+    /// Prompt the episode chat with a question and get a response.
+    /// </summary>
+    /// <param name="episodeId"> The episode ID to prompt the chat for.</param>
+    /// <param name="user"> The user that is prompting the chat.</param>
+    /// <param name="prompt"> The question to prompt the chat with.</param>
+    /// <param name="domainUrl"> The domain URL to use for the response.</param>
+    /// <returns> The response from the chat.</returns>
+    /// <exception cref="Exception"> Throws an exception if the episode does not exist.</exception>
     public async Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl)
     {
         // Check if the episode exists, if it does retrieve it.
         Episode episode = await _db.Episodes.FirstOrDefaultAsync(e => e.Id == episodeId) ?? throw new Exception("Episode does not exist for the given ID.");
 
-        var url = _pyBaseUrl+"/chat";
-        var json = $@"{{
-            ""podcast_id"": ""{episode.PodcastId}"",
-            ""episode_id"": ""{episodeId}"",
-            ""prompt"": ""{prompt}""
-        }}";
-
-        string responseText = string.Empty;
-
-        try
-        {
-            using var httpClient = new HttpClient();
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(url, content);
-
-            // Handle the response here
-            responseText = await response.Content.ReadAsStringAsync();
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-
-        if (string.IsNullOrEmpty(responseText))
-            responseText = "Sorry, but I can't answer your question right now. Please try again later.";
-
+        // Create the prompt message
         EpisodeChatMessage promptMessage = new()
         {
             Id = Guid.NewGuid(),
@@ -1276,22 +1821,57 @@ public class PodcastService : IPodcastService
             UpdatedAt = DateTime.Now
         };
 
+
+        string defaultErrorMsg = "Sorry, but I can't answer your question right now. Please try again later.";
+
+        // Send request to PY server to chat with the episode
+        var url = _pyBaseUrl + "/chat";
+        var json = $@"{{
+            ""podcast_id"": ""{episode.PodcastId}"",
+            ""episode_id"": ""{episodeId}"",
+            ""prompt"": ""{prompt}""
+        }}";
+
+        // Response text from PY server
+        string responseText = string.Empty;
+
+        try
+        {
+            // Send request to PY server to generate a chat response
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync(url, content);
+
+            // If the response is not successful, return the default error message
+            if (!response.IsSuccessStatusCode)
+                responseText = defaultErrorMsg;
+            else
+                responseText = await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        // Create the response message
         EpisodeChatMessage responseMessage = new()
         {
             Id = Guid.NewGuid(),
             EpisodeId = episodeId,
-            UserId = Guid.Empty,
+            UserId = user.Id,
             Message = responseText,
             IsPrompt = false,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
 
+        // Add the messages to the database
         await _db.EpisodeChatMessages.AddAsync(promptMessage);
         await _db.EpisodeChatMessages.AddAsync(responseMessage);
 
+        // Save the changes to the database
         await _db.SaveChangesAsync();
-        
+
         // Return the chat with the messages
         return new EpisodeChatMessageResponse(responseMessage, user, domainUrl);
     }
@@ -1299,4 +1879,5 @@ public class PodcastService : IPodcastService
     #endregion Episode Chat
 
     #endregion
+
 }

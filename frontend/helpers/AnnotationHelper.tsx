@@ -1,7 +1,7 @@
-import Axios from 'axios';
+import axios from 'axios';
 import  EndpointHelper from './EndpointHelper';
-import { BaseResponse, AddAnnotationResponse, getAnnotationResponse } from "../utilities/Responses";
-import { AnnotationAddRequest } from "../utilities/Requests";
+import { BaseResponse, AddAnnotationResponse, getAnnotationResponse } from "../types/Responses";
+import { AnnotationAddRequest } from "../types/Requests";
 
 export default class AnnotationHelper {
     static getUserProfile() {
@@ -29,7 +29,7 @@ export default class AnnotationHelper {
             console.debug("URL:", options.url);
             console.debug("Data:", options.data);
     
-            const requestResponse = await Axios(options);
+            const requestResponse = await axios(options);
     
             console.debug("Received the following annotationCreateResponse:");
             console.debug(requestResponse);
@@ -80,7 +80,7 @@ export default class AnnotationHelper {
 
             console.log(options);
             // Send the request and wait for the response.
-            const requestResponse = await Axios(options);
+            const requestResponse = await axios(options);
 
             console.debug("Received the following annotationCreateResponse...");
             console.debug(requestResponse);
@@ -124,7 +124,7 @@ export default class AnnotationHelper {
 
             console.log(options);
             // Send the request and wait for the response.
-            const requestResponse = await Axios(options);
+            const requestResponse = await axios(options);
 
             console.debug("Received the following annotationCreateResponse...");
             console.debug(requestResponse);
@@ -166,7 +166,7 @@ export default class AnnotationHelper {
 
             console.log(options);
             // Send the request and wait for the response.
-            const requestResponse = await Axios(options);
+            const requestResponse = await axios(options);
 
             console.debug("Received the following getAnnotationsResponse...");
             console.debug(requestResponse);
@@ -208,7 +208,7 @@ export default class AnnotationHelper {
 
             console.log(options);
             // Send the request and wait for the response.
-            const requestResponse = await Axios(options);
+            const requestResponse = await axios(options);
 
             console.debug("Received the following deleteAnnotationResponse...");
             console.debug(requestResponse);

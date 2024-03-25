@@ -15,15 +15,15 @@ public class EpisodeChatResponse
     /// </summary>
     public EpisodeChatResponse(List<EpisodeChatMessage> chats, User user, Guid episodeId, string domainUrl)
     {
+        // Set the episode ID and user ID
         EpisodeId = episodeId;
         UserId = user.Id;
 
         // Add all chats to the response
-        foreach (EpisodeChatMessage chat in chats)
-            Messages.Add(new EpisodeChatMessageResponse(chat,user, domainUrl));
+        chats.ForEach(chat => Messages.Add(new EpisodeChatMessageResponse(chat, user, domainUrl)));
 
         // Sort the messages by date
-        Messages.Sort((x, y) => x.SentAt.CompareTo(y.SentAt));
+        _ = Messages.OrderBy(m => m.SentAt);
     }
 
     /// <summary>

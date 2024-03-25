@@ -15,7 +15,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { PodcastReviewRequest } from "../../utilities/Requests";
+import { PodcastReviewRequest } from "../../types/Requests";
 
 // This component represents the review section for a podcast
 const ReviewComponent = ({ podcastId }) => {

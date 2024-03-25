@@ -22,6 +22,7 @@ public class UserMenuInfoResponse
         else
             AvatarUrl = user.Avatar;
         Username = user.Username;
+        IsAdmin = user.IsAdmin;
     }
 
     [Required]
@@ -32,6 +33,9 @@ public class UserMenuInfoResponse
 
     [Required]
     public string Username { get; set; } = string.Empty;
+    
+    [Required]
+    public bool IsAdmin { get; set; } = false;
 }
 
 /// <summary>

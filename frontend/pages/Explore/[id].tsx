@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PodcastOverview from "../../components/explore/PodcastOverview";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import type { Podcast, UserMenuInfo } from "../../utilities/Interfaces";
+import type { Podcast, UserMenuInfo } from "../../types/Interfaces";
 import { useRouter } from "next/router";
 
 

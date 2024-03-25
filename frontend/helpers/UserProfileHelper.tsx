@@ -3,7 +3,7 @@ import {
   UserProfileEditRequest,
   UserProfileSetupRequest,
   ChangePasswordRequest,
-} from "../utilities/Requests";
+} from "../types/Requests";
 import EndpointHelper from "./EndpointHelper";
 import {
   BaseResponse,
@@ -11,7 +11,7 @@ import {
   SearchProfilesResponse,
   UserProfileByIdResponse,
   GetChangePasswordResponse
-} from "../utilities/Responses";
+} from "../types/Responses";
 import { data } from "cypress/types/jquery";
 
 export default class UserProfileHelper {

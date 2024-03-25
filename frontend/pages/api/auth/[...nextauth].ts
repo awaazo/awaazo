@@ -2,7 +2,7 @@ import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import AuthHelper from "../../../helpers/AuthHelper";
 import { Profile } from "next-auth";
-import { GoogleSSORequest } from "../../../utilities/Requests";
+import { GoogleSSORequest } from "../../../types/Requests";
 
 export default NextAuth({
     providers:[

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -7,46 +7,20 @@ import {
   Text,
   Image,
   Icon,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
   useToast,
 } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
-
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-} from "@chakra-ui/react";
-
-import {
-  BsExplicitFill,
-  BsFillSkipForwardFill,
-  BsPlayFill,
-} from "react-icons/bs";
-
-import { IoIosMore } from "react-icons/io";
-import { CgPlayList, CgPlayListAdd } from "react-icons/cg";
-import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
+import { BsExplicitFill } from "react-icons/bs";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/Likes";
-import CommentComponent from "../social/Comments";
-import AddToPlaylistModal from "../playlist/AddToPlaylistModal";
-import PlaylistHelper from "../../helpers/PlaylistHelper";
-
-import ShareComponent from "../social/Share";
+import LikeComponent from "../interactionHub/Likes";
 import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "./EpisodeMenu";
+import CommentButton from "../interactionHub/buttons/CommentButton";
+import Tipjar from "../interactionHub/Tipjar";
+
 
 // Component to display an episode
-const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
+const EpisodeCard = ({ episode, inPlaylist, playlistId, inWallet }) => {
   const { dispatch } = usePlayer();
   const toast = useToast();
 
@@ -68,7 +42,6 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
       width="100%"
       borderRadius="15px"
       bg={"rgba(0, 0, 0, 0.2)"}
-      backdropFilter="blur(4px)"
       boxShadow="sm"
       style={{ cursor: "pointer" }}
       onClick={isMobile ? handleEpisodeClick : null}
@@ -122,8 +95,15 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
 
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start" style={{ marginRight: "15px" }}>
-        <CommentComponent
-          episodeIdOrCommentId={episode.id}
+
+        {/* Make sure Point is only rendered when inWallet is true */}
+        {inWallet != null && inWallet == true ? (
+          <Tipjar episodeId={episode.id} totalPoint={episode.totalPoints} />
+        ) : (
+          <>
+
+        <CommentButton
+          episodeId={episode.id}
           initialComments={episode.comments.length}
           showCount={true}
         />
@@ -143,6 +123,9 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId }) => {
           inPlaylist={inPlaylist}
           playlistId={playlistId}
         />
+                </>
+              )}
+
       </Flex>
     </Flex>
   );

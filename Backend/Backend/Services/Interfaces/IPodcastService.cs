@@ -19,26 +19,52 @@ public interface IPodcastService
     public Task<List<PodcastResponse>> GetPodcastsByTagsAsync(int page, int pageSize, string domainUrl, string[] tags);
     public Task<List<PodcastResponse>> GetRecentPodcasts(int page, int pageSize, string domainUrl);
 
+    
+
     // EPISODES
 
-    public Task<bool> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
+    public Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
     public Task<bool> EditEpisodeAsync(EditEpisodeRequest request, Guid podcastId, User user);
+    public Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user);
     public Task<bool> DeleteEpisodeAsync(Guid episodeId, User user);
     public Task<EpisodeResponse> GetEpisodeByIdAsync(Guid episodeId, string domainUrl);
     public Task<string> GetEpisodeAudioNameAsync(Guid episodeId);
     public Task<string> GetEpisodeThumbnailNameAsync(Guid episodeId);
     public Task<bool> SaveWatchHistory(User user, Guid episodeId, double listenPosition);
-    public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);
-    public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
-    public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
     public Task<ListenPositionResponse> GetWatchHistory(User user, Guid episodeId);
     public Task<AdjecentEpisodeResponse> GetAdjecentEpisodeAsync(Guid episodeId);
     public Task<PodcastMetricsResponse> GetMetrics(User user, Guid podcastId, string domainUrl);
     public Task<List<EpisodeResponse>> SearchEpisodeAsync(int page, int pageSize,EpisodeFilter episodeFilter,string domainUrl);
     public Task<List<EpisodeResponse>> GetRecentEpisodes(int page, int pageSize, string domainUrl);
+    public Task<List<History>> GetUserWatchHistory (int page,int pageSize,User user);
+    public Task<bool> DeleteWatchHistory(User user,Guid episodeId);
+    public Task<bool> DeleteAllWatchHistory(User user);
+
+
+
+    // TRANSCRIPT
+    public Task<EpisodeTranscriptResponse> GetEpisodeTranscriptAsync(Guid episodeId, float? seekTime, bool includeWords);
+    public Task<EpisodeTranscriptTextResponse> GetEpisodeTranscriptTextAsync(Guid episodeId);
+    public Task<bool> EditEpisodeTranscriptLinesAsync(User user,Guid episodeId, TranscriptLineResponse[] lines);
+    public Task<bool> GenerateEpisodeTranscriptAsync(Guid episodeId, User user);
+
 
     // EPISODE CHAT
     public Task<EpisodeChatResponse> GetEpisodeChatAsync(int page, int pageSize, Guid episodeId, User user, string domainUrl);
     public Task<EpisodeChatMessageResponse> PromptEpisodeChatAsync(Guid episodeId, User user, string prompt, string domainUrl);
+
+    
+    // Recommendation
+    public Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl);
+
+
+    // HIGHLIGHT
+    public Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user);
+    public Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user);
+    public Task<bool> RemoveHighlightAsync(Guid highlightId, User user);
+    public Task<List<HighlightResponse>> GetAllUserHighlightsAsync(Guid userId);
+    public Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId);
+    public Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId);
+    public Task<List<HighlightResponse>> GetRandomHighlightsAsync(int quantity);
 
 }

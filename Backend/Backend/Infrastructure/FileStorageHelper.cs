@@ -1,6 +1,10 @@
 using static System.IO.Directory;
 using static System.IO.Path;
 using static System.IO.File;
+using System;
+using FFMpegCore;
+using Backend.Controllers.Requests;
+using Backend.Models;
 
 namespace Backend.Infrastructure;
 
@@ -42,6 +46,11 @@ public static class FileStorageHelper
     public const string PLAYLIST_DIR_NAME = "Playlist";
 
     /// <summary>
+    /// Dir where all highlights are stored. 
+    /// </summary>
+    public const string HIGHLIGHT_DIR_NAME = "Highlight";
+
+    /// <summary>
     /// Identifies if the file is a transcription status file.
     /// </summary>
     public const string STATUS_ID = "_status.txt";
@@ -50,6 +59,19 @@ public static class FileStorageHelper
     /// Identifies the file type for transcript files.
     /// </summary>
     public const string TRANSCRIPT_FILE_TYPE = ".json";
+
+    /// <summary>
+    /// Identifies the file type for Highlights
+    /// </summary>
+    public const string HIGHLIGHT_FILE_TYPE = ".mp3";
+
+    /// <summary>
+    /// This is for use with the File Content type
+    /// </summary>
+    public const string FORMATTED_HIGHLIGHT_FILE_TYPE = "audio/mp3";
+
+
+    public static readonly string[] AVATAR_EXTENSIONS = new[] { ".jpg", ".png", ".jpeg", ".gif"};
 
     public enum TranscriptStatus 
     {
@@ -60,6 +82,21 @@ public static class FileStorageHelper
     };
 
     #region User Profile
+    
+    public static bool ValidateAvatar(IFormFile? file, out object? errorObject) {
+        errorObject = null;
+        if (file is null)
+            return true;
+        
+        string extension = Path.GetExtension(file.FileName);
+
+        if (AVATAR_EXTENSIONS.Contains(extension))
+            return true;
+        else {
+            errorObject = new { Errors = new[] { $"Invalid file extension {extension}" } };
+            return false;
+        }
+    }
 
     /// <summary>
     /// Saves a user avatar and returns the filename stored in the database.
@@ -223,6 +260,52 @@ public static class FileStorageHelper
     public static string GetPodcastPath(string coverArtName)
     {
         return Combine(GetCurrentDirectory(), BASE_DIR, PODCASTS_DIR_NAME, coverArtName.Split(FILE_SPLIT_KEY)[0].Split('.')[0]);
+    }
+
+    /// <summary>
+    /// Appends an audio chunk to a podcast episode audio and returns the filename stored in the database.
+    /// </summary>
+    /// <param name="podcastId"> The podcast id. </param>
+    /// <param name="audioName"> The audio name. </param>
+    /// <param name="audioFile"> The audio file. </param>
+    /// <returns> The filename stored in the database. </returns>
+    public static async Task<string> AppendPodcastEpisodeAudio(Guid podcastId, string audioName, IFormFile audioFile)
+    {
+        // Get the audio path
+        string audioPath = GetPodcastEpisodeAudioPath(audioName, podcastId);
+        
+        // Create a temp file path
+        string audioPath_temp = audioPath + ".temp";
+
+        // Check if the file exists
+        if (File.Exists(audioPath))
+        {   
+            // Open the file and the memory stream
+            using FileStream fileStream = Create(audioPath_temp);
+            using MemoryStream memoryStream = new ();
+
+            // Append the audio file to the memory stream and then to the file stream
+            await audioFile.CopyToAsync(memoryStream);
+            byte[] buff = await ReadAllBytesAsync(audioPath);
+            await fileStream.WriteAsync(buff);
+            buff = memoryStream.ToArray();
+            await fileStream.WriteAsync(buff);
+
+            // Close both streams
+            fileStream.Close();
+            memoryStream.Close();
+
+            // Delete the original file
+            File.Delete(audioPath);
+
+            // Rename the temp file to the original file
+            File.Move(audioPath_temp, audioPath);
+
+            // Delete the temp file
+            File.Delete(audioPath_temp);
+        }
+
+        return string.Format("{0}{1}{2}", audioName, FILE_SPLIT_KEY, audioFile.ContentType);
     }
 
     /// <summary>
@@ -557,6 +640,88 @@ public static class FileStorageHelper
 
     }
 
+
+    #endregion
+
+    #region Highlights
+
+    /// <summary>
+    /// Saves a given highlight to the file System. Reuquires both the highlight model and its associated
+    /// episode model. Stores files C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3 format
+    /// </summary>
+    /// <param name="highlight"></param>
+    /// <param name="episode"></param>
+    /// <returns></returns>
+    public static string SaveHighlightFile(Highlight highlight, Episode episode)
+    {
+        var highlightId = highlight.HighlightId.ToString();
+
+        // File name in the file System ex: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\FileName
+        string highlightFileFullPath = GetHighlightPath(highlight.EpisodeId.ToString(),
+                                                    highlight.UserId.ToString(),
+                                                    highlight.HighlightId.ToString());
+
+        var highlightFileName = highlightId + highlightFileFullPath.Split(highlight.HighlightId.ToString()).Last();
+
+        string dirPath = highlightFileFullPath.Split(highlight.HighlightId.ToString())[0];
+
+        string episodeFilePath = GetPodcastEpisodeAudioPath(episode.Audio, episode.PodcastId);
+
+
+        // Create directory should it not exist
+        if (!Directory.Exists(dirPath))
+        {
+            CreateDirectory(dirPath);
+        }
+
+        // Create the Highlight File
+        FFMpegArguments.FromFileInput(episodeFilePath)
+               .OutputToFile(highlightFileFullPath, true, options => options
+                   .Seek(TimeSpan.FromSeconds(highlight.StartTime))
+                   .EndSeek(TimeSpan.FromSeconds(highlight.EndTime))).ProcessSynchronously();
+
+        return highlightFileName;
+    }
+
+    /// <summary>
+    /// Removes the given Highlight File from the file directory.
+    /// </summary>
+    /// <param name="highlight"></param>
+    public static void RemoveHighlightFile(Highlight highlight)
+    {
+        var filePath = GetHighlightPath(highlight.EpisodeId, highlight.UserId, highlight.HighlightId);
+
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with Guid values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    public static string GetHighlightPath(Guid episodeId, Guid userId, Guid highlightId)
+    {
+        return GetHighlightPath(episodeId.ToString(), userId.ToString(), highlightId.ToString());
+    }
+
+    /// <summary>
+    /// Generates/Gets the Highlight File Path storage path with string values
+    /// FileFormat: C:\backend_server\ServerFiles\Highlight\{episodeId}\{userId}\{HighlightId}.mp3
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="userId"></param>
+    /// <param name="highlightId"></param>
+    /// <returns></returns>
+    public static string GetHighlightPath(string episodeId, string userId, string highlightId)
+    {
+        return Combine(GetCurrentDirectory(), BASE_DIR, HIGHLIGHT_DIR_NAME, episodeId, userId, highlightId + HIGHLIGHT_FILE_TYPE);
+    }
 
     #endregion
 

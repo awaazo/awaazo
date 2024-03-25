@@ -46,7 +46,7 @@ public class PodcastTests
         _httpRequestMock = new();
         _notificationServiceMock = new();
         _loggerMock = new();
-        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object,config);
+        _podcastService = new(_dbContextMock.Object, _notificationServiceMock.Object, config);
         _podcastController = new(_podcastService, _authServiceMock.Object, _loggerMock.Object)
         {
             ControllerContext = new ControllerContext()
@@ -153,7 +153,7 @@ public class PodcastTests
             Assert.Fail("Should not have thrown an error: " + e.Message);
         }
 
-        Assert.Equal(_podcast.Object.First().Id.ToString()+@".png|/|\|test/png", response);
+        Assert.Equal(_podcast.Object.First().Id.ToString() + @".png|/|\|test/png", response);
 
     }
 
@@ -452,7 +452,7 @@ public class PodcastTests
 
         Assert.True(response);
     }
-    
+
     [Fact]
     public void Episode_GetWatchHistory_ValidRequest_ReturnsTrue()
     {
@@ -545,7 +545,7 @@ public class PodcastTests
         // Arrange
         var request = CreateEditPodcastRequest();
         request.Id = _podcast.Object.First().Id;
-        request.CoverImage=null;
+        request.CoverImage = null;
         OkObjectResult? response = null;
 
         // Act
@@ -875,8 +875,8 @@ public class PodcastTests
         // As long as this doesnt error out, the code works as intended
     }
 
-    
-    [Fact (Skip="Test will have to be updated to work with new changes to the controller")]
+
+    [Fact(Skip = "Test will have to be updated to work with new changes to the controller")]
     public void Episode_SaveWatchHistory_ValidRequest_ReturnsOK()
     {
         // Arrange
@@ -898,7 +898,8 @@ public class PodcastTests
     }
 
     [Fact]
-    public void Episode_GetWatchHistory_ValidRequest_ReturnsOK() {
+    public void Episode_GetWatchHistory_ValidRequest_ReturnsOK()
+    {
         // Arrange
         OkObjectResult? response = null;
 
@@ -913,7 +914,7 @@ public class PodcastTests
             Assert.Fail("Should not have thrown an error: " + e.Message);
         }
 
-        Assert.NotNull(response);        
+        Assert.NotNull(response);
     }
 
 

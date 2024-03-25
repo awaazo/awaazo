@@ -15,6 +15,15 @@ jobs:
         - name: Check out the repo
           uses: actions/checkout@v4
 
+        # Add .env for openai secrets
+        - name: Add .env assistant_service to python
+          working-directory: Python/assistant_service
+          env:
+            settings: ${{ vars.OPEN_AI_KEY }}
+          run: |
+            touch .env
+            echo $settings > .env
+
         - name: Extract branch name
           shell: bash
           run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT

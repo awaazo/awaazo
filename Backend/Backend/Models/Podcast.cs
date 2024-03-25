@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Backend.Models.Interfaces;
 
 namespace Backend.Models;
 
-public class Podcast : BaseEntity
+public class Podcast : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Podcast ID
@@ -103,4 +104,7 @@ public class Podcast : BaseEntity
             return PodcastType.Real;
         }
     }
+
+    public DateTime? DeletedAt { get; set; }
+    public Guid DeletedBy { get; set; }
 }

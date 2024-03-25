@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Box,
-  Avatar,
   Button,
   Stack,
   Grid,
@@ -17,7 +15,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 import Link from "next/link";
-import { Podcast } from "../../../utilities/Interfaces";
+import { Podcast } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
 import PodcastCard from "../../cards/PodcastCard";
 
@@ -58,20 +56,6 @@ export default function Podcasts() {
     setPage((page) => page + 1);
   };
 
-  // const [subscribed, setSubscribe] = useState(false);
-
-  let subscribed = false;
-  let subscribedText = "Subscribe";
-
-  function setSubscribe() {
-    // if (!subscribed){
-    //   subscribed = true;
-    //   subscribedText = "Subscribe";
-    // } else {
-    //   subscribed = false;
-    //   subscribedText = "UnSubscribe";
-    // }
-  }
 
   return (
     <>

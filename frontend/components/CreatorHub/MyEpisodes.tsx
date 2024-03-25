@@ -25,17 +25,23 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
-import { FaLinesLeaning } from "react-icons/fa6";
+import { FaFileLines, FaLinesLeaning } from "react-icons/fa6";
 import EditEpisodeForm from "./EditEpisode";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import ManageSections from "./ManageSections";
+import ManageTranscript from "./ManageTranscript";
 import { convertTime } from "../../utilities/commonUtils";
-import { FaList } from "react-icons/fa";
+import { FaList, FaCaretSquareRight } from "react-icons/fa";
 import AnnotationForm from "../annotations/AnnotationForm";
 import AnnotationList from "../annotations/AnnotationList";
 import AnnotationHelper from "../../helpers/AnnotationHelper";
+import HighlightForm from "../highlights/highlightForm";
+import HighlightList from "../highlights/HighlightList";
+import HighlightHelper from "../../helpers/HighlightHelper";
+
 
 import { BsExplicitFill } from "react-icons/bs";
+import { any } from "cypress/types/bluebird";
 
 // Component to render an episode
 const Episode = ({ episode }) => {
@@ -45,6 +51,7 @@ const Episode = ({ episode }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
   const [episodes, setEpisode] = useState(null);
+  const [highlights, setHighlights] = useState([]);
 
   const handleOpenForm = (index = null) => {
     setTabIndex(1);
@@ -102,6 +109,22 @@ const Episode = ({ episode }) => {
     setAnnotations((prevAnnotations) => prevAnnotations.filter((ann) => ann.id !== annotationId));
   };
 
+
+  // Highlights
+  const fetchHighlights = async () => {
+    try {
+      const fetchedHighlights = await HighlightHelper.getEpisodeHighlights(episode.id);
+      setHighlights(fetchedHighlights);
+    } catch (error) {
+      console.error("Failed to fetch highlights:", error);
+      // Handle error (e.g., set error state, show toast notification, etc.)
+    }
+  };
+
+  useEffect(() => {
+    fetchHighlights(); // Initial fetch when the component mounts or the episode.id changes
+  }, [episode.id]);
+
   // Edit Episode Modal
   //-----------------------------------------------------------------------
 
@@ -141,9 +164,46 @@ const Episode = ({ episode }) => {
   };
   //----------------------------------------------------------------------
 
+  // Transcript Modal
+  //----------------------------------------------------------------------
+
+  // State for managing modal visibility and the current episode for transcripts
+  const [isModalTranscriptOpen, setIsModalTranscriptOpen] = useState(false);
+
+  // Function to open the transcript modal
+  const openTranscriptModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalTranscriptOpen(true);
+  };
+
+  // Function to close the transcript modal
+  const closeTranscriptModal = () => {
+    setIsModalTranscriptOpen(false);
+    setCurrentEpisode(null);
+  };
+  //----------------------------------------------------------------------
+
+  // Highlights Modal
+  //----------------------------------------------------------------------
+  const [isModalHighlightsOpen, setIsModalHighlightsOpen] = useState(false);
+
+  // Function to open the highlights modal
+  const openHighlightsModal = (episode) => {
+    setCurrentEpisode(episode);
+    setIsModalHighlightsOpen(true);
+  };
+
+  // Function to close the highlights modal
+  const closeHighlightsModal = () => {
+    setIsModalHighlightsOpen(false);
+    setCurrentEpisode(null);
+  };
+  //----------------------------------------------------------------------
+
   // For delete pop up
   const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
   const { isOpen: isAnnotationDrawerOpen, onOpen: onOpenAnnotationDrawer, onClose: onCloseAnnotationDrawer } = useDisclosure();
+  const { isOpen: isHighlightDrawerOpen, onOpen: onOpenHighlightDrawer, onClose: onCloseHighlightDrawer } = useDisclosure();
   const [isDeleting, setDeleting] = useState(false);
 
   // Form errors
@@ -190,6 +250,20 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
+        <Tooltip label="Highlights" aria-label="Highlights Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="highlights-button"
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Highlights"
+              icon={<Icon as={FaCaretSquareRight} />}
+              onClick={() => openHighlightsModal(episode)}
+            />
+          </Tooltip>
           <Tooltip label="Annotations" aria-label="Annotations Tooltip">
             <IconButton
               variant="ghost"
@@ -216,6 +290,20 @@ const Episode = ({ episode }) => {
               aria-label="Edit Sections"
               icon={<Icon as={FaLinesLeaning} />}
               onClick={() => openSectionsModal(episode)}
+            />
+          </Tooltip>
+          <Tooltip label="Transcript" aria-label="Transcript Tooltip">
+            <IconButton
+              variant="ghost"
+              data-cy="transcript-button"
+              fontSize={isMobile ? "md" : "lg"}
+              mr={1}
+              rounded={"full"}
+              opacity={0.7}
+              color="white"
+              aria-label="Edit Transcript"
+              icon={<Icon as={FaFileLines} />}
+              onClick={() => openTranscriptModal(episode)}
             />
           </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
@@ -275,6 +363,47 @@ const Episode = ({ episode }) => {
                 <ManageSections episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
             </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+
+      <Modal isOpen={isModalTranscriptOpen} onClose={closeTranscriptModal}>
+  <ModalOverlay backdropFilter="blur(10px)" />
+  <ModalContent minWidth={"50%"} padding={"2em"}>
+    <ModalCloseButton />
+    <ModalBody>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <VStack align="center" backgroundColor={"transparent"}>
+          <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
+          {/* Assuming there's a component for managing transcripts similar to ManageSections */}
+          <ManageTranscript episodeId={episode.id} podcastId={episode.podcastId} />
+        </VStack>
+      </Box>
+    </ModalBody>
+  </ModalContent>
+</Modal>
+
+      <Modal isOpen={isModalHighlightsOpen} onClose={closeHighlightsModal}>
+        <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent minWidth={"50%"} padding={"2em"}>
+          <ModalCloseButton />
+          <ModalHeader>Highlights</ModalHeader>
+          <ModalBody>
+            <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
+              <TabList>
+                <Tab>Add Highlight</Tab>
+                <Tab>Highlights</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} episodeLength={episode.duration} />
+                </TabPanel>
+                <TabPanel>
+                  <HighlightList episodeId={episode.id} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </ModalBody>
         </ModalContent>
       </Modal>

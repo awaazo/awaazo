@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, IconButton, Img } from "@chakra-ui/react";
-import { PodcastEditRequest } from "../../utilities/Requests";
+import { PodcastEditRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import GenreSelector from "../tools/GenreSelector";
 

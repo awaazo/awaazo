@@ -100,6 +100,6 @@ jobs:
       packages: write
     name: Run Cypress E2E Tests
     if: ${{ !cancelled() }}
-    needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry]
+    needs: [push_backend_to_registry, push_frontend_to_registry,push_python_to_registry,run_backend_unit_tests]
     uses: ./.github/workflows/e2e.yml
 

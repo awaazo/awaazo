@@ -1,9 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using static Backend.Infrastructure.ControllerHelper;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Backend.Controllers;
 
@@ -15,6 +18,10 @@ namespace Backend.Controllers;
 [Authorize]
 public class SocialController : ControllerBase
 {
+    private const int MIN_PAGE = 0;
+    private const int DEFAULT_PAGE_SIZE = 10;
+
+
     private readonly IAuthService _authService;
     private readonly ISocialService _socialService;
     private readonly ILogger<SocialController> _logger;
@@ -33,6 +40,60 @@ public class SocialController : ControllerBase
     }
 
     #region Comment
+
+    /// <summary>
+    /// Gets comment for a specific episode
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("{episodeId}/getComments")]
+    public async Task<IActionResult> GetComments(Guid episodeId,int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddComment));
+
+
+            return Ok(await _socialService.GetEpisodeCommentsAsync(episodeId, page,pageSize,GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddComment));
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get Replies of each comment
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("{commentId}/getReplies")]
+    public async Task<IActionResult> GetCommentReplies(Guid commentId, int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(AddComment));
+
+
+            return Ok(await _socialService.GetCommentReplyAsync(commentId, page, pageSize, GetDomainUrl(HttpContext)));
+        }
+        catch (Exception e)
+        {
+            // Return the error message
+            this.LogErrorAPICall(logger: _logger, e, callerName: nameof(AddComment));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+
+
 
     /// <summary>
     /// Adds a comment to the episode or comment for the current user.
@@ -305,6 +366,72 @@ public class SocialController : ControllerBase
         }
     }
 
+    #endregion
+
+
+    #region Points
+
+    /// <summary>
+    /// Generate link to Gift the Podcaster
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    [HttpPost("{episodeId}/giftpoints")]    
+    public async Task<IActionResult> GiftPoints(Guid episodeId,int points)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GiftPoints));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+            return Ok(await _socialService.GiftPoints(points,episodeId,user));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GiftPoints));
+            return BadRequest(e.Message);
+        }
+    }
+    /// <summary>
+    /// Confirm payment after successfully processed by stripe
+    /// </summary>
+    /// <param name="pointId"></param>
+    /// <returns></returns>
+    [HttpPost("{pointId}/confirmPoints")]
+    public async Task<IActionResult> ConfirmPayment(Guid pointId)
+    {
+        try
+        {
+  
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(ConfirmPayment));
+
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user is null)
+                return NotFound("User does not exist.");
+
+
+
+            return Ok(await _socialService.ConfirmPointPayment(pointId) ? "Payment Confirmed" : "Payment Not Confirmed");
+
+        }
+        catch(Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(ConfirmPayment));
+            return BadRequest(e.Message);
+
+        }
+    }
     #endregion
 
 }

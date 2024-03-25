@@ -1,5 +1,6 @@
 ﻿using Backend.Controllers.Requests;
 using Backend.Models;
+using Backend.Services;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -232,6 +233,9 @@ public class PlaylistController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetUserPlaylists));
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
             
             // Get the user playlists.
             return Ok(await _playlistService.GetUserPlaylistsAsync(userId,user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -257,6 +261,9 @@ public class PlaylistController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllPlaylists));
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
             
             // Get the user playlists.
             return Ok(await _playlistService.GetAllPlaylistsAsync(user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -283,6 +290,10 @@ public class PlaylistController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(SearchPlaylists));
+
+            // Get the current User
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+          
             
             // Gets the searched Playlists
             return Ok(await _playlistService.SearchPlaylistsAsync(searchTerm,user,page,pageSize,GetDomainUrl(HttpContext)));
@@ -302,6 +313,7 @@ public class PlaylistController : ControllerBase
     /// <param name="playlistId">Id of the Playlist.</param>
     /// <returns>200 OK if successful, 400 Bad Request if unsuccessful.</returns>
     [HttpGet("{playlistId}")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetPlaylist(Guid playlistId)
     {
         try
@@ -310,8 +322,6 @@ public class PlaylistController : ControllerBase
 
             // Get the current User
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
-                return NotFound("User does not exist.");
             
             // Get the user playlist episodes.
             return Ok(await _playlistService.GetPlaylistEpisodesAsync(playlistId,user,GetDomainUrl(HttpContext)));
@@ -361,7 +371,7 @@ public class PlaylistController : ControllerBase
     public async Task<ActionResult> GetPlaylistCoverArt(Guid playlistId)
     {
         try
-        {
+        {   
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetPlaylistCoverArt));
 
             // Get the name of the cover art file

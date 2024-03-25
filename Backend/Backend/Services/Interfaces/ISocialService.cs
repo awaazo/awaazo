@@ -10,6 +10,8 @@ namespace Backend.Services.Interfaces;
 public interface ISocialService
 {
     // Comment
+    public Task<List<EpisodeCommentResponse>> GetEpisodeCommentsAsync(Guid episodeId, int page, int pageSize, string domainUrl);
+    public Task<List<CommentReplyResponse>> GetCommentReplyAsync(Guid commentId, int page, int pageSize, string domainUrl);
     public Task<bool> AddCommentAsync(Guid episodeOrCommentId, User user, string commentText);
     public Task<bool> AddCommentToEpisodeAsync(Guid episodeId, User user, string commentText);
     public Task<bool> AddCommentToCommentAsync(Guid commentId, User user, string commentText);
@@ -31,5 +33,11 @@ public interface ISocialService
 
     public Task<bool> AddReviewToPodcastAsync(Guid podcastId, User user, string review);
     public Task<bool> RemoveReviewFromPodcastAsync(Guid podcastId, User user);
+
+
+    // Points
+    public Task<string> GiftPoints(int quantity, Guid episodeId, User user);
+
+    public Task<bool> ConfirmPointPayment(Guid pointId);
 
 }

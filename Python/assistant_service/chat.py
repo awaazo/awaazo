@@ -8,8 +8,26 @@ from langchain.chains import RetrievalQA
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 def chat(podcast_id, episode_id, prompt):
+    """
+    Starts a chat with the given prompt and returns the response.
+
+    Args:
+        podcast_id (str): The id of the podcast.
+        episode_id (str): The id of the episode.
+        prompt (str): The prompt to start the chat with.
+
+    Raises:
+        Exception: If an error occurs during the chat process.
+
+    Returns:
+        str: The response from the chat.
+    """
     try:
         print("------------ Starting chat ------------")
+
+        podcast_id = str(podcast_id)
+        episode_id = str(episode_id)
+        prompt = str(prompt)
 
         BASE_DIR = './ServerFiles/Podcasts'
 
@@ -23,11 +41,15 @@ def chat(podcast_id, episode_id, prompt):
         if not OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
 
+        persist_directory = f"{BASE_DIR}/{podcast_id}/{episode_id}_vectorstore"
+
+        if not os.path.exists(persist_directory):
+            raise FileNotFoundError(f"Vectorstore not found at {persist_directory}")
+
+        collection_name = f"vector_{episode_id}_store"
+
         # Create the language model and embeddings
         embeddings = OpenAIEmbeddings()
-
-        persist_directory = f"{BASE_DIR}/{podcast_id}/{episode_id}_vectorstore"
-        collection_name = f"vector_{episode_id}_store"
 
         # Access the vectorstore
         vectorstore = Chroma(embedding_function=embeddings, persist_directory=persist_directory, collection_name=collection_name)
@@ -42,6 +64,7 @@ def chat(podcast_id, episode_id, prompt):
         {question}
         ----
         """
+
         general_user_template = "Question:```{question}```"
         
         messages = [
@@ -53,28 +76,17 @@ def chat(podcast_id, episode_id, prompt):
         
         llm = ChatOpenAI(temperature=0.1, streaming=True, max_tokens=100)
         
-        qa = RetrievalQA.from_chain_type(llm=llm, 
-                                         chain_type="stuff",
-                                         retriever=retriever,
-                                         callbacks=[StreamingStdOutCallbackHandler()],
-                                         verbose=True,
-                                         )
+        qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, callbacks=[StreamingStdOutCallbackHandler()], verbose=True,)
 
         prompt = f"{prompt} (answer with a maximum of 100 tokens)"
 
         print(f"Prompt: {prompt}")
 
         response  = qa.run(prompt, callbacks=[StreamingStdOutCallbackHandler()])
-
-        # while True:
-        #     user_question = input("\nAsk a question or type 'exit' to quit: ")
-        #     if user_question.lower() == 'exit':
-        #         break
-        #     response = qa.run(user_question, callbacks=[StreamingStdOutCallbackHandler()])
-        #     print(response)
         
         print("------------ Chat ended ------------")
         return response
     except Exception as e:
+        print(f"episode_id: {episode_id} \n podcast_id: {podcast_id} \n prompt: {prompt} \n")
         print(f"An error occurred: {e}")
         raise e

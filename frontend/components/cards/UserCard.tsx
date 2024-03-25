@@ -6,7 +6,6 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { use } from "chai";
 import Link from "next/link";
 
 // Define the UserCard component
@@ -43,10 +42,10 @@ const UserCard = ({ user }) => {
           mb={4}
         />
         <Box>
-          <Text fontWeight="bold" data-cy={`user-card-${user.displayName}`}>
+          <Text fontWeight="bold">
             {user.displayName}
           </Text>
-          <Text>@{user.username}</Text>
+          <Text data-cy={`user-card-${user.username}`}>@{user.username}</Text>
         </Box>
       </Flex>
     </Link>

@@ -1,7 +1,11 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { BaseResponse, IsLikedResponse } from "../utilities/Responses";
-import { request } from "http";
+import {
+  BaseResponse,
+  GetCommentsResponse,
+  GetRepliesResponse,
+  IsLikedResponse,
+} from "../types/Responses";
 
 export default class SocialHelper {
   static getEpisodeComments() {
@@ -38,7 +42,6 @@ export default class SocialHelper {
       console.debug("Sending the following postEpisodeComment...");
       console.debug(options);
 
-      console.log(options);
       // Send the request and wait for the response.
       const requestResponse = await axios(options);
 
@@ -174,6 +177,7 @@ export default class SocialHelper {
       };
     }
   };
+
   // Delete a like
   public static isLiked = async (
     episodeOrCommentId,
@@ -210,6 +214,90 @@ export default class SocialHelper {
         status: error.response?.status,
         message: error.response?.statusText,
         isLiked: false,
+      };
+    }
+  };
+
+  // Get comments for an episode
+  public static getComments = async (
+    episodeId,
+    page,
+    pageSize,
+  ): Promise<GetCommentsResponse> => {
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getGetCommentsEndpoint(episodeId, page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getComments...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getComments...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        comments: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        comments: null,
+      };
+    }
+  };
+
+  // Get comments for an episode
+  public static getReplies = async (
+    commentId,
+    page,
+    pageSize,
+  ): Promise<GetRepliesResponse> => {
+    const options = {
+      method: "Get",
+      url: EndpointHelper.getGetRepliesEndpoint(commentId, page, pageSize),
+      headers: {
+        accept: "*/*",
+      },
+      withCredentials: true,
+      cache: false,
+    };
+
+    try {
+      console.debug("Sending the following getReplies...");
+      console.debug(options);
+
+      console.log(options);
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options);
+
+      console.debug("Received the following getReplies...");
+      console.debug(requestResponse);
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        replies: requestResponse.data,
+      };
+    } catch (error) {
+      return {
+        status: error.response?.status,
+        message: error.response?.statusText,
+        replies: null,
       };
     }
   };

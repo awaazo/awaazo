@@ -6,7 +6,7 @@ import torch
 import threading
 
 # Import Custom Libraries
-import transcription_service.stt
+import transcription_service.stt as stt
 import text_to_speech_service.tts
 import rvc_service.rvc
 import assistant_service.ingest
@@ -71,7 +71,7 @@ async def handle_transcription_request(request):
                 raise Exception(f'Transcription is already in progress for the given episode.')
     
         # Launch the thread to create the transcript (DO NOT AWAIT as it could take a long time depending on the audio size)
-        threading.Thread(target=transcription_service.stt.create_transcript_whisperx, args=(episode_audio_path,)).start()
+        threading.Thread(target=stt.create_transcript_whisperx, args=(episode_audio_path,)).start()
 
         status = "Transcription process has been initiated."
 
@@ -351,7 +351,7 @@ async def handle_tts_request(request):
         print(f"Error in handle_tts_request: {e}")
         return web.Response(status=400, text=str(e))
     
-async def handle_stt_request(request):
+async def handle_stt_ingest_request(request):
     try:
         print("---------------- Handling STT Request ----------------")
 
@@ -372,17 +372,95 @@ async def handle_stt_request(request):
         print(f"Error in handle_stt_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_stt_request(request):
+    """ 
+    Handles the STT request
+
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to transcribe. Required. 
+            episode_id (str): The ID of
+            the episode to transcribe. Required.
+        
+    Returns:
+        A web response with the status of the transcription process.
+        It should contain the following data:
+            status (str): The status of the transcription process.
+
+    Raises:
+        Exception: If an error occurs during the transcription process.
+    """
+    try:
+        print("---------------- Handling STT Request ----------------")
+
+        # Get the data from the request
+        data = await request.json()
+
+        print(request.headers)
+
+        # Get the podcast and episode IDs to transcribe
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}\n")
+        
+        AUDIO_FILE_EXTENSIONS = [".wav", ".mp3", ".mp4", ".mpeg"]
+
+        BASE_DIR = "./ServerFiles"
+        PODCAST_DIR = f"{BASE_DIR}/Podcasts/{podcast_id}"
+        EPISODE = f"{PODCAST_DIR}/{episode_id}"
+
+        # Convert to strings, if not already
+        episode_id = str(episode_id)
+        podcast_id = str(podcast_id)
+
+        # DO PRE PROCESSING CHECKS
+        # ==================================================== 
+
+        # Check that the podcast exists
+        if not os.path.exists(PODCAST_DIR):
+            raise Exception(f"Podcast does not exist for given podcast_id {podcast_id} at {PODCAST_DIR}")
+
+        # Find the episode file
+        for file in os.listdir(PODCAST_DIR):
+            if file.endswith(tuple(AUDIO_FILE_EXTENSIONS)) and file.startswith(episode_id):
+                episode_filename = f"{PODCAST_DIR}/{file}"
+                break
+
+        # Check that the episode exists
+        if not os.path.exists(episode_filename):
+            raise Exception(f"Episode does not exist for given episode_id {episode_id} at {episode_filename}")
+        
+        # Check that the episode has not already been transcribed
+        if os.path.exists(f"{EPISODE}.json"):
+            raise Exception(f"Episode has already been transcribed for given episode_id {episode_id} at {EPISODE}.json")
+
+        # ====================================================
+
+        print("Starting transcription step...")
+
+        threading.Thread(target=stt.create_transcript_whisperx, args=(episode_filename,)).start()
+        
+        print("---------------- STT Request Completed ----------------")
+        return web.Response(text="STT started...", status=200)
+    
+    except Exception as e:
+        print(f"Error in handle_stt_request: {e}")
+        return web.Response(status=400, text=str(e))
+
 # Create the server instance
 app = web.Application()
 
 # Add the routes to the server
+app.add_routes([web.post('/stt', handle_stt_request)])
 app.add_routes([web.get('/{podcast_id}/{episode_file_name}/create_transcript', handle_transcription_request)])
 app.add_routes([web.post('/tts', handle_text_to_speech_request)])
 app.add_routes([web.post('/rvc', handle_realistic_voice_cloning_request)])
 app.add_routes([web.post('/ingest', handle_ingest_request)])
 app.add_routes([web.post('/chat', handle_chat_request)])
 app.add_routes([web.post('/tts_rvc', handle_tts_request)])
-app.add_routes([web.post('/stt_ingest', handle_stt_request)])
+app.add_routes([web.post('/stt_ingest', handle_stt_ingest_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")

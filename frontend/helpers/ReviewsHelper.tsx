@@ -3,11 +3,11 @@ import EndpointHelper from "./EndpointHelper";
 import {
    PodcastRatingRequest,
    PodcastReviewRequest
-} from "../utilities/Requests";
+} from "../types/Requests";
 import {
    BaseResponse,
    GetMyPodcastResponse,
-} from "../utilities/Responses";
+} from "../types/Responses";
 
 export default class ReviewsHelper {
    static getPodcastRating() {

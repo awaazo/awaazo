@@ -1,12 +1,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using Backend.Models.Interfaces;
 
 namespace Backend.Models;
 
 /// <summary>
 /// Comment Entity. Represents a comment on an episode, done by a user.
 /// </summary>
-public class Comment : BaseEntity
+public class Comment : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Id of the comment.
@@ -48,9 +49,13 @@ public class Comment : BaseEntity
     /// Likes that belong to this comment
     /// </summary>
     public ICollection<CommentLike> Likes { get; set; } = new Collection<CommentLike>();
+
+    public DateTime? DeletedAt { get; set; }
+    
+    public Guid DeletedBy { get; set; }
 }
 
-public class CommentReply : BaseEntity
+public class CommentReply : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Id of the comment.
@@ -83,4 +88,8 @@ public class CommentReply : BaseEntity
     public Guid ReplyToCommentId { get; set; } = Guid.Empty;
 
     public Comment ReplyToComment { get; set; } = null!;
+    
+    public DateTime? DeletedAt { get; set; }
+    
+    public Guid DeletedBy { get; set; }
 }

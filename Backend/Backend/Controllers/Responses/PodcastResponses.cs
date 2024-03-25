@@ -1,8 +1,12 @@
 using System.Data;
 using AutoMapper.Configuration.Annotations;
 using Backend.Models;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static Backend.Infrastructure.FileStorageHelper;
+using Backend.Infrastructure;
+using Google.Apis.Util;
 
 namespace Backend.Controllers.Responses;
 
@@ -13,14 +17,20 @@ namespace Backend.Controllers.Responses;
 public class EpisodeResponse
 {
     /// <summary>
+    /// Empty constructor for the episode response
+    /// </summary>
+    public EpisodeResponse()
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EpisodeResponse"/> class.
     /// </summary>
     /// <param name="e">The episode.</param>
     /// <param name="domainUrl">The domain URL.</param>
     /// <param name="includeComments">if set to <c>true</c> [include comments].</param>
-    public EpisodeResponse(Episode e,string domainUrl, bool includeComments = true)
+    public EpisodeResponse(Episode e, string domainUrl, bool includeComments = true)
     {
-        //Episode = e;
         Id = e.Id;
         PodcastId = e.PodcastId;
         EpisodeName = e.EpisodeName;
@@ -31,13 +41,24 @@ public class EpisodeResponse
         PlayCount = e.PlayCount;
         AudioUrl = domainUrl + string.Format("podcast/{0}/{1}/getAudio", e.PodcastId, e.Id);
         ThumbnailUrl = domainUrl + string.Format("podcast/{0}/{1}/getThumbnail", e.PodcastId, e.Id);
+        TotalPoints = e.Points.Where(u => u.Success = true).Sum(u => u.PointCount);
         Likes = e.Likes.Count;
         if (includeComments) 
             Comments = e.Comments.Select(c => new CommentResponse(c, domainUrl)).ToList();
         PodcastName = e.Podcast.Name;
 
+        // Get the status of the transcript
+        TranscriptStatus status = GetTranscriptStatus(e.Id,e.PodcastId);
+        TranscriptionStatus = status.ToString();
+
+        // Set the IsTranscriptReady property based on the status
+        IsTranscriptReady = status switch
+        {
+            TranscriptStatus.Ready => true,
+            _ => false,
+        };
     }
-    
+
     public Guid Id { get; set; } = Guid.Empty;
     public Guid PodcastId { get; set; } = Guid.Empty;
     public string EpisodeName { get; set; } = string.Empty;
@@ -50,6 +71,18 @@ public class EpisodeResponse
     public string ThumbnailUrl { get; set; } = string.Empty;
     public int Likes { get; set; } = 0;
     
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public bool IsTranscriptReady { get; set; } = false;
+
+    /// <summary>
+    /// The status of the episode transcript
+    /// </summary>
+    public string TranscriptionStatus { get; set; } = "None";
+
+    public int TotalPoints { get; set; } = 0;
+
     public List<CommentResponse> Comments { get; set; } = new();
 
     public string PodcastName { get; set; } = string.Empty;
@@ -63,6 +96,13 @@ public class EpisodeResponse
 [BindProperties]
 public class PodcastResponse
 {
+    /// <summary>
+    /// Empty constructor for the podcast response
+    /// </summary>
+    public PodcastResponse()
+    {
+    }
+
     public PodcastResponse(Podcast p, string domainUrl)
     {
         Id = p.Id;
@@ -76,6 +116,7 @@ public class PodcastResponse
         Episodes = p.Episodes.Select(e => new EpisodeResponse(e, domainUrl)).ToList();
         Ratings = p.Ratings.Select(r => new RatingResponse(r, domainUrl)).ToList();
         TotalRatings = (ulong)Ratings.Where(r => r.Rating != 0).Count();
+        TotalPodcastPoints = Episodes.Sum(u => u.TotalPoints);
         if (TotalRatings > 0)
             AverageRating = (float)Ratings.Where(r => r.Rating != 0).Average(r => r.Rating);
     }
@@ -91,6 +132,8 @@ public class PodcastResponse
     public List<EpisodeResponse> Episodes { get; set; } = new List<EpisodeResponse>();
     public float AverageRating { get; set; } = 0;
     public ulong TotalRatings { get; set; } = 0;
+
+    public int TotalPodcastPoints { get; set; } = 0;
     public List<RatingResponse> Ratings { get; set; } = new List<RatingResponse>();
 }
 
@@ -302,3 +345,66 @@ public class PodcastMetricsResponse
         public uint TotalUnknown { get; set; } = 0;
     }
 }
+
+#region Highlights
+
+/// <summary>
+/// Basic Highlight Response object for the frontend
+/// </summary>
+[BindProperties]
+public class HighlightResponse
+{
+    
+    public HighlightResponse()
+    {
+
+    }
+
+    public HighlightResponse(Highlight highlight)
+    {
+        HighlightId = highlight.HighlightId;
+        EpisodeId = highlight.EpisodeId;
+        UserId = highlight.UserId;
+        StartTime = highlight.StartTime;
+        EndTime = highlight.EndTime;
+        Title = highlight.Title;
+        Description = highlight.Description;
+    }
+
+    /// <summary>
+    /// Id of the Given Episode
+    /// </summary>
+    public Guid HighlightId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Id of the episode attached to this Highlight
+    /// </summary>
+    public Guid EpisodeId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Id of the user who created this Highlight
+    /// </summary>
+    public Guid UserId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// StartTime of the Highlight
+    /// </summary>
+    public double StartTime { get; set; } = 0;
+
+    /// <summary>
+    /// EndTime of the Highlight
+    /// </summary>
+    public double EndTime { get; set; } = 0;
+
+    /// <summary>
+    /// Title of the Highlight 
+    /// </summary>
+    public string Title { get; set; } = "No Title Given";
+
+    /// <summary>
+    /// Description of the Highlight
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+}
+
+#endregion

@@ -1,5 +1,6 @@
 using Backend.Controllers.Requests;
 using Backend.Controllers.Responses;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -82,7 +83,7 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(SetupProfile));
+            this.LogDebugControllerAPICall(_logger);
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -90,7 +91,12 @@ public class ProfileController : ControllerBase
             // If User is not found, return 404
             if (user == null)
                 return NotFound("User does not exist.");
-
+            
+            // Validate file extension
+            if (!ValidateAvatar(setupRequest.Avatar, out var errors)) {
+                return BadRequest(errors);
+            }
+            
             // Update User Profile
             bool isChanged = await _profileService.SetupProfileAsync(setupRequest, user);
 
@@ -98,7 +104,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(SetupProfile));
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
@@ -113,7 +119,7 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(EditProfile));
+            this.LogDebugControllerAPICall(_logger);
 
             // Identify User from JWT Token
             User? user = await _authService.IdentifyUserAsync(HttpContext);
@@ -121,6 +127,11 @@ public class ProfileController : ControllerBase
             // If User is not found, return 404
             if (user == null)
                 return NotFound("User does not exist.");
+            
+            // Validate file extension
+            if (!ValidateAvatar(editRequest.Avatar, out var errors)) {
+                return BadRequest(errors);
+            }
 
             // Update User Profile
             bool isChanged = await _profileService.EditProfileAsync(editRequest, user);
@@ -129,7 +140,7 @@ public class ProfileController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(EditProfile));
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }

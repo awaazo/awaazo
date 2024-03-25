@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import ReviewsHelper from '../../helpers/ReviewsHelper';
 import { FaTrash, FaStar, FaCheckCircle } from 'react-icons/fa';
-import { Box, Button, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
-import { PodcastRatingRequest } from '../../utilities/Requests';
+import { Box, Button, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
+import { PodcastRatingRequest } from '../../types/Requests';
 
 // This component represents the rating section for a podcast
 const RatingComponent = ({ podcastId }) => {

@@ -2,9 +2,7 @@ import {
   Box,
   Flex,
   IconButton,
-  Tag,
   useColorModeValue,
-  useColorMode,
   useBreakpointValue,
   Text,
   Image,
@@ -12,9 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
-import LikeComponent from "../social/Likes";
-import CommentComponent from "../social/Comments";
+import LikeComponent from "../interactionHub/Likes";
+import CommentComponent from "../interactionHub/Comments";
 import { BsExplicitFill } from "react-icons/bs";
+import { convertTime } from "../../utilities/commonUtils";
 
 // Component to display an episode
 const Episode = ({ episode }) => {
@@ -25,15 +24,7 @@ const Episode = ({ episode }) => {
     dispatch({ type: "SET_EPISODE", payload: episode });
   };
 
-  const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  // Format duration in minutes and seconds
-  const formatDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
 
   return (
     <Flex
@@ -46,7 +37,8 @@ const Episode = ({ episode }) => {
       bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
       backdropFilter="blur(4px)"
       boxShadow="sm"
-      style={{ cursor: "pointer", transition: "transform 0.3s" }}
+      cursor="pointer"
+      transition="transform 0.3s"
       onClick={() => handleEpisodeClick()}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
@@ -55,7 +47,11 @@ const Episode = ({ episode }) => {
         e.currentTarget.style.transform = "scale(1)";
       }}
     >
-      <Box data-cy={`episode-name-${episode.episodeName}`} position="relative" mr={5}>
+      <Box
+        data-cy={`episode-name-${episode.episodeName}`}
+        position="relative"
+        mr={5}
+      >
         <Image
           boxSize={isMobile ? "0px" : "125px"}
           src={episode.thumbnailUrl}
@@ -100,7 +96,7 @@ const Episode = ({ episode }) => {
           {isMobile ? null : <Text>{episode.description}</Text>}
 
           <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {formatDuration(episode.duration)}
+            Duration: {convertTime(episode.duration)}
           </Text>
         </Flex>
       </Flex>
@@ -114,10 +110,10 @@ const Episode = ({ episode }) => {
         <CommentComponent
           episodeIdOrCommentId={episode.id}
           initialComments={episode.comments.length}
-          showCount={true}
         />
-        <div
-          style={{ marginTop: "4px", marginLeft: "4px" }}
+        <Box
+          marginTop="4px"
+          marginLeft="4px"
           data-cy={`likes-on-${episode.episodeName}-${episode.likes}`}
         >
           <LikeComponent
@@ -125,7 +121,7 @@ const Episode = ({ episode }) => {
             initialLikes={episode.likes}
             showCount={true}
           />
-        </div>
+        </Box>
       </Flex>
     </Flex>
   );

@@ -12,7 +12,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import PlaylistCard from "../../components/cards/PlaylistCard";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import { Playlist } from "../../utilities/Interfaces";
+import { Playlist } from "../../types/Interfaces";
+import router from "next/router";
+import AuthHelper from "../../helpers/AuthHelper";
+import withAuth from "../../utilities/authHOC";
 
 const MyPlaylist = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -30,6 +33,7 @@ const MyPlaylist = () => {
         setPlaylistError("Podcasts cannot be fetched");
       }
     });
+    
   }, [page]);
 
   // Function to handle clicking the "Load More" button
@@ -88,4 +92,4 @@ const MyPlaylist = () => {
   );
 };
 
-export default MyPlaylist;
+export default withAuth(MyPlaylist);

@@ -1,6 +1,4 @@
 import os
-import torch
-
 from dotenv import load_dotenv
 from scipy.io import wavfile
 from rvc_service.configs.config import Config

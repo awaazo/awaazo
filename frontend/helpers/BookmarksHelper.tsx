@@ -1,8 +1,7 @@
 import axios from "axios";
 import EndpointHelper from "./EndpointHelper";
-import { EpisodeBookmarkRequest } from "../utilities/Requests";
-import { BaseResponse, GetBookmarksResponse } from "../utilities/Responses";
-import { request } from "http";
+import { EpisodeBookmarkRequest } from "../types/Requests";
+import { BaseResponse, GetBookmarksResponse } from "../types/Responses";
 
 export default class BookmarksHelper {
 

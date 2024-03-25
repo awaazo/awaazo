@@ -9,7 +9,7 @@ import {
 import "@testing-library/jest-dom";
 import { SessionProvider } from "next-auth/react";
 import { MemoryRouter } from "react-router-dom";
-import Login from "../pages/auth/Login";
+import Login from "../components/auth/Login";
 import "jest-webextension-mock";
 
 // Mock Next.js' router to prevent issues

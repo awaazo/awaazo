@@ -7,7 +7,6 @@ from text_to_speech_service.tortoise.api_fast import TextToSpeech as Tortoise_TT
 from text_to_speech_service.tortoise.utils.text import split_and_recombine_text
 from text_to_speech_service.tortoise.utils.audio import load_audio, load_voice
 
-
 def create_audio_coqui(text, language, speaker_file_path, result_file_path):
     """
     Creates an audio file from the given text and saves it to the given file path.

@@ -11,6 +11,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Backend.Middlewares;
 using System.Reflection;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Backend;
 
@@ -28,24 +30,37 @@ public class Program
             options.JsonSerializerOptions.WriteIndented = true;
         });
 
+        builder.Services.AddScoped<IAnalyticService, AnalyticService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPodcastService, PodcastService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
-        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+        builder.Services.AddScoped<ISubscriptionService, Services.SubscriptionService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
         builder.Services.AddScoped<ISocialService, SocialService>();
-
+       
         builder.Services.AddScoped<ISectionService, SectionService>();
         builder.Services.AddScoped<IPlaylistService,PlaylistService>();
         builder.Services.AddScoped<IAnnotationService, AnnotationService>();
+        builder.Services.AddScoped<IWalletServices, WalletServices>();
+        builder.Services.AddScoped<AdminPanelService>();
+        builder.Services.AddScoped<ReportService>();
+
 
 
 
         builder.Services.AddScoped<ValidateUser>();
+        builder.Services.AddScoped<ValidateAdmin>();
         builder.Services.AddScoped<BookmarkService>();
         builder.Services.AddScoped<ILogger, FileLogger>();
 
         builder.Services.AddScoped<EmailService>(serviceProvider => new EmailService(builder.Configuration));
+
+       
+        builder.Services.AddScoped<SessionService>();
+        builder.Services.AddScoped<IStripeServices, StripeServices>();
+        StripeConfiguration.ApiKey = config["StripeOptions:SecretKey"];
+
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -117,12 +132,14 @@ public class Program
         });
 
 
+
+
         builder.Services.AddCors(o => o.AddPolicy("Dev-policy", builder =>
         {
             builder.SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithOrigins("http://localhost:3000", "https://localhost:3000",
                 "http://localhost:3500", "https://localhost:3500",
-                "https://*.awaazo.com/*")
+                "https://*.awaazo.com/*","http://localhost:8500", "http://py:8000")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -151,14 +168,16 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseWhen(c => c.Request.Path.StartsWithSegments("/playlist"), builder =>
-        {
-            builder.UseMiddleware<ValidateUser>();
-        });
+      
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/bookmark"), builder =>
         {
             builder.UseMiddleware<ValidateUser>();
         });
+        app.UseWhen(c => c.Request.Path.StartsWithSegments("/admin"), builder =>
+        {
+            builder.UseMiddleware<ValidateAdmin>();
+        });
+
 
         app.MapControllers();
 
@@ -167,6 +186,8 @@ public class Program
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             dbContext.Database.Migrate();
         }
+
+        Console.Write("Delete me!");
 
         app.Run();
     }
