@@ -16,6 +16,7 @@ const Panel = () => {
 
   return (
     <Box
+
       position="fixed"
       right="0"
       top="5em"
@@ -24,7 +25,7 @@ const Panel = () => {
       h="calc(88vh - 5em)"
       overflow="hidden"
       p={state.isOpen ? '20px' : '0'}
-      zIndex="1000"
+      zIndex="999999"
       bg="rgba(255, 255, 255, 0.04)"
       backdropFilter="blur(50px)"
       outline={'2px solid rgba(255, 255, 255, 0.06)'}

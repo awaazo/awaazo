@@ -242,7 +242,7 @@ const Sidebar = () => {
               transform="translateY(-50%)"
               borderRadius="20px"
               backdropFilter={"blur(40px)"}
-              zIndex={990000} // Ensure it's above other content
+              zIndex={10} // Ensure it's above other content
               bgColor={"rgba(0, 0, 0, 0.0)"}
               boxShadow={`inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.1)`}
               _hover={{

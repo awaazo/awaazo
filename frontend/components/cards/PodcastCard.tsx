@@ -41,7 +41,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           width="full"
           height="full"
           outline="2px solid #FFFFFF14"
-
+          zIndex={0}
         >
           <PodcastImage coverArtUrl={podcast.coverArtUrl} name={podcast.name} />
           {/* Gradient Overlay */}
