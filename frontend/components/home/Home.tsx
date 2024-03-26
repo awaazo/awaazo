@@ -28,18 +28,21 @@ const Home = () => {
         <Button
           onClick={() => setCurrentView('ForYou')}
           variant={currentView === 'ForYou' ? 'solid' : 'ghost'}
+          borderRadius={"3em"}
         >
           For You
         </Button>
         <Button
           onClick={() => setCurrentView('RecentlyUploaded')}
           variant={currentView === 'RecentlyUploaded' ? 'solid' : 'ghost'}
+          borderRadius={"3em"}
         >
           Recently Uploaded
         </Button>
         <Button
           onClick={() => setCurrentView('Highlights')}
           variant={currentView === 'Highlights' ? 'solid' : 'ghost'}
+          borderRadius={"3em"}
         >
           Highlights
         </Button>
