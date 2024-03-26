@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(Register));
+            this.LogDebugControllerAPICall(_logger);
 
             // Register User if he does not already exist
             User? newUser = await _authService.RegisterAsync(request);
@@ -90,6 +90,9 @@ public class AuthController : ControllerBase
 
             Response.Cookies.Append("jwt-token", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Lax });
 
+            // Send Welcome Email with Verification Link
+            await _authService.SendWelcomeEmail(newUser, GetDomainUrl(HttpContext));
+            
             // Return JWT Token
             return Ok("Registered.");
         }
@@ -216,7 +219,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(SentForgotPasswordEmail));
+            this.LogDebugControllerAPICall(_logger);
 
             if (!ModelState.IsValid)
             {
@@ -228,7 +231,28 @@ public class AuthController : ControllerBase
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e, callerName: nameof(SentForgotPasswordEmail));
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("verifyemail")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            await _authService.VerifyEmail(user, request.Token);
+            return Ok("Email Verified");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }
     }
