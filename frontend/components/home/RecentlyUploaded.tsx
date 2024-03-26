@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { Episode } from "../../types/Interfaces";
-import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from "@chakra-ui/react";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import PodcastTicket from "./PodcastTicket";
+import React, { useState, useEffect } from 'react'
+import { Episode } from '../../types/Interfaces'
+import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from '@chakra-ui/react'
+import PodcastHelper from '../../helpers/PodcastHelper'
+import EpisodeCard from '../cards/EpisodeCard'
 
 const RecentlyUploaded: React.FC = () => {
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [episodes, setEpisodes] = useState<Episode[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchPodcasts = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const res = await PodcastHelper.podcastGetRecentEpisodes(0, 12);
+        const res = await PodcastHelper.podcastGetRecentEpisodes(0, 12)
         if (res.status === 200) {
-          setEpisodes(res.episode);
+          setEpisodes(res.episode)
         } else {
-          throw new Error("Failed to load podcasts");
+          throw new Error('Failed to load podcasts')
         }
       } catch (err) {
-        setError(err.message || "An error occurred while fetching podcasts");
+        setError(err.message || 'An error occurred while fetching podcasts')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchPodcasts();
-  }, []);
+    fetchPodcasts()
+  }, [])
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   return (
     <VStack spacing={4} align="stretch">
@@ -40,20 +40,21 @@ const RecentlyUploaded: React.FC = () => {
       ) : (
         <HStack
           spacing={4}
-          overflowX="auto"
           css={{
-            "&::-webkit-scrollbar": {
-              display: "none",
+            '&::-webkit-scrollbar': {
+              display: 'none',
             },
           }}
         >
-          <SimpleGrid columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }} spacing={5}>
-            {episodes && episodes.length > 0 ? episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />) : <Text>No episodes available</Text>}
-          </SimpleGrid>
+          {episodes && episodes.length > 0 ? (
+            episodes.map((episode) => <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />)
+          ) : (
+            <Text>No episodes available</Text>
+          )}
         </HStack>
       )}
     </VStack>
-  );
-};
+  )
+}
 
-export default RecentlyUploaded;
+export default RecentlyUploaded

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
-import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import { FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import {Play} from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
 import { convertTime } from '../../utilities/commonUtils'
@@ -272,7 +273,7 @@ const PlayerBar = () => {
             <IconButton aria-label="Skip Backward" icon={<TbRewindBackward10 size={'20px'} />} variant="ghost" size="sm" onClick={skipBackward} mr={4} data-cy={`skip-backward`} />
             <IconButton
               aria-label={isPlaying ? 'Pause' : 'Play'}
-              icon={isPlaying ? <FaPause /> : <FaPlay />}
+              icon={isPlaying ? <FaPause /> : <Play />}
               variant="gradient"
               minWidth="2.5em"
               size="md"

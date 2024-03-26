@@ -42,7 +42,6 @@ export default class SocialHelper {
       console.debug("Sending the following postEpisodeComment...");
       console.debug(options);
 
-      console.log(options);
       // Send the request and wait for the response.
       const requestResponse = await axios(options);
 

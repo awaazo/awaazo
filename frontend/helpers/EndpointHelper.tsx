@@ -753,4 +753,37 @@ export default class EndpointHelper {
   static getHighestEarningPodcast = (page, pageSize) => {
     return this.getBackendAddress() + '/wallet/topEarningPodcasts?page=' + page + '&pageSize=' + pageSize
   }
+
+  // --------------------------------
+  // Highlights Endpoints
+  // --------------------------------
+
+  static addHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + '/podcast/' + episodeId + '/Createhighlight'
+  }
+
+  static editHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + '/podcast/' + episodeId + '/EditHighlight'
+  }
+
+  static deleteHighlightsEndpoint = (highlightId: string) => {
+    return this.getBackendAddress() + '/podcast/' + highlightId + '/RemoveHighlight'
+  }
+
+  static getUserHighlightsEndpoint = (userId: string) => {
+    return this.getBackendAddress() + '/podcast/' + userId + '/GetAllUserHighlights'
+  }
+
+  static getEpisodeHighlightsEndpoint = (episodeId: string) => {
+    return this.getBackendAddress() + '/podcast/' + episodeId + '/GetAllEpisodeHighlights'
+  }
+
+  public static getHighlightAudioEndpoint(highlightId: string) {
+    // This method constructs the URL for the audio file. Ensure this method returns the correct URL.
+    return `${this.getBackendAddress()}/podcast/${highlightId}/GetHighlightAudio`
+  }
+
+  static getRandomHighlightsEndpoint = (quantity: number) => {
+    return `${this.getBackendAddress()}/podcast/GetRandomHighlights?quantity=${quantity}`
+  }
 }

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button,  Tooltip } from "@chakra-ui/react";
 import { usePanel } from "../../../utilities/PanelContext";
-import { MdBookmark } from "react-icons/md";
+import { Bookmark } from '../../../public/icons';
 import AuthPrompt from "../../auth/AuthPrompt";
 import AuthHelper from "../../../helpers/AuthHelper";
+
 
 const BookmarksButtton = ({ episodeId, selectedTimestamp}) => {
     const { dispatch } = usePanel();
@@ -30,7 +31,7 @@ const BookmarksButtton = ({ episodeId, selectedTimestamp}) => {
       <>
         <Tooltip label="Bookmarks" aria-label="Bookmarks">
           <Button padding={"0px"} variant={"ghost"} onClick={handleClick}>
-            <MdBookmark size="20px" />
+            <Bookmark width="18px" height="18px" />
           </Button>
         </Tooltip>
         {showLoginPrompt && (

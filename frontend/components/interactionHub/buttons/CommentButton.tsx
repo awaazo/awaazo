@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import { usePanel } from "../../../utilities/PanelContext";
-import { FaComments } from "react-icons/fa";
+import { Chat } from '../../../public/icons';
 
 const CommentsButton = ({ episodeId, initialComments, showCount }) => {
   const { dispatch } = usePanel();
@@ -15,15 +15,15 @@ const CommentsButton = ({ episodeId, initialComments, showCount }) => {
   return (
     <>
       {showCount ? (
-        <Tooltip label="Comment" aria-label="Comment">
-          <Button p={2} m={1} leftIcon={<Icon as={FaComments} />} onClick={handleClick} variant={"ghost"} data-cy={`playerbar-comment-button`}>
+
+          <Button leftIcon={<Icon as={Chat} />} onClick={handleClick} variant="minimal" data-cy={`playerbar-comment-button`}>
             {noOfComments}
           </Button>
-        </Tooltip>
+
       ) : (
-        <Tooltip label={`${noOfComments} Comments`} aria-label={`${noOfComments} Comments`}>
-          <Button p={2} m={1} onClick={handleClick} variant={"ghost"} data-cy={`playerbar-comment-button`}>
-            <Icon as={FaComments} />
+        <Tooltip label={`${noOfComments} Comments`} aria-label={`${noOfComments} Comments`} >
+          <Button  onClick={handleClick} variant={"minimal"} data-cy={`playerbar-comment-button`} color={"az.greyish"} >
+            <Chat width="16px" height="16px" />
           </Button>
         </Tooltip>
       )}

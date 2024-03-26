@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Box, ChakraProvider, Flex } from '@chakra-ui/react'
-import bg from '../styles/images/bg.png'
 import { SessionProvider } from 'next-auth/react'
 import { PlayerProvider } from '../utilities/PlayerContext'
 import PlayerBar from '../components/shared/PlayerBar'
@@ -41,7 +40,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <ChakraProvider theme={AppTheme}>
       <meta name="referrer" content="no-referrer" />
-      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundImage={bg.src} backgroundSize="cover" zIndex="-1" minHeight="100vh" bgColor={'black'} />
+      <Box position="fixed" top="0" left="0" width="100%" height="100vh" backgroundSize="cover" zIndex="-1" minHeight="100vh" bgColor={'az.blackish'} />
       <SessionProvider session={session}>
         <PlayerProvider>
           <PanelProvider>

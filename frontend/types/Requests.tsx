@@ -194,6 +194,19 @@ export interface PlaylistEditRequest {
 }
 //#endregion
 
+//#region  Highlight Requests
+export interface HighlightAddRequest {
+  StartTime: number;
+  EndTime: number;
+  Title: string;
+  Description: string;
+}
+
+export interface HighlightEditRequest {
+  Title: string;
+  Description: string;
+}
+
 //#region Episode SaveWatchHistory Request
 export interface SaveWatchHistoryRequest {
   listenPosition: number;
