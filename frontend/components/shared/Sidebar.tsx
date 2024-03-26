@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack } from "@chakra-ui/react";
+import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from "@chakra-ui/react";
 import Link from "next/link";
 import Logo from "../../public/logo_white.svg";
 import { Home, Search, Add, Cards } from '../../public/icons'
@@ -14,6 +14,19 @@ import LoginPrompt from "../auth/AuthPrompt";
 import { MdKeyboardDoubleArrowRight, MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Sidebar = () => {
+  const [user, setUser] = useState({
+    id: '',
+    username: '',
+    avatarUrl: '',
+  });
+
+  useEffect(() => {
+    AuthHelper.authMeRequest().then((response) => {
+      if (response.status === 200) {
+        setUser(response.userMenuInfo); // Assuming this includes the avatarUrl
+      }
+    });
+  }, []);
   const router = useRouter();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [reload, setReload] = useState(false);
@@ -133,6 +146,7 @@ const Sidebar = () => {
 
         <Flex align={collapsed ? "left" : "center"} p="3" mb="7" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
           <Image src={Logo.src} alt="Logo" w="28px" />
+          {/* <Avatar src={user.avatarUrl} name={user.username} /> */}
         </Flex>
         <VStack spacing={"2em"} marginTop={"4em"} align={collapsed ? "center" : "left"}>
           <VStack align={collapsed ? "center" : "left"}>
