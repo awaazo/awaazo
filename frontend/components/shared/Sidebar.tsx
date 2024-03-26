@@ -244,10 +244,10 @@ const Sidebar = () => {
               backdropFilter={"blur(40px)"}
               zIndex={990000} // Ensure it's above other content
               bgColor={"rgba(0, 0, 0, 0.0)"}
-              boxShadow={`inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.2)`}
+              boxShadow={`inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.1)`}
               _hover={{
                 bgColor: "rgba(255, 255, 255, 0.0)",
-                boxShadow: `inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.3)`,
+                boxShadow: `inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.2)`,
               }}
             />
           </Flex>
