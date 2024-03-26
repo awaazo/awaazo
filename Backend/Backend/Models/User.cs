@@ -120,6 +120,10 @@ public class User : BaseEntity, ISoftDeletable
 
     public Guid DeletedBy { get; set; } = Guid.Empty;
     
+    public bool IsVerified { get; set; } = false;
+    
+    public string? VerificationToken { get; set; }
+    
     /// <summary>
     /// User's podcasts.
     /// </summary>
