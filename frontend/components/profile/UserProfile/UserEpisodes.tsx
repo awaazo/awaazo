@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 
 import { Podcast, Episode } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
-import EpisodeCard from "../../cards/EpisodeCard";
+import EpisodeCard from "../../playlist/EpisodeCardForPlaylist";
 import { usePlayer } from "../../../utilities/PlayerContext";
 
 // Define the MyEpisodes component

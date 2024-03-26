@@ -3,7 +3,7 @@ import { Flex, IconButton, Tooltip, VStack } from "@chakra-ui/react";
 
 import { Episode } from "../../types/Interfaces";
 import PaymentHelper from "../../helpers/PaymentHelper";
-import EpisodeCard from "../cards/EpisodeCard";
+import EpisodeCard from "../playlist/EpisodeCardForPlaylist";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 const MostGiftedEpisode = () => {

@@ -220,9 +220,7 @@ export default function PodcastOverview({ podcast, User }) {
               ) : (
                 podcast.episodes.map((episode, index) => (
                   <EpisodeCard
-                    episode={episode}
-                    inPlaylist={false}
-                    playlistId={null} inWallet={false}                    
+                  key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false}                    
                   />
                 ))
               )}
@@ -288,10 +286,7 @@ export default function PodcastOverview({ podcast, User }) {
                 </Text>
               ) : (
                 podcast.episodes.map((episode, index) => (
-                  <EpisodeCard
-                    episode={episode}
-                    inPlaylist={false}
-                    playlistId={null} inWallet={false}                  />
+                  <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />
                 ))
               )}
             </div>

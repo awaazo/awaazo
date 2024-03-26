@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
 import ForYou from "./ForYou";
 import HighLights from "../highlights/Highlights";
-import { any } from "cypress/types/bluebird";
+
 
 const Home = () => {
 
