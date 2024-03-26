@@ -38,7 +38,7 @@ export default function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0)
   const [navbarStyle, setNavbarStyle] = useState({
     backgroundColor: 'transparent',
-    backdropFilter: 'blur(0px)',
+    backdropFilter: 'blur(10px)',
   })
 
   interface SessionExt extends DefaultSession {
@@ -201,7 +201,7 @@ export default function Navbar() {
   return (
     <>
       <Box p={3} mb={'3em'} width={'100%'} position="sticky" alignSelf="center" alignContent={'center'} alignItems={'center'} top={'0'} zIndex={5} data-testid="navbar-component" style={navbarStyle}>
-        <Box mr={'2em'} ml={'2em'}>
+        <Box mt={"0em"} mr={'2em'} ml={'2em'}>
           <Flex justifyContent="space-between">
             <Flex align="center">
               <IconButton aria-label="Back" icon={<ArrowL />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
