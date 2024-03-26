@@ -36,9 +36,10 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
   const [isUserSet, setIsUserSet] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
-  const [navbarStyle, setNavbarStyle] = useState({
 
+  const [navbarStyle, setNavbarStyle] = useState({
     backdropFilter: 'blur(0px)',
+    boxShadow: '',
   })
 
   interface SessionExt extends DefaultSession {
@@ -116,15 +117,23 @@ export default function Navbar() {
     setSearchValue(event.target.value)
   }
 
-  // Function to handle scroll event
   const handleScroll = () => {
     const scrollY = window.scrollY;
     const maxScroll = 100; // Adjust this value based on when you want the blur effect to be fully applied
-    const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 20px is the maximum blur value, adjust as needed
-
-    setNavbarStyle({
-      backdropFilter: `blur(${blurIntensity}px)`,
-    });
+    if (scrollY === 0) {
+      // User has scrolled to the top, reset navbar style to initial
+      setNavbarStyle({
+        backdropFilter: 'blur(0px)',
+        boxShadow: 'none', // Set boxShadow to 'none' to ensure it's fully transparent
+      });
+    } else {
+      // User is scrolling down, apply dynamic blur and shadow
+      const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 15px is the maximum blur value, adjust as needed
+      setNavbarStyle({
+        backdropFilter: `blur(${blurIntensity}px)`,
+        boxShadow: '0px 12px 30px -10px rgba(0, 0, 0, 0.4)',
+      });
+    }
   }
 
   useEffect(() => {
