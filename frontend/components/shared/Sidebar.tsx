@@ -138,7 +138,7 @@ const Sidebar = () => {
           <VStack align={collapsed ? "center" : "left"}>
             {/* Home */}
             <Link href="/" passHref>
-              <Flex align={collapsed ? "left" : "center"} p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
+              <Flex align={collapsed ? "left" : "center"} p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
                 <Icon as={Home} fontSize="xl" mr={collapsed ? "0" : "3"} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="bold">
@@ -163,7 +163,7 @@ const Sidebar = () => {
 
           {/* My Shelf */}
           <Box>
-            <Flex justify="center" align="center" p="3" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed} ml={"1em"}>
+            <Flex justify="center" align="center" p="3" mb="1" borderRadius="md" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed} ml={"1em"}>
               <Icon as={Cards} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
               {!collapsed && (
                 <Box flex="1" fontWeight="bold">
