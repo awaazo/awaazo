@@ -131,7 +131,7 @@ export default function Navbar() {
       const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 15px is the maximum blur value, adjust as needed
       setNavbarStyle({
         backdropFilter: `blur(${blurIntensity}px)`,
-        boxShadow: '0px 12px 30px -10px rgba(0, 0, 0, 0.4)',
+        boxShadow: '10px 12px 40px -10px rgba(0, 0, 0, 0.4)',
       });
     }
   }
