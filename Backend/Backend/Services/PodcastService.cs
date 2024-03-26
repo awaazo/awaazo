@@ -401,17 +401,9 @@ public class PodcastService : IPodcastService
     /// <returns></returns>
     public async Task<List<PodcastResponse>> GetPodcastsByTagsAsync(int page, int pageSize, string domainUrl, string[] tags)
     {
-        // Add conditions to find each tag
-        List<string> tagQueries = new();
-        foreach (string tag in tags)
-            tagQueries.Add(string.Format(" LOWER(Tags) like '%{0}%' ", tag));
-
-        // Build the query
-        string query = " WHERE " + string.Join(" OR ", tagQueries);
-
         // Execute the query
         List<PodcastResponse> podcastResponses = await _db.Podcasts
-            .FromSqlRaw($"SELECT * FROM dbo.Podcasts {query}")
+            .Where(p => p.Tags.Any(t => tags.Contains(t)))
             .Include(p => p.Podcaster)
             .Include(p => p.Episodes)
             .Include(p => p.Ratings).ThenInclude(r => r.User)
