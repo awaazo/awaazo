@@ -45,7 +45,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
             {episodeName}
           </Text>
           <Text fontSize="xs" color="az.greyish" noOfLines={1}>
-            {podcastName}Episode Number : Episode Name
+            {podcastName}
           </Text>
         </VStack>
         <HStack>
