@@ -5,29 +5,6 @@
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
 
-<br clear="left"/>
-
-<br>
-
-
-
-<div align="center">
-
-[<img src="/docAssets/readme/toc/Overview.svg" alt="Overview" width="180"/>](#overview)
-[<img src="/docAssets/readme/toc/why_awaazo.svg" alt="Why Awaazo" width="180"/>](#what-sets-awaazo-apart)
-[<img src="/docAssets/readme/toc/Core_Features.svg" alt="Core Features" width="180"/>](#core-features)
-
-[<img src="/docAssets/readme/toc/Latest_Release.svg" alt="Demo Video" width="180"/>](#latest-release-demo)
-[<img src="/docAssets/readme/toc/Team_Members.svg" alt="Team Members" width="180"/>](#team-members)
-[<img src="/docAssets/readme/toc/tech_stack.svg" alt="Tech Stack" width="180"/>](#tech-stack)
-
-</div>
-
-
-
-
-
-
 ## Overview
 
 Awaazo redefines podcasting by fusing traditional streaming with innovative AI-powered content creation. It's the hub for discovering new content, crafting your own episodes, and accessing live transcripts. Engage with our AI assistant, knowledgeable about every episode, for an enhanced listening experience. Dive into a diverse library of podcasts, utilize AI-enhanced tools for content creation, and join a community to share insights and connect with other creators. With Awaazo, immerse yourself in a podcasting experience that transcends the ordinary.
