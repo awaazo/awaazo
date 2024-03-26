@@ -1,9 +1,8 @@
 import uuid
 import json
 import os
-import chromadb
 from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
 from dotenv import load_dotenv
@@ -32,22 +31,22 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
 
         BASE_DIR = './ServerFiles/Podcasts'
 
+        status_file_path = f'{BASE_DIR}/{podcast_id}/{episode_id}_ingestion_status.txt'
+
         # Load environment variables
         load_dotenv()
         
-        # Load OpenAI API key
-        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-        print(f"Loaded OPENAI_API_KEY...")
+        # Load HuggingFace API key
+        HF_API_KEY = os.getenv("HF_API_KEY")
+        print(f"Loaded HF_API_KEY...")
         
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
+        if not HF_API_KEY:
+            raise ValueError("HF_API_KEY not found in environment variables")
 
         # Check if the transcript exists
         if not os.path.exists(f'{BASE_DIR}/{podcast_id}/{episode_id}.json'):
             print(f"Transcript not found at {BASE_DIR}/{podcast_id}/{episode_id}.json")
             raise FileNotFoundError(f"Transcript not found at {BASE_DIR}/{podcast_id}/{episode_id}.json")
-
-        status_file_path = f'{BASE_DIR}/{podcast_id}/{episode_id}_ingestion_status.txt'
 
         # Create a status file to indicate that the ingestion is in progress
         with open(status_file_path, 'w') as f:
@@ -55,7 +54,9 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
             f.close()
 
         # Create the embeddings
-        embeddings = OpenAIEmbeddings()
+        embeddings = HuggingFaceInferenceAPIEmbeddings(
+            api_key=HF_API_KEY ,model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
 
         # Load and process the JSON transcript
         with open(f'{BASE_DIR}/{podcast_id}/{episode_id}.json', 'r') as file:
@@ -139,3 +140,6 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
         print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Has Speaker Labels: {has_speaker_labels}")
         print(f"An error occurred: {e}")
         raise e
+    
+
+
