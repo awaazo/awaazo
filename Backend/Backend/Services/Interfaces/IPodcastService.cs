@@ -40,6 +40,8 @@ public interface IPodcastService
     public Task<bool> DeleteWatchHistory(User user,Guid episodeId);
     public Task<bool> DeleteAllWatchHistory(User user);
 
+    // AI GENERATED EPISODES
+    public Task<bool> GenerateAIEpisodeAsync(GenerateAIEpisodeRequest request, Guid podcastId, User user, string domainUrl);
 
 
     // TRANSCRIPT

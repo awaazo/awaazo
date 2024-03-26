@@ -6,6 +6,7 @@ import assistant_service.generate_episode_text as generate_episode_text
 
 import torch
 import os
+import requests
 
 def tts_rvc_pipeline(podcast_id, episode_id, text, delimiter='', speaker='Default', language='en', use_tortoise=True, 
                      index_rate=0.5, filter_radius=3, resample_sr=0, rms_mix_rate=0.25, protect=0.33):
@@ -191,7 +192,7 @@ def transcription_ingestion_pipeline(podcast_id, episode_id, model_name="base", 
         print("------------- Transcription Ingestion Pipeline Failed -------------")
         print(e)
 
-def generate_episode_pipeline(podcast_id, episode_id, podcast_name, podcast_description, prompt,speaker_name='Default'):
+def generate_episode_pipeline(podcast_id, episode_id, podcast_name, podcast_description, prompt,speaker_name='Drinker'):
     try:
         print("------------- Text Generation Pipeline Started -------------")
 
@@ -202,7 +203,7 @@ def generate_episode_pipeline(podcast_id, episode_id, podcast_name, podcast_desc
         tts_rvc_pipeline(podcast_id, episode_id, text,speaker=speaker_name)
 
         # Run the transcription and ingestion pipelines
-        transcription_ingestion_pipeline(podcast_id, episode_id)
+        #transcription_ingestion_pipeline(podcast_id, episode_id)
 
         print("------------- Text Generation Pipeline Completed -------------")
     except Exception as e:

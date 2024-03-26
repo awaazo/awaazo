@@ -113,7 +113,7 @@ public class PodcastResponse
         IsExplicit = p.IsExplicit;
         Type = p.GetPodcastTypeString();
         PodcasterId = p.PodcasterId;
-        Episodes = p.Episodes.Select(e => new EpisodeResponse(e, domainUrl)).ToList();
+        Episodes = p.Episodes.Where(e=>e.Duration!=0).Select(e => new EpisodeResponse(e, domainUrl)).ToList();
         Ratings = p.Ratings.Select(r => new RatingResponse(r, domainUrl)).ToList();
         TotalRatings = (ulong)Ratings.Where(r => r.Rating != 0).Count();
         TotalPodcastPoints = Episodes.Sum(u => u.TotalPoints);

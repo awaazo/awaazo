@@ -460,7 +460,7 @@ async def handle_generate_episode_request(request):
         podcast_name = data.get('podcast_name')
         podcast_description = data.get('podcast_description')
         prompt = data.get('prompt')
-        speaker_name = data.get('speaker_name', 'Default')
+        speaker_name = data.get('speaker_name', 'Drinker')
 
         print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Podcast Name: {podcast_name}, Podcast Description: {podcast_description}, Prompt: {prompt}\n")
 
