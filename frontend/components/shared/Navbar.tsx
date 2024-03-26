@@ -37,8 +37,8 @@ export default function Navbar() {
   const [isUserSet, setIsUserSet] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [navbarStyle, setNavbarStyle] = useState({
-    backgroundColor: 'transparent',
-    backdropFilter: 'blur(10px)',
+
+    backdropFilter: 'blur(0px)',
   })
 
   interface SessionExt extends DefaultSession {
@@ -118,27 +118,24 @@ export default function Navbar() {
 
   // Function to handle scroll event
   const handleScroll = () => {
-    const scrollY = window.scrollY
-    const maxScroll = 100
-    const opacity = Math.min(scrollY / maxScroll, 1)
-    const blur = Math.min((scrollY / maxScroll) * 25, 25)
+    const scrollY = window.scrollY;
+    const maxScroll = 100; // Adjust this value based on when you want the blur effect to be fully applied
+    const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 20px is the maximum blur value, adjust as needed
 
     setNavbarStyle({
-      backgroundColor: `rgba(255, 255, 255, 0)`,
-      backdropFilter: `blur(50px)`,
-    })
+      backdropFilter: `blur(${blurIntensity}px)`,
+    });
   }
 
-  // useEffect(() => {
-  //   // Add scroll event listener when the component mounts
-  //   window.addEventListener("scroll", handleScroll);
+  useEffect(() => {
+    // Add scroll event listener when the component mounts
+    window.addEventListener("scroll", handleScroll);
 
-  //   // Cleanup by removing the event listener when the component unmounts
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
-
+    // Cleanup by removing the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount()

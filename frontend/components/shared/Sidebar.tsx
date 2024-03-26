@@ -18,7 +18,7 @@ const Sidebar = () => {
   // In your MainContent component
   const mainContentStyle = {
     marginLeft: "0px",
-    marginRight: "2em",
+    marginRight: "3em",
     zIndex: 25,
   };
   const [user, setUser] = useState({
