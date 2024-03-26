@@ -15,15 +15,15 @@ const CommentsButton = ({ episodeId, initialComments, showCount }) => {
   return (
     <>
       {showCount ? (
-        <Tooltip label="Comment" aria-label="Comment">
-          <Button p={2} m={1} leftIcon={<Icon as={Chat} />} onClick={handleClick} variant={"ghost"} data-cy={`playerbar-comment-button`}>
+
+          <Button leftIcon={<Icon as={Chat} />} onClick={handleClick} variant="minimal" data-cy={`playerbar-comment-button`}>
             {noOfComments}
           </Button>
-        </Tooltip>
+
       ) : (
-        <Tooltip label={`${noOfComments} Comments`} aria-label={`${noOfComments} Comments`}>
-          <Button p={2} m={1} onClick={handleClick} variant={"ghost"} data-cy={`playerbar-comment-button`}>
-            <Chat width="18px" height="18px" />
+        <Tooltip label={`${noOfComments} Comments`} aria-label={`${noOfComments} Comments`} >
+          <Button  onClick={handleClick} variant={"minimal"} data-cy={`playerbar-comment-button`} color={"az.greyish"} >
+            <Chat width="16px" height="16px" />
           </Button>
         </Tooltip>
       )}
