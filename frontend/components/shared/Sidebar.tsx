@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack } from "@chakra-ui/react";
 import Link from "next/link";
 import Logo from "../../public/logo_white.svg";
-import { Home, Search , Add , Cards} from '../../public/icons'
+import { Home, Search, Add, Cards } from '../../public/icons'
 import { useRouter } from "next/router";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../types/Interfaces";
@@ -11,6 +11,7 @@ import CreatePlaylistModal from "../playlist/CreatePlaylistModal";
 import { PiQueueFill } from "react-icons/pi";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
+import { MdKeyboardDoubleArrowRight, MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -37,9 +38,9 @@ const Sidebar = () => {
         return newPlaylists;
       });
     };
-  
+
     window.addEventListener('playlistUpdated', handlePlaylistUpdate);
-  
+
     return () => {
       window.removeEventListener('playlistUpdated', handlePlaylistUpdate);
     };
@@ -92,7 +93,7 @@ const Sidebar = () => {
 
   const MobileNavigation = () => {
     return (
-      <Box position="fixed" bottom="0" left="0" right="0" py={2} zIndex={1000} borderTop={"2px solid rgba(255, 255, 255, 0.03)"} bg="rgba(255, 255, 255, 0.04)" backdropFilter="blur(40px)">
+      <Box position="fixed" right="0" py={2} zIndex={1000} borderTop={"2px solid rgba(255, 255, 255, 0.03)"} bg="rgba(255, 255, 255, 0.04)" backdropFilter="blur(40px)">
         <HStack justify="space-around">
           <Link href="/" passHref>
             <IconButton icon={<Home />} variant="ghost" aria-label="Home" borderRadius="50%" fontSize="18px" />
@@ -113,28 +114,32 @@ const Sidebar = () => {
   } else {
     return (
       <Box
-        bg="rgba(255, 255, 255, 0.04)"
-        w={collapsed ? "60px" : "15em"}
+        bg="linear-gradient(180deg, #37383A8C, #18181827)"
+        w={collapsed ? "70px" : "15em"}
         h="calc(88vh - 5em)"
-        py={8}
+        py={10}
         px={collapsed ? 2 : 3}
         position="sticky"
         mt="5em"
         zIndex={10}
         transition="width 0.2s ease-in-out"
-        roundedTopRight="10px"
-        roundedBottomRight="10px"
-        outline={"2px solid rgba(255, 255, 255, 0.06)"}
+        roundedTopRight="25px"
+        roundedBottomRight="25px"
+        outline={"2px solid rgba(255, 255, 255, 0.01)"}
+        boxShadow={"0px 0px 20px rgba(0, 0, 0, 0.15)"}
+        flexDirection="column"
+        justifyContent="space-between"
       >
-        <Flex justify="center" align="center" mb={7}>
+
+        <Flex align={collapsed ? "left" : "center"} p="3" mb="7" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
           <Image src={Logo.src} alt="Logo" w="28px" />
         </Flex>
-        <VStack align="left" spacing={"1em"}>
-          <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
+        <VStack spacing={"2em"} marginTop={"4em"} align={collapsed ? "center" : "left"}>
+          <VStack align={collapsed ? "center" : "left"}>
             {/* Home */}
             <Link href="/" passHref>
-              <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
-                <Icon as={Home} fontSize="xl" mr={3} />
+              <Flex align={collapsed ? "left" : "center"} p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
+                <Icon as={Home} fontSize="xl" mr={collapsed ? "0" : "3"} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="bold">
                     Home
@@ -145,8 +150,8 @@ const Sidebar = () => {
 
             {/* Explore */}
             <Link href="/Explore/Search" passHref>
-              <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
-                <Icon as={Search} fontSize="xl" mr={3} />
+              <Flex align={collapsed ? "left" : "center"} p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} ml={collapsed ? "0" : "1em"}>
+                <Icon as={Search} fontSize="xl" mr={collapsed ? "0" : "3"} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
                     Explore
@@ -154,36 +159,36 @@ const Sidebar = () => {
                 )}
               </Flex>
             </Link>
-          </Box>
+          </VStack>
 
           {/* My Shelf */}
-          <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
-          <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed}>
-            <Icon as={Cards} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
-            {!collapsed && (
-              <Box flex="1" fontWeight="bold">
-                My Shelf
-              </Box>
-            )}
-            {!collapsed && (
-              <Box onClick={handleModalClick}>
-                {" "}
-                <Tooltip label="View Queue" fontSize="small">
-                  <span>
-                    <IconButton icon={<PiQueueFill />} variant={"ghost"} aria-label="View Queue" fontSize={"15px"} onClick={onQueueModalOpen} data-cy={`queue-button`} />{" "}
-                  </span>
-                </Tooltip>
-                {/* Conditionally rendering the create playlist button only when login prompt is not visible */}
-                {!showLoginPrompt && (
-                  <Tooltip label="Create Playlist" fontSize="small">
+          <Box>
+            <Flex justify="center" align="center" p="3" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed} ml={"1em"}>
+              <Icon as={Cards} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
+              {!collapsed && (
+                <Box flex="1" fontWeight="bold">
+                  My Shelf
+                </Box>
+              )}
+              {!collapsed && (
+                <Box onClick={handleModalClick}>
+                  {" "}
+                  <Tooltip label="View Queue" fontSize="small">
                     <span>
-                      <IconButton icon={<Add />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"}  onClick={() => {handleAddPlaylistClick() ;onCreateModalOpen(); }} data-cy={`add-playlist-button`} />
+                      <IconButton icon={<PiQueueFill />} variant={"ghost"} aria-label="View Queue" fontSize={"15px"} onClick={onQueueModalOpen} data-cy={`queue-button`} />{" "}
                     </span>
                   </Tooltip>
-                )}
-              </Box>
-            )}
-          </Flex>
+                  {/* Conditionally rendering the create playlist button only when login prompt is not visible */}
+                  {!showLoginPrompt && (
+                    <Tooltip label="Create Playlist" fontSize="small">
+                      <span>
+                        <IconButton icon={<Add />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"} onClick={() => { handleAddPlaylistClick(); onCreateModalOpen(); }} data-cy={`add-playlist-button`} />
+                      </span>
+                    </Tooltip>
+                  )}
+                </Box>
+              )}
+            </Flex>
 
             {/* User Playlists */}
             {!showLoginPrompt && userPlaylists.length > 0 && (
@@ -191,7 +196,7 @@ const Sidebar = () => {
                 {userPlaylists.map((playlist) => (
                   <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                     <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: "rgba(255, 255, 255, 0.05)" }}>
-                      <Image src={`${playlist.coverArt}?v=${playlist.lastUpdated}`} alt="Playlist" boxSize={collapsed ? "24px" : "12"} objectFit="cover" mr={collapsed ? "0" : "2"} borderRadius="8" key={playlist.lastUpdated}/>
+                      <Image src={`${playlist.coverArt}?v=${playlist.lastUpdated}`} alt="Playlist" boxSize={collapsed ? "24px" : "12"} objectFit="cover" mr={collapsed ? "0" : "2"} borderRadius="8" key={playlist.lastUpdated} />
                       {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
                     </Flex>
                   </Link>
@@ -199,18 +204,38 @@ const Sidebar = () => {
               </VStack>
             )}
           </Box>
-        </VStack>{" "}
-        <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
+        </VStack >
+        <Flex justify="center" align="center" mt={7} mb={collapsed ? 7 : 0} position="relative">
+          <IconButton
+            icon={collapsed ? <MdKeyboardDoubleArrowRight /> : <MdKeyboardDoubleArrowLeft />}
+            aria-label={collapsed ? "Open Sidebar" : "Collapse Sidebar"}
+            onClick={toggleCollapsed}
+            position="absolute"
+            right="-30px" // Adjust this value as needed to move the button further to the right
+            top="10em"
+            transform="translateY(-50%)"
+            borderRadius="20px"
+            backdropFilter="blur(40px)"
+            bgColor="rgba(255, 255, 255, 0.01)"
+            _hover={{
+              bgColor: "transparent",
+            }}
+            zIndex={20} // Ensure it's above other content
+          />
+        </Flex>
+        < ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
         <CreatePlaylistModal handleReload={handleReload} isOpen={isCreateModalOpen} onClose={onCreateModalClose} />
         {/* LoginPrompt */}
-        {showLoginPrompt && (
-          <LoginPrompt
-            isOpen={showLoginPrompt}
-            onClose={() => setShowLoginPrompt(false)}
-            infoMessage="To access this feature, you must be logged in. Please log in or create an account."
-          />
-        )}
-      </Box>
+        {
+          showLoginPrompt && (
+            <LoginPrompt
+              isOpen={showLoginPrompt}
+              onClose={() => setShowLoginPrompt(false)}
+              infoMessage="To access this feature, you must be logged in. Please log in or create an account."
+            />
+          )
+        }
+      </Box >
     );
   }
 };
