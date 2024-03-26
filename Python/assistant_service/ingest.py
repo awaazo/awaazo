@@ -1,10 +1,8 @@
 import uuid
 import json
 import os
-import chromadb
 from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
 from dotenv import load_dotenv
@@ -38,12 +36,12 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
         # Load environment variables
         load_dotenv()
         
-        # Load OpenAI API key
-        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-        print(f"Loaded OPENAI_API_KEY...")
+        # Load HuggingFace API key
+        HF_API_KEY = os.getenv("HF_API_KEY")
+        print(f"Loaded HF_API_KEY...")
         
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
+        if not HF_API_KEY:
+            raise ValueError("HF_API_KEY not found in environment variables")
 
         # Check if the transcript exists
         if not os.path.exists(f'{BASE_DIR}/{podcast_id}/{episode_id}.json'):
@@ -55,14 +53,10 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
             f.write('In progress')
             f.close()
 
-
-        embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2",
-            model_kwargs={"device": "cuda"}
-        )
-
         # Create the embeddings
-        #embeddings = OpenAIEmbeddings()
+        embeddings = HuggingFaceInferenceAPIEmbeddings(
+            api_key=HF_API_KEY ,model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
 
         # Load and process the JSON transcript
         with open(f'{BASE_DIR}/{podcast_id}/{episode_id}.json', 'r') as file:

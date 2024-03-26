@@ -29,8 +29,6 @@ def generate_episode_text(podcast_name, podcast_description, prompt):
         # Generate the episode text
         response = client.chat.completions.create(model="mixtral-8x7b-32768",messages=[{"role":"user","content":prompt}], temperature=0.5, max_tokens=1000)
 
-
-
         
         print("------------ Text Generation ended ------------")
         return response.choices[0].message.content.replace("\n", " ").replace("\"", "'")
