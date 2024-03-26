@@ -231,24 +231,7 @@ const Sidebar = () => {
               )}
             </Box>
           </VStack >
-          <Flex justify="center" align="center" mt={7} mb={collapsed ? 7 : 0} position="relative">
-            <IconButton
-              icon={collapsed ? <MdKeyboardDoubleArrowRight /> : <MdKeyboardDoubleArrowLeft />}
-              aria-label={collapsed ? "Open Sidebar" : "Collapse Sidebar"}
-              onClick={toggleCollapsed}
-              position="absolute"
-              right="-30px" // Adjust this value as needed to move the button further to the right
-              top="10em"
-              transform="translateY(-50%)"
-              borderRadius="20px"
-              backdropFilter={"blur(40px)"}
 
-              _hover={{
-                bgColor: "transparent",
-              }}
-              zIndex={30} // Ensure it's above other content
-            />
-          </Flex>
           < ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />
           <CreatePlaylistModal handleReload={handleReload} isOpen={isCreateModalOpen} onClose={onCreateModalClose} />
           {/* LoginPrompt */}
@@ -262,6 +245,26 @@ const Sidebar = () => {
             )
           }
         </Box >
+        <Flex justify="center" align="center" height="100vh" position="relative">
+          <IconButton
+            icon={collapsed ? <MdKeyboardDoubleArrowRight /> : <MdKeyboardDoubleArrowLeft />}
+            aria-label={collapsed ? "Open Sidebar" : "Collapse Sidebar"}
+            onClick={toggleCollapsed}
+            position="absolute"
+            left="3em"
+            top="50%"
+            transform="translateY(-50%)"
+            borderRadius="20px"
+            backdropFilter="blur(40px)"
+            zIndex={990000}
+            bgColor="rgba(0, 0, 0, 0.0)"
+            boxShadow="inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.2)"
+            _hover={{
+              bgColor: "rgba(255, 255, 255, 0.0)",
+              boxShadow: "inset 0 0 0px rgba(255, 255, 255, 0), inset -2px 0 1px rgba(255, 255, 255, 0.3)",
+            }}
+          />
+        </Flex>
       </div>
     );
   }
