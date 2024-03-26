@@ -203,7 +203,7 @@ def generate_episode_pipeline(podcast_id, episode_id, podcast_name, podcast_desc
         tts_rvc_pipeline(podcast_id, episode_id, text,speaker=speaker_name)
 
         # Run the transcription and ingestion pipelines
-        #transcription_ingestion_pipeline(podcast_id, episode_id)
+        transcription_ingestion_pipeline(podcast_id, episode_id)
 
         print("------------- Text Generation Pipeline Completed -------------")
     except Exception as e:
