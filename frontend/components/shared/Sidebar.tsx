@@ -151,7 +151,7 @@ const Sidebar = () => {
           boxShadow={"1px 0px 20px 1px rgba(0, 0, 0, 0.205)"}
           flexDirection="column"
           justifyContent="space-between"
-          backdropFilter="blur(25px)"
+          backdropFilter="blur(15px)"
           bgColor={"rgba(0, 0, 0, 0.2)"}
           border={'2px solid rgba(255, 255, 255, 0.03)'}
         >
