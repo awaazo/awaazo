@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, Spinner, Flex, VStack, HStack } from "@chakra-ui/react";
+import { Box, Text, Spinner, Flex, VStack, HStack, Grid, useBreakpointValue } from "@chakra-ui/react";
 import { Podcast } from "../../types/Interfaces";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import PodcastCard from "../cards/PodcastCard";
@@ -31,6 +31,19 @@ const ForYou: React.FC = () => {
 
     fetchPodcasts();
   }, []);
+  // Define responsive grid layout
+  const gridTemplateColumns = useBreakpointValue({
+    base: "repeat(2, 1fr)",
+    sm: "repeat(2, 1fr)",
+    md: "repeat(auto-fit, minmax(220px, 1fr))",
+  });
+
+  const gridColumnGap = useBreakpointValue({
+    base: "10px", // Adjust this value to decrease the gap between columns in mobile mode
+    sm: "10px", // Gap for small devices
+    md: "20px", // Gap for medium to larger devices
+  });
+
 
   return (
     <Box>
@@ -41,11 +54,12 @@ const ForYou: React.FC = () => {
       ) : podcasts && podcasts.length > 0 ? (
         <>
           <Text fontSize="2xl" fontWeight="bold" mt={4}>Podcasts</Text>
-          <Flex flexWrap="wrap">
+          <Grid templateColumns={gridTemplateColumns} gap={{ base: "5px", sm: "10px", md: "20px" }}>
             {podcasts.map((podcast) => (
               <PodcastCard key={podcast.id} podcast={podcast} />
             ))}
-          </Flex>
+          </Grid>
+
           <Flex width="100%" alignItems="flex-start">
             <HStack width="40%">
               <VStack align="left">

@@ -19,7 +19,7 @@ const overrides = {
       red: '#FF6A5F',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
-      blackish: '#1D1D1D',
+      blackish: '#18191B',
       greyish: '#818990',
       darkGrey: '#393939',
       darkerGrey: '#2D2D2D',
