@@ -40,5 +40,10 @@ namespace Backend.Controllers.Requests
       [Required]
       public string ConfirmNewPassword { get; set; } = string.Empty;
    }
+
+   [BindProperties]
+   public record VerifyEmailRequest(
+      [Required] string Token
+      );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
-import { RiRobot2Fill } from "react-icons/ri";
+import { Waazo } from '../../../public/icons';
 import { usePanel } from "../../../utilities/PanelContext";
 import AuthPrompt from "../../auth/AuthPrompt";
 import AuthHelper from "../../../helpers/AuthHelper";
@@ -25,7 +25,7 @@ const ChatBotButton = ({ episodeId }) => {
     <>
       <Tooltip label="ChatBot" aria-label="ChatBot">
         <Button padding={"0px"} variant={"ghost"} onClick={handleClick}>
-          <RiRobot2Fill size="20px" />
+          <Waazo width="18px" height="18px" />
         </Button>
       </Tooltip>
       {showLoginPrompt && (

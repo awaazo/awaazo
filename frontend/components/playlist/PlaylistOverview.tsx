@@ -28,7 +28,7 @@ import {
 } from "@chakra-ui/react";
 import { Episode, Playlist } from "../../types/Interfaces";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
-import EpisodeCard from "../cards/EpisodeCard";
+import EpisodeCard from "./EpisodeCardForPlaylist";
 import { RiPlayList2Fill } from "react-icons/ri";
 import { convertTime } from "../../utilities/commonUtils";
 import { ImShuffle } from "react-icons/im";

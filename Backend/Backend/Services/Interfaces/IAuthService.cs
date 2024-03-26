@@ -21,4 +21,6 @@ public interface IAuthService
     public Task<bool> CheckEmail(string email);
 
     public Task SentForgotPasswordEmail(string requestEmail);
+    public Task SendWelcomeEmail(User newUser, string getDomainUrl);
+    public Task VerifyEmail(User? user, string requestToken);
 }
