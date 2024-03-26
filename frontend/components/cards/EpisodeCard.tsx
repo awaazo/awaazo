@@ -23,8 +23,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
 
   return (
     <HStack
-      
-     
+
+
       overflow="hidden"
       p={'15px'}
       alignItems="center"
@@ -34,7 +34,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
       _hover={{
         transform: 'scale(1.01)',
       }}
-      transition="transform 1s ease-in-out"
+      transition="transform 0.1s ease-in-out"
       spacing={3}
     >
       <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" width="80px" height="80px" borderRadius="10px" />

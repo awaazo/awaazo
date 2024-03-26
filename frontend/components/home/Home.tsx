@@ -1,33 +1,50 @@
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Text, Button, ButtonGroup } from "@chakra-ui/react";
 import RecentlyUploaded from "./RecentlyUploaded";
 import ForYou from "./ForYou";
 import HighLights from "../highlights/Highlights";
 
-
 const Home = () => {
+  // State to track the current view
+  const [currentView, setCurrentView] = useState('ForYou');
 
- 
+  // Function to render the current view based on state
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case 'RecentlyUploaded':
+        return <RecentlyUploaded />;
+      case 'ForYou':
+        return <ForYou />;
+      case 'Highlights':
+        return <HighLights />;
+      default:
+        return <RecentlyUploaded />;
+    }
+  };
+
   return (
     <Box px={["1em", "2em", "4em"]} minH="100vh">
-      <Box mb={4}>
-        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
+      <ButtonGroup mb={4} spacing={4}>
+        <Button
+          onClick={() => setCurrentView('ForYou')}
+          variant={currentView === 'ForYou' ? 'solid' : 'ghost'}
+        >
+          For You
+        </Button>
+        <Button
+          onClick={() => setCurrentView('RecentlyUploaded')}
+          variant={currentView === 'RecentlyUploaded' ? 'solid' : 'ghost'}
+        >
           Recently Uploaded
-        </Text>
-        <RecentlyUploaded />
-      </Box>
-      <Box mb={4}>
-        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
-          Podcasts For You
-        </Text>
-        <ForYou />
-      </Box>
-      <Box mb={4}>
-        <Text fontSize={["xl", "2xl"]} fontWeight="bold" mb={3}>
-          Podcasts Highlights
-        </Text>
-        <HighLights />
-      </Box>
+        </Button>
+        <Button
+          onClick={() => setCurrentView('Highlights')}
+          variant={currentView === 'Highlights' ? 'solid' : 'ghost'}
+        >
+          Highlights
+        </Button>
+      </ButtonGroup>
+      {renderCurrentView()}
     </Box>
   );
 };
