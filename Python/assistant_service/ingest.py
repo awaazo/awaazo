@@ -4,6 +4,7 @@ import os
 import chromadb
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
 from dotenv import load_dotenv
@@ -54,8 +55,14 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
             f.write('In progress')
             f.close()
 
+
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={"device": "cuda"}
+        )
+
         # Create the embeddings
-        embeddings = OpenAIEmbeddings()
+        #embeddings = OpenAIEmbeddings()
 
         # Load and process the JSON transcript
         with open(f'{BASE_DIR}/{podcast_id}/{episode_id}.json', 'r') as file:
@@ -139,3 +146,6 @@ def process_transcript(podcast_id,episode_id,has_speaker_labels=False):
         print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Has Speaker Labels: {has_speaker_labels}")
         print(f"An error occurred: {e}")
         raise e
+    
+
+

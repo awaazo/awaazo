@@ -2,6 +2,7 @@ import os
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.prompts import SystemMessagePromptTemplate, ChatPromptTemplate, HumanMessagePromptTemplate
 from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
@@ -55,7 +56,13 @@ def chat(podcast_id, episode_id, prompt):
         collection_name = f"vector_{episode_id}_store"
 
         # Create the language model and embeddings
-        embeddings = OpenAIEmbeddings()
+
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={"device": "cuda"}
+        )
+
+        #embeddings = OpenAIEmbeddings()
 
         # Access the vectorstore
         vectorstore = Chroma(embedding_function=embeddings, persist_directory=persist_directory, collection_name=collection_name)

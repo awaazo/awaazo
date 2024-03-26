@@ -34,6 +34,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 RUN pip3 install --no-cache-dir chromadb
 RUN pip3 install --no-cache-dir transformers
 RUN pip3 install --no-cache-dir tiktoken
+RUN pip3 install --no-cache-dir sentence-transformers
 
 
 # create a new stage from the base image
