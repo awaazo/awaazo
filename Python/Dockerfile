@@ -27,8 +27,6 @@ COPY rvc_service/requirements.txt .
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-RUN pip3 install --no-cache-dir sentence-transformers
-
 COPY text_to_speech_service/requirements.txt .
 
 RUN pip3 install --no-cache-dir -r requirements.txt
