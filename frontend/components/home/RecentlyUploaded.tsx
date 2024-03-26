@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Episode } from '../../types/Interfaces'
 import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from '@chakra-ui/react'
 import PodcastHelper from '../../helpers/PodcastHelper'
-import EpisodeCard from './EpisodeCard'
+import EpisodeCard from '../cards/EpisodeCard'
 
 const RecentlyUploaded: React.FC = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([])

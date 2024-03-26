@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Podcast, Episode } from "../../../types/Interfaces";
 import PodcastHelper from "../../../helpers/PodcastHelper";
-import EpisodeCard from "../../cards/EpisodeCard";
+import EpisodeCard from "../../playlist/EpisodeCardForPlaylist";
 
 // Define the MyEpisodes component
 export default function MyEpisodes() {
