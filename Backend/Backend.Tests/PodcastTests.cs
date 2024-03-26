@@ -245,27 +245,27 @@ public class PodcastTests
     }
 
     //Raw SQL has issues with test framework, will fix at a later date
-    //[Fact]
-    //public void Podcast_GetPodcastsByTagsAsync_ValidRequest_ReturnsTrue()
-    //{
-    //    // Arrange
-    //    List<PodcastResponse> sampleResponse = new();
-    //    List<PodcastResponse> response = null;
-    //    sampleResponse.Add(new PodcastResponse(_podcast.Object.First(), DOMAIN));
-
-    //    // Act
-    //    try
-    //    {
-    //        response = _podcastService.GetPodcastsByTagsAsync(PAGE, PAGE_SIZE, DOMAIN, TAGS).Result;
-    //    }
-    //    // Assert
-    //    catch (Exception e)
-    //    {
-    //        Assert.Fail("Should not have thrown an error: " + e.Message);
-    //    }
-
-    //    Assert.Equal(sampleResponse.First().Id, response.First().Id);
-    //}
+    [Fact]
+    public void Podcast_GetPodcastsByTagsAsync_ValidRequest_ReturnsTrue()
+    {
+        // Arrange
+        List<PodcastResponse> sampleResponse = new();
+        List<PodcastResponse> response = null;
+        sampleResponse.Add(new PodcastResponse(_podcast.Object.First(), DOMAIN));
+    
+        // Act
+        try
+        {
+            response = _podcastService.GetPodcastsByTagsAsync(PAGE, PAGE_SIZE, DOMAIN, TAGS).Result;
+        }
+        // Assert
+        catch (Exception e)
+        {
+            Assert.Fail("Should not have thrown an error: " + e.Message);
+        }
+    
+        Assert.Equal(sampleResponse.First().Id, response.First().Id);
+    }
 
     // It is currently impossible to test this since it calls an external api, and we cant moq that
     //[Fact]
