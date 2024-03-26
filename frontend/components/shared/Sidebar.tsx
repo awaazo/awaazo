@@ -114,7 +114,7 @@ const Sidebar = () => {
   } else {
     return (
       <Box
-        bg="linear-gradient(180deg, #37383A8C, #18181827)"
+        bg="linear-gradient(180deg, #2D2D2F8C, #1F1F218C)"
         w={collapsed ? "70px" : "15em"}
         h="calc(88vh - 5em)"
         py={10}
@@ -126,7 +126,7 @@ const Sidebar = () => {
         roundedTopRight="25px"
         roundedBottomRight="25px"
         outline={"2px solid rgba(255, 255, 255, 0.01)"}
-        boxShadow={"0px 0px 20px rgba(0, 0, 0, 0.15)"}
+        // boxShadow={"0px 0px 60px 20px rgba(0, 0, 0, 0.05)"}
         flexDirection="column"
         justifyContent="space-between"
       >
