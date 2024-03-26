@@ -1,12 +1,19 @@
-import { Box, HStack, VStack, Image, Text, IconButton, Icon } from '@chakra-ui/react'
+import { HStack, VStack, Image, Text, IconButton, Icon } from '@chakra-ui/react'
 import { Episode } from '../../types/Interfaces'
 import { usePlayer } from '../../utilities/PlayerContext'
 import { convertTime } from '../../utilities/commonUtils'
-import { Chat,  Dots, Time, Plays, Play } from '../../public/icons'
+import { Dots, Time, Plays, Play } from '../../public/icons'
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 
-const EpisodeCard: React.FC<{ episode: Episode }> = ({ episode }) => {
+interface EpisodeCardProps {
+  episode: Episode
+  showLike?: boolean
+  showComment?: boolean
+  showMore?: boolean
+}
+
+const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, showComment = true, showMore = true }) => {
   const { thumbnailUrl, episodeName, podcastName, duration, likes, playCount, id } = episode
   const { dispatch } = usePlayer()
 
@@ -16,9 +23,9 @@ const EpisodeCard: React.FC<{ episode: Episode }> = ({ episode }) => {
 
   return (
     <HStack
-      width="100%" 
-      maxW="600px" 
-      overflow="hidden" 
+      
+     
+      overflow="hidden"
       p={'15px'}
       alignItems="center"
       borderRadius="15px"
@@ -59,10 +66,10 @@ const EpisodeCard: React.FC<{ episode: Episode }> = ({ episode }) => {
 
       <HStack spacing={1}>
         <IconButton aria-label={'Play'} icon={<Play />} variant="circle" background="az.red" minWidth="2.5em" size="md" onClick={handleEpisodeClick} />
-        <HStack spacing={0} >
-          <Likes episodeOrCommentId={id} initialLikes={likes} showCount={false} />
-          <CommentButton episodeId={episode.id} initialComments={0} showCount={false} />
-          <IconButton aria-label="more" icon={<Icon as={Dots} />} variant="minimal" color="az.greyish" />
+        <HStack spacing={0}>
+          {showLike ? <Likes episodeOrCommentId={id} initialLikes={likes} showCount={false} /> : null}
+          {showComment ? <CommentButton episodeId={episode.id} initialComments={0} showCount={false} /> : null}
+          {showMore ? <IconButton aria-label="more" icon={<Icon as={Dots} />} variant="minimal" color="az.greyish" /> : null}
         </HStack>
       </HStack>
     </HStack>
