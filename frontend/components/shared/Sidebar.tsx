@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { FaHome, FaPlus, FaSearch } from "react-icons/fa";
-import { VscLibrary } from "react-icons/vsc";
 import Logo from "../../public/logo_white.svg";
+import { Home, Search , Add , Cards} from '../../public/icons'
 import { useRouter } from "next/router";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { Playlist } from "../../types/Interfaces";
@@ -96,13 +95,13 @@ const Sidebar = () => {
       <Box position="fixed" bottom="0" left="0" right="0" py={2} zIndex={1000} borderTop={"2px solid rgba(255, 255, 255, 0.03)"} bg="rgba(255, 255, 255, 0.04)" backdropFilter="blur(40px)">
         <HStack justify="space-around">
           <Link href="/" passHref>
-            <IconButton icon={<FaHome />} variant="ghost" aria-label="Home" borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Home />} variant="ghost" aria-label="Home" borderRadius="50%" fontSize="18px" />
           </Link>
           <Link href="/Explore/Search" passHref>
-            <IconButton icon={<FaSearch />} variant="ghost" aria-label="Search" borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Search />} variant="ghost" aria-label="Search" borderRadius="50%" fontSize="18px" />
           </Link>
           <Link href="/Playlist/" passHref>
-            <IconButton icon={<VscLibrary />} variant="ghost" aria-label="Playlist" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Cards />} variant="ghost" aria-label="Playlist" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
           </Link>
         </HStack>
       </Box>
@@ -135,7 +134,7 @@ const Sidebar = () => {
             {/* Home */}
             <Link href="/" passHref>
               <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
-                <Icon as={FaHome} fontSize="xl" mr={3} />
+                <Icon as={Home} fontSize="xl" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="bold">
                     Home
@@ -147,7 +146,7 @@ const Sidebar = () => {
             {/* Explore */}
             <Link href="/Explore/Search" passHref>
               <Flex as={Flex} align="center" p="2" mb="1" borderRadius="md" color={router.pathname === "/Explore/Search" ? "brand.200" : "grey.700"} transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }}>
-                <Icon as={FaSearch} fontSize="xl" mr={3} />
+                <Icon as={Search} fontSize="xl" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="bold" data-cy={`explore-icon`}>
                     Explore
@@ -160,7 +159,7 @@ const Sidebar = () => {
           {/* My Shelf */}
           <Box p={1} bg={"rgba(0, 0, 0, 0.1)"} rounded={"xl"} width={"100%"} outline={"2px solid rgba(255, 255, 255, 0.05)"}>
           <Flex align="center" p="2" mb="1" borderRadius="md" color="grey.700" transition="color 0.4s ease-in-out" _hover={{ textDecoration: "none", color: "brand.300" }} onClick={toggleCollapsed}>
-            <Icon as={VscLibrary} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
+            <Icon as={Cards} fontSize="xl" mr={3} data-cy={`playlist-icon`} />
             {!collapsed && (
               <Box flex="1" fontWeight="bold">
                 My Shelf
@@ -178,7 +177,7 @@ const Sidebar = () => {
                 {!showLoginPrompt && (
                   <Tooltip label="Create Playlist" fontSize="small">
                     <span>
-                      <IconButton icon={<FaPlus />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"}  onClick={() => {handleAddPlaylistClick() ;onCreateModalOpen(); }} data-cy={`add-playlist-button`} />
+                      <IconButton icon={<Add />} variant={"ghost"} aria-label="Add Playlist" fontSize={"15px"}  onClick={() => {handleAddPlaylistClick() ;onCreateModalOpen(); }} data-cy={`add-playlist-button`} />
                     </span>
                   </Tooltip>
                 )}
