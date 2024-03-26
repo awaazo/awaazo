@@ -1,95 +1,66 @@
-import { Box, VStack, Image, Text, IconButton, useColorModeValue, Icon } from "@chakra-ui/react";
-import { FaPlay, FaClock} from "react-icons/fa";
-import { Episode } from "../../types/Interfaces";
-import { usePlayer } from "../../utilities/PlayerContext";
-import { convertTime } from "../../utilities/commonUtils";
+import { Box, HStack, VStack, Image, Text, IconButton, Icon } from '@chakra-ui/react'
+import { FaPlay, FaClock } from 'react-icons/fa'
+import { Episode } from '../../types/Interfaces'
+import { usePlayer } from '../../utilities/PlayerContext'
+import { convertTime } from '../../utilities/commonUtils'
+import { Chat, Like, Dots , Time , Plays } from '../../public/icons'
 
 const PodcastTicket: React.FC<{ episode: Episode }> = ({ episode }) => {
-  const { thumbnailUrl, episodeName, podcastName, duration, likes } = episode;
-  const { dispatch } = usePlayer();
+  const { thumbnailUrl, episodeName, podcastName, duration, likes, playCount } = episode
+  const { dispatch } = usePlayer()
 
   const handleEpisodeClick = () => {
-    dispatch({ type: "PLAY_NOW_QUEUE", payload: episode });
-  };
+    dispatch({ type: 'PLAY_NOW_QUEUE', payload: episode })
+  }
 
   return (
-    <VStack
-      p={2}
+    <HStack
+      width="100%" // Ensures HStack takes full width
+      maxW="600px" // Adjust maximum width as needed
+      overflow="hidden" // Prevents content from spilling out
+      p={'15px'}
       spacing={1}
       alignItems="center"
-      borderRadius="26px"
-      bg={useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(0, 0, 0, 0.2)")}
-      boxShadow="md"
+      borderRadius="15px"
+      bg={'az.darkerGrey'}
       _hover={{
-        bg: useColorModeValue("rgba(255, 255, 255, 0.3)", "rgba(0, 0, 0, 0.3)"),
-        boxShadow: "lg",
+        bg: 'az.blackish',
+        boxShadow: 'lg',
       }}
       transition="all 0.3s ease-in-out"
       onClick={handleEpisodeClick}
       cursor="pointer"
       role="group"
     >
-      <Box position="relative" width="120px" height="120px" borderRadius="20px" overflow="hidden">
-        <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" boxSize="full" />
-        <Box position="absolute" top="0" left="0" w="full" h="full">
-          <IconButton
-            aria-label="Play"
-            mb={2}
-            icon={<FaPlay />}
-            borderRadius={"15px"}
-            variant="ghost"
-            size="md"
-            shadow="md"
-            color="white"
-            // bg="brand.100"
-            bgGradient="linear(to-r, brand.100, brand.200)"
-            position="absolute"
-            bottom={-6}
-            left="50%"
-            transform="translateX(-50%) translateY(100%)"
-            opacity={0}
-            _groupHover={{
-              bottom: 0,
-              opacity: 1,
-              transform: "translateX(-50%) translateY(0%) ",
-            }}
-            transition="all 0.2s ease-in-out"
-          />
-          <Box
-            display="flex"
-            alignItems="center"
-            mt={2}
-            // bg="brand.100"
-            bgGradient="linear(to-r, brand.100, brand.200)"
-            p={1}
-            rounded="lg"
-            position="absolute"
-            top={-6}
-            left="50%"
-            transform="translateX(-50%)"
-            opacity={0}
-            _groupHover={{ top: 0, opacity: 1 }}
-            transition="all 0.2s ease-in-out"
-          >
-            <Icon as={FaClock} color="white" mr={1} size="md" />
-            <Text color="white" fontSize="small">
-              {convertTime(duration)}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+      <Image src={thumbnailUrl} alt={episodeName} objectFit="cover" width="80px" height="80px" borderRadius="10px" />
 
-      {/* Bottom: Episode Info */}
-      <VStack spacing={0} align="center" w="full">
-        <Text fontWeight="bold" noOfLines={1} textAlign="left" data-cy={`ticket-episode-${episode.episodeName}`}>
+      <VStack spacing={0} w="222px" flexDir="column" justify="center" align="flex-start" gap={"9px"} flexShrink={0}>
+        <Text fontWeight="bold" color="az.white" noOfLines={1} textAlign="left" data-cy={`ticket-episode-${episode.episodeName}`}>
           {episodeName}
         </Text>
-        <Text fontSize="sm" color="gray.500" noOfLines={1} textAlign="left">
+        <Text fontSize="sm" color="az.greyish" noOfLines={1} textAlign="left">
           {podcastName}
         </Text>
+        <HStack>
+          <Icon as={Plays} color="az.greyish" />
+          <Text color="az.greyish" fontSize="xs">
+            {playCount}
+          </Text>
+          <Icon as={Time} color="az.red" />
+          <Text color="az.greyish" fontSize="xs">
+            {convertTime(duration)}
+          </Text>
+        </HStack>
       </VStack>
-    </VStack>
-  );
-};
 
-export default PodcastTicket;
+      <HStack>
+        <IconButton icon={<Icon as={FaPlay} />} aria-label="Button 1" onClick={handleEpisodeClick}></IconButton>
+        <IconButton icon={<Icon as={Like} />} aria-label="Button 2"></IconButton>
+        <IconButton icon={<Icon as={Chat} />} aria-label="comments"></IconButton>
+        <IconButton icon={<Icon as={Dots} />} aria-label="more"></IconButton>
+      </HStack>
+    </HStack>
+  )
+}
+
+export default PodcastTicket

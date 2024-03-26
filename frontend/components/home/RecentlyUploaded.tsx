@@ -47,9 +47,10 @@ const RecentlyUploaded: React.FC = () => {
             },
           }}
         >
-          <SimpleGrid columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }} spacing={5}>
             {episodes && episodes.length > 0 ? episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />) : <Text>No episodes available</Text>}
-          </SimpleGrid>
+          {/* <SimpleGrid columns={{ base: 3, sm: 4, md: 5, lg: 6, xl: 7 }} spacing={5}>
+            {episodes && episodes.length > 0 ? episodes.map((episode) => <PodcastTicket key={episode.id} episode={episode} />) : <Text>No episodes available</Text>}
+          </SimpleGrid> */}
         </HStack>
       )}
     </VStack>
