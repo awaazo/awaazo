@@ -290,6 +290,7 @@ frontend/.env
 frontend/Dockerfile
 backend/Dockerfile
 backend/.env
+backend/backend/Migrations/**
 backend_server
 *.env.local
 *appsettings.json
@@ -310,3 +311,4 @@ python/text_to_speech_service/models/**
 python/.venv
 Python/assistant_service/*.env
 Backend/Backend/Migrations
+
