@@ -1,10 +1,16 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
+import { keyframes } from '@emotion/react';
 
 // this a fix for the default color mode issue
 const config: ThemeConfig = {
   useSystemColorMode: false,
   initialColorMode: 'dark',
 }
+
+const slideIn = keyframes`
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+`;
 
 const overrides = {
   colors: {
@@ -78,6 +84,39 @@ const overrides = {
         fontSize: 'xs',
       },
     },
+
+    Tabs: {
+     
+      variants: {
+        withIconOnSelected: (props) => ({
+          tab: {
+            fontSize: '16px',
+            position: 'relative',
+            transition: 'all 0.2s ease-in-out',
+            color:   '#818990',
+            fontWeight: 'medium',
+            _selected: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            _before: {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '1em',
+              width: '1em',
+              transition: 'opacity 0.3s ease-in-out',
+              opacity: 0,
+            },
+            ':focus': {
+              boxShadow: 'none',
+            },
+          },
+        }),
+      },
+    },
+    
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -165,6 +204,14 @@ const overrides = {
         '50%': { backgroundPosition: '0% 100%' },
         '100%': { backgroundPosition: '100% 0%' },
       },
+
+      '@keyframes pop': {
+        from: { transform: 'scale(0)', opacity: '0.5' },
+        '50%': { transform: 'scale(1.3)' },
+        to: { transform: 'scale(1)', opacity: '1' },
+
+      },
+
       '@font-face': [
         {
           fontFamily: "'Neue Montreal'",
