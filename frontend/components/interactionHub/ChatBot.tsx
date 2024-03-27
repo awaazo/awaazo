@@ -1,21 +1,39 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Box, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar } from "@chakra-ui/react";
 import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
 import { IoMdSend } from "react-icons/io";
 import ChatbotHelper from "../../helpers/ChatbotHelper";
+import PodcastHelper from "../../helpers/PodcastHelper";
+import { Episode } from "../../types/Interfaces";
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [episode, setEpisode] = useState<Episode>(null);
+  const msgEnd = useRef<HTMLDivElement>(null);
 
   const fetchMessages = useCallback(async () => {
+
+    // Return early if there's no episodeId
     if (!episodeId) {
       console.log("No currentEpisodeId, returning early.");
       return;
     }
 
+    // Get the episode if it's not already fetched so we can display the episode name
+    if ((!episode && episodeId) || (episode && episode.id !== episodeId)) {
+      try {
+        const response = await PodcastHelper.getEpisodeById(episodeId);
+        console.log("Episode fetched:", response);
+        setEpisode(response.episode);
+      } catch (error) {
+        console.error("Error fetching episode:", error);
+      }
+    }
+
+    // Fetch messages for the episode
     try {
-      const response = await ChatbotHelper.getEpisodeChat(episodeId, 1, 20);
+      const response = await ChatbotHelper.getEpisodeChat(episodeId, 0, 200);
       console.log("epid:", episodeId);
       console.log("Response received:", response);
       if (!response || !response.messages) {
@@ -23,6 +41,9 @@ const ChatBot = ({ episodeId }) => {
         return;
       }
       setMessages(response.messages);
+
+      msgEnd.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+
       console.log("Messages fetched:", response.messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -34,12 +55,30 @@ const ChatBot = ({ episodeId }) => {
   }, [episodeId, fetchMessages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim()) return;
+
+    console.log("Sending message:", newMessage);
+
+    // Save the message
+    const promptMsg = newMessage;
+
+    messages.push({
+      id: "1",
+      userId: "1",
+      episodeId: "1",
+      message: promptMsg,
+      isPrompt: true,
+      username: messages.at(-2).avatarUrl,
+      avatarUrl: messages.at(-2).avatarUrl,
+    });
+
+    setNewMessage("");
+
+    if (!promptMsg.trim()) return;
 
     try {
-      await ChatbotHelper.addEpisodeChat(episodeId, newMessage);
-      setNewMessage("");
-      console.log("Message sent:", newMessage);
+      await ChatbotHelper.addEpisodeChat(episodeId, promptMsg);
+
+      console.log("Message sent:", promptMsg);
       fetchMessages();
     } catch (error) {
       console.error("Error sending message:", error);
@@ -60,13 +99,7 @@ const ChatBot = ({ episodeId }) => {
           <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
         </Box>
         <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
-          Episode Title
-        </Text>
-        <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
-          Episode Title :{episodeId}
-        </Text>
-        <Text textAlign="center" fontSize="sm" paddingBottom={"1em"}>
-          Episode ID: {episodeId}
+          {episode?.episodeName || "No episode selected"}
         </Text>
         <VStack spacing={"1em"} overflowY="auto" height="50vh" paddingY="4" mt={"20px"}>
           {messages.map((message, index) => (
@@ -80,30 +113,36 @@ const ChatBot = ({ episodeId }) => {
               </HStack>
             </Box>
           ))}
+          <div ref={msgEnd} />
         </VStack>
-
+      
         <Box position="absolute" bottom="0" left="0" right="0" p="30px" borderColor="gray.700">
-          <VStack spacing="2" align="left" pb="1em">
-            <Text textAlign="left" fontSize={"14px"} pb="0.3em">
-              Things you can ask:
-            </Text>
 
-            <VStack spacing={"1em"} overflowY="auto" paddingY="1">
-              <Button
-                borderRadius={"25px"}
-                width={"fit-content"}
-                fontSize={"12px"}
-                fontWeight={"light"}
-                border={"2px solid rgba(255, 255, 255, 0.05)"}
-                onClick={() => handlePredefinedQuestionClick("What is the timp stamp where they talked about ...")}
-              >
-                What is the timestamp where they talked about
-              </Button>
-              <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ...")}>
-                What did the podcaster think about
-              </Button>
-            </VStack>
-          </VStack>
+          {messages.length === 0 ?
+            (
+              <VStack spacing="2" align="left" pb="1em">
+                <Text textAlign="left" fontSize={"14px"} pb="0.3em">
+                  Things you can ask:
+                </Text>
+
+
+                <VStack spacing={"1em"} overflowY="auto" paddingY="1">
+                  <Button
+                    borderRadius={"25px"}
+                    width={"fit-content"}
+                    fontSize={"12px"}
+                    fontWeight={"light"}
+                    border={"2px solid rgba(255, 255, 255, 0.05)"}
+                    onClick={() => handlePredefinedQuestionClick("What is the timestamp where they talked about ")}
+                  >
+                    Why did the podcaster say ... ?
+                  </Button>
+                  <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ")}>
+                    What did the podcaster think about ... ?
+                  </Button>
+                </VStack>
+              </VStack>
+            ) : null}
           <InputGroup>
             <Input
               value={newMessage}
