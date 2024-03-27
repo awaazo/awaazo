@@ -7,7 +7,7 @@ import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import HighlightHelper from "../../helpers/HighlightHelper";
 
-  const HighlightTicket= ({episode, highlight, thumbnailUrl }) => {
+  const HighlightTicket= ({episode, highlight, thumbnailUrl, onOpenFullScreen }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [audio, setAudio] = useState(new Audio());
     const { dispatch, state } = usePlayer();
@@ -19,10 +19,9 @@ import HighlightHelper from "../../helpers/HighlightHelper";
     return () => audio && audio.pause();
   }, [audio, highlight.id]);
 
-const handlePlayPauseClick = () => {
-    console.log('Play/Pause button clicked');
-    console.log('Highlight object:', highlight);
-
+const handlePlayPauseClick = (e) => {
+  e.stopPropagation();
+   
     if (!isPlaying) {
         const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId);
         console.debug("Playing audio from URL:", audioUrl);
@@ -52,6 +51,7 @@ return (
     width="300px"
     position="relative"
     borderRadius="2xl"
+    onClick={() => onOpenFullScreen()}
   >
     {
       episode && (
@@ -65,6 +65,7 @@ return (
           position="absolute"
           zIndex="-1"
           opacity="0.5"
+          onClick={() => onOpenFullScreen()}
         />
         <Box
             position="absolute"

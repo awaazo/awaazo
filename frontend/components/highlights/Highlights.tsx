@@ -3,12 +3,15 @@ import React, { useState, useEffect } from "react";
 import HighlightTicket from "./HighlightTicket";
 import HighlightHelper from "../../helpers/HighlightHelper";
 import axios from "axios";
+import FullScreenHighlight from "./FullScreenHighlight";
 
 const Highlights = () => {
   const [highlights, setHighlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [episodes, setEpisodes] = useState([]);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [currentHighlightIndex, setCurrentHighlightIndex] = useState(0);
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -51,27 +54,56 @@ const Highlights = () => {
     return <Text color="red.500">{error}</Text>;
   }
 
+  const openFullScreen = (index) => {
+    setCurrentHighlightIndex(index);
+    setIsFullScreen(true);
+  };
+
+  const goToNextHighlight = () => {
+    setCurrentHighlightIndex(prevIndex => prevIndex < highlights.length - 1 ? prevIndex + 1 : prevIndex);
+  };
+
+  const goToPreviousHighlight = () => {
+    setCurrentHighlightIndex(prevIndex => prevIndex > 0 ? prevIndex - 1 : 0);
+  };
+
   return (
+    <>
+
+    {isFullScreen && (
+        <FullScreenHighlight
+          highlights={highlights}
+          currentHighlightIndex={currentHighlightIndex}
+          onClose={() => setIsFullScreen(false)}
+          onNext={goToNextHighlight}
+          onPrevious={goToPreviousHighlight} episodes={undefined} />
+
     <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
       <HStack spacing={4} align="stretch">
-        {highlights.length > 0 ? (
-          highlights.map((highlight) => {
-            const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
-            if (!correspondingEpisode) {
-              console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
-              return null;
-            }
+          {highlights.length > 0 ? (
+            highlights.map((highlight, index) => { // Make sure to include 'index' here
+              const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
+              if (!correspondingEpisode) {
+                console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
+                return null;
+              }
 
-            return (
-              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} thumbnailUrl={correspondingEpisode.thumbnailUrl}/>
-            );
-          })
-        ) : (
-          <Text>No highlights available</Text>
-        )}
+              return (
+                <HighlightTicket 
+                  key={highlight.id} 
+                  highlight={highlight} 
+                  episode={correspondingEpisode} 
+                  thumbnailUrl={correspondingEpisode.thumbnailUrl} 
+                  onOpenFullScreen={() => openFullScreen(index)} // 'index' is now correctly defined
+                />
+              );
+            })
+          ) : (
+            <Text>No highlights available</Text>
+          )}
       </HStack>
     </Box>
-
+    </>
   );
 };
 

@@ -254,7 +254,7 @@ const shiftRangeForward = () => {
   return (
     <VStack spacing={4} align="stretch">
       <FormControl>
-          <FormLabel>Highlight Time Range (seconds)</FormLabel>
+          <FormLabel>Highlight Time Range</FormLabel>
           
           <HStack spacing={2}>
            <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} size="md" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-play-pause`}/>
