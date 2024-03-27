@@ -34,6 +34,8 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
         .then((res) => {
           if (res.status === 200) {
 
+            
+
             setTranscript(res.transcript);
             setTranscriptLines(res.transcript.lines);
 
@@ -54,7 +56,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
 
       // If there is a transcript and the audio is playing, update the visible words
       if (transcription && audioRef.current) {
-        
+        //console.log(visibleWords)
         // Re-fetch the transcript if the audio has seeked to a new time
         if (!seeking && (audioRef.current.currentTime > nextSeekTime || audioRef.current.currentTime < minSeekTime)) {
         
