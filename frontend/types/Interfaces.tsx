@@ -298,7 +298,7 @@ export interface MySubscriptions {
   ratings?: PodcastRating[];
 }
 
-export interface Chatbot {
+export interface ChatbotMessage {
   id: string;
   userId: string;
   episodeId: string;
@@ -307,6 +307,12 @@ export interface Chatbot {
   username: string;
   avatarUrl: string;
   sentAt: Date;
+}
+
+export interface Chatbot {
+  episodeId: string;
+  userId: string;
+  messages: ChatbotMessage[];
 }
 
 export interface Transcript {

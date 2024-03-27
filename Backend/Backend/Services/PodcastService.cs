@@ -1948,7 +1948,7 @@ public class PodcastService : IPodcastService
         // Get the episode chat messages
         List<EpisodeChatMessage> chatMessages = await _db.EpisodeChatMessages
             .Where(m => m.EpisodeId == episodeId)
-            .OrderBy(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt).ThenByDescending(m=>m.IsPrompt)
             .Skip(page * pageSize)
             .Take(pageSize)
             .ToListAsync();
