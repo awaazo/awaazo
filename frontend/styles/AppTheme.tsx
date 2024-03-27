@@ -1,16 +1,11 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
-import { keyframes } from '@emotion/react';
+import { keyframes } from '@emotion/react'
 
 // this a fix for the default color mode issue
 const config: ThemeConfig = {
   useSystemColorMode: false,
   initialColorMode: 'dark',
 }
-
-const slideIn = keyframes`
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-`;
 
 const overrides = {
   colors: {
@@ -86,14 +81,13 @@ const overrides = {
     },
 
     Tabs: {
-     
       variants: {
         withIconOnSelected: (props) => ({
           tab: {
             fontSize: '16px',
             position: 'relative',
             transition: 'all 0.2s ease-in-out',
-            color:   '#818990',
+            color: '#818990',
             fontWeight: 'medium',
             _selected: {
               color: 'white',
@@ -116,7 +110,7 @@ const overrides = {
         }),
       },
     },
-    
+
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -209,7 +203,6 @@ const overrides = {
         from: { transform: 'scale(0)', opacity: '0.5' },
         '50%': { transform: 'scale(1.3)' },
         to: { transform: 'scale(1)', opacity: '1' },
-
       },
 
       '@font-face': [
