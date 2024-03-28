@@ -397,7 +397,7 @@ const Episode = ({ episode }) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} episodeLength={episode.duration} />
+                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} episodeLength={episode.duration} podcastId={episode.podcastId} />
                 </TabPanel>
                 <TabPanel>
                   <HighlightList episodeId={episode.id} />
