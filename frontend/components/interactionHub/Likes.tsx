@@ -22,7 +22,8 @@ const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
     fetchData()
   }, [episodeOrCommentId])
 
-  const handleLike = async () => {
+  const handleLike = async (e) => {
+    e.stopPropagation()
     try {
       const response = isLiked ? await SocialHelper.deleteEpisodeLike(episodeOrCommentId) : await SocialHelper.postLike(episodeOrCommentId)
 

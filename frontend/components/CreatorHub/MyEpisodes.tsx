@@ -250,7 +250,7 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <Flex alignItems="flex-start">
         <Box>
-        <Tooltip label="Highlights" aria-label="Highlights Tooltip">
+          <Tooltip label="Highlights" aria-label="Highlights Tooltip">
             <IconButton
               variant="ghost"
               data-cy="highlights-button"
@@ -369,20 +369,20 @@ const Episode = ({ episode }) => {
 
 
       <Modal isOpen={isModalTranscriptOpen} onClose={closeTranscriptModal}>
-  <ModalOverlay backdropFilter="blur(10px)" />
-  <ModalContent minWidth={"50%"} padding={"2em"}>
-    <ModalCloseButton />
-    <ModalBody>
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <VStack align="center" backgroundColor={"transparent"}>
-          <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
-          {/* Assuming there's a component for managing transcripts similar to ManageSections */}
-          <ManageTranscript episodeId={episode.id} podcastId={episode.podcastId} />
-        </VStack>
-      </Box>
-    </ModalBody>
-  </ModalContent>
-</Modal>
+        <ModalOverlay backdropFilter="blur(10px)" />
+        <ModalContent minWidth={"50%"} padding={"2em"}>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <VStack align="center" backgroundColor={"transparent"}>
+                <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
+                {/* Assuming there's a component for managing transcripts similar to ManageSections */}
+                <ManageTranscript episodeId={episode.id} podcastId={episode.podcastId} />
+              </VStack>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <Modal isOpen={isModalHighlightsOpen} onClose={closeHighlightsModal}>
         <ModalOverlay backdropFilter="blur(10px)" />
@@ -397,7 +397,7 @@ const Episode = ({ episode }) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} episodeLength={episode.duration} />
+                  <HighlightForm episodeId={episode.id} highlightId={null} fetchHighlights={fetchHighlights} episodeLength={episode.duration} podcastId={episode.podcastId} />
                 </TabPanel>
                 <TabPanel>
                   <HighlightList episodeId={episode.id} />
