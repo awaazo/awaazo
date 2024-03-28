@@ -4,16 +4,13 @@ import Link from "next/link";
 import Logo from "../../public/logos/logo_white.svg";
 import { ArrowR } from "../../public/icons";
 import genreBackdropShape from "../../public/svgs/genreBackdropShape.svg";
+
 interface GenreCardProps {
   genre: {
     link: string;
     name: string;
     podcastCount: number;
     image: {
-      src: string;
-      alt?: string;
-    };
-    logo: {
       src: string;
       alt?: string;
     };
@@ -27,11 +24,7 @@ const GenreCard: React.FC<GenreCardProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const LogoTopRight = () => (
-    <Flex position="absolute" top="5" right="6" align="center" zIndex="2">
-      <Image src={Logo.src} alt="Logo" w={4} />
-    </Flex>
-  );
+
   return (
     <Link href={`/Explore/Genre/${genre.link}`} passHref>
       <Box
@@ -70,7 +63,9 @@ const GenreCard: React.FC<GenreCardProps> = ({
             roundedBottomLeft={"10px"}
             roundedBottomRight={"10px"}
           />
-          <LogoTopRight />
+           <Flex position="absolute" top="5" right="6" align="center" zIndex="2">
+      <Image src={Logo.src} alt="Logo" w={4} />
+    </Flex>
         </Box>
 
         {/* Text and Button */}

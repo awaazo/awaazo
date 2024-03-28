@@ -10,12 +10,12 @@ import GenreCard from "../cards/GenreCard";
 
 // Define the genres array with name, image, and link properties
 const genres = [
-  { name: "Tech", image: techImage, link: "Technology" },
-  { name: "Medical", image: medImage, link: "Medical" },
-  { name: "Comedy", image: comedyImage, link: "Comedy" },
-  { name: "Politics", image: politicsImage, link: "Politics" },
-  { name: "Crime", image: crimeImage, link: "Crime" },
-  { name: "Other", image: otherImage, link: "Other" },
+  { name: "Tech", image: techImage, link: "Technology" ,  podcastCount: 43},
+  { name: "Medical", image: medImage, link: "Medical" ,  podcastCount: 3132},
+  { name: "Comedy", image: comedyImage, link: "Comedy", podcastCount: 3412 },
+  { name: "Politics", image: politicsImage, link: "Politics",  podcastCount: 3112},
+  { name: "Crime", image: crimeImage, link: "Crime" , podcastCount: 3122},
+  { name: "Other", image: otherImage, link: "Other",  podcastCount: 3123 },
 ];
 
 const ExploreGenres = () => {
