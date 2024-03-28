@@ -1,20 +1,24 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import techImage from "../../styles/images/genres/tech.png";
-import medImage from "../../styles/images/genres/med.png";
+import educationImage from "../../styles/images/genres/Education.png";
 import comedyImage from "../../styles/images/genres/comedy.png";
-import politicsImage from "../../styles/images/genres/politics.png";
-import crimeImage from "../../styles/images/genres/crime.png";
+import NewsImage from "../../styles/images/genres/News.png";
+import businessImage from "../../styles/images/genres/Business.png";
+import sportsImage from "../../styles/images/genres/Sports.png";
+import wellnessImage from "../../styles/images/genres/Wellness.png";
 import otherImage from "../../styles/images/genres/other.png";
 import GenreCard from "../cards/GenreCard";
 
 // Define the genres array with name, image, and link properties
 const genres = [
   { name: "Tech", image: techImage, link: "Technology" ,  podcastCount: 43},
-  { name: "Medical", image: medImage, link: "Medical" ,  podcastCount: 3132},
+  { name: "Education", image: educationImage, link: "Education" ,  podcastCount: 3132},
   { name: "Comedy", image: comedyImage, link: "Comedy", podcastCount: 3412 },
-  { name: "Politics", image: politicsImage, link: "Politics",  podcastCount: 3112},
-  { name: "Crime", image: crimeImage, link: "Crime" , podcastCount: 3122},
+  { name: "News", image: NewsImage, link: "News",  podcastCount: 3112},
+  { name: "Business", image: businessImage, link: "Business" , podcastCount: 3122},
+  { name: "Sports", image: sportsImage, link: "Sports" , podcastCount: 3122},
+  { name: "Wellness", image: wellnessImage, link: "Wellness" , podcastCount: 3122},
   { name: "Other", image: otherImage, link: "Other",  podcastCount: 3123 },
 ];
 
