@@ -260,18 +260,20 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
                 throw new Exception("No audience data available for the given podcast.");
 
-            // Get the total watch time of the audience for the podcast
-            TimeSpan totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the podcast
+            TimeSpan totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the podcast
-            int totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.Episode.PodcastId == podcast.Id)
+            int totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the average watch time of the audience for the podcast
             avgWatchTime = TimeSpan.FromSeconds((double)totalWatchTime.TotalSeconds / totalClicks);
@@ -286,17 +288,19 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
                 throw new Exception("No audience data available for the given episode.");
 
-            // Get the total watch time of the audience for the episode
-            TimeSpan totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
-                .Select(uei => uei.TotalListenTime.Seconds)
-                .SumAsync());
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the episode
+            TimeSpan totalWatchTime = TimeSpan.FromSeconds(interactions
+                .Select(uei => uei.TotalListenTime.TotalSeconds)
+                .Sum());
 
             // Get the total amount of clicks for the episode
-            int totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.EpisodeId == episode.Id)
+            int totalClicks =  interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the average watch time of the audience for the episode
             avgWatchTime = totalWatchTime / totalClicks;
@@ -330,12 +334,15 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
                 throw new Exception("No audience data available for the given podcast.");
 
-            // Get the total watch time of the audience for the podcast
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
         }
         else
         {
@@ -347,11 +354,14 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
                 throw new Exception("No audience data available for the given episode.");
 
-            // Get the total watch time of the audience for the episode
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the episode
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
         }
 
         return totalWatchTime;
@@ -389,19 +399,20 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
                 throw new Exception("No audience data available for the given podcast.");
 
-            // Get the total watch time of the audience for the podcast
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the podcast
-            totalClicks = await _db.UserEpisodeInteractions
-                .Include(uei => uei.Episode)
-                .Where(uei => uei.Episode.PodcastId == podcast.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the watch time range of the audience for the podcast
             watchTimeRangeResponse = await _db.UserEpisodeInteractions
@@ -420,17 +431,19 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
                 throw new Exception("No audience data available for the given episode.");
 
-            // Get the total watch time of the audience for the episode
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the episode
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the episode
-            totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.EpisodeId == episode.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the watch time range of the audience for the episode
             watchTimeRangeResponse = await _db.UserEpisodeInteractions
@@ -478,29 +491,28 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcast.Id) == false)
                 throw new Exception("No audience data available for the given podcast.");
 
-            // Get the total watch time of the audience for the podcast
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcast.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the podcast
-            totalClicks = await _db.UserEpisodeInteractions
-                .Include(uei => uei.Episode)
-                .Where(uei => uei.Episode.PodcastId == podcast.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the watch time range of the audience for the podcast
-            watchTimeRangeResponses = await _db.UserEpisodeInteractions
-                .Include(uei => uei.Episode)
-                .Where(uei => uei.Episode.PodcastId == podcast.Id)
+            watchTimeRangeResponses = interactions
                 .GroupBy(uei => (uei.TotalListenTime.TotalSeconds - (uei.TotalListenTime.TotalSeconds % timeInterval)) / timeInterval)
                 .OrderByDescending(g => g.Count())
                 .OrderBy(g => g.Key)
                 .Select(g => new WatchTimeRangeResponse(g.ToList(), totalClicks, totalWatchTime))
-                .ToListAsync();
+                .ToList(); 
         }
         else
         {
@@ -512,26 +524,28 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == episode.Id) == false)
                 throw new Exception("No audience data available for the given episode.");
 
-            // Get the total watch time of the audience for the episode
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == episode.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the audience for the episode
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the episode
-            totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.EpisodeId == episode.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
 
             // Get the watch time range of the audience for the episode
-            watchTimeRangeResponses = await _db.UserEpisodeInteractions
-                .Where(uei => uei.EpisodeId == episode.Id)
+            watchTimeRangeResponses = interactions
                 .GroupBy(uei => (uei.TotalListenTime.TotalSeconds - (uei.TotalListenTime.TotalSeconds % timeInterval)) / timeInterval)
                 .OrderByDescending(g => g.Count())
                 .OrderBy(g => g.Key)
                 .Select(g => new WatchTimeRangeResponse(g.ToList(), totalClicks, totalWatchTime))
-                .ToListAsync();
+                .ToList();
+        
         }
 
         return watchTimeRangeResponses;
@@ -627,23 +641,32 @@ public class AnalyticService : IAnalyticService
         if (count <= 0)
             throw new Exception("Count cannot be less than or equal to 0.");
 
-        // Return the top commented podcasts for the user
-        return getLessCommented ?
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.Comments)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.Comments.Count))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync()
-            :
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.Comments)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.Comments.Count))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync();
+        if(getLessCommented)
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+                .Include(p => p.Ratings)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderBy(p => p.Episodes.Sum(e => e.Comments.Count))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
+        else
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Comments).ThenInclude(c => c.User)
+                .Include(p => p.Ratings)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderByDescending(p => p.Episodes.Sum(e => e.Comments.Count))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -664,24 +687,32 @@ public class AnalyticService : IAnalyticService
         if(! await _db.Podcasts.AnyAsync(p => p.Id == podcastId && p.PodcasterId == user.Id))
             throw new Exception("Podcast does not exist for the given ID.");
 
-        return getLessCommented ?
-            await _db.Episodes
-            .Include(e => e.Comments)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderBy(e => e.Comments.Count)
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync()
-            :
-            await _db.Episodes
-            .Include(e => e.Comments)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderByDescending(e => e.Comments.Count)
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync();
+        if (getLessCommented)
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.Comments)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderBy(e => e.Comments.Count)
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl, false))
+                .ToList();
+        }
+        else
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.Comments)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderByDescending(e => e.Comments.Count)
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl, false))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -698,22 +729,30 @@ public class AnalyticService : IAnalyticService
         if (count <= 0)
             throw new Exception("Count cannot be less than or equal to 0.");
 
-        return getLessLiked ? 
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.Likes)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.Likes.Count))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync()
-            :
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.Likes)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.Likes.Count))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync();
+        if(getLessLiked)
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderBy(p => p.Episodes.Sum(e => e.Likes.Count))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
+        else
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.Likes)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderByDescending(p => p.Episodes.Sum(e => e.Likes.Count))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -734,24 +773,32 @@ public class AnalyticService : IAnalyticService
         if (!await _db.Podcasts.AnyAsync(p => p.Id == podcastId && p.PodcasterId == user.Id))
             throw new Exception("Podcast does not exist for the given ID.");
 
-        return getLessLiked ?
-            await _db.Episodes
-            .Include(e => e.Likes)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderBy(e => e.Likes.Count)
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync()
-            :
-            await _db.Episodes
-            .Include(e => e.Likes)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderByDescending(e => e.Likes.Count)
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync();
+        if(getLessLiked)
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.Likes)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderBy(e => e.Likes.Count)
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
+        else
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.Likes)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderByDescending(e => e.Likes.Count)
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -763,27 +810,35 @@ public class AnalyticService : IAnalyticService
     /// <param name="domainUrl">The domain URL.</param>
     /// <returns>The top clicked podcasts for the user.</returns>
     /// <exception cref="Exception">Thrown when the count is less than or equal to 0.</exception>
-    public Task<List<PodcastResponse>> GetTopClickedPodcastsAsync(int count, bool getLessClicked, User user, string domainUrl)
+    public async Task<List<PodcastResponse>> GetTopClickedPodcastsAsync(int count, bool getLessClicked, User user, string domainUrl)
     {
         if (count <= 0)
             throw new Exception("Count cannot be less than or equal to 0.");
 
-        return getLessClicked ?
-            _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync()
-            :
-            _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync();
+        if(getLessClicked)
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
+        else
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks)))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -805,24 +860,32 @@ public class AnalyticService : IAnalyticService
         if (!await _db.Podcasts.AnyAsync(p => p.Id == podcastId && p.PodcasterId == user.Id))
             throw new Exception("Podcast does not exist for the given ID.");
 
-        return getLessClicked ?
-            await _db.Episodes
-            .Include(e => e.UserEpisodeInteractions)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync()
-            :
-            await _db.Episodes
-            .Include(e => e.UserEpisodeInteractions)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync();
+        if(getLessClicked)
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
+        else
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.Clicks))
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -839,22 +902,30 @@ public class AnalyticService : IAnalyticService
         if (count <= 0)
             throw new Exception("Count cannot be less than or equal to 0.");
 
-        return getLessWatched ?
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync()
-            :
-            await _db.Podcasts
-            .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
-            .Where(p => p.PodcasterId == user.Id)
-            .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
-            .Take(count)
-            .Select(p => new PodcastResponse(p, domainUrl))
-            .ToListAsync();
+        if(getLessWatched)
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+            
+            return podcasts.OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
+        else
+        {
+            var podcasts = await _db.Podcasts
+                .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
+                .Where(p => p.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return podcasts.OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
+                .Take(count)
+                .Select(p => new PodcastResponse(p, domainUrl))
+                .ToList();
+        }
     }
 
     /// <summary>
@@ -876,24 +947,32 @@ public class AnalyticService : IAnalyticService
         if (!await _db.Podcasts.AnyAsync(p => p.Id == podcastId && p.PodcasterId == user.Id))
             throw new Exception("Podcast does not exist for the given ID.");
 
-        return getLessWatched ?
-            await _db.Episodes
-            .Include(e => e.UserEpisodeInteractions)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync()
-            :
-            await _db.Episodes
-            .Include(e => e.UserEpisodeInteractions)
-            .Include(e => e.Podcast)
-            .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
-            .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
-            .Take(count)
-            .Select(e => new EpisodeResponse(e, domainUrl,false))
-            .ToListAsync();
+        if(getLessWatched)
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
+        else
+        {
+            var episodes = await _db.Episodes
+                .Include(e => e.UserEpisodeInteractions)
+                .Include(e => e.Podcast)
+                .Where(e => e.PodcastId == podcastId && e.Podcast.PodcasterId == user.Id)
+                .ToListAsync();
+
+            return episodes.OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
+                .Take(count)
+                .Select(e => new EpisodeResponse(e, domainUrl,false))
+                .ToList();
+        }
     }
 
     #endregion User Engagement Metrics
@@ -923,19 +1002,20 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcastOrEpisodeId) == false)
                 throw new Exception("No data available for the given podcast.");
 
-            // Get the total watch time of the user for the podcast
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the user for the podcast
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the podcast   
-            totalClicks = await _db.UserEpisodeInteractions
-                .Include(uei => uei.Episode)
-                .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
         }
         else if(isEpisode)
         {
@@ -943,17 +1023,19 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == podcastOrEpisodeId && uei.Clicks!=0 && uei.UserId == user.Id) == false)
                 throw new Exception("No data available for the given episode.");
 
-            // Get the total watch time of the user for the episode
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the user for the episode
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());    
 
             // Get the total amount of clicks for the episode
-            totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
         }
         else
         {
@@ -961,17 +1043,19 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.UserId == user.Id && uei.Clicks!=0) == false)
                 throw new Exception("No data available for the given user.");
 
-            // Get the total watch time of the user
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.UserId == user.Id)
+                .ToListAsync();
+
+            // Get the total watch time of the user
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
 
             // Get the total amount of clicks for the user
-            totalClicks = await _db.UserEpisodeInteractions
-                .Where(uei => uei.UserId == user.Id)
+            totalClicks = interactions
                 .Select(uei => uei.Clicks)
-                .SumAsync();
+                .Sum();
         }
 
         // Calculate the average watch time
@@ -1003,12 +1087,14 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.Include(uei => uei.Episode).AnyAsync(uei => uei.Episode.PodcastId == podcastOrEpisodeId) == false)
                 throw new Exception("No data available for the given podcast.");
 
-            // Get the total watch time of the user for the podcast
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Include(uei => uei.Episode)
                 .Where(uei => uei.Episode.PodcastId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .ToListAsync();
+
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
         }
         else if(isEpisode)
         {
@@ -1016,11 +1102,13 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.EpisodeId == podcastOrEpisodeId) == false)
                 throw new Exception("No data available for the given episode.");
 
-            // Get the total watch time of the user for the episode
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.EpisodeId == podcastOrEpisodeId && uei.UserId == user.Id)
+                .ToListAsync();
+
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
         }
         else
         {
@@ -1028,11 +1116,13 @@ public class AnalyticService : IAnalyticService
             if (await _db.UserEpisodeInteractions.AnyAsync(uei => uei.UserId == user.Id) == false)
                 throw new Exception("No data available for the given user.");
 
-            // Get the total watch time of the user
-            totalWatchTime = TimeSpan.FromSeconds(await _db.UserEpisodeInteractions
+            var interactions = await _db.UserEpisodeInteractions
                 .Where(uei => uei.UserId == user.Id)
+                .ToListAsync(); 
+
+            totalWatchTime = TimeSpan.FromSeconds(interactions
                 .Select(uei => uei.TotalListenTime.TotalSeconds)
-                .SumAsync());
+                .Sum());
         }
 
         return totalWatchTime;
@@ -1057,25 +1147,33 @@ public class AnalyticService : IAnalyticService
 
         if (getLessWatched)
         {
-            topWatchedEpisodes = await _db.Episodes
+            List<Episode> episodes = await _db.Episodes
+                .Include(e=>e.Podcast)
                 .Include(e => e.UserEpisodeInteractions)
                 .Where(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id))
+                .ToListAsync();
+            
+            topWatchedEpisodes = episodes
                 .OrderBy(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .Select(e => new EpisodeResponse(e, domainUrl,false))
-                .ToListAsync();
+                .ToList();
         }
         else
         {
-            topWatchedEpisodes = await _db.Episodes
+            List<Episode> episodes = await _db.Episodes
                 .Include(e => e.UserEpisodeInteractions)
+                .Include(e => e.Podcast)
                 .Where(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id))
+                .ToListAsync();
+
+            topWatchedEpisodes = episodes
                 .OrderByDescending(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds))
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .Select(e => new EpisodeResponse(e, domainUrl,false))
-                .ToListAsync();
+                .ToList();
         }
 
         return topWatchedEpisodes;
@@ -1102,25 +1200,32 @@ public class AnalyticService : IAnalyticService
 
         if (getLessWatched)
         {
-            topWatchedPodcasts = await _db.Podcasts
+            List<Podcast> podcasts = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
                 .Where(p => p.Episodes.Any(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id)))
+                .ToListAsync();
+
+            topWatchedPodcasts = podcasts
                 .OrderBy(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .Select(p => new PodcastResponse(p, domainUrl))
-                .ToListAsync();
+                .ToList();
         }
         else
         {
-            topWatchedPodcasts = await _db.Podcasts
+            List<Podcast> podcasts = await _db.Podcasts
                 .Include(p => p.Episodes).ThenInclude(e => e.UserEpisodeInteractions)
                 .Where(p => p.Episodes.Any(e => e.UserEpisodeInteractions.Any(uei => uei.UserId == user.Id)))
+                .ToListAsync();
+
+            topWatchedPodcasts = podcasts
                 .OrderByDescending(p => p.Episodes.Sum(e => e.UserEpisodeInteractions.Sum(uei => uei.TotalListenTime.TotalSeconds)))
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .Select(p => new PodcastResponse(p, domainUrl))
-                .ToListAsync();
+                .ToList();
+
         }
 
         return topWatchedPodcasts;
@@ -1162,7 +1267,7 @@ public class AnalyticService : IAnalyticService
     public async Task<List<EpisodeResponse>> GetUserListeningHistoryAsync(User user, string domainUrl, int page, int pageSize)
     {
         return await _db.UserEpisodeInteractions
-            .Include(uei => uei.Episode)
+            .Include(uei => uei.Episode).ThenInclude(e => e.Podcast)
             .Where(uei => uei.UserId == user.Id)
             .OrderByDescending(uei => uei.DateListened)
             .Skip(page * pageSize)
