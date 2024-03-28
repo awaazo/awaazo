@@ -16,7 +16,7 @@ const Tipjar = ({ episodeId, totalPoint }) => {
   useEffect(() => {
     const checkQueryParameter = async () => {
       if (success) {
-        setShowStack(false)
+        setShowStack(false);
         try {
           const response = await PaymentHelper.confirmPayment({ pointId: success.toString() })
           setPaymentSuccess(response.status === 200 ? 'Thank you for Supporting !' : response.data)
