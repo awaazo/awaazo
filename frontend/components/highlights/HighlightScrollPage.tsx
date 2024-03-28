@@ -19,7 +19,7 @@ const HighlightScrollPage = ({ highlights }) => {
             }
 
             return (
-              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} thumbnailUrl={correspondingEpisode.thumbnailUrl}/>
+              <HighlightTicket key={highlight.id} highlight={highlight} episode={correspondingEpisode} thumbnailUrl={correspondingEpisode.thumbnailUrl} onOpenFullScreen={undefined} isFullScreenMode={undefined}/>
             );
           })
         ) : (
@@ -29,9 +29,7 @@ const HighlightScrollPage = ({ highlights }) => {
   );
 };
 
-// This function gets called at build time on server-side.
 export async function getStaticProps(context) {
-  // Fetch data from external API
 
   const res = await fetch('http://localhost:32773/podcast/GetRandomHighlights?quantity=20');
   const highlights = await res.json();
