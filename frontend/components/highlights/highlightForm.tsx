@@ -34,7 +34,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(new Audio());
-  const [shiftAmount, setShiftAmount] = useState(5); // Default to 5 seconds
+  const [shiftAmount, setShiftAmount] = useState(5); 
 
 
 
@@ -192,7 +192,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
 
   useEffect(() => {
     if (isPlaying) {
-      // Play the audio from the start time when isPlaying is true
       audioRef.current.currentTime = Number(formData.StartTime);
       audioRef.current.play().catch((e) => {
         console.error("Error playing audio:", e);
@@ -205,7 +204,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
         });
       });
   
-      // Add an event listener to stop the audio at the end time
+
       const stopAudioAtEndTime = () => {
         if (audioRef.current.currentTime >= Number(formData.EndTime)) {
           audioRef.current.pause();
@@ -214,11 +213,8 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
       };
   
       audioRef.current.addEventListener('timeupdate', stopAudioAtEndTime);
-  
-      // Cleanup: Remove the event listener
       return () => audioRef.current.removeEventListener('timeupdate', stopAudioAtEndTime);
     } else {
-      // Pause the audio when isPlaying is false
       audioRef.current.pause();
     }
   }, [isPlaying, formData.StartTime, formData.EndTime, toast]);
@@ -266,10 +262,9 @@ const shiftRangeForward = () => {
               defaultValue={[0, 15]}
               value={[Number(formData.StartTime), Number(formData.EndTime)]}
               onChange={handleRangeChange}
-              step={1} // Setting the step to 1 second for easier adjustments
+              step={1} 
               onChangeEnd={(val) => {
                 if (val[1] - val[0] > 15) {
-                  // Adjust the range to not exceed 15 seconds
                   const adjustedEnd = val[0] + 15 > episodeLength ? episodeLength : val[0] + 15;
                   handleRangeChange([val[0], adjustedEnd]);
                 }

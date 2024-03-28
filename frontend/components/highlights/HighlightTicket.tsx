@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link } from "@chakra-ui/react";
-import { FaPlay, FaPause} from "react-icons/fa";
+import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton } from "@chakra-ui/react";
+import { FaPlay, FaPause, FaShare} from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import HighlightHelper from "../../helpers/HighlightHelper";
+import ShareComponent from "../interactionHub/Share";
+
 
 
   const HighlightTicket= ({episode, highlight, thumbnailUrl, onOpenFullScreen, isFullScreenMode }) => {
@@ -12,6 +14,11 @@ import HighlightHelper from "../../helpers/HighlightHelper";
     const [audio, setAudio] = useState(new Audio());
     const { dispatch, state } = usePlayer();
     const isMobile = useBreakpointValue({ base: true, md: false });
+
+
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const onShareModalClose = () => setIsShareModalOpen(false);
+    const onShareModalOpen = () => setIsShareModalOpen(true);
 
     const highlightStyles = {
       transform: isFullScreenMode ? 'scale(1)' : 'none',
@@ -149,24 +156,49 @@ return (
       left="50%" 
       transform="translate(-50%, -50%)" 
     />
-    {
-    !isFullScreenMode && (
-    <Box
-      position="absolute"
-      bottom="20px"
-      right="20px"
-      zIndex="1"
-    >
-        <Box zIndex="1">
+   
+
+      
+      <Box
+          position="absolute"
+          bottom="20px"
+          right="20px"
+          zIndex="overlay" 
+        >
       <VStack spacing={2}>
         <Likes episodeOrCommentId={episode.id} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-          <CommentButton episodeId={episode.id} initialComments={0} showCount={false}  />
-        
+        {
+        !isFullScreenMode && (
+
+        <CommentButton episodeId={episode.id} initialComments={0} showCount={false}  />
+        )
+        }
+        <IconButton
+              icon={<FaShare />}
+              size="lg"
+              onClick={(e) => {
+                e.stopPropagation(); 
+                onShareModalOpen();
+              }}
+              aria-label={""}     
+              bg="transparent"
+          />
+
+             <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Share this Highlight</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ShareComponent content={episode} contentType="episode" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       </VStack>
       </Box>
-    </Box>
-    )
-  }
+    
+  
+
     <Box
       position="absolute"
       bottom="4" 

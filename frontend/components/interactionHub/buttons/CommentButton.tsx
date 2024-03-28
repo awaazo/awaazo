@@ -15,7 +15,7 @@ const CommentsButton = ({ episodeId, initialComments, showCount }) => {
 
   return (
     <>
-    <Box zIndex="105">
+    <Box zIndex="3">
       {showCount ? (
 
           <Button leftIcon={<Icon as={Chat} />} onClick={handleClick} variant="minimal" data-cy={`playerbar-comment-button`}>

@@ -53,7 +53,7 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
 
     return (
       <Modal isOpen={true} onClose={onClose} size="full" isCentered>
-        <ModalOverlay />
+        <ModalOverlay bg="transparent"/>
         <ModalContent>
         <IconButton
           aria-label="Close full screen"
