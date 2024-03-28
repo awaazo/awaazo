@@ -36,9 +36,10 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
   const [isUserSet, setIsUserSet] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
+
   const [navbarStyle, setNavbarStyle] = useState({
-    backgroundColor: 'transparent',
     backdropFilter: 'blur(0px)',
+    boxShadow: '',
   })
 
   interface SessionExt extends DefaultSession {
@@ -116,29 +117,34 @@ export default function Navbar() {
     setSearchValue(event.target.value)
   }
 
-  // Function to handle scroll event
   const handleScroll = () => {
-    const scrollY = window.scrollY
-    const maxScroll = 100
-    const opacity = Math.min(scrollY / maxScroll, 1)
-    const blur = Math.min((scrollY / maxScroll) * 25, 25)
-
-    setNavbarStyle({
-      backgroundColor: `rgba(255, 255, 255, 0)`,
-      backdropFilter: `blur(50px)`,
-    })
+    const scrollY = window.scrollY;
+    const maxScroll = 100; // Adjust this value based on when you want the blur effect to be fully applied
+    if (scrollY === 0) {
+      // User has scrolled to the top, reset navbar style to initial
+      setNavbarStyle({
+        backdropFilter: 'blur(0px)',
+        boxShadow: 'none', // Set boxShadow to 'none' to ensure it's fully transparent
+      });
+    } else {
+      // User is scrolling down, apply dynamic blur and shadow
+      const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 15px is the maximum blur value, adjust as needed
+      setNavbarStyle({
+        backdropFilter: `blur(${blurIntensity}px)`,
+        boxShadow: '10px 12px 40px -10px rgba(0, 0, 0, 0.4)',
+      });
+    }
   }
 
-  // useEffect(() => {
-  //   // Add scroll event listener when the component mounts
-  //   window.addEventListener("scroll", handleScroll);
+  useEffect(() => {
+    // Add scroll event listener when the component mounts
+    window.addEventListener("scroll", handleScroll);
 
-  //   // Cleanup by removing the event listener when the component unmounts
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
-
+    // Cleanup by removing the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   useEffect(() => {
     const fetchNotificationCount = async () => {
       const response = await NotificationHelper.NotificationCount()
@@ -201,7 +207,7 @@ export default function Navbar() {
   return (
     <>
       <Box p={3} mb={'3em'} width={'100%'} position="sticky" alignSelf="center" alignContent={'center'} alignItems={'center'} top={'0'} zIndex={5} data-testid="navbar-component" style={navbarStyle}>
-        <Box mr={'2em'} ml={'2em'}>
+        <Box mt={"0em"} mr={'2em'} ml={'2em'}>
           <Flex justifyContent="space-between">
             <Flex align="center">
               <IconButton aria-label="Back" icon={<ArrowL />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />

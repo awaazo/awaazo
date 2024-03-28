@@ -1,6 +1,6 @@
 # Awaazo 🎙️ [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
-<img src="frontend/public/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
+<img src="frontend/public/logos/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
 
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 

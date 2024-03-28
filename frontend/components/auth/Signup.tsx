@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from "@chakra-ui/react";
-import Logo from "../../public/logo_white.svg";
+import Logo from "../../public/logos/logo_white.svg";
 import { signIn } from "next-auth/react";
 import AuthHelper from "../../helpers/AuthHelper";
 import { useSession } from "next-auth/react";

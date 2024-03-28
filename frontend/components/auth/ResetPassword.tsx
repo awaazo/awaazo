@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Button, FormControl, Input, Stack, Container, Flex, Img, Text, useToast, InputGroup, InputRightElement, IconButton, Alert, AlertDescription } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import AuthHelper from '../../helpers/AuthHelper';
-import Logo from "../../public/logo_white.svg";
+import Logo from "../../public/logos/logo_white.svg";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');

@@ -30,8 +30,7 @@ import {
   SliderThumb,
   SliderTrack,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-
+import { Search } from '../../public/icons'
 import { IoFilterSharp } from "react-icons/io5";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import UserProfileHelper from "../../helpers/UserProfileHelper";
@@ -45,8 +44,16 @@ import { formatSecToDurationString } from "../../utilities/commonUtils";
 import { FaXmark } from "react-icons/fa6";
 
 export default function MyPodcast() {
-  const { isOpen: isPodcastModalOpen, onOpen: onPodcastModalOpen, onClose: onPodcastModalClose } = useDisclosure();
-  const { isOpen: isEpisodeModalOpen, onOpen: onEpisodeModalOpen, onClose: onEpisodeModalClose } = useDisclosure();
+  const {
+    isOpen: isPodcastModalOpen,
+    onOpen: onPodcastModalOpen,
+    onClose: onPodcastModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isEpisodeModalOpen,
+    onOpen: onEpisodeModalOpen,
+    onClose: onEpisodeModalClose,
+  } = useDisclosure();
   const router = useRouter();
 
   const { searchTerm } = router.query;
@@ -109,7 +116,11 @@ export default function MyPodcast() {
     setLoadingPodcasts(true);
     const requestData = { searchTerm: searchTerm, ...podcastFilter };
     try {
-      const res = await PodcastHelper.podcastSearchPodcastsGet(0, 6, requestData);
+      const res = await PodcastHelper.podcastSearchPodcastsGet(
+        0,
+        6,
+        requestData
+      );
       if (res.status === 200) {
         setPodcasts(res.podcasts);
       } else {
@@ -126,7 +137,11 @@ export default function MyPodcast() {
     setLoadingEpisodes(true);
     const requestData = { searchTerm: searchTerm, ...episodeFilter };
     try {
-      const res = await PodcastHelper.podcastSearchEpisodeGet(0, 6, requestData);
+      const res = await PodcastHelper.podcastSearchEpisodeGet(
+        0,
+        6,
+        requestData
+      );
       if (res.status === 200) {
         setEpisodes(res.episodes);
       } else {
@@ -142,7 +157,11 @@ export default function MyPodcast() {
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      const res = await UserProfileHelper.profileSearchProfilesGet(0, 9, searchTerm);
+      const res = await UserProfileHelper.profileSearchProfilesGet(
+        0,
+        9,
+        searchTerm
+      );
       if (res.status === 200) {
         setUsers(res.users);
         console.log(res.users);
@@ -217,8 +236,18 @@ export default function MyPodcast() {
           gridColumn="span 2"
         >
           <InputGroup>
-            <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
-            <Input borderRadius={"25px"} width="400px" placeholder="Search for Podcasts, Users, and Episodes" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} pl="40px" />
+            <InputLeftElement
+              pointerEvents="none"
+              children={<Search color="az.Greyish" />}
+            />
+            <Input
+              borderRadius={"25px"}
+              width="400px"
+              placeholder="Search for Podcasts, Users, and Episodes"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              pl="40px"
+            />
           </InputGroup>
         </Flex>
         {searchTerm == "" || searchTerm == null ? (
@@ -255,7 +284,17 @@ export default function MyPodcast() {
                     <>
                       {podcastFilter.tags &&
                         podcastFilter.tags.map((tag, index) => (
-                          <Flex key={index} fontSize="md" color="gray.700" bg={"#8b8b8b"} padding={"5px"} fontWeight={"bold"} borderRadius={"8px"} alignItems="center" mr="2">
+                          <Flex
+                            key={index}
+                            fontSize="md"
+                            color="gray.700"
+                            bg={"#8b8b8b"}
+                            padding={"5px"}
+                            fontWeight={"bold"}
+                            borderRadius={"8px"}
+                            alignItems="center"
+                            mr="2"
+                          >
                             <Button
                               size="xs"
                               variant={"ghost"}
@@ -271,7 +310,15 @@ export default function MyPodcast() {
                         ))}
                       {/* Display active podcast filters */}
                       {podcastFilter.isExplicit === false && (
-                        <Flex fontSize="md" color="gray.700" bg={"#8b8b8b"} padding={"5px"} fontWeight={"bold"} borderRadius={"8px"} alignItems="center">
+                        <Flex
+                          fontSize="md"
+                          color="gray.700"
+                          bg={"#8b8b8b"}
+                          padding={"5px"}
+                          fontWeight={"bold"}
+                          borderRadius={"8px"}
+                          alignItems="center"
+                        >
                           <Button
                             size="xs"
                             variant={"ghost"}
@@ -287,25 +334,43 @@ export default function MyPodcast() {
                       )}
 
                       {podcastFilter.ratingGreaterThan !== null && (
-                        <Flex fontSize="md" color="gray.700" bg={"#8b8b8b"} padding={"5px"} fontWeight={"bold"} borderRadius={"8px"} alignItems="center">
+                        <Flex
+                          fontSize="md"
+                          color="gray.700"
+                          bg={"#8b8b8b"}
+                          padding={"5px"}
+                          fontWeight={"bold"}
+                          borderRadius={"8px"}
+                          alignItems="center"
+                        >
                           <Button
                             size="xs"
                             variant={"ghost"}
                             onClick={() => {
-                              handlePodcastFilterChange("ratingGreaterThan", null);
+                              handlePodcastFilterChange(
+                                "ratingGreaterThan",
+                                null
+                              );
                               handlePodcastRefresh();
                             }}
                           >
                             <FaXmark />
                           </Button>
-                          <Text>Rating Greater Than: {podcastFilter.ratingGreaterThan}</Text>
+                          <Text>
+                            Rating Greater Than:{" "}
+                            {podcastFilter.ratingGreaterThan}
+                          </Text>
                         </Flex>
                       )}
                     </>
                   )}
                 </HStack>
 
-                <Button onClick={onPodcastModalOpen} variant="ghost" mr={"15px"}>
+                <Button
+                  onClick={onPodcastModalOpen}
+                  variant="ghost"
+                  mr={"15px"}
+                >
                   Filter Podcasts
                   <span style={{ marginRight: "10px" }}></span>
                   <IoFilterSharp />
@@ -314,13 +379,24 @@ export default function MyPodcast() {
               {loadingPodcasts ? (
                 <Spinner />
               ) : podcasts.length > 0 ? (
-                <HStack alignSelf={"center"} spacing={5} width="100%" justify={isMobile ? "center" : "flex-start"} align={isMobile ? "center" : "stretch"}>
+                <HStack
+                  alignSelf={"center"}
+                  spacing={5}
+                  width="100%"
+                  justify={isMobile ? "center" : "flex-start"}
+                  align={isMobile ? "center" : "stretch"}
+                >
                   {podcasts.map((podcast) => (
                     <PodcastCard podcast={podcast} key={podcast.id} />
                   ))}
                 </HStack>
               ) : (
-                <Text fontWeight={"bold"} fontSize={"18px"} mt={"20px"} mb={"30px"}>
+                <Text
+                  fontWeight={"bold"}
+                  fontSize={"18px"}
+                  mt={"20px"}
+                  mb={"30px"}
+                >
                   No Podcasts Found
                 </Text>
               )}
@@ -334,7 +410,15 @@ export default function MyPodcast() {
                   {!isMobile && (
                     <>
                       {episodeFilter.isExplicit === false && (
-                        <Flex fontSize="md" color="gray.700" bg={"#8b8b8b"} padding={"5px"} fontWeight={"bold"} borderRadius={"8px"} alignItems="center">
+                        <Flex
+                          fontSize="md"
+                          color="gray.700"
+                          bg={"#8b8b8b"}
+                          padding={"5px"}
+                          fontWeight={"bold"}
+                          borderRadius={"8px"}
+                          alignItems="center"
+                        >
                           {" "}
                           <Button
                             size="xs"
@@ -351,24 +435,44 @@ export default function MyPodcast() {
                       )}
 
                       {episodeFilter.minEpisodeLength && (
-                        <Flex fontSize="md" color="gray.700" bg={"#8b8b8b"} padding={"5px"} fontWeight={"bold"} borderRadius={"8px"} alignItems="center">
+                        <Flex
+                          fontSize="md"
+                          color="gray.700"
+                          bg={"#8b8b8b"}
+                          padding={"5px"}
+                          fontWeight={"bold"}
+                          borderRadius={"8px"}
+                          alignItems="center"
+                        >
                           <Button
                             size="xs"
                             variant={"ghost"}
                             onClick={() => {
-                              handleEpisodeFilterChange("minEpisodeLength", null);
+                              handleEpisodeFilterChange(
+                                "minEpisodeLength",
+                                null
+                              );
                               handleEpisodeRefresh();
                             }}
                           >
                             <FaXmark />
                           </Button>
-                          <Text>Min Length: {formatSecToDurationString(episodeFilter.minEpisodeLength)}</Text>
+                          <Text>
+                            Min Length:{" "}
+                            {formatSecToDurationString(
+                              episodeFilter.minEpisodeLength
+                            )}
+                          </Text>
                         </Flex>
                       )}
                     </>
                   )}
                 </HStack>
-                <Button onClick={onEpisodeModalOpen} variant="ghost" mr={"15px"}>
+                <Button
+                  onClick={onEpisodeModalOpen}
+                  variant="ghost"
+                  mr={"15px"}
+                >
                   Filter Episodes
                   <span style={{ marginRight: "10px" }}></span>
                   <IoFilterSharp />
@@ -379,11 +483,22 @@ export default function MyPodcast() {
               ) : episodes.length > 0 ? (
                 <SimpleGrid columns={1} spacing={5} width="100%">
                   {episodes.map((episode) => (
-                    <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />
+                    <EpisodeCard
+                      key={episode.id}
+                      episode={episode}
+                      showLike={false}
+                      showComment={false}
+                      showMore={false}
+                    />
                   ))}
                 </SimpleGrid>
               ) : (
-                <Text fontWeight={"bold"} fontSize={"18px"} mt={"20px"} mb={"30px"}>
+                <Text
+                  fontWeight={"bold"}
+                  fontSize={"18px"}
+                  mt={"20px"}
+                  mb={"30px"}
+                >
                   No Episodes Found
                 </Text>
               )}
@@ -403,7 +518,12 @@ export default function MyPodcast() {
                   ))}
                 </SimpleGrid>
               ) : (
-                <Text fontWeight={"bold"} fontSize={"18px"} mt={"20px"} mb={"30px"}>
+                <Text
+                  fontWeight={"bold"}
+                  fontSize={"18px"}
+                  mt={"20px"}
+                  mb={"30px"}
+                >
                   No Users Found
                 </Text>
               )}
@@ -421,12 +541,32 @@ export default function MyPodcast() {
             <FormControl textAlign={"center"} mt={"15px"}>
               <FormLabel textAlign={"center"}>
                 Non-Explicit Only
-                <Switch ml={"5px"} colorScheme="purple" isChecked={podcastFilter.isExplicit === false} onChange={(e) => handlePodcastFilterChange("isExplicit", e.target.checked ? false : null)} />
+                <Switch
+                  ml={"5px"}
+                  colorScheme="purple"
+                  isChecked={podcastFilter.isExplicit === false}
+                  onChange={(e) =>
+                    handlePodcastFilterChange(
+                      "isExplicit",
+                      e.target.checked ? false : null
+                    )
+                  }
+                />
               </FormLabel>
             </FormControl>
             <FormControl mt={"20px"}>
-              <FormLabel>Rating Greater Than: {podcastFilter.ratingGreaterThan ?? ""}</FormLabel>
-              <Slider min={0} max={5} step={0.1} value={podcastFilter.ratingGreaterThan ?? 0} onChange={(val) => handlePodcastFilterChange("ratingGreaterThan", val)}>
+              <FormLabel>
+                Rating Greater Than: {podcastFilter.ratingGreaterThan ?? ""}
+              </FormLabel>
+              <Slider
+                min={0}
+                max={5}
+                step={0.1}
+                value={podcastFilter.ratingGreaterThan ?? 0}
+                onChange={(val) =>
+                  handlePodcastFilterChange("ratingGreaterThan", val)
+                }
+              >
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -435,7 +575,11 @@ export default function MyPodcast() {
             </FormControl>
             <FormControl mt={"20px"}>
               <FormLabel>Tags</FormLabel>
-              <GenreSelector onGenresChange={(genres) => handlePodcastFilterChange("tags", genres)} />
+              <GenreSelector
+                onGenresChange={(genres) =>
+                  handlePodcastFilterChange("tags", genres)
+                }
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
@@ -469,13 +613,37 @@ export default function MyPodcast() {
             <FormControl textAlign={"center"}>
               <FormLabel textAlign={"center"}>
                 Non-Explicit Only
-                <Switch ml={"5px"} colorScheme="purple" isChecked={episodeFilter.isExplicit === false} onChange={(e) => handleEpisodeFilterChange("isExplicit", e.target.checked ? false : null)} />
+                <Switch
+                  ml={"5px"}
+                  colorScheme="purple"
+                  isChecked={episodeFilter.isExplicit === false}
+                  onChange={(e) =>
+                    handleEpisodeFilterChange(
+                      "isExplicit",
+                      e.target.checked ? false : null
+                    )
+                  }
+                />
               </FormLabel>
             </FormControl>
 
             <FormControl mt={"15px"}>
-              <FormLabel>Minimum Episode Length: {episodeFilter.minEpisodeLength ? `${formatSecToDurationString(episodeFilter.minEpisodeLength)}` : ""}</FormLabel>
-              <Slider min={0} max={3600} value={episodeFilter.minEpisodeLength ?? 0} onChange={(val) => handleEpisodeFilterChange("minEpisodeLength", val)}>
+              <FormLabel>
+                Minimum Episode Length:{" "}
+                {episodeFilter.minEpisodeLength
+                  ? `${formatSecToDurationString(
+                      episodeFilter.minEpisodeLength
+                    )}`
+                  : ""}
+              </FormLabel>
+              <Slider
+                min={0}
+                max={3600}
+                value={episodeFilter.minEpisodeLength ?? 0}
+                onChange={(val) =>
+                  handleEpisodeFilterChange("minEpisodeLength", val)
+                }
+              >
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
