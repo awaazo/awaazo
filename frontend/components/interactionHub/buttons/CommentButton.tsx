@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Icon, Tooltip } from "@chakra-ui/react";
+import { Button, Icon, Tooltip, Box } from "@chakra-ui/react";
 import { usePanel } from "../../../utilities/PanelContext";
 import { Chat } from '../../../public/icons';
 
@@ -7,13 +7,15 @@ const CommentsButton = ({ episodeId, initialComments, showCount }) => {
   const { dispatch } = usePanel();
   const [noOfComments, setNoOfComments] = useState(initialComments);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation();
     dispatch({ type: "OPEN_PANEL", payload: "Comments" });
     dispatch({ type: "SET_EPISODE_ID", payload: episodeId });
   };
 
   return (
     <>
+    <Box zIndex="105">
       {showCount ? (
 
           <Button leftIcon={<Icon as={Chat} />} onClick={handleClick} variant="minimal" data-cy={`playerbar-comment-button`}>
@@ -27,6 +29,7 @@ const CommentsButton = ({ episodeId, initialComments, showCount }) => {
           </Button>
         </Tooltip>
       )}
+      </Box>
     </>
   );
 };

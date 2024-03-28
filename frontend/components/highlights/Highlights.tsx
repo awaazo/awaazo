@@ -22,14 +22,12 @@ const Highlights = () => {
         console.error('Error fetching episodes:', error);
       }
     };
-
     fetchEpisodes();
   }, []);
 
   useEffect(() => {
     async function fetchHighlights() {
       const quantity = 20;
-
       setIsLoading(true);
       try {
         const response = await HighlightHelper.getRandomHighlights(quantity);
@@ -42,7 +40,6 @@ const Highlights = () => {
         setIsLoading(false);
       }
     }
-
     fetchHighlights();
   }, []); 
 
@@ -69,19 +66,21 @@ const Highlights = () => {
 
   return (
     <>
-
-    {isFullScreen && (
+    
+      {isFullScreen && (
         <FullScreenHighlight
           highlights={highlights}
           currentHighlightIndex={currentHighlightIndex}
           onClose={() => setIsFullScreen(false)}
           onNext={goToNextHighlight}
-          onPrevious={goToPreviousHighlight} episodes={undefined} />
+          onPrevious={goToPreviousHighlight}     
+        />
+      )}
 
-    <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
-      <HStack spacing={4} align="stretch">
+      <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
+        <HStack spacing={4} align="stretch">
           {highlights.length > 0 ? (
-            highlights.map((highlight, index) => { // Make sure to include 'index' here
+            highlights.map((highlight, index) => {
               const correspondingEpisode = episodes.find(episode => episode.id === highlight.episodeId);
               if (!correspondingEpisode) {
                 console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
@@ -94,15 +93,16 @@ const Highlights = () => {
                   highlight={highlight} 
                   episode={correspondingEpisode} 
                   thumbnailUrl={correspondingEpisode.thumbnailUrl} 
-                  onOpenFullScreen={() => openFullScreen(index)} // 'index' is now correctly defined
+                  onOpenFullScreen={() => openFullScreen(index)}
+                  isFullScreenMode={false}
                 />
               );
             })
           ) : (
             <Text>No highlights available</Text>
           )}
-      </HStack>
-    </Box>
+        </HStack>
+      </Box>
     </>
   );
 };
