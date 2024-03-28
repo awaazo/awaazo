@@ -4,12 +4,15 @@ import waazo from "../../public/svgs/waazo.svg";
 import { IoMdSend } from "react-icons/io";
 import ChatbotHelper from "../../helpers/ChatbotHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
-import { Episode } from "../../types/Interfaces";
+import { Episode, UserMenuInfo } from "../../types/Interfaces";
+import UserProfileHelper from "../../helpers/UserProfileHelper";
+import AuthHelper from "../../helpers/AuthHelper";
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [episode, setEpisode] = useState<Episode>(null);
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
   const msgEnd = useRef<HTMLDivElement>(null);
 
   const fetchMessages = useCallback(async () => {
@@ -18,6 +21,17 @@ const ChatBot = ({ episodeId }) => {
     if (!episodeId) {
       console.log("No currentEpisodeId, returning early.");
       return;
+    }
+
+    if (!user) {
+      try {
+        const response = await AuthHelper.authMeRequest();
+        console.log("User fetched:", response);
+        
+        setUser(response.userMenuInfo);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
     }
 
     // Get the episode if it's not already fetched so we can display the episode name
@@ -67,8 +81,8 @@ const ChatBot = ({ episodeId }) => {
       episodeId: "1",
       message: promptMsg,
       isPrompt: true,
-      username: messages.at(-2).avatarUrl,
-      avatarUrl: messages.at(-2).avatarUrl,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
     });
 
     setNewMessage("");
@@ -133,9 +147,9 @@ const ChatBot = ({ episodeId }) => {
                     fontSize={"12px"}
                     fontWeight={"light"}
                     border={"2px solid rgba(255, 255, 255, 0.05)"}
-                    onClick={() => handlePredefinedQuestionClick("What is the timestamp where they talked about ")}
+                    onClick={() => handlePredefinedQuestionClick("Give me a summary of this episode.")}
                   >
-                    Why did the podcaster say ... ?
+                    Can you summarize the episode?
                   </Button>
                   <Button borderRadius={"25px"} width={"fit-content"} fontSize={"12px"} fontWeight={"light"} border={"2px solid rgba(255, 255, 255, 0.05)"} onClick={() => handlePredefinedQuestionClick("What did the podcaster think about ")}>
                     What did the podcaster think about ... ?
