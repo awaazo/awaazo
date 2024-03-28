@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Box, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar } from "@chakra-ui/react";
-import awaazo_bird_aihelper_logo from "../../public/awaazo_bird_aihelper_logo.svg";
+import waazo from "../../public/svgs/waazo.svg";
 import { IoMdSend } from "react-icons/io";
 import ChatbotHelper from "../../helpers/ChatbotHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
@@ -96,7 +96,7 @@ const ChatBot = ({ episodeId }) => {
     <Box>
       <Box>
         <Box display="flex" alignItems="center" justifyContent="center" mt={"-0.5em"}>
-          <Image src={awaazo_bird_aihelper_logo.src} alt="Logo" w="50px" />
+          <Image src={waazo.src} alt="Logo" w="50px" />
         </Box>
         <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={"1em"}>
           {episode?.episodeName || "No episode selected"}
@@ -105,7 +105,7 @@ const ChatBot = ({ episodeId }) => {
           {messages.map((message, index) => (
             <Box key={index} alignSelf={message.isPrompt ? "flex-end" : "flex-start"} maxWidth="90%" color={message.isPrompt ? "#8b8b8b" : "#ffffff"} borderRadius="lg">
               <HStack alignItems="flex-start">
-                {!message.isPrompt && <Avatar src={awaazo_bird_aihelper_logo.src} w="30px" h="30px" boxSize={"30px"} rounded={""} borderRadius="full" />}
+                {!message.isPrompt && <Avatar src={waazo.src} w="30px" h="30px" boxSize={"30px"} rounded={""} borderRadius="full" />}
                 <Text fontSize="sm" mt={!message.isPrompt ? "4px" : "0px"}>
                   {message.message}
                 </Text>

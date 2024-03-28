@@ -23,8 +23,6 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
 
   return (
     <HStack
-
-
       overflow="hidden"
       p={'15px'}
       alignItems="center"

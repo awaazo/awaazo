@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from "@chakra-ui/react";
 import Link from "next/link";
-import Logo from "../../public/logo_white.svg";
+import Logo from "../../public/logos/logo_white.svg";
 import { Home, Search, Add, Cards } from '../../public/icons'
 import { useRouter } from "next/router";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
@@ -15,7 +15,6 @@ import { MdKeyboardDoubleArrowRight, MdKeyboardDoubleArrowLeft } from "react-ico
 
 const Sidebar = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
-  // In your MainContent component
   const mainContentStyle = {
     marginLeft: "0px",
     marginRight: "3em",

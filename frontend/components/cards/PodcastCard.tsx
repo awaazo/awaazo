@@ -2,9 +2,9 @@ import { Box, Image, Text, Flex, Icon, useBreakpointValue } from "@chakra-ui/rea
 import Link from "next/link";
 import React from "react";
 import { Podcast } from "../../types/Interfaces";
-import Logo from "../../public/logo_white.svg";
+import Logo from "../../public/logos/logo_white.svg";
 import { FaStar } from "react-icons/fa";
-import { GiClick } from "react-icons/gi";
+
 
 interface PodcastCardProps {
   podcast: Podcast;
@@ -20,6 +20,44 @@ const CardSize = {
   md: "200px",
   lg: "220px",
 };
+
+const PodcastImage = ({ coverArtUrl, name }) => (
+  <Image src={coverArtUrl} alt={name} objectFit="cover" position="absolute" top={0} w="full" h="full" transition="opacity 0.2s ease-in-out" _groupHover={{ opacity: 0.4 }} />
+);
+
+const LogoTopLeft = () => (
+  <Flex position="absolute" top="5" left="5" align="center" zIndex="2">
+    <Image src={Logo.src} alt="Logo" w={5} />
+  </Flex>
+);
+
+const RatingTopRight = ({ averageRating }) => (
+  <Flex position="absolute" top="5" right="5" align="center" opacity="0" _groupHover={{ opacity: 1 }} zIndex={2} >
+    <Icon as={FaStar} color="white" w={4} h={4} />
+    <Text fontSize="sm" color="white" ml="2" textShadow="0px 2px 20px #0000008E">
+      {averageRating}
+    </Text>
+  </Flex>
+);
+
+const PodcastNameAndTags = ({ name, tags }) => (
+  <Flex position="absolute" bottom="5" left={1} right={1} px="4" justifyContent="space-between" alignItems="center" zIndex={2} >
+    <Box>
+      <Text fontSize="md" fontWeight="bold" color="white" textShadow="0px 2px 20px #0000008E" data-cy={`podcast-name:${name}`} >
+        {name}
+      </Text>
+      <Text fontSize="xs" color="gray.200" noOfLines={1} textShadow="0px 2px 20px #0000008E">
+        {tags}
+      </Text>
+    </Box>
+  </Flex>
+);
+
+const PodcastType = ({ type }) => (
+  <Text fontSize="xs" color="gray.400" position="absolute" bottom="5" right={4} zIndex={2} textShadow="0px 2px 20px #0000008E" >
+    {type}
+  </Text>
+);
 
 const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
   const size = useBreakpointValue(CardSize);
@@ -64,42 +102,6 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
   );
 };
 
-const PodcastImage = ({ coverArtUrl, name }) => (
-  <Image src={coverArtUrl} alt={name} objectFit="cover" position="absolute" top={0} w="full" h="full" transition="opacity 0.2s ease-in-out" _groupHover={{ opacity: 0.4 }} />
-);
 
-const LogoTopLeft = () => (
-  <Flex position="absolute" top="5" left="5" align="center" zIndex="2">
-    <Image src={Logo.src} alt="Logo" w={5} />
-  </Flex>
-);
-
-const RatingTopRight = ({ averageRating }) => (
-  <Flex position="absolute" top="5" right="5" align="center" opacity="0" _groupHover={{ opacity: 1 }} zIndex={2} >
-    <Icon as={FaStar} color="white" w={4} h={4} />
-    <Text fontSize="sm" color="white" ml="2" textShadow="0px 2px 20px #0000008E">
-      {averageRating}
-    </Text>
-  </Flex>
-);
-
-const PodcastNameAndTags = ({ name, tags }) => (
-  <Flex position="absolute" bottom="5" left={1} right={1} px="4" justifyContent="space-between" alignItems="center" zIndex={2} >
-    <Box>
-      <Text fontSize="md" fontWeight="bold" color="white" textShadow="0px 2px 20px #0000008E" data-cy={`podcast-name:${name}`} >
-        {name}
-      </Text>
-      <Text fontSize="xs" color="gray.200" noOfLines={1} textShadow="0px 2px 20px #0000008E">
-        {tags}
-      </Text>
-    </Box>
-  </Flex>
-);
-
-const PodcastType = ({ type }) => (
-  <Text fontSize="xs" color="gray.400" position="absolute" bottom="5" right={4} zIndex={2} textShadow="0px 2px 20px #0000008E" >
-    {type}
-  </Text>
-);
 
 export default PodcastCard;

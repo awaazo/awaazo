@@ -5,7 +5,7 @@ import { LoginRequest } from "../../types/Requests";
 import { FaGoogle } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import Logo from "../../public/logo_white.svg";
+import Logo from "../../public/logos/logo_white.svg";
 
 interface LoginProps {
   infoMessage?: string;
