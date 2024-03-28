@@ -61,26 +61,25 @@ const ManageTranscript = ({ episodeId, podcastId }) => {
                 }
                 return line;
             });
-            
+
             // Get the start time of the line being edited
             const startTime = transcriptLines[lineIndex].start;
             console.log("startTime: " + startTime);
 
             // Get the original text of the line being edited with the words as an array
-            PodcastHelper.getTranscript(episodeId,startTime)
+            PodcastHelper.getTranscript(episodeId, startTime)
                 .then((res) => {
                     if (res.status === 200) {
 
                         // Update the word in the transcript
-                        var newLine = res.transcript.lines[lineIndex];
+                        var newLine = res.transcript.lines.find((line)=>line.id === lineIndex);
+
                         newLine.text = updatedTranscript[lineIndex].text;
                         newLine.words[wordIndex].word = editState.value;
                         newLine.words[wordIndex].score = 1;
 
-
                         // Save the updated line
                         saveTranscriptLine([newLine]);
-
 
                     } else {
                         console.error("Error fetching transcripts data:", res.message);
@@ -128,7 +127,7 @@ const ManageTranscript = ({ episodeId, podcastId }) => {
         <Box>
             <Box
                 style={{
-                    width: '100vh',
+                    width: '100%',
                     height: '70vh',
                     overflowY: 'scroll',
                     padding: '10px',
@@ -141,7 +140,7 @@ const ManageTranscript = ({ episodeId, podcastId }) => {
                         transcriptLines.map((line, lineIndex) => (
                             <Box key={lineIndex} style={{ marginBottom: '10px' }}>
 
-                                {line.text.split(' ').map((word, wordIndex) => (
+                                {line.text.trim().split(' ').map((word, wordIndex) => (
 
                                     editState.textIndex === lineIndex && editState.wordIndex === wordIndex ? (
                                         <Input

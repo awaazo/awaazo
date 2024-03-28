@@ -64,6 +64,28 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Highlights",
+                columns: table => new
+                {
+                    HighlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EpisodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartTime = table.Column<double>(type: "float", nullable: false),
+                    EndTime = table.Column<double>(type: "float", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Audio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Highlights", x => x.HighlightId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reports",
                 columns: table => new
                 {
@@ -822,6 +844,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "ForgetPasswordTokens");
+
+            migrationBuilder.DropTable(
+                name: "Highlights");
 
             migrationBuilder.DropTable(
                 name: "MediaLinks");

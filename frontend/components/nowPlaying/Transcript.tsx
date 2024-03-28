@@ -34,11 +34,13 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
         .then((res) => {
           if (res.status === 200) {
 
+            
+
             setTranscript(res.transcript);
             setTranscriptLines(res.transcript.lines);
 
-            setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
-            setMinSeekTime(Math.min(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)),0));
+            setNextSeekTime(res.transcript.lines.map((line) => line.end).reduce((a, b) => Math.max(a, b))-10);
+            setMinSeekTime(Math.min(res.transcript.lines.map((line) => line.start).reduce((a, b) => Math.min(a, b)),0));
 
     
           } else {
@@ -54,13 +56,13 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
 
       // If there is a transcript and the audio is playing, update the visible words
       if (transcription && audioRef.current) {
-        
+        //console.log(visibleWords)
         // Re-fetch the transcript if the audio has seeked to a new time
         if (!seeking && (audioRef.current.currentTime > nextSeekTime || audioRef.current.currentTime < minSeekTime)) {
-          
+        
           // Set seeking to true before fetching the new transcript
           seeking = true;
-          PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime-5)
+          PodcastHelper.getTranscript(episodeId, audioRef.current.currentTime-10)
             .then((res) => {
               if (res.status === 200) {
 
@@ -71,8 +73,13 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
                 setTranscriptLines(res.transcript.lines);
                 
                 // Set the next seek time to the maximum seek time in the new transcript
-                setNextSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.max(a, b)));
-                setMinSeekTime(res.transcript.lines.map((line) => line.seek).reduce((a, b) => Math.min(a, b)));
+                setNextSeekTime(res.transcript.lines.map((line) => line.end).reduce((a, b) => Math.max(a, b))-10);
+                setMinSeekTime(res.transcript.lines.map((line) => line.start).reduce((a, b) => Math.min(a, b)));
+
+                // Means that the end of the transcript has been reached, so set the next seek time to the end of the last line
+                if (audioRef.current.currentTime > nextSeekTime) {
+                  setNextSeekTime(res.transcript.lines.map((line) => line.end).reduce((a, b) => Math.max(a, b))+1);
+                }
 
                 // Set seeking to false after fetching the new transcript
                 seeking = false;

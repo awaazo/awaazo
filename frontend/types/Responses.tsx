@@ -17,7 +17,8 @@ import {
   Reply,
   Transaction,
   Balance,
-  Highlight
+  Highlight,
+  ChatbotMessage
 } from "./Interfaces";
 
 
@@ -227,10 +228,12 @@ export interface GetMetricsResponse extends BaseResponse {
 
 //#endregion
 
+export interface AddEpisodeChatResponse extends BaseResponse {
+  chatbotMessage: ChatbotMessage
+}
+
 export interface GetChatbotResponse extends BaseResponse {
-  episodeId: string;
-  userId: string;
-  messages: Chatbot[];
+  chatbot: Chatbot;
 }
 
 export interface createPaymentResponse extends BaseResponse {
