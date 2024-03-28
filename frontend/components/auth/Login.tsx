@@ -56,7 +56,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = "Get into the new age of po
 
   return (
     <>
-      <Container variant={"authBox"}>
+      <Container variant={"authBox"} bg="az.blackish" style={{ outline: 'none', fontFamily: "'Neue Montreal'" }}>
         {loginError && (
           <Alert status="error" borderRadius="xl" mb={4} p={2}>
             <AlertDescription display="block" fontSize="sm">
@@ -67,21 +67,15 @@ const Login: React.FC<LoginProps> = ({ infoMessage = "Get into the new age of po
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
-        <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
-          Login to Awaazo
-        </Text>
-        <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
-          {infoMessage}
-        </Text>
         <form onSubmit={handleLogin}>
           <Stack spacing={4}>
-            <Input type="text" id="email" placeholder="Email or username" borderRadius="2xl" bg="whiteAlpha.200" borderColor="whiteAlpha.400" _placeholder={{ color: "whiteAlpha.700" }} required onChange={(e) => setEmail(e.target.value)} />
+            <Input type="text" id="email" placeholder="Enter Email/Username" borderRadius="2xl" bg="whiteAlpha.200" borderColor="whiteAlpha.400" _placeholder={{ color: "whiteAlpha.700" }} required onChange={(e) => setEmail(e.target.value)} />
             <FormControl>
               <InputGroup>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="Enter Password"
                   borderRadius="2xl"
                   bg="whiteAlpha.200"
                   borderColor="whiteAlpha.400"
@@ -95,33 +89,28 @@ const Login: React.FC<LoginProps> = ({ infoMessage = "Get into the new age of po
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Button id="loginBtn" type="submit" color="white" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Text color="brand.300" fontSize="sm" mb={1} align={"right"}>
+              <Box as="a" href="/auth/ForgotPassword" color={"az.blue"} fontWeight="semibold">
+                Forgot password ?
+              </Box>
+            </Text>
+            <Button id="loginBtn" type="submit" color="az.blackish" bg="az.offWhite" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
               Log in
             </Button>
-          </Stack>
-          <Flex alignItems="center" justifyContent="center" mb={4} mt={4}>
-            <Box flex="1" height="1px" bg="whiteAlpha.400" />
-            <Text fontSize="sm" mx={2} color="gray.500">
-              Or authorize with
-            </Text>
-            <Box flex="1" height="1px" bg="whiteAlpha.400" />
-          </Flex>
-          <ButtonGroup isAttached mb={4}>
-            <Button leftIcon={<FaGoogle />} onClick={() => signIn("google")} size="md" mb={3} borderRadius="2xl">
-              Google
+
+
+            <Button w="100%" leftIcon={<FaGoogle />} onClick={() => signIn("google")} color="az.greyish" bg="az.offWhite" fontSize="md" mb={3} borderRadius="2xl">
+              Continue with Google
             </Button>
-          </ButtonGroup>
-          <Text color="brand.300" fontSize="sm" mb={1} align={"center"}>
-            <Box as="a" href="/auth/ForgotPassword" mb={1}  color={"brand.100"} fontWeight="semibold">
-              Forgot password?
-            </Box>
-          </Text>
-          <Text color="gray.400" fontSize="sm" align={"center"}>
+
+          </Stack>
+
+          {/* <Text color="gray.400" fontSize="sm" align={"center"}>
             Don't have an account?{" "}
             <Box as="a" href="/auth/Signup" color="brand.100" fontWeight="semibold">
               Sign up
             </Box>
-          </Text>
+          </Text> */}
         </form>
       </Container>
     </>
