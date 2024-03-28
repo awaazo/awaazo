@@ -99,16 +99,10 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <Container variant={"authBox"}>
+      <Container variant={"authBox"} bg="az.blackish" style={{ outline: 'none' }}>
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
-        <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
-          Sign Up to Awaazo
-        </Text>
-        <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
-          Join Awaazo and transform podcasting.
-        </Text>
 
         {signUpError && (
           <Alert status="error" borderRadius="xl" mb={4} p={2}>
@@ -121,49 +115,40 @@ const SignUp: React.FC = () => {
         )}
         <form onSubmit={handleSignUp}>
           <Stack spacing={3}>
-            <FormControl>
-              <Input type="email" id="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required borderRadius="2xl" />
-            </FormControl>
-            <FormControl>
-              <Input type="text" id="username" placeholder="Username" value={username} onChange={handleUsernameChange} required borderRadius="2xl" pr="50px" />
-              <Text position="absolute" right="9px" bottom="9px" fontSize="sm" color="gray.500">
+          <FormControl>
+              <Input type="text" id="username" placeholder="Enter Username" value={username} onChange={handleUsernameChange} required borderRadius="2xl" pr="50px" />
+              {/* <Text position="absolute" right="9px" bottom="9px" fontSize="sm" color="gray.500">
                 {usernameCharacterCount}/25
-              </Text>
+              </Text> */}
             </FormControl>
             <FormControl>
-              <Input type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required borderRadius="2xl" />
+              <Input type="email" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} required borderRadius="2xl" />
+            </FormControl>
+            <FormControl>
+              <Input type="password" id="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl>
               <Input type="password" id="confirmPassword" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl mt={2} mb={2}>
-              <FormLabel htmlFor="date" fontWeight="normal" fontSize="sm" ml={2}>
+            <FormLabel htmlFor="date" fontWeight="normal" fontSize="sm" ml={2}>
                 Date of Birth
               </FormLabel>
+
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
-            <Button id="loginBtn" type="submit" color="white" bg="brand.100" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Button id="loginBtn" type="submit" color="az.blackish" bg="az.offWhite" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
               Sign Up
             </Button>
 
-            <Flex alignItems="center" justifyContent="center">
-              <Box flex="1" height="1px" bg="whiteAlpha.400" />
-              <Text fontSize="sm" mx={2} color="gray.500">
-                Or authorize with
-              </Text>
-              <Box flex="1" height="1px" bg="whiteAlpha.400" />
-            </Flex>
-
-            <ButtonGroup isAttached justifyContent="center">
-              <Button leftIcon={<FaGoogle />} onClick={handleGoogleSignUp} size="md" mb={3} borderRadius="2xl">
-                Google
+              <Button leftIcon={<FaGoogle />} color="az.greyish" bg="az.offWhite" onClick={handleGoogleSignUp} size="md" fontSize="md" mb={3} borderRadius="2xl">
+                Continue with Google
               </Button>
-            </ButtonGroup>
 
             <Text color="gray.400" fontSize="sm" align={"center"}>
               Already have an account?{" "}
-              <Box as="a" href="/auth/Login" color="brand.100" fontWeight="semibold">
+              <Box as="a" href="/auth/Login" color="white" fontWeight="semibold">
                 Log in
               </Box>
             </Text>
