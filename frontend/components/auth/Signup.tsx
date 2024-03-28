@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
   const { data: session } = useSession();
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false);
 
-  useEffect(() => {}, [session, googleSignUpClicked]);
+  useEffect(() => { }, [session, googleSignUpClicked]);
 
   const calculateAge = (dob) => {
     const today = new Date();
@@ -82,7 +82,7 @@ const SignUp: React.FC = () => {
       username: username,
       dateOfBirth: dateOfBirth,
       gender: "None",
-      
+
     };
 
     try {
@@ -99,7 +99,7 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <Container variant={"authBox"} bg="az.blackish" style={{ outline: 'none' }}>
+      <Container variant={"authBox"} bg="az.blackish" style={{ outline: 'none', fontFamily: "'Neue Montreal'" }}>
         <Flex justifyContent="center" mb={4}>
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
         </Flex>
@@ -115,7 +115,7 @@ const SignUp: React.FC = () => {
         )}
         <form onSubmit={handleSignUp}>
           <Stack spacing={3}>
-          <FormControl>
+            <FormControl>
               <Input type="text" id="username" placeholder="Enter Username" value={username} onChange={handleUsernameChange} required borderRadius="2xl" pr="50px" />
               {/* <Text position="absolute" right="9px" bottom="9px" fontSize="sm" color="gray.500">
                 {usernameCharacterCount}/25
@@ -131,7 +131,7 @@ const SignUp: React.FC = () => {
               <Input type="password" id="confirmPassword" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl mt={2} mb={2}>
-            <FormLabel htmlFor="date" fontWeight="normal" fontSize="sm" ml={2}>
+              <FormLabel htmlFor="date" fontWeight="normal" fontSize="sm" ml={2}>
                 Date of Birth
               </FormLabel>
 
@@ -142,9 +142,9 @@ const SignUp: React.FC = () => {
               Sign Up
             </Button>
 
-              <Button leftIcon={<FaGoogle />} color="az.greyish" bg="az.offWhite" onClick={handleGoogleSignUp} size="md" fontSize="md" mb={3} borderRadius="2xl">
-                Continue with Google
-              </Button>
+            <Button leftIcon={<FaGoogle />} color="az.greyish" bg="az.offWhite" onClick={handleGoogleSignUp} size="md" fontSize="md" mb={3} borderRadius="2xl">
+              Continue with Google
+            </Button>
 
             <Text color="gray.400" fontSize="sm" align={"center"}>
               Already have an account?{" "}
