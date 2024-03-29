@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Podcast } from "../../types/Interfaces";
 import Logo from "../../public/logos/logo_white.svg";
-import { FaStar } from "react-icons/fa";
+import { OneDot, TwoDots, ThreeDots,FourDots, FiveDots} from "../../public/icons";
 
 
 interface PodcastCardProps {
@@ -31,14 +31,37 @@ const LogoTopLeft = () => (
   </Flex>
 );
 
-const RatingTopRight = ({ averageRating }) => (
-  <Flex position="absolute" top="5" right="5" align="center" opacity="0" _groupHover={{ opacity: 1 }} zIndex={2} >
-    <Icon as={FaStar} color="white" w={4} h={4} />
-    <Text fontSize="sm" color="white" ml="2" textShadow="0px 2px 20px #0000008E">
-      {averageRating}
-    </Text>
-  </Flex>
-);
+const RatingTopRight = ({ averageRating }) => {
+  const roundRating = Math.round(averageRating);
+  let ratingIcon;
+  switch (roundRating) {
+    case 1:
+      ratingIcon = oneDot;
+      break;
+    case 2:
+      ratingIcon = twoDots;
+      break;
+    case 3:
+      ratingIcon = threeDots;
+      break;
+    case 4:
+      ratingIcon = fourDots;
+      break;
+    case 5:
+      ratingIcon = fiveDots;
+      break;
+    default:
+      ratingIcon = oneDot;
+  }
+  return (
+    <Flex position="absolute" top="5" right="5" align="center" opacity="0" _groupHover={{ opacity: 1 }} zIndex={2} >
+      {ratingIcon}
+      <Text fontSize="sm" color="white" ml="2" textShadow="0px 2px 20px #0000008E">
+        {averageRating}
+      </Text>
+    </Flex>
+  );
+}
 
 const PodcastNameAndTags = ({ name, tags }) => (
   <Flex position="absolute" bottom="5" left={1} right={1} px="4" justifyContent="space-between" alignItems="center" zIndex={2} >
@@ -96,6 +119,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           <RatingTopRight averageRating={podcast.averageRating} />
           <PodcastNameAndTags name={podcast.name} tags={podcast.tags} />
           <PodcastType type={podcast.type} />
+          <Icon as={oneDot} />
         </Flex>
       </Link>
     </Box>

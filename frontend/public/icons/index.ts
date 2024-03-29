@@ -36,3 +36,8 @@ export { default as Waazo } from './Waazo'
 export { default as Warning } from './Warning'
 export { default as Play } from './Play'
 
+
+export { default as TwoDots } from './Ratings/TwoDots'
+export { default as ThreeDots } from './Ratings/ThreeDots'
+export { default as FourDots} from './Ratings/FourDots'
+export { default as FiveDots } from './Ratings/FiveDots'
