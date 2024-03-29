@@ -1,4 +1,6 @@
-﻿using Backend.Controllers.Requests;
+﻿using Azure.Core;
+using Backend.Controllers.Requests;
+using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.Interfaces;
@@ -145,6 +147,60 @@ public class AdminPanelController : ControllerBase
             return Ok();
         }
         catch (Exception e) {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("Podcast/CreateDailyRecomendation")]
+    public async Task<IActionResult> CreateDailyPodcastRecomendation([FromForm] AdminPodcastRecommendationRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+            var admin = await IdentifyAdminAsync();
+
+            var result = await _adminService.CreateDailyPodcastRecomendationAsync(request, ControllerHelper.GetDomainUrl(HttpContext));
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("Podcast/GetDailyRecomendations")]
+    public async Task<IActionResult> GetDailyPodcastRecomendations()
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+            var admin = await IdentifyAdminAsync();
+
+            var result = await _adminService.GetDailyPodcastRecomendationsAsync(ControllerHelper.GetDomainUrl(HttpContext));
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("Podcast/RemoveDailyRecommendations")]
+    public async Task<IActionResult> RemoveDailyPodcastRecomendations([FromForm] AdminPodcastRecommendationRemovalRequest request)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+            var admin = await IdentifyAdminAsync();
+
+            await _adminService.RemoveDailyPodcastRecomendationsAsync(request.podcastsToRemove);
+            return Ok();
+        }
+        catch (Exception e)
+        {
             this.LogErrorAPICall(_logger, e);
             return BadRequest(e.Message);
         }

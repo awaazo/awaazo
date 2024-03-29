@@ -137,6 +137,21 @@ public class PodcastResponse
     public List<RatingResponse> Ratings { get; set; } = new List<RatingResponse>();
 }
 
+#region adminRecommendationRequests
+public class adminRecommendationResponse : PodcastResponse
+{
+    public adminRecommendationResponse(Podcast p, string domainUrl)
+    : base(p, domainUrl)
+    {
+        dailyAdminChoice = p.dailyAdminChoice;
+        customAdminDescription = p.customAdminDescription;
+    }
+
+    public bool dailyAdminChoice { get; set; } = false;
+    public string customAdminDescription { get; set; } = string.Empty;
+}
+#endregion
+
 #region Transcript Responses
 
 /// <summary>
