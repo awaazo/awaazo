@@ -273,6 +273,20 @@ async def handle_realistic_voice_cloning_request(request):
         return web.Response(status=400, text=str(e))
 
 async def handle_ingest_request(request):
+    """
+    Handle an ingest request.
+
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to ingest. Required. 
+            episode_id (str): The ID of the episode to ingest. Required.
+    Returns:
+        A web response with the status of the ingest process.
+
+    Raises:
+        Exception: If an error occurs during the ingest process.
+    """
     try:
         print("Handling ingest request...")
 
@@ -293,13 +307,22 @@ async def handle_ingest_request(request):
         return web.Response(status=400, text=str(e))
 
 async def handle_chat_request(request):
-    # Extract necessary information from the request
-        # For example, the user's message or any other relevant data
+    """
+    Handle a chat request.
 
-        # Use the imported chat functionality to process the request
-        # Example: response = ChatFunctionality.process(user_message)
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to chat with. Required. 
+            episode_id (str): The ID of the episode to chat with. Required.
+            prompt (str): The user's prompt to chat with. Required.
 
-        # Return the chat response
+    Returns:
+        A web response with the chat response.
+
+    Raises:
+        Exception: If an error occurs during the chat process.
+    """
     try:
         print("Handling chat request...")
 
@@ -321,6 +344,31 @@ async def handle_chat_request(request):
         return web.Response(status=400, text=str(e))
 
 async def handle_tts_request(request):
+    """
+    Handle a TTS/RVC request.
+    
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to use TTS/RVC. Required. 
+            episode_id (str): The ID of the episode to use TTS/RVC. Required.
+            text (str): The text to convert to speech. Required.
+            language (str): The language of the text to convert to speech. Default is 'en'.
+            speaker_name (str): The name of the speaker to convert the text to speech. Default is 'Default'.
+            delimiter (str): The delimiter to use for the text to speech process. Default is ''.
+            use_tortoise (bool): Flag indicating whether to use Tortoise TTS. Default is True.
+            index_rate (int): The rate at which the index is generated. Default is 0.5.
+            filter_radius (int): The radius of the filter used for voice conversion. Default is 3.
+            resample_sr (int): The target sampling rate for the converted voice. Default is 0.
+            rms_mix_rate (float): The rate at which the RMS of the converted voice is mixed with the original voice. Default is 0.25.
+            protect (bool): Flag indicating whether to protect the converted voice. Default is False.
+
+    Returns:
+        A web response with the status of the TTS/RVC process.
+
+    Raises:
+        Exception: If an error occurs during the TTS/RVC process.
+    """
     try:
         print("---------------- Handling TTS/RVC Request ----------------")
 
@@ -352,6 +400,21 @@ async def handle_tts_request(request):
         return web.Response(status=400, text=str(e))
     
 async def handle_stt_ingest_request(request):
+    """
+    Handle an STT request.
+    
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to transcribe. Required. 
+            episode_id (str): The ID of the episode to transcribe. Required.
+
+    Returns:
+        A web response with the status of the transcription process.
+
+    Raises:
+        Exception: If an error occurs during the transcription process.
+    """
     try:
         print("---------------- Handling STT Request ----------------")
 
@@ -450,6 +513,25 @@ async def handle_stt_request(request):
         return web.Response(status=400, text=str(e))
 
 async def handle_generate_episode_request(request):
+    """
+    Handle a generate episode request.
+
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to generate the episode for. Required. 
+            episode_id (str): The ID of the episode to generate. Required.
+            podcast_name (str): The name of the podcast. Required.
+            podcast_description (str): The description of the podcast. Required.
+            prompt (str): The prompt to generate the episode. Required.
+            speaker_name (str): The name of the speaker to generate the episode. Default is 'Drinker'.
+
+    Returns:
+        A web response with the status of the text generation process.
+
+    Raises:
+        Exception: If an error occurs during the text generation process.
+    """
     try:
         print("---------------- Handling Text Generation Request ----------------")
 
@@ -473,6 +555,46 @@ async def handle_generate_episode_request(request):
         print(f"Error in handle_generate_episode_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_generate_episode_from_text_request(request):
+    """
+    Handle a generate episode from text request.
+
+    Args:
+        request: The HTTP request object.
+        It should contain the following data:
+            podcast_id (str): The ID of the podcast to generate the episode for. Required. 
+            episode_id (str): The ID of the episode to generate. Required.
+            text (str): The text to generate the episode from. Required.
+            speaker_name (str): The name of the speaker to generate the episode. Default is 'Drinker'.
+
+    Returns:
+        A web response with the status of the text generation process.
+
+    Raises:
+        Exception: If an error occurs during the text generation process.
+    """
+    try:
+        print("---------------- Handling Text Generation Request ----------------")
+
+        data = await request.json()
+
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+        text = data.get('text', '')
+        speaker_name = data.get('speaker_name', 'Drinker')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Text: {text}\n")
+
+        threading.Thread(target=sp.generate_episode_pipeline_with_text, args=(podcast_id,episode_id,text,speaker_name)).start()
+
+        print("---------------- Text Generation Request Completed ----------------")
+
+        return web.Response(text="Generation started...", status=200)
+    except Exception as e:
+        print(f"Error in handle_generate_episode_request: {e}")
+        return web.Response(status=400, text=str(e))
+        
+
 # Create the server instance
 app = web.Application()
 
@@ -486,6 +608,7 @@ app.add_routes([web.post('/chat', handle_chat_request)])
 app.add_routes([web.post('/tts_rvc', handle_tts_request)])
 app.add_routes([web.post('/stt_ingest', handle_stt_ingest_request)])
 app.add_routes([web.post('/generate_episode', handle_generate_episode_request)])
+app.add_routes([web.post('/generate_episode_from_text', handle_generate_episode_from_text_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")
