@@ -193,11 +193,58 @@ def transcription_ingestion_pipeline(podcast_id, episode_id, model_name="base", 
         print(e)
 
 def generate_episode_pipeline(podcast_id, episode_id, podcast_name, podcast_description, prompt,speaker_name='Drinker'):
+    """
+    Runs the entire pipeline to generate a new episode for the given podcast_id and episode_id.
+
+    Args:
+        podcast_id (str): The id of the podcast.
+        episode_id (str): The id of the episode.
+        podcast_name (str): The name of the podcast.
+        podcast_description (str): The description of the podcast.
+        prompt (str): The prompt to generate the episode text.
+        speaker_name (str): The name of the speaker to use for TTS.
+
+    Raises:
+        Exception: If an error occurs during the pipeline process.
+
+    Returns:
+        None
+    """
     try:
         print("------------- Text Generation Pipeline Started -------------")
 
         # Generate the episode text
         text = generate_episode_text.generate_episode_text(podcast_name, podcast_description, prompt)
+
+        # Run the TTS and RVC pipelines
+        tts_rvc_pipeline(podcast_id, episode_id, text,speaker=speaker_name)
+
+        # Run the transcription and ingestion pipelines
+        transcription_ingestion_pipeline(podcast_id, episode_id)
+
+        print("------------- Text Generation Pipeline Completed -------------")
+    except Exception as e:
+        print("------------- Text Generation Pipeline Failed -------------")
+        print(e)
+
+def generate_episode_pipeline_with_text(podcast_id, episode_id, text, speaker_name='Drinker'):
+    """
+    Runs the entire pipeline to generate a new episode for the given podcast_id and episode_id.
+
+    Args:
+        podcast_id (str): The id of the podcast.
+        episode_id (str): The id of the episode.
+        text (str): The text to be spoken.
+        speaker_name (str): The name of the speaker to use for TTS.
+
+    Raises:
+        Exception: If an error occurs during the pipeline process.
+
+    Returns:
+        None
+    """
+    try:
+        print("------------- Text Generation Pipeline Started -------------")
 
         # Run the TTS and RVC pipelines
         tts_rvc_pipeline(podcast_id, episode_id, text,speaker=speaker_name)
