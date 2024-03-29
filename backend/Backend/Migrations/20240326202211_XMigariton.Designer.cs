@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240319032034_firstMigration")]
-    partial class firstMigration
+    [Migration("20240326202211_XMigariton")]
+    partial class XMigariton
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -875,6 +875,9 @@ namespace Backend.Migrations
                     b.Property<bool>("IsPodcaster")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LinkedInUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -891,6 +894,9 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WebsiteUrl")

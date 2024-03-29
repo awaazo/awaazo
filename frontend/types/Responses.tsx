@@ -236,7 +236,7 @@ export interface GetEmailLogs extends BaseResponse {
 }
 
 export interface GetReports extends BaseResponse {
-  reports: String
+  reports: Report[]
 }
 
 //#endregion

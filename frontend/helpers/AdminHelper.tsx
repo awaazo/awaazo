@@ -1,7 +1,7 @@
 import axios from 'axios'
 import EndpointHelper from './EndpointHelper'
 
-import { SendEmailRequest } from '../types/Requests'
+import { ReportRequest, SendEmailRequest } from '../types/Requests'
 import { BaseResponse, GetEmailLogs, GetReports, GetUsersResponse } from '../types/Responses'
 
 export default class AdminHelper {
@@ -371,6 +371,49 @@ export default class AdminHelper {
       const requestResponse = await axios(options)
 
       console.debug('Received the following adminRejectReportRequest...')
+      console.debug(requestResponse)
+
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+      }
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+      }
+    }
+  }
+
+  /**
+   * Creates a report request to the server.
+   * @param requestData Request data to be sent to the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static userReportRequest = async (requestData: ReportRequest): Promise<BaseResponse> => {
+    // Create the request options.
+    const options = {
+      method: 'POST',
+      data: requestData,
+      url: EndpointHelper.getReportEndpoint(),
+      headers: {
+        accept: '*/*',
+      },
+      withCredentials: true,
+      cache: false,
+    }
+
+    try {
+      console.debug('Sending the following userReportRequest...')
+      console.debug(options)
+
+      console.log(options)
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options)
+
+      console.debug('Received the following userReportRequest...')
       console.debug(requestResponse)
 
       // Return the response.
