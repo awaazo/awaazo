@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'; 
-import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link } from "@chakra-ui/react";
-import { FaPlay, FaPause, FaHeart, FaCommentDots, FaShare } from "react-icons/fa";
+import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton } from "@chakra-ui/react";
+import { FaPlay, FaPause, FaShare} from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import HighlightHelper from "../../helpers/HighlightHelper";
+import ShareComponent from "../interactionHub/Share";
 
-  const HighlightTicket= ({episode, highlight, thumbnailUrl }) => {
+
+
+  const HighlightTicket= ({episode, highlight, thumbnailUrl, onOpenFullScreen, isFullScreenMode }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [audio, setAudio] = useState(new Audio());
     const { dispatch, state } = usePlayer();
     const isMobile = useBreakpointValue({ base: true, md: false });
+
+
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const onShareModalClose = () => setIsShareModalOpen(false);
+    const onShareModalOpen = () => setIsShareModalOpen(true);
+
+    const highlightStyles = {
+      transform: isFullScreenMode ? 'scale(1)' : 'none',
+      transformOrigin: 'center center',
+      transition: 'transform 0.2s',
+      width: isFullScreenMode ? '600px' : '300px',
+      height: isFullScreenMode ? '1000px' : '400px',
+      maxWidth: isFullScreenMode ? '100vw' : '300px',
+      maxHeight: isFullScreenMode ? '100vh' : '400px',
+      position: 'relative',
+      borderRadius: isFullScreenMode ? 'none' : '2xl',
+      bg: 'blackAlpha.500',
+    };
     
   const isEpisodeLoaded = !!episode
   
@@ -19,10 +39,8 @@ import HighlightHelper from "../../helpers/HighlightHelper";
     return () => audio && audio.pause();
   }, [audio, highlight.id]);
 
-const handlePlayPauseClick = () => {
-    console.log('Play/Pause button clicked');
-    console.log('Highlight object:', highlight);
-
+const handlePlayPauseClick = (e) => {
+  e.stopPropagation();
     if (!isPlaying) {
         const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId);
         console.debug("Playing audio from URL:", audioUrl);
@@ -39,6 +57,37 @@ const handlePlayPauseClick = () => {
     }
 };
 
+useEffect(() => {
+  if (isFullScreenMode) {
+    const playAudio = async () => {
+      const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId);
+      console.debug("Playing audio from URL:", audioUrl);
+      if (audio && audioUrl) {
+        audio.src = audioUrl;
+        try {
+          await audio.play();
+          setIsPlaying(true);
+        } catch (error) {
+          console.error("Audio playback failed:", error);
+        }
+      }
+    };
+    
+    playAudio();
+  } else {
+    if (audio) {
+      audio.pause();
+      setIsPlaying(false);
+    }
+  }
+
+  return () => {
+    if (audio) {
+      audio.pause();
+      setIsPlaying(false);
+    }
+  };
+}, [highlight.highlightId, isFullScreenMode]);
 
 
 
@@ -47,12 +96,15 @@ return (
     spacing={4}
     align="center"
     justify="center"
-    bg="blackAlpha.500"
     height="400px"
     width="300px"
     position="relative"
     borderRadius="2xl"
+    sx={highlightStyles}
+    onClick={() => !isFullScreenMode && onOpenFullScreen ? onOpenFullScreen() : undefined}
   >
+    
+    
     {
       episode && (
         <>
@@ -65,25 +117,33 @@ return (
           position="absolute"
           zIndex="-1"
           opacity="0.5"
+        
         />
+        
         <Box
-            position="absolute"
-            top="4" 
-            width="full"
-            textAlign="center" // Center-align the text
-            p={2}
-            borderRadius="md"
-           
+          position="absolute"
+          top="4"
+          width="full"
+          textAlign="center"
+          p={2}
+          borderRadius="md"
+        >
+          <Link
+            href={`/NowPlaying/${episode.id}`}
+            onClick={(e) => {
+              e.stopPropagation(); 
+            }}
           >
-            <Link href={`/NowPlaying/${episode.id}`} >
             <Text fontSize={["md", "lg"]} color="whiteAlpha.900" fontWeight="bold">
-              Episode:{episode.episodeName} 
+              Episode:{episode.episodeName}
             </Text>
-            </Link>
-          </Box>
+          </Link>
+        </Box>
         </>
       )
     }
+
+    
     <IconButton
       aria-label={isPlaying ? "Pause" : "Play"}
       icon={isPlaying ? <FaPause /> : <FaPlay />}
@@ -96,17 +156,49 @@ return (
       left="50%" 
       transform="translate(-50%, -50%)" 
     />
-    <Box
-      position="absolute"
-      bottom="20px"
-      right="20px"
-      zIndex="1"
-    >
+   
+
+      
+      <Box
+          position="absolute"
+          bottom="20px"
+          right="20px"
+          zIndex="overlay" 
+        >
       <VStack spacing={2}>
         <Likes episodeOrCommentId={episode.id} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-        <CommentButton episodeId={episode.id} initialComments={0} showCount={false} />
+        {
+        !isFullScreenMode && (
+
+        <CommentButton episodeId={episode.id} initialComments={0} showCount={false}  />
+        )
+        }
+        <IconButton
+              icon={<FaShare />}
+              size="lg"
+              onClick={(e) => {
+                e.stopPropagation(); 
+                onShareModalOpen();
+              }}
+              aria-label={""}     
+              bg="transparent"
+          />
+
+             <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Share this Highlight</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ShareComponent content={episode} contentType="episode" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       </VStack>
-    </Box>
+      </Box>
+    
+  
+
     <Box
       position="absolute"
       bottom="4" 

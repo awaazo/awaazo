@@ -18,6 +18,7 @@ import {
   Balance,
   Email,
   Highlight,
+  ChatbotMessage,
 } from './Interfaces'
 
 export interface BaseResponse {
@@ -240,6 +241,10 @@ export interface GetReports extends BaseResponse {
 }
 
 //#endregion
+
+export interface AddEpisodeChatResponse extends BaseResponse {
+  chatbotMessage: ChatbotMessage
+}
 
 export interface GetChatbotResponse extends BaseResponse {
   episodeId: string

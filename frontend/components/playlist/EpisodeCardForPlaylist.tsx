@@ -17,6 +17,7 @@ import { convertTime } from "../../utilities/commonUtils";
 import EpisodeMenu from "../cards/EpisodeMenu";
 import CommentButton from "../interactionHub/buttons/CommentButton";
 import Tipjar from "../interactionHub/Tipjar";
+import TipjarButton from "../interactionHub/buttons/TipjarButton";
 
 
 // Component to display an episode
@@ -98,7 +99,7 @@ const EpisodeCard = ({ episode, inPlaylist, playlistId, inWallet }) => {
 
         {/* Make sure Point is only rendered when inWallet is true */}
         {inWallet != null && inWallet == true ? (
-          <Tipjar episodeId={episode.id} totalPoint={episode.totalPoints} />
+          <TipjarButton episodeId={episode.id} totalPoint={episode.totalPoints} />
         ) : (
           <>
 

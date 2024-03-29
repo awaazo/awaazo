@@ -570,9 +570,9 @@ public class PodcastController : ControllerBase
             this.LogErrorAPICall(_logger, e, callerName: nameof(GetEpisodeThumbnail));
             return BadRequest(e.Message);
         }
-    } 
-    
-       /// <summary>
+    }
+
+    /// <summary>
     /// Searches for episodes based on a filter.
     /// </summary>
     /// <param name="episodeFilter">The filter to apply.</param>
@@ -594,9 +594,44 @@ public class PodcastController : ControllerBase
             this.LogErrorAPICall(_logger, e: e, callerName: nameof(SearchEpisode));
             return BadRequest(e.Message);
         }
-    } 
+    }
 
     #endregion Episode CRUD
+
+    #region AI Generated Episode
+
+    /// <summary>
+    /// Generates an AI episode for a podcast.
+    /// </summary>
+    /// <param name="podcastId">Id of the podcast to generate the AI episode for.</param>
+    /// <param name="request">Request object containing the AI episode details.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns> 
+    [HttpPost("{podcastId}/generateAIEpisode")]
+    public async Task<IActionResult> GenerateAIEpisode([FromForm] GenerateAIEpisodeRequest request, Guid podcastId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GenerateAIEpisode));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return await _podcastService.GenerateAIEpisodeAsync(request, podcastId, user, GetDomainUrl(HttpContext)) ? Ok("AI Generated Episode created.") : Ok("Failed to create AI Generated Episode.");
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GenerateAIEpisode));
+            return BadRequest(e.Message);
+        }
+    }
+
+
+    #endregion AI Generated Episode
 
     #region Episode Watch History
 
@@ -671,7 +706,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return Ok(await _podcastService.GetUserWatchHistory(page,pageSize,user));
+            return Ok(await _podcastService.GetUserWatchHistory(page, pageSize, user));
         }
         catch (Exception e)
         {
@@ -697,7 +732,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return Ok(await _podcastService.DeleteWatchHistory(user,episodeId) ? "Successfully Deleted the History" : "Error while Deleting the History");
+            return Ok(await _podcastService.DeleteWatchHistory(user, episodeId) ? "Successfully Deleted the History" : "Error while Deleting the History");
         }
         catch (Exception e)
         {
@@ -761,8 +796,8 @@ public class PodcastController : ControllerBase
     }
 
 
-    
-       /// <summary>
+
+    /// <summary>
     /// Gets recent Episodes
     /// </summary>
     /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns>
@@ -950,7 +985,7 @@ public class PodcastController : ControllerBase
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GenerateEpisodeTranscript));
 
             User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if(user is null)
+            if (user is null)
                 return NotFound("User not found");
 
             return await _podcastService.GenerateEpisodeTranscriptAsync(episodeId, user) ? Ok("Transcript generation started") : Ok("Failed to start transcript generation");
@@ -981,7 +1016,7 @@ public class PodcastController : ControllerBase
             if (user is null)
                 return NotFound("User not found");
 
-            return Ok(await _podcastService.GetRecommendedEpisodes(user,GetDomainUrl(HttpContext)));
+            return Ok(await _podcastService.GetRecommendedEpisodes(user, GetDomainUrl(HttpContext)));
         }
         catch (Exception e)
         {
@@ -1161,7 +1196,7 @@ public class PodcastController : ControllerBase
 
             var highlights = await _podcastService.GetRandomHighlightsAsync(quantity);
 
-            return Ok(highlights); 
+            return Ok(highlights);
         }
         catch (Exception e)
         {

@@ -79,6 +79,41 @@ public class EditEpisodeRequest : CreateEpisodeRequest
 }
 
 [BindProperties]
+public class GenerateAIEpisodeRequest
+{
+
+    /// <summary>
+    /// The name of the episode
+    /// </summary> 
+    [Required]
+    public string EpisodeName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The description of the episode
+    /// </summary> 
+    [Required]
+    public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The prompt for the AI to generate the episode
+    /// </summary>
+    [Required]
+    public string Prompt { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether to use a female voice or not
+    /// </summary>
+    [Required]
+    public bool IsFemaleVoice { get; set; } 
+
+    /// <summary>
+    /// Episode thumbnail
+    /// </summary>
+    [Required]
+    public IFormFile? Thumbnail { get; set; }
+}
+
+[BindProperties]
 public class AddEpisodeAudioRequest{
 
     [Required]

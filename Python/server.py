@@ -449,6 +449,30 @@ async def handle_stt_request(request):
         print(f"Error in handle_stt_request: {e}")
         return web.Response(status=400, text=str(e))
 
+async def handle_generate_episode_request(request):
+    try:
+        print("---------------- Handling Text Generation Request ----------------")
+
+        data = await request.json()
+
+        podcast_id = data.get('podcast_id')
+        episode_id = data.get('episode_id')
+        podcast_name = data.get('podcast_name')
+        podcast_description = data.get('podcast_description')
+        prompt = data.get('prompt')
+        speaker_name = data.get('speaker_name', 'Drinker')
+
+        print(f"Podcast ID: {podcast_id}, Episode ID: {episode_id}, Podcast Name: {podcast_name}, Podcast Description: {podcast_description}, Prompt: {prompt}\n")
+
+        threading.Thread(target=sp.generate_episode_pipeline, args=(podcast_id,episode_id,podcast_name,podcast_description,prompt,speaker_name)).start()
+
+        print("---------------- Text Generation Request Completed ----------------")
+
+        return web.Response(text="Generation started...", status=200)
+    except Exception as e:
+        print(f"Error in handle_generate_episode_request: {e}")
+        return web.Response(status=400, text=str(e))
+
 # Create the server instance
 app = web.Application()
 
@@ -461,6 +485,7 @@ app.add_routes([web.post('/ingest', handle_ingest_request)])
 app.add_routes([web.post('/chat', handle_chat_request)])
 app.add_routes([web.post('/tts_rvc', handle_tts_request)])
 app.add_routes([web.post('/stt_ingest', handle_stt_ingest_request)])
+app.add_routes([web.post('/generate_episode', handle_generate_episode_request)])
 
 # Download the Speakers
 print("Downloading Speaker Models...")

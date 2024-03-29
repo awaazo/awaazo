@@ -1,6 +1,6 @@
 import axios from "axios";
 import EndpointHelper from "../helpers/EndpointHelper";
-import { GetChatbotResponse } from "../types/Responses";
+import { AddEpisodeChatResponse, GetChatbotResponse } from "../types/Responses";
 
 export default class ChatbotHelper {
   private static async requestWrapper<T>(request: Promise<T>): Promise<T> {
@@ -30,7 +30,12 @@ export default class ChatbotHelper {
     };
 
     try {
+      console.log("Sending request for getting episode chat", options);
+
       const response = await axios(options);
+
+      console.log("Response received for getting episode chat", response.data);
+
       return response.data;
     } catch (error) {
       console.log(error);
@@ -41,7 +46,7 @@ export default class ChatbotHelper {
   public static async addEpisodeChat(
     episodeId: string,
     prompt: string
-  ): Promise<GetChatbotResponse> {
+  ): Promise<AddEpisodeChatResponse> {
     if (!episodeId || !prompt) {
       throw new Error("Invalid parameters for addEpisodeChat");
     }
@@ -52,6 +57,7 @@ export default class ChatbotHelper {
       data: { episodeId, prompt },
       withCredentials: true,
     };
-    return this.requestWrapper<GetChatbotResponse>(axios(options));
+
+    return this.requestWrapper<AddEpisodeChatResponse>(axios(options));
   }
 }
