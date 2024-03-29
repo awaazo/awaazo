@@ -189,7 +189,7 @@ public class AdminPanelService
     public async Task<bool> RemoveDailyPodcastRecomendationsAsync(List<Guid> podcasts)
     {
         List<Podcast> oldRecommendations = await _db.Podcasts
-            .Where(p => p.dailyAdminChoice == true)
+            .Where(p => p.dailyAdminChoice == true && podcasts.Contains(p.Id))
             .ToListAsync() ?? throw new Exception("Cannot find any podcasts with those Id");
 
         foreach (var oldRec in oldRecommendations)
