@@ -2,6 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
+RUN apt-get -y update && apt-get install -y --no-install-recommends ffmpeg
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
@@ -18,5 +19,4 @@ RUN dotnet publish "Backend.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN apt-get -y update && apt-get install -y --no-install-recommends ffmpeg
 ENTRYPOINT ["dotnet", "Backend.dll"]

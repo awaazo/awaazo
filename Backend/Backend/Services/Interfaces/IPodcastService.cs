@@ -42,6 +42,7 @@ public interface IPodcastService
 
     // AI GENERATED EPISODES
     public Task<bool> GenerateAIEpisodeAsync(GenerateAIEpisodeRequest request, Guid podcastId, User user, string domainUrl);
+    public Task<bool> GenerateAIEpisodeFromTextAsync(GenerateAIEpisodeFromTextRequest request, Guid podcastId, User user, string domainUrl);
 
 
     // TRANSCRIPT

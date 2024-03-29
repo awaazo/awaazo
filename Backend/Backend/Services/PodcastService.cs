@@ -1217,6 +1217,90 @@ public class PodcastService : IPodcastService
         return await _db.SaveChangesAsync() > 0;
     }
 
+
+    /// <summary>
+    /// Generates an AI episode for the specified podcast.
+    /// </summary>
+    /// <param name="request"> The request object </param>
+    /// <param name="podcastId"> The podcast ID </param>
+    /// <param name="user"> The user object </param>
+    /// <param name="domainUrl"> The domain URL </param>
+    /// <returns> A boolean indicating success </returns>
+    public async Task<bool> GenerateAIEpisodeFromTextAsync(GenerateAIEpisodeFromTextRequest request, Guid podcastId, User user, string domainUrl)
+    {
+        // Check if the podcast exists
+        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == podcastId && p.PodcasterId == user.Id)
+        ?? throw new Exception("Podcast does not exist and/or it is not owned by user.");
+
+        // Check if the episode name already exists for the podcast
+        if (await _db.Episodes.AnyAsync(e => e.PodcastId == podcastId && e.EpisodeName == request.EpisodeName))
+            throw new Exception("An episode with the same name already exists for this podcast.");
+
+        Episode aiEpisode = new()
+        {
+            Id = Guid.NewGuid(),
+            PodcastId = podcastId,
+            EpisodeName = request.EpisodeName,
+            Description = request.Description,
+            IsExplicit = false,
+            ReleaseDate = DateTime.Now,
+            UpdatedAt = DateTime.Now,
+            CreatedAt = DateTime.Now,
+            Duration = 0
+        };
+
+        // Check if the episode thumbnail was provided
+        if (request.Thumbnail == null)
+            throw new Exception("Thumbnail is required.");
+
+        // Check if the episode thumbnail is an image
+        if (!ALLOWED_IMG_FILES.Contains(request.Thumbnail.ContentType))
+            throw new Exception("Thumbnail must be a JPEG, PNG, or SVG.");
+
+        // Check if the episode thumbnail is smaller than 5MB
+        if (request.Thumbnail.Length > MAX_IMG_SIZE)
+            throw new Exception("Thumbnail must be smaller than 5MB.");
+
+        // Save the episode thumbnail to the server
+        aiEpisode.Thumbnail = SavePodcastEpisodeThumbnail(aiEpisode.Id, podcastId, request.Thumbnail);
+
+        // Add the audio name to the episode
+        aiEpisode.Audio = string.Format("{0}.wav|/|\\|audio/wav", aiEpisode.Id);
+
+        // Send request to PY server to generate an AI episode
+        try
+        {
+            string speaker_name = request.IsFemaleVoice ? "Female0" : "Drinker";
+
+            var url = _pyBaseUrl + "/generate_episode_from_text";
+            var json = $@"{{
+                ""podcast_id"": ""{aiEpisode.PodcastId}"",
+                ""episode_id"": ""{aiEpisode.Id}"",
+                ""text"": ""{request.Text}"",
+                ""speaker_name"": ""{speaker_name}""
+            }}";
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var resp = await httpClient.PostAsync(url, content);
+
+            if (!resp.IsSuccessStatusCode)
+                throw new Exception($"Failed to generate AI episode. {resp.ReasonPhrase}");
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Failed to generate AI episode. {e.Message}");
+        }
+
+        // Save the episode to the database
+        await _db.Episodes.AddAsync(aiEpisode);
+
+        // Return whether the changes were saved successfully
+        return await _db.SaveChangesAsync() > 0;
+    }
+
+
+
     /// <summary>
     /// Notifies the user that the AI episode generation has been completed.
     /// </summary>
