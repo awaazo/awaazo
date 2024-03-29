@@ -355,7 +355,7 @@ public class AnalyticControllerTests
         _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minWatchTime, maxWatchTime)).ReturnsAsync(watchTimeRangeResponse);
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime, maxWatchTime);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, (int) minWatchTime.TotalMinutes,(int) maxWatchTime.TotalMinutes);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -375,7 +375,7 @@ public class AnalyticControllerTests
         _authServiceMock.Setup(auth => auth.IdentifyUserAsync(It.IsAny<HttpContext>())).ReturnsAsync(user);
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime, maxWatchTime);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId,(int) minWatchTime.TotalMinutes, (int)maxWatchTime.TotalMinutes);
 
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -396,7 +396,7 @@ public class AnalyticControllerTests
         _analyticServiceMock.Setup(service => service.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minWatchTime, maxWatchTime)).ThrowsAsync(new Exception(errorMessage));
 
         // Act
-        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, minWatchTime, maxWatchTime);
+        var result = await _analyticController.GetWatchTimeRangeInfo(podcastOrEpisodeId, (int)minWatchTime.TotalMinutes, (int)maxWatchTime.TotalMinutes);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
