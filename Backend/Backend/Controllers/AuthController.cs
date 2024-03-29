@@ -30,6 +30,7 @@ public class AuthController : ControllerBase
     public AuthController(IConfiguration configuration, IAuthService authService, ILogger<AuthController> logger)
     {
         _logger = logger;
+        logger.LogInformation("AuthController created");
         _configuration = configuration;
         _authService = authService;
     }
