@@ -58,7 +58,7 @@ public interface IPodcastService
     
     // Recommendation
     public Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl);
-
+    public Task<List<Guid>> GetRecommendedPodcast(User? user, int page, int pageSize);
 
     // HIGHLIGHT
     public Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user);
