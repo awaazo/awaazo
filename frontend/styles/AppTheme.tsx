@@ -24,6 +24,10 @@ const overrides = {
       greyish: '#818990',
       darkGrey: '#393939',
       darkerGrey: '#2D2D2D',
+      darkGradient: 'linear-gradient(180deg, #2A2A2A 5.06%, #1D1D1D 100%)',
+      lightGradient: 'linear-gradient(200deg, #FFF 22.27%, #D1D9DE 111.44%)',
+      sunset: 'linear-gradient(180deg, #FF6B60 21%, #FFD569 100%)',
+      greenToYellow: 'linear-gradient(180deg, #89DBBD 0%, #FFD569 99.17%)',
     },
   },
   gradients: {
@@ -235,7 +239,7 @@ const overrides = {
       },
       '.text-appear': {
         animation: 'appear 0.5s ease forwards',
-        marginRight: '4px', // Adjust the spacing as needed
+        marginRight: '4px', 
       },
       '.transcript-text': {
         whiteSpace: 'pre-wrap',
