@@ -1,9 +1,11 @@
 ﻿using System.Net.Mail;
 using Backend.Controllers.Requests;
+using Backend.Controllers.Responses;
 using Backend.Infrastructure;
 using Backend.Models;
 using Backend.Models.stats;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services;
 
@@ -13,6 +15,9 @@ public class AdminPanelService
     private readonly EmailService _emailService;
 
     private readonly string _awazooEmail;
+    private const int EmailLogsPerPage = 20;
+    private const int MAX_ADMIN_PODCAST_RECOMMENDATIONS = 10;
+
     public AdminPanelService(AppDbContext db, IConfiguration config, EmailService emailService) {
         _db = db;
         _emailService = emailService;
@@ -120,7 +125,85 @@ public class AdminPanelService
         }
     }
 
-    private const int EmailLogsPerPage = 20;
+    #region admin podcast recommendations
+
+    /// <summary>
+    /// Creates a new Daily recommendation if the limit hasnt already been reached
+    /// </summary>
+    /// <param name="req"></param>
+    /// <param name="domainUrl"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<adminRecommendationResponse> CreateDailyPodcastRecomendationAsync(AdminPodcastRecommendationRequest req, string domainUrl)
+    {     
+        // Check how many podcasts are still a daily recommendation
+        List<Podcast> oldRecommendations = await _db.Podcasts
+            .Where(p => p.dailyAdminChoice == true)
+            .ToListAsync();
+
+        // Check if max 10 podcast
+        if (MAX_ADMIN_PODCAST_RECOMMENDATIONS == oldRecommendations.Count)
+        {
+            throw new Exception("You can only have a maximum of 10 admin recommendations. Remove some recommendations before adding more");
+        }
+
+        Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == req.podcastId) ?? throw new Exception("Podcast does not exist");
+       
+        // Set podcast values
+        podcast.dailyAdminChoice = true;        
+        if (req.description.IsNullOrEmpty())
+        {
+            podcast.customAdminDescription = string.Empty;
+        }
+        podcast.customAdminDescription = req.description;
+        var response = new adminRecommendationResponse(podcast, domainUrl);
+
+        _db.Podcasts.Update(podcast);
+        await _db.SaveChangesAsync();
+
+        return response;
+    }
+
+    /// <summary>
+    /// Return all current admin recommendations
+    /// </summary>
+    /// <param name="domainUrl"> domainURL is required for responses</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<adminRecommendationResponse>> GetDailyPodcastRecomendationsAsync(string domainUrl)
+    {
+        var currentRecommendations = await _db.Podcasts
+            .Where(p => p.dailyAdminChoice == true)
+            .Select(p => new adminRecommendationResponse(p, domainUrl))
+            .ToListAsync() ?? throw new Exception("There exists no current admin recommendations");
+
+        return currentRecommendations;
+    }
+
+    /// <summary>
+    /// Removes all the daily Admin recommendations
+    /// </summary>
+    /// <param name="podcasts"> Old/current recommendations that are being removed</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> RemoveDailyPodcastRecomendationsAsync(List<Guid> podcasts)
+    {
+        List<Podcast> oldRecommendations = await _db.Podcasts
+            .Where(p => p.dailyAdminChoice == true && podcasts.Contains(p.Id))
+            .ToListAsync() ?? throw new Exception("Cannot find any podcasts with those Id");
+
+        foreach (var oldRec in oldRecommendations)
+        {
+            oldRec.dailyAdminChoice = false;
+            oldRec.customAdminDescription = string.Empty;
+            _db.Podcasts.Update(oldRec);
+        }
+
+        return await _db.SaveChangesAsync() == oldRecommendations.Count;
+    }
+
+    #endregion
+
     public Task<AdminEmailLog[]> EmailLogs(User admin, int page) {
         return _db.AdminEmailLogs.Skip(page * EmailLogsPerPage).Take(EmailLogsPerPage).ToArrayAsync();
     }

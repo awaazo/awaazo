@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Backend.Models;
 using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,4 +33,21 @@ internal class ReportTargetEntityAttribute : ValidationAttribute
             return ValidationResult.Success;
         return new ValidationResult($"{val} is not a valid report entity target type. Valid types are {string.Join(", ", ReportService.AcceptableReportTargets)}");
     }
+}
+
+[BindProperties]
+public class AdminPodcastRecommendationRequest
+{
+    [Required]
+    public Guid podcastId { get; set; } = Guid.Empty;
+
+    public string description { get; set; } = string.Empty;
+}
+
+[BindProperties]
+public class AdminPodcastRecommendationRemovalRequest
+{
+
+    [Required]
+    public List<Guid> podcastsToRemove { get; set; } = new List<Guid>();
 }
