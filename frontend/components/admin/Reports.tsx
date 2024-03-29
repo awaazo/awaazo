@@ -109,7 +109,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
   }
 
   return (
-    <Box flex="1" overflow="auto" height={'85vh'} bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={`calc((100vh - 100px))`}>
+    <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={`calc((100vh - 100px))`}>
       <Tabs isFitted variant="enclosed">
         <TabList mb="1em" width={'300px'} border={'none'}>
           <Tab

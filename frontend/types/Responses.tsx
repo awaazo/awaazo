@@ -19,6 +19,7 @@ import {
   Email,
   Highlight,
   ChatbotMessage,
+  Report,
 } from './Interfaces'
 
 export interface BaseResponse {
