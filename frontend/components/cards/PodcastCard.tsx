@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Podcast } from "../../types/Interfaces";
 import Logo from "../../public/logos/logo_white.svg";
-import { OneDot, TwoDots, ThreeDots,FourDots, FiveDots} from "../../public/icons";
+import { OneDot , TwoDots, ThreeDots,FourDots, FiveDots} from "../../public/icons";
 
 
 interface PodcastCardProps {
@@ -36,22 +36,22 @@ const RatingTopRight = ({ averageRating }) => {
   let ratingIcon;
   switch (roundRating) {
     case 1:
-      ratingIcon = oneDot;
+      ratingIcon = OneDot;
       break;
     case 2:
-      ratingIcon = twoDots;
+      ratingIcon = TwoDots;
       break;
     case 3:
-      ratingIcon = threeDots;
+      ratingIcon = ThreeDots;
       break;
     case 4:
-      ratingIcon = fourDots;
+      ratingIcon = FourDots;
       break;
     case 5:
-      ratingIcon = fiveDots;
+      ratingIcon = FiveDots;
       break;
     default:
-      ratingIcon = oneDot;
+      ratingIcon = OneDot;
   }
   return (
     <Flex position="absolute" top="5" right="5" align="center" opacity="0" _groupHover={{ opacity: 1 }} zIndex={2} >
@@ -119,7 +119,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           <RatingTopRight averageRating={podcast.averageRating} />
           <PodcastNameAndTags name={podcast.name} tags={podcast.tags} />
           <PodcastType type={podcast.type} />
-          <Icon as={oneDot} />
+          <Icon as={OneDot} />
         </Flex>
       </Link>
     </Box>
