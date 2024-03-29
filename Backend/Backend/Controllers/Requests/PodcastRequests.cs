@@ -104,7 +104,42 @@ public class GenerateAIEpisodeRequest
     /// Whether to use a female voice or not
     /// </summary>
     [Required]
-    public bool IsFemaleVoice { get; set; } 
+    public bool IsFemaleVoice { get; set; }
+
+    /// <summary>
+    /// Episode thumbnail
+    /// </summary>
+    [Required]
+    public IFormFile? Thumbnail { get; set; }
+}
+
+
+[BindProperties]
+public class GenerateAIEpisodeFromTextRequest
+{
+    /// <summary>
+    /// The name of the episode
+    /// </summary> 
+    [Required]
+    public string EpisodeName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The description of the episode
+    /// </summary> 
+    [Required]
+    public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The text to generate the episode from
+    /// </summary>
+    [Required]
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether to use a female voice or not
+    /// </summary>
+    [Required]
+    public bool IsFemaleVoice { get; set; }
 
     /// <summary>
     /// Episode thumbnail
@@ -114,7 +149,8 @@ public class GenerateAIEpisodeRequest
 }
 
 [BindProperties]
-public class AddEpisodeAudioRequest{
+public class AddEpisodeAudioRequest
+{
 
     [Required]
     public IFormFile? AudioFile { get; set; }
@@ -173,13 +209,13 @@ public class EpisodeFilter
 {
     [Required]
     public string SearchTerm { get; set; } = string.Empty;
-    
+
     public bool? IsExplicit { get; set; }
 
-    public string? ReleaseDate { get; set;}
+    public string? ReleaseDate { get; set; }
 
     [Range(0.0, Double.MaxValue, ErrorMessage = "Time must be a positive number")]
-    public float? MinEpisodeLength { get; set;}
+    public float? MinEpisodeLength { get; set; }
 
 }
 
@@ -237,7 +273,7 @@ public class EpisodeRating
     [LoadColumn(1)]
     public string EpisodeId;
     [LoadColumn(2)]
-    public float TotalListenTime ;
+    public float TotalListenTime;
 }
 
 

@@ -658,6 +658,37 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Generates an AI episode for a podcast from text.
+    /// </summary>
+    /// <param name="podcastId">Id of the podcast to generate the AI episode for.</param>
+    /// <param name="request">Request object containing the AI episode details.</param>
+    /// <returns>200 Ok if successful, 400 BadRequest if not successful</returns> 
+    [HttpPost("{podcastId}/generateAIEpisodeFromText")]
+    public async Task<IActionResult> GenerateAIEpisodeFromText([FromForm] GenerateAIEpisodeFromTextRequest request, Guid podcastId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GenerateAIEpisodeFromText));
+
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+            // If User is not found, return 404
+            if (user == null)
+                return NotFound("User does not exist.");
+
+            return await _podcastService.GenerateAIEpisodeFromTextAsync(request, podcastId, user, GetDomainUrl(HttpContext)) ? Ok("AI Generated Episode created.") : Ok("Failed to create AI Generated Episode.");
+        }
+        catch (Exception e)
+        {
+            // If error occurs, return BadRequest
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GenerateAIEpisodeFromText));
+            return BadRequest(e.Message);
+        }
+
+    }
+
 
     #endregion AI Generated Episode
 
