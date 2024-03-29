@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Backend.Infrastructure;
 using Backend.Services.Interfaces;
 using Backend.Services;
+using Backend.Helper;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Backend.Middlewares;
@@ -63,6 +64,7 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
