@@ -4,7 +4,6 @@ import AdminHelper from '../../helpers/AdminHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import { AwaazoA } from '../../public/icons'
-import { Report } from '../../types/Interfaces'
 
 const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
   const [selectedTab, setSelectedTab] = useState('pending')
@@ -125,7 +124,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}
@@ -147,7 +146,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}
@@ -169,7 +168,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}

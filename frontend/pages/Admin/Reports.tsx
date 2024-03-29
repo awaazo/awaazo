@@ -7,7 +7,6 @@ import Link from 'next/link'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastCard from '../../components/cards/PodcastCard'
-import EpisodeCard from '../../components/cards/EpisodeCard'
 import AdminHelper from '../../helpers/AdminHelper'
 
 const reportReasons = {

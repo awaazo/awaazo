@@ -6,7 +6,7 @@ import { GoReport } from 'react-icons/go'
 import { FaUsersCog } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 
-import Logo from '../../public/logo_white.svg'
+import Logo from '../../public/logos/logo_white.svg'
 import { useRouter } from 'next/router'
 
 const AdminSidebar = () => {

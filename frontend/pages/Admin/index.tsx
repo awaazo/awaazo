@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import AdminSidebar from '../../components/admin/AdminSidebar'
-import Link from 'next/link'
 import Reports from '../../components/admin/Reports'
 import BannedUsers from '../../components/admin/BannedUsers'
 import EmailLogs from '../../components/admin/EmailLogs'
