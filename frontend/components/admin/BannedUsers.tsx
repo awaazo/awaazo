@@ -3,7 +3,7 @@ import { Box, Table, Tbody, Td, Text, Th, Tr, Avatar } from '@chakra-ui/react'
 import AdminHelper from '../../helpers/AdminHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 
-const BannedUsers = () => {
+const BannedUsers = ({ inDashboard }) => {
   const [bannedUsers, setBannedUsers] = useState([])
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const BannedUsers = () => {
   }
 
   return (
-    <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px">
+    <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={inDashboard ? `calc((100vh - 100px) / 2)` : 'calc(100vh - 100px)'}>
       <Text fontWeight="bold" fontSize="24px">
         Banned Users
       </Text>
@@ -86,6 +86,11 @@ const BannedUsers = () => {
           ))}
         </Tbody>
       </Table>
+      {bannedUsers && bannedUsers.length === 0 && (
+        <Text textAlign={'center'} fontSize={'24px'} mt={'50px'}>
+          No Banned Users
+        </Text>
+      )}
     </Box>
   )
 }

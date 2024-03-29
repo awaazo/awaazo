@@ -50,7 +50,7 @@ const UserSearch = ({ onSelectUser, selectedUser }) => {
   }
 
   return (
-    <Box flex="1" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={'85vh'}>
+    <Box flex="1" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={`calc((100vh - 100px))`}>
       <InputGroup maxWidth={'350px'} bg="az.darkGrey" borderRadius={'15px'} border={'none'} mb={4}>
         <Input
           borderRadius={'15px'}

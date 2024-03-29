@@ -60,7 +60,7 @@ const UserManagementPage = () => {
   }
 
   return (
-    <Flex maxHeight={'80vh'}>
+    <Flex height={`calc((100vh - 100px))`}>
       <AdminSidebar />
 
       <Box flex="1" p="4" ml={'15px'}>
@@ -107,7 +107,9 @@ const UserManagementPage = () => {
                 </VStack>
               </Box>
             )}
-            <BannedUsers />
+            <Box width="100%" height={'85vh'}>
+              <BannedUsers inDashboard={false} />
+            </Box>
           </VStack>
         </Flex>
       </Box>

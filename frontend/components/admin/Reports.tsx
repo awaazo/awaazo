@@ -6,7 +6,7 @@ import PodcastHelper from '../../helpers/PodcastHelper'
 import { AwaazoA } from '../../public/icons'
 import { Report } from '../../types/Interfaces'
 
-const Reports = ({ onSelectReport, selectedReport }) => {
+const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
   const [selectedTab, setSelectedTab] = useState('pending')
   const [resolvedReports, setResolvedReports] = useState([])
   const [rejectedReports, setRejectedReports] = useState([])
@@ -109,7 +109,7 @@ const Reports = ({ onSelectReport, selectedReport }) => {
   }
 
   return (
-    <Box flex="1" overflow="auto" height={'85vh'} bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px">
+    <Box flex="1" overflow="auto" height={'85vh'} bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={`calc((100vh - 100px))`}>
       <Tabs isFitted variant="enclosed">
         <TabList mb="1em" width={'300px'} border={'none'}>
           <Tab
@@ -187,14 +187,14 @@ const Reports = ({ onSelectReport, selectedReport }) => {
                 p={'10px'}
                 borderRadius="15px"
                 bg={selectedReport && selectedReport.id === report.id ? 'az.blackish' : 'az.darkGrey'}
-                mb={2}
+                mb={3}
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
                 cursor="pointer"
                 transition="all 0.3s"
                 _hover={{ transform: 'scale(1.05)' }}
-                onClick={() => onSelectReport(report)}
+                onClick={inDashboard ? null : () => onSelectReport(report)}
               >
                 {/* Image */}
                 <Box flex="0 0 auto" mr={4}>
@@ -224,6 +224,11 @@ const Reports = ({ onSelectReport, selectedReport }) => {
                 </Box>
               </Box>
             ))}
+            {pendingReports && pendingReports.length === 0 && (
+              <Text textAlign={'center'} fontSize={'24px'} mt={'50px'}>
+                No Reports Yet
+              </Text>
+            )}
           </TabPanel>
           <TabPanel>
             <Table variant="simple" size="sm" borderWidth="0px">

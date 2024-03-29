@@ -48,15 +48,15 @@ const EmailLogsPage = () => {
   }
 
   return (
-    <Flex maxHeight={'80vh'}>
+    <Flex height={`calc(100vh - 100px)`}>
       <AdminSidebar />
 
       <Box flex="1" p="4" ml={'15px'}>
         <Text fontSize={'32px'} fontWeight={'bold'} mb={'15px'}>
           Email Logs
         </Text>
-        <Flex height={'85vh'}>
-          <EmailLogs emails={emails} setSelectedEmail={setSelectedEmail} selectedEmail={selectedEmail} />
+        <Flex height={`calc((100vh - 100px))`}>
+          <EmailLogs emails={emails} setSelectedEmail={setSelectedEmail} selectedEmail={selectedEmail} inDashboard={false} />
           {selectedEmail && (
             <Box flexBasis="60%" ml="15px" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px">
               <Box borderRadius="10px" p="4">

@@ -8,6 +8,7 @@ import PodcastHelper from '../../helpers/PodcastHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastCard from '../../components/cards/PodcastCard'
 import EpisodeCard from '../../components/cards/EpisodeCard'
+import AdminHelper from '../../helpers/AdminHelper'
 
 const reportReasons = {
   'Inappropriate Content': {
@@ -71,12 +72,20 @@ const ReportsPage = () => {
     setSelectedReport(report)
   }
 
-  const handleAcceptReport = () => {
-    // Logic to accept the report
+  const handleAcceptReport = async () => {
+    try {
+      const res = await AdminHelper.adminResolveReportRequest(selectedReport.id)
+    } catch (error) {
+      console.error('Error banning user:', error)
+    }
   }
 
-  const handleRejectReport = () => {
-    // Logic to reject the report
+  const handleRejectReport = async () => {
+    try {
+      const res = await AdminHelper.adminRejectReportRequest(selectedReport.id)
+    } catch (error) {
+      console.error('Error banning user:', error)
+    }
   }
 
   const PodcastComponent = ({ entityData }) => {
@@ -173,7 +182,7 @@ const ReportsPage = () => {
   }
 
   return (
-    <Flex maxHeight={'80vh'}>
+    <Flex height={`calc((100vh - 100px))`}>
       <AdminSidebar />
       <Box flex="1" p="4" ml={'15px'}>
         <Text fontSize={'32px'} fontWeight={'bold'} mb={'15px'}>
@@ -181,7 +190,7 @@ const ReportsPage = () => {
         </Text>
         <Flex height={'85vh'}>
           <Box flexBasis="55%" mr="15px">
-            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} />{' '}
+            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} inDashboard={false} />{' '}
           </Box>
           <Box flexBasis="50%" ml="15px">
             {selectedReport && (
@@ -210,7 +219,7 @@ const ReportsPage = () => {
                         </Button>
                       </Box>
                       <Box>
-                        <Button bg={'az.darkGrey'} color={'az.red'} borderRadius={'13px'} onClick={handleRejectReport}>
+                        <Button bg={'az.darkGrey'} color={'az.red'} borderRadius={'13px'} onClick={handleAcceptReport}>
                           Delete {selectedReport.targetEntityName}
                         </Button>
                       </Box>
