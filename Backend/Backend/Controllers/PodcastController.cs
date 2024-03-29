@@ -358,6 +358,34 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get Recommeded Podcasts for a User
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("getRecommendedPodcasts")]
+    [AllowAnonymous]
+
+    public async Task<ActionResult> GetRecommededPodcasts(int page = MIN_PAGE, int pageSize = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            // Identify User from JWT Token
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+
+
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRecommededPodcasts));
+
+            return Ok(await _podcastService.GetRecommendedPodcast(user,page,pageSize));
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e, callerName: nameof(GetRecommededPodcasts));
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 
     #region Episode

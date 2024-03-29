@@ -248,6 +248,23 @@ public class ModelResult
 }
 
 
+public class PodcastRecommendationInput
+{
+
+    [LoadColumn(0)]
+    public string UserId;
+    [LoadColumn(1)]
+    public string PodcastId;
+    [LoadColumn(2)]
+    public float TotalListenTime;
+}
+
+public class LikedPodcasts
+{
+    public Podcast podcast;
+    public int totalLikes;
+}
+
 #region Highlight Requests
 
 /// <summary>

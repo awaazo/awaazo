@@ -14,6 +14,9 @@ using Microsoft.ML.Trainers;
 using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using Backend.Helper;
+using System;
+using Instances;
 
 namespace Backend.Services;
 
@@ -68,6 +71,11 @@ public class PodcastService : IPodcastService
     /// Threshold for ML
     /// </summary>
     public const double THRESHOLD = 30;
+
+    /// <summary>
+    /// threshold for string matching
+    /// </summary>
+    public const double LEVENSHTEIN_DISTANCE = 3.0;
 
     /// <summary>
     /// Maximum duration of a highlight
@@ -544,6 +552,141 @@ public class PodcastService : IPodcastService
         .ToListAsync() ?? throw new Exception("No podcasts found.");
 
         return podcastResponses;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    public async Task<List<Guid>> GetRecommendedPodcast(User? user, int page,int pageSize)
+    {
+        // Update ai generated episodes
+        await NotifyGenerationCompletionAsync();
+
+        // Get all episode interactions
+        List<UserEpisodeInteraction> episodeInteractions = await _db.UserEpisodeInteractions.Include(u => u.Episode).ToListAsync();
+
+        // Get all the podcasts
+        List<Podcast> podcasts = await _db.Podcasts.Include(u => u.Ratings).Include(u => u.Episodes).ThenInclude(u => u.Likes).ToListAsync();
+
+        // response
+        List<Guid> response = new List<Guid>();
+
+        
+
+        // if user is not loggedIn return the top rated podcasts
+        if (user == null)
+        {
+            // return the Top rated Podcasts
+            var topRatedPodcasts = podcasts.OrderByDescending(u => u.Ratings.Sum(u => u.Rating)).Skip(page * pageSize).Take(pageSize).ToList();
+
+            for(int i = 0; i < topRatedPodcasts.Count(); i++)
+            {
+                response.Add(topRatedPodcasts[i].Id);
+            }
+            return response;
+        }
+
+
+        // Unique Podcasts
+
+        HashSet<Guid> uniquePodcasts = new HashSet<Guid>();
+
+        //loop through to get the training set
+        List<PodcastRecommendationInput> trainingSet = new List<PodcastRecommendationInput>();
+
+        // Loop through all the podcasts
+        for (int i = 0; i < podcasts.Count(); i++)
+        {
+            // For each podcasts loop through episode interaction
+            for(int j = 0;j < episodeInteractions.Count(); j++)
+            {
+                // if the podcast id is equal to the episode id
+                if (episodeInteractions[j].Episode.PodcastId == podcasts[i].Id)
+                {
+                    // check if it exist in the array
+                    PodcastRecommendationInput? input = trainingSet.FirstOrDefault(u => u.PodcastId == podcasts[i].Id.ToString() && u.UserId == episodeInteractions[j].UserId.ToString());
+
+                    // if it doesnot exist then add it array
+                    if(input == null)
+                    {
+                        trainingSet.Add(new PodcastRecommendationInput { PodcastId = podcasts[i].Id.ToString(), UserId = episodeInteractions[j].UserId.ToString(), TotalListenTime = (float)episodeInteractions[j].TotalListenTime.TotalSeconds });
+                    }
+                    // if it exist then add the listen time 
+                    else
+                    {
+                        input.TotalListenTime += (float)episodeInteractions[j].TotalListenTime.TotalSeconds;   
+                    }   
+                }
+            }
+        }
+
+        //Get Recommedation Based on like History
+        uniquePodcasts = GetOtherRecommededPodcastsBasedOnLikeHistory(podcasts, user);
+
+        // if training set is empty then just return the response
+        if (trainingSet.Count() == 0)
+        {
+            response =  uniquePodcasts.Skip(page * pageSize).Take(pageSize).ToList(); 
+            return response;
+        }
+
+        // Load the Data
+        IDataView trainingDataView = _mLContext.Data.LoadFromEnumerable<PodcastRecommendationInput>(trainingSet);
+
+        // Convert Guid to a numeric Key
+        var estimator = _mLContext.Transforms.Conversion.MapValueToKey(new[] {
+                new  InputOutputColumnPair("userIdEncoded", "UserId"),
+                new  InputOutputColumnPair("podcastIdEncoded", "PodcastId")
+                },
+                 keyOrdinality: Microsoft.ML.Transforms.ValueToKeyMappingEstimator
+                     .KeyOrdinality.ByValue, addKeyValueAnnotationsAsText: true);
+
+        // Transform the userID
+        var options = new MatrixFactorizationTrainer.Options
+        {
+            MatrixColumnIndexColumnName = "userIdEncoded",
+            MatrixRowIndexColumnName = "podcastIdEncoded",
+            LabelColumnName = "TotalListenTime",
+            NumberOfIterations = 20,
+            ApproximationRank = 100
+        };
+
+        // Define the trainer.
+        var trainerEstimator = estimator.Append(_mLContext.Recommendation().Trainers.MatrixFactorization(options));
+
+        // Train the model.
+        var model = trainerEstimator.Fit(trainingDataView);
+
+        // Create Prediction Engine
+        var prediction = _mLContext.Model.CreatePredictionEngine<PodcastRecommendationInput, ModelResult>(model);
+
+
+        // Loop through all the Podcasts
+        foreach (var item in podcasts)
+        {
+            //Predict for each Episode
+            ModelResult result = prediction.Predict(new PodcastRecommendationInput { PodcastId = item.Id.ToString(),UserId = user.Id.ToString() }) ;
+
+            // If score Greater then threshold then Add it to the list
+            if (result.Score > THRESHOLD)
+            {
+                uniquePodcasts.Add(item.Id);
+            }
+
+        }
+
+        // Change the Set type to the list
+        response = uniquePodcasts.Skip(page * pageSize).Take(pageSize).ToList();
+        
+        
+        // Return the List
+        return response;
+
+
     }
 
     #endregion Podcast
@@ -1610,6 +1753,13 @@ public class PodcastService : IPodcastService
 
         List<EpisodeRating> episodeInteractions = await _db.UserEpisodeInteractions.Select(u => new EpisodeRating(u)).ToListAsync();
 
+        List<EpisodeResponse> response = new List<EpisodeResponse>();
+
+        if(episodeInteractions.Count() == 0)
+        {
+            return response;
+        }
+
         // Load the Data
         IDataView trainingDataView = _mLContext.Data.LoadFromEnumerable<EpisodeRating>(episodeInteractions);
 
@@ -1631,10 +1781,8 @@ public class PodcastService : IPodcastService
             ApproximationRank = 100
         };
 
-
         // Define the trainer.
         var trainerEstimator = estimator.Append(_mLContext.Recommendation().Trainers.MatrixFactorization(options));
-
 
         // Train the model.
         var model = trainerEstimator.Fit(trainingDataView);
@@ -1664,13 +1812,17 @@ public class PodcastService : IPodcastService
 
         }
 
-        List<EpisodeResponse> response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
+        response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
 
         // Return the List
         return response;
 
 
     }
+
+
+
+
     #region Highlights
 
     /// <summary>
@@ -1926,6 +2078,66 @@ public class PodcastService : IPodcastService
             list[k] = list[n];
             list[n] = value;
         }
+    }
+
+    private HashSet<Guid> GetOtherRecommededPodcastsBasedOnLikeHistory(List<Podcast> podcasts, User user)
+    {
+
+        HashSet<Guid> response = new HashSet<Guid>();
+
+        // Podcasts which they like the most
+        List <LikedPodcasts> mostlikedPodcast = new List<LikedPodcasts>();
+
+        // Get how much each podcast is liked 
+        for(int i = 0; i < podcasts.Count(); i++)
+        {
+            int sum = 0;
+            List<Episode> pod = podcasts[i].Episodes.ToList();
+            for(int j = 0; j < pod.Count; j++)
+            {
+                sum += pod[j].Likes.Count(u => u.UserId == user.Id);
+
+            }
+            if(sum > 0)
+            {
+                mostlikedPodcast.Add(new LikedPodcasts { podcast = podcasts[i], totalLikes = sum });
+
+            }
+
+        }
+
+        //Get 5 most liked Podcast
+        mostlikedPodcast =  mostlikedPodcast.OrderBy(u => u.totalLikes).Take(5).ToList();
+
+        // Get similiar podcasts
+        List<string> allLikedTags = new List<string>();
+
+        // Loop through the podcast array to add all liked Tags
+        for(int i = 0; i < mostlikedPodcast.Count; i++)
+        {
+            // add the Tags
+            allLikedTags.AddRange(mostlikedPodcast[i].podcast.Tags);
+        }
+
+        //Loop through the podcast to get podcasts which have similiar tags
+
+
+        for(int i = 0; i < podcasts.Count(); i++)
+        {
+            // Check for duplication
+            if (!mostlikedPodcast.Any(u => u.podcast.Id == podcasts[i].Id))
+            {
+                for(int j = 0; j < podcasts[i].Tags.Length; j++)
+                {
+                    if(allLikedTags.Any(u => u.ToLower() == podcasts[i].Tags[j].ToLower()))
+                    {
+                        response.Add(podcasts[i].Id);
+                    }
+                    
+                }
+            }
+        }
+        return response;
     }
 
     #region Episode Chat
