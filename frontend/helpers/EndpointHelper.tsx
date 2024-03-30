@@ -755,6 +755,78 @@ export default class EndpointHelper {
   }
 
   // --------------------------------
+  // Analytics Endpoints
+  // --------------------------------
+
+  static getUserEngagementMetrics = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/userEngagementMetrics'
+  }
+
+  static getMostCommented = (podcastId, count, getLessCommented) => {
+    return this.getBackendAddress() + '/analytic/getMostCommented?podcastId=' + podcastId + '&count=' + count + '&getLessCommented=' + getLessCommented
+  }
+
+  static getMostLiked = (podcastId, count, getLessLiked) => {
+    return this.getBackendAddress() + '/analytic/getMostLiked?podcastId=' + podcastId + '&count=' + count + '&getLessLiked=' + getLessLiked
+  }
+
+  static getMostClicked = (podcastId, count, getLessClicked) => {
+    return this.getBackendAddress() + '/analytic/getMostClicked?podcastId=' + podcastId + '&count=' + count + '&getLessClicked=' + getLessClicked
+  }
+
+  static getMostWatched = (podcastId, count, getLessWatched) => {
+    return this.getBackendAddress() + '/analytic/getMostWatched?podcastId=' + podcastId + '&count=' + count + '&getLessWatched=' + getLessWatched
+  }
+
+  static getAverageWatchTime = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/averageWatchTime'
+  }
+
+  static getTotalWatchTime = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/totalWatchTime'
+  }
+
+  static getWatchTimeDistribution = (podcastOrEpisodeId, timeInterval, intervalIsInMinutes) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/watchTimeDistribution?timeInterval=' + timeInterval + '&intervalIsInMinutes=' + intervalIsInMinutes
+  }
+
+  static getWatchTimeRangeInfo = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/watchTimeRangeInfo'
+  }
+
+  static getAverageAudienceAge = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/averageAudienceAge'
+  }
+
+  static getAgeRangeInfo = (podcastOrEpisodeId, min, max) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/ageRangeInfo?min=' + min + '&max=' + max
+  }
+
+  static getAgeRangeDistributionInfo = (podcastOrEpisodeId, ageInterval) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/ageRangeDistributionInfo?ageInterval=' + ageInterval
+  }
+
+  static getUserAverageWatchTime = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/userAverageWatchTime?podcastOrEpisodeId=' + podcastOrEpisodeId
+  }
+
+  static getUserTotalWatchTime = (podcastOrEpisodeId) => {
+    return this.getBackendAddress() + '/analytic/userTotalWatchTime?podcastOrEpisodeId=' + podcastOrEpisodeId
+  }
+
+  static getTopWatched = (isEpisodes, count, getLessWatched, page, pageSize) => {
+    return this.getBackendAddress() + '/analytic/topWatched?isEpisodes=' + isEpisodes + '&count=' + count + '&getLessWatched=' + getLessWatched + '&page=' + page + '&pageSize=' + pageSize
+  }
+
+  static getTopGenre = () => {
+    return this.getBackendAddress() + '/analytic/topGenre'
+  }
+
+  static getListeningHistory = (page, pageSize) => {
+    return this.getBackendAddress() + '/analytic/listeningHistory?page=' + page + '&pageSize=' + pageSize
+  }
+
+  // --------------------------------
   // Highlights Endpoints
   // --------------------------------
 
