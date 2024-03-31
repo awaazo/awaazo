@@ -1,69 +1,59 @@
-import React from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { convertTime } from "../../utilities/commonUtils";
-import { RiPlayList2Fill } from "react-icons/ri";
-import Link from "next/link";
+import React from 'react'
+import { Box, Flex, HStack, Text } from '@chakra-ui/react'
+import { convertTime } from '../../utilities/commonUtils'
+import PlaylistMenu from '../playlist/PlaylistMenu'
+import Image from 'next/image'
+import LikedEpisodesImage from '../../styles/images/LikedEpisodes.png'
+import { Time, Plays, Lock, Unlock } from '../../public/icons'
 
 const PlaylistCard = ({ playlist }) => {
   return (
-    <Flex
-      p={4}
-      mt={3}
-      width="100%"
-      borderRadius="15px"
-      overflow="hidden"
-      cursor="pointer"
-      transition="transform 0.3s, opacity 0.3s ease"
-      bg={"rgba(0, 0, 0, 0.2)"}
-      backdropFilter="blur(4px)"
-      boxShadow="sm"
-      opacity="1"
-      _hover={{ opacity: "0.7" }}
-    >
+    <Flex p={3} mt={3} width="100%" borderRadius="15px" bg={'az.darkGrey'}>
       <Flex direction="column" flex={1}>
-        <Link href={`/Playlist/${playlist.id}`}>
-          <Flex justifyContent="space-between" mb={2} align="center">
-            {/* Privacy */}
-            <Flex alignItems="center">
-              <RiPlayList2Fill size={"25px"} />
-              <Text fontWeight="medium" fontSize="xl" ml={2}>
-                {playlist.name}
-              </Text>
-            </Flex>
-            {/* Playlist Name */}
-            <Text fontWeight="medium" fontSize="sm">
-              {playlist.privacy}
+        <Flex justifyContent="space-between" mb={2} align="center">
+          <Box mr={3} borderRadius="10px" overflow={'hidden'}>
+            {playlist.name === 'Liked Episodes' ? (
+              <Image src={LikedEpisodesImage} alt={playlist.name} width={100} height={100} />
+            ) : (
+              <Image src={playlist.coverArt} alt={playlist.name} width={100} height={100} />
+            )}
+          </Box>
+
+          <Box flex={1}>
+            <Text fontWeight="bold" fontSize="20px" color="white" mb={1}>
+              {playlist.name}
             </Text>
-          </Flex>
-          {/* Playlist Details */}
-          <Box fontSize="sm" color="gray.500">
-            <Text>{playlist.description}</Text>
-            <Flex>
-              <Box flex={1}>
-                <Text>
-                  <strong>Number of Episodes:</strong>{" "}
+            <Text fontSize="16px" color="grey">
+              {playlist.description}
+            </Text>
+
+            <HStack textAlign="left" mt={'5px'}>
+              <Flex align="center" color="grey" mr="10px">
+                <Plays />
+                <Text fontSize="16px" ml="1">
                   {playlist.numberOfEpisodes}
                 </Text>
-                <Text>
-                  <strong>Duration:</strong> {convertTime(playlist.duration)}
+              </Flex>
+              <Flex align="center" color="grey">
+                <Time />
+                <Text fontSize="16px" ml="1" mr="15px">
+                  {convertTime(playlist.duration)}
                 </Text>
-              </Box>
-              <Box>
-                <Text>
-                  <strong>Created At:</strong>{" "}
-                  {new Date(playlist.createdAt).toLocaleDateString()}
-                </Text>
-                <Text>
-                  <strong>Updated At:</strong>{" "}
-                  {new Date(playlist.updatedAt).toLocaleDateString()}
-                </Text>
-              </Box>
-            </Flex>
+              </Flex>
+              <Text fontSize="16px" color="white">
+                {playlist.privacy === 'public' ? <Unlock /> : <Lock />}
+              </Text>
+            </HStack>
           </Box>
-        </Link>
+
+          {/* Playlist Menu */}
+          <Box ml={3} textAlign="center">
+            <PlaylistMenu playlist={playlist} onUpdate={null} />
+          </Box>
+        </Flex>
       </Flex>
     </Flex>
-  );
-};
+  )
+}
 
-export default PlaylistCard;
+export default PlaylistCard
