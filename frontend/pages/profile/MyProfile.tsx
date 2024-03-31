@@ -22,14 +22,14 @@ const MyProfile = () => {
           <MyPlaylists />
         </VStack>
       ) : (
-        <HStack width="90%" align={'start'} spacing={'15px'}>
-          <VStack width="35%" align="start" spacing={'10px'}>
+        <HStack width="80vw" align={'start'} spacing={'15px'}>
+          <VStack width="28vw" align="start" spacing={'10px'}>
             <Header />
           </VStack>
-          <VStack width="40%" align="start">
+          <VStack width="500px" align="start">
             <Podcasts />
           </VStack>
-          <VStack width="20%" align="start">
+          <VStack width="16vw" align="start">
             <MyPlaylists />
           </VStack>
         </HStack>

@@ -9,6 +9,7 @@ import UserProfileHelper from '../../../helpers/UserProfileHelper'
 import Subscriptions from './MySubscriptions'
 import AnalyticsHelper from '../../../helpers/AnalyticsHelper'
 import PodcastCard from '../../cards/PodcastCard'
+import { AwaazoA, Pen } from '../../../public/icons'
 
 const iconProps = {
   variant: 'ghost',
@@ -71,34 +72,44 @@ export default function Header() {
       <VStack width={'100%'} spacing={4} px={2} alignItems={{ base: 'center', sm: 'flex-start' }} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
         <HStack>
           <Box position="relative">
-            <Avatar boxShadow="xl" width="7em" height="7em" src={profile?.avatarUrl} />
+            <Avatar boxShadow="xl" width="5em" height="5em" src={profile?.avatarUrl} />
             <IconButton
               aria-label="Edit Profile"
-              icon={<FiEdit2 />}
+              icon={<AwaazoA fontSize={'40px'} />}
+              position="absolute"
+              bottom={5}
+              right={5}
+              transform={'translate(-100%, -100%)'}
+              variant="ghost"
+              onClick={() => router.push('/profile/EditProfile')}
+              color="az.red"
+              _hover={{ color: 'az.blue' }}
+              data-cy={`edit_profile_button`}
+            />{' '}
+            <IconButton
+              aria-label="Edit Profile"
+              icon={<Pen fontSize={'19px'} />}
               position="absolute"
               bottom={6}
-              right={6}
-              transform={'translate(50%, 50%)'}
+              right={'17px'}
+              transform={'translate(-100%, -100%)'}
+              pointerEvents="none"
               variant="ghost"
-              rounded="3xl"
-              onClick={() => router.push('/profile/EditProfile')}
-              backgroundColor="brand.100"
-              _hover={{ bg: 'brand.300' }}
-              data-cy={`edit_profile_button`}
+              color="white"
             />
           </Box>
           <VStack align="start" spacing={1}>
             <Heading textAlign={{ base: 'center', sm: 'left' }} margin="0 auto" fontSize={{ base: '1.5rem', sm: '1.8rem' }}>
               {profile?.displayName}
             </Heading>
-            <Text fontSize="1.2rem">
-              <span style={{ color: useColorModeValue('pink', 'pink') }}>@{profile?.username}</span>
+            <Text fontSize="1.2rem" color={'az.red'} fontWeight={'bold'}>
+              @{profile?.username}
             </Text>
           </VStack>
         </HStack>
 
-        <Text textAlign="left">
-          <span>{profile?.bio}</span>
+        <Text textAlign="left" color={'grey'}>
+          {profile?.bio}
         </Text>
         <HStack>{/*<Subscriptions />*/}</HStack>
         <Divider />
@@ -117,15 +128,16 @@ export default function Header() {
 
               {topGenre && (
                 <Text fontSize="16px" mb="15px" marginLeft="30px" color={'grey'}>
-                  Your most listened-to genre is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{topGenre.genre}</span>, accounting for{' '}
+                  Your most listened-to genre is <span style={{ color: '#ff6a5f', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px', fontSize: '18px' }}>{topGenre.genre}</span>, accounting for{' '}
                   <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{topGenre.percentageOfTotalClicks}%</span> of total clicks. <br />
                   <Box p={'10px'} />
                   You've spent a total watch time of <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{topGenre.watchTime.slice(0, 8)}</span> on this genre,
                   which is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{topGenre.percentageOfTotalWatchTime.toFixed(1)}%</span> of your total watch
                   time.
                   <br />
-                  You've watched <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{topGenre.numberOfEpisodesWatched} episodes</span> and liked
-                  <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '3px', marginRight: '2px' }}>{topGenre.numberOfLikes} episodes</span>.
+                  You've watched <span style={{ color: '#ff6a5f', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px', fontSize: '18px' }}>{topGenre.numberOfEpisodesWatched} episodes</span> and
+                  liked
+                  <span style={{ color: '#ff6a5f', fontWeight: 'bold', marginLeft: '3px', marginRight: '2px', fontSize: '18px' }}>{topGenre.numberOfLikes} episodes</span>.
                 </Text>
               )}
               {mostWatchedPodcast && mostWatchedPodcast.length > 0 && (
