@@ -132,9 +132,8 @@ const ReportsPage = () => {
       <Box mb={4} display="flex" alignItems="left" width={'100%'}>
         <VStack width={'100%'}>
           <Flex width={'100%'}>
-            <Box mr={4} justifyContent="left">
-              <Image src={entityData.thumbnailUrl} boxSize={'175px'} borderRadius={'30px'} />
-            </Box>
+            <Image src={entityData.thumbnailUrl} boxSize={'175px'} borderRadius={'30px'} mr={'15px'} />
+
             <Box>
               <Text fontWeight="bold" mt={'10px'} mb={'5px'} fontSize={'24px'}>
                 {entityData.episodeName}
