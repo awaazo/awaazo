@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Container, Spinner } from '@chakra-ui/react'
-
+import { Settings } from '../../../public/icons'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
 import Link from 'next/link'
@@ -47,19 +47,10 @@ export default function Podcasts() {
 
   return (
     <>
-      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" justifyContent="space-between">
-        My Podcasts
-        <Link href="/CreatorHub/MyPodcasts" passHref>
-          <Button
-            style={{
-              fontWeight: 'bold',
-              marginLeft: '10px',
-              borderRadius: '10em',
-              borderColor: 'rgba(158, 202, 237, 0.6)',
-            }}
-          >
-            Manage Podcasts
-          </Button>
+      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" justifyContent="space-between" alignItems="center">
+        <span>My Podcasts</span>
+        <Link href="/CreatorHub/" passHref>
+          <IconButton aria-label="Settings" icon={<Settings />} size="lg" variant="ghost" />
         </Link>
       </Container>
       {isLoading ? (
@@ -95,7 +86,7 @@ export default function Podcasts() {
             </>
           )}
           {podcasts[(page + 1) * pageSize - 1] != null && (
-            <Flex justify="center" mt={4}>
+            <Flex justify="center" mt={4} width={'100%'}>
               <Tooltip label="Load More" placement="top">
                 <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
               </Tooltip>

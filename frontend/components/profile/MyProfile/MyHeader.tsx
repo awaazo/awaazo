@@ -69,8 +69,8 @@ export default function Header() {
 
   return (
     <>
-      <VStack width={'100%'} spacing={4} px={2} alignItems={{ base: 'center', sm: 'flex-start' }} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
-        <HStack>
+      <VStack width={'100%'} spacing={4} px={2} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
+        <HStack alignItems={'flex-start'} width="100%">
           <Box position="relative">
             <Avatar boxShadow="xl" width="5em" height="5em" src={profile?.avatarUrl} />
             <IconButton
@@ -111,8 +111,52 @@ export default function Header() {
         <Text textAlign="left" color={'grey'}>
           {profile?.bio}
         </Text>
-        <HStack>{/*<Subscriptions />*/}</HStack>
-        <Divider />
+
+        <Center>
+          <HStack spacing={4} alignItems="center">
+            <VStack justify="center" alignItems="center">
+              <Text fontSize="16px" color="white" fontWeight="bold">
+                5
+              </Text>
+              <Text fontSize="16px" color="az.red" fontWeight="bold">
+                Podcasts
+              </Text>
+            </VStack>
+            <Text fontSize="16px" color="gray">
+              |
+            </Text>
+            <VStack justify="center" alignItems="center">
+              <Text fontSize="16px" color="white" fontWeight="bold">
+                250
+              </Text>
+              <Text fontSize="16px" color="az.red" fontWeight="bold">
+                Episodes
+              </Text>
+            </VStack>
+            <Text fontSize="16px" color="gray">
+              |
+            </Text>
+            <VStack justify="center" alignItems="center">
+              <Text fontSize="16px" color="white" fontWeight="bold">
+                1.2M
+              </Text>
+              <Text fontSize="16px" color="az.red" fontWeight="bold">
+                Likes
+              </Text>
+            </VStack>
+            <Text fontSize="16px" color="gray">
+              |
+            </Text>
+            <VStack justify="center" alignItems="center">
+              <Text fontSize="16px" color="white" fontWeight="bold">
+                500k
+              </Text>
+              <Text fontSize="16px" color="az.red" fontWeight="bold">
+                Subscribers
+              </Text>
+            </VStack>
+          </HStack>
+        </Center>
         <Box w="100%">
           <Text fontWeight="bold" fontSize="22px" mb="15px" marginLeft="5px">
             Your Listening Habits:
