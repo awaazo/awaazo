@@ -790,8 +790,8 @@ export default class EndpointHelper {
     return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/watchTimeDistribution?timeInterval=' + timeInterval + '&intervalIsInMinutes=' + intervalIsInMinutes
   }
 
-  static getWatchTimeRangeInfo = (podcastOrEpisodeId) => {
-    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/watchTimeRangeInfo'
+  static getWatchTimeRangeInfo = (podcastOrEpisodeId, minTime, maxTime) => {
+    return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/watchTimeRangeInfo?minTime=' + minTime + '  &maxTime=' + maxTime
   }
 
   static getAverageAudienceAge = (podcastOrEpisodeId) => {

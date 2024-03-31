@@ -2,7 +2,7 @@ import axios from 'axios'
 import EndpointHelper from './EndpointHelper'
 import { GetEngagementMetricsResponse } from '../types/Responses'
 
-export default class AnalyicsHelper {
+export default class AnalyticsHelper {
   static getUserProfile() {
     throw new Error('Method not implemented.')
   }
@@ -311,10 +311,10 @@ export default class AnalyicsHelper {
    * Gets the watch time range info from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  static getWatchTimeRangeInfoResponse = async (podcastOrEpisodeId) => {
+  static getWatchTimeRangeInfoResponse = async (podcastOrEpisodeId, minTime, maxTime) => {
     const options = {
       method: 'GET',
-      url: EndpointHelper.getWatchTimeRangeInfo(podcastOrEpisodeId),
+      url: EndpointHelper.getWatchTimeRangeInfo(podcastOrEpisodeId, minTime, maxTime),
       headers: {
         accept: '*/*',
       },
