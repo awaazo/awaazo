@@ -54,7 +54,7 @@ const AdminPage = () => {
         </Text>
         <Flex>
           <Box flexBasis="50%" mr="15px">
-            <Reports onSelectReport={null} selectedReport={null} inDashboard={true} />
+            <Reports refresh={null} onSelectReport={null} selectedReport={null} inDashboard={true} />
           </Box>
           <Box flexBasis="50%" ml="15px">
             <BannedUsers inDashboard={true} refresh={null} />

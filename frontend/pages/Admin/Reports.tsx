@@ -45,6 +45,12 @@ const ReportsPage = () => {
   const [selectedReport, setSelectedReport] = useState(null)
   const [currentEntity, setCurrentEntity] = useState(null)
 
+  const [refresh, setRefresh] = useState(false)
+
+  const handleRefresh = () => {
+    setRefresh(!refresh)
+  }
+
   useEffect(() => {
     const fetchEntityDetails = async () => {
       if (selectedReport) {
@@ -74,6 +80,7 @@ const ReportsPage = () => {
   const handleAcceptReport = async () => {
     try {
       const res = await AdminHelper.adminResolveReportRequest(selectedReport.id)
+      handleRefresh()
     } catch (error) {
       console.error('Error banning user:', error)
     }
@@ -82,6 +89,7 @@ const ReportsPage = () => {
   const handleRejectReport = async () => {
     try {
       const res = await AdminHelper.adminRejectReportRequest(selectedReport.id)
+      handleRefresh()
     } catch (error) {
       console.error('Error banning user:', error)
     }
@@ -189,7 +197,7 @@ const ReportsPage = () => {
         </Text>
         <Flex height={'85vh'}>
           <Box flexBasis="55%" mr="15px">
-            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} inDashboard={false} />{' '}
+            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} inDashboard={false} refresh={refresh} />{' '}
           </Box>
           <Box flexBasis="50%" ml="15px">
             {selectedReport && (

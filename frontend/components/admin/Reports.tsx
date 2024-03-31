@@ -5,7 +5,7 @@ import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import { AwaazoA } from '../../public/icons'
 
-const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
+const Reports = ({ onSelectReport, selectedReport, inDashboard, refresh }) => {
   const [selectedTab, setSelectedTab] = useState('pending')
   const [resolvedReports, setResolvedReports] = useState([])
   const [rejectedReports, setRejectedReports] = useState([])
@@ -15,7 +15,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
     fetchPendingReports()
     fetchResolvedReports()
     fetchRejectedReports()
-  }, [])
+  }, [refresh])
 
   const fetchPendingReports = async () => {
     try {

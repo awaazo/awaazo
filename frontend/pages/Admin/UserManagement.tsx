@@ -115,7 +115,7 @@ const UserManagementPage = () => {
               </Box>
             )}
             <Box width="100%" height={'85vh'}>
-              <BannedUsers inDashboard={false} />
+              <BannedUsers inDashboard={false} refresh={refresh} />
             </Box>
           </VStack>
         </Flex>
