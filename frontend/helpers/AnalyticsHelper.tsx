@@ -462,10 +462,10 @@ export default class AnalyticsHelper {
    * Gets the user average watch time from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  static getUserAverageWatchTimeResponse = async (podcastOrEpisodeId) => {
+  static getUserAverageWatchTimeResponse = async () => {
     const options = {
       method: 'GET',
-      url: EndpointHelper.getUserAverageWatchTime(podcastOrEpisodeId),
+      url: EndpointHelper.getUserAverageWatchTime(),
       headers: {
         accept: '*/*',
       },
@@ -500,10 +500,10 @@ export default class AnalyticsHelper {
    * Gets the user total watch time from the server.
    * @returns A BaseResponse object with the server's response.
    */
-  static getUserTotalWatchTimeResponse = async (podcastOrEpisodeId) => {
+  static getUserTotalWatchTimeResponse = async () => {
     const options = {
       method: 'GET',
-      url: EndpointHelper.getUserTotalWatchTime(podcastOrEpisodeId),
+      url: EndpointHelper.getUserTotalWatchTime(),
       headers: {
         accept: '*/*',
       },

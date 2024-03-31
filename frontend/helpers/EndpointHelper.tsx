@@ -806,12 +806,12 @@ export default class EndpointHelper {
     return this.getBackendAddress() + '/analytic/' + podcastOrEpisodeId + '/ageRangeDistributionInfo?ageInterval=' + ageInterval
   }
 
-  static getUserAverageWatchTime = (podcastOrEpisodeId) => {
-    return this.getBackendAddress() + '/analytic/userAverageWatchTime?podcastOrEpisodeId=' + podcastOrEpisodeId
+  static getUserAverageWatchTime = () => {
+    return this.getBackendAddress() + '/analytic/userAverageWatchTime'
   }
 
-  static getUserTotalWatchTime = (podcastOrEpisodeId) => {
-    return this.getBackendAddress() + '/analytic/userTotalWatchTime?podcastOrEpisodeId=' + podcastOrEpisodeId
+  static getUserTotalWatchTime = () => {
+    return this.getBackendAddress() + '/analytic/userTotalWatchTime'
   }
 
   static getTopWatched = (isEpisodes, count, getLessWatched, page, pageSize) => {
