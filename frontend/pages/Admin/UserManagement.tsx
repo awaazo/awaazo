@@ -32,6 +32,12 @@ const UserManagementPage = () => {
   const { isOpen: isEmailModalOpen, onOpen: onEmailModalOpen, onClose: onEmailModalClose } = useDisclosure()
   const { isOpen: isBanModalOpen, onOpen: onBanModalOpen, onClose: onBanModalClose } = useDisclosure()
 
+  const [refresh, setRefresh] = useState(false)
+
+  const handleRefresh = () => {
+    setRefresh(!refresh)
+  }
+
   const handleUserSelect = (user) => {
     setSelectedUser(user)
   }
@@ -53,6 +59,7 @@ const UserManagementPage = () => {
   const handlePermabanUser = async () => {
     try {
       const res = await AdminHelper.adminBanUserRequest(selectedUser.id)
+      handleRefresh()
       onBanModalClose()
     } catch (error) {
       console.error('Error banning user:', error)

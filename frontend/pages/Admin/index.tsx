@@ -57,7 +57,7 @@ const AdminPage = () => {
             <Reports onSelectReport={null} selectedReport={null} inDashboard={true} />
           </Box>
           <Box flexBasis="50%" ml="15px">
-            <BannedUsers inDashboard={true} />
+            <BannedUsers inDashboard={true} refresh={null} />
             <Box mt={'15px'} />
             <EmailLogs selectedEmail={null} setSelectedEmail={null} emails={emails} inDashboard={true} />
           </Box>
