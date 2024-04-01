@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { Box, HStack, VStack, useBreakpointValue } from '@chakra-ui/react'
 import Header from '../../components/profile/MyProfile/MyHeader'
-import MyEpisodes from '../../components/profile/MyProfile/MyEpisodes'
 import Podcasts from '../../components/profile/MyProfile/MyPodcasts'
 import MyPlaylists from '../../components/profile/MyProfile/MyPlaylists'
 
@@ -13,16 +12,15 @@ const MyProfile = () => {
   const [podcastId, setPodcastId] = useState(1)
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" width={'95%'}>
+    <Box display="flex" justifyContent="center" alignItems="center" width={'100%'}>
       {isMobile ? (
         <VStack justify="center" align="center" ml={'15px'}>
           <Header />
           <Podcasts />
-          <MyEpisodes />
           <MyPlaylists />
         </VStack>
       ) : (
-        <HStack align="start" spacing={'20px'} ml={'80px'}>
+        <HStack align="start" spacing={'30px'} ml={'5%'}>
           <VStack minWidth={'300px'} width="calc((100% - 500px) * 0.6)" align="start" spacing={4}>
             <Header />
           </VStack>

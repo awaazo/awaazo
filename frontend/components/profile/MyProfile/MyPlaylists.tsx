@@ -32,7 +32,7 @@ export default function MyPlaylists() {
   }
 
   return (
-    <Box width="110%" overflow={'hidden'}>
+    <Box width="95%" overflow={'hidden'}>
       {/* Render the heading */}
       <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" justifyContent="space-between" alignItems="center">
         <span>My Playlists</span>
