@@ -1834,9 +1834,7 @@ public class PodcastService : IPodcastService
     {
         // Update ai generated episodes
         await NotifyGenerationCompletionAsync();
-
         List<EpisodeRating> episodeInteractions = await _db.UserEpisodeInteractions.Select(u => new EpisodeRating(u)).ToListAsync();
-
         List<EpisodeResponse> response = new List<EpisodeResponse>();
 
         if(episodeInteractions.Count() == 0)
@@ -1896,16 +1894,10 @@ public class PodcastService : IPodcastService
 
         }
 
-        response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
-
         // Return the List
+        response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
         return response;
-
-
     }
-
-
-
 
     #region Highlights
 
@@ -2135,6 +2127,55 @@ public class PodcastService : IPodcastService
         Shuffle(highlights);
 
         return highlights;
+    }
+
+    public async Task<List<HighlightResponse>> GetRecommendedHighlightsAsync(User user, string domainUrl, int count)
+    {
+        // piggyback off the already created eipisode recommender for this
+        var recEpisodes = await GetRecommendedEpisodes(user, domainUrl);
+
+        // Get only a certain amount of these episodes, truncate the list if too many
+        //if (recEpisodes.Count > count)
+        //{
+        //    recEpisodes.RemoveRange(count, recEpisodes.Count);
+        //}
+
+        // Get the highlights associated with these episodes.
+        List<Highlight> episodeHighlights = new List<Highlight>();
+        var episodeIds = new List<Guid>();
+
+        foreach (var episode in episodeHighlights)
+        {
+            if (episodeIds.Count >= 10)
+            {
+                break;
+            }
+            var ep = await _db.Highlights
+                                .Where(h => episodeIds.Contains(h.EpisodeId))                            
+                                .ToListAsync();
+
+            episodeIds.Add(episode.EpisodeId);
+        }
+
+        var result = new List<HighlightResponse>();       
+
+        // If not enough highlights exist, return the recommendations with random highlights afterwards.
+        // Can be duplicates with small enough dataset
+        if (result.Count <= count)
+        {
+            Shuffle(result);
+            var randomHighlights = await GetRandomHighlightsAsync(result.Count - count);
+            result.AddRange(randomHighlights);
+            return result;
+        }
+
+        // If we have too many highlights, We have to remove duplicate episode highlights (ie: 6 highlights from the same episode)
+        foreach (var highlight in result)
+        {
+            if (result.Contains())
+        }
+
+        return result;
     }
 
 

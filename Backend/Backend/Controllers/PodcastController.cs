@@ -1264,6 +1264,29 @@ public class PodcastController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
+    [HttpGet("GetRecommendedHighlights")]
+    public async Task<IActionResult> GetRecommendedHighlights(int quantity = DEFAULT_PAGE_SIZE)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRandomHighlights));
+
+            User? user = await _authService.IdentifyUserAsync(HttpContext);
+            if (user is null)
+                return NotFound("User not found");
+
+            var highlights = await _podcastService.GetRecommendedHighlightsAsync(quantity);
+
+            return Ok(highlights);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetRandomHighlights));
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 
     #endregion
