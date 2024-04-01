@@ -159,7 +159,7 @@ export default function Navbar() {
   const UserProfileMenu = () => (
     <Menu>
       <MenuButton aria-label="loggedInMenu" as={Button} rounded={'full'} variant={'link'} cursor={'pointer'}>
-        {user.avatarUrl === '' ? (
+        {typeof user === 'function' ? (
           <Avatar size={'sm'} src={''} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
         ) : (
           <Avatar size={'sm'} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
