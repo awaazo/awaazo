@@ -1,60 +1,151 @@
 import React from 'react'
 import { Box, IconButton, Text, Flex } from '@chakra-ui/react'
 import { usePanel } from '../../utilities/PanelContext'
+import { usePlayer } from '../../utilities/PlayerContext'
 import { IoIosCloseCircle } from 'react-icons/io'
 import ChatBot from '../interactionHub/ChatBot'
 import Comments from '../interactionHub/Comments'
 import Bookmarks from '../interactionHub/Bookmarks'
 import Tipjar from '../interactionHub/Tipjar'
 
+import { Bookmark, Dollar, Chat, Document, Waazo, ArrowR, ArrowL } from '../../public/icons'
+
 const Panel = () => {
-  const { state, dispatch } = usePanel()
+  const { state: panelState, dispatch: panelDispatch } = usePanel()
+  const { state: playerState, dispatch: playerDispatch } = usePlayer()
+
+  console.log('panelState', panelState)
+  console.log('playerState', playerState)
 
   const togglePanel = () => {
-    dispatch({ type: 'TOGGLE_PANEL', payload: null })
+    panelDispatch({ type: 'TOGGLE_PANEL', payload: panelState.content })
+  }
+
+  const openPanel = (content) => {
+    panelDispatch({ type: 'OPEN_PANEL', payload: content })
+  }
+
+  const panelWidth = () => {
+    if (playerState.episode && playerState.episode.id && panelState.isOpen) {
+      return '32%'
+    } else if (playerState.episode && playerState.episode.id && !panelState.isOpen) {
+      return '60px'
+    } else {
+      return '0px'
+    }
   }
 
   return (
     <Box
-
       position="fixed"
       right="0"
       top="5em"
-      transition="width 0.2s ease-in-out"
-      w={state.isOpen ? '32%' : '0'}
+      transition="width 0.5s ease-in-out"
+      w={panelWidth()}
       h="calc(88vh - 5em)"
-      overflow="hidden"
-      p={state.isOpen ? '20px' : '0'}
+      p={panelState.isOpen ? '10px' : '0'}
       zIndex="999999"
-      bg="rgba(255, 255, 255, 0.04)"
-      backdropFilter="blur(50px)"
-      outline={'2px solid rgba(255, 255, 255, 0.06)'}
-      roundedTopLeft="10px"
-      roundedBottomLeft="10px"
+      bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)"
+      border={'2px solid rgba(255, 255, 255, 0.03)'}
+      roundedTopLeft="25px"
+      roundedBottomLeft="25px"
     >
-      {state.isOpen && (
-        <Box>
-          <Flex>
+      {panelState.isOpen ? (
+        <Flex position="absolute" left="0" top="50%" transform="translateY(-50%)" zIndex="1">
+          <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)" transform="translateX(-55%) ">
             <IconButton
-              display="flex"
-              aria-label="Close chatbot"
-              icon={<IoIosCloseCircle />}
+              aria-label="Open Panel"
+              transform={'translateX(-15%)'}
+              icon={<ArrowR />}
               onClick={togglePanel}
-              fontSize="30px"
               variant="ghost"
-              color="#FFFFFF6B"
-              _hover={{ background: 'transparent' }}
+              color="#FFFFFF"
+              _hover={{ textDecoration: 'none', color: 'red.300' }}
               _active={{ background: 'transparent' }}
             />
-            <Text fontSize={'24px'} fontWeight={'bold'} ml={'10px'} mt={'2px'}>
-              {state.content}
-            </Text>
+          </Box>
+        </Flex>
+      ) : (
+        panelState.content && (
+          <Flex position="absolute" left="0" top="50%" transform="translateY(-50%) translateX(-55%)" zIndex="1">
+            <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)">
+              <IconButton
+                transform={'translateX(-15%)'}
+                aria-label="Close Panel"
+                icon={<ArrowL />}
+                onClick={togglePanel}
+                variant="ghost"
+                color="#FFFFFF"
+                _hover={{ textDecoration: 'none', color: 'red.300' }}
+                _active={{ background: 'transparent' }}
+              />
+            </Box>
           </Flex>
+        )
+      )}
+      {playerState.episode && playerState.episode.id && !panelState.isOpen && (
+        <Flex direction="column" position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" alignItems="center" justifyContent="center" gap="10px">
+          <IconButton
+            aria-label="Open Comments"
+            fontSize={'20'}
+            icon={<Chat />}
+            onClick={() => openPanel('Comments')}
+            variant="ghost"
+            color="#FFFFFF"
+            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _active={{ background: 'transparent' }}
+          />
+
+          <IconButton
+            aria-label="Open Chat"
+            fontSize={'20'}
+            icon={<Waazo />}
+            onClick={() => openPanel('ChatBot')}
+            variant="ghost"
+            color="#FFFFFF"
+            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _active={{ background: 'transparent' }}
+          />
+          <IconButton
+            aria-label="Open Transcript"
+            fontSize={'20'}
+            icon={<Document />}
+            onClick={() => openPanel('Transcript')}
+            variant="ghost"
+            color="#FFFFFF"
+            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _active={{ background: 'transparent' }}
+          />
+          <IconButton
+            aria-label="Open Bookmarks"
+            icon={<Bookmark />}
+            fontSize={'20'}
+            onClick={() => openPanel('Bookmarks')}
+            variant="ghost"
+            color="#FFFFFF"
+            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _active={{ background: 'transparent' }}
+          />
+          <IconButton
+            aria-label="Open Tipjar"
+            icon={<Dollar />}
+            fontSize={'20'}
+            onClick={() => openPanel('Tipjar')}
+            variant="ghost"
+            color="#FFFFFF"
+            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _active={{ background: 'transparent' }}
+          />
+        </Flex>
+      )}
+      {panelState.isOpen && (
+        <Box>
           <Box>
-            {state.content === 'ChatBot' && state.currentEpisodeId && <ChatBot episodeId={state.currentEpisodeId} />}
-            {state.content === 'Comments' && state.currentEpisodeId && <Comments episodeIdOrCommentId={state.currentEpisodeId} initialComments={0} />}
-            {state.content === 'Bookmarks' && state.currentEpisodeId && <Bookmarks episodeId={state.currentEpisodeId} selectedTimestamp={state.selectedTimestamp} />}
-            {state.content === 'Tipjar' && state.currentEpisodeId && <Tipjar episodeId={state.currentEpisodeId} totalPoint={undefined} />}
+            {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
+            {panelState.content === 'Comments' && playerState.episode.id && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+            {panelState.content === 'Transcript' && playerState.episode.id && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+            {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
+            {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
           </Box>
         </Box>
       )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
 import { FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
-import {Play} from '../../public/icons'
+import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
 import { convertTime } from '../../utilities/commonUtils'
@@ -16,7 +16,6 @@ import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
 import TipjarButton from '../interactionHub/buttons/TipjarButton'
-
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer()
@@ -312,12 +311,7 @@ const PlayerBar = () => {
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
 
-              <TipjarButton episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
-              <ChatBotButton episodeId={episode?.id} />
-              <BookmarksButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} selectedTimestamp={isEpisodeLoaded ? position : 0} />
               <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-              <CommentButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} initialComments={0} showCount={false} />
-
             </Flex>
 
             {/* Volume Control Section */}
@@ -345,7 +339,6 @@ const PlayerBar = () => {
             )}
           </Flex>
         )}
-        
       </Flex>
     </Box>
   )
