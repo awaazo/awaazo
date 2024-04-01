@@ -19,20 +19,18 @@ export default function Navbar() {
   const { data: session, status } = useSession()
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [searchValue, setSearchValue] = useState('')
-  const router = useRouter()
-  const currentPath = router.pathname
 
-  const handleSearchSubmit = () => {
-    const searchlink = '/Explore/Search?searchTerm=' + searchValue
-    window.location.href = searchlink
-  }
+
+
+
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<UserMenuInfo>({
+  const [user, setUser] = useState<UserMenuInfo | (() => UserMenuInfo)>(() => ({
     id: '',
     username: '',
     avatarUrl: '',
-  })
+    isAdmin: false, 
+  }))
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
   const [isUserSet, setIsUserSet] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)

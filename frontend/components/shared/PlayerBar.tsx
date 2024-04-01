@@ -12,10 +12,7 @@ import { usePlayer } from '../../utilities/PlayerContext'
 import { SaveWatchHistoryRequest } from '../../types/Requests'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import PlayerMenu from '../playerbar/Menu'
-import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
-import CommentButton from '../interactionHub/buttons/CommentButton'
-import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
-import TipjarButton from '../interactionHub/buttons/TipjarButton'
+
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer()
@@ -259,7 +256,7 @@ const PlayerBar = () => {
             <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>
               {isEpisodeLoaded ? episode.episodeName : 'Not Playing'}
             </Text>
-            <Text fontSize={isMobile ? 'xs' : 'sm'} color="gray.500" isTruncated>
+            <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" isTruncated>
               {isEpisodeLoaded ? episode.podcastName : ''}{' '}
             </Text>
           </Box>
@@ -273,7 +270,8 @@ const PlayerBar = () => {
             <IconButton
               aria-label={isPlaying ? 'Pause' : 'Play'}
               icon={isPlaying ? <FaPause /> : <Play />}
-              variant="gradient"
+              variant="circle"
+              bg="az.red"
               minWidth="2.5em"
               size="md"
               onClick={togglePlayPause}
@@ -331,9 +329,9 @@ const PlayerBar = () => {
                   width="5rem"
                 >
                   <SliderTrack bg="gray.500">
-                    <SliderFilledTrack bg="brand.100" />
+                    <SliderFilledTrack bg="az.red" />
                   </SliderTrack>
-                  <SliderThumb boxSize={2} bg="brand.100" />
+                  <SliderThumb boxSize={2} bg="az.red" />
                 </Slider>
               </Box>
             )}
