@@ -31,7 +31,7 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabItems }) => {
         <HStack spacing="0.5em">
           {tabItems.map((item, index) => (
             <Tab key={item.label}>
-              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" _hover={{ color: 'az.red', transition: 'color 0.5s ease-in-out' }}>
                 {tabIndex === index && AwaazoA && <Icon as={AwaazoA} {...iconStyle(tabIndex === index)} />}
                 <Text whiteSpace="nowrap">{item.label}</Text>
               </Box>

@@ -1,13 +1,11 @@
 import React from 'react'
-import { Box, IconButton, Text, Flex } from '@chakra-ui/react'
+import { Box, IconButton, Flex } from '@chakra-ui/react'
 import { usePanel } from '../../utilities/PanelContext'
 import { usePlayer } from '../../utilities/PlayerContext'
-import { IoIosCloseCircle } from 'react-icons/io'
 import ChatBot from '../interactionHub/ChatBot'
 import Comments from '../interactionHub/Comments'
 import Bookmarks from '../interactionHub/Bookmarks'
 import Tipjar from '../interactionHub/Tipjar'
-
 import { Bookmark, Dollar, Chat, Document, Waazo, ArrowR, ArrowL } from '../../public/icons'
 
 const Panel = () => {

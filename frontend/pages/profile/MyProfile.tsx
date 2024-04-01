@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState} from 'react'
 import { Box, HStack, VStack, useBreakpointValue } from '@chakra-ui/react'
 import Header from '../../components/profile/MyProfile/MyHeader'
 import Podcasts from '../../components/profile/MyProfile/MyPodcasts'
 import MyPlaylists from '../../components/profile/MyProfile/MyPlaylists'
-
 import withAuth from '../../utilities/authHOC'
 
 const MyProfile = () => {

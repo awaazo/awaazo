@@ -10,7 +10,7 @@ import Notifications from '../notification/Notifications'
 import { UserMenuInfo } from '../../types/Interfaces'
 import { GoogleSSORequest } from '../../types/Requests'
 import NotificationHelper from '../../helpers/NotificationsHelper'
-import { useRouter } from 'next/router'
+
 
 export default function Navbar() {
   const loginPage = '/auth/Login'
