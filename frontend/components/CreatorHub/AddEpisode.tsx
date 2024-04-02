@@ -121,7 +121,7 @@ const AddEpisodeForm = ({ podcastId }) => {
       if (response.status !== 200) {
         setServerError(true)
         setAddError(response.data)
-      } else {
+      } else if (response.status === 200) {
         setServerError(false)
         setAddError('')
         window.location.reload()
@@ -145,7 +145,7 @@ const AddEpisodeForm = ({ podcastId }) => {
       if (response.status !== 200) {
         setServerError(true)
         setAddError(response.data)
-      } else {
+      } else if (response.status === 200) {
         setServerError(false)
         setAddError('')
         window.location.reload()
