@@ -1264,25 +1264,31 @@ public class PodcastController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+
+    /// <summary>
+    /// This endpoint relies on the recommended episode algorithm to find highlights to recommend.
+    /// Will fail to return a full amount should we not have enough highlights in the database
+    /// </summary>
+    /// <param name="quantity"></param>
+    /// <returns></returns>
     [HttpGet("GetRecommendedHighlights")]
-    public async Task<IActionResult> GetRecommendedHighlights(int quantity = DEFAULT_PAGE_SIZE)
+    public async Task<IActionResult> GetRecommendedHighlights(int quantity = 10)
     {
         try
         {
-            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRandomHighlights));
+            this.LogDebugControllerAPICall(_logger, callerName: nameof(GetRecommendedHighlights));
 
             User? user = await _authService.IdentifyUserAsync(HttpContext);
             if (user is null)
                 return NotFound("User not found");
 
-            var highlights = await _podcastService.GetRecommendedHighlightsAsync(quantity);
+            var highlights = await _podcastService.GetRecommendedHighlightsAsync(user, GetDomainUrl(HttpContext), quantity);
 
             return Ok(highlights);
         }
         catch (Exception e)
         {
-            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetRandomHighlights));
+            this.LogErrorAPICall(_logger, e: e, callerName: nameof(GetRecommendedHighlights));
             return BadRequest(e.Message);
         }
     }
