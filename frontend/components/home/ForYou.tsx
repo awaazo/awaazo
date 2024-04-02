@@ -31,18 +31,10 @@ const ForYou: React.FC = () => {
 
     fetchPodcasts()
   }, [])
-  // Define responsive grid layout
-  const gridTemplateColumns = useBreakpointValue({
-    base: 'repeat(2, 1fr)',
-    sm: 'repeat(2, 1fr)',
-    md: 'repeat(auto-fit, minmax(220px, 1fr))',
-  })
 
-  const gridColumnGap = useBreakpointValue({
-    base: '10px', // Adjust this value to decrease the gap between columns in mobile mode
-    sm: '10px', // Gap for small devices
-    md: '20px', // Gap for medium to larger devices
-  })
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const episodeColumnWidth = isMobile ? '100%' : '40%';
+  const snippetColumnWidth = isMobile ? '100%' : '60%';
 
   return (
     <Box>
@@ -52,7 +44,7 @@ const ForYou: React.FC = () => {
         <Text color="red.500">{error}</Text>
       ) : podcasts && podcasts.length > 0 ? (
         <>
-          <Text fontSize="2xl" fontWeight="bold" mt={4}>
+          <Text fontSize="lg" fontWeight="bold" mt={4}>
             Podcasts
           </Text>
           <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="30px" width={'100%'}>
@@ -61,24 +53,26 @@ const ForYou: React.FC = () => {
             ))}
           </Box>
 
-          <Flex width="100%" alignItems="flex-start">
-            <HStack width="40%">
+
+          <Flex width="100%" alignItems="flex-start" direction={isMobile ? 'column' : 'row'}>
+            {/* Episodes For You */}
+            <VStack width={episodeColumnWidth} align="left">
+              <Text fontSize="lg" fontWeight="bold" mt={4}>
+                Episodes For You
+              </Text>
+              <EpisodesForYou />
+            </VStack>
+
+            {/* Snippets and Today's Recommendation */}
+            <VStack width={snippetColumnWidth} alignItems="flex-start">
               <VStack align="left">
-                <Text fontSize="2xl" fontWeight="bold" mt={4}>
-                  Episodes For You
-                </Text>
-                <EpisodesForYou />
-              </VStack>
-            </HStack>
-            <VStack width="60%" alignItems="flex-start">
-              <VStack align="left">
-                <Text fontSize="2xl" fontWeight="bold" mt={4}>
+                <Text fontSize="lg" fontWeight="bold" mt={4}>
                   Snippets
                 </Text>
                 <Snippets />
               </VStack>
-              <VStack align={'left'}>
-                <Text fontSize="2xl" fontWeight="bold" mt={4}>
+              <VStack align="left">
+                <Text fontSize="lg" fontWeight="bold" mt={4}>
                   Today's Recommendation
                 </Text>
                 <TodaysRecommendation />
