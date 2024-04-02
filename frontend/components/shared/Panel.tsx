@@ -47,14 +47,14 @@ const Panel = () => {
       h="calc(88vh - 5em)"
       p={panelState.isOpen ? '10px' : '0'}
       zIndex={1000000} 
-      bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)"
+      bg="az.darkestGrey"
       border={'2px solid rgba(255, 255, 255, 0.03)'}
       roundedTopLeft="20px"
       roundedBottomLeft="20px"
     >
       {panelState.isOpen ? (
         <Flex position="absolute" left="0" top="50%" transform="translateY(-50%)" zIndex="1">
-          <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)" transform="translateX(-55%) " >
+          <Box borderRadius="full" bg="az.darkestGrey" transform="translateX(-55%) " >
             <IconButton
               aria-label="Open Panel"
               transform={'translateX(-15%)'}
@@ -70,7 +70,7 @@ const Panel = () => {
       ) : (
         panelState.content && (
           <Flex position="absolute" left="0" top="50%" transform="translateY(-50%) translateX(-55%)" zIndex="1" >
-            <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)">
+            <Box borderRadius="full" bg="az.darkestGrey">
               <IconButton
                 transform={'translateX(-15%)'}
                 aria-label="Close Panel"

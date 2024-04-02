@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack, Img } from '@chakra-ui/react'
 import { FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa'
 import { SpeakerFull, SpeakerLow, SpeakerMute } from '../../public/icons'
+import waazoSleeping from '../../public/svgs/waazoSleeping.svg'
 
 import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
@@ -173,7 +174,7 @@ const PlayerBar = () => {
 
       const handleBeforeUnload = async () => {
         const request: SaveWatchHistoryRequest = {
-          listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+          listenPosition: audioRef.current.currentTime, 
         }
         if (audioRef.current && isEpisodeLoaded) {
           await PodcastHelper.saveWatchHistory(episode.id, request).then((response) => {
@@ -197,7 +198,7 @@ const PlayerBar = () => {
   useEffect(() => {
     const saveHistoryAtInterval = async () => {
       const request: SaveWatchHistoryRequest = {
-        listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
+        listenPosition: audioRef.current.currentTime, 
       }
       if (audioRef.current && episode !== null) {
         try {
@@ -226,17 +227,15 @@ const PlayerBar = () => {
     <Box
       maxWidth={isMobile ? '100%' : '97%'}
       padding={isMobile ? '0.5em' : '1em'}
-      bg="rgba(255, 255, 255, 0.04)"
-      backdropFilter="blur(50px)"
+      bg="az.darkestGrey"
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
       bottom={isMobile ? '55px' : '0.1px'}
-      borderTopLeftRadius="10px"
-      borderTopRightRadius="10px"
-      border={'2px solid rgba(255, 255, 255, 0.03)'}
+      borderTopLeftRadius="20px"
+      borderTopRightRadius="20px"
     >
       <Flex
         flexDirection="row"
@@ -251,7 +250,9 @@ const PlayerBar = () => {
               <Image boxSize={isMobile ? '30px' : '60px'} src={episode.thumbnailUrl} borderRadius="15px" mr={4} objectFit="cover" cursor="pointer" />
             </Link>
           ) : (
-            <Image boxSize={isMobile ? '30px' : '40px'} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
+            <Box boxSize={isMobile ? '30px' : '40px'} mr={4}>
+            <Img src="/svgs/waazoSleeping.svg" alt="Waazo Sleeping" style={{ width: '100%', height: '100%' }} />
+          </Box>
           )}
           <Box maxWidth={isMobile ? '75%' : '100%'}>
             <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>

@@ -190,7 +190,7 @@ const Sidebar = () => {
   } else {
     return (
       <Box
-        bg="#252525"
+        bg="az.darkestGrey"
         w={collapsed ? '60px' : '240px'}
         h="calc(88vh - 5em)"
         py={8}
@@ -205,7 +205,7 @@ const Sidebar = () => {
         outline={'2px solid rgba(255, 255, 255, 0.06)'}
       >
         <Flex position="absolute" left={collapsed ? '40px' : '220px'} top="50%" transform="translateY(-50%)" zIndex="1" transition="all 0.5s ease-in-out">
-          <Box borderRadius="full" bg="#252525">
+          <Box borderRadius="full" bg="az.darkestGrey">
             <IconButton
               aria-label={collapsed ? 'Open Sidebar' : 'Close Sidebar'}
               icon={collapsed ? <ArrowR /> : <ArrowL />}
