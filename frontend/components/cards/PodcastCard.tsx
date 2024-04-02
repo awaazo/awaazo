@@ -12,7 +12,7 @@ interface PodcastCardProps {
 const CardSize = {
   base: '150px',
   md: '200px',
-  lg: '220px',
+  lg: '200px',
 }
 
 const PodcastImage = ({ coverArtUrl, name }) => (

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
-import { FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import { FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import { SpeakerFull, SpeakerLow, SpeakerMute } from '../../public/icons'
+
 import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
@@ -314,7 +316,7 @@ const PlayerBar = () => {
             {/* Volume Control Section */}
             {!isTablet && (
               <Box display="contents" alignItems="center">
-                <IconButton aria-label={isMuted ? 'Unmute' : 'Mute'} icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />} variant="ghost" size="sm" onClick={toggleMute} />
+                <IconButton aria-label={isMuted ? 'Unmute' : 'Mute'} icon={isMuted ? <SpeakerMute /> : <SpeakerFull />} variant="minimal" size="sm" onClick={toggleMute} />
                 <Slider
                   aria-label="Volume"
                   value={isMuted ? 0 : volume}
