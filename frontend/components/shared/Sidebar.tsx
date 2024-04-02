@@ -172,7 +172,7 @@ const Sidebar = () => {
       <Box
         bg="rgba(255, 255, 255, 0.04)"
         w={collapsed ? '60px' : '15em'}
-        h="calc(88vh - 5em)"
+        h="calc(88vh - 7em)"
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"
@@ -184,18 +184,13 @@ const Sidebar = () => {
         roundedBottomRight="10px"
         outline={'2px solid rgba(255, 255, 255, 0.06)'}
       >
-        <Flex justify="center" align="center" mb={7} >
+        <Flex justify="center" align="center" mb={7}>
           {collapsed ? (
             <Icon as={AwaazoA} w="30px" h="30px" fill={user.avatarUrl} />
           ) : (
             <Flex align="center">
-              <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={"6"} color={"az.red"}/>
-              {typeof user === 'function' ? (
-                <Avatar size={'sm'} src={''}  />
-              ) : (
-                <Avatar size={'md'} src={user.avatarUrl} boxShadow= '0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)' />
-              )}
-              
+              <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={'6'} color={'az.red'} />
+              {typeof user === 'function' ? <Avatar size={'sm'} src={''} /> : <Avatar size={'md'} src={user.avatarUrl} boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)" />}
             </Flex>
           )}
         </Flex>

@@ -41,7 +41,7 @@ const Panel = () => {
       top="5em"
       transition="width 0.5s ease-in-out"
       w={panelWidth()}
-      h="calc(88vh - 5em)"
+      h="calc(88vh - 7em)"
       p={panelState.isOpen ? '10px' : '0'}
       zIndex="999999"
       bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)"
@@ -138,14 +138,12 @@ const Panel = () => {
         </Flex>
       )}
       {panelState.isOpen && (
-        <Box>
-          <Box>
-            {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
-            {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
-            {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
-            {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
-            {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
-          </Box>
+        <Box overflow={'hidden'}>
+          {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
+          {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+          {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
+          {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
+          {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
         </Box>
       )}
     </Box>

@@ -16,7 +16,7 @@ const Tipjar = ({ episodeId, totalPoint }) => {
   useEffect(() => {
     const checkQueryParameter = async () => {
       if (success) {
-        setShowStack(false);
+        setShowStack(false)
         try {
           const response = await PaymentHelper.confirmPayment({ pointId: success.toString() })
           setPaymentSuccess(response.status === 200 ? 'Thank you for Supporting !' : response.data)
@@ -44,7 +44,7 @@ const Tipjar = ({ episodeId, totalPoint }) => {
       setPaymentError('Please enter or select a points amount')
       return
     }
-    const amount = numericPoints * 0.1 
+    const amount = numericPoints * 0.1
 
     try {
       const response = await PaymentHelper.createPayment({ episodeId, points: numericPoints })
@@ -65,7 +65,7 @@ const Tipjar = ({ episodeId, totalPoint }) => {
   const calculateSupporterMessage = (points) => {
     if (!points) return '5 Points = 0.5 CAD'
     const numericPoints = parseFloat(points)
-    const amount = numericPoints * 0.1 
+    const amount = numericPoints * 0.1
     return `Thanks for supporting $${amount.toFixed(2)} CAD!`
   }
 
@@ -77,10 +77,10 @@ const Tipjar = ({ episodeId, totalPoint }) => {
       {showStack == true && (
         <>
           <VStack spacing={5} align="center" p={5}>
-            <Box p={3} bg="rgba(255, 255, 255, 0.08)" rounded="xl" w="full" backdropFilter="blur(10px)">
+            <Box p={3} bg="rgba(255, 255, 255, 0.08)" rounded="xl" w="full">
               <VStack align="left">
                 <HStack align="center">
-                  <Icon as={PiCurrencyDollarSimpleFill} color="brand.100" size="24px" style={{ marginBottom: '3px' }} />
+                  <Icon as={PiCurrencyDollarSimpleFill} color="az.red" size="24px" style={{ marginBottom: '3px' }} />
                   <Text fontSize="lg" fontWeight="bold">
                     Support the Podcast
                   </Text>
@@ -95,20 +95,14 @@ const Tipjar = ({ episodeId, totalPoint }) => {
                 {paymentError}
               </Text>
             )}
-            <VStack position="fixed" bottom="0" width="100%" p={'20px'}>
-            <HStack justify="center" spacing={5}>
-              {['5', '10', '50', 'custom'].map(value => (
-                <Button 
-                  key={value} 
-                  onClick={() => handlePointsChange(value)}
-                
-                  variant={points === value ? 'gradient' : 'ghost'}
-                  style={{ minWidth: "0rem" }} 
-                >
-                  {points === value ? ` ${value}` : value}
-                </Button>
-              ))}
-            </HStack>
+            <VStack position="relative" width="100%" p={'20px'}>
+              <HStack justify="center" spacing={5}>
+                {['5', '10', '50', 'custom'].map((value) => (
+                  <Button key={value} onClick={() => handlePointsChange(value)} bg={points === value ? 'az.red' : 'none'} borderRadius={'50px'} style={{ minWidth: '0rem' }}>
+                    {points === value ? ` ${value}` : value}
+                  </Button>
+                ))}
+              </HStack>
               {points === 'custom' && (
                 <FormControl>
                   <Input placeholder="Enter custom points amount" value={customPoints} onChange={handleCustomPointsChange} type="number" min={1} />
@@ -118,7 +112,7 @@ const Tipjar = ({ episodeId, totalPoint }) => {
                 <Text textAlign="center">{supporterMessage}</Text>
               </Center>
 
-              <Button leftIcon={<Icon as={PiCurrencyDollarSimpleFill} />} onClick={handleTipSubmit} variant="gradient" mt={5}>
+              <Button leftIcon={<Icon as={PiCurrencyDollarSimpleFill} />} onClick={handleTipSubmit} bg="az.red" borderRadius={'10px'} mt={5}>
                 Tip Creator
               </Button>
             </VStack>
@@ -128,4 +122,4 @@ const Tipjar = ({ episodeId, totalPoint }) => {
     </>
   )
 }
-export default Tipjar;
+export default Tipjar
