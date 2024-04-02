@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Episode } from '../../types/Interfaces'
-import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from '@chakra-ui/react'
+import { VStack, Text, useBreakpointValue, Spinner,  } from '@chakra-ui/react'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import EpisodeCard from '../cards/EpisodeCard'
 
@@ -34,7 +34,7 @@ const EpisodesForYou: React.FC = () => {
     return (
         <VStack spacing={4} align="stretch">
             {isLoading ? (
-                <Spinner size="xl" />
+                <Spinner size="lg" />
             ) : error ? (
                 <Text color="red.500">{error}</Text>
             ) : (
