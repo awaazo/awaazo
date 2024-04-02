@@ -89,6 +89,9 @@ const SignUp: React.FC = () => {
       if (response.status === 200) {
         window.location.href = setupPage
       } else {
+        if (response.data.search('SMTP') !== -1) {
+          window.location.href = setupPage
+        }
         setSignUpError(response.data)
       }
     } catch (error) {
