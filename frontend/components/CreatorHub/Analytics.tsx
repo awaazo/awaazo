@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Select, Box, Text, Spinner } from '@chakra-ui/react'
+import { Select, Box, Text, Spinner, useBreakpointValue } from '@chakra-ui/react'
 import AnalyticsHelper from '../../helpers/AnalyticsHelper'
 import { Episode } from '../../types/Interfaces'
 import EpisodeCard from '../cards/EpisodeCard'
@@ -194,9 +194,11 @@ export default function Analytics({ podcastId }) {
   const maxWatchTimePercentage = Math.max(...watchTimeData.map(({ percentage }) => Math.round(percentage * 10) / 10))
   const yAxisDomainWatchTime = [0, Math.round(maxWatchTimePercentage * 2)]
 
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-      <Box>
+    <Box display="flex" flexDirection={{ base: 'column', md: 'row' }}>
+      <Box flex="1" mb={{ base: '30px', md: 0 }}>
         <Text fontWeight="bold" fontSize="24px" mb="15px">
           Interaction Insights:
         </Text>
@@ -231,8 +233,7 @@ export default function Analytics({ podcastId }) {
         </Box>
       </Box>
 
-      {/* Right Section - Audience Insights */}
-      <Box flex="1" marginLeft="30px">
+      <Box flex="1" marginLeft={{ md: '30px' }}>
         <Text fontWeight="bold" fontSize="24px" mb="15px" marginLeft="30px">
           Audience Insights:
         </Text>
@@ -250,15 +251,17 @@ export default function Analytics({ podcastId }) {
               <Text fontSize="18px" mb="5px" marginLeft="30px" color={'az.red'}>
                 Audience Age Distribution
               </Text>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={ageData} margin={{ bottom: 50, left: 5 }}>
-                  <CartesianGrid strokeDasharray="4 4" />
-                  <XAxis dataKey="ageRange" interval={0} angle={-45} textAnchor="end" fontSize={'16px'} />
-                  <YAxis type="number" domain={yAxisDomain} tickFormatter={(value) => `${value}%`} />
-                  <Tooltip formatter={(value) => `${value}%`} />
-                  <Bar dataKey="percentage" fill="#ff6a5f" />
-                </BarChart>
-              </ResponsiveContainer>
+              <Box height={300} width="100%" overflow="hidden">
+                <ResponsiveContainer>
+                  <BarChart data={ageData} margin={{ bottom: 50, left: 5 }}>
+                    <CartesianGrid strokeDasharray="4 4" />
+                    <XAxis dataKey="ageRange" interval={0} angle={-45} textAnchor="end" fontSize={'16px'} />
+                    <YAxis type="number" domain={yAxisDomain} tickFormatter={(value) => `${value}%`} />
+                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Bar dataKey="percentage" fill="#ff6a5f" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Box>
             </Box>
           </React.Fragment>
         ) : (
@@ -272,7 +275,6 @@ export default function Analytics({ podcastId }) {
         {watchTimeData.length > 0 ? (
           <React.Fragment>
             <Box>
-              {' '}
               <Text fontSize="18px" mb="15px" marginLeft="30px" color={'grey'}>
                 On average, your audience watches between
                 <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>
@@ -286,15 +288,17 @@ export default function Analytics({ podcastId }) {
               <Text fontSize="18px" mb="5px" marginLeft="30px" color={'az.red'}>
                 Watch Time Distribution
               </Text>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={watchTimeData} margin={{ bottom: 80, left: 5 }}>
-                  <CartesianGrid strokeDasharray="4 4" />
-                  <XAxis dataKey="rangeStart" interval={1} angle={-45} textAnchor="end" fontSize={'16px'} />
-                  <YAxis type="number" domain={yAxisDomain} />
-                  <Tooltip formatter={(value) => `${value}%`} />
-                  <Line type="monotone" dataKey="percentage" stroke="#ff6a5f" />
-                </LineChart>
-              </ResponsiveContainer>
+              <Box height={300} width="100%" overflow="hidden">
+                <ResponsiveContainer>
+                  <LineChart data={watchTimeData} margin={{ bottom: 80, left: 5 }}>
+                    <CartesianGrid strokeDasharray="4 4" />
+                    <XAxis dataKey="rangeStart" interval={1} angle={-45} textAnchor="end" fontSize={'16px'} />
+                    <YAxis type="number" domain={yAxisDomain} />
+                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Line type="monotone" dataKey="percentage" stroke="#ff6a5f" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Box>
             </Box>
           </React.Fragment>
         ) : (
