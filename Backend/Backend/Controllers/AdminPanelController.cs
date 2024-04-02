@@ -205,4 +205,28 @@ public class AdminPanelController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    /// <summary>
+    /// Admin only method to delete an episodes transcript
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpDelete("Podcast/{episodeId}/DeleteTranscript")]
+    public async Task<IActionResult> DeleteTranscript(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+            var admin = await IdentifyAdminAsync();
+
+            var success = await _adminService.DeleteTranscriptAsync(episodeId);
+
+            return success ? Ok("Transcript deleted.") : Ok("Failed to delete transcript.");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
 }
