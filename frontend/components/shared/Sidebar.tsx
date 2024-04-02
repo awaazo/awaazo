@@ -3,7 +3,6 @@ import { useSession, signOut } from 'next-auth/react'
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from '@chakra-ui/react'
 import Link from 'next/link'
 import { DefaultSession } from 'next-auth'
-import Logo from '../../public/logos/logo_white.svg'
 import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL } from '../../public/icons'
 import { useRouter } from 'next/router'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
@@ -172,7 +171,7 @@ const Sidebar = () => {
       <Box
         bg="#252525"
         w={collapsed ? '60px' : '240px'}
-        h="calc(88vh - 5em)"
+        h="calc(88vh - 7em)"
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"

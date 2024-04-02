@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, IconButton, Flex } from '@chakra-ui/react'
+import { Box, IconButton, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { usePanel } from '../../utilities/PanelContext'
 import { usePlayer } from '../../utilities/PlayerContext'
 import ChatBot from '../interactionHub/ChatBot'
@@ -26,6 +26,7 @@ const Panel = () => {
 
   const panelWidth = () => {
     if (playerState.episode && playerState.episode.id && panelState.isOpen) {
+      if (isMobile) return '95%'
       return '32%'
     } else if (playerState.episode && playerState.episode.id && !panelState.isOpen) {
       return '60px'
@@ -33,6 +34,8 @@ const Panel = () => {
       return '0px'
     }
   }
+
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   return (
     <Box
@@ -139,13 +142,14 @@ const Panel = () => {
         </Flex>
       )}
       {panelState.isOpen && (
-           <Box overflow={'hidden'}>
-           {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
-           {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
-           {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
-           {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
-           {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
-         </Box>
+        <Box overflow={'hidden'}>
+          {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
+          {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+          {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
+          {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
+          {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
+        </Box>
+         
       )}
     </Box>
   )
