@@ -92,6 +92,7 @@ const PlayerBar = () => {
       dispatch({ type: 'SET_CT', payload: audio.currentTime })
       setPosition(audio.currentTime)
     }
+    setSelectedTimestamp(audio.currentTime)
     audio.addEventListener('loadedmetadata', setAudioData)
     audio.addEventListener('timeupdate', updatePosition)
     return () => {
@@ -127,6 +128,10 @@ const PlayerBar = () => {
 
   const playNext = () => {
     dispatch({ type: 'PLAY_NEXT' })
+  }
+
+  const setSelectedTimestamp = (timestamp) => {
+    dispatch({ type: 'SET_SELECTED_TIMESTAMP', payload: timestamp })
   }
 
   const playPrevious = () => {
