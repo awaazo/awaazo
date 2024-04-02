@@ -268,6 +268,7 @@ export interface UserMenuInfo {
   id: string
   username: string
   avatarUrl: string
+  isAdmin: boolean
 }
 
 /**
@@ -376,4 +377,16 @@ export interface Report {
   deletedBy: string
   amount: number
   date: string
+}
+
+export interface Metrics {
+  totalClicks: number
+  averageClicks: number
+  totalWatchTime: string
+  averageWatchTime: string
+  totalComments: number
+  commentsPercentage: number
+  totalLikes: number
+  likesPercentage: number
+  totalListeners: number
 }

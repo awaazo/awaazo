@@ -21,9 +21,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   useEffect(() => {
     const path = router.pathname
-    const hidePlayerBarOnPaths = ['/auth/', '/profile/ProfileSetup', '/CreatorHub/', '/Admin']
-    const hideNavbarOnPaths = ['/auth/', '/Admin']
-    const hideSidebarOnPaths = ['/auth/', '/profile/ProfileSetup', '/Admin']
+    const hidePlayerBarOnPaths = ['/auth/', '/profile/ProfileSetup', '/CreatorHub/', '/Admin', '/Greeting']
+    const hideNavbarOnPaths = ['/auth/', '/Admin','/Greeting' ]
+    const hideSidebarOnPaths = ['/auth/', '/profile/ProfileSetup', '/Admin', '/Greeting']
     const hidePanelOnPaths = ['/auth/', '/profile/ProfileSetup', '/CreatorHub/', '/Admin']
 
     const shouldHidePlayerBar = hidePlayerBarOnPaths.some((p) => path.startsWith(p))

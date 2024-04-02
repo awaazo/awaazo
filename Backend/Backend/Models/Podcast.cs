@@ -83,12 +83,12 @@ public class Podcast : BaseEntity, ISoftDeletable
     /// <summary>
     /// Boolean representing if this podcast is one of the daily admin choices. This is manually set flag, so false by default
     /// </summary>
-    public bool dailyAdminChoice { get; set; } = false;
+    public bool DailyAdminChoice { get; set; } = false;
 
     /// <summary>
     /// Only used if taken as a daily choice of podcast. Is blank by default
     /// </summary>
-    public string customAdminDescription { get; set; } = string.Empty;
+    public string CustomAdminDescription { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets a string representation of the podcast type

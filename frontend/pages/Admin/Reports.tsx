@@ -7,7 +7,6 @@ import Link from 'next/link'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastCard from '../../components/cards/PodcastCard'
-import EpisodeCard from '../../components/cards/EpisodeCard'
 import AdminHelper from '../../helpers/AdminHelper'
 
 const reportReasons = {
@@ -46,6 +45,12 @@ const ReportsPage = () => {
   const [selectedReport, setSelectedReport] = useState(null)
   const [currentEntity, setCurrentEntity] = useState(null)
 
+  const [refresh, setRefresh] = useState(false)
+
+  const handleRefresh = () => {
+    setRefresh(!refresh)
+  }
+
   useEffect(() => {
     const fetchEntityDetails = async () => {
       if (selectedReport) {
@@ -75,6 +80,7 @@ const ReportsPage = () => {
   const handleAcceptReport = async () => {
     try {
       const res = await AdminHelper.adminResolveReportRequest(selectedReport.id)
+      handleRefresh()
     } catch (error) {
       console.error('Error banning user:', error)
     }
@@ -83,6 +89,7 @@ const ReportsPage = () => {
   const handleRejectReport = async () => {
     try {
       const res = await AdminHelper.adminRejectReportRequest(selectedReport.id)
+      handleRefresh()
     } catch (error) {
       console.error('Error banning user:', error)
     }
@@ -125,9 +132,8 @@ const ReportsPage = () => {
       <Box mb={4} display="flex" alignItems="left" width={'100%'}>
         <VStack width={'100%'}>
           <Flex width={'100%'}>
-            <Box mr={4} justifyContent="left">
-              <Image src={entityData.thumbnailUrl} boxSize={'175px'} borderRadius={'30px'} />
-            </Box>
+            <Image src={entityData.thumbnailUrl} boxSize={'175px'} borderRadius={'30px'} mr={'15px'} />
+
             <Box>
               <Text fontWeight="bold" mt={'10px'} mb={'5px'} fontSize={'24px'}>
                 {entityData.episodeName}
@@ -190,7 +196,7 @@ const ReportsPage = () => {
         </Text>
         <Flex height={'85vh'}>
           <Box flexBasis="55%" mr="15px">
-            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} inDashboard={false} />{' '}
+            <Reports onSelectReport={handleReportSelect} selectedReport={selectedReport} inDashboard={false} refresh={refresh} />{' '}
           </Box>
           <Box flexBasis="50%" ml="15px">
             {selectedReport && (

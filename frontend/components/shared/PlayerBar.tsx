@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack } from '@chakra-ui/react'
-import { FaPause, FaVolumeUp, FaVolumeMute, FaStepForward, FaStepBackward } from 'react-icons/fa'
-import {Play} from '../../public/icons'
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack, Img } from '@chakra-ui/react'
+import { FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa'
+import { SpeakerFull, SpeakerLow, SpeakerMute } from '../../public/icons'
+import waazoSleeping from '../../public/svgs/waazoSleeping.svg'
+
+import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
 import { convertTime } from '../../utilities/commonUtils'
@@ -12,11 +15,6 @@ import { usePlayer } from '../../utilities/PlayerContext'
 import { SaveWatchHistoryRequest } from '../../types/Requests'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import PlayerMenu from '../playerbar/Menu'
-import ChatBotButton from '../interactionHub/buttons/ChatBotButton'
-import CommentButton from '../interactionHub/buttons/CommentButton'
-import BookmarksButton from '../interactionHub/buttons/BookmarksButton'
-import TipjarButton from '../interactionHub/buttons/TipjarButton'
-
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer()
@@ -94,6 +92,7 @@ const PlayerBar = () => {
       dispatch({ type: 'SET_CT', payload: audio.currentTime })
       setPosition(audio.currentTime)
     }
+    setSelectedTimestamp(audio.currentTime)
     audio.addEventListener('loadedmetadata', setAudioData)
     audio.addEventListener('timeupdate', updatePosition)
     return () => {
@@ -129,6 +128,10 @@ const PlayerBar = () => {
 
   const playNext = () => {
     dispatch({ type: 'PLAY_NEXT' })
+  }
+
+  const setSelectedTimestamp = (timestamp) => {
+    dispatch({ type: 'SET_SELECTED_TIMESTAMP', payload: timestamp })
   }
 
   const playPrevious = () => {
@@ -176,7 +179,7 @@ const PlayerBar = () => {
 
       const handleBeforeUnload = async () => {
         const request: SaveWatchHistoryRequest = {
-          listenPosition: audioRef.current.currentTime, // Set the current timestamp for the playerbar
+          listenPosition: audioRef.current.currentTime, 
         }
         if (audioRef.current && isEpisodeLoaded) {
           await PodcastHelper.saveWatchHistory(episode.id, request).then((response) => {
@@ -200,7 +203,7 @@ const PlayerBar = () => {
   useEffect(() => {
     const saveHistoryAtInterval = async () => {
       const request: SaveWatchHistoryRequest = {
-        listenPosition: audioRef.current.currentTime, // Set the current listenPosition for the playerbar
+        listenPosition: audioRef.current.currentTime, 
       }
       if (audioRef.current && episode !== null) {
         try {
@@ -229,17 +232,15 @@ const PlayerBar = () => {
     <Box
       maxWidth={isMobile ? '100%' : '97%'}
       padding={isMobile ? '0.5em' : '1em'}
-      bg="rgba(255, 255, 255, 0.04)"
-      backdropFilter="blur(50px)"
+      bg="az.darkestGrey"
       position="fixed"
       left="50%"
       transform="translateX(-50%)"
       width="100%"
       zIndex={999}
       bottom={isMobile ? '55px' : '0.1px'}
-      borderTopLeftRadius="10px"
-      borderTopRightRadius="10px"
-      border={'2px solid rgba(255, 255, 255, 0.03)'}
+      borderTopLeftRadius="20px"
+      borderTopRightRadius="20px"
     >
       <Flex
         flexDirection="row"
@@ -251,16 +252,18 @@ const PlayerBar = () => {
         <Flex alignItems="center" ml={2}>
           {isEpisodeLoaded ? (
             <Link href={`/NowPlaying/${episode.id}`} shallow>
-              <Image boxSize={isMobile ? '30px' : '40px'} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
+              <Image boxSize={isMobile ? '30px' : '60px'} src={episode.thumbnailUrl} borderRadius="15px" mr={4} objectFit="cover" cursor="pointer" />
             </Link>
           ) : (
-            <Image boxSize={isMobile ? '30px' : '40px'} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />
+            <Box boxSize={isMobile ? '30px' : '40px'} mr={4}>
+            <Img src="/svgs/waazoSleeping.svg" alt="Waazo Sleeping" style={{ width: '100%', height: '100%' }} />
+          </Box>
           )}
           <Box maxWidth={isMobile ? '75%' : '100%'}>
             <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>
               {isEpisodeLoaded ? episode.episodeName : 'Not Playing'}
             </Text>
-            <Text fontSize={isMobile ? 'xs' : 'sm'} color="gray.500" isTruncated>
+            <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" isTruncated>
               {isEpisodeLoaded ? episode.podcastName : ''}{' '}
             </Text>
           </Box>
@@ -274,7 +277,8 @@ const PlayerBar = () => {
             <IconButton
               aria-label={isPlaying ? 'Pause' : 'Play'}
               icon={isPlaying ? <FaPause /> : <Play />}
-              variant="gradient"
+              variant="circle"
+              bg="az.red"
               minWidth="2.5em"
               size="md"
               onClick={togglePlayPause}
@@ -312,18 +316,13 @@ const PlayerBar = () => {
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
 
-              <TipjarButton episodeId={isEpisodeLoaded ? episode.id : "default-id"} totalPoint={undefined} />
-              <ChatBotButton episodeId={episode?.id} />
-              <BookmarksButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} selectedTimestamp={isEpisodeLoaded ? position : 0} />
               <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-              <CommentButton episodeId={isEpisodeLoaded ? episode.id : 'default-id'} initialComments={0} showCount={false} />
-
             </Flex>
 
             {/* Volume Control Section */}
             {!isTablet && (
               <Box display="contents" alignItems="center">
-                <IconButton aria-label={isMuted ? 'Unmute' : 'Mute'} icon={isMuted ? <FaVolumeMute /> : <FaVolumeUp />} variant="ghost" size="sm" onClick={toggleMute} />
+                <IconButton aria-label={isMuted ? 'Unmute' : 'Mute'} icon={isMuted ? <SpeakerMute /> : <SpeakerFull />} variant="minimal" size="sm" onClick={toggleMute} />
                 <Slider
                   aria-label="Volume"
                   value={isMuted ? 0 : volume}
@@ -337,15 +336,14 @@ const PlayerBar = () => {
                   width="5rem"
                 >
                   <SliderTrack bg="gray.500">
-                    <SliderFilledTrack bg="brand.100" />
+                    <SliderFilledTrack bg="az.red" />
                   </SliderTrack>
-                  <SliderThumb boxSize={2} bg="brand.100" />
+                  <SliderThumb boxSize={2} bg="az.red" />
                 </Slider>
               </Box>
             )}
           </Flex>
         )}
-        
       </Flex>
     </Box>
   )

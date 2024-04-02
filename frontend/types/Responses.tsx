@@ -243,6 +243,17 @@ export interface GetReports extends BaseResponse {
 
 //#endregion
 
+//#region Analytics Responses
+export interface GetEngagementMetricsResponse extends BaseResponse {
+  metrics: Metrics
+}
+
+export interface MostInteracted extends BaseResponse {
+  episodes: Episode[]
+}
+
+//#endregion
+
 export interface AddEpisodeChatResponse extends BaseResponse {
   chatbotMessage: ChatbotMessage
 }

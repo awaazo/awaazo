@@ -5,6 +5,7 @@ interface PlayerState {
   episode: Episode;
   currentEpisodeIndex: number | null;
   playlist: Episode[] | null;
+  selectedTimestamp: number | 0;
 }
 
 interface PlayerContextProps {
@@ -19,6 +20,7 @@ const initialState: PlayerState = {
   episode: null,
   currentEpisodeIndex: null,
   playlist: [],
+  selectedTimestamp: 0,
 };
 
 interface PlayerProviderProps {
@@ -89,6 +91,12 @@ const playerReducer = (state: PlayerState, action: any) => {
         episode: nextEpisode !== undefined ? nextEpisode : state.episode,
         currentEpisodeIndex: nextEpisode !== undefined ? nextIndex : state.currentEpisodeIndex,
       };
+    case "SET_CT":
+      return {
+        ...state,
+        selectedTimestamp: action.payload,
+      };
+    
     case "PLAY_PREVIOUS":
       const prevIndex = state.currentEpisodeIndex - 1;
       const prevEpisode = state.playlist[prevIndex];

@@ -36,7 +36,7 @@ const RecentlyUploaded: React.FC = () => {
       {isLoading ? (
         <Spinner size="xl" />
       ) : error ? (
-        <Text color="red.500">{error}</Text>
+        <Text color="az.red">{error}</Text>
       ) : (
         <HStack
           spacing={4}
