@@ -11,6 +11,7 @@ The goal of project Awaazo is to provide enthusiasts with tools that might not b
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
 <br>
+
 ## What Sets Awaazo Apart
 
 - **AI-Enhanced Podcast Creation**: Don't just listen—create. With our cutting-edge AI, turn scripts into captivating podcast episodes, complete with voice cloning for an authentic feel.
@@ -108,125 +109,19 @@ The installation process pulls the latest Docker images from Awaazo's main branc
 
 ## Team Members
 
+| Name              | GitHub Profile                 | Email                         | Student ID |
+|-------------------|--------------------------------|-------------------------------|------------|
+| Jonathan Haddad   | [jonathan-githubofficial](https://github.com/jonathan-githubofficial) | jonathan200023@gmail.com | 40111053   |
+| Usama Saleem      | [usamasaleem1](https://github.com/usamasaleem1)              | usama.saleem [at] hotmail dot com | 40110036   |
+| Steven Franchetto | [sfranchetto](https://github.com/sfranchetto)                | steven.franchetto@gmail.com | 40112243   |
+| Jonathan Pauze    | [BigSaladMan](https://github.com/BigSaladMan)                | jonathanpauze25@gmail.com  | 40177730   |
+| Ahed Memas        | [Ahed752](https://github.com/Ahed752)                        | ahed.mimas@gmail.com      | 40112710   |
+| Shadi Jiha        | [shadijiha](https://github.com/shadijiha)                    | shadijiha@gmail.com       | 40131284   |
+| Sonia Rahal       | [soni2261](https://github.com/soni2261)                      | soniarahal20@gmail.com    | 40211893   |
+| Mathieu Trudeau   | [mathieutrudeau](https://github.com/mathieutrudeau)          | mathieutrudeau11@gmail.com| 40177075   |
+| Muhammad Mubashir | [mubashir494](https://github.com/mubashir494)                | mubashirqbl@gmail.com     | 40152977   |
+| Radwan Baba       | [Radwanbaba13](https://github.com/Radwanbaba13)              | radwangbaba@gmail.com     | 40167316   |
 
-<table align="center" > 
-  <tr>
-    <td align="center" valign="top">
-      <a href="https://github.com/jonathan-githubofficial">
-        <img src="docAssets/readme/pfp/J.haddad.png" width="100px; " alt="Jonathan Haddad"/>
-        <br />
-        <sub><b>Jonathan Haddad</b></sub>
-      </a>
-      <br />
-      <sub>jonathan200023@gmail.com</sub>
-      <br />
-      <sub>40111053</sub>
-    </td>
-    <td align="center" valign="top">
-      <a href="https://github.com/usamasaleem1">
-        <img src="docAssets/readme/pfp/Usama.jpg" width="100px;" alt="Usama Saleem"/>
-        <br />
-        <sub><b>Usama Saleem</b></sub>
-      </a>
-      <br />
-      <sub>usama.saleem [at] hotmail dot com</sub>
-      <br />
-      <sub> 40110036</sub>
-    </td>
-    <td align="center" valign="top">
-      <a href="https://github.com/sfranchetto">
-        <img src="docAssets/readme/pfp/steven.png" width="100px;" alt="Steven Franchetto"/>
-        <br />
-        <sub><b>Steven Franchetto</b></sub>
-      </a>
-      <br />
-      <sub> steven.franchetto@gmail.com</sub>
-      <br />
-      <sub>40112243</sub>
-    </td>
-      <td align="center" valign="top">
-    <a href="https://github.com/BigSaladMan">
-      <img src="docAssets/readme/pfp/J.Pauze.jpg" width="100px;" alt="Jonathan Pauze"/>
-      <br />
-      <sub><b>Jonathan Pauze</b></sub>
-    </a>
-    <br />
-    <sub>jonathanpauze25@gmail.com</sub>
-    <br />
-    <sub>40177730</sub>
-  </td>
-     <td align="center" valign="top">
-    <a href="https://github.com/Ahed752">
-      <img src="docAssets/readme/pfp/ahed.png" width="100px;" alt="Ahed Memas"/>
-      <br />
-      <sub><b>Ahed Memas</b></sub>
-    </a>
-    <br />
-    <sub>ahed.mimas@gmail.com</sub>
-    <br />
-    <sub>40112710</sub>
-  </td>
-  </tr>
-
-
-<tr>
-      <td align="center" valign="top">
-    <a href="https://github.com/shadijiha">
-      <img src="docAssets/readme/pfp/Shadi.jpg" width="100px;" alt="Shadi Jiha"/>
-      <br />
-      <sub><b>Shadi Jiha</b></sub>
-    </a>
-    <br />
-    <sub>shadijiha@gmail.com</sub>
-    <br />
-    <sub>40131284</sub>
-  </td>
-  <td align="center" valign="top">
-    <a href="https://github.com/soni2261">
-      <img src="docAssets/readme/pfp/soni.png" width="100px;" alt="Sonia Rahal"/>
-      <br />
-      <sub><b>Sonia Rahal</b></sub>
-    </a>
-    <br />
-    <sub>soniarahal20@gmail.com</sub>
-    <br />
-    <sub>40211893</sub>
-  </td>
-  <td align="center" valign="top">
-    <a href="https://github.com/mathieutrudeau">
-      <img src="docAssets/readme/pfp/matt.jpg" width="100px;" alt="Mathieu Trudeau"/>
-      <br />
-      <sub><b>Mathieu Trudeau</b></sub>
-    </a>
-    <br />
-    <sub>mathieutrudeau11@gmail.com</sub>
-    <br />
-    <sub>40177075</sub>
-  </td>
-  <td align="center" valign="top">
-    <a href="https://github.com/mubashir494">
-      <img src="docAssets/readme/pfp/mubashir.png" width="100px;" alt="Muhammad Mubashir"/>
-      <br />
-      <sub><b>Muhammad Mubashir</b></sub>
-    </a>
-    <br />
-    <sub>mubashirqbl@gmail.com</sub>
-    <br />
-    <sub>40152977</sub>
-  </td>
-    <td align="center" valign="top">
-    <a href="https://github.com/Radwanbaba13">
-      <img src="docAssets/readme/pfp/radwan.png" width="100px;" alt="Radwan Baba"/>
-      <br />
-      <sub><b>Radwan Baba</b></sub>
-    </a>
-    <br />
-    <sub>radwangbaba@gmail.com</sub>
-    <br />
-    <sub>40167316</sub>
-  </td>
-</tr>
-</table>
 
 <br>
 
