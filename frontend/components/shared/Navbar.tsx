@@ -18,12 +18,6 @@ export default function Navbar() {
   const signupPage = '/auth/Signup'
   const { data: session, status } = useSession()
   const isMobile = useBreakpointValue({ base: true, md: false })
-  const [searchValue, setSearchValue] = useState('')
-
-
-
-
-
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<UserMenuInfo | (() => UserMenuInfo)>(() => ({
     id: '',
@@ -91,42 +85,18 @@ export default function Navbar() {
     }
   }, [session, isLoggedIn])
 
-  const handleLogOut = async () => {
-    try {
-      // Wait for the logout request to complete
-      await AuthHelper.authLogoutRequest()
-      console.log('Logout successful')
-      if (session) {
-        await signOut()
-      }
-
-      // Set Logged In Status to false
-      setIsUserLoggedIn(false)
-      setIsUserSet(false)
-
-      // Redirect to the index page
-      window.location.href = indexPage
-    } catch (error) {
-      // Handle any errors that occur during logout
-      console.error('Logout failed', error)
-    }
-  }
-  const handleSearchChange = (event) => {
-    setSearchValue(event.target.value)
-  }
-
   const handleScroll = () => {
     const scrollY = window.scrollY;
-    const maxScroll = 100; // Adjust this value based on when you want the blur effect to be fully applied
+    const maxScroll = 100; 
     if (scrollY === 0) {
-      // User has scrolled to the top, reset navbar style to initial
+  
       setNavbarStyle({
         backdropFilter: 'blur(0px)',
-        boxShadow: 'none', // Set boxShadow to 'none' to ensure it's fully transparent
+        boxShadow: 'none', 
       });
     } else {
-      // User is scrolling down, apply dynamic blur and shadow
-      const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20; // 15px is the maximum blur value, adjust as needed
+  
+      const blurIntensity = Math.min(scrollY / maxScroll, 1) * 20;
       setNavbarStyle({
         backdropFilter: `blur(${blurIntensity}px)`,
         boxShadow: '10px 12px 40px -10px rgba(0, 0, 0, 0.4)',
@@ -176,12 +146,6 @@ export default function Navbar() {
           <Link href="/Wallet" passHref>
             <MenuItem>Wallet</MenuItem>
           </Link>
-        </MenuGroup>
-        <MenuDivider />
-        <MenuGroup>
-          <MenuItem onClick={handleLogOut} style={{ color: 'red', fontWeight: 'normal' }}>
-            Logout
-          </MenuItem>
         </MenuGroup>
       </MenuList>
     </Menu>

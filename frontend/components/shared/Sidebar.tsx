@@ -3,7 +3,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from '@chakra-ui/react'
 import Link from 'next/link'
 import { DefaultSession } from 'next-auth'
-import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL } from '../../public/icons'
+import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL, Logout, Settings } from '../../public/icons'
 import { useRouter } from 'next/router'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import { Playlist } from '../../types/Interfaces'
@@ -50,6 +50,27 @@ const Sidebar = () => {
   }
   const handleReload = () => {
     setReload(!reload)
+  }
+
+  const handleLogOut = async () => {
+    try {
+      // Wait for the logout request to complete
+      await AuthHelper.authLogoutRequest()
+      console.log('Logout successful')
+      if (session) {
+        await signOut()
+      }
+
+      // Set Logged In Status to false
+      setIsUserLoggedIn(false)
+      setIsUserSet(false)
+
+      // Redirect to the index page
+      window.location.href = indexPage
+    } catch (error) {
+      // Handle any errors that occur during logout
+      console.error('Logout failed', error)
+    }
   }
 
   interface SessionExt extends DefaultSession {
@@ -171,7 +192,7 @@ const Sidebar = () => {
       <Box
         bg="#252525"
         w={collapsed ? '60px' : '240px'}
-        h="calc(88vh - 7em)"
+        h="calc(88vh - 5em)"
         py={8}
         px={collapsed ? 2 : 3}
         position="sticky"
@@ -282,7 +303,7 @@ const Sidebar = () => {
                           variant="minimal"
                           color="az.greyish"
                           aria-label="Add Playlist"
-                          fontSize={'12px'}
+                          fontSize={'sm'}
                           onClick={() => {
                             handleAddPlaylistClick()
                             onCreateModalOpen()
@@ -298,25 +319,69 @@ const Sidebar = () => {
 
             {/* User Playlists */}
             {!showLoginPrompt && userPlaylists.length > 0 && (
-              <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 400px)" overflowY="auto">
+              <VStack align="left" spacing={1} mt={4} maxH='calc(100vh - 10em - 20em' overflowY="auto">
                 {userPlaylists.map((playlist) => (
                   <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                     <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: 'rgba(255, 255, 255, 0.05)' }}>
                       <Image
                         src={`${playlist.coverArt}?v=${playlist.lastUpdated}`}
                         alt="Playlist"
-                        boxSize={collapsed ? '24px' : '12'}
+                        boxSize={collapsed ? '16px' : '34px'}
                         objectFit="cover"
                         mr={collapsed ? '0' : '2'}
                         borderRadius="8"
                         key={playlist.lastUpdated}
                       />
-                      {!collapsed && <Text data-cy={`playlist-${playlist.name}`}>{playlist.name}</Text>}
+                      {!collapsed && <Text data-cy={`playlist-${playlist.name}`} fontSize={'sm'} >{playlist.name}</Text> }
                     </Flex>
                   </Link>
                 ))}
               </VStack>
             )}
+          </Box>
+
+          <Box p={1}   width={'100%'} position="absolute" bottom="5">
+            {/* Settings */}
+            <Link href="/CreatorHub" passHref>
+              <Flex
+                as={Flex}
+                align="center"
+                p="2"
+                mb="1"
+                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                transition="color 0.4s ease-in-out"
+                _hover={{ textDecoration: 'none', color: 'az.red' }}
+              >
+                <Icon as={Settings} fontSize="18px" mr={3} />
+                {!collapsed && (
+                  <Box flex="1" fontWeight="medium">
+                    Settings
+                  </Box>
+                )}
+              </Flex>
+            </Link>
+
+            {/* logout */}
+            
+              <Flex
+                as={Flex}
+                align="center"
+                p="2"
+                mb="1"
+                borderRadius="md"
+                color={router.pathname === '/Explore/Search' ? 'az.red' : 'white'}
+                transition="color 0.4s ease-in-out"
+                _hover={{ textDecoration: 'none', color: 'az.red' }}
+                onClick={handleLogOut}
+              >
+                <Icon as={Logout} fontSize="18px" mr={3} />
+                {!collapsed && (
+                  <Box flex="1" fontWeight="medium" data-cy={`explore-icon`}>
+                    Logout
+                  </Box>
+                )}
+              </Flex>
+            
           </Box>
         </VStack>
         <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />

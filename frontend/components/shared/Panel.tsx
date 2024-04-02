@@ -44,7 +44,7 @@ const Panel = () => {
       top="5em"
       transition="width 0.5s ease-in-out"
       w={panelWidth()}
-      h="calc(88vh - 7em)"
+      h="calc(88vh - 5em)"
       p={panelState.isOpen ? '10px' : '0'}
       zIndex={1000000} 
       bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)"
