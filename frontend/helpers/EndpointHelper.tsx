@@ -180,6 +180,22 @@ export default class EndpointHelper {
    * Returns the Podcast myPodcasts endpoint.
    * @returns The Podcast myPodcasts Endpoint
    */
+  static getEpisodeAIAddEndpoint = (podcastId: string) => {
+    return this.getBackendAddress() + '/podcast/' + podcastId + '/generateAIEpisode'
+  }
+
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
+  static getEpisodeAIwithTextAddEndpoint = (podcastId: string) => {
+    return this.getBackendAddress() + '/podcast/' + podcastId + '/generateAIEpisodeFromText'
+  }
+
+  /**
+   * Returns the Podcast myPodcasts endpoint.
+   * @returns The Podcast myPodcasts Endpoint
+   */
   static getPodcastEndpoint = (podcastId: string) => {
     return this.getBackendAddress() + '/podcast/' + podcastId
   }

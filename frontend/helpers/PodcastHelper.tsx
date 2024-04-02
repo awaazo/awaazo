@@ -481,7 +481,7 @@ export default class PodcastHelper {
    * @returns A BaseResponse object with the server's response.
    */
   public static episodeAIAddRequest = async (
-    requestData: EpisodeAddRequest,
+    requestData,
     podcastId: string,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
   ): Promise<CreateEpisodeResponse> => {
@@ -531,7 +531,7 @@ export default class PodcastHelper {
    * @returns A BaseResponse object with the server's response.
    */
   public static episodeAIwithTextAddRequest = async (
-    requestData: EpisodeAddRequest,
+    requestData,
     podcastId: string,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
   ): Promise<CreateEpisodeResponse> => {

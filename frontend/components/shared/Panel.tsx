@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, IconButton, Flex } from '@chakra-ui/react'
+import { Box, IconButton, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { usePanel } from '../../utilities/PanelContext'
 import { usePlayer } from '../../utilities/PlayerContext'
 import ChatBot from '../interactionHub/ChatBot'
@@ -26,6 +26,7 @@ const Panel = () => {
 
   const panelWidth = () => {
     if (playerState.episode && playerState.episode.id && panelState.isOpen) {
+      if (isMobile) return '95%'
       return '32%'
     } else if (playerState.episode && playerState.episode.id && !panelState.isOpen) {
       return '60px'
@@ -33,6 +34,8 @@ const Panel = () => {
       return '0px'
     }
   }
+
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   return (
     <Box

@@ -17,7 +17,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [replies, setReplies] = useState({})
   const [repliesPage, setRepliesPage] = useState({})
-  const [showReplyInput, setShowReplyInput] = useState<boolean[]>(Array(initialComments).fill(false))
+  const [replyInputIndex, setReplyInputIndex] = useState(null) // New state
 
   const isMobile = useBreakpointValue({ base: true, md: false })
 
@@ -50,7 +50,11 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     return updatedComments
   }
 
-  const fetchReplies = async (commentId) => {
+  const handleReplyInput = (commentIndex) => {
+    setReplyInputIndex(commentIndex)
+  }
+
+  const fetchReplies = async (commentId, commentIndex) => {
     const currentPage = repliesPage[commentId] || 0
     const response = await SocialHelper.getReplies(commentId, currentPage, 10)
     console.log('API Response:', response)
@@ -63,6 +67,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
         ...repliesPage,
         [commentId]: currentPage + 1,
       })
+      // Set the reply input index to show the input field
+      setReplyInputIndex(commentIndex)
     } else {
       console.error('Error fetching replies:', response.message)
     }
@@ -80,6 +86,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
       const response = await SocialHelper.postEpisodeComment(newComment, episodeIdOrCommentId)
       if (response.status === 200) {
         setNoOfComments((noOfComments) => noOfComments + 1)
+        setReplyChange((replyChange) => replyChange + 1)
       } else {
         setShowLoginPrompt(true)
         console.log('Error posting comment:', response.message)
@@ -99,6 +106,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     const response = await SocialHelper.postEpisodeComment(replyTexts[index], commentId)
     if (response.status === 200) {
       setReplyChange((replyChange) => replyChange + 1)
+      fetchReplies(comment.id, index)
     } else {
       setShowLoginPrompt(true)
       console.log('Error posting comment:', response.message)
@@ -151,10 +159,6 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  const handleShowReply = (index) => {
-    setShowReplyInput((prev) => prev.map((value, idx) => (idx === index ? !value : value)))
-  }
-
   return (
     <Box height={'100%'}>
       <Text fontSize="xl" fontWeight="bold" mt={1} ml={2}>
@@ -195,35 +199,24 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                           size="md"
                         />
                       ) : null}
-                      <IconButton icon={<Icon as={FaReply} />} variant={'ghost'} aria-label="Reply to Comment" onClick={() => handleShowReply(comment.id)} size="sm" />
                     </HStack>
+                  </HStack>
+                  <HStack>
+                    {comment.noOfReplies > 0 && (!replies[comment.id] || comment.noOfReplies > replies[comment.id].length) && (
+                      <Text onClick={() => fetchReplies(comment.id, index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
+                        Load Replies
+                      </Text>
+                    )}
+                    {replyInputIndex != index && (
+                      <Text onClick={() => handleReplyInput(index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
+                        Reply
+                      </Text>
+                    )}
                   </HStack>
                 </VStack>
               </HStack>
 
-              {showReplyInput[index] && (
-                <VStack align="start" spacing={'0px'} mt={'2px'} pl={8}>
-                  <Box mt={2} width="100%">
-                    <HStack spacing={2}>
-                      <Input
-                        flex="1"
-                        placeholder="Reply to this comment..."
-                        value={replyTexts[index]}
-                        onChange={(e) => {
-                          const updatedReplyTexts = [...replyTexts]
-                          updatedReplyTexts[index] = e.target.value
-                          setReplyTexts(updatedReplyTexts)
-                        }}
-                      />
-                      <Tooltip label="Reply to this comment" aria-label="Reply tooltip">
-                        <IconButton icon={<Icon as={FaPaperPlane} />} onClick={() => handleReply(index)} aria-label="Reply to Comment" size="sm" data-cy={`reply-button`} />
-                      </Tooltip>
-                    </HStack>
-                  </Box>
-                </VStack>
-              )}
-
-              <VStack align="start" spacing={'0px'} pl={8}>
+              <VStack align="start" spacing={'0px'} mt={'2px'} pl={8}>
                 {replies[comment.id] &&
                   replies[comment.id].map((reply, replyIndex) => (
                     <Box key={index} bg="gray.650" p={2} borderRadius="md" width="100%">
@@ -252,10 +245,25 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                       </HStack>
                     </Box>
                   ))}
-                {comment.noOfReplies && comment.noOfReplies > (replies[comment.id] ? replies[comment.id].length : 0) && (
-                  <Text onClick={() => fetchReplies(comment.id)} size="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
-                    Load Replies
-                  </Text>
+
+                {replyInputIndex === index && (
+                  <Box mt={2} width="100%">
+                    <HStack spacing={2}>
+                      <Input
+                        flex="1"
+                        placeholder="Reply to this comment..."
+                        value={replyTexts[index]}
+                        onChange={(e) => {
+                          const updatedReplyTexts = [...replyTexts]
+                          updatedReplyTexts[index] = e.target.value
+                          setReplyTexts(updatedReplyTexts)
+                        }}
+                      />
+                      <Tooltip label="Reply to this comment" aria-label="Reply tooltip">
+                        <IconButton icon={<Icon as={FaReply} />} onClick={() => handleReply(index)} aria-label="Reply to Comment" size="sm" data-cy={`reply-button`} />
+                      </Tooltip>
+                    </HStack>
+                  </Box>
                 )}
               </VStack>
             </Box>
