@@ -13,8 +13,6 @@ const Panel = () => {
   const { state: panelState, dispatch: panelDispatch } = usePanel()
   const { state: playerState, dispatch: playerDispatch } = usePlayer()
 
-  console.log('panelState', panelState)
-  console.log('playerState', playerState)
 
   const togglePanel = () => {
     panelDispatch({ type: 'TOGGLE_PANEL', payload: panelState.content })
@@ -146,7 +144,7 @@ const Panel = () => {
           {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
           {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
           {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
-          {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
+          {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={playerState.selectedTimestamp} />}
           {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
         </Box>
          
