@@ -13,7 +13,6 @@ import { SaveWatchHistoryRequest } from '../../types/Requests'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import PlayerMenu from '../playerbar/Menu'
 
-
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer()
   const { episode } = state
@@ -247,7 +246,7 @@ const PlayerBar = () => {
         <Flex alignItems="center" ml={2}>
           {isEpisodeLoaded ? (
             <Link href={`/NowPlaying/${episode.id}`} shallow>
-              <Image boxSize={isMobile ? '30px' : '40px'} src={episode.thumbnailUrl} borderRadius="base" mr={4} objectFit="cover" cursor="pointer" />
+              <Image boxSize={isMobile ? '30px' : '60px'} src={episode.thumbnailUrl} borderRadius="15px" mr={4} objectFit="cover" cursor="pointer" />
             </Link>
           ) : (
             <Image boxSize={isMobile ? '30px' : '40px'} src="/awaazo_bird_aihelper_logo.svg" borderRadius="full" mr={4} objectFit="cover" />

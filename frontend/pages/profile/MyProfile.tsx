@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState} from 'react'
+import { useState } from 'react'
 import { Box, HStack, VStack, useBreakpointValue } from '@chakra-ui/react'
 import Header from '../../components/profile/MyProfile/MyHeader'
 import Podcasts from '../../components/profile/MyProfile/MyPodcasts'
@@ -11,7 +11,7 @@ const MyProfile = () => {
   const [podcastId, setPodcastId] = useState(1)
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" width={'100%'}>
+    <Box display="flex" justifyContent="center" alignItems="center" width={'95%'}>
       {isMobile ? (
         <VStack justify="center" align="center" ml={'15px'}>
           <Header />

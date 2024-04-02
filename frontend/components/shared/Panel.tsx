@@ -7,6 +7,7 @@ import Comments from '../interactionHub/Comments'
 import Bookmarks from '../interactionHub/Bookmarks'
 import Tipjar from '../interactionHub/Tipjar'
 import { Bookmark, Dollar, Chat, Document, Waazo, ArrowR, ArrowL } from '../../public/icons'
+import TranscriptComp from '../nowPlaying/Transcript'
 
 const Panel = () => {
   const { state: panelState, dispatch: panelDispatch } = usePanel()
@@ -140,8 +141,8 @@ const Panel = () => {
         <Box>
           <Box>
             {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
-            {panelState.content === 'Comments' && playerState.episode.id && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
-            {panelState.content === 'Transcript' && playerState.episode.id && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+            {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+            {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
             {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
             {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
           </Box>

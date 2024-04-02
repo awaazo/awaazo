@@ -1,18 +1,19 @@
 import React from 'react'
-import { Box, Flex, HStack, Text } from '@chakra-ui/react'
+import { Box, Flex, HStack, Text, Image } from '@chakra-ui/react'
 import { convertTime } from '../../utilities/commonUtils'
 import PlaylistMenu from '../playlist/PlaylistMenu'
-import Image from 'next/image'
 import LikedEpisodesImage from '../../styles/images/LikedEpisodes.png'
 import { Time, Plays, Lock, Unlock } from '../../public/icons'
 
 const PlaylistCard = ({ playlist }) => {
+  const playlistImage = playlist.name === 'Liked Episodes' ? LikedEpisodesImage.src : playlist.coverArt
+
   return (
     <Flex p={3} mt={3} width="100%" borderRadius="15px" bg={'az.darkGrey'}>
       <Flex direction="column" flex={1}>
         <Flex justifyContent="space-between" mb={2} align="center">
           <Box mr={3} borderRadius="10px" overflow={'hidden'}>
-            <Image src={LikedEpisodesImage} alt={playlist.name} width={100} height={100} />
+            <Image src={playlistImage} alt={playlist.name} width={100} height={100} />
           </Box>
 
           <Box flex={1}>
@@ -43,7 +44,7 @@ const PlaylistCard = ({ playlist }) => {
           </Box>
 
           {/* Playlist Menu */}
-          <Box ml={3} textAlign="center">
+          <Box ml={3} textAlign="center" zIndex={5}>
             <PlaylistMenu playlist={playlist} onUpdate={null} />
           </Box>
         </Flex>
