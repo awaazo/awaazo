@@ -14,7 +14,6 @@ import NotificationHelper from '../../helpers/NotificationsHelper'
 
 export default function Navbar() {
   const loginPage = '/auth/Login'
-  const indexPage = '/'
   const signupPage = '/auth/Signup'
   const { data: session, status } = useSession()
   const isMobile = useBreakpointValue({ base: true, md: false })
@@ -126,30 +125,7 @@ export default function Navbar() {
     fetchNotificationCount()
   }, [])
 
-  const UserProfileMenu = () => (
-    <Menu>
-      <MenuButton aria-label="loggedInMenu" as={Button} rounded={'full'} variant={'link'} cursor={'pointer'}>
-        {typeof user === 'function' ? (
-          <Avatar size={'sm'} src={''} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" />
-        ) : (
-          <Avatar size={'sm'} src={user.avatarUrl} boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)" bg="rgba(255, 255, 255, 0.2)" backdropFilter="blur(10px)" />
-        )}
-      </MenuButton>
-      <MenuList>
-        <MenuGroup>
-          <Link href="/profile/MyProfile" passHref>
-            <MenuItem>My Account</MenuItem>
-          </Link>
-          <Link href="/CreatorHub" passHref>
-            <MenuItem>CreatorHub</MenuItem>
-          </Link>
-          <Link href="/Wallet" passHref>
-            <MenuItem>Wallet</MenuItem>
-          </Link>
-        </MenuGroup>
-      </MenuList>
-    </Menu>
-  )
+  
 
   const LoggedOutMenu = () => (
     <Menu>
@@ -178,7 +154,7 @@ export default function Navbar() {
             <Spacer />
             <Flex align="center" justifyContent="flex-end">
               <Notifications initialNotifcationCount={notificationCount} />
-              {isUserLoggedIn ? <UserProfileMenu /> : <LoggedOutMenu />}
+              {isUserLoggedIn ? < ></> : <LoggedOutMenu />}
             </Flex>
           </Flex>
         </Box>

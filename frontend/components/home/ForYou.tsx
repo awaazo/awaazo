@@ -64,7 +64,7 @@ const ForYou: React.FC = () => {
             </VStack>
 
             {/* Snippets and Today's Recommendation */}
-            <VStack width={snippetColumnWidth} alignItems="flex-start">
+            <VStack width={snippetColumnWidth} alignItems="flex-start" pl={4} >
               <VStack align="left">
                 <Text fontSize="lg" fontWeight="bold" mt={4}>
                   Snippets
