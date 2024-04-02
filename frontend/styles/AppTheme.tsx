@@ -166,7 +166,7 @@ const overrides = {
         track: {},
         thumb: {},
         filledTrack: {
-          bg: 'brand.100',
+          bg: 'az.red',
         },
       },
     },

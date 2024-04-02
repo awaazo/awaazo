@@ -4,7 +4,7 @@ import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpoin
 import Link from 'next/link'
 import { DefaultSession } from 'next-auth'
 import Logo from '../../public/logos/logo_white.svg'
-import { Home, Search, Add, Cards, AwaazoA } from '../../public/icons'
+import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL } from '../../public/icons'
 import { useRouter } from 'next/router'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import { Playlist } from '../../types/Interfaces'
@@ -170,8 +170,8 @@ const Sidebar = () => {
   } else {
     return (
       <Box
-        bg="rgba(255, 255, 255, 0.04)"
-        w={collapsed ? '60px' : '15em'}
+        bg="#252525"
+        w={collapsed ? '60px' : '240px'}
         h="calc(88vh - 5em)"
         py={8}
         px={collapsed ? 2 : 3}
@@ -179,23 +179,36 @@ const Sidebar = () => {
         mt="5em"
         top="5em"
         zIndex={10}
-        transition="width 0.2s ease-in-out"
+        transition="all 0.5s ease-in-out"
         roundedTopRight="10px"
         roundedBottomRight="10px"
         outline={'2px solid rgba(255, 255, 255, 0.06)'}
       >
-        <Flex justify="center" align="center" mb={7} >
+        <Flex position="absolute" left={collapsed ? '40px' : '220px'} top="50%" transform="translateY(-50%)" zIndex="1" transition="all 0.5s ease-in-out">
+          <Box borderRadius="full" bg="#252525">
+            <IconButton
+              aria-label={collapsed ? 'Open Sidebar' : 'Close Sidebar'}
+              icon={collapsed ? <ArrowR /> : <ArrowL />}
+              onClick={toggleCollapsed}
+              variant="ghost"
+              color="#FFFFFF"
+              transform="translateX(15%)"
+              _hover={{ textDecoration: 'none', color: 'az.red' }}
+              _active={{ background: 'transparent' }}
+            />
+          </Box>
+        </Flex>
+
+        <Flex justify="center" align="center" mb={7}>
           {collapsed ? (
-            <Icon as={AwaazoA} w="30px" h="30px" fill={user.avatarUrl} />
+            <Flex align="center">
+              <Icon as={AwaazoA} w="25px" h="25px" fill={user.avatarUrl} />
+              <Box w={'12px'} h={'12px'} bg="az.red" borderRadius="50%" mt="12px" transform=" translateX(-20%)" />
+            </Flex>
           ) : (
             <Flex align="center">
-              <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={"6"} color={"az.red"}/>
-              {typeof user === 'function' ? (
-                <Avatar size={'sm'} src={''}  />
-              ) : (
-                <Avatar size={'md'} src={user.avatarUrl} boxShadow= '0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)' />
-              )}
-              
+              <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={'6'} color={'az.red'} />
+              {typeof user === 'function' ? <Avatar size={'sm'} src={''} /> : <Avatar size={'md'} src={user.avatarUrl} boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)" />}
             </Flex>
           )}
         </Flex>

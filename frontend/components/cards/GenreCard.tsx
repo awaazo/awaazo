@@ -35,11 +35,11 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre, onMouseEnter, onMouseLeave
         }}
       >
         <Container centerContent>
-          {/* Layer z=0: Shape and shadow */}
+          {/*  Shape and shadow */}
           
 
-          {/* Layer z=1: Genre Image with Logo */}
-          <Box position="relative" zIndex={3} top={6} >
+          {/*  Genre Image with Logo */}
+          <Box position="relative" zIndex={0} top={6} >
             <Image
               src={genre.image.src}
               alt={genre.image.alt || 'Genre background'}
@@ -57,10 +57,10 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre, onMouseEnter, onMouseLeave
             </Flex>
           </Box>
 
-          <Image src={genreBackdropShape.src} alt="Backdrop shape" position="absolute" bottom="0" left="0" right="0" zIndex={0} />
+          <Image src={genreBackdropShape.src} alt="Backdrop shape" position="absolute" bottom="0" left="0" right="0" zIndex={-1} />
 
           {/* Text and Button */}
-          <Box position="absolute" bottom="0" zIndex={3} w="full" p="4">
+          <Box position="absolute" bottom="0"  w="full" p="4">
             <HStack w="100%" spacing={4} justify="space-between">
               <VStack align="left" spacing={0} >
                 <Text fontSize="lg" fontWeight="bold" color="White">

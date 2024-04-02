@@ -41,17 +41,17 @@ const Panel = () => {
       top="5em"
       transition="width 0.5s ease-in-out"
       w={panelWidth()}
-      h="calc(88vh - 5em)"
+      h="calc(88vh - 7em)"
       p={panelState.isOpen ? '10px' : '0'}
-      zIndex="999999"
+      zIndex={1000000} 
       bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)"
       border={'2px solid rgba(255, 255, 255, 0.03)'}
-      roundedTopLeft="25px"
-      roundedBottomLeft="25px"
+      roundedTopLeft="20px"
+      roundedBottomLeft="20px"
     >
       {panelState.isOpen ? (
         <Flex position="absolute" left="0" top="50%" transform="translateY(-50%)" zIndex="1">
-          <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)" transform="translateX(-55%) ">
+          <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)" transform="translateX(-55%) " >
             <IconButton
               aria-label="Open Panel"
               transform={'translateX(-15%)'}
@@ -66,7 +66,7 @@ const Panel = () => {
         </Flex>
       ) : (
         panelState.content && (
-          <Flex position="absolute" left="0" top="50%" transform="translateY(-50%) translateX(-55%)" zIndex="1">
+          <Flex position="absolute" left="0" top="50%" transform="translateY(-50%) translateX(-55%)" zIndex="1" >
             <Box borderRadius="full" bg="linear-gradient(180deg, #1D1D1D, #2A2A2A)">
               <IconButton
                 transform={'translateX(-15%)'}
@@ -75,7 +75,7 @@ const Panel = () => {
                 onClick={togglePanel}
                 variant="ghost"
                 color="#FFFFFF"
-                _hover={{ textDecoration: 'none', color: 'red.300' }}
+                _hover={{ textDecoration: 'none', color: 'az.red' }}
                 _active={{ background: 'transparent' }}
               />
             </Box>
@@ -91,8 +91,9 @@ const Panel = () => {
             onClick={() => openPanel('Comments')}
             variant="ghost"
             color="#FFFFFF"
-            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _hover={{ textDecoration: 'none', color: 'az.red' }}
             _active={{ background: 'transparent' }}
+            
           />
 
           <IconButton
@@ -102,7 +103,7 @@ const Panel = () => {
             onClick={() => openPanel('ChatBot')}
             variant="ghost"
             color="#FFFFFF"
-            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _hover={{ textDecoration: 'none', color: 'az.red' }}
             _active={{ background: 'transparent' }}
           />
           <IconButton
@@ -112,7 +113,7 @@ const Panel = () => {
             onClick={() => openPanel('Transcript')}
             variant="ghost"
             color="#FFFFFF"
-            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _hover={{ textDecoration: 'none', color: 'az.red' }}
             _active={{ background: 'transparent' }}
           />
           <IconButton
@@ -122,7 +123,7 @@ const Panel = () => {
             onClick={() => openPanel('Bookmarks')}
             variant="ghost"
             color="#FFFFFF"
-            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _hover={{ textDecoration: 'none', color: 'az.red' }}
             _active={{ background: 'transparent' }}
           />
           <IconButton
@@ -132,21 +133,19 @@ const Panel = () => {
             onClick={() => openPanel('Tipjar')}
             variant="ghost"
             color="#FFFFFF"
-            _hover={{ textDecoration: 'none', color: 'red.300' }}
+            _hover={{ textDecoration: 'none', color: 'az.red' }}
             _active={{ background: 'transparent' }}
           />
         </Flex>
       )}
       {panelState.isOpen && (
-        <Box>
-          <Box>
-            {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
-            {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
-            {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
-            {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
-            {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
-          </Box>
-        </Box>
+           <Box overflow={'hidden'}>
+           {panelState.content === 'ChatBot' && playerState.episode.id && <ChatBot episodeId={playerState.episode.id} />}
+           {panelState.content === 'Comments' && <Comments episodeIdOrCommentId={playerState.episode.id} initialComments={0} />}
+           {panelState.content === 'Transcript' && playerState.episode.id && <TranscriptComp episodeId={playerState.episode.id} />}
+           {panelState.content === 'Bookmarks' && playerState.episode.id && <Bookmarks episodeId={playerState.episode.id} selectedTimestamp={panelState.selectedTimestamp} />}
+           {panelState.content === 'Tipjar' && playerState.episode.id && <Tipjar episodeId={playerState.episode.id} totalPoint={undefined} />}
+         </Box>
       )}
     </Box>
   )
