@@ -3,7 +3,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from '@chakra-ui/react'
 import Link from 'next/link'
 import { DefaultSession } from 'next-auth'
-import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL, Logout, Settings } from '../../public/icons'
+import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL, Logout, Settings, Wallet } from '../../public/icons'
 import { useRouter } from 'next/router'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import { Playlist } from '../../types/Interfaces'
@@ -221,14 +221,16 @@ const Sidebar = () => {
 
         <Flex justify="center" align="center" mb={7}>
           {collapsed ? (
-            <Flex align="center">
-              <Icon as={AwaazoA} w="25px" h="25px" fill={user.avatarUrl} />
+              <Flex align="center">
+              <Box position="relative" w="25px" h="25px">
+                <Icon as={AwaazoA} position="absolute" top="0" left="0" w="25px" h="25px" />
+              </Box>
               <Box w={'12px'} h={'12px'} bg="az.red" borderRadius="50%" mt="12px" transform=" translateX(-20%)" />
             </Flex>
           ) : (
             <Flex align="center">
               <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={'6'} color={'az.red'} />
-              {typeof user === 'function' ? <Avatar size={'sm'} src={''} /> : <Avatar size={'md'} src={user.avatarUrl} boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)" />}
+              {typeof user === 'function' ? <Avatar size={'sm'} src={''} onClick={() => window.location.href = '/profile/MyProfile'} _hover={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)', transform: 'scale(1.1)', transition: 'transform 0.5s ease-in-out' }} /> : <Avatar size={'md'} src={user.avatarUrl} boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)" onClick={() => window.location.href = '/profile/MyProfile'} _hover={{ boxShadow: '0px 0px 41.599998474121094px rgba(255, 255, 255, 0.7)', transition: 'all 0.5s ease-in-out' }} transition= 'all 0.5s ease-in-out'/>}
             </Flex>
           )}
         </Flex>
@@ -341,6 +343,26 @@ const Sidebar = () => {
           </Box>
 
           <Box p={1}   width={'100%'} position="absolute" bottom="5">
+
+            {/* Wallet */}
+          <Link href="/Wallet" passHref>
+              <Flex
+                as={Flex}
+                align="center"
+                p="2"
+                mb="1"
+                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                transition="color 0.4s ease-in-out"
+                _hover={{ textDecoration: 'none', color: 'az.red' }}
+              >
+                <Icon as={Wallet} fontSize="18px" mr={3} />
+                {!collapsed && (
+                  <Box flex="1" fontWeight="medium">
+                    Wallet
+                  </Box>
+                )}
+              </Flex>
+            </Link>
             {/* Settings */}
             <Link href="/CreatorHub" passHref>
               <Flex
@@ -362,7 +384,6 @@ const Sidebar = () => {
             </Link>
 
             {/* logout */}
-            
               <Flex
                 as={Flex}
                 align="center"
