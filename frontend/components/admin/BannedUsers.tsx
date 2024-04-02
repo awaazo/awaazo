@@ -3,12 +3,12 @@ import { Box, Table, Tbody, Td, Text, Th, Tr, Avatar } from '@chakra-ui/react'
 import AdminHelper from '../../helpers/AdminHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 
-const BannedUsers = ({ inDashboard }) => {
+const BannedUsers = ({ inDashboard, refresh }) => {
   const [bannedUsers, setBannedUsers] = useState([])
 
   useEffect(() => {
     fetchBannedUsers()
-  }, [])
+  }, [refresh])
 
   const fetchBannedUsers = async () => {
     try {

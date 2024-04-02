@@ -330,7 +330,7 @@ public class AnalyticController : ControllerBase
     /// <response code="200">Returns the watch time range of the podcast or episode.</response>
     /// <response code="400">If the podcast or episode does not exist or the user is not the owner.</response>
     [HttpGet("{podcastOrEpisodeId}/watchTimeRangeInfo")]
-    public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, TimeSpan minTime, TimeSpan maxTime)
+    public async Task<ActionResult> GetWatchTimeRangeInfo(Guid podcastOrEpisodeId, int minTime, int maxTime)
     {
         try
         {
@@ -344,7 +344,7 @@ public class AnalyticController : ControllerBase
             if (user == null)
                 return NotFound("User does not exist.");
 
-            return Ok(await _analyticService.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, minTime, maxTime));
+            return Ok(await _analyticService.GetWatchTimeRangeInfoAsync(podcastOrEpisodeId, user, TimeSpan.FromMinutes(minTime), TimeSpan.FromMinutes(maxTime)));
         }
         catch (Exception ex)
         {

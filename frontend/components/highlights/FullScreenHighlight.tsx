@@ -70,8 +70,8 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
             <HighlightTicket
                         key={currentHighlightIndex} 
                         highlight={currentHighlight}
-                        episode={correspondingEpisode} 
-                        thumbnailUrl={correspondingEpisode.thumbnailUrl} 
+                        // episode={correspondingEpisode}                     These two lines are commented out because they are not used in the HighlightTicket component
+                        //thumbnailUrl={correspondingEpisode.thumbnailUrl} 
                         onOpenFullScreen={undefined}      
                         isFullScreenMode={true}   
             />

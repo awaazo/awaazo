@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
-import { Chatbot, Episode  } from '../types/Interfaces'
+import { Chatbot, Episode } from '../types/Interfaces'
 
 interface PanelState {
   isOpen: boolean
   currentEpisodeId: string | null
-  selectedTimestamp: number | null; 
+  selectedTimestamp: number | null
   Chatbot: Chatbot[]
   episode: Episode
   content: string
@@ -53,11 +53,12 @@ const PanelReducer = (state: PanelState, action: any) => {
         ...state,
         currentEpisodeId: action.payload,
       }
-    case 'SET_SELECTED_TIMESTAMP': 
+    case 'SET_SELECTED_TIMESTAMP':
       return {
         ...state,
         selectedTimestamp: action.payload,
       }
+
     default:
       return state
   }

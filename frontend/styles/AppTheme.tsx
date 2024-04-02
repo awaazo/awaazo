@@ -1,4 +1,5 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
+import { keyframes } from '@emotion/react'
 
 // this a fix for the default color mode issue
 const config: ThemeConfig = {
@@ -19,10 +20,15 @@ const overrides = {
       red: '#FF6A5F',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
-      blackish: '#1D1D1D',
+      blackish: '#18191B',
       greyish: '#818990',
       darkGrey: '#393939',
       darkerGrey: '#2D2D2D',
+      darkestGrey: '#252525',
+      darkGradient: 'linear-gradient(180deg, #2A2A2A 5.06%, #1D1D1D 100%)',
+      lightGradient: 'linear-gradient(200deg, #FFF 22.27%, #D1D9DE 111.44%)',
+      sunset: 'linear-gradient(180deg, #FF6B60 21%, #FFD569 100%)',
+      greenToYellow: 'linear-gradient(180deg, #89DBBD 0%, #FFD569 99.17%)',
     },
   },
   gradients: {
@@ -78,6 +84,38 @@ const overrides = {
         fontSize: 'xs',
       },
     },
+
+    Tabs: {
+      variants: {
+        withIconOnSelected: (props) => ({
+          tab: {
+            fontSize: '16px',
+            position: 'relative',
+            transition: 'all 0.2s ease-in-out',
+            color: '#818990',
+            fontWeight: 'medium',
+            _selected: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            _before: {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '1em',
+              width: '1em',
+              transition: 'opacity 0.3s ease-in-out',
+              opacity: 0,
+            },
+            ':focus': {
+              boxShadow: 'none',
+            },
+          },
+        }),
+      },
+    },
+
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -129,7 +167,7 @@ const overrides = {
         track: {},
         thumb: {},
         filledTrack: {
-          bg: 'brand.100',
+          bg: 'az.red',
         },
       },
     },
@@ -165,6 +203,13 @@ const overrides = {
         '50%': { backgroundPosition: '0% 100%' },
         '100%': { backgroundPosition: '100% 0%' },
       },
+
+      '@keyframes pop': {
+        from: { transform: 'scale(0)', opacity: '0.5' },
+        '50%': { transform: 'scale(1.3)' },
+        to: { transform: 'scale(1)', opacity: '1' },
+      },
+
       '@font-face': [
         {
           fontFamily: "'Neue Montreal'",
@@ -195,7 +240,7 @@ const overrides = {
       },
       '.text-appear': {
         animation: 'appear 0.5s ease forwards',
-        marginRight: '4px', // Adjust the spacing as needed
+        marginRight: '4px',
       },
       '.transcript-text': {
         whiteSpace: 'pre-wrap',

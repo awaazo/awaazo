@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { Box,Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Podcast } from "../../../types/Interfaces";
-import PodcastHelper from "../../../helpers/PodcastHelper";
-import PodcastCard from "../../cards/PodcastCard";
+import { useState, useEffect } from 'react'
+import { Box, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip } from '@chakra-ui/react'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Podcast } from '../../../types/Interfaces'
+import PodcastHelper from '../../../helpers/PodcastHelper'
+import PodcastCard from '../../cards/PodcastCard'
 
 export default function UserPodcasts({ userId }) {
   // podcasts data
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-  const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 });
+  const [podcasts, setPodcasts] = useState<Podcast[]>([])
+  const columns = useBreakpointValue({ base: 2, md: 3, lg: 3 })
 
   // Form errors
-  const [podcastError, setPodcastError] = useState("");
-  const [page, setPage] = useState(0);
-  const pageSize = 6;
+  const [podcastError, setPodcastError] = useState('')
+  const [page, setPage] = useState(0)
+  const pageSize = 6
 
   // State to maintain the selected podcast ID
   useEffect(() => {
@@ -22,44 +22,42 @@ export default function UserPodcasts({ userId }) {
     PodcastHelper.podcastUserPodcastsGet(userId, page, pageSize).then((res2) => {
       // If logged in, set user, otherwise redirect to login page
       if (res2.status == 200) {
-        setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts]);
+        setPodcasts((prevPodcasts) => [...prevPodcasts, ...res2.myPodcasts])
       } else {
-        setPodcastError("Podcasts cannot be fetched");
+        setPodcastError('Podcasts cannot be fetched')
       }
-    });
-  }, [userId, page]);
+    })
+  }, [userId, page])
 
   // Function to handle clicking the "Load More" button
   const handleLoadMoreClick = () => {
-    setPage((page) => page + 1);
-  };
+    setPage((page) => page + 1)
+  }
 
   return (
     <>
-      <Box
-        marginBottom="1em"
-        fontSize="1.5em"
-        fontWeight="bold"
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-      >
+      <Box marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" alignItems="center" justifyContent="space-between">
         Podcasts:
       </Box>
 
       {podcasts && podcasts.length == 0 ? (
-        <Text mt={"50px"} fontSize={"18px"} textAlign={"center"}>
+        <Text mt={'50px'} fontSize={'18px'} textAlign={'center'}>
           This user has not created any podcasts yet.
         </Text>
       ) : (
         <>
-          <Grid templateColumns={`repeat(${columns}, 1fr)`} gap={6} placeItems="center">
-            {podcasts.map((podcast, index) => (
-              <Stack key={index} spacing={4} direction="column" align="center" height="100%" width="100%">
-                <PodcastCard podcast={podcast} />
-              </Stack>
-            ))}
-          </Grid>
+          {podcasts.map(
+            (podcast, index) =>
+              index % 2 === 0 && (
+                <Grid key={index} templateColumns={`repeat(2, 1fr)`} gap={'0px'} placeItems="center">
+                  {podcasts.slice(index, index + 2).map((podcast, innerIndex) => (
+                    <Stack key={innerIndex} spacing={4} direction="column" align="center" height="100%" width="100%">
+                      <PodcastCard podcast={podcast} />
+                    </Stack>
+                  ))}
+                </Grid>
+              )
+          )}
         </>
       )}
       {podcasts[(page + 1) * pageSize - 1] != null && (
@@ -70,5 +68,5 @@ export default function UserPodcasts({ userId }) {
         </Flex>
       )}
     </>
-  );
+  )
 }
