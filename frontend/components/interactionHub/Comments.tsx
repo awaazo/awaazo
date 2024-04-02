@@ -201,18 +201,6 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                       ) : null}
                     </HStack>
                   </HStack>
-                  <HStack>
-                    {comment.noOfReplies > 0 && (!replies[comment.id] || comment.noOfReplies > replies[comment.id].length) && (
-                      <Text onClick={() => fetchReplies(comment.id, index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
-                        Load Replies
-                      </Text>
-                    )}
-                    {replyInputIndex != index && (
-                      <Text onClick={() => handleReplyInput(index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
-                        Reply
-                      </Text>
-                    )}
-                  </HStack>
                 </VStack>
               </HStack>
 
@@ -244,8 +232,19 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                         </HStack>
                       </HStack>
                     </Box>
-                  ))}
-
+                  ))}{' '}
+                <HStack>
+                  {comment.noOfReplies > 0 && (!replies[comment.id] || comment.noOfReplies > replies[comment.id].length) && (
+                    <Text onClick={() => fetchReplies(comment.id, index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
+                      Load Replies
+                    </Text>
+                  )}
+                  {replyInputIndex != index && (
+                    <Text onClick={() => handleReplyInput(index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
+                      Reply
+                    </Text>
+                  )}
+                </HStack>
                 {replyInputIndex === index && (
                   <Box mt={2} width="100%">
                     <HStack spacing={2}>

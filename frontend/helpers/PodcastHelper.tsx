@@ -480,22 +480,17 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static episodeAIAddRequest = async (
-    requestData,
-    podcastId: string,
-    onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
-  ): Promise<CreateEpisodeResponse> => {
+  public static episodeAIAddRequest = async (requestData, podcastId: string): Promise<CreateEpisodeResponse> => {
     // Create the request options.
     const options: AxiosRequestConfig = {
       method: 'POST',
       data: requestData,
-      url: EndpointHelper.getEpisodeAddEndpoint(podcastId),
+      url: EndpointHelper.getEpisodeAIAddEndpoint(podcastId),
       headers: {
         accept: '*/*',
         'Content-Type': 'multipart/form-data',
       },
       withCredentials: true,
-      onUploadProgress,
     }
 
     try {
@@ -530,22 +525,17 @@ export default class PodcastHelper {
    * @param requestData Request data to be sent to the server.
    * @returns A BaseResponse object with the server's response.
    */
-  public static episodeAIwithTextAddRequest = async (
-    requestData,
-    podcastId: string,
-    onUploadProgress: (progressEvent: AxiosProgressEvent) => void // Use AxiosProgressEvent here
-  ): Promise<CreateEpisodeResponse> => {
+  public static episodeAIwithTextAddRequest = async (requestData, podcastId: string): Promise<CreateEpisodeResponse> => {
     // Create the request options.
     const options: AxiosRequestConfig = {
       method: 'POST',
       data: requestData,
-      url: EndpointHelper.getEpisodeAddEndpoint(podcastId),
+      url: EndpointHelper.getEpisodeAIwithTextAddEndpoint(podcastId),
       headers: {
         accept: '*/*',
         'Content-Type': 'multipart/form-data',
       },
       withCredentials: true,
-      onUploadProgress,
     }
 
     try {
