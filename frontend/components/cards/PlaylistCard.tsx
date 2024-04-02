@@ -12,11 +12,7 @@ const PlaylistCard = ({ playlist }) => {
       <Flex direction="column" flex={1}>
         <Flex justifyContent="space-between" mb={2} align="center">
           <Box mr={3} borderRadius="10px" overflow={'hidden'}>
-            {playlist.name === 'Liked Episodes' ? (
-              <Image src={LikedEpisodesImage} alt={playlist.name} width={100} height={100} />
-            ) : (
-              <Image src={playlist.coverArt} alt={playlist.name} width={100} height={100} />
-            )}
+            <Image src={LikedEpisodesImage} alt={playlist.name} width={100} height={100} />
           </Box>
 
           <Box flex={1}>
