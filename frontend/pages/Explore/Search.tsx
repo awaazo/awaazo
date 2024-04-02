@@ -373,9 +373,9 @@ export default function MyPodcast() {
               {loadingEpisodes ? (
                 <Spinner />
               ) : episodes.length > 0 ? (
-                <SimpleGrid columns={1} spacing={5} width="100%">
+                <SimpleGrid columns={1} spacing={5} width="550px">
                   {episodes.map((episode) => (
-                    <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />
+                    <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={true} />
                   ))}
                 </SimpleGrid>
               ) : (

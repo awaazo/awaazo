@@ -5,6 +5,7 @@ import { convertTime } from '../../utilities/commonUtils'
 import { Dots, Time, Plays, Play } from '../../public/icons'
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
+import EpisodeMenu from './EpisodeMenu'
 
 interface EpisodeCardProps {
   episode: Episode
@@ -21,9 +22,12 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
     dispatch({ type: 'PLAY_NOW_QUEUE', payload: episode })
   }
 
+  const handleMenuClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation()
+  }
+
   return (
     <HStack
-      overflow="hidden"
       p={'15px'}
       alignItems="center"
       borderRadius="15px"
@@ -67,7 +71,11 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = true, sho
         <HStack spacing={0}>
           {showLike ? <Likes episodeOrCommentId={id} initialLikes={likes} showCount={false} /> : null}
           {showComment ? <CommentButton episodeId={episode.id} initialComments={0} showCount={false} /> : null}
-          {showMore ? <IconButton aria-label="more" icon={<Icon as={Dots} />} variant="minimal" color="az.greyish" /> : null}
+          {showMore ? (
+            <div onClick={handleMenuClick}>
+              <EpisodeMenu episode={episode} inPlaylist={false} playlistId={null} />
+            </div>
+          ) : null}
         </HStack>
       </HStack>
     </HStack>
