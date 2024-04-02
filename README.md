@@ -1,17 +1,13 @@
-# Awaazo 🎙️ [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
+# Awaazo  [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
 <img src="frontend/public/logos/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
-
-A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
-
-
-## Overview
-
-Awaazo redefines podcasting by fusing traditional streaming with innovative AI-powered content creation. It's the hub for discovering new content, crafting your own episodes, and accessing live transcripts. Engage with our AI assistant, knowledgeable about every episode, for an enhanced listening experience. Dive into a diverse library of podcasts, utilize AI-enhanced tools for content creation, and join a community to share insights and connect with other creators. With Awaazo, immerse yourself in a podcasting experience that transcends the ordinary.
+The goal of project Awaazo is to provide enthusiasts with tools that might not be available in other podcasting apps, helping them navigate and get answers about the podcasts they're listening to, straight to the point using our AI assistant, Wazzo. It's also designed to assist students in generating podcasts on the fly using their lecture notes or other study materials, enabling them to listen to their lectures on the go. On Awaazo, users can share episodes generated or recorded with friends and classmates, fostering discussions about the content and building a community. Users can also take notes at specific timestamps of any podcast, allowing them to return and reflect on what they discovered or found interesting. Additionally, we have an algorithm that recommends the best episodes and podcasts for you, tailored to your interests and listening habits.
 
 <br>
+## The Origin of AWAAZO
+A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
-
+<br>
 ## What Sets Awaazo Apart
 
 - **AI-Enhanced Podcast Creation**: Don't just listen—create. With our cutting-edge AI, turn scripts into captivating podcast episodes, complete with voice cloning for an authentic feel.
@@ -24,18 +20,6 @@ Awaazo redefines podcasting by fusing traditional streaming with innovative AI-p
 
 - **Rich Content Annotations**: As a creator, add layers to your episodes with timestamps, external links, and insights, offering listeners a comprehensive experience.
 
-<br>
-
-## Latest Release Demo
-
-<div align="center">
-  <a href="https://youtu.be/SVZxZEOdr8Q">
-    <img src="docAssets/readme/relaseCover/R1.png" width="50%" alt="Latest Release Demo"/>
-  </a>
-  <p style="margin-top: 20px;">
-    <i>Check out our latest release demo video to see Awaazo in action. Click on the image above to watch the video on YouTube.</i>
-  </p>
-</div>
 
 <br>
 
