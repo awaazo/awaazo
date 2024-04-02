@@ -1,10 +1,13 @@
 # Awaazo  [![Build Docker Images and Run Tests](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml/badge.svg)](https://github.com/awaazo/awaazo/actions/workflows/build-services.yml)
 
 <img src="frontend/public/logos/logo_white.svg" alt="Awaazo Logo" width="60px" align="left" />
+
 The goal of project Awaazo is to provide enthusiasts with tools that might not be available in other podcasting apps, helping them navigate and get answers about the podcasts they're listening to, straight to the point using our AI assistant, Wazzo. It's also designed to assist students in generating podcasts on the fly using their lecture notes or other study materials, enabling them to listen to their lectures on the go. On Awaazo, users can share episodes generated or recorded with friends and classmates, fostering discussions about the content and building a community. Users can also take notes at specific timestamps of any podcast, allowing them to return and reflect on what they discovered or found interesting. Additionally, we have an algorithm that recommends the best episodes and podcasts for you, tailored to your interests and listening habits.
 
 <br>
+
 ## The Origin of AWAAZO
+
 A voice from the East meets a melody from the West. Drawing inspiration from Urdu's word for "sound" – "آواز", and the French term for "bird" – "oiseau", our name embodies the global allure of narratives. Venture into a dynamic podcasting realm where your stories come alive, amplified by the power of AI.
 
 <br>
