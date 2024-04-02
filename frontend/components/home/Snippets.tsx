@@ -1,56 +1,49 @@
 import React, { useState, useEffect } from 'react'
-import { Episode } from '../../types/Interfaces'
-import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid } from '@chakra-ui/react'
+import { VStack, Text, Spinner, Wrap } from '@chakra-ui/react'
+import HighlightTicket from '../highlights/HighlightTicket'
 import PodcastHelper from '../../helpers/PodcastHelper'
-import EpisodeCard from '../cards/EpisodeCard'
+import { Highlight } from '../../types/Interfaces'
 
 const Snippets: React.FC = () => {
-    const [episodes, setEpisodes] = useState<Episode[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState('')
+  const [highlights, setHighlights] = useState<Highlight[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
 
-    useEffect(() => {
-        const fetchPodcasts = async () => {
-            setIsLoading(true)
-            try {
-                const res = await PodcastHelper.podcastGetRecentEpisodes(0, 12)
-                if (res.status === 200) {
-                    setEpisodes(res.episode)
-                } else {
-                    throw new Error('Failed to load podcasts')
-                }
-            } catch (err) {
-                setError(err.message || 'An error occurred while fetching podcasts')
-            } finally {
-                setIsLoading(false)
-            }
+  useEffect(() => {
+    const fetchHighlights = async () => {
+      setIsLoading(true)
+      try {
+        const res = await fetch('http://localhost:32773/podcast/GetRandomHighlights?quantity=20')
+
+        if (res.ok) {
+          const highlightsData = await res.json()
+          setHighlights(highlightsData)
+        } else {
+          throw new Error('Failed to load highlights')
         }
+      } catch (err) {
+        setError(err.message || 'An error occurred while fetching highlights')
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-        fetchPodcasts()
-    }, [])
+    fetchHighlights()
+  }, [])
 
-    const isMobile = useBreakpointValue({ base: true, md: false })
-
-
-    return (
-        <VStack spacing={4} align="stretch">
-            {isLoading ? (
-                <Spinner size="xl" />
-            ) : error ? (
-                <Text color="red.500">{error}</Text>
-            ) : (
-                <VStack
-                    spacing={4}
-                >
-                    {episodes && episodes.length > 0 ? (
-                        episodes.map((episode) => <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />)
-                    ) : (
-                        <Text>No episodes available</Text>
-                    )}
-                </VStack>
-            )}
-        </VStack>
-    )
+  return (
+    <Wrap spacing={4} align="stretch">
+      {isLoading ? (
+        <Spinner size="xl" />
+      ) : error ? (
+        <Text color="red.500">{error}</Text>
+      ) : highlights.length > 0 ? (
+        highlights.map((highlight) => <HighlightTicket key={highlight.id} highlight={highlight} onOpenFullScreen={() => {}} isFullScreenMode={false} />)
+      ) : (
+        <Text>No highlights available</Text>
+      )}
+    </Wrap>
+  )
 }
 
 export default Snippets
