@@ -874,4 +874,8 @@ export default class EndpointHelper {
   static getRandomHighlightsEndpoint = (quantity: number) => {
     return `${this.getBackendAddress()}/podcast/GetRandomHighlights?quantity=${quantity}`
   }
+
+  static getRecommendedHighlightsEndpoint = (quantity: number) => {
+    return `${this.getBackendAddress()}/podcast/GetRecommendedHighlights?quantity=${quantity}`
+  }
 }

@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalBody, IconButton } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalBody, IconButton, Text } from "@chakra-ui/react";
 import HighlightTicket from './HighlightTicket';
 import axios from "axios";
 import { FaTimes } from "react-icons/fa";
+import PodcastHelper from '../../helpers/PodcastHelper';
 
 const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNext, onPrevious }) => {
     const [episodes, setEpisodes] = useState([]);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [error, setError] = useState("");
 
 
-     useEffect(() => {
-    const fetchEpisodes = async () => {
-      try {
-        const response = await axios.get('http://localhost:32773/podcast/getRecentEpisodes?page=0&pageSize=20');
-        setEpisodes(response.data);
-      } catch (error) {
-        console.error('Error fetching episodes:', error);
-      }
-    };
-    fetchEpisodes();
-  }, []);
+    useEffect(() => {
+      const fetchEpisodes = async () => {
+        try {
+          const response = await PodcastHelper.podcastGetRecentEpisodes(0, 20); 
+          if (response && response.episode) {
+            setEpisodes(response.episode);
+          } else {
+            throw new Error('Failed to fetch episodes');
+          }
+        } catch (error) {
+          console.error('Error fetching episodes:', error);
+          setError('Failed to fetch episodes'); 
+        }
+      };
+      fetchEpisodes();
+    }, []);
+
+    if (error) {
+      return <Text color="red.500">{error}</Text>;
+    }
 
   const currentHighlight = highlights[currentHighlightIndex];
     const correspondingEpisode = episodes.find(episode => episode.id === currentHighlight.episodeId);
@@ -70,8 +81,6 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
             <HighlightTicket
                         key={currentHighlightIndex} 
                         highlight={currentHighlight}
-                        // episode={correspondingEpisode}                     These two lines are commented out because they are not used in the HighlightTicket component
-                        //thumbnailUrl={correspondingEpisode.thumbnailUrl} 
                         onOpenFullScreen={undefined}      
                         isFullScreenMode={true}   
             />
