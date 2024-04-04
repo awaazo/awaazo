@@ -90,29 +90,25 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
   const handleRangeChange = ([start, end]) => {
     const maxDuration = 15;
   
-    let newStart = start;
-    let newEnd = end;
-  
-    if (newEnd - newStart > maxDuration) {
-      if (newEnd !== formData.EndTime) {
-        newStart = newEnd - maxDuration;
+    // Ensure the range does not exceed maxDuration
+    let duration = end - start;
+    if (duration > maxDuration) {
+      // If the range exceeds maxDuration, adjust end if it's movable, otherwise adjust start
+      if (end !== Number(formData.EndTime)) {
+        start = end - maxDuration;
       } else {
-        newEnd = newStart + maxDuration;
+        end = start + maxDuration;
       }
     }
   
-    newStart = Math.max(0, newStart);
-    newEnd = Math.min(episodeLength, newEnd);
-  
-    if (newEnd > episodeLength) {
-      newEnd = episodeLength;
-      newStart = Math.max(0, episodeLength - maxDuration);
-    }
+    // Clamp the start and end to ensure they are within the valid range
+    start = Math.max(0, Math.min(start, episodeLength - maxDuration));
+    end = Math.min(episodeLength, start + maxDuration);
   
     setFormData((prev) => ({
       ...prev,
-      StartTime: newStart.toString(),
-      EndTime: newEnd.toString(),
+      StartTime: start.toString(),
+      EndTime: end.toString(),
     }));
   };
   
