@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { Box, Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, ButtonGroup, Img, Alert, AlertDescription } from '@chakra-ui/react'
+import { Box, Container, Button, FormControl, FormLabel, Input, Stack, Text, Flex, Img, Alert, AlertDescription } from '@chakra-ui/react'
 import Logo from '../../public/logos/logo_white.svg'
 import { signIn } from 'next-auth/react'
 import AuthHelper from '../../helpers/AuthHelper'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { RegisterRequest } from '../../types/Requests'
-import { FaGoogle } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
 import { isEmail } from 'validator'
 
 const SignUp: React.FC = () => {
@@ -140,17 +140,35 @@ const SignUp: React.FC = () => {
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
-            <Button id="loginBtn" type="submit" color="az.blackish" bg="az.offWhite" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+            <Button id="loginBtn" type="submit" variant={"large"}>
               Sign Up
             </Button>
 
-            <Button leftIcon={<FaGoogle />} color="az.greyish" bg="az.offWhite" onClick={handleGoogleSignUp} size="md" fontSize="md" mb={3} borderRadius="2xl">
+             <Button
+              w="100%"
+              leftIcon={<FcGoogle style={{ width: '25px', height: '25px' }} />}
+              onClick={() => signIn('google')}
+              color="az.greyish"
+              bg="az.lightGradient"
+              fontSize="md"
+              mb={3}
+              borderRadius="15px"
+              h="50px"
+              _hover={{
+                bg: 'az.green',
+                color: 'white',
+                transition: 'all 0.5s ease-in-out',
+              }}
+            >
               Continue with Google
             </Button>
 
             <Text color="gray.400" fontSize="sm" align={'center'}>
               Already have an account?{' '}
-              <Box as="a" href="/auth/Login" color="white" fontWeight="semibold">
+              <Box as="a" href="/auth/Login" color="white" fontWeight="semibold"  _hover={{
+                color: 'az.red',
+                transition: 'color 0.5s ease-in-out',
+              }}>
                 Log in
               </Box>
             </Text>

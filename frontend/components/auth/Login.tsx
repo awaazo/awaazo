@@ -2,10 +2,11 @@ import React, { useState, FormEvent, useEffect } from 'react'
 import { Box, Button, Input, Stack, Text, Flex, ButtonGroup, Img, InputGroup, InputRightElement, FormControl, IconButton, Alert, AlertDescription, Container } from '@chakra-ui/react'
 import AuthHelper from '../../helpers/AuthHelper'
 import { LoginRequest } from '../../types/Requests'
-import { FaGoogle } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
 import { signIn } from 'next-auth/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import Logo from '../../public/logos/logo_white.svg'
+import { az } from 'date-fns/locale'
 
 interface LoginProps {
   infoMessage?: string
@@ -55,7 +56,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
 
   return (
     <>
-      <Container variant={'authBox'} bg="az.blackish" style={{ outline: 'none', fontFamily: "'Neue Montreal'" }}>
+      <Container variant={'authBox'} bg="az.blackish">
         {loginError && (
           <Alert status="error" borderRadius="xl" mb={4} p={2}>
             <AlertDescription display="block" fontSize="sm">
@@ -85,10 +86,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter Password"
-                  borderRadius="2xl"
-                  bg="whiteAlpha.200"
-                  borderColor="whiteAlpha.400"
-                  _placeholder={{ color: 'whiteAlpha.700' }}
+          
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -96,33 +94,68 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                 <InputRightElement>
                   <IconButton
                     bg="transparent"
-                    variant="ghost"
+                    variant="minimal"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={handlePasswordVisibility}
-                    borderRadius="3xl"
+               
                   />
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Text color="brand.300" fontSize="sm" mb={1} align={'right'}>
-              <Box as="a" href="/auth/ForgotPassword" color={'az.blue'} fontWeight="semibold">
-                Forgot password ?
-              </Box>
-            </Text>
-            <Button id="loginBtn" type="submit" color="az.blackish" bg="az.offWhite" size="md" fontSize="md" borderRadius="2xl" py={3} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+
+            <Button id="loginBtn" type="submit" variant={'large'}>
               Log in
             </Button>
 
-            <Button w="100%" leftIcon={<FaGoogle />} onClick={() => signIn('google')} color="az.greyish" bg="az.offWhite" fontSize="md" mb={3} borderRadius="2xl">
+            <Button
+              w="100%"
+              leftIcon={<FcGoogle style={{ width: '25px', height: '25px' }} />}
+              onClick={() => signIn('google')}
+              color="az.greyish"
+              bg="az.lightGradient"
+              fontSize="md"
+              mb={3}
+              borderRadius="15px"
+              h="50px"
+              _hover={{
+                bg: 'az.green',
+                color: 'white',
+                transition: 'all 0.5s ease-in-out',
+              }}
+            >
               Continue with Google
             </Button>
           </Stack>
 
-          <Text color="gray.400" fontSize="sm" align={'center'}>
-            Don't have an account?{' '}
-            <Box as="a" href="/auth/Signup" color="white" fontWeight="semibold">
+          <Text color="az.greyish" fontSize="sm" align={'center'} mb={1}>
+             Don't have an account ?  {""}
+           
+            <Box
+              as="a"
+              href="/auth/Signup"
+              color="white"
+              fontWeight="semibold"
+              _hover={{
+                color: 'az.red',
+                transition: 'color 0.5s ease-in-out',
+              }}
+            >
               Sign up
+            </Box>
+          </Text>
+          <Text color="az.blue" fontSize="sm" mb={1} align={'center'}>
+            <Box
+              as="a"
+              href="/auth/ForgotPassword"
+              color={'az.blue'}
+              fontWeight="semibold"
+              _hover={{
+                color: 'az.red',
+                transition: 'color 0.5s ease-in-out',
+              }}
+            >
+              Forgot password ?
             </Box>
           </Text>
         </form>

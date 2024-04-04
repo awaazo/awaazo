@@ -75,7 +75,6 @@ const overrides = {
         },
         large: {
           display: 'flex',
-          width: '340px',
           height: '50px',
           padding: '15px 35px 15px 36px',
           justifyContent: 'center',
@@ -83,7 +82,7 @@ const overrides = {
           borderRadius: '15px',
           background: 'var(--Just-White, #FFF)',
           fontWeight: '700',
-          fontSize: '14px',
+          fontSize: '15px',
           color:'#1D1D1D',
           _hover: {
             background: 'az.red', 
@@ -121,7 +120,7 @@ const overrides = {
             bg: '#393939',
             borderColor: 'transparent',
             _hover: {
-              borderColor: '#FA6257', // Change border color on hover
+              borderColor: '#FA6257', 
             },
             _focus: {
               borderColor: '#89DBBD',
@@ -131,10 +130,8 @@ const overrides = {
             _placeholder: {
               color: '#818990',
             },
-           
           },
         },
-        // ... add more variants as needed
       },
       defaultProps: {
         size: 'md',
@@ -240,11 +237,8 @@ const overrides = {
         },
         authBox: {
           p: 6,
-          bg: 'rgba(255, 255, 255, 0.04)',
-          outline: '2px solid rgba(255, 255, 255, 0.06)',
           backdropFilter: 'blur(10px)',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
-          borderRadius: '3xl',
+          borderRadius: '15px',
           maxW: '400px',
           w: 'full',
           textAlign: 'center',
