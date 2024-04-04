@@ -61,7 +61,7 @@ const PlayerMenu = ({ episode }) => {
               onAddToPlaylistModalOpen()
             }}
           >
-            <CgPlayListAdd size="20px" style={{ marginRight: '10px', color: 'white' }} />
+            <CgPlayListAdd size="18px" style={{ marginRight: '10px', color: 'white' }} />
             <Text fontSize={'sm'}>Add to Playlist</Text>
           </MenuItem>
 
@@ -83,7 +83,7 @@ const PlayerMenu = ({ episode }) => {
 
           <MenuDivider />
           <MenuItem onClick={onShareModalOpen}>
-            <IoShare size="20px" style={{ marginRight: '10px', color: 'white' }} /> <Text fontSize={'sm'}>Share</Text>
+            <IoShare size="18px" style={{ marginRight: '10px', color: 'white' }} /> <Text fontSize={'sm'}>Share</Text>
           </MenuItem>
         </MenuList>
       </Menu>
