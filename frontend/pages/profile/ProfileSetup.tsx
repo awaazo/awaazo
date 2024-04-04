@@ -1,53 +1,53 @@
-import React, { useState, FormEvent, useEffect, useCallback } from "react";
-import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import AuthHelper from "../../helpers/AuthHelper";
-import LogoWhite from "../../public/logo_white.svg";
-import { UserProfileSetupRequest } from "../../types/Requests";
-import UserProfileHelper from "../../helpers/UserProfileHelper";
-import { UserMenuInfo } from "../../types/Interfaces";
-import ImageAdder from "../../components/tools/ImageAdder";
-import GenreSelector from "../../components/tools/GenreSelector";
-import withAuth from "../../utilities/authHOC";
+import React, { useState, FormEvent, useEffect, useCallback } from 'react'
+import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
+import AuthHelper from '../../helpers/AuthHelper'
+import LogoWhite from '../../public/logos/logo_white.svg'
+import { UserProfileSetupRequest } from '../../types/Requests'
+import UserProfileHelper from '../../helpers/UserProfileHelper'
+import { UserMenuInfo } from '../../types/Interfaces'
+import ImageAdder from '../../components/tools/ImageAdder'
+import GenreSelector from '../../components/tools/GenreSelector'
+import withAuth from '../../utilities/authHOC'
 
 const ProfileSetup: React.FC = () => {
-  const mainPage = "/";
-  const loginPage = "/auth/Login";
+  const mainPage = '/'
+  const loginPage = '/auth/Login'
 
-  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
-  const [displayName, setDisplayName] = useState("");
-  const [displayNameCharacterCount, setDisplayNameCharacterCount] = useState<number>(0);
-  const [bio, setBio] = useState("");
-  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [setupError, setSetupError] = useState("");
-  const router = useRouter();
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameCharacterCount, setDisplayNameCharacterCount] = useState<number>(0)
+  const [bio, setBio] = useState('')
+  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0)
+  const [selectedInterests, setSelectedInterests] = useState([])
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [setupError, setSetupError] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
     // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
       if (res.status == 200) {
-        setUser(res.userMenuInfo);
+        setUser(res.userMenuInfo)
       } else {
-        window.location.href = loginPage;
+        window.location.href = loginPage
       }
-    });
-  }, [router]);
+    })
+  }, [router])
 
   const handleImageAdded = useCallback(async (addedImageUrl: string) => {
     try {
-      const response = await fetch(addedImageUrl);
-      const blob = await response.blob();
-      const file = new File([blob], "avatar.jpg", { type: blob.type });
-      setAvatarFile(file);
+      const response = await fetch(addedImageUrl)
+      const blob = await response.blob()
+      const file = new File([blob], 'avatar.jpg', { type: blob.type })
+      setAvatarFile(file)
     } catch (error) {
-      console.error("Error converting image URL to File:", error);
+      console.error('Error converting image URL to File:', error)
     }
-  }, []);
+  }, [])
 
   const handleSetup = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Create request object
     const request: UserProfileSetupRequest = {
@@ -55,39 +55,39 @@ const ProfileSetup: React.FC = () => {
       bio: bio,
       interests: selectedInterests,
       displayName: displayName,
-    };
+    }
 
     // Send the request
-    const response = await UserProfileHelper.profileSetupRequest(request);
-    console.log(response);
+    const response = await UserProfileHelper.profileSetupRequest(request)
+    console.log(response)
 
     if (response.status === 200) {
       // Success, go to main page
-      window.location.href = mainPage;
+      window.location.href = mainPage
     } else {
       // Handle error here
-      setSetupError("Avatar, Display Name and Bio Required.");
+      setSetupError('Avatar, Display Name and Bio Required.')
     }
-  };
+  }
 
   const handleInterestClick = (selectedGenres: string[]) => {
     // Update the 'tags' state with the new set of selected genres
-    setSelectedInterests(selectedGenres);
-  };
+    setSelectedInterests(selectedGenres)
+  }
 
   // Ensures display name is not longer than 25 characters
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDisplayName = e.target.value.slice(0, 25);
-    setDisplayName(newDisplayName);
-    setDisplayNameCharacterCount(newDisplayName.length);
-  };
+    const newDisplayName = e.target.value.slice(0, 25)
+    setDisplayName(newDisplayName)
+    setDisplayNameCharacterCount(newDisplayName.length)
+  }
 
   // Ensures bio is not longer than 250 characters
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newBio = e.target.value.slice(0, 250);
-    setBio(newBio);
-    setBioCharacterCount(newBio.length);
-  };
+    const newBio = e.target.value.slice(0, 250)
+    setBio(newBio)
+    setBioCharacterCount(newBio.length)
+  }
 
   /**
    * Contains the elements of the Setup page
@@ -102,21 +102,32 @@ const ProfileSetup: React.FC = () => {
         </Text>
 
         <form onSubmit={handleSetup}>
-          <Stack spacing={6} align={"center"}>
+          <Stack spacing={6} align={'center'}>
             <Box mt={4}>
               <ImageAdder onImageAdded={handleImageAdded} />
             </Box>
             {setupError && <Text color="red.500">{setupError}</Text>}
 
             <FormControl position="relative">
-              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} alignSelf = "center" />
+              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} alignSelf="center" />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {displayNameCharacterCount}/25
               </Text>
             </FormControl>
 
             <FormControl position="relative">
-              <Textarea id="bio" placeholder="What's your story?" value={bio} onChange={handleBioChange} width="100%" height="100px" padding="12px" fontSize="16px" borderRadius="18px" resize="vertical" />
+              <Textarea
+                id="bio"
+                placeholder="What's your story?"
+                value={bio}
+                onChange={handleBioChange}
+                width="100%"
+                height="100px"
+                padding="12px"
+                fontSize="16px"
+                borderRadius="18px"
+                resize="vertical"
+              />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {bioCharacterCount}/250
               </Text>
@@ -125,8 +136,8 @@ const ProfileSetup: React.FC = () => {
             <FormControl>
               <FormLabel
                 style={{
-                  textAlign: "center",
-                  padding: "10px",
+                  textAlign: 'center',
+                  padding: '10px',
                 }}
               >
                 What kind of topics do you like?
@@ -140,11 +151,11 @@ const ProfileSetup: React.FC = () => {
         </form>
       </Box>
     </>
-  );
+  )
 
   if (user !== undefined) {
-    return SetupPage();
+    return SetupPage()
   }
-};
+}
 
-export default withAuth(ProfileSetup);
+export default withAuth(ProfileSetup)

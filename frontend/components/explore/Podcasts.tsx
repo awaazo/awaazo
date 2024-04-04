@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { SimpleGrid, Box, Image, Text, useBreakpointValue, Card, Flex } from "@chakra-ui/react";
-import { Podcast } from "../../types/Interfaces";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import Link from "next/link";
+import React, { useState, useEffect } from 'react'
+import { SimpleGrid, Box, Image, Text, useBreakpointValue, Card, Flex } from '@chakra-ui/react'
+import { Podcast } from '../../types/Interfaces'
+import PodcastHelper from '../../helpers/PodcastHelper'
+import Link from 'next/link'
 
 // Component for rendering a podcast card
 const PodcastCard = ({ podcast }) => (
@@ -11,12 +11,12 @@ const PodcastCard = ({ podcast }) => (
       boxShadow="lg"
       rounded="md"
       overflow="hidden"
-      background={"transparent"}
+      background={'transparent'}
       _hover={{
-        transform: "scale(1.07)",
-        textDecoration: "none",
+        transform: 'scale(1.07)',
+        textDecoration: 'none',
       }}
-      height={"100%"}
+      height={'100%'}
       position="relative"
       outline="solid 3px rgba(255, 255, 255, 0.15)"
       borderRadius="1.5em"
@@ -32,25 +32,25 @@ const PodcastCard = ({ podcast }) => (
         src={podcast.coverArtUrl}
         alt={podcast.title}
         height={{
-          base: "150px",
-          md: "200px",
-          lg: "200px",
+          base: '150px',
+          md: '200px',
+          lg: '200px',
         }}
-        objectFit={"cover"}
+        objectFit={'cover'}
       />
       <Flex direction="column" align="center" p={4}>
         <Text fontSize="xl" fontWeight="bold" mb={2}>
           {podcast.name}
         </Text>
-        <Text fontSize="sm" textAlign="center" opacity={"0.6"}>
-          {podcast.description.length <= 50 ? podcast.description : podcast.description.slice(0, 50) + "..."}
+        <Text fontSize="sm" textAlign="center" opacity={'0.6'}>
+          {podcast.description.length <= 50 ? podcast.description : podcast.description.slice(0, 50) + '...'}
         </Text>
       </Flex>
       {/* button */}
       <Box position="absolute" top="50%" left="50%" transform="translate(-50%, 50%)" zIndex={999}></Box>
     </Card>
   </Link>
-);
+)
 
 // Component for rendering the "For You" section
 const ForYou: React.FC = () => {
@@ -58,28 +58,28 @@ const ForYou: React.FC = () => {
     PodcastHelper.podcastAllPodcastsGet(0, 20).then((res) => {
       // If logged in, set user, otherwise redirect to login page
       if (res.status == 200) {
-        setPodcasts(res.podcasts);
+        setPodcasts(res.podcasts)
       } else {
-        setPodcasts(null);
+        setPodcasts(null)
       }
-    });
-  });
+    })
+  })
 
-  const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 });
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const columns = useBreakpointValue({ base: 2, md: 3, lg: 6 })
+  const [podcasts, setPodcasts] = useState<Podcast[]>([])
 
   return (
     <>
-      <Box bgGradient="linear(to-r, #6a39c4, transparent)" w={{ base: "70%", md: "20%" }} top={0} left={0} zIndex={-99} borderRadius={"0.5em"} boxShadow={"lg"}>
-        <Text fontSize="2xl" fontWeight="bold" mb={"1em"} ml={"0.7em"}>
+      <Box bgGradient="linear(to-r, #6a39c4, transparent)" w={{ base: '70%', md: '20%' }} top={0} left={0} zIndex={-99} borderRadius={'0.5em'} boxShadow={'lg'}>
+        <Text fontSize="2xl" fontWeight="bold" mb={'1em'} ml={'0.7em'}>
           Podcasts For You
         </Text>
       </Box>
-      <SimpleGrid columns={columns} spacing={7} marginBottom={"4em"}>
+      <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="20px" width={'100%'}>
         {podcasts ? podcasts.map((podcast, index) => <PodcastCard key={index} podcast={podcast} />) : <Text>No podcasts available</Text>}
-      </SimpleGrid>
+      </Box>
     </>
-  );
-};
+  )
+}
 
-export default ForYou;
+export default ForYou

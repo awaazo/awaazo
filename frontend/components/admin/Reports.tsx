@@ -4,9 +4,8 @@ import AdminHelper from '../../helpers/AdminHelper'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import { AwaazoA } from '../../public/icons'
-import { Report } from '../../types/Interfaces'
 
-const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
+const Reports = ({ onSelectReport, selectedReport, inDashboard, refresh }) => {
   const [selectedTab, setSelectedTab] = useState('pending')
   const [resolvedReports, setResolvedReports] = useState([])
   const [rejectedReports, setRejectedReports] = useState([])
@@ -16,7 +15,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
     fetchPendingReports()
     fetchResolvedReports()
     fetchRejectedReports()
-  }, [])
+  }, [refresh])
 
   const fetchPendingReports = async () => {
     try {
@@ -125,7 +124,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}
@@ -147,7 +146,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}
@@ -169,7 +168,7 @@ const Reports = ({ onSelectReport, selectedReport, inDashboard }) => {
                 <AwaazoA
                   style={{
                     position: 'absolute',
-                    top: '-0.0em',
+                    top: '0.3em',
                     left: '0.2em',
                     fontSize: '0.8em',
                   }}

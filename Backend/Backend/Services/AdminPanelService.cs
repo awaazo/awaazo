@@ -5,7 +5,7 @@ using Backend.Models;
 using Backend.Models.stats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Net.Mail;
+using Stripe;
 
 namespace Backend.Services;
 
@@ -155,7 +155,7 @@ public class AdminPanelService
     {
         // Check how many podcasts are still a daily recommendation
         List<Podcast> oldRecommendations = await _db.Podcasts
-            .Where(p => p.dailyAdminChoice == true)
+            .Where(p => p.DailyAdminChoice == true)
             .ToListAsync();
 
         // Check if max 10 podcast
@@ -167,12 +167,12 @@ public class AdminPanelService
         Podcast podcast = await _db.Podcasts.FirstOrDefaultAsync(p => p.Id == req.podcastId) ?? throw new Exception("Podcast does not exist");
 
         // Set podcast values
-        podcast.dailyAdminChoice = true;
+        podcast.DailyAdminChoice = true;        
         if (req.description.IsNullOrEmpty())
         {
-            podcast.customAdminDescription = string.Empty;
+            podcast.CustomAdminDescription = string.Empty;
         }
-        podcast.customAdminDescription = req.description;
+        podcast.CustomAdminDescription = req.description;
         var response = new adminRecommendationResponse(podcast, domainUrl);
 
         _db.Podcasts.Update(podcast);
@@ -190,7 +190,7 @@ public class AdminPanelService
     public async Task<List<adminRecommendationResponse>> GetDailyPodcastRecomendationsAsync(string domainUrl)
     {
         var currentRecommendations = await _db.Podcasts
-            .Where(p => p.dailyAdminChoice == true)
+            .Where(p => p.DailyAdminChoice == true)
             .Select(p => new adminRecommendationResponse(p, domainUrl))
             .ToListAsync() ?? throw new Exception("There exists no current admin recommendations");
 
@@ -206,13 +206,13 @@ public class AdminPanelService
     public async Task<bool> RemoveDailyPodcastRecomendationsAsync(List<Guid> podcasts)
     {
         List<Podcast> oldRecommendations = await _db.Podcasts
-            .Where(p => p.dailyAdminChoice == true && podcasts.Contains(p.Id))
+            .Where(p => p.DailyAdminChoice == true && podcasts.Contains(p.Id))
             .ToListAsync() ?? throw new Exception("Cannot find any podcasts with those Id");
 
         foreach (var oldRec in oldRecommendations)
         {
-            oldRec.dailyAdminChoice = false;
-            oldRec.customAdminDescription = string.Empty;
+            oldRec.DailyAdminChoice = false;
+            oldRec.CustomAdminDescription = string.Empty;
             _db.Podcasts.Update(oldRec);
         }
 
@@ -239,6 +239,64 @@ public class AdminPanelService
         }
 
         return false;
+    }
+
+    /// Get the total amount of users in the database. This includes admins.
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalUsersAsync(bool withDeleted = false)
+    {
+        int totalUserCount = 0;
+        if (withDeleted)
+        {
+            totalUserCount = await _db.Users.IgnoreQueryFilters().CountAsync();
+            return totalUserCount;
+        }
+
+        totalUserCount = await _db.Users.CountAsync();
+        return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users created since a certain amount of days, counting admins as well
+    /// </summary>
+    /// <param name="daysSinceCreation">Threashold for the search, in terms of days</param>
+    /// <returns></returns>
+    public async Task<int> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
+    {
+        var totalUserCount = await _db.Users
+            .Where(u => u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
+            .CountAsync();
+
+        return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users who have created podcasts, IE podcasters
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalAmountOfPodcastersAsync(bool withDeleted = false)
+    {
+        int uniquePodcasters = 0;
+
+        if (withDeleted)
+        {
+            uniquePodcasters = await _db.Podcasts
+                .IgnoreQueryFilters()
+                .Select(p => p.PodcasterId)
+                .Distinct()
+                .CountAsync();
+            return uniquePodcasters;
+        }
+        ;
+        uniquePodcasters = await _db.Podcasts
+            .Select(p => p.PodcasterId)
+            .Distinct()
+            .CountAsync();
+
+        return uniquePodcasters;
     }
 
     #endregion
