@@ -5,7 +5,7 @@ using Backend.Models;
 using Backend.Models.stats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Stripe;
+using System.Net.Mail;
 
 namespace Backend.Services;
 
