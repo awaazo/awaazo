@@ -18,6 +18,7 @@ const overrides = {
       blue: '#94AFFF',
       green: '#89DBBD',
       red: '#FA6257',
+      lightRed:'#FA7F57',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
       blackish: '#18191B',
@@ -199,12 +200,12 @@ const overrides = {
     Menu: {
       baseStyle: {
         list: {
-          borderRadius: '2xl',
-          backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          borderRadius: '15px',
+          backgroundColor: '#252525',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         },
         item: {
+          fontSize:"14px",
           backgroundColor: 'transparent',
           _focus: {
             backgroundColor: 'rgba(255, 255, 255, 0.1)',

@@ -6,7 +6,7 @@ import { Dots, Time, Plays, Play } from '../../public/icons'
 import Likes from '../interactionHub/Likes'
 import CommentButton from '../interactionHub/buttons/CommentButton'
 import EpisodeMenu from './EpisodeMenu'
-
+import { formatNumber } from '../../utilities/commonUtils'
 interface EpisodeCardProps {
   episode: Episode
   showLike?: boolean
@@ -55,7 +55,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, sh
           <HStack spacing={1}>
             <Icon as={Plays} color="az.greyish" boxSize={3} />
             <Text color="az.greyish" fontSize="xs">
-              {playCount}
+              {formatNumber(playCount)}
             </Text>
           </HStack>
           <HStack spacing={1}>

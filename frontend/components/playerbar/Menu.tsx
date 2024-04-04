@@ -62,22 +62,22 @@ const PlayerMenu = ({ episode }) => {
             }}
           >
             <CgPlayListAdd size="18px" style={{ marginRight: '10px', color: 'white' }} />
-            <Text fontSize={'sm'}>Add to Playlist</Text>
+            <Text>Add to Playlist</Text>
           </MenuItem>
 
           <MenuDivider />
           <MenuItem onClick={onQueueModalOpen}>
             <CgPlayListSearch size="18px" style={{ marginRight: '10px', color: 'white' }} />
-            <Text fontSize={'sm'}> View Queue</Text>
+            <Text> View Queue</Text>
           </MenuItem>
           <MenuItem onClick={handleRemoveFromQueue}>
             <CgPlayListRemove size="18px" style={{ marginRight: '10px', color: 'white' }} />
-            <Text fontSize={'sm'}> Remove from Queue</Text>
+            <Text> Remove from Queue</Text>
           </MenuItem>
           <Link href={'Explore/' + episode?.podcastId} style={{ textDecoration: 'none' }}>
             <MenuItem>
               <MdOutlinePodcasts size="18px" style={{ marginRight: '10px', color: 'white' }} />
-              <Text fontSize={'sm'}> Go to Podcast Page</Text>
+              <Text > Go to Podcast Page</Text>
             </MenuItem>
           </Link>
 
