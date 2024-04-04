@@ -158,7 +158,6 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             var result = await _adminService.CreateDailyPodcastRecomendationAsync(request, ControllerHelper.GetDomainUrl(HttpContext));
             return Ok(result);
@@ -176,7 +175,6 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             var result = await _adminService.GetDailyPodcastRecomendationsAsync(ControllerHelper.GetDomainUrl(HttpContext));
             return Ok(result);
@@ -194,10 +192,43 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             await _adminService.RemoveDailyPodcastRecomendationsAsync(request.podcastsToRemove);
             return Ok();
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("GetTotalUsers")]
+    public async Task<IActionResult> GetTotalUsers(bool withDeleted = false)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetTotalUsersAsync(withDeleted);
+            return Ok(totalUsers);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("GetRecentlyCreatedUserCount")]
+    public async Task<IActionResult> GetRecentlyCreatedUserCount(int daySinceCreation = 1)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetRecentlyCreatedUserCountAsync(daySinceCreation);
+            return Ok(totalUsers);
         }
         catch (Exception e)
         {

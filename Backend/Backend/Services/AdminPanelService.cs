@@ -202,6 +202,38 @@ public class AdminPanelService
         return await _db.SaveChangesAsync() == oldRecommendations.Count;
     }
 
+    /// <summary>
+    /// Get the total amount of users in the database. This includes admins.
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalUsersAsync(bool withDeleted = false)
+    {
+        int totalUserCount = 0;
+        if (withDeleted)
+        {
+            totalUserCount = await _db.Users.IgnoreQueryFilters().CountAsync();
+            return totalUserCount;
+        }
+
+        totalUserCount = await _db.Users.CountAsync();
+        return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users created since a certain amount of days, not counting admins
+    /// </summary>
+    /// <param name="daysSinceCreation">Threashold for the search, in terms of days</param>
+    /// <returns></returns>
+    public async Task<List<User>> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
+    {
+        var totalUserCount = await _db.Users
+            .Where(u => u.IsAdmin == false && u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
+            .ToListAsync();
+
+        return totalUserCount;
+    }
+
     #endregion
 
     public Task<AdminEmailLog[]> EmailLogs(User admin, int page) {
