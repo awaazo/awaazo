@@ -6,6 +6,7 @@ using Backend.Models;
 using Backend.Models.stats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 
 namespace Backend.Services;
 
@@ -200,6 +201,65 @@ public class AdminPanelService
         }
 
         return await _db.SaveChangesAsync() == oldRecommendations.Count;
+    }
+
+    /// <summary>
+    /// Get the total amount of users in the database. This includes admins.
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalUsersAsync(bool withDeleted = false)
+    {
+        int totalUserCount = 0;
+        if (withDeleted)
+        {
+            totalUserCount = await _db.Users.IgnoreQueryFilters().CountAsync();
+            return totalUserCount;
+        }
+
+        totalUserCount = await _db.Users.CountAsync();
+        return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users created since a certain amount of days, counting admins as well
+    /// </summary>
+    /// <param name="daysSinceCreation">Threashold for the search, in terms of days</param>
+    /// <returns></returns>
+    public async Task<int> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
+    {
+        var totalUserCount = await _db.Users
+            .Where(u => u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
+            .CountAsync();
+
+        return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users who have created podcasts, IE podcasters
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalAmountOfPodcastersAsync(bool withDeleted = false)
+    {
+        int uniquePodcasters = 0;
+
+        if (withDeleted)
+        {
+            uniquePodcasters = await _db.Podcasts
+                .IgnoreQueryFilters()
+                .Select(p => p.PodcasterId)
+                .Distinct()
+                .CountAsync();
+            return uniquePodcasters;
+        }
+        ;
+        uniquePodcasters = await _db.Podcasts
+            .Select(p => p.PodcasterId)
+            .Distinct()
+            .CountAsync();
+
+        return uniquePodcasters;
     }
 
     #endregion
