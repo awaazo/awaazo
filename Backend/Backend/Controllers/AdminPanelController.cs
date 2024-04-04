@@ -203,6 +203,11 @@ public class AdminPanelController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns total amount of users in the database. Includes admins
+    /// </summary>
+    /// <param name="withDeleted">Value to check if we wanted soft deleted users as well. Defaults to no</param>
+    /// <returns></returns>
     [HttpGet("GetTotalUsers")]
     public async Task<IActionResult> GetTotalUsers(bool withDeleted = false)
     {
@@ -220,6 +225,11 @@ public class AdminPanelController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the amount of recently created users in the database. Includes admins
+    /// </summary>
+    /// <param name="daySinceCreation">Positive interger defaulting to 1 that shows from how many days ago we are searching</param>
+    /// <returns></returns>
     [HttpGet("GetRecentlyCreatedUserCount")]
     public async Task<IActionResult> GetRecentlyCreatedUserCount(int daySinceCreation = 1)
     {

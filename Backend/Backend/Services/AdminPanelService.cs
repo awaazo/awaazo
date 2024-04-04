@@ -221,14 +221,14 @@ public class AdminPanelService
     }
 
     /// <summary>
-    /// Returns the amount of users created since a certain amount of days, not counting admins
+    /// Returns the amount of users created since a certain amount of days, counting admins as well
     /// </summary>
     /// <param name="daysSinceCreation">Threashold for the search, in terms of days</param>
     /// <returns></returns>
     public async Task<List<User>> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
     {
         var totalUserCount = await _db.Users
-            .Where(u => u.IsAdmin == false && u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
+            .Where(u => u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
             .ToListAsync();
 
         return totalUserCount;
