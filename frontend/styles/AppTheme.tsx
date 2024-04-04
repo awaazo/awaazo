@@ -17,7 +17,7 @@ const overrides = {
     az: {
       blue: '#94AFFF',
       green: '#89DBBD',
-      red: '#FF6A5F',
+      red: '#FA6257',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
       blackish: '#18191B',
@@ -54,7 +54,7 @@ const overrides = {
           animation: 'Gradient 10s infinite linear',
           minWidth: '200px',
         },
-        circle: {
+        play: {
           borderRadius: 'full',
           fontSize: 'md',
           color: 'white',
@@ -63,7 +63,7 @@ const overrides = {
           paddingRight: '2rem',
           backgroundSize: '300% 300%',
           _hover: {
-            background: '#89DBBD',
+            background: '#FA7F57',
           },
         },
         minimal: {

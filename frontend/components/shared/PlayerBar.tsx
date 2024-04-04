@@ -277,7 +277,7 @@ const PlayerBar = () => {
             <IconButton
               aria-label={isPlaying ? 'Pause' : 'Play'}
               icon={isPlaying ? <FaPause /> : <Play />}
-              variant="circle"
+              variant="play"
               bg="az.red"
               minWidth="2.5em"
               size="md"
