@@ -246,4 +246,25 @@ public class AdminPanelController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    /// <summary>
+    /// Endpoint that gets the total amount of users who are creators/podcasters
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("GetTotalAmountOfPodcasters")]
+    public async Task<IActionResult> GetTotalAmountOfPodcasters()
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetTotalAmountOfPodcastersAsync();
+            return Ok(totalUsers);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
 }

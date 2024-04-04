@@ -6,6 +6,7 @@ using Backend.Models;
 using Backend.Models.stats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 
 namespace Backend.Services;
 
@@ -225,13 +226,40 @@ public class AdminPanelService
     /// </summary>
     /// <param name="daysSinceCreation">Threashold for the search, in terms of days</param>
     /// <returns></returns>
-    public async Task<List<User>> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
+    public async Task<int> GetRecentlyCreatedUserCountAsync(int daysSinceCreation)
     {
         var totalUserCount = await _db.Users
             .Where(u => u.CreatedAt >= DateTime.Now.AddDays(-daysSinceCreation))
-            .ToListAsync();
+            .CountAsync();
 
         return totalUserCount;
+    }
+
+    /// <summary>
+    /// Returns the amount of users who have created podcasts, IE podcasters
+    /// </summary>
+    /// <param name="withDeleted">Optional parameter to include softdeleted users</param>
+    /// <returns></returns>
+    public async Task<int> GetTotalAmountOfPodcastersAsync(bool withDeleted = false)
+    {
+        int uniquePodcasters = 0;
+
+        if (withDeleted)
+        {
+            uniquePodcasters = await _db.Podcasts
+                .IgnoreQueryFilters()
+                .Select(p => p.PodcasterId)
+                .Distinct()
+                .CountAsync();
+            return uniquePodcasters;
+        }
+        ;
+        uniquePodcasters = await _db.Podcasts
+            .Select(p => p.PodcasterId)
+            .Distinct()
+            .CountAsync();
+
+        return uniquePodcasters;
     }
 
     #endregion
