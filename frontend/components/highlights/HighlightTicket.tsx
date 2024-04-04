@@ -4,8 +4,6 @@ import { FaPlay, FaPause } from 'react-icons/fa'
 import { usePlayer } from '../../utilities/PlayerContext'
 import HighlightHelper from '../../helpers/HighlightHelper'
 import PodcastHelper from '../../helpers/PodcastHelper'
-import Likes from '../interactionHub/Likes'
-
 
 const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -30,7 +28,7 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
       }
     }
 
-    fetchData() // Call the async function
+    fetchData() 
   }, [])
 
   useEffect(() => {
@@ -117,7 +115,16 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
       >
       {episode && (
         <>
-          <Image src={thumbnailUrl} alt={`Highlight from ${highlight.title || 'episode'}`} fit="cover" w="full" h="full" position="absolute" zIndex="-1" />
+          <Image
+            src={thumbnailUrl}
+            alt={`Highlight from ${highlight.title || 'episode'}`}
+            fit="cover"
+            w="full"
+            h="full"
+            position="absolute"
+            zIndex="-1"
+            style={{ transform: 'translate3d(0, 0, 0)', willChange: 'transform, opacity' }}
+          />
 
           <Box position="absolute" top="4" width="full" textAlign="center" p={2} borderRadius="md">
             <Link

@@ -71,7 +71,6 @@ const Highlights = () => {
 
   return (
     <>
-    
       {isFullScreen && (
         <FullScreenHighlight
           highlights={highlights}
@@ -81,7 +80,6 @@ const Highlights = () => {
           onPrevious={goToPreviousHighlight}     
         />
       )}
-
       <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
         <HStack spacing={4} align="stretch">
           {highlights.length > 0 ? (
@@ -91,7 +89,6 @@ const Highlights = () => {
                 console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
                 return null;
               }
-
               return (
                 <HighlightTicket 
                   key={highlight.id} 

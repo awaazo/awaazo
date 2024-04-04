@@ -36,31 +36,20 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
   const audioRef = useRef(new Audio());
   const [shiftAmount, setShiftAmount] = useState(5); 
 
-
-
   const getEpisodePlaying = async (podcastId, episodeId) => {
     return EndpointHelper.getPodcastEpisodePlayEndpoint(podcastId, episodeId);
   };
 
   useEffect(() => {
     const audio = audioRef.current;
-
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
     };
-
     audio.addEventListener("timeupdate", updateTime);
-
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
     };
   }, []);
-
-
-  const handleSeek = (value) => {
-    audioRef.current.currentTime = value;
-    setCurrentTime(value);
-  };
 
   useEffect(() => {
     const fetchAudio = async () => {
@@ -89,22 +78,16 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
 
   const handleRangeChange = ([start, end]) => {
     const maxDuration = 15;
-  
-    // Ensure the range does not exceed maxDuration
     let duration = end - start;
     if (duration > maxDuration) {
-      // If the range exceeds maxDuration, adjust end if it's movable, otherwise adjust start
       if (end !== Number(formData.EndTime)) {
         start = end - maxDuration;
       } else {
         end = start + maxDuration;
       }
     }
-  
-    // Clamp the start and end to ensure they are within the valid range
     start = Math.max(0, Math.min(start, episodeLength - maxDuration));
     end = Math.min(episodeLength, start + maxDuration);
-  
     setFormData((prev) => ({
       ...prev,
       StartTime: start.toString(),
@@ -112,31 +95,23 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
     }));
   };
   
-
-  
-
   const handleSubmit = async () => {
     let response;
-  
     if (highlightId) {
       const editData: HighlightEditRequest = {
         Title: formData.Title,
         Description: formData.Description,
       };
-  
       response = await HighlightHelper.highlightEditRequest(editData, highlightId);
     } else {
-     
       const addData = {
         StartTime: formData.StartTime, 
         EndTime: formData.EndTime, 
         Title: formData.Title,
         Description: formData.Description,
       };
-      
       response = await HighlightHelper.highlightCreateRequest(addData, episodeId);
     }
-  
     if (response.status === 200) {
       toast({
         title: 'Success',
@@ -157,7 +132,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
     }
   };
   
-
   const handleDelete = async () => {
     if (highlightId) {
       const response = await HighlightHelper.highlightDeleteRequest(highlightId);
@@ -200,7 +174,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
         });
       });
   
-
       const stopAudioAtEndTime = () => {
         if (audioRef.current.currentTime >= Number(formData.EndTime)) {
           audioRef.current.pause();
@@ -214,8 +187,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
       audioRef.current.pause();
     }
   }, [isPlaying, formData.StartTime, formData.EndTime, toast]);
-  
-  
 
   useEffect(() => {
     if (audioUrl) {
@@ -223,7 +194,6 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
     }
   }, [audioUrl]);
   
-
 const shiftRangeBackward = () => {
   setFormData(prev => ({
     ...prev,
@@ -239,9 +209,6 @@ const shiftRangeForward = () => {
     EndTime: Math.min(prev.EndTime + shiftAmount, episodeLength),
   }));
 };
-
-
-
 
   return (
     <VStack spacing={4} align="stretch">

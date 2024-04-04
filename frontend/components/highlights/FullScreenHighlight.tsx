@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, IconButton, Text } from "@chakra-ui/react";
 import HighlightTicket from './HighlightTicket';
-import axios from "axios";
 import { FaTimes } from "react-icons/fa";
 import PodcastHelper from '../../helpers/PodcastHelper';
 
@@ -9,12 +8,13 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
     const [episodes, setEpisodes] = useState([]);
     const [isAnimating, setIsAnimating] = useState(false);
     const [error, setError] = useState("");
-
+    const [animationDirection, setAnimationDirection] = useState('forward');
+    const [showHighlight, setShowHighlight] = useState(false);
 
     useEffect(() => {
       const fetchEpisodes = async () => {
         try {
-          const response = await PodcastHelper.podcastGetRecentEpisodes(0, 20); 
+          const response = await PodcastHelper.podcastGetRecentEpisodes(0, 20);
           if (response && response.episode) {
             setEpisodes(response.episode);
           } else {
@@ -22,45 +22,53 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
           }
         } catch (error) {
           console.error('Error fetching episodes:', error);
-          setError('Failed to fetch episodes'); 
+          setError('Failed to fetch episodes');
         }
       };
       fetchEpisodes();
-    }, []);
+      setShowHighlight(true);
+    }, [currentHighlightIndex, episodes]);
 
     if (error) {
       return <Text color="red.500">{error}</Text>;
     }
 
-  const currentHighlight = highlights[currentHighlightIndex];
+    const currentHighlight = highlights[currentHighlightIndex];
     const correspondingEpisode = episodes.find(episode => episode.id === currentHighlight.episodeId);
 
     if (!correspondingEpisode) {
         console.error("No corresponding episode found for the current highlight.");
-        return null; 
+        return null;
     }
 
-
     const handleScroll = (deltaY) => {
-      if (isAnimating) return; 
+      if (isAnimating) return;
 
-      setIsAnimating(true); 
-      if (deltaY > 0) {
-          onNext();
-      } else if (deltaY < 0) {
-          onPrevious();
-      }
-
+      setIsAnimating(true);
+      setShowHighlight(false); 
 
       setTimeout(() => {
+          if (deltaY > 0) {
+              setAnimationDirection('forward');
+              onNext();
+          } else if (deltaY < 0) {
+              setAnimationDirection('backward');
+              onPrevious();
+          }
+          setShowHighlight(true); 
           setIsAnimating(false);
-      }, 350); 
+      }, 530);
   };
 
-  const handleWheel = (e) => {
-      handleScroll(e.deltaY);
-  };
+    const handleWheel = (e) => {
+        handleScroll(e.deltaY);
+    };
 
+    const modalBodyStyle = {
+      transition: 'opacity 0.50s ease-out, transform 0.50s ease-out',
+      opacity: showHighlight ? 1 : 0, 
+      transform: `translateY(${animationDirection === 'forward' ? '100%' : '-100%'})`,
+  };
 
     return (
       <Modal isOpen={true} onClose={onClose} size="full" isCentered>
@@ -73,21 +81,23 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
           position="absolute"
           top={4}
           right={4}
-          zIndex={10} 
+          zIndex={10}
           onClick={onClose}
           colorScheme="whiteAlpha"
         />
-        <ModalBody onWheel={handleWheel}>
+        <ModalBody onWheel={handleWheel} style={!isAnimating ? {} : modalBodyStyle}>
             <HighlightTicket
-                        key={currentHighlightIndex} 
+                        key={currentHighlightIndex}
                         highlight={currentHighlight}
-                        onOpenFullScreen={undefined}      
-                        isFullScreenMode={true}   
+                        onOpenFullScreen={undefined}
+                        isFullScreenMode={true}
             />
           </ModalBody>
         </ModalContent>
       </Modal>
     );
 };
+
+
 
 export default FullScreenHighlight;
