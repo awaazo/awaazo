@@ -129,7 +129,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
           </Stack>
 
           <Text color="az.greyish" fontSize="sm" align={'center'} mb={1}>
-             Don't have an account ?  {""}
+             Don't have an account?  {""}
            
             <Box
               as="a"

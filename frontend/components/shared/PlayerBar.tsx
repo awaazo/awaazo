@@ -256,7 +256,7 @@ const PlayerBar = () => {
             </Link>
           ) : (
             <Box boxSize={isMobile ? '30px' : '40px'} mr={4}>
-            <Img src="/svgs/waazoSleeping.svg" alt="Waazo Sleeping" style={{ width: '100%', height: '100%' }} />
+            <Img src={waazoSleeping.src} alt="Waazo Sleeping" style={{ width: '100%', height: '100%' }} />
           </Box>
           )}
           <Box maxWidth={isMobile ? '75%' : '100%'}>
@@ -266,6 +266,9 @@ const PlayerBar = () => {
             <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" isTruncated>
               {isEpisodeLoaded ? episode.podcastName : ''}{' '}
             </Text>
+          </Box>
+          <Box ml={2 }>
+          <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
           </Box>
         </Flex>
 
@@ -315,8 +318,7 @@ const PlayerBar = () => {
           <Flex alignItems="center" mr={2}>
             <Flex alignItems="center" mr={2}>
               <PlayerMenu episode={episode} />
-
-              <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
+              
             </Flex>
 
             {/* Volume Control Section */}

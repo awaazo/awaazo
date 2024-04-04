@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -25,242 +25,242 @@ import {
   VStack,
   useDisclosure,
   useToast,
-} from "@chakra-ui/react";
-import { Episode, Playlist } from "../../types/Interfaces";
-import PlaylistHelper from "../../helpers/PlaylistHelper";
-import EpisodeCard from "./EpisodeCardForPlaylist";
-import { RiPlayList2Fill } from "react-icons/ri";
-import { convertTime } from "../../utilities/commonUtils";
-import { ImShuffle } from "react-icons/im";
-import { FaPlay } from "react-icons/fa";
-import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
-import { IoIosMore } from "react-icons/io";
-import { MdDelete, MdIosShare } from "react-icons/md";
-import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import { usePlayer } from "../../utilities/PlayerContext";
-import { FiEdit } from "react-icons/fi";
-import { PlaylistEditRequest } from "../../types/Requests";
-import ShareComponent from "../interactionHub/Share";
+} from '@chakra-ui/react'
+import { Episode, Playlist } from '../../types/Interfaces'
+import PlaylistHelper from '../../helpers/PlaylistHelper'
+import EpisodeCard from './EpisodeCardForPlaylist'
+import { RiPlayList2Fill } from 'react-icons/ri'
+import { convertTime } from '../../utilities/commonUtils'
+import { ImShuffle } from 'react-icons/im'
+import { FaPlay } from 'react-icons/fa'
+import { BsPlayFill, BsFillSkipForwardFill } from 'react-icons/bs'
+import { IoIosMore } from 'react-icons/io'
+import { MdDelete, MdIosShare } from 'react-icons/md'
+import { TbPlayerTrackNextFilled } from 'react-icons/tb'
+import { usePlayer } from '../../utilities/PlayerContext'
+import { FiEdit } from 'react-icons/fi'
+import { PlaylistEditRequest } from '../../types/Requests'
+import ShareComponent from '../interactionHub/Share'
 
 const PlaylistOverview = ({ episode, playlistId }) => {
-  const { dispatch } = usePlayer();
-  const toast = useToast();
+  const { dispatch } = usePlayer()
+  const toast = useToast()
 
-  const [playlist, setPlaylist] = useState<Playlist>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const onShareModalClose = () => setIsShareModalOpen(false);
-  const onShareModalOpen = () => setIsShareModalOpen(true);
+  const [playlist, setPlaylist] = useState<Playlist>(null)
+  const [episodes, setEpisodes] = useState<Episode[]>(null)
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const onShareModalClose = () => setIsShareModalOpen(false)
+  const onShareModalOpen = () => setIsShareModalOpen(true)
   // Form values
-  const [playlistName, setPlaylistName] = useState("");
-  const [playlistNameCharacterCount, setPlaylistNameCharacterCount] = useState<number>(0);
-  const [playlistDescription, setPlaylistDescription] = useState("");
-  const [playlistDescriptionCharacterCount, setPlaylistDescriptionCharacterCount] = useState<number>(0);
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null);
-  const [reload, setReload] = useState(false);
+  const [playlistName, setPlaylistName] = useState('')
+  const [playlistNameCharacterCount, setPlaylistNameCharacterCount] = useState<number>(0)
+  const [playlistDescription, setPlaylistDescription] = useState('')
+  const [playlistDescriptionCharacterCount, setPlaylistDescriptionCharacterCount] = useState<number>(0)
+  const [isPrivate, setIsPrivate] = useState(false)
+  const [playlistCoverArt, setPlaylistCoverArt] = useState<File | null>(null)
+  const [reload, setReload] = useState(false)
 
   // Form errors
-  const [playlistError, setPlaylistError] = useState("");
+  const [playlistError, setPlaylistError] = useState('')
 
   const handleSharePlaylist = () => {
-    onShareModalOpen();
-  };
+    onShareModalOpen()
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await PlaylistHelper.playlistsEpisodesGet(playlistId);
-        setPlaylist(response.playlist);
-        setEpisodes(response.playlist.playlistEpisodes);
+        const response = await PlaylistHelper.playlistsEpisodesGet(playlistId)
+        setPlaylist(response.playlist)
+        setEpisodes(response.playlist.playlistEpisodes)
       } catch (error) {
-        setPlaylistError("Cannot load Playlist");
+        setPlaylistError('Cannot load Playlist')
       }
-    };
+    }
 
-    fetchData();
-  }, [playlistId, reload]);
+    fetchData()
+  }, [playlistId, reload])
 
   useEffect(() => {
     if (playlist) {
-      setPlaylistName(playlist.name);
-      setPlaylistDescription(playlist.description);
-      setIsPrivate(playlist.privacy === "Private");
+      setPlaylistName(playlist.name)
+      setPlaylistDescription(playlist.description)
+      setIsPrivate(playlist.privacy === 'Private')
     }
-  }, [playlist]);
+  }, [playlist])
 
   useEffect(() => {
     if (playlistName && playlistDescription) {
-      setPlaylistNameCharacterCount(playlistName.length);
-      setPlaylistDescriptionCharacterCount(playlistDescription.length);
+      setPlaylistNameCharacterCount(playlistName.length)
+      setPlaylistDescriptionCharacterCount(playlistDescription.length)
     }
-  }, [playlistName, playlistDescription]);
+  }, [playlistName, playlistDescription])
 
   // Handle click on playlist
   const handlePlaylistClick = () => {
     dispatch({
-      type: "PLAY_PLAYLIST_NOW",
+      type: 'PLAY_PLAYLIST_NOW',
       payload: playlist,
-    });
-  };
+    })
+  }
 
   // Handle click play next on playlist
   const handlePlayNextClick = () => {
     dispatch({
-      type: "ADD_PLAYLIST_NEXT",
+      type: 'ADD_PLAYLIST_NEXT',
       payload: playlist,
-    });
-  };
+    })
+  }
 
   // Handle click play later on playlist
   const handlePlaylistLaterClick = () => {
     dispatch({
-      type: "ADD_PLAYLIST_LATER",
+      type: 'ADD_PLAYLIST_LATER',
       payload: playlist,
-    });
-  };
+    })
+  }
 
   // Handle shffule on playlist
   const handlePlaylistShuffleClick = () => {
     dispatch({
-      type: "SHUFFLE_PLAYLIST_NOW",
+      type: 'SHUFFLE_PLAYLIST_NOW',
       payload: playlist,
-    });
-  };
+    })
+  }
 
   // Handle menu item click and show toast notification
   const handleMenuItemClick = (action) => {
-    if (action === "playNext") {
-      handlePlayNextClick();
+    if (action === 'playNext') {
+      handlePlayNextClick()
       toast({
-        title: "Playlist added to queue",
-        status: "info",
-        position: "bottom-right",
+        title: 'Playlist added to queue',
+        status: 'info',
+        position: 'bottom-right',
         duration: 3000,
         isClosable: true,
-      });
-    } else if (action === "playLater") {
-      handlePlaylistLaterClick();
+      })
+    } else if (action === 'playLater') {
+      handlePlaylistLaterClick()
       toast({
-        title: "Playlist added to queue",
-        status: "info",
-        position: "bottom-right",
+        title: 'Playlist added to queue',
+        status: 'info',
+        position: 'bottom-right',
         duration: 3000,
         isClosable: true,
-      });
+      })
     }
-  };
+  }
 
   // For delete pop up
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isDeleting, setDeleting] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isDeleting, setDeleting] = useState(false)
 
   // Function to handle deletion of the episode
   const handleDelete = async (playlistId) => {
-    setDeleting(true);
-    const response = await PlaylistHelper.playlistDeleteRequest(playlistId);
-    console.log(response);
+    setDeleting(true)
+    const response = await PlaylistHelper.playlistDeleteRequest(playlistId)
+    console.log(response)
     if (response.status == 200) {
-      window.location.href = "/Playlist/MyPlaylists";
+      window.location.href = '/Playlist/MyPlaylists'
     } else {
-      setPlaylistError("Playlist cannot be deleted");
+      setPlaylistError('Playlist cannot be deleted')
     }
-    onClose();
-    setDeleting(false);
-  };
+    onClose()
+    setDeleting(false)
+  }
 
   // Ensures playlist name is not longer than 25 characters
   const handlePlaylistNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value.slice(0, 25);
-    setPlaylistName(newName);
-    setPlaylistNameCharacterCount(newName.length);
-  };
+    const newName = e.target.value.slice(0, 25)
+    setPlaylistName(newName)
+    setPlaylistNameCharacterCount(newName.length)
+  }
 
   // Ensures playlist description is not longer than 250 characters
   const handlePlaylistDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newDesc = e.target.value.slice(0, 250);
-    setPlaylistDescription(newDesc);
-    setPlaylistDescriptionCharacterCount(newDesc.length);
-  };
+    const newDesc = e.target.value.slice(0, 250)
+    setPlaylistDescription(newDesc)
+    setPlaylistDescriptionCharacterCount(newDesc.length)
+  }
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleCoverArtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files[0];
-    setPlaylistCoverArt(file);
-  };
+    const file = e.target.files[0]
+    setPlaylistCoverArt(file)
+  }
 
   // Handle logic for editing a playlist
   const handleEditPlaylist = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     // Ensure all required fields are filled
-    if (playlistName == "" || playlistDescription == "") {
-      setPlaylistError("Playlist Name and Description");
-      return;
+    if (playlistName == '' || playlistDescription == '') {
+      setPlaylistError('Playlist Name and Description')
+      return
     }
     // Create request object
     const request: PlaylistEditRequest = {
       name: playlistName,
       description: playlistDescription,
-      privacy: isPrivate ? "Private" : "Public",
+      privacy: isPrivate ? 'Private' : 'Public',
       coverArt: playlistCoverArt,
-    };
+    }
 
     // Send the request
-    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id);
+    const response = await PlaylistHelper.playlistEditRequest(request, playlist.id)
 
     if (response.status === 200) {
       // Success, refresh sidebar
-      setPlaylistName("");
-      setPlaylistDescription("");
-      setIsPrivate(false);
-      setReload(!reload);
-      setIsEditing(false);
+      setPlaylistName('')
+      setPlaylistDescription('')
+      setIsPrivate(false)
+      setReload(!reload)
+      setIsEditing(false)
     } else {
-      console.log(response.data);
-      setPlaylistError(response.data);
+      console.log(response.data)
+      setPlaylistError(response.data)
     }
-  };
+  }
 
   // State to track whether the menu is open or not
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   // Handle menu open and close
   const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   const OptionsMenu = () => {
     return (
       <>
-        {" "}
+        {' '}
         <MenuDivider />
         <MenuItem
           _hover={{
-            backgroundColor: "rgba(255, 255, 255, 0.4)",
-            fontWeight: "bold",
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+            fontWeight: 'bold',
           }}
           backgroundColor="transparent"
           onClick={() => {
-            setIsEditing(true);
-            handleMenuToggle();
+            setIsEditing(true)
+            handleMenuToggle()
           }}
         >
-          Edit "{playlist.name}" <FiEdit size={20} style={{ marginLeft: "auto", color: "white" }} data-cy={`edit-button`} />
+          Edit "{playlist.name}" <FiEdit size={20} style={{ marginLeft: 'auto', color: 'white' }} data-cy={`edit-button`} />
         </MenuItem>
         <MenuItem
           _hover={{
-            backgroundColor: "rgba(255, 255, 255, 0.4)",
-            fontWeight: "bold",
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+            fontWeight: 'bold',
           }}
           backgroundColor="transparent"
           color="red"
           onClick={onOpen}
         >
-          Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: "auto", color: "red" }} data-cy={`delete-button`} />
+          Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: 'auto', color: 'red' }} data-cy={`delete-button`} />
         </MenuItem>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <VStack spacing="4" align="stretch">
@@ -269,7 +269,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
           <Flex justifyContent="space-between" align="center">
             {/* Playlist Name */}
             <Flex alignItems="center">
-              <RiPlayList2Fill size={"30px"} />
+              <RiPlayList2Fill size={'30px'} />
               <Text fontWeight="medium" fontSize="30px" ml={2}>
                 {isEditing ? (
                   <>
@@ -314,11 +314,11 @@ const PlaylistOverview = ({ episode, playlistId }) => {
               )}
             </Text>
             {isEditing ? (
-              <Box justifyContent={"flex-end"} textAlign={"right"} mt={5}>
+              <Box justifyContent={'flex-end'} textAlign={'right'} mt={5}>
                 <Button
                   onClick={() => {
-                    setIsEditing(false);
-                    setReload(!reload);
+                    setIsEditing(false)
+                    setReload(!reload)
                   }}
                   mr={3}
                 >
@@ -333,21 +333,21 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                     <Text color="white">
                       <Text>
                         <b>Number of Episodes:</b> {playlist.numberOfEpisodes}
-                      </Text>{" "}
+                      </Text>{' '}
                     </Text>
                     <Text color="white">
                       <Text>
-                        {" "}
+                        {' '}
                         <b>Duration:</b> {convertTime(playlist.duration)}
-                      </Text>{" "}
+                      </Text>{' '}
                     </Text>
                   </Box>
                   <Box>
                     <Text color="gray.500">
-                      <Text fontWeight="bold">Created At: {new Date(playlist.createdAt).toLocaleDateString()}</Text>{" "}
+                      <Text fontWeight="bold">Created At: {new Date(playlist.createdAt).toLocaleDateString()}</Text>{' '}
                     </Text>
                     <Text color="gray.500">
-                      <Text fontWeight="bold">Updated At: {new Date(playlist.updatedAt).toLocaleDateString()}</Text>{" "}
+                      <Text fontWeight="bold">Updated At: {new Date(playlist.updatedAt).toLocaleDateString()}</Text>{' '}
                     </Text>
                   </Box>
                 </Flex>
@@ -359,50 +359,50 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                     Shuffle
                   </Button>
                   <Spacer />
-                  <Box style={{ position: "relative", zIndex: 1000 }} data-cy={`3-dots`}>
+                  <Box style={{ position: 'relative', zIndex: 1000 }} data-cy={`3-dots`}>
                     <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-                      <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} />
+                      <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: 'lg' }} onClick={handleMenuToggle} />
                       <MenuList backgroundColor="rgba(50, 50, 50, 0.8)" backdropFilter="blur(4px)">
                         <MenuItem
                           onClick={() => handlePlaylistClick()}
                           _hover={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            fontWeight: "bold",
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            fontWeight: 'bold',
                           }}
                           backgroundColor="transparent"
                         >
-                          Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: "auto", color: "white" }} />
+                          Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: 'auto', color: 'white' }} />
                         </MenuItem>
                         <MenuItem
-                          onClick={() => handleMenuItemClick("playNext")}
+                          onClick={() => handleMenuItemClick('playNext')}
                           _hover={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            fontWeight: "bold",
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            fontWeight: 'bold',
                           }}
                           backgroundColor="transparent"
                         >
-                          Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: "auto", color: "white" }} />
+                          Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: 'auto', color: 'white' }} />
                         </MenuItem>
                         <MenuItem
-                          onClick={() => handleMenuItemClick("playLater")}
+                          onClick={() => handleMenuItemClick('playLater')}
                           _hover={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            fontWeight: "bold",
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            fontWeight: 'bold',
                           }}
                           backgroundColor="transparent"
                         >
-                          Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: "auto", color: "white" }} />
+                          Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: 'auto', color: 'white' }} />
                         </MenuItem>
                         {playlist.isHandledByUser && <OptionsMenu />} <MenuDivider />
                         <MenuItem
                           onClick={handleSharePlaylist}
                           _hover={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            fontWeight: "bold",
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            fontWeight: 'bold',
                           }}
                           backgroundColor="transparent"
                         >
-                          Share <MdIosShare size="20px" style={{ marginLeft: "auto", color: "white" }} />
+                          Share <MdIosShare size="20px" style={{ marginLeft: 'auto', color: 'white' }} />
                         </MenuItem>
                       </MenuList>
                     </Menu>
@@ -428,7 +428,7 @@ const PlaylistOverview = ({ episode, playlistId }) => {
             {episodes && episodes.length > 0 ? (
               episodes.map((episode: any) => <EpisodeCard episode={episode} inPlaylist={true} playlistId={playlist.id} inWallet={false} />)
             ) : (
-              <Text textAlign={"center"} mt={"5%"} fontWeight={"bold"}>
+              <Text textAlign={'center'} mt={'5%'} fontWeight={'bold'}>
                 No episodes in this playlist yet
               </Text>
             )}
@@ -451,11 +451,11 @@ const PlaylistOverview = ({ episode, playlistId }) => {
                 </Button>
               </ModalFooter>
             </ModalContent>
-          </Modal>{" "}
+          </Modal>{' '}
         </>
       )}
     </VStack>
-  );
-};
+  )
+}
 
-export default PlaylistOverview;
+export default PlaylistOverview
