@@ -953,17 +953,13 @@ public class PodcastController : ControllerBase
     /// <param name="seekTime">The time to seek to in the transcript.</param>
     /// <param name="includeWords">Whether to include the words in the transcript.</param>
     /// <returns>The transcript or null if its not ready.</returns>
+    [AllowAnonymous]
     [HttpGet("{episodeId}/getTranscript")]
     public async Task<ActionResult> GetEpisodeTranscript(Guid episodeId, float? seekTime = null, bool includeWords = false)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscript));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            if (user is null)
-                return NotFound("User not found");
 
             return Ok(await _podcastService.GetEpisodeTranscriptAsync(episodeId, seekTime, includeWords));
         }
@@ -979,17 +975,13 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <param name="episodeId">ID of the episode for which a transcript is requested.</param>
     /// <returns>The transcript text or null if its not ready.</returns>
+    [AllowAnonymous]
     [HttpGet("{episodeId}/getTranscriptText")]
     public async Task<ActionResult> GetEpisodeTranscriptText(Guid episodeId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetEpisodeTranscriptText));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-
-            if (user is null)
-                return NotFound("User not found");
 
             return Ok(await _podcastService.GetEpisodeTranscriptTextAsync(episodeId));
         }
@@ -1171,16 +1163,13 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("{userId}/GetAllUserHighlights")]
     public async Task<IActionResult> GetAllUserHighlights(Guid userId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllUserHighlights));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
 
             var results = await _podcastService.GetAllUserHighlightsAsync(userId);
             return Ok(results);
@@ -1197,16 +1186,13 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <param name="episodeId"></param>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("{episodeId}/GetAllEpisodeHighlights")]
     public async Task<IActionResult> GetAllEpisodeHighlights(Guid episodeId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetAllEpisodeHighlights));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
 
             var results = await _podcastService.GetAllEpisodeHighlightsAsync(episodeId);
             return Ok(results);
@@ -1223,16 +1209,13 @@ public class PodcastController : ControllerBase
     /// </summary>
     /// <param name="highlightId"></param>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("{highlightId}/GetHighlightAudio")]
     public async Task<IActionResult> GetHighlightAudio(Guid highlightId)
     {
         try
         {
             this.LogDebugControllerAPICall(_logger, callerName: nameof(GetHighlightAudio));
-
-            User? user = await _authService.IdentifyUserAsync(HttpContext);
-            if (user is null)
-                return NotFound("User not found");
 
             Dictionary<string, string> guids = await _podcastService.GetHighlightAudioAysnc(highlightId);
 
@@ -1245,6 +1228,11 @@ public class PodcastController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a psdudo random set of highlights.
+    /// </summary>
+    /// <param name="quantity"> Amount of highlights desired. Default 20 </param>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpGet("GetRandomHighlights")]
     public async Task<IActionResult> GetRandomHighlights(int quantity = DEFAULT_PAGE_SIZE)
