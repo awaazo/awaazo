@@ -22,7 +22,6 @@ public interface IPodcastService
     
 
     // EPISODES
-
     public Task<Guid> CreateEpisodeAsync(CreateEpisodeRequest request, Guid podcastId, User user);
     public Task<bool> EditEpisodeAsync(EditEpisodeRequest request, Guid podcastId, User user);
     public Task<bool> AddEpisodeAudioAsync(AddEpisodeAudioRequest request, Guid episodeId, User user);
@@ -61,6 +60,7 @@ public interface IPodcastService
     public Task<List<EpisodeResponse>> GetRecommendedEpisodes(User user,string domainUrl);
     public Task<List<Guid>> GetRecommendedPodcast(User? user, int page, int pageSize);
 
+
     // HIGHLIGHT
     public Task<HighlightResponse> CreateHighlightAsync(HighlightRequest request, Guid episodeId, User user);
     public Task<bool> EditHighlightAsync(EditHighlightRequest request, Guid highlightId, User user);
@@ -69,5 +69,5 @@ public interface IPodcastService
     public Task<List<HighlightResponse>> GetAllEpisodeHighlightsAsync(Guid episodeId);
     public Task<Dictionary<string, string>> GetHighlightAudioAysnc(Guid highlightId);
     public Task<List<HighlightResponse>> GetRandomHighlightsAsync(int quantity);
-
+    public Task<List<HighlightResponse>> GetRecommendedHighlightsAsync(User user, string domainUrl, int amount);
 }
