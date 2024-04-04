@@ -351,7 +351,7 @@ const Sidebar = () => {
                 align="center"
                 p="2"
                 mb="1"
-                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                color={router.pathname === '/Wallet' ? 'az.red' : 'grey.700'}
                 transition="color 0.4s ease-in-out"
                 _hover={{ textDecoration: 'none', color: 'az.red' }}
               >
