@@ -103,7 +103,7 @@ const SignUp: React.FC = () => {
     <>
       <Container variant={'authBox'} bg="az.blackish" style={{ outline: 'none', fontFamily: "'Neue Montreal'" }}>
         <Flex justifyContent="center" mb={4}>
-          <Img src={Logo.src} alt="logo" style={{ maxWidth: '40px' }} />
+          <Img src={Logo.src} alt="logo" style={{ maxWidth: '45px' }} />
         </Flex>
 
         {signUpError && (

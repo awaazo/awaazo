@@ -64,7 +64,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
           </Alert>
         )}
         <Flex justifyContent="center" mb={4}>
-          <Img src={Logo.src} alt="logo" style={{ maxWidth: '40px' }} />
+          <Img src={Logo.src} alt="logo" style={{ maxWidth: '45px' }} />
         </Flex>
         <form onSubmit={handleLogin}>
           <Stack spacing={4}>

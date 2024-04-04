@@ -73,6 +73,23 @@ const overrides = {
             color: '#D1D9DE',
           },
         },
+        large: {
+          display: 'flex',
+          width: '340px',
+          height: '50px',
+          padding: '15px 35px 15px 36px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '15px',
+          background: 'var(--Just-White, #FFF)',
+          fontWeight: '700',
+          fontSize: '14px',
+          color:'#1D1D1D',
+          _hover: {
+            background: 'az.red', 
+            color: 'white', 
+          },
+        },
       },
     },
 
@@ -82,6 +99,46 @@ const overrides = {
         shadow: 'none',
         color: 'az.white',
         fontSize: 'xs',
+      },
+    },
+
+    Input: {
+      sizes: {
+        md: {
+          field: {
+            h: '40px',
+            px: 4,
+            fontSize: '14px',
+          },
+        },
+      },
+      variants: {
+        outline: {
+          field: {
+            borderWidth: '1px',
+            borderRadius: '15px',
+            color: '#ffffff',
+            bg: '#393939',
+            borderColor: 'transparent',
+            _hover: {
+              borderColor: '#FA6257', // Change border color on hover
+            },
+            _focus: {
+              borderColor: '#89DBBD',
+              color: '#ffffff',
+              boxShadow: '0 0 0 1px #89DBBD',
+            },
+            _placeholder: {
+              color: '#818990',
+            },
+           
+          },
+        },
+        // ... add more variants as needed
+      },
+      defaultProps: {
+        size: 'md',
+        variant: 'outline',
       },
     },
 
