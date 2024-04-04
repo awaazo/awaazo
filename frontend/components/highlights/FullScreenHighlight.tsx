@@ -10,6 +10,9 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
     const [error, setError] = useState("");
     const [animationDirection, setAnimationDirection] = useState('forward');
     const [showHighlight, setShowHighlight] = useState(false);
+    const [lastScrollTime, setLastScrollTime] = useState(0);
+    const scrollDebounceTime = 1000;
+    const [nextImageLoaded, setNextImageLoaded] = useState(false);
 
     useEffect(() => {
       const fetchEpisodes = async () => {
@@ -29,6 +32,33 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
       setShowHighlight(true);
     }, [currentHighlightIndex, episodes]);
 
+    useEffect(() => {
+      const preloadImages = () => {
+        const nextIndex = currentHighlightIndex + 1 < highlights.length ? currentHighlightIndex + 1 : 0;
+        const prevIndex = currentHighlightIndex - 1 >= 0 ? currentHighlightIndex - 1 : highlights.length - 1;
+    
+        const loadImage = (url) => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+        };
+    
+        const nextImageUrl = highlights[nextIndex]?.imageUrl;
+        const prevImageUrl = highlights[prevIndex]?.imageUrl;
+    
+        Promise.all([nextImageUrl && loadImage(nextImageUrl), prevImageUrl && loadImage(prevImageUrl)])
+          .then(() => setNextImageLoaded(true))
+          .catch((error) => console.error("Error preloading images", error));
+      };
+    
+      preloadImages();
+    }, [currentHighlightIndex, highlights]);
+    
+    
+
     if (error) {
       return <Text color="red.500">{error}</Text>;
     }
@@ -41,34 +71,41 @@ const FullScreenHighlight = ({ highlights, currentHighlightIndex, onClose, onNex
         return null;
     }
 
-    const handleScroll = (deltaY) => {
-      if (isAnimating) return;
-
-      setIsAnimating(true);
-      setShowHighlight(false); 
-
-      setTimeout(() => {
-          if (deltaY > 0) {
-              setAnimationDirection('forward');
-              onNext();
-          } else if (deltaY < 0) {
-              setAnimationDirection('backward');
-              onPrevious();
-          }
-          setShowHighlight(true); 
-          setIsAnimating(false);
-      }, 530);
-  };
+ const handleScroll = (deltaY) => {
+  const now = Date.now();
+  if (isAnimating || now - lastScrollTime < scrollDebounceTime) {
+    return;
+  }
+  setLastScrollTime(now);
+  if ((deltaY < 0 && currentHighlightIndex === 0) || (deltaY > 0 && currentHighlightIndex === highlights.length - 1)) {
+    return;
+  }
+  setIsAnimating(true);
+  setShowHighlight(false); 
+  const direction = deltaY > 0 ? 'forward' : 'backward';
+  setAnimationDirection(direction);
+  setTimeout(() => {
+      if (deltaY > 0) {
+          onNext();
+      } else if (deltaY < 0) {
+          onPrevious();
+      }
+      setShowHighlight(true); 
+      setIsAnimating(false);
+  }, 530);
+};
+    
 
     const handleWheel = (e) => {
         handleScroll(e.deltaY);
     };
 
     const modalBodyStyle = {
-      transition: 'opacity 0.50s ease-out, transform 0.50s ease-out',
+      transition: 'opacity 0.50s ease-in-out, transform 0.50s ease-in-out',
       opacity: showHighlight ? 1 : 0, 
       transform: `translateY(${animationDirection === 'forward' ? '100%' : '-100%'})`,
-  };
+    };
+    
 
     return (
       <Modal isOpen={true} onClose={onClose} size="full" isCentered>

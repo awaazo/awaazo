@@ -116,6 +116,7 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
       {episode && (
         <>
           <Image
+            loading="lazy"
             src={thumbnailUrl}
             alt={`Highlight from ${highlight.title || 'episode'}`}
             fit="cover"
