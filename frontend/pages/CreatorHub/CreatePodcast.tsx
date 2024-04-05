@@ -20,8 +20,8 @@ import { PodcastCreateRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { UserMenuInfo } from "../../types/Interfaces";
 import CreatePodcastHeader from "../../components/CreatePodcastHeader";
-import ImageAdder from "../../components/tools/ImageAdder";
-import GenreSelector from "../../components/tools/GenreSelector";
+import ImageAdder from "../../components/assets/ImageAdder";
+import GenreSelector from "../../components/assets/GenreSelector";
 
 export default function CreatePodcast() {
   const createPage = "/CreatorHub";

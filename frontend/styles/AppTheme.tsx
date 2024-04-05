@@ -106,6 +106,22 @@ const overrides = {
             color: 'white', 
           },
         },
+        mini: {
+          display: 'flex',
+          height: '28px',
+          padding: '10px 20px 10px 20px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '10px',
+          background: 'az.darkGrey',
+          fontWeight: '700',
+          fontSize: '12px',
+          color:'white',
+          _hover: {
+            background: 'az.lightRed', 
+            color: 'white', 
+          },
+        },
         
       },
     },

@@ -1,37 +1,42 @@
 import { useEffect, useState } from 'react'
-import { Box, Flex, useColorMode, useBreakpointValue, Text, Tag, Image, Wrap, WrapItem, Button, HStack, VStack, Img } from '@chakra-ui/react'
+import { Box, useBreakpointValue, Text, Image, Wrap, WrapItem, Button, HStack, VStack } from '@chakra-ui/react'
 import EpisodeCard from '../cards/EpisodeCard'
 import Reviews from '../explore/Reviews'
 import Subscription from '../explore/Subscription'
 import AuthHelper from '../../helpers/AuthHelper'
 import MetricDisplay from '../../components/assets/MetricDisplay'
 import { Settings } from '../../public/icons/'
-import Rating from '../assets/RatingView';
+import CustomTabs from '../assets/CustomTabs'
+import Rating from '../assets/RatingView'
+import { Episode } from '../../types/Interfaces'
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast, User }) {
-  const { colorMode } = useColorMode()
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [showMore, setShowMore] = useState(false)
   const [podcastData, setPodcastData] = useState(podcast)
-
+  const [currentUserID, setCurrentUserID] = useState(null)
   const updatePodcastData = (newData) => {
     setPodcastData(newData)
   }
 
-  // Function to render the podcast description
-  const renderDescription = () => {
+  const Description = () => {
     const descriptionLines = podcast.description.split('\n')
-    return descriptionLines
-      .map((line, index) => (
-        <Text key={index} style={index === 3 && !showMore ? fadeTextStyle : textStyle}>
-          {line}
-        </Text>
-      ))
-      .slice(0, showMore ? descriptionLines.length : 3)
-  }
+    const isLongDescription = descriptionLines.length > 3
 
-  const [currentUserID, setCurrentUserID] = useState(null)
+    return (
+      <Box>
+        {descriptionLines.slice(0, showMore ? descriptionLines.length : 3).map((line, index) => (
+          <Text key={index}>{line}</Text>
+        ))}
+        {isLongDescription && (
+          <Button size="sm" background={'rgba(255, 255, 255, 0.1)'} onClick={() => setShowMore(!showMore)} mt={1} borderRadius={'3em'} outline={'1px solid rgba(255, 255, 255, 0.2)'}>
+            {showMore ? 'Show Less' : 'Show More'}
+          </Button>
+        )}
+      </Box>
+    )
+  }
 
   useEffect(() => {
     const fetchUserID = async () => {
@@ -44,28 +49,28 @@ export default function PodcastOverview({ podcast, User }) {
     fetchUserID()
   }, [])
 
-  // Text style
-  const textStyle = {
-    fontSize: 'larger',
-    paddingTop: '10px',
-  }
-
-  // Fade text style
-  const fadeTextStyle = {
-    ...textStyle,
-    position: 'relative',
-    overflow: 'hidden',
-    marginBottom: '20px',
-    paddingBottom: '40px',
-    ':after': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      width: '100%',
-      height: '40px',
-      backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
-    },
+  const EpisodesList: React.FC<{ episodes: Episode[] }> = ({ episodes }) => {
+    if (episodes.length === 0) {
+      return (
+        <Text
+          align={'center'}
+          fontSize="md"
+          style={{
+            fontWeight: 'normal',
+            marginTop: '2em',
+          }}
+        >
+          (This podcast has no episodes yet)
+        </Text>
+      )
+    }
+    return (
+      <>
+        {episodes.map((episode) => (
+          <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />
+        ))}
+      </>
+    )
   }
 
   const TagList = ({ tags }) => {
@@ -86,81 +91,47 @@ export default function PodcastOverview({ podcast, User }) {
     )
   }
 
+  const PodcastHeader = () => (
+    <HStack spacing={"12px"}>
+      <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" marginLeft={isMobile ? '0px' : '20px'} mt={1} />
+      <VStack align="start" spacing={"8px"}>
+  <HStack>
+    <Text fontSize={'lg'} fontWeight={'bold'}>
+      {podcast.name}
+    </Text>
+    <HStack>
+      <Rating rating={podcast.totalRatings} />
+      <Text>{podcast.totalRatings}</Text>
+      <Settings />
+    </HStack>
+  </HStack>
+  <Description />
+  <TagList tags={podcast.tags} />
+</VStack>
+
+    </HStack>
+  )
+
+  const tabItems = [
+    { label: 'Review', component: <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} /> },
+    { label: 'Episodes', component: <EpisodesList episodes={podcast.episodes} /> },
+  ]
   return (
-    <>
-      <Box p={4} borderRadius="1em" padding={'2em'} dropShadow={' 0px 4px 4px rgba(0, 0, 0, 0.35)'} minHeight={'200px'}>
-        <HStack spacing={1}>
-          <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" marginLeft={isMobile ? '0px' : '20px'} mt={1} />
-          <VStack top={'2'}>
-            <HStack>
-              <Text fontSize={'lg'} fontWeight={'bold'}>
-                {podcast.name}
-              </Text>
+    <Box display="flex" justifyContent="center" alignItems="center" width={'95%'}>
+      {isMobile ? (
+        <VStack justify="center" align="center" ml={'15px'}>
+          <PodcastHeader />
+          <CustomTabs tabItems={tabItems} />
+        </VStack>
+      ) : (
+        <HStack align="start" spacing={'30px'} ml={'5%'}>
+          <PodcastHeader />
 
-              <HStack>
-              
-              <Rating rating={podcast.totalRatings} />
-                  <Settings />
-                
-              </HStack>
-            </HStack>
-            {renderDescription()}
-            {podcast.description.split('\n').length > 3 && (
-              <Button
-                size="sm"
-                background={'rgba(255, 255, 255, 0.1)'}
-                onClick={() => setShowMore(!showMore)}
-                mt={1}
-                bottom="0"
-                left="0"
-                right="0"
-                mx="auto"
-                borderRadius={'3em'}
-                outline={'1px solid rgba(255, 255, 255, 0.2)'}
-              >
-                {showMore ? 'Show Less' : 'Show More'}
-              </Button>
-            )}
-
-            <TagList tags={podcast.tags} />
-          </VStack>
-        </HStack>
-
-        <Box>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Text fontSize="md" mt={10} style={{ fontWeight: 'bold', paddingLeft: 15 }}>
-              Episodes
-            </Text>{' '}
-          </div>
-
-          {podcast.episodes.length === 0 ? (
-            <Text
-              align={'center'}
-              fontSize="md"
-              style={{
-                fontWeight: 'normal',
-                marginTop: '2em',
-              }}
-            >
-              (This podcast has no episodes yet)
-            </Text>
-          ) : (
-            podcast.episodes.map((episode, index) => <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />)
-          )}
-
-          <Box
-            p={4}
-            mt={'0.5em'}
-            padding={'1em'}
-            _focus={{
-              boxShadow: 'none',
-              outline: 'none',
-            }}
-          >
-            <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
+          <Box>
+            <CustomTabs tabItems={tabItems} />
           </Box>
-        </Box>
-      </Box>
-    </>
+        </HStack>
+      )}
+    </Box>
   )
 }

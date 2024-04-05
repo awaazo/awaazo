@@ -6,8 +6,8 @@ import LogoWhite from '../../public/logos/logo_white.svg'
 import { UserProfileSetupRequest } from '../../types/Requests'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import { UserMenuInfo } from '../../types/Interfaces'
-import ImageAdder from '../../components/tools/ImageAdder'
-import GenreSelector from '../../components/tools/GenreSelector'
+import ImageAdder from '../../components/assets/ImageAdder'
+import GenreSelector from '../../components/assets/GenreSelector'
 import withAuth from '../../utilities/authHOC'
 
 const ProfileSetup: React.FC = () => {

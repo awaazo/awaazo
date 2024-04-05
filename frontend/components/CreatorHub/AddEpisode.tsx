@@ -28,7 +28,7 @@ import PodcastHelper from '../../helpers/PodcastHelper'
 import { UserMenuInfo } from '../../types/Interfaces'
 import { EpisodeAddRequest } from '../../types/Requests'
 import { AxiosProgressEvent } from 'axios'
-import ImageAdder from '../tools/ImageAdder'
+import ImageAdder from '../assets/ImageAdder'
 import { v4 as uuidv4 } from 'uuid'
 
 const AddEpisodeForm = ({ podcastId }) => {
