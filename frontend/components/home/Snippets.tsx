@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { VStack, Text, Spinner, Wrap } from '@chakra-ui/react'
 import HighlightTicket from '../highlights/HighlightTicket'
-import PodcastHelper from '../../helpers/PodcastHelper'
 import { Highlight } from '../../types/Interfaces'
+import HighlightHelper from '../../helpers/HighlightHelper'
 
 const Snippets: React.FC = () => {
   const [highlights, setHighlights] = useState<Highlight[]>([])
@@ -13,13 +13,11 @@ const Snippets: React.FC = () => {
     const fetchHighlights = async () => {
       setIsLoading(true)
       try {
-        const res = await fetch('http://localhost:32773/podcast/GetRandomHighlights?quantity=20')
-
-        if (res.ok) {
-          const highlightsData = await res.json()
+        const highlightsData = await HighlightHelper.getRecommendedHighlights(20)
+        if (highlightsData.length > 0) {
           setHighlights(highlightsData)
         } else {
-          throw new Error('Failed to load highlights')
+          throw new Error('No highlights returned')
         }
       } catch (err) {
         setError(err.message || 'An error occurred while fetching highlights')
