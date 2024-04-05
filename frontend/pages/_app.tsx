@@ -10,8 +10,73 @@ import { useRouter } from 'next/router'
 import ColorModeFix from '../styles/ColorModeFix'
 import { PanelProvider } from '../utilities/PanelContext'
 import Panel from '../components/shared/Panel'
+import { useSession, signOut } from 'next-auth/react';
+import { DefaultSession } from 'next-auth';
+import Home from '../components/home/Home';
+import Greeting from './Greeting';
+import AuthHelper from '../helpers/AuthHelper';
+
+interface SessionExt extends DefaultSession {
+  token: {
+    email: string;
+    sub: string;
+    id_token: string;
+    name: string;
+    picture: string;
+  };
+}
+
+
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isUserSet, setIsUserSet] = useState(false);
+
+  useEffect(() => {
+    // Custom User logged in
+    if (!isUserSet) {
+      AuthHelper.authMeRequest().then((response) => {
+        if (response.status === 200) {
+          setIsLoggedIn(true);
+          setIsUserSet(true);
+          setShowPlayerBar(true);
+          setShowNavbar(true);
+          setShowSidebar(true);
+        } else {
+          setShowPlayerBar(false);
+          setShowNavbar(false);
+          setShowSidebar(false);
+        }
+      });
+    }
+
+    // Google User logged in
+    if (session !== null && session !== undefined && !isLoggedIn) {
+      // Get the session info
+      const currentSession = session as SessionExt;
+      const googleSSORequest = {
+        email: currentSession.token.email,
+        sub: currentSession.token.sub,
+        token: currentSession.token.id_token,
+        avatar: currentSession.token.picture,
+        name: currentSession.token.name,
+      };
+
+      AuthHelper.loginGoogleSSO(googleSSORequest).then((response) => {
+        if (response.status === 200) {
+          if (!isUserSet) {
+            AuthHelper.authMeRequest().then((response) => {
+              if (response.status === 200) {
+                setIsLoggedIn(true);
+                setIsUserSet(true);
+              }
+            });
+          }
+        }
+      });
+    }
+  }, [session, isLoggedIn]);
   ColorModeFix()
   const router = useRouter()
   const [showPlayerBar, setShowPlayerBar] = useState(true)
@@ -22,7 +87,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
     const path = router.pathname
     const hidePlayerBarOnPaths = ['/auth/', '/profile/ProfileSetup', '/CreatorHub/', '/Admin', '/Greeting']
-    const hideNavbarOnPaths = ['/auth/', '/Admin','/Greeting' ]
+    const hideNavbarOnPaths = ['/auth/', '/Admin', '/Greeting']
     const hideSidebarOnPaths = ['/auth/', '/profile/ProfileSetup', '/Admin', '/Greeting']
     const hidePanelOnPaths = ['/auth/', '/profile/ProfileSetup', '/CreatorHub/', '/Admin']
 
@@ -59,6 +124,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       </SessionProvider>
     </ChakraProvider>
   )
+
 }
 
 export default MyApp

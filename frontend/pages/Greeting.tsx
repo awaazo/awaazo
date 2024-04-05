@@ -3,6 +3,7 @@ import { Box, Button, Flex, Text, useColorModeValue, Img, keyframes, VStack } fr
 import { motion } from 'framer-motion';
 import React from 'react';
 import { useRouter } from 'next/router';
+import { AwaazoLogo } from '../public/icons';
 
 const MotionFlex = motion(Flex);
 const MotionImage = motion(Img);
@@ -15,9 +16,9 @@ const fadeIn = keyframes`
 const Greeting = () => {
   const bg = useColorModeValue('white', 'az.blackish');
   const router = useRouter();
-  
+
   return (
-    <Box bg={bg} h="100vh"  overflow="hidden">
+    <Box bg={bg} h="100vh" overflow="hidden">
       {/* Logo and bird image container */}
       <MotionFlex
         direction="column"
