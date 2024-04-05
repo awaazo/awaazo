@@ -178,7 +178,7 @@ const ChatBot = ({ episodeId }) => {
               pr={'50px'}
               onKeyDown={handleEnterPress}
             />
-            <Button variant={'ghost'} width="2em" height="2em" rounded={'full'} position="absolute" zIndex={'50'} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
+            <Button variant={'minimal'} width="18px" height="18px"  position="absolute" zIndex={'50'} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
               <Send color="az.red" fontSize={'20px'} />
             </Button>
           </InputGroup>
