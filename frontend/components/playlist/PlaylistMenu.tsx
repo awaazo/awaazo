@@ -208,7 +208,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
                   handleMenuToggle()
                 }}
               >
-                <Pen style={{ marginRight: '10px', color: 'white'  }} size="18px" data-cy={`edit-button`} /> <Text>Edit "{playlist.name}"</Text>
+                <Pen style={{ marginRight: '10px', color: 'white'  }} data-cy={`edit-button`} /> <Text>Edit "{playlist.name}"</Text>
               </MenuItem>
               <MenuItem style={{ color: 'red' }} onClick={onOpen}>
                 <MdDelete size={'18px'} style={{ marginRight: '10px', color: 'red' }} data-cy={`delete-button`} />
