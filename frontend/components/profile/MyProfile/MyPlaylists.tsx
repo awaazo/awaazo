@@ -5,7 +5,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Playlist } from '../../../types/Interfaces'
 import PlaylistHelper from '../../../helpers/PlaylistHelper'
 import PlaylistCard from '../../cards/PlaylistCard'
-import { Settings } from '../../../public/icons'
+import { Settings, ArrowD } from '../../../public/icons'
 
 // Define the MyEpisodes component
 export default function MyPlaylists() {
@@ -57,7 +57,7 @@ export default function MyPlaylists() {
           {playlists[(page + 1) * pageSize - 1] != null && (
             <Flex justify="center" mt={4} width={'100%'}>
               <Tooltip label="Load More" placement="top">
-                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
+                <IconButton aria-label="Load More" icon={<ArrowD />} onClick={handleLoadMoreClick} size="18px" variant="minimal" />
               </Tooltip>
             </Flex>
           )}

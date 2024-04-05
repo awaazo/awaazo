@@ -108,14 +108,14 @@ export default function Header() {
 
           <MetricDisplay metrics={metrics} />
         </VStack>
-        <Box w="100%" mt={'16px'}>
-          <Text fontWeight="bold" fontSize="lg" mb="15px">
+        <Box w="100%" mt={'16px'} >
+          <Text fontWeight="bold" fontSize="md" mb="15px">
             Your Listening Habits:
           </Text>
           {averageWatchTime || totalWatchTime || topGenre || (mostWatchedPodcast && mostWatchedPodcast.length > 0) ? (
             <>
               {averageWatchTime && totalWatchTime && (
-                <Text fontSize="md" mb="15px" color={'grey'}>
+                <Text fontSize="md" mb="15px" color={'az.greyish'}>
                   Your average watch time is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{averageWatchTime.slice(0, 8)}.</span>
                   <br /> Your Total watch time is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{totalWatchTime.slice(0, 8)}.</span>
                 </Text>
@@ -147,7 +147,7 @@ export default function Header() {
               )}
             </>
           ) : (
-            <Text fontSize="16px" mb="15px" marginLeft="30px" color={'grey'}>
+            <Text fontSize="sm" mb="15px" marginLeft="30px" color={'grey'}>
               No insights on your habits are available.
             </Text>
           )}
