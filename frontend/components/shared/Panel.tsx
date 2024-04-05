@@ -46,9 +46,8 @@ const Panel = () => {
       p={panelState.isOpen ? '10px' : '0'}
       zIndex={1000000} 
       bg="az.darkestGrey"
-      border={'2px solid rgba(255, 255, 255, 0.03)'}
-      roundedTopLeft="20px"
-      roundedBottomLeft="20px"
+      roundedTopLeft="10px"
+      roundedBottomLeft="10px"
     >
       {panelState.isOpen ? (
         <Flex position="absolute" left="0" top="50%" transform="translateY(-50%)" zIndex="1">

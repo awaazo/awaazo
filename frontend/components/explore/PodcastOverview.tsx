@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Box, Flex, useColorMode, useBreakpointValue, Text, Tag, Image, Wrap, WrapItem, Button } from '@chakra-ui/react'
+import { Box, Flex, useColorMode, useBreakpointValue, Text, Tag, Image, Wrap, WrapItem, Button, HStack, VStack, Img } from '@chakra-ui/react'
 import EpisodeCard from '../cards/EpisodeCard'
 import Reviews from '../explore/Reviews'
 import Subscription from '../explore/Subscription'
 import AuthHelper from '../../helpers/AuthHelper'
+import MetricDisplay from '../../components/assets/MetricDisplay'
+import { Settings } from '../../public/icons/'
+import Rating from '../assets/RatingView';
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast, User }) {
@@ -53,185 +56,110 @@ export default function PodcastOverview({ podcast, User }) {
     position: 'relative',
     overflow: 'hidden',
     marginBottom: '20px',
-    paddingBottom: '40px', // Increased padding to overlap with button
+    paddingBottom: '40px',
     ':after': {
       content: '""',
       position: 'absolute',
       bottom: 0,
       left: 0,
       width: '100%',
-      height: '40px', // Increased height for a clear fade effect
+      height: '40px',
       backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
     },
+  }
+
+  const TagList = ({ tags }) => {
+    return (
+      <HStack>
+        <Wrap spacing="10px">
+          {' '}
+          {/* Ensures spacing between items */}
+          {tags.map((tag, index) => (
+            <WrapItem key={index}>
+              <Box bg="az.darkGrey" px={3} py={1} borderRadius="10px">
+                <Text fontSize="xs">{tag}</Text>
+              </Box>
+            </WrapItem>
+          ))}
+        </Wrap>
+      </HStack>
+    )
   }
 
   return (
     <>
       <Box p={4} borderRadius="1em" padding={'2em'} dropShadow={' 0px 4px 4px rgba(0, 0, 0, 0.35)'} minHeight={'200px'}>
-        <Flex align="center" justify="center">
-          <Image
-            boxSize={isMobile ? '125px' : '0px'}
-            src={podcast.coverArtUrl}
-            borderRadius="1.5em"
-            marginLeft={isMobile ? '0px' : '20px'}
-            border={isMobile ? '3px solid rgba(255, 255, 255, 0.2)' : '0px'}
-            mt={1}
-          />
-        </Flex>
-
-        <Flex width="100%">
-          <Box position="relative" mr={5}>
-            <Image
-              boxSize={isMobile ? '0px' : '180px'}
-              objectFit="cover"
-              src={podcast.coverArtUrl}
-              borderRadius="2em"
-              marginLeft={isMobile ? '0px' : '20px'}
-              mt={1}
-              // outline={isMobile ? "0px" : "2px solid rgba(255, 255, 255, 0.05)"}
-            />
-          </Box>
-          <Flex direction="column" flex={1} style={{ paddingTop: '10px' }}>
-            {/* Episode Name */}
-
-            <Text fontSize="xl" fontWeight="bold">
-              <Wrap align="center" spacing={4}>
-                <WrapItem>🎙️ {podcast.name}</WrapItem>
-                {/* Display tags */}
-                {podcast.tags.map((tag, index) => (
-                  <WrapItem key={index}>
-                    <Box bg={colorMode === 'dark' ? 'rgba(50, 153, 175, 0.4)' : 'rgba(140, 216, 230, 0.5)'} px={3} py={1} borderRadius="10em">
-                      <Text fontSize="md">{tag}</Text>
-                    </Box>
-                  </WrapItem>
-                ))}
-
-                {/* Move the subscription button to the right with ml utility */}
-                <WrapItem ml="auto">
-                  <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} podcasterId={podcast.podcasterId} currentUserID={currentUserID} />
-                </WrapItem>
-              </Wrap>
-            </Text>
-
-            {/* Episode Details */}
-            <Flex direction="column" fontSize="sm" position="relative">
-              {renderDescription()}
-              {podcast.description.split('\n').length > 3 && (
-                <Button
-                  size="sm"
-                  background={'rgba(255, 255, 255, 0.1)'}
-                  onClick={() => setShowMore(!showMore)}
-                  mt={1}
-                  bottom="0" // Align to the bottom of the parent Flex
-                  left="0"
-                  right="0"
-                  mx="auto" // Center the button
-                  borderRadius={'3em'}
-                  outline={'1px solid rgba(255, 255, 255, 0.2)'}
-                >
-                  {showMore ? 'Show Less' : 'Show More'}
-                </Button>
-              )}
-
-              <Text fontSize="md" style={{ paddingTop: '10px' }}>
-                {podcast.totalRatings === 0 ? (
-                  'This podcast has no ratings yet'
-                ) : (
-                  <Tag size="sm" colorScheme={podcast.averageRating <= 2.4 ? 'red' : podcast.averageRating <= 3.5 ? 'yellow' : 'green'} fontSize="md">
-                    {`${podcast.averageRating.toFixed(1)} / 5 (${podcast.totalRatings} ratings)`}
-                  </Tag>
-                )}
+        <HStack spacing={1}>
+          <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" marginLeft={isMobile ? '0px' : '20px'} mt={1} />
+          <VStack top={'2'}>
+            <HStack>
+              <Text fontSize={'lg'} fontWeight={'bold'}>
+                {podcast.name}
               </Text>
-            </Flex>
-          </Flex>
-        </Flex>
 
-        {isMobile ? (
-          <Box>
-            <>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Text fontSize="md" mt={10} style={{ fontWeight: 'bold', paddingLeft: 15 }}>
-                  Episodes
-                </Text>{' '}
-              </div>
-
-              {podcast.episodes.length === 0 ? (
-                <Text
-                  align={'center'}
-                  fontSize="md"
-                  style={{
-                    fontWeight: 'normal',
-                    marginTop: '2em',
-                  }}
-                >
-                  (This podcast has no episodes yet)
-                </Text>
-              ) : (
-                podcast.episodes.map((episode, index) => <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />)
-              )}
-            </>
-            <Box
-              p={4}
-              mt={'0.5em'}
-              padding={'1em'}
-              _focus={{
-                boxShadow: 'none',
-                outline: 'none',
-              }}
-            >
-              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
-            </Box>
-          </Box>
-        ) : (
-          <Flex justify="space-between" align="start">
-            {/* Sidebar on the left */}
-            <Box
-              p={4}
-              mt={'0.5em'}
-              width={'30%'}
-              padding={'1em'}
-              _focus={{
-                boxShadow: 'none',
-                outline: 'none',
-              }}
-            >
-              <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
-            </Box>
-
-            {/* Podcast mapping on the right */}
-            <div style={{ flex: 1, paddingLeft: 25, marginTop: '1.5em' }}>
-              <Text
-                mt={5}
-                mb={5}
-                style={{
-                  fontWeight: 'bold',
-                  paddingLeft: 15,
-                  fontSize: '25px',
-                }}
+              <HStack>
+              
+              <Rating rating={podcast.totalRatings} />
+                  <Settings />
+                
+              </HStack>
+            </HStack>
+            {renderDescription()}
+            {podcast.description.split('\n').length > 3 && (
+              <Button
+                size="sm"
+                background={'rgba(255, 255, 255, 0.1)'}
+                onClick={() => setShowMore(!showMore)}
+                mt={1}
+                bottom="0"
+                left="0"
+                right="0"
+                mx="auto"
+                borderRadius={'3em'}
+                outline={'1px solid rgba(255, 255, 255, 0.2)'}
               >
-                Episodes
-              </Text>{' '}
-              {podcast.episodes.length === 0 ? (
-                <Text
-                  align={'center'}
-                  fontSize="lg"
-                  style={{
-                    fontWeight: 'normal',
-                    marginTop: '5em',
-                  }}
-                >
-                  (This podcast has no episodes yet)
-                </Text>
-              ) : (
-                podcast.episodes.map((episode, index) => (
-                  <Box mb={'15px'} width={'550px'}>
-                    <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={true} />
-                  </Box>
-                ))
-              )}
-            </div>
-          </Flex>
-        )}
+                {showMore ? 'Show Less' : 'Show More'}
+              </Button>
+            )}
+
+            <TagList tags={podcast.tags} />
+          </VStack>
+        </HStack>
+
+        <Box>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Text fontSize="md" mt={10} style={{ fontWeight: 'bold', paddingLeft: 15 }}>
+              Episodes
+            </Text>{' '}
+          </div>
+
+          {podcast.episodes.length === 0 ? (
+            <Text
+              align={'center'}
+              fontSize="md"
+              style={{
+                fontWeight: 'normal',
+                marginTop: '2em',
+              }}
+            >
+              (This podcast has no episodes yet)
+            </Text>
+          ) : (
+            podcast.episodes.map((episode, index) => <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />)
+          )}
+
+          <Box
+            p={4}
+            mt={'0.5em'}
+            padding={'1em'}
+            _focus={{
+              boxShadow: 'none',
+              outline: 'none',
+            }}
+          >
+            <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} />
+          </Box>
+        </Box>
       </Box>
     </>
   )

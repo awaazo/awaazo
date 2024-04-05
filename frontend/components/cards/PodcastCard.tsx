@@ -1,9 +1,8 @@
-import { Box, Image, Text, Flex, Icon, useBreakpointValue, Container } from '@chakra-ui/react'
+import { Box, Image, Text, Flex,  useBreakpointValue } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
 import { Podcast } from '../../types/Interfaces'
-
-import { OneDot, TwoDots, ThreeDots, FourDots, FiveDots } from '../../public/icons'
+import Rating from '../assets/RatingView';
 
 interface PodcastCardProps {
   podcast: Podcast
@@ -42,19 +41,6 @@ const PodcastImage = ({ coverArtUrl, name }) => (
   </>
 )
 
-const Rating = ({ averageRating }) => {
-  const ratingIcons = [OneDot, TwoDots, ThreeDots, FourDots, FiveDots]
-  const ratingIndex = Math.min(Math.max(0, Math.round(averageRating) - 1), 4)
-  const RatingIcon = ratingIcons[ratingIndex]
-
-  return (
-    <Flex position="absolute" bottom="3" left="4" align="start" zIndex={2}>
-      <Box width="50px" height="20px" lineHeight="0" display="flex" alignItems="flex-start">
-        <RatingIcon width="100%" height="100%" style={{ position: 'absolute' }} />
-      </Box>
-    </Flex>
-  )
-}
 
 const PodcastNameAndTags = ({ name, description }) => (
   <Flex position="absolute" top="5" left={1} right={1} px="4" justifyContent="space-between" alignItems="center" zIndex={2} opacity="0" _groupHover={{ opacity: 1 }}>
@@ -98,7 +84,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           <PodcastImage coverArtUrl={podcast.coverArtUrl} name={podcast.name} />
           {/* Gradient Overlay */}
           <Box position="absolute" top={0} left={0} right={0} bottom={0} bgGradient="linear(to-t, rgba(0, 0, 0, 0.5), transparent)" zIndex="1" />
-          <Rating averageRating={podcast.averageRating} />
+          <Rating rating={podcast.averageRating} />
           <PodcastNameAndTags name={podcast.name} description={podcast.description} />
           <PodcastType type={podcast.type} />
         </Flex>
