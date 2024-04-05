@@ -11,8 +11,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
   const [commentPage, setCommentPage] = useState(0)
   const [newComment, setNewComment] = useState('')
   const [replyTexts, setReplyTexts] = useState(Array(initialComments).fill(''))
-  const [replyChange, setReplyChange] = useState(0)
-  const [noOfComments, setNoOfComments] = useState(initialComments)
+  const [resfreshComments, setRefreshComments] = useState(false)
   const [user, setUser] = useState(null)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [replies, setReplies] = useState({})
@@ -32,14 +31,17 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
 
       if (response.status === 200) {
         if (response) {
-          setComments([...comments, ...formatComments(response.comments)])
+          const newComments = formatComments(response.comments)
+
+          const uniqueComments = newComments.filter((newComment) => !comments.find((comment) => comment.id === newComment.id))
+          setComments([...comments, ...uniqueComments])
         }
       } else {
         console.error('Error fetching episode details:', response.message)
       }
     }
     fetchEpisodeDetails()
-  }, [episodeIdOrCommentId, noOfComments, replyChange, commentPage])
+  }, [episodeIdOrCommentId, resfreshComments, commentPage])
 
   const formatComments = (fetchedComments) => {
     const updatedComments = fetchedComments.map((comment) => ({
@@ -54,23 +56,35 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     setReplyInputIndex(commentIndex)
   }
 
-  const fetchReplies = async (commentId, commentIndex) => {
-    const currentPage = repliesPage[commentId] || 0
-    const response = await SocialHelper.getReplies(commentId, currentPage, 10)
-    console.log('API Response:', response)
-    if (response.status === 200) {
-      setReplies({
-        ...replies,
-        [commentId]: [...(replies[commentId] || []), ...response.replies],
-      })
-      setRepliesPage({
-        ...repliesPage,
-        [commentId]: currentPage + 1,
-      })
-      // Set the reply input index to show the input field
-      setReplyInputIndex(commentIndex)
-    } else {
-      console.error('Error fetching replies:', response.message)
+  const fetchReplies = async (commentId, commentIndex, reset) => {
+    try {
+      const currentPage = reset === true ? 0 : repliesPage[commentId] || 0
+
+      const response = await SocialHelper.getReplies(commentId, currentPage, 10)
+
+      if (response.status === 200) {
+        const newReplies = response.replies
+
+        console.log('New Replies:', repliesPage[commentId])
+
+        setReplies((prevReplies) => ({
+          ...prevReplies,
+          [commentId]: currentPage === 0 ? newReplies : [...(prevReplies[commentId] || []), ...newReplies],
+        }))
+
+        setRepliesPage((prevRepliesPage) => ({
+          ...prevRepliesPage,
+          [commentId]: currentPage + 1,
+        }))
+
+        if (commentIndex !== null) {
+          setReplyInputIndex(commentIndex)
+        }
+      } else {
+        console.error('Error fetching replies:', response.message)
+      }
+    } catch (error) {
+      console.error('Error fetching replies:', error.message)
     }
   }
 
@@ -85,8 +99,8 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     if (newComment.trim()) {
       const response = await SocialHelper.postEpisodeComment(newComment, episodeIdOrCommentId)
       if (response.status === 200) {
-        setNoOfComments((noOfComments) => noOfComments + 1)
-        setReplyChange((replyChange) => replyChange + 1)
+        setRefreshComments(!resfreshComments)
+        setCommentPage(0)
       } else {
         setShowLoginPrompt(true)
         console.log('Error posting comment:', response.message)
@@ -95,24 +109,25 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     }
   }
 
-  const handleReply = async (index) => {
-    if (replyTexts[index] == '') {
+  const handleReply = async (commentIndex) => {
+    if (replyTexts[commentIndex] === '') {
       return
     }
-    const comment = comments[index]
+    const comment = comments[commentIndex]
     const commentId = comment.id
-    const updatedComments = [...comments]
 
-    const response = await SocialHelper.postEpisodeComment(replyTexts[index], commentId)
+    const response = await SocialHelper.postEpisodeComment(replyTexts[commentIndex], commentId)
     if (response.status === 200) {
-      setReplyChange((replyChange) => replyChange + 1)
-      fetchReplies(comment.id, index)
+      setRefreshComments(!resfreshComments)
+      setCommentPage(0)
+
+      fetchReplies(commentId, commentIndex, true)
     } else {
       setShowLoginPrompt(true)
       console.log('Error posting comment:', response.message)
     }
     const updatedReplyTexts = [...replyTexts]
-    updatedReplyTexts[index] = ''
+    updatedReplyTexts[commentIndex] = ''
     setReplyTexts(updatedReplyTexts)
   }
 
@@ -120,9 +135,17 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     SocialHelper.deleteComment(commentOrReplyId).then((response) => {
       if (response.status === 200) {
         if (isComment) {
-          setNoOfComments((noOfComments) => noOfComments - 1)
+          setComments(comments.filter((comment) => comment.id !== commentOrReplyId))
+          setCommentPage(0)
         } else {
-          setReplyChange((replyChange) => replyChange - 1)
+          const updatedReplies = { ...replies }
+          Object.keys(updatedReplies).forEach((commentId) => {
+            updatedReplies[commentId] = updatedReplies[commentId].filter((reply) => reply.id !== commentOrReplyId)
+          })
+          setReplies(updatedReplies)
+          setCommentPage(0)
+
+          fetchReplies(commentOrReplyId, null, true)
         }
       } else {
         console.log('Error deleting comment:', response.message)
@@ -131,9 +154,17 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
   }
 
   const timeAgo = (dateCreated) => {
+    let adjustedDate
+    if (dateCreated instanceof Date) {
+      adjustedDate = dateCreated
+    } else {
+      console.error('Invalid date format:', dateCreated)
+      adjustedDate = new Date(dateCreated)
+      console.log('Adjusted Date:', adjustedDate)
+    }
+
     const now = new Date()
-    const adjustedDate = new Date(dateCreated.getTime() - 4 * 3600 * 1000)
-    const seconds = Math.floor((now.getTime() - adjustedDate.getTime()) / 1000)
+    const seconds = Math.floor((now.getTime() - (adjustedDate.getTime() - 4 * 3600 * 1000)) / 1000)
 
     let interval = Math.floor(seconds / 31536000)
 
@@ -221,7 +252,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                           </HStack>
                           <HStack spacing={1} borderRadius="md">
                             <Text fontSize="xs" color="grey" fontWeight={'bold'}>
-                              {timeAgo(comment.dateCreated)}
+                              {timeAgo(reply.dateCreated)}
                             </Text>
                           </HStack>
                         </VStack>
@@ -235,7 +266,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                   ))}{' '}
                 <HStack>
                   {comment.noOfReplies > 0 && (!replies[comment.id] || comment.noOfReplies > replies[comment.id].length) && (
-                    <Text onClick={() => fetchReplies(comment.id, index)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
+                    <Text onClick={() => fetchReplies(comment.id, index, false)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
                       Load Replies
                     </Text>
                   )}
