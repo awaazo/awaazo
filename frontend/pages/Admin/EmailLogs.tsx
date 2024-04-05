@@ -5,6 +5,7 @@ import AdminSidebar from '../../components/admin/AdminSidebar'
 import EmailLogs from '../../components/admin/EmailLogs'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import AdminHelper from '../../helpers/AdminHelper'
+import { set } from 'lodash'
 
 const EmailLogsPage = () => {
   const [emails, setEmails] = useState([])

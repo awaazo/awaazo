@@ -324,6 +324,43 @@ export default class HighlightHelper {
             return [];
         }
     }
+
+    public static getRecommendedHighlights = async (
+        quantity: number,
+    ): Promise<Highlight[]> => {
+        const options = {
+            method: "GET",
+            headers: {
+                accept: "*/*",
+            },
+            url: EndpointHelper.getRecommendedHighlightsEndpoint(quantity),
+            withCredentials: true,
+            cache: false,
+        };
+    
+        try {
+            console.debug("Sending getRecommendedHighlights with the following data:");
+            console.debug("URL:", options.url);
+    
+            const requestResponse = await axios(options);
+    
+            console.debug("Received the following getRecommendedHighlights:");
+            console.debug(requestResponse);
+    
+            return requestResponse.data;
+        } catch (error) {
+            console.error("Error in getRecommendedHighlights:");
+            console.error("Request URL:", options.url);
+            if (error.response) {
+                console.error("Error Status:", error.response.status);
+                console.error("Error Response:", error.response.data);
+            } else {
+                console.error("Error Details:", error);
+            }
+    
+            return [];
+        }
+    }
     
 
 }

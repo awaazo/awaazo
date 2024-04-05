@@ -1834,9 +1834,7 @@ public class PodcastService : IPodcastService
     {
         // Update ai generated episodes
         await NotifyGenerationCompletionAsync();
-
         List<EpisodeRating> episodeInteractions = await _db.UserEpisodeInteractions.Select(u => new EpisodeRating(u)).ToListAsync();
-
         List<EpisodeResponse> response = new List<EpisodeResponse>();
 
         if(episodeInteractions.Count() == 0)
@@ -1896,16 +1894,10 @@ public class PodcastService : IPodcastService
 
         }
 
-        response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
-
         // Return the List
+        response = list.Select(u => new EpisodeResponse(u, domainUrl)).ToList();
         return response;
-
-
     }
-
-
-
 
     #region Highlights
 
@@ -2137,6 +2129,70 @@ public class PodcastService : IPodcastService
         return highlights;
     }
 
+    /// <summary>
+    /// Uses the Recommended Episode funciton to get a recommended highlight. Will not return more than the database has
+    /// No duplicates either
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="domainUrl"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public async Task<List<HighlightResponse>> GetRecommendedHighlightsAsync(User user, string domainUrl, int amount)
+    {
+        // piggyback off the already created eipisode recommender for this
+        var recEpisodes = await GetRecommendedEpisodes(user, domainUrl);
+
+        // Get the highlights associated with these episodes.
+        List<Highlight> episodeHighlights = new List<Highlight>();
+        var highlightResponses = new List<HighlightResponse>();
+
+        foreach (var episode in episodeHighlights)
+        {
+            // If we have reached the needed amount of highlights, exit early
+            if (highlightResponses.Count >= amount)
+            {
+                break;
+            }
+
+
+            // Get all the highlights for the episode, but take a random one
+            var highlight = await _db.Highlights
+                                .Where(h => h.EpisodeId == episode.EpisodeId)
+                                .Select(h => new HighlightResponse(h))
+                                .ToListAsync();
+
+            if (highlight.IsNullOrEmpty())
+            { 
+                continue;
+            }
+            
+            // Take a random one
+            Shuffle(highlight);
+
+            // Make a list of the highlights we want to get
+            highlightResponses.Add(highlight.FirstOrDefault()!);
+        }
+
+        // If not enough highlights have been returned, fill the list with random ones.
+        if (highlightResponses.Count < amount)
+        {
+            // No duplicates on this list
+            var randoms = await GetRandomHighlightsAsync(amount - highlightResponses.Count);          
+
+            foreach(var high in randoms)
+            {
+                if (highlightResponses.Contains(high))
+                {
+                    randoms.RemoveAll(h => h == high);
+                }
+            }
+
+            highlightResponses.AddRange(randoms);
+        }
+
+        return highlightResponses;
+    }
+
 
     #endregion
 
@@ -2150,6 +2206,11 @@ public class PodcastService : IPodcastService
         return await FFMpegCore.FFProbe.AnalyseAsync(GetPodcastEpisodeAudioPath(audioName, podcastId));
     }
 
+    /// <summary>
+    /// Shuffles a given list
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
     private static void Shuffle<T>(IList<T> list)
     {
         var rng = new Random();

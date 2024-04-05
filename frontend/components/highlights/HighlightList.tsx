@@ -76,8 +76,7 @@ const HighlightList = ({ episodeId }) => {
         } catch (error) {
             console.error("Error deleting highlight:", error);
         }
-      };
-      
+      };   
 
     const handleCancelEdit = () => {
         setEditingHighlightId(null);

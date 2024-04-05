@@ -143,8 +143,8 @@ public class adminRecommendationResponse : PodcastResponse
     public adminRecommendationResponse(Podcast p, string domainUrl)
     : base(p, domainUrl)
     {
-        dailyAdminChoice = p.dailyAdminChoice;
-        customAdminDescription = p.customAdminDescription;
+        dailyAdminChoice = p.DailyAdminChoice;
+        customAdminDescription = p.CustomAdminDescription;
     }
 
     public bool dailyAdminChoice { get; set; } = false;

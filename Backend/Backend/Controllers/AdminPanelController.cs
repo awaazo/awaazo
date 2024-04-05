@@ -158,7 +158,6 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             var result = await _adminService.CreateDailyPodcastRecomendationAsync(request, ControllerHelper.GetDomainUrl(HttpContext));
             return Ok(result);
@@ -176,7 +175,6 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             var result = await _adminService.GetDailyPodcastRecomendationsAsync(ControllerHelper.GetDomainUrl(HttpContext));
             return Ok(result);
@@ -194,10 +192,98 @@ public class AdminPanelController : ControllerBase
         try
         {
             this.LogDebugControllerAPICall(_logger);
-            var admin = await IdentifyAdminAsync();
 
             await _adminService.RemoveDailyPodcastRecomendationsAsync(request.podcastsToRemove);
             return Ok();
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Admin only method to delete an episodes transcript
+    /// </summary>
+    /// <param name="episodeId"></param>
+    /// <returns></returns>
+    [HttpDelete("Podcast/{episodeId}/DeleteTranscript")]
+    public async Task<IActionResult> DeleteTranscript(Guid episodeId)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+            var admin = await IdentifyAdminAsync();
+
+            var success = await _adminService.DeleteTranscriptAsync(episodeId);
+
+            return success ? Ok("Transcript deleted.") : Ok("Failed to delete transcript.");
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Returns total amount of users in the database. Includes admins
+    /// </summary>
+    /// <param name="withDeleted">Value to check if we wanted soft deleted users as well. Defaults to no</param>
+    /// <returns></returns>
+    [HttpGet("GetTotalUsers")]
+    public async Task<IActionResult> GetTotalUsers(bool withDeleted = false)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetTotalUsersAsync(withDeleted);
+            return Ok(totalUsers);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets the amount of recently created users in the database. Includes admins
+    /// </summary>
+    /// <param name="daySinceCreation">Positive interger defaulting to 1 that shows from how many days ago we are searching</param>
+    /// <returns></returns>
+    [HttpGet("GetRecentlyCreatedUserCount")]
+    public async Task<IActionResult> GetRecentlyCreatedUserCount(int daySinceCreation = 1)
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetRecentlyCreatedUserCountAsync(daySinceCreation);
+            return Ok(totalUsers);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Endpoint that gets the total amount of users who are creators/podcasters
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("GetTotalAmountOfPodcasters")]
+    public async Task<IActionResult> GetTotalAmountOfPodcasters()
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var totalUsers = await _adminService.GetTotalAmountOfPodcastersAsync();
+            return Ok(totalUsers);
         }
         catch (Exception e)
         {

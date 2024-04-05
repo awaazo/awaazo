@@ -1,224 +1,188 @@
-import React, { useState, useEffect } from "react";
-import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton } from "@chakra-ui/react";
-import { FaPlay, FaPause, FaShare} from "react-icons/fa";
-import { usePlayer } from "../../utilities/PlayerContext";
-import Likes from '../interactionHub/Likes'
-import CommentButton from '../interactionHub/buttons/CommentButton'
-import HighlightHelper from "../../helpers/HighlightHelper";
-import ShareComponent from "../interactionHub/Share";
+import React, { useState, useEffect } from 'react'
+import { Box, Image, IconButton, useBreakpointValue, Text, Link,Progress, VStack   } from '@chakra-ui/react'
+import { FaPlay, FaPause } from 'react-icons/fa'
+import { usePlayer } from '../../utilities/PlayerContext'
+import HighlightHelper from '../../helpers/HighlightHelper'
+import PodcastHelper from '../../helpers/PodcastHelper'
 
+const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [audio, setAudio] = useState(new Audio())
+  const [episode, setEpisode] = useState(null)
+  const [thumbnailUrl, setThumbnailUrl] = useState('')
+  const { dispatch, state } = usePlayer()
+  const isMobile = useBreakpointValue({ base: true, md: false })
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-
-  const HighlightTicket= ({episode, highlight, thumbnailUrl, onOpenFullScreen, isFullScreenMode }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [audio, setAudio] = useState(new Audio());
-    const { dispatch, state } = usePlayer();
-    const isMobile = useBreakpointValue({ base: true, md: false });
-
-
-    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-    const onShareModalClose = () => setIsShareModalOpen(false);
-    const onShareModalOpen = () => setIsShareModalOpen(true);
-
-    const highlightStyles = {
-      transform: isFullScreenMode ? 'scale(1)' : 'none',
-      transformOrigin: 'center center',
-      transition: 'transform 0.2s',
-      width: isFullScreenMode ? '600px' : '300px',
-      height: isFullScreenMode ? '1000px' : '400px',
-      maxWidth: isFullScreenMode ? '100vw' : '300px',
-      maxHeight: isFullScreenMode ? '100vh' : '400px',
-      position: 'relative',
-      borderRadius: isFullScreenMode ? 'none' : '2xl',
-      bg: 'blackAlpha.500',
-    };
-    
   const isEpisodeLoaded = !!episode
-  
+
   useEffect(() => {
-    return () => audio && audio.pause();
-  }, [audio, highlight.id]);
-
-const handlePlayPauseClick = (e) => {
-  e.stopPropagation();
-    if (!isPlaying) {
-        const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId);
-        console.debug("Playing audio from URL:", audioUrl);
-        if (audio && audioUrl) {
-            audio.src = audioUrl; 
-            audio.play(); 
-            setIsPlaying(true); 
-        }
-    } else {
-        if (audio) {
-            audio.pause(); 
-            setIsPlaying(false); 
-        }
-    }
-};
-
-useEffect(() => {
-  if (isFullScreenMode) {
-    const playAudio = async () => {
-      const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId);
-      console.debug("Playing audio from URL:", audioUrl);
-      if (audio && audioUrl) {
-        audio.src = audioUrl;
-        try {
-          await audio.play();
-          setIsPlaying(true);
-        } catch (error) {
-          console.error("Audio playback failed:", error);
-        }
+    const fetchData = async () => {
+      try {
+        const res = await PodcastHelper.getEpisodeById(highlight.episodeId)
+        setEpisode(res.episode)
+        setThumbnailUrl(res.episode.thumbnailUrl)
+      } catch (error) {
+        console.error('Error fetching episode:', error)
       }
-    };
-    
-    playAudio();
-  } else {
-    if (audio) {
-      audio.pause();
-      setIsPlaying(false);
+    }
+
+    fetchData() 
+  }, [])
+
+  useEffect(() => {
+    return () => audio && audio.pause()
+  }, [audio, highlight.id])
+
+  const handlePlayPauseClick = (e) => {
+    e.stopPropagation()
+    if (!isPlaying) {
+      const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId)
+      console.debug('Playing audio from URL:', audioUrl)
+      if (audio && audioUrl) {
+        audio.src = audioUrl
+        audio.play()
+        setIsPlaying(true)
+      }
+    } else {
+      if (audio) {
+        audio.pause()
+        setIsPlaying(false)
+      }
     }
   }
 
-  return () => {
-    if (audio) {
-      audio.pause();
-      setIsPlaying(false);
-    }
-  };
-}, [highlight.highlightId, isFullScreenMode]);
-
-
-
-return (
-  <VStack
-    spacing={4}
-    align="center"
-    justify="center"
-    height="400px"
-    width="300px"
-    position="relative"
-    borderRadius="2xl"
-    sx={highlightStyles}
-    onClick={() => !isFullScreenMode && onOpenFullScreen ? onOpenFullScreen() : undefined}
-  >
-    
-    
-    {
-      episode && (
-        <>
-        <Image
-          src={thumbnailUrl}
-          alt={`Highlight from ${highlight.title || 'episode'}`}
-          fit="cover"
-          w="full"
-          h="full"
-          position="absolute"
-          zIndex="-1"
-          opacity="0.5"
-        
-        />
-        
-        <Box
-          position="absolute"
-          top="4"
-          width="full"
-          textAlign="center"
-          p={2}
-          borderRadius="md"
-        >
-          <Link
-            href={`/NowPlaying/${episode.id}`}
-            onClick={(e) => {
-              e.stopPropagation(); 
-            }}
-          >
-            <Text fontSize={["md", "lg"]} color="whiteAlpha.900" fontWeight="bold">
-              Episode:{episode.episodeName}
-            </Text>
-          </Link>
-        </Box>
-        </>
-      )
-    }
-
-    
-    <IconButton
-      aria-label={isPlaying ? "Pause" : "Play"}
-      icon={isPlaying ? <FaPause /> : <FaPlay />}
-      onClick={handlePlayPauseClick}
-      size="lg"
-      isRound
-      colorScheme="whiteAlpha"
-      position="absolute"
-      top="50%" 
-      left="50%" 
-      transform="translate(-50%, -50%)" 
-    />
-   
-
-      
-      <Box
-          position="absolute"
-          bottom="20px"
-          right="20px"
-          zIndex="overlay" 
-        >
-      <VStack spacing={2}>
-        <Likes episodeOrCommentId={episode.id} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
-        {
-        !isFullScreenMode && (
-
-        <CommentButton episodeId={episode.id} initialComments={0} showCount={false}  />
-        )
+  useEffect(() => {
+    if (isFullScreenMode) {
+      const playAudio = async () => {
+        const audioUrl = HighlightHelper.getHighlightAudioEndpoint(highlight.highlightId)
+        console.debug('Playing audio from URL:', audioUrl)
+        if (audio && audioUrl) {
+          audio.src = audioUrl
+          try {
+            await audio.play()
+            setIsPlaying(true)
+          } catch (error) {
+            console.error('Audio playback failed:', error)
+          }
         }
-        <IconButton
-              icon={<FaShare />}
-              size="lg"
-              onClick={(e) => {
-                e.stopPropagation(); 
-                onShareModalOpen();
-              }}
-              aria-label={""}     
-              bg="transparent"
+      }
+
+      playAudio()
+    } else {
+      if (audio) {
+        audio.pause()
+        setIsPlaying(false)
+      }
+    }
+
+    return () => {
+      if (audio) {
+        audio.pause()
+        setIsPlaying(false)
+      }
+    }
+  }, [highlight.highlightId, isFullScreenMode])
+
+  useEffect(() => {
+    const setAudioMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
+
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    audio.addEventListener('loadedmetadata', setAudioMetadata);
+    audio.addEventListener('timeupdate', updateTime);
+
+    return () => {
+      audio.removeEventListener('loadedmetadata', setAudioMetadata);
+      audio.removeEventListener('timeupdate', updateTime);
+    };
+  }, [audio]);
+
+  return (
+    <>
+    <Box 
+      width={isFullScreenMode ? "600px" : "150px"}
+      height={isFullScreenMode ? "850px" : "150px"}
+        borderRadius={isFullScreenMode ? "10px" : "150px"} 
+      position="relative" 
+      overflow={'hidden'} 
+      onClick={() => (!isFullScreenMode && onOpenFullScreen ? onOpenFullScreen() : undefined)}
+      >
+      {episode && (
+        <>
+          <Image
+            loading="lazy"
+            src={thumbnailUrl}
+            alt={`Highlight from ${highlight.title || 'episode'}`}
+            fit="cover"
+            w="full"
+            h="full"
+            position="absolute"
+            zIndex="-1"
+            style={{ transform: 'translate3d(0, 0, 0)', willChange: 'transform, opacity' }}
           />
 
-             <Modal isOpen={isShareModalOpen} onClose={onShareModalClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Share this Highlight</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <ShareComponent content={episode} contentType="episode" />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-      </VStack>
-      </Box>
-    
-  
+          <Box position="absolute" top="4" width="full" textAlign="center" p={2} borderRadius="md">
+            <Link
+              href={`/NowPlaying/${episode.id}`}
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+            ></Link>
+          </Box>
+        </>
+      )}
 
-    <Box
-      position="absolute"
-      bottom="4" 
-      width="full"
-      p={4}
-      bg="blackAlpha.300"
-      borderRadius="md"
-    >
-    
-      <Text fontSize={["md", "lg"]} color="whiteAlpha.900" fontWeight="bold" noOfLines={1}>
-        {highlight.title}
-      </Text>
-      <Text fontSize={["sm", "md"]} color="whiteAlpha.800" noOfLines={2}>
-        {highlight.description}
-      </Text>
-   
+      <IconButton
+        aria-label={isPlaying ? 'Pause' : 'Play'}
+        icon={isPlaying ? <FaPause /> : <FaPlay />}
+        onClick={handlePlayPauseClick}
+        size="lg"
+        isRound
+        colorScheme="whiteAlpha"
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+      />
+
+          {isFullScreenMode && (
+            <>
+              <Text color="white" fontSize="lg" fontWeight="bold" noOfLines={2} position="absolute" bottom="1" width="full" p={2} bg="blackAlpha.800">
+                    Title :  {highlight.title}
+                  </Text>
+              <Progress value={(currentTime / duration) * 100} size="xs" colorScheme="red" position="absolute" bottom="0" width="full" />
+             </>
+            )}
     </Box>
-  </VStack>
-);
 
-};
+    <Box position="fixed" bottom="0" right="0" zIndex="1000" width="full" bg="blackAlpha.800" p={2} display="flex" alignItems="center" justifyContent="center">   
+      {isFullScreenMode && (
+              <VStack spacing={2} position="absolute" bottom="5" width="full" alignItems="center" px={4}>      
+              {episode && (
+                <>
+                  <Link href={`/NowPlaying/${episode.id}`} >
+                    <Text fontSize={["md", "lg"]} color="whiteAlpha.900" fontWeight="bold">
+                      Episode: {episode.episodeName} 
+                    </Text>
+                  </Link>
+                    <Text fontSize={["sm", "md"]} color="whiteAlpha.900">
+                      Podcast: {episode.podcastName}
+                    </Text>
+                </>
+              )}
+              </VStack>
+          )}
+      </Box>
+    </>
+    
 
-export default HighlightTicket;
+  )
+}
+
+export default HighlightTicket
