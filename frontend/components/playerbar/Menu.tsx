@@ -7,11 +7,12 @@ import { CgPlayListSearch, CgPlayListAdd, CgPlayListRemove } from 'react-icons/c
 import ShareComponent from '../interactionHub/Share'
 import { Dots } from '../../public/icons/'
 import { MdOutlinePodcasts } from 'react-icons/md'
-import { IoShare } from 'react-icons/io5'
+import { IoFlagSharp, IoShare } from 'react-icons/io5'
 import ViewQueueModal from '../playlist/ViewQueueModal'
 import AddToPlaylistModal from '../playlist/AddToPlaylistModal'
 import AuthHelper from '../../helpers/AuthHelper'
 import LoginPrompt from '../auth/AuthPrompt'
+import ReportModal from '../admin/reportModal'
 
 const PlayerMenu = ({ episode }) => {
   const { dispatch } = usePlayer()
@@ -26,6 +27,11 @@ const PlayerMenu = ({ episode }) => {
   const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] = useState(false)
   const onAddToPlaylistModalClose = () => setIsAddToPlaylistModalOpen(false)
   const onAddToPlaylistModalOpen = () => setIsAddToPlaylistModalOpen(true)
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false)
+
+  const handleReportModalOpen = () => setIsReportModalOpen(true)
+  const handleReportModalClose = () => setIsReportModalOpen(false)
 
   // State to track whether the menu is open or not
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -52,7 +58,7 @@ const PlayerMenu = ({ episode }) => {
 
   return (
     <Box position="relative" zIndex={9999} data-cy={`3-dots`}>
-      <Menu isOpen={isMenuOpen} onClose={handleMenuToggle} >
+      <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
         <MenuButton as={IconButton} aria-label="Options" icon={<Dots />} variant="minimal" fontSize="20px" ml={1} onClick={handleMenuToggle} />
         <MenuList backgroundColor="rgba(50, 50, 50, 0.8)" backdropFilter="blur(4px)">
           <MenuItem
@@ -77,13 +83,16 @@ const PlayerMenu = ({ episode }) => {
           <Link href={'Explore/' + episode?.podcastId} style={{ textDecoration: 'none' }}>
             <MenuItem>
               <MdOutlinePodcasts size="18px" style={{ marginRight: '10px', color: 'white' }} />
-              <Text > Go to Podcast Page</Text>
+              <Text> Go to Podcast Page</Text>
             </MenuItem>
           </Link>
 
           <MenuDivider />
           <MenuItem onClick={onShareModalOpen}>
             <IoShare size="18px" style={{ marginRight: '10px', color: 'white' }} /> <Text fontSize={'sm'}>Share</Text>
+          </MenuItem>
+          <MenuItem onClick={handleReportModalOpen}>
+            <IoFlagSharp size="18px" style={{ marginRight: '10px', color: 'white' }} /> <Text fontSize={'sm'}>Report</Text>
           </MenuItem>
         </MenuList>
       </Menu>
@@ -106,6 +115,7 @@ const PlayerMenu = ({ episode }) => {
           infoMessage="To add this episode to your playlist, you must be logged in. Please log in or create an account."
         />
       )}
+      {episode && <ReportModal isOpen={isReportModalOpen} onClose={handleReportModalClose} entityId={episode.id} entityName={'Episode'} />}
     </Box>
   )
 }

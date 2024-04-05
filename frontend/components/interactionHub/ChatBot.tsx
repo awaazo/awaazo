@@ -8,6 +8,7 @@ import { Episode, UserMenuInfo } from '../../types/Interfaces'
 import UserProfileHelper from '../../helpers/UserProfileHelper'
 import AuthHelper from '../../helpers/AuthHelper'
 import { Send } from '../../public/icons'
+import AuthPrompt from '../auth/AuthPrompt'
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([])
@@ -15,6 +16,7 @@ const ChatBot = ({ episodeId }) => {
   const [episode, setEpisode] = useState<Episode>(null)
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
   const msgEnd = useRef<HTMLDivElement>(null)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
   const fetchMessages = useCallback(async () => {
     // Return early if there's no episodeId
@@ -28,7 +30,9 @@ const ChatBot = ({ episodeId }) => {
         const response = await AuthHelper.authMeRequest()
         console.log('User fetched:', response)
 
-        setUser(response.userMenuInfo)
+        if (response.status === 200) {
+          setUser(response.userMenuInfo)
+        }
       } catch (error) {
         console.error('Error fetching user:', error)
       }
@@ -69,7 +73,10 @@ const ChatBot = ({ episodeId }) => {
   }, [episodeId, fetchMessages])
 
   const sendMessage = async () => {
-    console.log('Sending message:', newMessage)
+    if (user === undefined || user === null) {
+      setShowLoginPrompt(true)
+      return
+    }
 
     // Save the message
     const promptMsg = newMessage
@@ -89,10 +96,11 @@ const ChatBot = ({ episodeId }) => {
     if (!promptMsg.trim()) return
 
     try {
-      await ChatbotHelper.addEpisodeChat(episodeId, promptMsg)
-
-      console.log('Message sent:', promptMsg)
-      fetchMessages()
+      const response = await ChatbotHelper.addEpisodeChat(episodeId, promptMsg)
+      if (response.status === 200) {
+        console.log('Message sent:', promptMsg)
+        fetchMessages()
+      }
     } catch (error) {
       console.error('Error sending message:', error)
     }
@@ -178,11 +186,12 @@ const ChatBot = ({ episodeId }) => {
               pr={'50px'}
               onKeyDown={handleEnterPress}
             />
-            <Button variant={'minimal'} width="18px" height="18px"  position="absolute" zIndex={'50'} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
+            <Button variant={'minimal'} width="18px" height="18px" position="absolute" zIndex={'50'} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
               <Send color="az.red" fontSize={'20px'} />
             </Button>
           </InputGroup>
         </Box>
+        {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="Login to Chat with this Episode." />}
       </Box>
     </Box>
   )
