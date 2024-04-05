@@ -154,36 +154,38 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
             </Button>
           </VStack>
         ) : (
-          <VStack spacing={3} align="start" width="100%" mb={4} ml={'15px'} mr={'15px'} overflowY="scroll" maxHeight={'75vh'}>
+          <VStack spacing={3} align="start" width="100%" mb={4} ml={'15px'} mr={'15px'}>
             {bookmarks && bookmarks.length > 0 ? (
-              bookmarks.map((bookmark, index) => (
-                <Box key={index} bg="rgba(255, 255, 255, 0.02)" borderRadius="2xl" p={4} _hover={{ bg: 'rgba(255, 255, 255, 0.05)' }} w="100%">
-                  <Flex justify="space-between" align="center">
-                    <Text fontSize={'20px'} color="white" fontWeight={'bold'}>
-                      {bookmark.title}
+              <Box overflowY="scroll" maxHeight={'55vh'} width={'100%'}>
+                {bookmarks.map((bookmark, index) => (
+                  <Box mb={'15px'} key={index} bg="rgba(255, 255, 255, 0.02)" borderRadius="2xl" p={4} _hover={{ bg: 'rgba(255, 255, 255, 0.05)' }} w="100%">
+                    <Flex justify="space-between" align="center">
+                      <Text fontSize={'20px'} color="white" fontWeight={'bold'}>
+                        {bookmark.title}
+                      </Text>
+                      <IconButton
+                        icon={<Icon as={FaTrash} />}
+                        variant={'ghost'}
+                        color={'az.red'}
+                        aria-label="Delete Bookmark"
+                        data-cy={`delete-bookmark-id:`}
+                        onClick={() => handleDeleteBookmark(bookmark.id)}
+                        size="md"
+                      />
+                    </Flex>
+
+                    <Text fontSize={'16px'} color="gray">
+                      {convertTime(bookmark.time)}
                     </Text>
-                    <IconButton
-                      icon={<Icon as={FaTrash} />}
-                      variant={'ghost'}
-                      color={'az.red'}
-                      aria-label="Delete Bookmark"
-                      data-cy={`delete-bookmark-id:`}
-                      onClick={() => handleDeleteBookmark(bookmark.id)}
-                      size="md"
-                    />
-                  </Flex>
 
-                  <Text fontSize={'16px'} color="gray">
-                    {convertTime(bookmark.time)}
-                  </Text>
-
-                  <Text fontSize={'18px'} color="white">
-                    {bookmark.note}
-                  </Text>
-                </Box>
-              ))
+                    <Text fontSize={'18px'} color="white">
+                      {bookmark.note}
+                    </Text>
+                  </Box>
+                ))}
+              </Box>
             ) : (
-              <Text color="gray" mt={'50px'} textAlign={'center'}>
+              <Text color="gray" mt={'50px'} textAlign={'center'} width={'100%'}>
                 You have no bookmarks for this episode.
               </Text>
             )}
