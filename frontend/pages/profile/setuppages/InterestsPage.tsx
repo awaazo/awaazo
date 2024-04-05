@@ -16,18 +16,18 @@ const InterestsPage: React.FC<InterestsPageProps> = ({ handleInterestClick, next
     return (
         <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center" mx="auto" alignContent={"center"} verticalAlign={"center"} height={"50vh"}>
             <Img src={LogoWhite.src} alt="logo" maxHeight="10em" maxWidth="3em" />
-            <Text fontSize="1.5rem" textAlign="center" margin="1rem" fontWeight={"black"}>
+            <Text fontSize="1.5rem" textAlign="center" margin="1rem" fontWeight={"black"} marginBottom={"2em"}>
                 What Are Your Interests
             </Text>
 
             <form onSubmit={handleSetup}>
-                <Stack spacing={6} align={'center'}>
+                <Stack spacing={6} align={'center'} >
                     <GenreSelector onGenresChange={handleInterestClick} />
                     <Button type="submit" colorScheme="teal"
-                        size="lg" borderRadius="17px" width="100%"
+                        size="lg" borderRadius="17px" width="100%" marginTop={"2em"}
                         fontSize={"1em"}
                         boxShadow="md">🎉 Finish Setup</Button>
-                    <Button onClick={prevPage}>Back</Button>
+                    <Button onClick={prevPage} variant={"minimal"}>Back</Button>
                 </Stack>
             </form>
         </Box>

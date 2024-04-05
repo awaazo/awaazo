@@ -47,7 +47,7 @@ const BioPage: React.FC<BioPageProps> = ({ username, bio, bioCharacterCount, han
                         size="lg" borderRadius="17px" width="100%"
                         fontSize={"1em"}
                         boxShadow="md">Next</Button>
-                    <Button onClick={prevPage}>Back</Button>
+                    <Button onClick={prevPage} variant={"minimal"}>Back</Button>
                 </Stack>
             </form>
         </Box>
