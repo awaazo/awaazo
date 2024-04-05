@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, useEffect, useCallback } from 'react';
-import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, useBreakpointValue, Progress } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import AuthHelper from '../../helpers/AuthHelper';
 import LogoWhite from '../../public/logos/logo_white.svg';
@@ -106,25 +106,33 @@ const ProfileSetup: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
+  const progressBarValue = (currentPage + 1) * (100 / 4); // Assuming there are 4 pages
 
+  return (
+    <>
+      {/* Progress bar */}
+      <Progress value={progressBarValue} size="sm" style={
+        {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: "100%"
+        }
+      }
+        transition={'all 0.5s ease-in-out'}
+      />
 
-
-
-  if (user !== undefined) {
-    switch (currentPage) {
-      case 0:
-        return <DisplayNamePage username={user.username} displayName={displayName} displayNameCharacterCount={displayNameCharacterCount} handleDisplayNameChange={handleDisplayNameChange} nextPage={nextPage} />;
-      case 1:
-        return <AvatarPage handleImageAdded={handleImageAdded} handleSetup={handleSetup} nextPage={nextPage} prevPage={prevPage} />;
-      case 2:
-        return <BioPage username={user.username} bio={bio} bioCharacterCount={bioCharacterCount} handleBioChange={handleBioChange} nextPage={nextPage} prevPage={prevPage} />;
-      case 3:
-        return <InterestsPage handleInterestClick={handleInterestClick} handleSetup={handleSetup} prevPage={prevPage} nextPage={nextPage} />;
-      default:
-        return null;
-    }
-  }
-
+      {/* Page content */}
+      {user !== undefined && (
+        <>
+          {currentPage === 0 && <DisplayNamePage username={user.username} displayName={displayName} displayNameCharacterCount={displayNameCharacterCount} handleDisplayNameChange={handleDisplayNameChange} nextPage={nextPage} />}
+          {currentPage === 1 && <AvatarPage handleImageAdded={handleImageAdded} handleSetup={handleSetup} nextPage={nextPage} prevPage={prevPage} />}
+          {currentPage === 2 && <BioPage username={user.username} bio={bio} bioCharacterCount={bioCharacterCount} handleBioChange={handleBioChange} nextPage={nextPage} prevPage={prevPage} />}
+          {currentPage === 3 && <InterestsPage handleInterestClick={handleInterestClick} handleSetup={handleSetup} prevPage={prevPage} nextPage={nextPage} />}
+        </>
+      )}
+    </>
+  );
 };
 
 export default withAuth(ProfileSetup);
