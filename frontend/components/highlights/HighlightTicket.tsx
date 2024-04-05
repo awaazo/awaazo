@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Image, VStack, IconButton, useBreakpointValue, Text, Link, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton } from '@chakra-ui/react'
-import { FaPlay, FaPause, FaShare } from 'react-icons/fa'
+import { Box, Image, IconButton, useBreakpointValue, Text, Link,Progress, VStack   } from '@chakra-ui/react'
+import { FaPlay, FaPause } from 'react-icons/fa'
 import { usePlayer } from '../../utilities/PlayerContext'
-import Likes from '../interactionHub/Likes'
-import CommentButton from '../interactionHub/buttons/CommentButton'
 import HighlightHelper from '../../helpers/HighlightHelper'
-import ShareComponent from '../interactionHub/Share'
 import PodcastHelper from '../../helpers/PodcastHelper'
-import { set } from 'lodash'
 
 const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -16,10 +12,8 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState('')
   const { dispatch, state } = usePlayer()
   const isMobile = useBreakpointValue({ base: true, md: false })
-
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
-  const onShareModalClose = () => setIsShareModalOpen(false)
-  const onShareModalOpen = () => setIsShareModalOpen(true)
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const isEpisodeLoaded = !!episode
 
@@ -34,7 +28,7 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
       }
     }
 
-    fetchData() // Call the async function
+    fetchData() 
   }, [])
 
   useEffect(() => {
@@ -91,11 +85,47 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
     }
   }, [highlight.highlightId, isFullScreenMode])
 
+  useEffect(() => {
+    const setAudioMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
+
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    audio.addEventListener('loadedmetadata', setAudioMetadata);
+    audio.addEventListener('timeupdate', updateTime);
+
+    return () => {
+      audio.removeEventListener('loadedmetadata', setAudioMetadata);
+      audio.removeEventListener('timeupdate', updateTime);
+    };
+  }, [audio]);
+
   return (
-    <Box height="150px" width="150px" borderRadius={'150px'} position="relative" overflow={'hidden'} onClick={() => (!isFullScreenMode && onOpenFullScreen ? onOpenFullScreen() : undefined)}>
+    <>
+    <Box 
+      width={isFullScreenMode ? "600px" : "150px"}
+      height={isFullScreenMode ? "850px" : "150px"}
+        borderRadius={isFullScreenMode ? "10px" : "150px"} 
+      position="relative" 
+      overflow={'hidden'} 
+      onClick={() => (!isFullScreenMode && onOpenFullScreen ? onOpenFullScreen() : undefined)}
+      >
       {episode && (
         <>
-          <Image src={thumbnailUrl} alt={`Highlight from ${highlight.title || 'episode'}`} fit="cover" w="full" h="full" position="absolute" zIndex="-1" />
+          <Image
+            loading="lazy"
+            src={thumbnailUrl}
+            alt={`Highlight from ${highlight.title || 'episode'}`}
+            fit="cover"
+            w="full"
+            h="full"
+            position="absolute"
+            zIndex="-1"
+            style={{ transform: 'translate3d(0, 0, 0)', willChange: 'transform, opacity' }}
+          />
 
           <Box position="absolute" top="4" width="full" textAlign="center" p={2} borderRadius="md">
             <Link
@@ -120,7 +150,38 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
         left="50%"
         transform="translate(-50%, -50%)"
       />
+
+          {isFullScreenMode && (
+            <>
+              <Text color="white" fontSize="lg" fontWeight="bold" noOfLines={2} position="absolute" bottom="1" width="full" p={2} bg="blackAlpha.800">
+                    Title :  {highlight.title}
+                  </Text>
+              <Progress value={(currentTime / duration) * 100} size="xs" colorScheme="red" position="absolute" bottom="0" width="full" />
+             </>
+            )}
     </Box>
+
+    <Box position="fixed" bottom="0" right="0" zIndex="1000" width="full" bg="blackAlpha.800" p={2} display="flex" alignItems="center" justifyContent="center">   
+      {isFullScreenMode && (
+              <VStack spacing={2} position="absolute" bottom="5" width="full" alignItems="center" px={4}>      
+              {episode && (
+                <>
+                  <Link href={`/NowPlaying/${episode.id}`} >
+                    <Text fontSize={["md", "lg"]} color="whiteAlpha.900" fontWeight="bold">
+                      Episode: {episode.episodeName} 
+                    </Text>
+                  </Link>
+                    <Text fontSize={["sm", "md"]} color="whiteAlpha.900">
+                      Podcast: {episode.podcastName}
+                    </Text>
+                </>
+              )}
+              </VStack>
+          )}
+      </Box>
+    </>
+    
+
   )
 }
 

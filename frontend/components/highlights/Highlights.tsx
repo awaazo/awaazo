@@ -2,8 +2,8 @@ import { Spinner, Text, HStack, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import HighlightTicket from "./HighlightTicket";
 import HighlightHelper from "../../helpers/HighlightHelper";
-import axios from "axios";
 import FullScreenHighlight from "./FullScreenHighlight";
+import PodcastHelper from "../../helpers/PodcastHelper";
 
 const Highlights = () => {
   const [highlights, setHighlights] = useState([]);
@@ -16,10 +16,15 @@ const Highlights = () => {
   useEffect(() => {
     const fetchEpisodes = async () => {
       try {
-        const response = await axios.get('http://localhost:32773/podcast/getRecentEpisodes?page=0&pageSize=20');
-        setEpisodes(response.data);
+        const response = await PodcastHelper.podcastGetRecentEpisodes(0, 20); 
+        if (response && response.episode) {
+          setEpisodes(response.episode);
+        } else {
+          throw new Error('Failed to fetch episodes');
+        }
       } catch (error) {
         console.error('Error fetching episodes:', error);
+        setError('Failed to fetch episodes'); 
       }
     };
     fetchEpisodes();
@@ -66,7 +71,6 @@ const Highlights = () => {
 
   return (
     <>
-    
       {isFullScreen && (
         <FullScreenHighlight
           highlights={highlights}
@@ -76,7 +80,6 @@ const Highlights = () => {
           onPrevious={goToPreviousHighlight}     
         />
       )}
-
       <Box overflowX="auto" css={{ width: "100%", maxWidth: "2100px", "&::-webkit-scrollbar": { display: "none" } }}>
         <HStack spacing={4} align="stretch">
           {highlights.length > 0 ? (
@@ -86,13 +89,10 @@ const Highlights = () => {
                 console.error(`No episode found for highlight ${highlight.id} with episodeId ${highlight.episodeId}`);
                 return null;
               }
-
               return (
                 <HighlightTicket 
                   key={highlight.id} 
                   highlight={highlight} 
-                  //episode={correspondingEpisode}               These two lines are commented out because they are not used in the HighlightTicket component  
-                  //thumbnailUrl={correspondingEpisode.thumbnailUrl} 
                   onOpenFullScreen={() => openFullScreen(index)}
                   isFullScreenMode={false}
                 />
