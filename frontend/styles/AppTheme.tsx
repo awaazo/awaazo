@@ -90,6 +90,23 @@ const overrides = {
             color: 'white', 
           },
         },
+        normal: {
+          display: 'flex',
+          height: '37px',
+          padding: '12px 20px 12px 20px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '15px',
+          background: 'var(--Just-White, #FFF)',
+          fontWeight: '700',
+          fontSize: '15px',
+          color:'az.red',
+          _hover: {
+            background: 'az.lightRed', 
+            color: 'white', 
+          },
+        },
+        
       },
     },
 
