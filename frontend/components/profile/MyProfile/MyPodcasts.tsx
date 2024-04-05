@@ -47,18 +47,14 @@ export default function Podcasts() {
 
   return (
     <>
-         <Box
-      marginBottom="1em"
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      width="100%"
-    >
-      <Text fontSize="lg" fontWeight="bold">My Podcasts</Text>
-      <Link href="/CreatorHub/" passHref>
-        <IconButton aria-label="Settings" icon={<Settings />} size="14px" variant="ghost" />
-      </Link>
-    </Box>
+      <Box marginBottom="1em" display="flex" justifyContent="space-between" alignItems="center" width="100%">
+        <Text fontSize="lg" fontWeight="bold">
+          My Podcasts
+        </Text>
+        <Link href="/CreatorHub/" passHref>
+          <IconButton aria-label="Settings" icon={<Settings />} size="14px" variant="minimal" />
+        </Link>
+      </Box>
       {isLoading ? (
         <Flex justifyContent="center" alignItems="center" height="100px">
           <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
@@ -72,7 +68,7 @@ export default function Podcasts() {
           )}
 
           {podcasts && podcasts.length === 0 ? (
-            <Text mt={'50px'} fontSize={'md'} textAlign={'center'} color={"az.greyish"}>
+            <Text mt={'50px'} fontSize={'md'} textAlign={'center'} color={'az.greyish'}>
               You have not created any podcasts yet.
             </Text>
           ) : (
