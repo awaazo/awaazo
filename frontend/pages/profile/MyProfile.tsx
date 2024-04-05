@@ -26,7 +26,7 @@ const MyProfile = () => {
           <VStack width="500px" align="start">
             <Podcasts />
           </VStack>
-          <VStack width="calc((100% - 500px) * 0.7)" align="start">
+          <VStack width="500px" align="start">
             <MyPlaylists />
           </VStack>
         </HStack>
