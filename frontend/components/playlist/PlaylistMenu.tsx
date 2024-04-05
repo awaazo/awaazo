@@ -23,19 +23,18 @@ import {
   FormControl,
   FormLabel,
   Switch,
+  Text,
 } from '@chakra-ui/react'
-import { IoIosMore } from 'react-icons/io'
-import { BsPlayFill, BsFillSkipForwardFill } from 'react-icons/bs'
-import { MdIosShare } from 'react-icons/md'
+import {  BsFillSkipForwardFill } from 'react-icons/bs'
 import { TbPlayerTrackNextFilled } from 'react-icons/tb'
-import { FiEdit } from 'react-icons/fi'
 import { MdDelete } from 'react-icons/md'
 import { usePlayer } from '../../utilities/PlayerContext'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import ImageAdder from '../tools/ImageAdder'
-
+import { Dots, Pen } from '../../public/icons'
 import { useRouter } from 'next/router'
 import ShareComponent from '../interactionHub/Share'
+import { IoShare } from 'react-icons/io5'
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer()
@@ -189,91 +188,37 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   }, [])
 
   return (
-    <Box style={{ position: 'relative', zIndex: 5 }} data-cy={`3-dots`}>
+    <Box position="relative" data-cy={`3-dots`}>
       <Menu isOpen={isMenuOpen} onClose={handleMenuToggle}>
-        <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} _hover={{ boxShadow: 'lg' }} onClick={handleMenuToggle} />
-        <MenuList
-          style={{
-            backgroundColor: 'rgba(50, 50, 50, 0.8)',
-            backdropFilter: 'blur(4px)',
-          }}
-        >
-          <MenuItem
-            onClick={() => handlePlaylistClick()}
-            _hover={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              fontWeight: 'bold',
-            }}
-            style={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            Play "{playlist.name}" <BsPlayFill size="20px" style={{ marginLeft: 'auto', color: 'white' }} />
+        <MenuButton as={IconButton} aria-label="Options" icon={<Dots />} variant="minmal" fontSize="18px" onClick={handleMenuToggle} />
+        <MenuList backgroundColor="rgba(50, 50, 50, 0.8)" backdropFilter="blur(4px)">
+          <MenuItem onClick={() => handleMenuItemClick('playNext')}>
+            <TbPlayerTrackNextFilled size="16px" style={{ marginRight: '10px', color: 'white' }} /> <Text>Play Next</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => handleMenuItemClick('playNext')}
-            _hover={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              fontWeight: 'bold',
-            }}
-            style={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            Play Next <TbPlayerTrackNextFilled size="18px" style={{ marginLeft: 'auto', color: 'white' }} />
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleMenuItemClick('playLater')}
-            _hover={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              fontWeight: 'bold',
-            }}
-            style={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            Play Later <BsFillSkipForwardFill size="18px" style={{ marginLeft: 'auto', color: 'white' }} />
+          <MenuItem onClick={() => handleMenuItemClick('playLater')}>
+            <BsFillSkipForwardFill size="16px" style={{ marginRight: '10px', color: 'white' }} /> <Text>Play Later</Text>
           </MenuItem>
 
           {playlist.isHandledByUser && (
             <>
               <MenuDivider />
               <MenuItem
-                _hover={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  fontWeight: 'bold',
-                }}
-                style={{ backgroundColor: 'transparent' }}
                 onClick={() => {
                   openEditModal()
                   handleMenuToggle()
                 }}
               >
-                Edit "{playlist.name}" <FiEdit size={20} style={{ marginLeft: 'auto', color: 'white' }} data-cy={`edit-button`} />
+                <Pen style={{ marginRight: '10px', color: 'white'  }} size="18px" data-cy={`edit-button`} /> <Text>Edit "{playlist.name}"</Text>
               </MenuItem>
-              <MenuItem
-                _hover={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  fontWeight: 'bold',
-                }}
-                style={{ backgroundColor: 'transparent', color: 'red' }}
-                onClick={onOpen}
-              >
-                Delete "{playlist.name}" <MdDelete size={20} style={{ marginLeft: 'auto', color: 'red' }} data-cy={`delete-button`} />
+              <MenuItem style={{ color: 'red' }} onClick={onOpen}>
+                <MdDelete size={'18px'} style={{ marginRight: '10px', color: 'red' }} data-cy={`delete-button`} />
+                <Text> Delete "{playlist.name}" </Text>
               </MenuItem>
             </>
           )}
-          <MenuItem
-            onClick={onShareModalOpen}
-            _hover={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              fontWeight: 'bold',
-            }}
-            style={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            Share <MdIosShare size="20px" style={{ marginLeft: 'auto', color: 'white' }} />
+          <MenuItem onClick={onShareModalOpen}>
+          <IoShare size="18px" style={{ marginRight: '10px', color: 'white' }} />
+             <Text>Share</Text>
           </MenuItem>
         </MenuList>
       </Menu>
@@ -313,7 +258,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Edit Playlist</ModalHeader>
-          <ModalCloseButton />
+        
           <ModalBody>
             <ImageAdder onImageAdded={handleImageAdded} />
 
@@ -333,10 +278,10 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button bg="black.100" _hover={{ bg: 'brand.100' }} mr={3} onClick={handleSaveEdit}>
+            <Button variant={"normal"} mr={3} onClick={handleSaveEdit}>
               Save
             </Button>
-            <Button variant="ghost" onClick={closeEditModal}>
+            <Button variant={"normal"} color={"az.offwhite"} bg={"az.darkGrey"}  onClick={closeEditModal}>
               Cancel
             </Button>
           </ModalFooter>
