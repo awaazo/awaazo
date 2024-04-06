@@ -9,6 +9,7 @@ using static Backend.Infrastructure.ControllerHelper;
 using System.ComponentModel.DataAnnotations;
 using Backend.Controllers.Responses;
 using Azure.Core;
+using Backend.Infrastructure;
 
 namespace Backend.Controllers;
 
@@ -1075,6 +1076,24 @@ public class PodcastController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpGet("GetDailyAdminRecomendations")]
+    public async Task<IActionResult> GetDailyAdminRecomendations()
+    {
+        try
+        {
+            this.LogDebugControllerAPICall(_logger);
+
+            var result = await _podcastService.GetDailyAdminRecomendationsAsync(GetDomainUrl(HttpContext));
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            this.LogErrorAPICall(_logger, e);
+            return BadRequest(e.Message);
+        }
+    }
+
     #endregion
 
     #region Highlights
