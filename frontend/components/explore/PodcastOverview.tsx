@@ -144,7 +144,7 @@ export default function PodcastOverview({ podcast, User }) {
   }
 
   const Metrics = () => (
-    <HStack bg={'#222222'} width={'100%'} justify="space-between" px={7} py={2} borderRadius={'10'}>
+    <HStack bg={'az.darkestGrey'} width={'100%'} justify="space-between" px={4} py={2} borderRadius={'10'}>
       <MetricDisplay metrics={metrics} />
       <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} podcasterId={podcast.podcasterId} currentUserID={currentUserID} />
     </HStack>

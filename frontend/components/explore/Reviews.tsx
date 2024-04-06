@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Avatar, useBreakpointValue, Text, Textarea, FormControl, Button, VStack, HStack } from '@chakra-ui/react'
+import { Box, Flex, Avatar, Text, Textarea, FormControl, Button, VStack, HStack } from '@chakra-ui/react'
 import { FaCircle } from 'react-icons/fa6'
 import ReviewsHelper from '../../helpers/ReviewsHelper'
 import { PodcastRatingRequest, PodcastReviewRequest } from '../../types/Requests'
 import AuthPrompt from '../auth/AuthPrompt'
 import AuthHelper from '../../helpers/AuthHelper'
+import {AwaazoA} from '../../public/icons'
 
 // Component for displaying and adding reviews
 const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false })
   const [isAddingReview, setIsAddingReview] = useState(false)
   const [newRating, setNewRating] = useState(0)
   const [newReviewText, setNewReviewText] = useState('')
@@ -17,7 +17,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
   const [reviews, setReviews] = useState(podcast.ratings)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const ratingColors = ['white', 'az.blue', 'az.green', 'az.yellow', 'az.red']
-
+  const [hoverRating, setHoverRating] = useState(null);
   const fetchAndUpdateReviews = async () => {
     try {
       const response = await ReviewsHelper.getPodcastById(podcast.id)
@@ -110,18 +110,22 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       {isAddingReview && (
       <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
     <Flex direction="column" mt={0}>
-      <Flex justify="center" direction="row">
+      <Flex justify="center" direction="row" >
+         
+         <Box ><AwaazoA w="100px" h="100px" /></Box>
         {[1, 2, 3, 4, 5].map((index) => (
           <Box
-            key={index}
-            as={FaCircle}
-            onClick={() => setNewRating(index)}
-            cursor="pointer"
-            boxSize={3}
-            m={"2px"}
-            color={newRating >= index ? ratingColors[index - 1] : 'gray.300'}
-            _hover={{ color: ratingColors[index - 1] }}
-            data-cy={`star-icon-${index}`}
+          key={index}
+          as={FaCircle}
+          onClick={() => setNewRating(index)}
+          onMouseEnter={() => setHoverRating(index)}
+          onMouseLeave={() => setHoverRating(null)}
+          cursor="pointer"
+          boxSize={3}
+          m={"1.5px"}
+          color={(hoverRating ? hoverRating >= index : newRating >= index) ? ratingColors[index - 1] : 'az.darkGrey'}
+          _hover={{ color: ratingColors[index - 1] }}
+          data-cy={`star-icon-${index}`}
           />
         ))}
         {reviewError && <Text color="red.500">{reviewError}</Text>}
