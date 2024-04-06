@@ -54,5 +54,20 @@ export const convertTime = (seconds: number): string => {
 
 
 
+  export const formatNumber = (num: number): string => {
+    if (num < 1000) return num.toString();
+    
+    if (num < 1000000) {
+      const inThousands = num / 1000;
+      return inThousands % 1 === 0 ? `${inThousands}k` : `${inThousands.toFixed(1)}k`;
+    }
+  
+    const inMillions = num / 1000000;
+    return inMillions % 1 === 0 ? `${inMillions}M` : `${inMillions.toFixed(1)}M`;
+  };
+  
+
+
+
   
   

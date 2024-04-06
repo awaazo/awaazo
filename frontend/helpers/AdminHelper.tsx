@@ -2,7 +2,7 @@ import axios from 'axios'
 import EndpointHelper from './EndpointHelper'
 
 import { ReportRequest, SendEmailRequest } from '../types/Requests'
-import { BaseResponse, GetEmailLogs, GetReports, GetUsersResponse } from '../types/Responses'
+import { BaseResponse, GetEmailLogs, GetReports, GetUserCountResponse, GetUsersResponse } from '../types/Responses'
 
 export default class AdminHelper {
   static getUserProfile() {
@@ -426,6 +426,132 @@ export default class AdminHelper {
       return {
         status: error.response.status,
         message: error.response.statusText,
+      }
+    }
+  }
+
+  /**
+   * Gets all reports from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static adminGetTotalUsers = async (withDeleted): Promise<GetUserCountResponse> => {
+    // Create the request options.
+    const options = {
+      method: 'Get',
+      url: EndpointHelper.getTotalUsers(withDeleted),
+      headers: {
+        accept: '*/*',
+      },
+      withCredentials: true,
+      cache: false,
+    }
+
+    try {
+      console.debug('Sending the following adminGetTotalUsers...')
+      console.debug(options)
+
+      console.log(options)
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options)
+
+      console.debug('Received the following adminGetTotalUsers...')
+      console.debug(requestResponse)
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        userCount: requestResponse.data,
+      }
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        userCount: null,
+      }
+    }
+  }
+
+  /**
+   * Gets all reports from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static adminGetRecentlyCreatedUsers = async (daySinceCreation): Promise<GetUserCountResponse> => {
+    // Create the request options.
+    const options = {
+      method: 'Get',
+      url: EndpointHelper.getRecentlyCreatedUserCount(daySinceCreation),
+      headers: {
+        accept: '*/*',
+      },
+      withCredentials: true,
+      cache: false,
+    }
+
+    try {
+      console.debug('Sending the following adminGetTotalUsers...')
+      console.debug(options)
+
+      console.log(options)
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options)
+
+      console.debug('Received the following adminGetTotalUsers...')
+      console.debug(requestResponse)
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        userCount: requestResponse.data,
+      }
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        userCount: null,
+      }
+    }
+  }
+
+  /**
+   * Gets all reports from the server.
+   * @returns A BaseResponse object with the server's response.
+   */
+  public static adminTotalPodcaster = async (): Promise<GetUserCountResponse> => {
+    // Create the request options.
+    const options = {
+      method: 'Get',
+      url: EndpointHelper.getTotalPodcaster(),
+      headers: {
+        accept: '*/*',
+      },
+      withCredentials: true,
+      cache: false,
+    }
+
+    try {
+      console.debug('Sending the following adminTotalPodcaster...')
+      console.debug(options)
+
+      console.log(options)
+      // Send the request and wait for the response.
+      const requestResponse = await axios(options)
+
+      console.debug('Received the following adminTotalPodcaster...')
+      console.debug(requestResponse)
+      // Return the response.
+      return {
+        status: requestResponse.status,
+        message: requestResponse.statusText,
+        userCount: requestResponse.data,
+      }
+    } catch (error) {
+      // Return the error.
+      return {
+        status: error.response.status,
+        message: error.response.statusText,
+        userCount: null,
       }
     }
   }

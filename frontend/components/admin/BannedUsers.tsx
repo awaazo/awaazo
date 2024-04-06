@@ -41,7 +41,7 @@ const BannedUsers = ({ inDashboard, refresh }) => {
   }
 
   return (
-    <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={inDashboard ? `calc((100vh - 100px) / 2)` : 'calc(100vh - 100px)'}>
+    <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" height={'calc((100vh - 40px) / 2)'}>
       <Text fontWeight="bold" fontSize="24px">
         Banned Users
       </Text>

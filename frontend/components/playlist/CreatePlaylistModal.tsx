@@ -3,7 +3,7 @@ import React, { useState, useEffect, FormEvent, useCallback } from "react";
 import { Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Button, FormControl, Textarea, Text, VStack, Switch } from "@chakra-ui/react";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import { PlaylistCreateRequest } from "../../types/Requests";
-import ImageAdder from "../tools/ImageAdder";
+import ImageAdder from "../assets/ImageAdder";
 
 
 const CreatePlaylistModal = ({ handleReload, isOpen, onClose }) => {

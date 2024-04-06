@@ -1,24 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Avatar, Heading, Text, VStack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue, Button, Center } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import UserProfileHelper from '../../../helpers/UserProfileHelper'
 import { userProfileByID } from '../../../types/Interfaces'
+import MetricDisplay from '../../assets/MetricDisplay'
 
-const iconProps = {
-  variant: 'ghost',
-  size: 'lg',
-  isRound: true,
-}
+
 
 export default function Header({ userId }) {
   // Form Values
   const [user, setUser] = useState<userProfileByID | null>(null)
   const [getError, setGetError] = useState('')
-
-  const { data: session } = useSession()
-  const [profile, setProfile] = useState<userProfileByID>(null)
-
   const isMobile = useBreakpointValue({ base: true, md: false })
 
   useEffect(() => {
@@ -34,6 +26,12 @@ export default function Header({ userId }) {
     })
   }, [userId])
 
+  const metrics = [
+    { value: 999, label: 'Podcasts' },
+    { value: 1500, label: 'Episodes' },
+    { value: 1200000, label: 'Likes' },
+    { value: 500000, label: 'Subscribers' },
+  ]
   return (
     <>
       <VStack width={'100%'} spacing={4} px={2} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
@@ -56,49 +54,7 @@ export default function Header({ userId }) {
         </Text>
 
         <Center>
-          <HStack spacing={4} alignItems="center">
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                5
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Podcasts
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                250
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Episodes
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                1.2M
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Likes
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                500k
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Subscribers
-              </Text>
-            </VStack>
-          </HStack>
+        <MetricDisplay metrics={metrics} />
         </Center>
       </VStack>
     </>

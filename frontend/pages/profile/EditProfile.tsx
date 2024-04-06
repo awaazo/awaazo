@@ -6,7 +6,7 @@ import UserProfileHelper from "../../helpers/UserProfileHelper";
 import { UserProfile } from "../../types/Interfaces";
 import { useRouter } from "next/router";
 import ChangePassWordForm from "../../components/profile/MyProfile/ChangePasswordForm";
-import GenreSelector from "../../components/tools/GenreSelector";
+import GenreSelector from "../../components/assets/GenreSelector";
 import { FaKey } from 'react-icons/fa';
 import withAuth from "../../utilities/authHOC";
 

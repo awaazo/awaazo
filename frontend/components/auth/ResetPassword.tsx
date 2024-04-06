@@ -80,7 +80,7 @@ const ResetPassword = () => {
     <>
       <Container variant={"authBox"}> {/* Adjust the variant as needed */}
         <Flex justifyContent="center" mb={4}>
-          <Img src={Logo.src} alt="logo" style={{ maxWidth: "40px" }} />
+          <Img src={Logo.src} alt="logo" style={{ maxWidth: "45px" }} />
         </Flex>
         <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
           Reset Your Password

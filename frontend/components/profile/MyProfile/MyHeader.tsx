@@ -2,20 +2,12 @@ import { useState, useEffect } from 'react'
 import { Avatar, Heading, Center, Text, VStack, Link, IconButton, Divider, Flex, Box, HStack, useColorModeValue, useBreakpointValue } from '@chakra-ui/react'
 import { UserProfile } from '../../../types/Interfaces'
 import { useSession } from 'next-auth/react'
-import { FaXTwitter, FaLinkedinIn, FaGithub } from 'react-icons/fa6'
-import { FiEdit2 } from 'react-icons/fi'
 import router from 'next/router'
 import UserProfileHelper from '../../../helpers/UserProfileHelper'
-import Subscriptions from './MySubscriptions'
 import AnalyticsHelper from '../../../helpers/AnalyticsHelper'
 import PodcastCard from '../../cards/PodcastCard'
 import { AwaazoA, Pen } from '../../../public/icons'
-
-const iconProps = {
-  variant: 'ghost',
-  size: 'lg',
-  isRound: true,
-}
+import MetricDisplay from '../../assets/MetricDisplay'
 
 export default function Header() {
   const { data: session } = useSession()
@@ -67,104 +59,60 @@ export default function Header() {
 
   console.log(mostWatchedPodcast)
 
+  const metrics = [
+    { value: 999, label: 'Podcasts' },
+    { value: 1500, label: 'Episodes' },
+    { value: 1200000, label: 'Likes' },
+    { value: 500000, label: 'Subscribers' },
+  ]
+
   return (
     <>
-      <VStack width={'100%'} spacing={4} px={2} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
-        <HStack alignItems={'flex-start'} width="100%">
-          <Box position="relative">
-            <Avatar boxShadow="xl" width="5em" height="5em" src={profile?.avatarUrl} />
-            <IconButton
-              aria-label="Edit Profile"
-              icon={<AwaazoA fontSize={'40px'} />}
-              position="absolute"
-              bottom={5}
-              right={5}
-              transform={'translate(-100%, -100%)'}
-              variant="ghost"
-              onClick={() => router.push('/profile/EditProfile')}
-              color="az.red"
-              _hover={{ color: 'az.blue' }}
-              data-cy={`edit_profile_button`}
-            />{' '}
-            <IconButton
-              aria-label="Edit Profile"
-              icon={<Pen fontSize={'19px'} />}
-              position="absolute"
-              bottom={6}
-              right={'17px'}
-              transform={'translate(-100%, -100%)'}
-              pointerEvents="none"
-              variant="ghost"
-              color="white"
-            />
-          </Box>
-          <VStack align="start" spacing={1}>
-            <Heading textAlign={{ base: 'center', sm: 'left' }} margin="0 auto" fontSize={{ base: '1.5rem', sm: '1.8rem' }}>
-              {profile?.displayName}
-            </Heading>
-            <Text fontSize="1.2rem" color={'az.red'} fontWeight={'bold'}>
-              @{profile?.username}
-            </Text>
-          </VStack>
-        </HStack>
-
-        <Text textAlign="left" color={'grey'}>
-          {profile?.bio}
-        </Text>
-
-        <Center>
-          <HStack spacing={4} alignItems="center">
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                5
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Podcasts
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                250
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Episodes
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                1.2M
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Likes
-              </Text>
-            </VStack>
-            <Text fontSize="16px" color="gray">
-              |
-            </Text>
-            <VStack justify="center" alignItems="center">
-              <Text fontSize="16px" color="white" fontWeight="bold">
-                500k
-              </Text>
-              <Text fontSize="16px" color="az.red" fontWeight="bold">
-                Subscribers
+      <VStack width={'100%'} spacing={4} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
+        <VStack spacing={'14px'} alignItems={'flex-start'}>
+          <HStack alignItems={'flex-start'} width="100%">
+            <Box position="relative">
+              <Avatar boxShadow="xl" width="73px" height="73px" src={profile?.avatarUrl} />
+              <Box position="absolute" top="50px" right="7">
+                <IconButton
+                  aria-label="Decorative Icon"
+                  icon={<AwaazoA fontSize={'22px'} />}
+                  position="absolute"
+                  bottom={5}
+                  right={5}
+                  variant="ghost"
+                  onClick={() => router.push('/profile/EditProfile')}
+                  color="az.red"
+                  _hover={{ color: 'az.lightRed' }}
+                  data-cy={`edit_profile_button`}
+                />{' '}
+                <IconButton aria-label="Edit Profile" icon={<Pen fontSize={'11px'} />} position="absolute" bottom={'22px'} right={'19px'} pointerEvents="none" variant="ghost" color="white" />
+              </Box>
+            </Box>
+            <VStack align="start" spacing={1}>
+              <Heading textAlign={{ base: 'left', sm: 'left' }} margin="0 auto" fontSize={{ base: 'xl', sm: 'lg' }}>
+                {profile?.displayName}
+              </Heading>
+              <Text fontSize="md" color={'az.greyish'} fontWeight={'bold'}>
+                @{profile?.username}
               </Text>
             </VStack>
           </HStack>
-        </Center>
-        <Box w="100%">
-          <Text fontWeight="bold" fontSize="22px" mb="15px" marginLeft="5px">
+
+          <Text textAlign="right" color="grey">
+            {profile?.bio}
+          </Text>
+
+          <MetricDisplay metrics={metrics} />
+        </VStack>
+        <Box w="100%" mt={'16px'} >
+          <Text fontWeight="bold" fontSize="md" mb="15px">
             Your Listening Habits:
           </Text>
           {averageWatchTime || totalWatchTime || topGenre || (mostWatchedPodcast && mostWatchedPodcast.length > 0) ? (
             <>
               {averageWatchTime && totalWatchTime && (
-                <Text fontSize="16px" mb="15px" marginLeft="30px" color={'grey'}>
+                <Text fontSize="md" mb="15px" color={'az.greyish'}>
                   Your average watch time is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{averageWatchTime.slice(0, 8)}.</span>
                   <br /> Your Total watch time is <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{totalWatchTime.slice(0, 8)}.</span>
                 </Text>
@@ -186,7 +134,7 @@ export default function Header() {
               )}
               {mostWatchedPodcast && mostWatchedPodcast.length > 0 && (
                 <>
-                  <Text fontSize="18px" mb="10px" mt={'30px'} marginLeft="15px" color={'white'} fontWeight={'bold'}>
+                  <Text fontSize="md" mb="10px" mt={'30px'} marginLeft="15px" color={'white'} fontWeight={'bold'}>
                     Your most listened-to podcast:
                   </Text>
                   <Center>
@@ -196,7 +144,7 @@ export default function Header() {
               )}
             </>
           ) : (
-            <Text fontSize="16px" mb="15px" marginLeft="30px" color={'grey'}>
+            <Text fontSize="sm" mb="15px" marginLeft="30px" color={'grey'}>
               No insights on your habits are available.
             </Text>
           )}

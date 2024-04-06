@@ -5,7 +5,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Playlist } from '../../../types/Interfaces'
 import PlaylistHelper from '../../../helpers/PlaylistHelper'
 import PlaylistCard from '../../cards/PlaylistCard'
-import { Settings } from '../../../public/icons'
+import { Settings, ArrowD } from '../../../public/icons'
 
 // Define the MyEpisodes component
 export default function MyPlaylists() {
@@ -32,14 +32,16 @@ export default function MyPlaylists() {
   }
 
   return (
-    <Box width="95%" overflow={'hidden'}>
-      {/* Render the heading */}
-      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" justifyContent="space-between" alignItems="center">
-        <span>My Playlists</span>
+    <Box width="100%" overflow={'hidden'}>
+    
+      <Box marginBottom="1em" display="flex" justifyContent="space-between" alignItems="center" width="100%">
+        <Text fontSize="lg" fontWeight="bold">
+        My Playlists
+        </Text>
         <Link href="/Playlist/MyPlaylists" passHref>
-          <IconButton aria-label="Settings" icon={<Settings />} size="lg" variant="ghost" />
+          <IconButton aria-label="Settings" icon={<Settings />} size="14px" variant="minimal" />
         </Link>
-      </Container>
+      </Box>
       {playlists && playlists.length == 0 ? (
         <Text mt={'50px'} fontSize={'18px'} textAlign={'center'}>
           You have not created any Playlists yet
@@ -55,7 +57,7 @@ export default function MyPlaylists() {
           {playlists[(page + 1) * pageSize - 1] != null && (
             <Flex justify="center" mt={4} width={'100%'}>
               <Tooltip label="Load More" placement="top">
-                <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
+                <IconButton aria-label="Load More" icon={<ArrowD />} onClick={handleLoadMoreClick} size="18px" variant="minimal" />
               </Tooltip>
             </Flex>
           )}

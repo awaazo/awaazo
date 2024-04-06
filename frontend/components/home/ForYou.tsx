@@ -32,9 +32,9 @@ const ForYou: React.FC = () => {
     fetchPodcasts()
   }, [])
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const episodeColumnWidth = isMobile ? '100%' : '40%';
-  const snippetColumnWidth = isMobile ? '100%' : '60%';
+  const isMobile = useBreakpointValue({ base: true, md: false })
+  const episodeColumnWidth = isMobile ? '100%' : '40%'
+  const snippetColumnWidth = isMobile ? '100%' : '60%'
 
   return (
     <Box>
@@ -47,15 +47,31 @@ const ForYou: React.FC = () => {
           <Text fontSize="lg" fontWeight="bold" mt={4}>
             Podcasts
           </Text>
-          <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="30px" width={'100%'}>
-            {podcasts.map((podcast) => (
-              <PodcastCard key={podcast.id} podcast={podcast} />
-            ))}
-          </Box>
+          {isMobile ? (
+            <>
+              <Box overflowX="auto" maxWidth="100vw">
+                <Flex width={`${200 * podcasts.length}px`} flexDirection="row">
+                  {podcasts.map((podcast) => (
+                    <PodcastCard key={podcast.id} podcast={podcast} />
+                  ))}
+                </Flex>
+              </Box>
 
-
+              <VStack align="left" width={'100%'} mt={'15px'}>
+                <Text fontSize="lg" fontWeight="bold">
+                  Today's Recommendation
+                </Text>
+                <TodaysRecommendation />{' '}
+              </VStack>
+            </>
+          ) : (
+            <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="10px" width={'100%'}>
+              {podcasts.map((podcast) => (
+                <PodcastCard key={podcast.id} podcast={podcast} />
+              ))}
+            </Box>
+          )}
           <Flex width="100%" alignItems="flex-start" direction={isMobile ? 'column' : 'row'}>
-            {/* Episodes For You */}
             <VStack width={episodeColumnWidth} align="left">
               <Text fontSize="lg" fontWeight="bold" mt={4}>
                 Episodes For You
@@ -63,20 +79,21 @@ const ForYou: React.FC = () => {
               <EpisodesForYou />
             </VStack>
 
-            {/* Snippets and Today's Recommendation */}
-            <VStack width={snippetColumnWidth} alignItems="flex-start" pl={4} >
+            <VStack width={snippetColumnWidth} alignItems="flex-start" pl={4}>
               <VStack align="left">
                 <Text fontSize="lg" fontWeight="bold" mt={4}>
                   Snippets
                 </Text>
                 <Snippets />
               </VStack>
-              <VStack align="left">
-                <Text fontSize="lg" fontWeight="bold" mt={4}>
-                  Today's Recommendation
-                </Text>
-                <TodaysRecommendation />
-              </VStack>
+              {!isMobile && (
+                <VStack align="left">
+                  <Text fontSize="lg" fontWeight="bold" mt={4}>
+                    Today's Recommendation
+                  </Text>
+                  <TodaysRecommendation />
+                </VStack>
+              )}
             </VStack>
           </Flex>
         </>
