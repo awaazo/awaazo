@@ -12,7 +12,7 @@ const Rating: React.FC<RatingProps> = ({ rating }) => {
   const RatingIcon = ratingIcons[ratingIndex];
 
   return (
-    <Flex position="absolute" bottom="3" left="4" align="start" zIndex={2}>
+    <Flex position="absolute" zIndex={2}>
       <Box width="50px" height="20px" lineHeight="0" display="flex" alignItems="flex-start">
         <RatingIcon width="100%" height="100%" style={{ position: 'absolute' }} />
       </Box>
@@ -20,4 +20,4 @@ const Rating: React.FC<RatingProps> = ({ rating }) => {
   );
 };
 
-export default Rating;
+export default Rating
