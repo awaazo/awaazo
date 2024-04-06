@@ -69,6 +69,15 @@ export default class EndpointHelper {
     return this.getBackendAddress() + '/auth/CheckEmail'
   }
 
+    /**
+   * Returns the verify email endpoint.
+   * @returns The Verify Email Endpoint
+   * */
+
+    static getVerifyEmailEndpoint = () => {
+      return this.getBackendAddress() + '/auth/verifyemail'
+    }
+
   // --------------------------------
   // PROFILE ENDPOINTS
   // --------------------------------
