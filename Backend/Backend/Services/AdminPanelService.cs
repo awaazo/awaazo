@@ -182,22 +182,6 @@ public class AdminPanelService
     }
 
     /// <summary>
-    /// Return all current admin recommendations
-    /// </summary>
-    /// <param name="domainUrl"> domainURL is required for responses</param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public async Task<List<adminRecommendationResponse>> GetDailyPodcastRecomendationsAsync(string domainUrl)
-    {
-        var currentRecommendations = await _db.Podcasts
-            .Where(p => p.DailyAdminChoice == true)
-            .Select(p => new adminRecommendationResponse(p, domainUrl))
-            .ToListAsync() ?? throw new Exception("There exists no current admin recommendations");
-
-        return currentRecommendations;
-    }
-
-    /// <summary>
     /// Removes all the daily Admin recommendations
     /// </summary>
     /// <param name="podcasts"> Old/current recommendations that are being removed</param>

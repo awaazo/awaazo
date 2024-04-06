@@ -169,23 +169,6 @@ public class AdminPanelController : ControllerBase
         }
     }
 
-    [HttpGet("Podcast/GetDailyRecomendations")]
-    public async Task<IActionResult> GetDailyPodcastRecomendations()
-    {
-        try
-        {
-            this.LogDebugControllerAPICall(_logger);
-
-            var result = await _adminService.GetDailyPodcastRecomendationsAsync(ControllerHelper.GetDomainUrl(HttpContext));
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            this.LogErrorAPICall(_logger, e);
-            return BadRequest(e.Message);
-        }
-    }
-
     [HttpPost("Podcast/RemoveDailyRecommendations")]
     public async Task<IActionResult> RemoveDailyPodcastRecomendations([FromForm] AdminPodcastRecommendationRemovalRequest request)
     {

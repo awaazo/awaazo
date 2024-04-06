@@ -573,9 +573,7 @@ public class PodcastService : IPodcastService
         List<Podcast> podcasts = await _db.Podcasts.Include(u => u.Ratings).Include(u => u.Episodes).ThenInclude(u => u.Likes).ToListAsync();
 
         // response
-        List<Guid> response = new List<Guid>();
-
-        
+        List<Guid> response = new List<Guid>();      
 
         // if user is not loggedIn return the top rated podcasts
         if (user == null)
@@ -589,7 +587,6 @@ public class PodcastService : IPodcastService
             }
             return response;
         }
-
 
         // Unique Podcasts
 
@@ -681,12 +678,25 @@ public class PodcastService : IPodcastService
 
         // Change the Set type to the list
         response = uniquePodcasts.Skip(page * pageSize).Take(pageSize).ToList();
-        
-        
+             
         // Return the List
         return response;
+    }
 
+    /// <summary>
+    /// Return all current admin recommendations
+    /// </summary>
+    /// <param name="domainUrl"> domainURL is required for responses</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<adminRecommendationResponse>> GetDailyAdminRecomendationsAsync(string domainUrl)
+    {
+        var currentRecommendations = await _db.Podcasts
+            .Where(p => p.DailyAdminChoice == true)
+            .Select(p => new adminRecommendationResponse(p, domainUrl))
+            .ToListAsync() ?? throw new Exception("There exists no current admin recommendations");
 
+        return currentRecommendations;
     }
 
     #endregion Podcast
