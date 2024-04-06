@@ -154,7 +154,9 @@ export default function PodcastOverview({ podcast, User }) {
       {isMobile ? (
         <VStack justify="center" align="center" ml={'15px'} w={'full'}>
           <PodcastHeader />
+          <Box width={"100%"}>
           <CustomTabs tabItems={tabItems} />
+          </Box>
         </VStack>
       ) : (
         <HStack align="start" spacing={'30px'} ml={'5%'} w={'85%'}>

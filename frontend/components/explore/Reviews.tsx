@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Avatar, useBreakpointValue, Text, Textarea, FormControl, Button, VStack, HStack } from '@chakra-ui/react'
-import { StarIcon } from '@chakra-ui/icons'
+import { FaCircle } from 'react-icons/fa6'
 import ReviewsHelper from '../../helpers/ReviewsHelper'
 import { PodcastRatingRequest, PodcastReviewRequest } from '../../types/Requests'
 import AuthPrompt from '../auth/AuthPrompt'
@@ -16,6 +16,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
   const [reviewError, setReviewError] = useState('')
   const [reviews, setReviews] = useState(podcast.ratings)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const ratingColors = ['white', 'az.blue', 'az.green', 'az.yellow', 'az.red']
 
   const fetchAndUpdateReviews = async () => {
     try {
@@ -30,7 +31,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       console.error('Error fetching reviews:', error)
     }
   }
-  
+
   const handleAddReview = async (event) => {
     console.log('Yo')
     event.preventDefault()
@@ -88,7 +89,6 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       <Flex justify="space-between" w="100%" alignItems="center">
         {!isAddingReview && podcast.podcasterId !== currentUserID && (
           <>
-            
             <Button
               onClick={() => {
                 AuthHelper.authMeRequest().then((response) => {
@@ -100,7 +100,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
                   }
                 })
               }}
-              variant={"mini"}
+              variant={'mini'}
             >
               Add Review
             </Button>
@@ -108,22 +108,24 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
         )}
       </Flex>
       {isAddingReview && (
-        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
-          <Flex direction="column" mt={0}>
-            <Flex justify="center">
-              {[1, 2, 3, 4, 5].map((index) => (
-                <StarIcon
-                  key={index}
-                  color={newRating >= index ? 'yellow.400' : 'gray.300'}
-                  cursor="pointer"
-                  onClick={() => setNewRating(index)}
-                  boxSize={5}
-                  margin={2}
-                  data-cy={`star-icon-${index}`}
-                />
-              ))}
-              {reviewError && <Text color="red.500">{reviewError}</Text>}
-            </Flex>
+      <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
+    <Flex direction="column" mt={0}>
+      <Flex justify="center" direction="row">
+        {[1, 2, 3, 4, 5].map((index) => (
+          <Box
+            key={index}
+            as={FaCircle}
+            onClick={() => setNewRating(index)}
+            cursor="pointer"
+            boxSize={3}
+            m={"2px"}
+            color={newRating >= index ? ratingColors[index - 1] : 'gray.300'}
+            _hover={{ color: ratingColors[index - 1] }}
+            data-cy={`star-icon-${index}`}
+          />
+        ))}
+        {reviewError && <Text color="red.500">{reviewError}</Text>}
+      </Flex>
             <FormControl position="relative">
               <Textarea placeholder="Write your review here..." value={newReviewText} onChange={handleReviewChange} mt={4} />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
@@ -155,7 +157,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
                   </Flex>
                   <Box>
                     {Array.from({ length: rating.rating }, (_, index) => (
-                      <StarIcon key={index} color="yellow.400" />
+                      <FaCircle key={index} color="yellow.400" />
                     ))}
                   </Box>
                 </Flex>
