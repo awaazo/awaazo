@@ -1,53 +1,60 @@
-import React, { useState, FormEvent, useEffect, useCallback } from 'react'
-import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import AuthHelper from '../../helpers/AuthHelper'
-import LogoWhite from '../../public/logos/logo_white.svg'
-import { UserProfileSetupRequest } from '../../types/Requests'
-import UserProfileHelper from '../../helpers/UserProfileHelper'
-import { UserMenuInfo } from '../../types/Interfaces'
-import ImageAdder from '../../components/tools/ImageAdder'
-import GenreSelector from '../../components/tools/GenreSelector'
-import withAuth from '../../utilities/authHOC'
+import React, { useState, FormEvent, useEffect, useCallback } from 'react';
+import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, useBreakpointValue, Progress } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import AuthHelper from '../../helpers/AuthHelper';
+import LogoWhite from '../../public/logos/logo_white.svg';
+import { UserProfileSetupRequest } from '../../types/Requests';
+import UserProfileHelper from '../../helpers/UserProfileHelper';
+import { UserMenuInfo } from '../../types/Interfaces';
+import ImageAdder from '../../components/assets/ImageAdder';
+import GenreSelector from '../../components/assets/GenreSelector';
+import withAuth from '../../utilities/authHOC';
+import DisplayNamePage from './setuppages/DisplayNamePage';
+import BioPage from './setuppages/BioPage';
+import InterestsPage from './setuppages/InterestsPage';
+import AvatarPage from './setuppages/AvatarPage';
+import next from 'next';
 
 const ProfileSetup: React.FC = () => {
-  const mainPage = '/'
-  const loginPage = '/auth/Login'
+  const mainPage = '/';
+  const loginPage = '/auth/Login';
 
-  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
-  const [displayName, setDisplayName] = useState('')
-  const [displayNameCharacterCount, setDisplayNameCharacterCount] = useState<number>(0)
-  const [bio, setBio] = useState('')
-  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0)
-  const [selectedInterests, setSelectedInterests] = useState([])
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const [setupError, setSetupError] = useState('')
-  const router = useRouter()
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
+  const [displayName, setDisplayName] = useState('');
+  const [displayNameCharacterCount, setDisplayNameCharacterCount] = useState<number>(0);
+  const [bio, setBio] = useState('');
+  const [bioCharacterCount, setBioCharacterCount] = useState<number>(0);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [setupError, setSetupError] = useState('');
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const router = useRouter();
 
   useEffect(() => {
     // Check to make sure the user has logged in
     AuthHelper.authMeRequest().then((res) => {
       if (res.status == 200) {
-        setUser(res.userMenuInfo)
+        setUser(res.userMenuInfo);
       } else {
-        window.location.href = loginPage
+        window.location.href = loginPage;
       }
-    })
-  }, [router])
+    });
+  }, [router]);
 
   const handleImageAdded = useCallback(async (addedImageUrl: string) => {
     try {
-      const response = await fetch(addedImageUrl)
-      const blob = await response.blob()
-      const file = new File([blob], 'avatar.jpg', { type: blob.type })
-      setAvatarFile(file)
+      const response = await fetch(addedImageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], 'avatar.jpg', { type: blob.type });
+      setAvatarFile(file);
     } catch (error) {
-      console.error('Error converting image URL to File:', error)
+      console.error('Error converting image URL to File:', error);
     }
-  }, [])
+  }, []);
 
   const handleSetup = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Create request object
     const request: UserProfileSetupRequest = {
@@ -55,107 +62,77 @@ const ProfileSetup: React.FC = () => {
       bio: bio,
       interests: selectedInterests,
       displayName: displayName,
-    }
+    };
 
     // Send the request
-    const response = await UserProfileHelper.profileSetupRequest(request)
-    console.log(response)
+    const response = await UserProfileHelper.profileSetupRequest(request);
+    console.log(response);
 
     if (response.status === 200) {
       // Success, go to main page
-      window.location.href = mainPage
+      window.location.href = mainPage;
     } else {
       // Handle error here
-      setSetupError('Avatar, Display Name and Bio Required.')
+      setSetupError('Avatar, Display Name and Bio Required.');
     }
-  }
+  };
 
   const handleInterestClick = (selectedGenres: string[]) => {
     // Update the 'tags' state with the new set of selected genres
-    setSelectedInterests(selectedGenres)
-  }
+    setSelectedInterests(selectedGenres);
+  };
 
   // Ensures display name is not longer than 25 characters
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDisplayName = e.target.value.slice(0, 25)
-    setDisplayName(newDisplayName)
-    setDisplayNameCharacterCount(newDisplayName.length)
-  }
+    e.preventDefault(); // Add this line
+    const newDisplayName = e.target.value.slice(0, 25);
+    setDisplayName(newDisplayName);
+    setDisplayNameCharacterCount(newDisplayName.length);
+  };
 
-  // Ensures bio is not longer than 250 characters
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newBio = e.target.value.slice(0, 250)
-    setBio(newBio)
-    setBioCharacterCount(newBio.length)
-  }
+    e.preventDefault(); // Add this line
+    const newBio = e.target.value.slice(0, 250);
+    setBio(newBio);
+    setBioCharacterCount(newBio.length);
+  };
 
-  /**
-   * Contains the elements of the Setup page
-   * @returns Setup Page content
-   */
-  const SetupPage = () => (
+
+  const nextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const progressBarValue = (currentPage + 1) * (100 / 4); // Assuming there are 4 pages
+
+  return (
     <>
-      <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <Img src={LogoWhite.src} alt="logo" maxHeight="10em" maxWidth="3em" />
-        <Text fontSize="1.5rem" textAlign="center" marginTop="1rem">
-          Hey, @{user.username}! Let's get you set up.
-        </Text>
+      {/* Progress bar */}
+      <Progress value={progressBarValue} size="sm" style={
+        {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: "100%"
+        }
+      }
+        transition={'all 0.5s ease-in-out'}
+      />
 
-        <form onSubmit={handleSetup}>
-          <Stack spacing={6} align={'center'}>
-            <Box mt={4}>
-              <ImageAdder onImageAdded={handleImageAdded} />
-            </Box>
-            {setupError && <Text color="red.500">{setupError}</Text>}
-
-            <FormControl position="relative">
-              <Input id="displayName" placeholder="Display Name" value={displayName} onChange={handleDisplayNameChange} alignSelf="center" />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
-                {displayNameCharacterCount}/25
-              </Text>
-            </FormControl>
-
-            <FormControl position="relative">
-              <Textarea
-                id="bio"
-                placeholder="What's your story?"
-                value={bio}
-                onChange={handleBioChange}
-                width="100%"
-                height="100px"
-                padding="12px"
-                fontSize="16px"
-                borderRadius="18px"
-                resize="vertical"
-              />
-              <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
-                {bioCharacterCount}/250
-              </Text>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel
-                style={{
-                  textAlign: 'center',
-                  padding: '10px',
-                }}
-              >
-                What kind of topics do you like?
-              </FormLabel>
-              <GenreSelector onGenresChange={handleInterestClick} />
-            </FormControl>
-            <Button id="setupBtn" type="submit" variant="gradient">
-              Start Listening
-            </Button>
-          </Stack>
-        </form>
-      </Box>
+      {/* Page content */}
+      {user !== undefined && (
+        <>
+          {currentPage === 0 && <DisplayNamePage username={user.username} displayName={displayName} displayNameCharacterCount={displayNameCharacterCount} handleDisplayNameChange={handleDisplayNameChange} nextPage={nextPage} />}
+          {currentPage === 1 && <AvatarPage handleImageAdded={handleImageAdded} handleSetup={handleSetup} nextPage={nextPage} prevPage={prevPage} />}
+          {currentPage === 2 && <BioPage username={user.username} bio={bio} bioCharacterCount={bioCharacterCount} handleBioChange={handleBioChange} nextPage={nextPage} prevPage={prevPage} />}
+          {currentPage === 3 && <InterestsPage handleInterestClick={handleInterestClick} handleSetup={handleSetup} prevPage={prevPage} nextPage={nextPage} />}
+        </>
+      )}
     </>
-  )
+  );
+};
 
-  if (user !== undefined) {
-    return SetupPage()
-  }
-}
-
-export default withAuth(ProfileSetup)
+export default withAuth(ProfileSetup);

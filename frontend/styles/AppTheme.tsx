@@ -17,7 +17,8 @@ const overrides = {
     az: {
       blue: '#94AFFF',
       green: '#89DBBD',
-      red: '#FF6A5F',
+      red: '#FA6257',
+      lightRed:'#FA7F57',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
       blackish: '#18191B',
@@ -54,7 +55,7 @@ const overrides = {
           animation: 'Gradient 10s infinite linear',
           minWidth: '200px',
         },
-        circle: {
+        play: {
           borderRadius: 'full',
           fontSize: 'md',
           color: 'white',
@@ -63,7 +64,7 @@ const overrides = {
           paddingRight: '2rem',
           backgroundSize: '300% 300%',
           _hover: {
-            background: '#89DBBD',
+            background: '#FA7F57',
           },
         },
         minimal: {
@@ -73,6 +74,55 @@ const overrides = {
             color: '#D1D9DE',
           },
         },
+        large: {
+          display: 'flex',
+          height: '50px',
+          padding: '15px 35px 15px 36px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '15px',
+          background: 'var(--Just-White, #FFF)',
+          fontWeight: '700',
+          fontSize: '15px',
+          color:'#1D1D1D',
+          _hover: {
+            background: 'az.red', 
+            color: 'white', 
+          },
+        },
+        normal: {
+          display: 'flex',
+          height: '37px',
+          padding: '12px 20px 12px 20px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '15px',
+          background: 'var(--Just-White, #FFF)',
+          fontWeight: '700',
+          fontSize: '15px',
+          color:'az.red',
+          _hover: {
+            background: 'az.lightRed', 
+            color: 'white', 
+          },
+        },
+        mini: {
+          display: 'flex',
+          height: '28px',
+          padding: '10px 20px 10px 20px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '10px',
+          background: 'az.darkGrey',
+          fontWeight: '700',
+          fontSize: '12px',
+          color:'white',
+          _hover: {
+            background: 'az.lightRed', 
+            color: 'white', 
+          },
+        },
+        
       },
     },
 
@@ -82,6 +132,44 @@ const overrides = {
         shadow: 'none',
         color: 'az.white',
         fontSize: 'xs',
+      },
+    },
+
+    Input: {
+      sizes: {
+        md: {
+          field: {
+            h: '40px',
+            px: 4,
+            fontSize: '14px',
+          },
+        },
+      },
+      variants: {
+        outline: {
+          field: {
+            borderWidth: '1px',
+            borderRadius: '15px',
+            color: '#ffffff',
+            bg: '#393939',
+            borderColor: 'transparent',
+            _hover: {
+              borderColor: '#FA6257', 
+            },
+            _focus: {
+              borderColor: '#89DBBD',
+              color: '#ffffff',
+              boxShadow: '0 0 0 1px #89DBBD',
+            },
+            _placeholder: {
+              color: '#818990',
+            },
+          },
+        },
+      },
+      defaultProps: {
+        size: 'md',
+        variant: 'outline',
       },
     },
 
@@ -145,12 +233,12 @@ const overrides = {
     Menu: {
       baseStyle: {
         list: {
-          borderRadius: '2xl',
-          backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          borderRadius: '15px',
+          backgroundColor: '#252525',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         },
         item: {
+          fontSize:"14px",
           backgroundColor: 'transparent',
           _focus: {
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -183,11 +271,8 @@ const overrides = {
         },
         authBox: {
           p: 6,
-          bg: 'rgba(255, 255, 255, 0.04)',
-          outline: '2px solid rgba(255, 255, 255, 0.06)',
           backdropFilter: 'blur(10px)',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
-          borderRadius: '3xl',
+          borderRadius: '15px',
           maxW: '400px',
           w: 'full',
           textAlign: 'center',

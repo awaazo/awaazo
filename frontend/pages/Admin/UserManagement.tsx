@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Flex,
   Box,
@@ -17,6 +17,7 @@ import {
   ModalCloseButton,
   Input,
   Textarea,
+  HStack,
 } from '@chakra-ui/react'
 import { AwaazoLogo } from '../../public/icons'
 import AdminSidebar from '../../components/admin/AdminSidebar'
@@ -29,6 +30,9 @@ import { data } from 'cypress/types/jquery'
 
 const UserManagementPage = () => {
   const [selectedUser, setSelectedUser] = useState(null)
+  const [totalUsers, setTotalUsers] = useState(0)
+  const [recentlyAddedUsers, setRecentlyAddedUsers] = useState(0)
+  const [totalPodcasters, setTotalPodcasters] = useState(0)
   const { isOpen: isEmailModalOpen, onOpen: onEmailModalOpen, onClose: onEmailModalClose } = useDisclosure()
   const { isOpen: isBanModalOpen, onOpen: onBanModalOpen, onClose: onBanModalClose } = useDisclosure()
 
@@ -41,6 +45,24 @@ const UserManagementPage = () => {
   const handleUserSelect = (user) => {
     setSelectedUser(user)
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const totalUserResponse = await AdminHelper.adminGetTotalUsers(false)
+      if (totalUserResponse.status == 200) {
+        setTotalUsers(totalUserResponse.userCount)
+      }
+      const totalPodcasterResponse = await AdminHelper.adminTotalPodcaster()
+      if (totalPodcasterResponse.status == 200) {
+        setTotalPodcasters(totalPodcasterResponse.userCount)
+      }
+      const recentlyAddedResponse = await AdminHelper.adminGetRecentlyCreatedUsers(7)
+      if (recentlyAddedResponse.status == 200) {
+        setRecentlyAddedUsers(recentlyAddedResponse.userCount)
+      }
+    }
+    fetchData()
+  }, [])
 
   const handleSendEmail = async () => {
     try {
@@ -79,7 +101,7 @@ const UserManagementPage = () => {
             <UserSearch onSelectUser={handleUserSelect} selectedUser={selectedUser} />
           </Box>
           <VStack flexBasis="45%" ml="15px">
-            {selectedUser && (
+            {selectedUser ? (
               <Box mb={4} display="flex" alignItems="left" width={'100%'}>
                 <VStack width={'100%'}>
                   <Flex width={'100%'}>
@@ -113,6 +135,37 @@ const UserManagementPage = () => {
                   </Flex>
                 </VStack>
               </Box>
+            ) : (
+              <HStack mb={'10px'} width={'100%'}>
+                {/* Total Users */}
+                <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" width="50%" height={'30vh'}>
+                  <Box>
+                    <Text fontSize={'24px'} fontWeight={'bold'} color={'az.red'}>
+                      Total Users: {totalUsers}
+                    </Text>
+                    <Text fontSize={'14px'} color={'gray'}>
+                      These are active users who have not been banned or deleted.
+                    </Text>
+                    <Text fontSize={'20px'} fontWeight={'bold'} color={'az.yellow'} mt={4}>
+                      {recentlyAddedUsers} Users Joined Last Week
+                    </Text>
+                    <Text fontSize={'14px'} color={'gray'}>
+                      These new users consitute {((recentlyAddedUsers / totalUsers) * 100).toFixed(2)}% of the total User Base
+                    </Text>
+                  </Box>
+                </Box>
+                {/* Total Podcasters */}
+                <Box flex="1" overflow="auto" bg="rgba(129, 137, 144, 0.1)" borderRadius="20px" p="15px" width="50%" ml={'15px'} height={'30vh'}>
+                  <Box>
+                    <Text fontSize={'24px'} fontWeight={'bold'} color={'az.red'}>
+                      Total Podcasters: {totalPodcasters}
+                    </Text>
+                    <Text fontSize={'14px'} color={'gray'}>
+                      These are users who own or have created at least one podcast.
+                    </Text>
+                  </Box>
+                </Box>
+              </HStack>
             )}
             <Box width="100%" height={'85vh'}>
               <BannedUsers inDashboard={false} refresh={refresh} />

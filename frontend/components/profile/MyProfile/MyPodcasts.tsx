@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Container, Spinner } from '@chakra-ui/react'
+import { Box, Button, Stack, Grid, useBreakpointValue, Text, Flex, IconButton, Tooltip, Spinner } from '@chakra-ui/react'
 import { Settings } from '../../../public/icons'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
@@ -47,12 +47,14 @@ export default function Podcasts() {
 
   return (
     <>
-      <Container marginBottom="1em" fontSize="1.5em" fontWeight="bold" display="flex" justifyContent="space-between" alignItems="center">
-        <span>My Podcasts</span>
+      <Box marginBottom="1em" display="flex" justifyContent="space-between" alignItems="center" width="100%">
+        <Text fontSize="lg" fontWeight="bold">
+          My Podcasts
+        </Text>
         <Link href="/CreatorHub/" passHref>
-          <IconButton aria-label="Settings" icon={<Settings />} size="lg" variant="ghost" />
+          <IconButton aria-label="Settings" icon={<Settings />} size="14px" variant="minimal" />
         </Link>
-      </Container>
+      </Box>
       {isLoading ? (
         <Flex justifyContent="center" alignItems="center" height="100px">
           <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
@@ -66,7 +68,7 @@ export default function Podcasts() {
           )}
 
           {podcasts && podcasts.length === 0 ? (
-            <Text mt={'50px'} fontSize={'18px'} textAlign={'center'}>
+            <Text mt={'50px'} fontSize={'md'} textAlign={'center'} color={'az.greyish'}>
               You have not created any podcasts yet.
             </Text>
           ) : (

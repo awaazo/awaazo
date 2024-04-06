@@ -233,6 +233,10 @@ export interface GetUsersResponse extends BaseResponse {
   users: User[]
 }
 
+export interface GetUserCountResponse extends BaseResponse {
+  userCount: number
+}
+
 export interface GetEmailLogs extends BaseResponse {
   emails: Email[]
 }

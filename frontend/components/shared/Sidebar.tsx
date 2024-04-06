@@ -3,7 +3,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Box, Flex, Icon, Image, VStack, Text, Tooltip, IconButton, useBreakpointValue, HStack, Avatar } from '@chakra-ui/react'
 import Link from 'next/link'
 import { DefaultSession } from 'next-auth'
-import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL, Logout, Settings, Wallet } from '../../public/icons'
+import { Home, Search, Add, Cards, AwaazoA, ArrowR, ArrowL, Logout, Settings, Wallet, User } from '../../public/icons'
 import { useRouter } from 'next/router'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import { Playlist } from '../../types/Interfaces'
@@ -180,6 +180,9 @@ const Sidebar = () => {
           <Link href="/Playlist/" passHref>
             <IconButton icon={<Cards />} variant="ghost" aria-label="Playlist" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
           </Link>
+          <Link href="/profile/MyProfile" passHref>
+            <IconButton icon={<User />} variant="ghost" aria-label="Users" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
+          </Link>
         </HStack>
       </Box>
     )
@@ -221,7 +224,7 @@ const Sidebar = () => {
 
         <Flex justify="center" align="center" mb={7}>
           {collapsed ? (
-              <Flex align="center">
+            <Flex align="center">
               <Box position="relative" w="25px" h="25px">
                 <Icon as={AwaazoA} position="absolute" top="0" left="0" w="25px" h="25px" />
               </Box>
@@ -230,7 +233,23 @@ const Sidebar = () => {
           ) : (
             <Flex align="center">
               <Icon as={AwaazoA} w="12px" h="12px" ml="0" mb={'6'} color={'az.red'} />
-              {typeof user === 'function' ? <Avatar size={'sm'} src={''} onClick={() => window.location.href = '/profile/MyProfile'} _hover={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)', transform: 'scale(1.1)', transition: 'transform 0.5s ease-in-out' }} /> : <Avatar size={'md'} src={user.avatarUrl} boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)" onClick={() => window.location.href = '/profile/MyProfile'} _hover={{ boxShadow: '0px 0px 41.599998474121094px rgba(255, 255, 255, 0.7)', transition: 'all 0.5s ease-in-out' }} transition= 'all 0.5s ease-in-out'/>}
+              {typeof user === 'function' ? (
+                <Avatar
+                  size={'sm'}
+                  src={''}
+                  onClick={() => (window.location.href = '/profile/MyProfile')}
+                  _hover={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)', transform: 'scale(1.1)', transition: 'transform 0.5s ease-in-out' }}
+                />
+              ) : (
+                <Avatar
+                  size={'md'}
+                  src={user.avatarUrl}
+                  boxShadow="0px 0px 41.599998474121094px rgba(255, 255, 255, 0.25)"
+                  onClick={() => (window.location.href = '/profile/MyProfile')}
+                  _hover={{ boxShadow: '0px 0px 41.599998474121094px rgba(255, 255, 255, 0.7)', transition: 'all 0.5s ease-in-out' }}
+                  transition="all 0.5s ease-in-out"
+                />
+              )}
             </Flex>
           )}
         </Flex>
@@ -321,7 +340,7 @@ const Sidebar = () => {
 
             {/* User Playlists */}
             {!showLoginPrompt && userPlaylists.length > 0 && (
-              <VStack align="left" spacing={1} mt={4} maxH='calc(100vh - 10em - 20em' overflowY="auto">
+              <VStack align="left" spacing={1} mt={4} maxH="calc(100vh - 10em - 20em" overflowY="auto">
                 {userPlaylists.map((playlist) => (
                   <Link href={`/Playlist/${playlist.id}`} key={playlist.id} passHref>
                     <Flex align="center" padding={1} pl={2} borderRadius="5px" _hover={{ bg: 'rgba(255, 255, 255, 0.05)' }}>
@@ -334,7 +353,11 @@ const Sidebar = () => {
                         borderRadius="8"
                         key={playlist.lastUpdated}
                       />
-                      {!collapsed && <Text data-cy={`playlist-${playlist.name}`} fontSize={'sm'} >{playlist.name}</Text> }
+                      {!collapsed && (
+                        <Text data-cy={`playlist-${playlist.name}`} fontSize={'sm'}>
+                          {playlist.name}
+                        </Text>
+                      )}
                     </Flex>
                   </Link>
                 ))}
@@ -342,16 +365,15 @@ const Sidebar = () => {
             )}
           </Box>
 
-          <Box p={1}   width={'100%'} position="absolute" bottom="5">
-
+          <Box p={1} width={'100%'} position="absolute" bottom="5">
             {/* Wallet */}
-          <Link href="/Wallet" passHref>
+            <Link href="/Wallet" passHref>
               <Flex
                 as={Flex}
                 align="center"
                 p="2"
                 mb="1"
-                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                color={router.pathname === '/Wallet' ? 'az.red' : 'grey.700'}
                 transition="color 0.4s ease-in-out"
                 _hover={{ textDecoration: 'none', color: 'az.red' }}
               >
@@ -384,25 +406,24 @@ const Sidebar = () => {
             </Link>
 
             {/* logout */}
-              <Flex
-                as={Flex}
-                align="center"
-                p="2"
-                mb="1"
-                borderRadius="md"
-                color={router.pathname === '/Explore/Search' ? 'az.red' : 'white'}
-                transition="color 0.4s ease-in-out"
-                _hover={{ textDecoration: 'none', color: 'az.red' }}
-                onClick={handleLogOut}
-              >
-                <Icon as={Logout} fontSize="18px" mr={3} />
-                {!collapsed && (
-                  <Box flex="1" fontWeight="medium" data-cy={`explore-icon`}>
-                    Logout
-                  </Box>
-                )}
-              </Flex>
-            
+            <Flex
+              as={Flex}
+              align="center"
+              p="2"
+              mb="1"
+              borderRadius="md"
+              color={router.pathname === '/Explore/Search' ? 'az.red' : 'white'}
+              transition="color 0.4s ease-in-out"
+              _hover={{ textDecoration: 'none', color: 'az.red' }}
+              onClick={handleLogOut}
+            >
+              <Icon as={Logout} fontSize="18px" mr={3} />
+              {!collapsed && (
+                <Box flex="1" fontWeight="medium" data-cy={`explore-icon`}>
+                  Logout
+                </Box>
+              )}
+            </Flex>
           </Box>
         </VStack>
         <ViewQueueModal isOpen={isQueueModalOpen} onClose={onQueueModalClose} />

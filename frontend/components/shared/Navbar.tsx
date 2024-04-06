@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { DefaultSession } from 'next-auth'
-import { Box, Flex, Avatar, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup, useBreakpointValue, Spacer } from '@chakra-ui/react'
-import { HamburgerIcon } from '@chakra-ui/icons'
+import { Box, Flex, IconButton, Button, HStack, useBreakpointValue, Spacer } from '@chakra-ui/react'
 import { ArrowL, ArrowR } from '../../public/icons'
 import AuthHelper from '../../helpers/AuthHelper'
 import Notifications from '../notification/Notifications'
@@ -128,18 +127,14 @@ export default function Navbar() {
   
 
   const LoggedOutMenu = () => (
-    <Menu>
-      <MenuButton menu-id="menuBtn" aria-label="Menu" data-cy={`navbar-hamburger`} as={Button} variant={'link'} cursor={'pointer'}>
-        <HamburgerIcon />
-      </MenuButton>
-      <MenuList>
-        <MenuItem id="loginBtn" onClick={() => (window.location.href = loginPage)}>
-          Login
-        </MenuItem>
-        <MenuDivider />
-        <MenuItem onClick={() => (window.location.href = signupPage)}>Sign up</MenuItem>
-      </MenuList>
-    </Menu>
+    <HStack spacing={4}>
+      <Button id="loginBtn" onClick={() => (window.location.href = loginPage)} colorScheme="green" size="sm" fontWeight="700" borderRadius="10px">
+        Login
+      </Button>
+      <Button onClick={() => (window.location.href = signupPage)} colorScheme="yellow" size="sm" fontWeight="700" borderRadius="10px">
+        Sign up
+      </Button>
+    </HStack>
   )
 
   return (

@@ -75,7 +75,7 @@ const TodaysRecommendation: React.FC = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : (
-        <Box width={'50vw'} height={'30vh'} position="relative" margin="1em">
+        <Box width={isMobile ? '100vw' : '50vw'} height={isMobile ? '25vh' : '30vh'} position="relative" margin="1em">
           <Link href={`/Explore/${podcast[0].id}`} passHref>
             <Flex
               direction="column"

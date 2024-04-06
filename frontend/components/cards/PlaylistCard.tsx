@@ -1,55 +1,74 @@
 import React from 'react'
-import { Box, Flex, HStack, Text, Image } from '@chakra-ui/react'
+import { Box, HStack, Text, Image, VStack, Icon, IconButton } from '@chakra-ui/react'
 import { convertTime } from '../../utilities/commonUtils'
 import PlaylistMenu from '../playlist/PlaylistMenu'
 import LikedEpisodesImage from '../../styles/images/LikedEpisodes.png'
-import { Time, Plays, Lock, Unlock } from '../../public/icons'
+import { Time, Plays, Lock, Unlock, Play } from '../../public/icons'
+import { usePlayer } from '../../utilities/PlayerContext'
 
 const PlaylistCard = ({ playlist }) => {
   const playlistImage = playlist.name === 'Liked Episodes' ? LikedEpisodesImage.src : playlist.coverArt
+  const { dispatch } = usePlayer()
+
+  const handlePlaylistClick = () => {
+    dispatch({
+      type: 'PLAY_PLAYLIST_NOW',
+      payload: playlist,
+    })
+  }
 
   return (
-    <Flex p={3} mt={3} width="100%" borderRadius="15px" bg={'az.darkGrey'}>
-      <Flex direction="column" flex={1}>
-        <Flex justifyContent="space-between" mb={2} align="center">
-          <Box mr={3} borderRadius="10px" overflow={'hidden'}>
-            <Image src={playlistImage} alt={playlist.name} width={100} height={100} />
-          </Box>
-
-          <Box flex={1}>
-            <Text fontWeight="bold" fontSize="20px" color="white" mb={1}>
-              {playlist.name}
+    <HStack
+      p="8px 10px"
+      alignItems="center"
+      borderRadius="15px"
+      bg="az.darkerGrey"
+      _hover={{
+        bg: 'az.darkestGrey',
+      }}
+      transition="all 0.5s ease-in-out"
+      spacing={11}
+      w="100%"
+    >
+      <Image src={playlistImage} alt={playlist.name} objectFit="cover" width="80px" height="80px" borderRadius="10px" />
+      <VStack spacing={0} w="full" align="flex-start">
+        <VStack align="start" spacing={0}>
+          <Text fontSize="md" fontWeight="bold" color="az.white" noOfLines={2} mb="-1">
+            {playlist.name}
+          </Text>
+          <Text fontSize="xs" fontWeight="medium" color="az.greyish" noOfLines={1}>
+            {playlist.description}
+          </Text>
+        </VStack>
+        <HStack justify="space-between">
+          <HStack spacing={1}>
+            <Icon as={Plays} color="az.greyish" boxSize={3} />
+            <Text color="az.greyish" fontSize="xs">
+              {playlist.numberOfEpisodes}
             </Text>
-            <Text fontSize="16px" color="grey">
-              {playlist.description}
+          </HStack>
+          <HStack spacing={1}>
+            <Icon as={Time} color="az.greyish" boxSize={3} />
+            <Text color="az.greyish" fontSize="xs">
+              {convertTime(playlist.duration)}
             </Text>
-
-            <HStack textAlign="left" mt={'5px'}>
-              <Flex align="center" color="grey" mr="10px">
-                <Plays />
-                <Text fontSize="16px" ml="1">
-                  {playlist.numberOfEpisodes}
-                </Text>
-              </Flex>
-              <Flex align="center" color="grey">
-                <Time />
-                <Text fontSize="16px" ml="1" mr="15px">
-                  {convertTime(playlist.duration)}
-                </Text>
-              </Flex>
-              <Text fontSize="16px" color="white">
-                {playlist.privacy === 'public' ? <Unlock /> : <Lock />}
-              </Text>
-            </HStack>
-          </Box>
-
-          {/* Playlist Menu */}
-          <Box ml={3} textAlign="center" zIndex={5}>
-            <PlaylistMenu playlist={playlist} onUpdate={null} />
-          </Box>
-        </Flex>
-      </Flex>
-    </Flex>
+          </HStack>
+          <HStack spacing={1}>
+          {playlist.privacy === 'public' ? 
+        <Icon as={Unlock} color="az.green" boxSize={3} /> : 
+        <Icon as={Lock} color="az.red" boxSize={3} />
+      }
+            
+          </HStack>
+        </HStack>
+      </VStack>
+      
+      {/* Playlist Menu */}
+      <HStack textAlign="center" >
+      <IconButton aria-label="Play" icon={<Play width="12px" />} variant="play" background="az.red" minWidth="2em" width="30px" height="30px" onClick={handlePlaylistClick} />
+        <PlaylistMenu playlist={playlist} onUpdate={null} />
+      </HStack >
+    </HStack>
   )
 }
 

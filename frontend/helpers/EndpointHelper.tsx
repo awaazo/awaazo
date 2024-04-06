@@ -729,7 +729,15 @@ export default class EndpointHelper {
   static getRejectReportEndpoint = (reportId) => {
     return this.getBackendAddress() + '/admin/rejectReport/' + reportId
   }
-
+  static getRecentlyCreatedUserCount = (daySinceCreation) => {
+    return this.getBackendAddress() + '/admin/GetRecentlyCreatedUserCount/?daySinceCreation=' + daySinceCreation
+  }
+  static getTotalUsers = (withDeleted) => {
+    return this.getBackendAddress() + '/admin/GetTotalUsers?withDeleted=' + withDeleted
+  }
+  static getTotalPodcaster = () => {
+    return this.getBackendAddress() + '/admin/GetTotalAmountOfPodcasters'
+  }
   // --------------------------------
   // Report ENDPOINTS
   // --------------------------------
