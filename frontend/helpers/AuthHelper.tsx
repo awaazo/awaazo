@@ -284,6 +284,45 @@ export default class AuthHelper {
         }
     }
 
+    public static verifyEmail = async (token: string): Promise<BaseResponse> => {
+        // Create the request options.
+        const options =
+        {
+            method: 'GET',
+            url: EndpointHelper.getVerifyEmailEndpoint(),
+            data: { token: token },
+            headers:
+            {
+                accept: '*/*',
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        }
+        try {
+            console.debug("Sending the following getVerifyEmailEndpoint...");
+            console.debug(options);
+
+            // Send the request and wait for the response.
+            const requestResponse = await axios(options);
+
+            console.debug("Received the following getVerifyEmailEndpoint...");
+            console.debug(requestResponse);
+
+            // Return the response
+            return {
+                status: requestResponse.status,
+                message: requestResponse.statusText
+            }
+        }
+        catch (error) {
+
+            return {
+                status: error.response.status,
+                message: error.response.statusText
+            }
+        }
+    }
+
 
 
 
