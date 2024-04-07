@@ -181,6 +181,35 @@ const overrides = {
       },
     },
 
+    Textarea: {
+      variants: {
+        outline: {
+        maxHeight: '200px',
+        borderRadius: '15px', 
+        padding: '16px', 
+        backgroundColor: 'az.darkestGrey', 
+        color: 'white', 
+        border: '2px solid', 
+        borderColor: 'transparent', 
+        _hover: {
+          borderColor: '#FA6257', 
+        },
+        _focus: {
+          borderColor: '#89DBBD',
+          color: '#ffffff',
+          boxShadow: '0 0 0 1px #89DBBD',
+        },
+        _placeholder: {
+          color: '#818990',
+        },
+      },
+    },
+      defaultProps: {
+        variant: 'outline',
+      },
+    },
+
+
     Tabs: {
       variants: {
         withIconOnSelected: (props) => ({
@@ -232,11 +261,7 @@ const overrides = {
       variants: {},
     },
 
-    Textarea: {
-      baseStyle: {
-        maxHeight: '200px',
-      },
-    },
+  
 
     Menu: {
       baseStyle: {

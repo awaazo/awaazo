@@ -112,7 +112,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       </Flex>
 
       {isAddingReview && (
-        <Box w="100%" p={4} py={6} bg={'az.darkestGrey'} borderRadius="15px">
+        <Box w="100%" p={4} py={6} bg={'az.darkerGrey'} borderRadius="15px">
           <Flex direction="column" mt={0}>
             <HStack justifyContent={'space-between'} width={'full'}>
               <IconButton onClick={() => setIsAddingReview(false)} icon={<IoClose />} aria-label="Close Review" variant={'minimal'} size="lg" style={{ position: 'relative', top: '-8px' }} />
@@ -163,14 +163,14 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       {podcast.ratings && podcast.ratings.length > 0 ? (
         podcast.ratings.map((rating) =>
             rating && rating.user && (
-              <Box key={rating.id} w="100%" p={4} bg={'az.darkerGrey'} borderRadius="15px">
+              <Box key={rating.id} w="100%" p={4} bg={'az.darkestGrey'} borderRadius="15px">
                 <Flex justify="space-between" align="center">
                   <Flex align="center" position="relative">
                     <Box position="absolute" zIndex={2} left="-5px" top="0px" color={"az.red"}>
                       <AwaazoA fontSize={'15px'} />
                     </Box>
                     <Avatar size="md" name={rating.user.username} src={rating.user.avatarUrl} />
-                    <Text ml={2}>{rating.user.username}</Text>
+                    <Text ml={2} fontWeight="bold" fontSize="md">{rating.user.username}</Text>
                   </Flex>
                   <Rating rating={rating.rating} />
                 </Flex>
