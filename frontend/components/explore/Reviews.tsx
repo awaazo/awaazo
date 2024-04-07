@@ -18,6 +18,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const ratingColors = ['white', 'az.blue', 'az.green', 'az.yellow', 'az.red']
   const [hoverRating, setHoverRating] = useState(null)
+  
   const fetchAndUpdateReviews = async () => {
     try {
       const response = await ReviewsHelper.getPodcastById(podcast.id)
