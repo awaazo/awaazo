@@ -68,45 +68,44 @@ export default function Header() {
 
   return (
     <>
-      <VStack width={'100%'} spacing={4} marginBottom={'2em'} ml={isMobile ? '25px' : '0px'}>
-        <VStack spacing={'14px'} alignItems={'flex-start'}>
-          <HStack alignItems={'flex-start'} width="100%">
-            <Box position="relative">
-              <Avatar boxShadow="xl" width="73px" height="73px" src={profile?.avatarUrl} />
-              <Box position="absolute" top="50px" right="7">
-                <IconButton
-                  aria-label="Decorative Icon"
-                  icon={<AwaazoA fontSize={'22px'} />}
-                  position="absolute"
-                  bottom={5}
-                  right={5}
-                  variant="ghost"
-                  onClick={() => router.push('/profile/EditProfile')}
-                  color="az.red"
-                  _hover={{ color: 'az.lightRed' }}
-                  data-cy={`edit_profile_button`}
-                />{' '}
-                <IconButton aria-label="Edit Profile" icon={<Pen fontSize={'11px'} />} position="absolute" bottom={'22px'} right={'19px'} pointerEvents="none" variant="ghost" color="white" />
-              </Box>
+      <VStack spacing={'14px'} alignItems={'flex-start'} width={'100%'}>
+        <HStack alignItems={'center'} width="100%">
+          <Box position="relative">
+            <Avatar boxShadow="xl" width="73px" height="73px" src={profile?.avatarUrl} />
+            <Box position="absolute" top="50px" right="7">
+              <IconButton
+                aria-label="Decorative Icon"
+                icon={<AwaazoA fontSize={'22px'} />}
+                position="absolute"
+                bottom={5}
+                right={5}
+                variant="ghost"
+                onClick={() => router.push('/profile/EditProfile')}
+                color="az.red"
+                _hover={{ color: 'az.lightRed' }}
+                data-cy={`edit_profile_button`}
+              />{' '}
+              <IconButton aria-label="Edit Profile" icon={<Pen fontSize={'11px'} />} position="absolute" bottom={'22px'} right={'19px'} pointerEvents="none" variant="ghost" color="white" />
             </Box>
-            <VStack align="start" spacing={1}>
-              <Heading textAlign={{ base: 'left', sm: 'left' }} margin="0 auto" fontSize={{ base: 'xl', sm: 'lg' }}>
-                {profile?.displayName}
-              </Heading>
-              <Text fontSize="md" color={'az.greyish'} fontWeight={'bold'}>
-                @{profile?.username}
-              </Text>
-            </VStack>
-          </HStack>
+          </Box>
+          <VStack align="start" spacing={1}>
+            <Heading textAlign={{ base: 'left', sm: 'left' }} margin="0 auto" fontSize={{ base: 'xl', sm: 'lg' }}>
+              {profile?.displayName}
+            </Heading>
+            <Text fontSize="md" color={'az.greyish'} fontWeight={'bold'} mt={-1}>
+              @{profile?.username}
+            </Text>
+          </VStack>
+        </HStack>
 
-          <Text textAlign="right" color="grey">
-            {profile?.bio}
-          </Text>
+        <Text textAlign="right" color="grey">
+          {profile?.bio}
+        </Text>
 
-          <MetricDisplay metrics={metrics} />
-        </VStack>
-        <Box w="100%" mt={'16px'} >
-          <Text fontWeight="bold" fontSize="md" mb="15px">
+        <MetricDisplay metrics={metrics} />
+
+        <Box w="100%" mt={'16px'}>
+          <Text fontWeight="bold" fontSize="lg" mb="15px">
             Your Listening Habits:
           </Text>
           {averageWatchTime || totalWatchTime || topGenre || (mostWatchedPodcast && mostWatchedPodcast.length > 0) ? (

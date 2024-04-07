@@ -254,8 +254,8 @@ const overrides = {
           alignItems: 'center',
         },
         header: {
-          fontWeight: 'light',
-          fontSize: '1.5em',
+          fontWeight: 'medium',
+          fontSize: 'lg',
         },
 
         closeButton:{

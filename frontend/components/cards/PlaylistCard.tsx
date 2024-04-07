@@ -1,9 +1,10 @@
 import React from 'react'
-import { Box, HStack, Text, Image, VStack, Icon, IconButton } from '@chakra-ui/react'
+import { HStack, Text, Image, VStack, Icon, IconButton } from '@chakra-ui/react'
 import { convertTime } from '../../utilities/commonUtils'
 import PlaylistMenu from '../playlist/PlaylistMenu'
 import LikedEpisodesImage from '../../styles/images/LikedEpisodes.png'
-import { Time, Plays, Lock, Unlock, Play } from '../../public/icons'
+import { Time, Plays, Play } from '../../public/icons'
+import { TiLockClosed , TiLockOpen } from "react-icons/ti";
 import { usePlayer } from '../../utilities/PlayerContext'
 
 const PlaylistCard = ({ playlist }) => {
@@ -55,8 +56,8 @@ const PlaylistCard = ({ playlist }) => {
           </HStack>
           <HStack spacing={1}>
           {playlist.privacy === 'public' ? 
-        <Icon as={Unlock} color="az.green" boxSize={3} /> : 
-        <Icon as={Lock} color="az.red" boxSize={3} />
+        <Icon as={TiLockOpen} color="az.green" boxSize={4} /> : 
+        <Icon as={TiLockClosed} color="az.red" boxSize={4} />
       }
             
           </HStack>

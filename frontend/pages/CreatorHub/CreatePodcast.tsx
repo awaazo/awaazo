@@ -110,11 +110,7 @@ export default function CreatePodcast() {
     <>
       <Center paddingBottom={"1em"}>
         <VStack mt={"3em"}>
-          <Heading fontWeight={"normal"}>Create a New Podcast</Heading>
-
-          <Text fontSize="3xl" role="img" aria-label="giant emoji">
-            ✨🎙️✨
-          </Text>
+          <Heading fontWeight={"bold"}>Create a New Podcast</Heading>
         </VStack>
       </Center>
       <CreatePodcastHeader />
