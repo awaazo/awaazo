@@ -245,10 +245,9 @@ const overrides = {
     Modal: {
       baseStyle: (props) => ({
         dialog: {
-          borderRadius: '3xl',
-          backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          borderRadius: '15px',
+          backgroundColor: '#18191B',
+          boxShadow:'#18191',
           padding: '2em',
           mx: 'auto',
           my: 'auto',
@@ -257,6 +256,13 @@ const overrides = {
         header: {
           fontWeight: 'light',
           fontSize: '1.5em',
+        },
+
+        closeButton:{
+          bg: 'transparent',
+          _hover: {
+            color: '#818990',
+          },
         },
       }),
       variants: {},
