@@ -73,10 +73,9 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           <PodcastImage coverArtUrl={podcast.coverArtUrl} name={podcast.name} />
           {/* Gradient Overlay */}
           <Box position="absolute" top={0} left={0} right={0} bottom={0} bgGradient="linear(to-t, rgba(0, 0, 0, 0.5), transparent)" zIndex="1" />
-          <Box position="absolute" left="2" bottom="8">
-            <Rating rating={podcast.averageRating} />
+          <Box position="absolute" left="2" bottom="4" zIndex="3">
+            <Rating rating={podcast.averageRating}  />
           </Box>
-
           <PodcastNameAndTags name={podcast.name} description={podcast.description} />
           <PodcastType type={podcast.type} />
         </Flex>

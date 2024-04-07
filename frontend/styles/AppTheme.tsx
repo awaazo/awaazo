@@ -50,7 +50,7 @@ const overrides = {
           padding: '20px',
           paddingLeft: '2rem',
           paddingRight: '2rem',
-          background: 'linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)',
+          background: 'linear-gradient(45deg, #FA6257, #FFD569)',
           backgroundSize: '300% 300%',
           animation: 'Gradient 10s infinite linear',
           minWidth: '200px',
@@ -74,6 +74,14 @@ const overrides = {
             color: '#D1D9DE',
           },
         },
+        minimalColor: {
+          bg: 'transparent',
+          _hover: {
+            bg: 'transparent',
+            color: 'az.red',
+          },
+        },
+     
         large: {
           display: 'flex',
           height: '50px',

@@ -71,16 +71,13 @@ export default function PodcastOverview({ podcast, User }) {
       <HStack spacing={'12px'} width={'100%'} align={'start'}>
         <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" />
         <VStack align="start" spacing={'8px'} width={'100%'} justify="space-between">
-          <HStack width={'full'} justify="space-between">
+          <HStack width={'full'} justify="space-between" pr={"12px"}>
             <Text fontSize={'lg'} fontWeight={'bold'}>
               {podcast.name}
             </Text>
-            <HStack spacing={'10px'}>
-              <Box maxWidth="200px" position={'relative'} top={'-2'} right={'9'}>
-                <Rating rating={podcast.totalRatings} />
-              </Box>
-              <Box></Box>
-            </HStack>
+            
+            <Rating rating={podcast.totalRatings} />
+          
           </HStack>
           <VStack align="start">
             <Description />
@@ -93,7 +90,7 @@ export default function PodcastOverview({ podcast, User }) {
   )
 
   const Description = () => {
-    const maxCharCount = 150 // Set your desired character count threshold
+    const maxCharCount = 150
     const isLongDescription = podcast.description.length > maxCharCount
     const truncatedDescription = podcast.description.slice(0, maxCharCount) + '...'
 
@@ -121,6 +118,7 @@ export default function PodcastOverview({ podcast, User }) {
       </Box>
     )
   }
+
   const TagList = ({ tags }) => {
     return (
       <HStack>
