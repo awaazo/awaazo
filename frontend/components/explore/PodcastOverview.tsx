@@ -76,14 +76,10 @@ export default function PodcastOverview({ podcast, User }) {
               {podcast.name}
             </Text>
             <HStack spacing={'10px'}>
-              <Box maxWidth="200px" position={"relative"} top={"-3"} right={"9"}>
+              <Box maxWidth="200px" position={'relative'} top={'-2'} right={'9'}>
                 <Rating rating={podcast.totalRatings} />
               </Box>
-              <Box>
-                <Link href="/CreatorHub" passHref>
-                  <IconButton aria-label="Settings" icon={<Settings />} variant="minimal" size="md" p={'0'} />
-                </Link>
-              </Box>
+              <Box></Box>
             </HStack>
           </HStack>
           <VStack align="start">
@@ -92,7 +88,7 @@ export default function PodcastOverview({ podcast, User }) {
           </VStack>
         </VStack>
       </HStack>
-      <Metrics />
+      <Metrics_Subscribe />
     </VStack>
   )
 
@@ -143,19 +139,26 @@ export default function PodcastOverview({ podcast, User }) {
     )
   }
 
-  const Metrics = () => (
+  const Metrics_Subscribe = () => (
     <HStack bg={'az.darkestGrey'} width={'100%'} justify="space-between" px={4} py={2} borderRadius={'10'}>
       <MetricDisplay metrics={metrics} />
       <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} podcasterId={podcast.podcasterId} currentUserID={currentUserID} />
+
+      {podcast.podcasterId === currentUserID && (
+        <Link href="/CreatorHub" passHref>
+          <IconButton aria-label="Settings" icon={<Settings />} variant="minimalColor" size="md" p={'0'} />
+        </Link>
+      )}
     </HStack>
   )
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center" width={'100%'}>
       {isMobile ? (
         <VStack justify="center" align="center" ml={'15px'} w={'full'}>
           <PodcastHeader />
-          <Box width={"100%"}>
-          <CustomTabs tabItems={tabItems} />
+          <Box width={'100%'}>
+            <CustomTabs tabItems={tabItems} />
           </Box>
         </VStack>
       ) : (
