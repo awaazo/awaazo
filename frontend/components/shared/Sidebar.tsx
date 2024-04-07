@@ -50,25 +50,26 @@ const Sidebar = () => {
   const handleReload = () => {
     setReload(!reload)
   }
-
   const handleLogOut = async () => {
-    try {
-      // Wait for the logout request to complete
-      await AuthHelper.authLogoutRequest()
-      console.log('Logout successful')
-      if (session) {
-        await signOut()
+    if (window.confirm('Are you sure you want to log out?')) {
+      try {
+        // Wait for the logout request to complete
+        await AuthHelper.authLogoutRequest()
+        console.log('Logout successful')
+        if (session) {
+          await signOut()
+        }
+
+        // Set Logged In Status to false
+        setIsUserLoggedIn(false)
+        setIsUserSet(false)
+
+        // Redirect to the index page
+        window.location.href = indexPage
+      } catch (error) {
+        // Handle any errors that occur during logout
+        console.error('Logout failed', error)
       }
-
-      // Set Logged In Status to false
-      setIsUserLoggedIn(false)
-      setIsUserSet(false)
-
-      // Redirect to the index page
-      window.location.href = indexPage
-    } catch (error) {
-      // Handle any errors that occur during logout
-      console.error('Logout failed', error)
     }
   }
 
@@ -434,7 +435,7 @@ const Sidebar = () => {
               p="2"
               mb="1"
               borderRadius="md"
-              color={router.pathname === '/Explore/Search' ? 'az.red' : 'white'}
+              color={'az.yellow'}
               transition="color 0.4s ease-in-out"
               _hover={{ textDecoration: 'none', color: 'az.red' }}
               onClick={handleLogOut}
