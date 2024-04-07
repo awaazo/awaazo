@@ -312,7 +312,7 @@ const Sidebar = () => {
                   {' '}
                   <Tooltip label="View Queue" fontSize="xs" placement="top" openDelay={1000}>
                     <span>
-                      <IconButton icon={<PiQueueFill />} variant="minimal" color="az.greyish" aria-label="View Queue" fontSize={'15px'} onClick={onQueueModalOpen} data-cy={`queue-button`} />{' '}
+                      <IconButton icon={<PiQueueFill />} variant="minimal"  aria-label="View Queue" fontSize={'15px'} onClick={onQueueModalOpen} data-cy={`queue-button`} />{' '}
                     </span>
                   </Tooltip>
                   {/* Conditionally rendering the create playlist button only when login prompt is not visible */}
@@ -322,7 +322,7 @@ const Sidebar = () => {
                         <IconButton
                           icon={<Add />}
                           variant="minimal"
-                          color="az.greyish"
+                        
                           aria-label="Add Playlist"
                           fontSize={'sm'}
                           onClick={() => {

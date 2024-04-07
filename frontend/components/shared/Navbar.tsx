@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { DefaultSession } from 'next-auth'
 import { Box, Flex, IconButton, Button, HStack, useBreakpointValue, Spacer } from '@chakra-ui/react'
 import { ArrowL, ArrowR } from '../../public/icons'
@@ -103,10 +102,7 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    // Add scroll event listener when the component mounts
     window.addEventListener("scroll", handleScroll);
-
-    // Cleanup by removing the event listener when the component unmounts
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -143,8 +139,8 @@ export default function Navbar() {
         <Box mt={"0em"} mr={'2em'} ml={'2em'}>
           <Flex justifyContent="space-between">
             <Flex align="center">
-              <IconButton aria-label="Back" icon={<ArrowL />} onClick={() => window.history.back()} variant="ghost" size="md" mr={2} rounded="full" />
-              <IconButton aria-label="Forward" icon={<ArrowR />} onClick={() => window.history.forward()} variant="ghost" size="md" rounded="full" />
+              <IconButton aria-label="Back" icon={<ArrowL />} onClick={() => window.history.back()} variant="minimal" size="md" mr={2} rounded="full" />
+              <IconButton aria-label="Forward" icon={<ArrowR />} onClick={() => window.history.forward()} variant="minimal" size="md" rounded="full" />
             </Flex>
             <Spacer />
             <Flex align="center" justifyContent="flex-end">

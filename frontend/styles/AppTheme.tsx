@@ -71,7 +71,7 @@ const overrides = {
           bg: 'transparent',
           _hover: {
             bg: 'transparent',
-            color: '#D1D9DE',
+            color: '#818990',
           },
         },
         minimalColor: {
