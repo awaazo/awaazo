@@ -105,7 +105,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
               }}
               variant={'mini'}
             >
-              Add Review
+              {podcast.ratings.some((rating) => rating.user.id === currentUserID) ? 'Edit Review' : 'Add Review'}
             </Button>
           </>
         )}
@@ -114,35 +114,48 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       {isAddingReview && (
         <Box w="100%" p={4} py={6} bg={'az.darkestGrey'} borderRadius="15px">
           <Flex direction="column" mt={0}>
-            <HStack justifyContent={'space-between'} width={"full"} >
-              <IconButton onClick={() => setIsAddingReview(false)} icon={<IoClose />} aria-label="Close Review" variant={'minimal'}  size="lg"  style={{ position: 'relative', top: '-8px' }}/>
+            <HStack justifyContent={'space-between'} width={'full'}>
+              <IconButton onClick={() => setIsAddingReview(false)} icon={<IoClose />} aria-label="Close Review" variant={'minimal'} size="lg" style={{ position: 'relative', top: '-8px' }} />
               <Flex justify="center" direction="row">
                 <AwaazoA width="18px" height="18px" style={{ position: 'relative', zIndex: 2, bottom: '7px', left: '1px' }} />
-                {[1, 2, 3, 4, 5].map((index) => (
-                  <Box
-                    key={index}
-                    as={FaCircle}
-                    onClick={() => setNewRating(index)}
-                    onMouseEnter={() => setHoverRating(index)}
-                    onMouseLeave={() => setHoverRating(null)}
-                    cursor="pointer"
-                    color={(hoverRating ? hoverRating >= index : newRating >= index) ? ratingColors[index - 1] : 'az.darkGrey'}
-                    _hover={{ color: ratingColors[index - 1] }}
-                    data-cy={`star-icon-${index}`}
-                    size="10px"
-                    marginLeft="2px"
-                  />
-                ))}
-                {reviewError && <Text color="red.500">{reviewError}</Text>}
+                {[1, 2, 3, 4, 5].map((index) => {
+                  const userRating = podcast.ratings.find((rating) => rating.user.id === currentUserID) || {}
+                  const currentRating = hoverRating !== null ? hoverRating : newRating || userRating.rating || 0
+                  return (
+                    <Box
+                      key={index}
+                      as={FaCircle}
+                      onClick={() => setNewRating(index)}
+                      onMouseEnter={() => setHoverRating(index)}
+                      onMouseLeave={() => setHoverRating(null)}
+                      cursor="pointer"
+                      color={currentRating >= index ? ratingColors[index - 1] : 'az.darkGrey'}
+                      _hover={{ color: ratingColors[index - 1] }}
+                      data-cy={`star-icon-${index}`}
+                      size="10px"
+                      marginLeft="2px"
+                    />
+                  )
+                })}
               </Flex>
               <IconButton onClick={handleAddReview} icon={<Send />} aria-label="Submit Review" variant={'minimalColor'} size="lg" />
             </HStack>
             <FormControl position="relative">
-              <Textarea placeholder="Write your review here..." value={newReviewText} onChange={handleReviewChange} mt={4} />
+              <Textarea
+                placeholder="Write your review here..."
+                value={newReviewText || (podcast.ratings.find((rating) => rating.user.id === currentUserID) || {}).review}
+                onChange={handleReviewChange}
+                mt={4}
+              />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {reviewCharacterCount}/150
               </Text>
             </FormControl>
+            {reviewError && (
+              <Text color="red.500" textAlign="center" fontSize="sm" fontWeight="medium" mt={4}>
+                {reviewError}
+              </Text>
+            )}
           </Flex>
         </Box>
       )}
