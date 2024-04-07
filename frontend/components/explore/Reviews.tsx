@@ -112,7 +112,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       </Flex>
 
       {isAddingReview && (
-        <Box w="100%" p={4} py={6} bg={'az.darkerGrey'} borderRadius="15px">
+        <Box w="100%" p={4} py={6} bg={'az.darkestGrey'} borderRadius="15px">
           <Flex direction="column" mt={0}>
             <HStack justifyContent={'space-between'} width={'full'}>
               <IconButton onClick={() => setIsAddingReview(false)} icon={<IoClose />} aria-label="Close Review" variant={'minimal'} size="lg" style={{ position: 'relative', top: '-8px' }} />
@@ -145,7 +145,6 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
                 placeholder="Write your review here..."
                 value={newReviewText || (podcast.ratings.find((rating) => rating.user.id === currentUserID) || {}).review}
                 onChange={handleReviewChange}
-                mt={4}
               />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {reviewCharacterCount}/150

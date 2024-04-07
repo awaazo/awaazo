@@ -184,12 +184,12 @@ const overrides = {
     Textarea: {
       variants: {
         outline: {
+        bg: '#393939',
         maxHeight: '200px',
         borderRadius: '15px', 
         padding: '16px', 
-        backgroundColor: 'az.darkestGrey', 
-        color: 'white', 
-        border: '2px solid', 
+        backgroundColor: '#393939', 
+        color: 'white',  
         borderColor: 'transparent', 
         _hover: {
           borderColor: '#FA6257', 
@@ -205,6 +205,7 @@ const overrides = {
       },
     },
       defaultProps: {
+        size: 'md',
         variant: 'outline',
       },
     },
