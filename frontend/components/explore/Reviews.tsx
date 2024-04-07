@@ -5,7 +5,7 @@ import ReviewsHelper from '../../helpers/ReviewsHelper'
 import { PodcastRatingRequest, PodcastReviewRequest } from '../../types/Requests'
 import AuthPrompt from '../auth/AuthPrompt'
 import AuthHelper from '../../helpers/AuthHelper'
-import {AwaazoA} from '../../public/icons'
+import { AwaazoA } from '../../public/icons'
 
 // Component for displaying and adding reviews
 const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
@@ -17,7 +17,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
   const [reviews, setReviews] = useState(podcast.ratings)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const ratingColors = ['white', 'az.blue', 'az.green', 'az.yellow', 'az.red']
-  const [hoverRating, setHoverRating] = useState(null);
+  const [hoverRating, setHoverRating] = useState(null)
   const fetchAndUpdateReviews = async () => {
     try {
       const response = await ReviewsHelper.getPodcastById(podcast.id)
@@ -108,28 +108,27 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
         )}
       </Flex>
       {isAddingReview && (
-      <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
-    <Flex direction="column" mt={0}>
-      <Flex justify="center" direction="row" >
-         
-         <Box ><AwaazoA w="100px" h="100px" /></Box>
-        {[1, 2, 3, 4, 5].map((index) => (
-          <Box
-          key={index}
-          as={FaCircle}
-          onClick={() => setNewRating(index)}
-          onMouseEnter={() => setHoverRating(index)}
-          onMouseLeave={() => setHoverRating(null)}
-          cursor="pointer"
-          boxSize={3}
-          m={"1.5px"}
-          color={(hoverRating ? hoverRating >= index : newRating >= index) ? ratingColors[index - 1] : 'az.darkGrey'}
-          _hover={{ color: ratingColors[index - 1] }}
-          data-cy={`star-icon-${index}`}
-          />
-        ))}
-        {reviewError && <Text color="red.500">{reviewError}</Text>}
-      </Flex>
+        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
+          <Flex direction="column" mt={0}>
+            <Flex justify="center" direction="row">
+              <AwaazoA width="22px" height="22px" style={{ position: 'relative', zIndex: 2, bottom: '7px' }} />
+              {[1, 2, 3, 4, 5].map((index) => (
+                <Box
+                  key={index}
+                  as={FaCircle}
+                  onClick={() => setNewRating(index)}
+                  onMouseEnter={() => setHoverRating(index)}
+                  onMouseLeave={() => setHoverRating(null)}
+                  cursor="pointer"
+                  boxSize={3}
+                  m={'1.5px'}
+                  color={(hoverRating ? hoverRating >= index : newRating >= index) ? ratingColors[index - 1] : 'az.darkGrey'}
+                  _hover={{ color: ratingColors[index - 1] }}
+                  data-cy={`star-icon-${index}`}
+                />
+              ))}
+              {reviewError && <Text color="red.500">{reviewError}</Text>}
+            </Flex>
             <FormControl position="relative">
               <Textarea placeholder="Write your review here..." value={newReviewText} onChange={handleReviewChange} mt={4} />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
