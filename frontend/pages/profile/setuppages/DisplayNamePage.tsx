@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Img, Text, FormControl, Button, FormLabel, Input, Stack, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Img, Text, FormControl, Button, Input, Stack, useBreakpointValue } from '@chakra-ui/react';
 import LogoWhite from '../../../public/logos/logo_white.svg';
 
 interface DisplayNamePageProps {

@@ -1,19 +1,16 @@
 import React, { useState, FormEvent, useEffect, useCallback } from 'react';
-import { Box, Img, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Wrap, WrapItem, useBreakpointValue, Progress } from '@chakra-ui/react';
+import { useBreakpointValue, Progress } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import AuthHelper from '../../helpers/AuthHelper';
-import LogoWhite from '../../public/logos/logo_white.svg';
 import { UserProfileSetupRequest } from '../../types/Requests';
 import UserProfileHelper from '../../helpers/UserProfileHelper';
 import { UserMenuInfo } from '../../types/Interfaces';
-import ImageAdder from '../../components/assets/ImageAdder';
-import GenreSelector from '../../components/assets/GenreSelector';
 import withAuth from '../../utilities/authHOC';
 import DisplayNamePage from './SetupPages/DisplayNamePage';
 import BioPage from './SetupPages/BioPage';
 import InterestsPage from './SetupPages/InterestsPage';
 import AvatarPage from './SetupPages/AvatarPage';
-import next from 'next';
+
 
 const ProfileSetup: React.FC = () => {
   const mainPage = '/';
@@ -69,10 +66,8 @@ const ProfileSetup: React.FC = () => {
     console.log(response);
 
     if (response.status === 200) {
-      // Success, go to main page
       window.location.href = mainPage;
     } else {
-      // Handle error here
       setSetupError('Avatar, Display Name and Bio Required.');
     }
   };
@@ -84,14 +79,14 @@ const ProfileSetup: React.FC = () => {
 
   // Ensures display name is not longer than 25 characters
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault(); // Add this line
+    e.preventDefault(); 
     const newDisplayName = e.target.value.slice(0, 25);
     setDisplayName(newDisplayName);
     setDisplayNameCharacterCount(newDisplayName.length);
   };
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault(); // Add this line
+    e.preventDefault(); 
     const newBio = e.target.value.slice(0, 250);
     setBio(newBio);
     setBioCharacterCount(newBio.length);
@@ -106,8 +101,7 @@ const ProfileSetup: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const progressBarValue = (currentPage + 1) * (100 / 4); // Assuming there are 4 pages
-
+  const progressBarValue = (currentPage + 1) * (100 / 4); 
   return (
     <>
       {/* Progress bar */}
