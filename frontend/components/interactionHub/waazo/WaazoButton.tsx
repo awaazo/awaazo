@@ -5,7 +5,7 @@ import { usePanel } from "../../../utilities/PanelContext";
 import AuthPrompt from "../../auth/AuthPrompt";
 import AuthHelper from "../../../helpers/AuthHelper";
 
-const ChatBotButton = ({ episodeId }) => {
+const WaazoButton = ({ episodeId }) => {
   const { dispatch } = usePanel();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
@@ -39,4 +39,4 @@ const ChatBotButton = ({ episodeId }) => {
   );
 };
 
-export default ChatBotButton;
+export default WaazoButton;

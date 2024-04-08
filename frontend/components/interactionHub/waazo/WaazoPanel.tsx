@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Box, VStack, Text, Input, Button, Image, InputGroup, HStack, Avatar } from '@chakra-ui/react'
-import waazo from '../../public/svgs/waazo.svg'
-import ChatbotHelper from '../../helpers/ChatbotHelper'
-import PodcastHelper from '../../helpers/PodcastHelper'
-import { Episode, UserMenuInfo } from '../../types/Interfaces'
-import AuthHelper from '../../helpers/AuthHelper'
-import { Send } from '../../public/icons'
-import AuthPrompt from '../auth/AuthPrompt'
-import CustomAvatar from '../assets/CustomAvatar'
+import waazo from '../../../public/svgs/waazo.svg'
+import ChatbotHelper from '../../../helpers/ChatbotHelper'
+import PodcastHelper from '../../../helpers/PodcastHelper'
+import { Episode, UserMenuInfo } from '../../../types/Interfaces'
+import AuthHelper from '../../../helpers/AuthHelper'
+import { Send } from '../../../public/icons'
+import AuthPrompt from '../../auth/AuthPrompt'
+import CustomAvatar from '../../assets/CustomAvatar'
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([])

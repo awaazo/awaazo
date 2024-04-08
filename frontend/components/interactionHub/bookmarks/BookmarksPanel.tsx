@@ -1,10 +1,10 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { Box, Button, Icon, FormControl, Textarea, VStack, HStack, Text, Input, FormHelperText, Flex, IconButton, useBreakpointValue, Spacer, InputGroup } from '@chakra-ui/react'
-import BookmarksHelper from '../../helpers/BookmarksHelper'
-import { convertTime } from '../../utilities/commonUtils'
-import { EpisodeBookmarkRequest } from '../../types/Requests'
-import { Bookmark } from '../../types/Interfaces'
-import { Trash } from '../../public/icons'
+import BookmarksHelper from '../../../helpers/BookmarksHelper'
+import { convertTime } from '../../../utilities/commonUtils'
+import { EpisodeBookmarkRequest } from '../../../types/Requests'
+import { Bookmark } from '../../../types/Interfaces'
+import { Trash } from '../../../public/icons'
 import { MdBookmark, MdBookmarkAdd } from 'react-icons/md'
 
 const Bookmarks = ({ episodeId, selectedTimestamp }) => {

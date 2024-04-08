@@ -8,10 +8,10 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import CoverArt from "../../components/nowPlaying/CoverArt";
-import Sections from "../../components/nowPlaying/Sections";
-import PodCue from "../../components/nowPlaying/PodCue";
-import Transcript from "../../components/nowPlaying/Transcript";
-import Bookmarks from "../../components/nowPlaying/Bookmarks";
+import Sections from "../../components/interactionHub/sections/Sections";
+import PodCue from "../../components/interactionHub/PodCue";
+import Transcript from "../../components/interactionHub/Transcript";
+import Bookmarks from "../../components/interactionHub/bookmarks/BookmarksMobile";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

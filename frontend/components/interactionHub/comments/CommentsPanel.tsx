@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import SocialHelper from '../../helpers/SocialHelper'
-import PodcastHelper from '../../helpers/PodcastHelper'
+import SocialHelper from '../../../helpers/SocialHelper'
+import PodcastHelper from '../../../helpers/PodcastHelper'
 import { Button, VStack, Icon, Text, HStack, Box, Input, useBreakpointValue, IconButton, InputGroup, Image } from '@chakra-ui/react'
 import { FaReply } from 'react-icons/fa'
-import AuthHelper from '../../helpers/AuthHelper'
-import LikeComponent from './Likes'
-import AuthPrompt from '../auth/AuthPrompt'
-import { Send, Trash, Chat } from '../../public/icons'
-import CustomAvatar from '../assets/CustomAvatar'
+import AuthHelper from '../../../helpers/AuthHelper'
+import LikeComponent from '../Likes'
+import AuthPrompt from '../../auth/AuthPrompt'
+import { Send, Trash, Chat } from '../../../public/icons'
+import CustomAvatar from '../../assets/CustomAvatar'
 
 const Comments = ({ episodeIdOrCommentId, initialComments }) => {
   const [comments, setComments] = useState([])

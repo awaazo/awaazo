@@ -1,36 +1,21 @@
 // pages/greeting.tsx
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  useColorModeValue,
-  Img,
-  keyframes,
-  VStack,
-  HStack,
-  useBreakpointValue,
-} from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import React from 'react';
-import { useRouter } from 'next/router';
-import { AwaazoLogo } from '../public/icons';
-import awaazologo from '../public/logos/awaazologo.png';
-import Image from 'next/image';
-const MotionFlex = motion(Flex);
-const MotionImage = motion(Img);
-import { FaPlus } from "react-icons/fa6";
-import { ClientOnly } from '../components/client-only';
+import { Box, Button, Flex, Text, useColorModeValue, Img, keyframes, VStack, useBreakpointValue } from '@chakra-ui/react'
+import { motion } from 'framer-motion'
+import React from 'react'
+import { useRouter } from 'next/router'
+const MotionImage = motion(Img)
+import { FaPlus } from 'react-icons/fa6'
+import { ClientOnly } from '../components/client-only'
 
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
-`;
+`
 
 const Greeting = () => {
-  const bg = useColorModeValue('white', 'az.blackish');
-  const router = useRouter();
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const bg = useColorModeValue('white', 'az.blackish')
+  const router = useRouter()
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   return isMobile ? (
     <ClientOnly>
@@ -40,7 +25,7 @@ const Greeting = () => {
           {/* white box */}
           <Box
             bg={`rgba(255, 255, 255, 0.15)`}
-            p={"2.5em"}
+            p={'2.5em'}
             borderRadius={20}
             boxShadow="lg"
             w="full"
@@ -89,37 +74,24 @@ const Greeting = () => {
               {/* Description */}
               <VStack spacing={10} justify="flex-end">
                 <Text align="left">
-                  <Text fontSize="2em" opacity={0.5} fontWeight={"bold"}>
+                  <Text fontSize="2em" opacity={0.5} fontWeight={'bold'}>
                     Welcome to
                   </Text>
-                  <Text fontSize="2em" fontWeight={"extrabold"}>
+                  <Text fontSize="2em" fontWeight={'extrabold'}>
                     AWAAZO.
                   </Text>
                   <br />
-                  <Text fontSize="15px" fontWeight={"extrabold"}>
-                    Awaazo revolutionizes podcasting by blending traditional streaming with advanced AI tools for content creation, discovery, and interaction, featuring live transcripts, a knowledgeable AI assistant, a diverse library, and a community for creators to share insights.
+                  <Text fontSize="15px" fontWeight={'extrabold'}>
+                    Awaazo revolutionizes podcasting by blending traditional streaming with advanced AI tools for content creation, discovery, and interaction, featuring live transcripts, a
+                    knowledgeable AI assistant, a diverse library, and a community for creators to share insights.
                   </Text>
                 </Text>
                 {/* Login and sign up buttons */}
                 <VStack spacing={5} align="stretch">
-                  <Button
-                    colorScheme="teal"
-                    size="lg"
-                    onClick={() => router.push('/auth/Signup')}
-                    borderRadius="17px"
-                    fontSize={"1em"}
-                    boxShadow="md"
-                  >
+                  <Button colorScheme="teal" size="lg" onClick={() => router.push('/auth/Signup')} borderRadius="17px" fontSize={'1em'} boxShadow="md">
                     GET STARTED
                   </Button>
-                  <Button
-                    colorScheme="orange"
-                    size="lg"
-                    onClick={() => router.push('/auth/Login')}
-                    borderRadius="17px"
-                    fontSize={"1em"}
-                    boxShadow="md"
-                  >
+                  <Button colorScheme="orange" size="lg" onClick={() => router.push('/auth/Login')} borderRadius="17px" fontSize={'1em'} boxShadow="md">
                     I ALREADY HAVE AN ACCOUNT
                   </Button>
                 </VStack>
@@ -130,8 +102,8 @@ const Greeting = () => {
           <Text fontSize="xs" position="absolute" bottom="4" left="4">
             Created by the Awaazo team 2024
           </Text>
-        </VStack >
-      </Box >
+        </VStack>
+      </Box>
     </ClientOnly>
   ) : (
     <ClientOnly>
@@ -140,7 +112,7 @@ const Greeting = () => {
           <VStack align="center" spacing={8}>
             <Box
               bg={`rgba(255, 255, 255, 0.15)`}
-              p={"2.5em"}
+              p={'2.5em'}
               borderRadius={20}
               boxShadow="lg"
               w="full"
@@ -186,50 +158,35 @@ const Greeting = () => {
                 <Box flex="1" />
                 <VStack spacing={10} justify="flex-end">
                   <Text align="left">
-                    <Text fontSize="2em" opacity={0.5} fontWeight={"bold"}>
+                    <Text fontSize="2em" opacity={0.5} fontWeight={'bold'}>
                       Welcome to
                     </Text>
-                    <Text fontSize="2em" fontWeight={"extrabold"}>
+                    <Text fontSize="2em" fontWeight={'extrabold'}>
                       AWAAZO.
                     </Text>
                     <br />
-                    <Text fontSize="15px" fontWeight={"extrabold"}>
-                      Awaazo revolutionizes podcasting by blending traditional streaming with advanced AI tools for content creation, discovery, and interaction, featuring live transcripts, a knowledgeable AI assistant, a diverse library, and a community for creators to share insights.
+                    <Text fontSize="15px" fontWeight={'extrabold'}>
+                      Awaazo revolutionizes podcasting by blending traditional streaming with advanced AI tools for content creation, discovery, and interaction, featuring live transcripts, a
+                      knowledgeable AI assistant, a diverse library, and a community for creators to share insights.
                     </Text>
                   </Text>
                   <VStack spacing={5} align="stretch">
-                    <Button
-                      colorScheme="teal"
-                      size="lg"
-                      onClick={() => router.push('/auth/Signup')}
-                      borderRadius="17px"
-                      fontSize={"1em"}
-                      boxShadow="md"
-                    >
+                    <Button colorScheme="teal" size="lg" onClick={() => router.push('/auth/Signup')} borderRadius="17px" fontSize={'1em'} boxShadow="md">
                       GET STARTED
                     </Button>
-                    <Button
-                      colorScheme="orange"
-                      size="lg"
-                      onClick={() => router.push('/auth/Login')}
-                      borderRadius="17px"
-                      fontSize={"1em"}
-                      boxShadow="md"
-                    >
+                    <Button colorScheme="orange" size="lg" onClick={() => router.push('/auth/Login')} borderRadius="17px" fontSize={'1em'} boxShadow="md">
                       I ALREADY HAVE AN ACCOUNT
                     </Button>
                   </VStack>
                 </VStack>
               </VStack>
             </Box>
-            <Text fontSize="xs">
-              Created by the Awaazo team 2024
-            </Text>
+            <Text fontSize="xs">Created by the Awaazo team 2024</Text>
           </VStack>
         </Flex>
       </Box>
     </ClientOnly>
-  );
-};
+  )
+}
 
-export default Greeting;
+export default Greeting

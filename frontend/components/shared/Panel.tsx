@@ -2,12 +2,12 @@ import React from 'react'
 import { Box, IconButton, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { usePanel } from '../../utilities/PanelContext'
 import { usePlayer } from '../../utilities/PlayerContext'
-import ChatBot from '../interactionHub/ChatBot'
-import Comments from '../interactionHub/Comments'
-import Bookmarks from '../interactionHub/Bookmarks'
-import Tipjar from '../interactionHub/Tipjar'
+import ChatBot from '../interactionHub/waazo/WaazoPanel'
+import Comments from '../interactionHub/comments/CommentsPanel'
+import Bookmarks from '../interactionHub/bookmarks/BookmarksPanel'
+import Tipjar from '../interactionHub/tipJar/Tipjar'
 import { Bookmark, Dollar, Chat, Document, Waazo, ArrowR, ArrowL } from '../../public/icons'
-import TranscriptComp from '../nowPlaying/Transcript'
+import TranscriptComp from '../interactionHub/Transcript'
 
 const Panel = () => {
   const { state: panelState, dispatch: panelDispatch } = usePanel()

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Text, VStack, Flex, useBreakpointValue, Icon } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import SectionHelper from "../../helpers/SectionHelper";
-import { convertTime } from "../../utilities/commonUtils";
+import SectionHelper from "../../../helpers/SectionHelper";
+import { convertTime } from "../../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
 
 interface SectionsProps {

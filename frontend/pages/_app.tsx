@@ -10,10 +10,7 @@ import { useRouter } from 'next/router'
 import ColorModeFix from '../styles/ColorModeFix'
 import { PanelProvider } from '../utilities/PanelContext'
 import Panel from '../components/shared/Panel'
-import { useSession, signOut } from 'next-auth/react';
 import { DefaultSession } from 'next-auth';
-import Home from '../components/home/Home';
-import Greeting from './Greeting';
 import AuthHelper from '../helpers/AuthHelper';
 
 interface SessionExt extends DefaultSession {

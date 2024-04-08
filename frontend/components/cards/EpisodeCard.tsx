@@ -4,7 +4,7 @@ import { usePlayer } from '../../utilities/PlayerContext'
 import { convertTime } from '../../utilities/commonUtils'
 import { Dots, Time, Plays, Play } from '../../public/icons'
 import Likes from '../interactionHub/Likes'
-import CommentButton from '../interactionHub/buttons/CommentButton'
+import CommentButton from '../interactionHub/comments/CommentButton'
 import EpisodeMenu from './EpisodeMenu'
 import { formatNumber } from '../../utilities/commonUtils'
 interface EpisodeCardProps {
