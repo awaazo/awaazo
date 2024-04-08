@@ -59,7 +59,7 @@ export default function Playlist() {
     <Box >
       {/* {playlistError && <Text color="red.500">{playlistError}</Text>} */}
       {playlist && (
-        <VStack spacing="4" width="50%" px={10}>
+        <VStack spacing="4" px={10} align="center" width={"90%"} mx="auto">
           <HStack spacing={4} width={"full"}>
             <Image src={playlist.coverArt} alt={playlist.name} boxSize="183px" borderRadius={'15px'} />
             <VStack align={'start'} spacing={3} width={"full"}>

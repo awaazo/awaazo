@@ -9,6 +9,7 @@ import UserProfileHelper from '../../helpers/UserProfileHelper'
 import AuthHelper from '../../helpers/AuthHelper'
 import { Send } from '../../public/icons'
 import AuthPrompt from '../auth/AuthPrompt'
+import CustomAvatar from '../assets/CustomAvatar'
 
 const ChatBot = ({ episodeId }) => {
   const [messages, setMessages] = useState([])
@@ -116,21 +117,29 @@ const ChatBot = ({ episodeId }) => {
   return (
     <Box>
       <Box>
-        <Box display="flex" alignItems="center" justifyContent="center" mt={'-0.5em'}>
-          <Image src={waazo.src} alt="Logo" w="50px" />
-        </Box>
-        <Text textAlign="center" fontSize="xl" fontWeight="bold" paddingTop={'1em'}>
-          {episode?.episodeName || 'No episode selected'}
-        </Text>
+        <HStack align="center" spacing={0}>
+          <Box>
+            <Image src={waazo.src} alt="Waazo" w="70px" mt={'2'} zIndex={2} />
+          </Box>
+          <VStack spacing={0} align="start">
+            <Text fontSize="xl" fontWeight="bold">
+              Ask Waazo
+            </Text>
+            <Text fontSize="md" fontWeight="medium" mt={'-2'} color={'az.greyish'}>
+              {episode ? `let’s chat about “${episode.episodeName}”` : 'No episode selected'}
+            </Text>
+          </VStack>
+        </HStack>
+
         <VStack spacing={'1em'} overflowY="auto" height="50vh" paddingY="4" mt={'20px'}>
           {messages.map((message, index) => (
             <Box key={index} alignSelf={message.isPrompt ? 'flex-end' : 'flex-start'} maxWidth="90%" color={message.isPrompt ? '#8b8b8b' : '#ffffff'} borderRadius="lg">
               <HStack alignItems="flex-start">
-                {!message.isPrompt && <Avatar src={waazo.src} w="30px" h="30px" boxSize={'30px'} rounded={''} borderRadius="full" />}
+                {!message.isPrompt && <Avatar src={waazo.src} w="30px" h="30px" mr="2px" style={{ alignSelf: 'flex-start' }} />}
                 <Text fontSize="sm" mt={!message.isPrompt ? '4px' : '0px'}>
                   {message.message}
                 </Text>
-                {message.isPrompt && <Avatar src={message.avatarUrl} w="30px" h="30px" mr="2px" style={{ alignSelf: 'flex-start' }} />}
+                {message.isPrompt && <CustomAvatar imageUrl={message.avatarUrl} username={user.username} size="sm" />}
               </HStack>
             </Box>
           ))}
@@ -146,7 +155,7 @@ const ChatBot = ({ episodeId }) => {
 
               <HStack spacing={'1em'} overflowY="auto" paddingY="1">
                 <Button
-                  borderRadius={'25px'}
+                  borderRadius={'15px'}
                   width={'fit-content'}
                   fontSize={'12px'}
                   fontWeight={'light'}
@@ -156,7 +165,7 @@ const ChatBot = ({ episodeId }) => {
                   Can you summarize the episode?
                 </Button>
                 <Button
-                  borderRadius={'25px'}
+                  borderRadius={'15px'}
                   width={'fit-content'}
                   fontSize={'12px'}
                   fontWeight={'light'}
@@ -169,24 +178,8 @@ const ChatBot = ({ episodeId }) => {
             </VStack>
           ) : null}
           <InputGroup>
-            <Input
-              value={newMessage}
-              onChange={handleInputChange}
-              placeholder="Ask me anything about this episode..."
-              fontSize={'13px'}
-              bg="#3636363A"
-              borderRadius="45px"
-              border={'2px solid rgba(255, 255, 255, 0.05)'}
-              _focus={{
-                bg: '#181818',
-                boxShadow: 'none',
-                borderColor: 'brand.100',
-              }}
-              _placeholder={{ color: '#8b8b8b' }}
-              pr={'50px'}
-              onKeyDown={handleEnterPress}
-            />
-            <Button variant={'minimal'} width="18px" height="18px" position="absolute" zIndex={'50'} right="5px" top="50%" transform="translateY(-50%)" onClick={sendMessage} p="0">
+            <Input value={newMessage} onChange={handleInputChange} placeholder="Ask me anything about this episode..." onKeyDown={handleEnterPress} />
+            <Button variant={'minimalColor'} width="18px" height="18px" position="absolute" zIndex={'50'} right="5px" top="55%" transform="translateY(-50%)" onClick={sendMessage} p="0">
               <Send color="az.red" fontSize={'20px'} />
             </Button>
           </InputGroup>
