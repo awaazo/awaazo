@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useToast, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
-import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdIosShare, MdOutlinePlaylistAdd } from "react-icons/md";
 import { BsPlayFill, BsFillSkipForwardFill } from "react-icons/bs";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
@@ -10,6 +9,7 @@ import { usePlayer } from "../../utilities/PlayerContext";
 import PlaylistHelper from "../../helpers/PlaylistHelper";
 import AuthHelper from "../../helpers/AuthHelper";
 import LoginPrompt from "../auth/AuthPrompt";
+import { Dots } from "../../public/icons";
 
 const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   const { dispatch } = usePlayer();
@@ -125,7 +125,7 @@ const EpisodeMenu = ({ episode, inPlaylist, playlistId }) => {
   return (
     <div ref={menuRef}>
       <Menu isOpen={isMenuOpen}>
-        <MenuButton as={IconButton} aria-label="Options" icon={<IoIosMore />} variant="ghost" fontSize="20px" ml={1} mt={1} _hover={{ boxShadow: "lg" }} onClick={handleMenuToggle} data-cy="2-dots-episode-card" />
+        <MenuButton as={IconButton} aria-label="Options" icon={<Dots />} variant="minimal" fontSize="20px"  onClick={handleMenuToggle} data-cy="2-dots-episode-card" />
         <MenuList
           style={{
             backgroundColor: "rgba(50, 50, 50, 0.8)",

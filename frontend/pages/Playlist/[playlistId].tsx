@@ -3,7 +3,7 @@ import { Box, Image, Text, VStack, IconButton, HStack, Icon } from '@chakra-ui/r
 import type { Episode } from '../../types/Interfaces'
 import type { Playlist } from '../../types/Interfaces'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
-import EpisodeCard from '../../components/playlist/EpisodeCardForPlaylist'
+import EpisodeCard from '../../components/cards/EpisodeCard'
 import { formatSecToDurationString } from '../../utilities/commonUtils'
 import { usePlayer } from '../../utilities/PlayerContext'
 import { useRouter } from 'next/router'
@@ -56,7 +56,7 @@ export default function Playlist() {
   }
 
   return (
-    <Box width={'1000px'}>
+    <Box >
       {/* {playlistError && <Text color="red.500">{playlistError}</Text>} */}
       {playlist && (
         <VStack spacing="4"  width="full">
@@ -117,7 +117,7 @@ export default function Playlist() {
           </HStack>
           <Box>
             {episodes && episodes.length > 0 ? (
-              episodes.map((episode: any) => <EpisodeCard episode={episode} inPlaylist={true} playlistId={playlist.id} inWallet={false} />)
+              episodes.map((episode: any) => <EpisodeCard episode={episode} isForPlaylist={true} playlistId={playlist.id} showMore={true} />)
             ) : (
               <Text textAlign={'center'} mt={'5%'} fontWeight={'bold'}>
                 No episodes in this playlist yet

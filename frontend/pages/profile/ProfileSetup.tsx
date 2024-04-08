@@ -9,10 +9,10 @@ import { UserMenuInfo } from '../../types/Interfaces';
 import ImageAdder from '../../components/assets/ImageAdder';
 import GenreSelector from '../../components/assets/GenreSelector';
 import withAuth from '../../utilities/authHOC';
-import DisplayNamePage from './setuppages/DisplayNamePage';
-import BioPage from './setuppages/BioPage';
-import InterestsPage from './setuppages/InterestsPage';
-import AvatarPage from './setuppages/AvatarPage';
+import DisplayNamePage from './SetupPages/DisplayNamePage';
+import BioPage from './SetupPages/BioPage';
+import InterestsPage from './SetupPages/InterestsPage';
+import AvatarPage from './SetupPages/AvatarPage';
 import next from 'next';
 
 const ProfileSetup: React.FC = () => {

@@ -12,9 +12,12 @@ interface EpisodeCardProps {
   showLike?: boolean
   showComment?: boolean
   showMore?: boolean
+  isForPlaylist?: boolean; 
+  playlistId?: string;
+  inWallet?: boolean; 
 }
 
-const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, showComment = false, showMore = false }) => {
+const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, showComment = false, showMore = false , isForPlaylist = false , playlistId = null ,inWallet = false  }) => {
   const { thumbnailUrl, episodeName, podcastName, duration, likes, playCount, id } = episode
   const { dispatch } = usePlayer()
 
@@ -74,7 +77,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, sh
           {showComment && <CommentButton episodeId={episode.id} initialComments={0} showCount={false} />}
           {showMore && (
             <div onClick={handleMenuClick}>
-              <EpisodeMenu episode={episode} inPlaylist={false} playlistId={null} />
+              <EpisodeMenu episode={episode} inPlaylist={isForPlaylist} playlistId={playlistId} />
             </div>
           )}
         </Box>
