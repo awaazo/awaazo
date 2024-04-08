@@ -17,15 +17,15 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
+  ModalOverlay,P
   Button,
   useDisclosure,
   FormControl,
-  FormLabel,
-  Switch,
   Text,
+  HStack,
+  VStack,
 } from '@chakra-ui/react'
-import {  BsFillSkipForwardFill } from 'react-icons/bs'
+import { BsFillSkipForwardFill } from 'react-icons/bs'
 import { TbPlayerTrackNextFilled } from 'react-icons/tb'
 import { MdDelete } from 'react-icons/md'
 import { usePlayer } from '../../utilities/PlayerContext'
@@ -33,13 +33,14 @@ import PlaylistHelper from '../../helpers/PlaylistHelper'
 import ImageAdder from '../assets/ImageAdder'
 import { Dots, Pen } from '../../public/icons'
 import { useRouter } from 'next/router'
-import ShareComponent from '../interactionHub/Share'
+import ShareComponent from '../interactionHub/P'
 import { IoShare } from 'react-icons/io5'
+import { TiLockClosed, TiLockOpen } from 'react-icons/ti'
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer()
   const toast = useToast()
-  const { onOpen, onClose, isOpen } = useDisclosure()
+  const { onOpen, onClose, isOpen }P = useDisclosure()
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [isDeleting, setDeleting] = useState(false)
   const [name, setName] = useState(playlist.name)
@@ -49,7 +50,8 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const onShareModalOpen = () => setIsShareModalOpen(true)
   const onShareModalClose = () => setIsShareModalOpen(false)
-  const [privacy, setPrivacy] = useState(playlist.privacy)
+  const [isPrivate, setIsPrivate] = useState(playlist.privacy)
+  const [hover, setHover] = useState(false)
 
   // Function to handle deletion of the playlist
   const handleDelete = async (id) => {
@@ -118,7 +120,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
   useEffect(() => {
     setName(playlist.name)
     setDescription(playlist.description)
-    setPrivacy(playlist.privacy)
+    setIsPrivate(playlist.privacy)
   }, [playlist])
 
   // Handle save logic for editing a playlist
@@ -136,7 +138,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     const request = {
       name: name,
       description: description,
-      privacy: privacy,
+      privacy: isPrivate,
       coverArt: playlistCoverArt,
     }
 
@@ -153,7 +155,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
         ...playlist,
         name: name,
         description: description,
-        privacy: privacy,
+        privacy: isPrivate,
         lastUpdated: new Date().toISOString(), // Update the lastUpdated field
         // Include other updated fields if applicable
       }
@@ -208,7 +210,7 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
                   handleMenuToggle()
                 }}
               >
-                <Pen style={{ marginRight: '10px', color: 'white'  }} data-cy={`edit-button`} /> <Text>Edit "{playlist.name}"</Text>
+                <Pen style={{ marginRight: '10px', color: 'white' }} data-cy={`edit-button`} /> <Text>Edit "{playlist.name}"</Text>
               </MenuItem>
               <MenuItem style={{ color: 'red' }} onClick={onOpen}>
                 <MdDelete size={'18px'} style={{ marginRight: '10px', color: 'red' }} data-cy={`delete-button`} />
@@ -217,8 +219,8 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
             </>
           )}
           <MenuItem onClick={onShareModalOpen}>
-          <IoShare size="18px" style={{ marginRight: '10px', color: 'white' }} />
-             <Text>Share</Text>
+            <IoShare size="18px" style={{ marginRight: '10px', color: 'white' }} />
+            <Text>Share</Text>
           </MenuItem>
         </MenuList>
       </Menu>
@@ -239,14 +241,11 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
           <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Are you sure you want to delete the episode "{playlist.name}". <br />
-            This action cannot be undone
+            <Text>Are you sure you want to delete the episode "{playlist.name}".</Text>
+            <Text>This action cannot be undone</Text>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="red" ml={3} onClick={() => handleDelete(playlist.id)}>
+            <Button variant={'minimal'} color={'az.red'} ml={3} onClick={() => handleDelete(playlist.id)}>
               Delete
             </Button>
           </ModalFooter>
@@ -257,34 +256,43 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
       <Modal isOpen={editModalOpen} onClose={closeEditModal} isCentered>
         <ModalOverlay />
         <ModalContent>
+          <ModalCloseButton />
           <ModalHeader>Edit Playlist</ModalHeader>
-        
-          <ModalBody>
-            <ImageAdder onImageAdded={handleImageAdded} />
 
-            <FormControl>
-              <Input placeholder="Playlist Name" value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} focusBorderColor="brand.100" />
-            </FormControl>
+          <ModalBody width={'full'}>
+            <VStack spacing={3} align="center">
+              <ImageAdder onImageAdded={handleImageAdded} />
 
-            <FormControl mt={4}>
-              <Textarea placeholder="Playlist Description" value={description} onChange={(e) => setDescription(e.target.value)} focusBorderColor="brand.100" />
-            </FormControl>
+              <FormControl>
+                <Input placeholder="Playlist Name" value={name} onChange={(e) => setName(e.target.value)} data-cy={`edit-playlist-name-form`} />
+              </FormControl>
 
-            <FormControl display="flex" alignItems="center" justifyContent="center" mt={4}>
-              <FormLabel htmlFor="privacy-switch" mb="0">
-                Private:
-              </FormLabel>
-              <Switch id="privacy-switch" isChecked={privacy === 'Private'} onChange={(e) => setPrivacy(e.target.checked ? 'Private' : 'Public')} />
-            </FormControl>
+              <FormControl>
+                <Textarea placeholder="Playlist Description" value={description} onChange={(e) => setDescription(e.target.value)} mb="2" />
+              </FormControl>
+              <HStack width={'full'} justifyContent={'space-between'}>
+                <FormControl>
+                  <Box>
+                    <Button
+                      onClick={() => setIsPrivate(!isPrivate)}
+                      variant={'minimal'}
+                      onMouseEnter={() => setHover(true)}
+                      onMouseLeave={() => setHover(false)}
+                      leftIcon={isPrivate ? <TiLockClosed /> : <TiLockOpen />}
+                      _hover={{ color: 'az.yellow', transition: 'color 0.5s ease-in-out' }}
+                      color={isPrivate ? 'az.red' : 'az.green'}
+                      transition="color 0.2s ease-in-out"
+                    >
+                      <Text fontSize={'sm'}>{hover ? (isPrivate ? 'Public' : 'Private') : isPrivate ? 'Private' : 'Public'}</Text>
+                    </Button>
+                  </Box>
+                </FormControl>
+                <Button variant={'large'} onClick={handleSaveEdit}>
+                  Save
+                </Button>
+              </HStack>
+            </VStack>
           </ModalBody>
-          <ModalFooter>
-            <Button variant={"normal"} mr={3} onClick={handleSaveEdit}>
-              Save
-            </Button>
-            <Button variant={"normal"} color={"az.offwhite"} bg={"az.darkGrey"}  onClick={closeEditModal}>
-              Cancel
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

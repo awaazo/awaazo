@@ -374,6 +374,7 @@ const overrides = {
   },
 
   fontSizes: {
+    xxl: '36px',
     xl: '24px',
     lg: '20px',
     md: '16px',
