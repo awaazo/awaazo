@@ -435,7 +435,7 @@ const Sidebar = () => {
               p="2"
               mb="1"
               borderRadius="md"
-              color={'az.yellow'}
+              color={'az.greyish'}
               transition="color 0.4s ease-in-out"
               _hover={{ textDecoration: 'none', color: 'az.red' }}
               onClick={handleLogOut}
