@@ -59,10 +59,10 @@ export default function Playlist() {
     <Box >
       {/* {playlistError && <Text color="red.500">{playlistError}</Text>} */}
       {playlist && (
-        <VStack spacing="4"  width="full">
-          <HStack spacing={4}>
+        <VStack spacing="4" width="50%" px={10}>
+          <HStack spacing={4} width={"full"}>
             <Image src={playlist.coverArt} alt={playlist.name} boxSize="183px" borderRadius={'15px'} />
-            <VStack align={'start'} spacing={3}>
+            <VStack align={'start'} spacing={3} width={"full"}>
               <VStack align={'start'} spacing={0} width={'full'}>
                 <HStack justifyContent={'space-between'} width={'full'}>
                   <Text fontWeight="bold" fontSize="xs">
@@ -115,15 +115,15 @@ export default function Playlist() {
               </HStack>
             </VStack>
           </HStack>
-          <Box>
+          <VStack spacing={"12px"} width={"full"}>
             {episodes && episodes.length > 0 ? (
-              episodes.map((episode: any) => <EpisodeCard episode={episode} isForPlaylist={true} playlistId={playlist.id} showMore={true} />)
+              episodes.map((episode: any) => <EpisodeCard episode={episode} isForPlaylist={true} playlistId={playlist.id} showMore={true} showComment ={true} showLike={true} />)
             ) : (
               <Text textAlign={'center'} mt={'5%'} fontWeight={'bold'}>
                 No episodes in this playlist yet
               </Text>
             )}
-          </Box>
+          </VStack>
         </VStack>
       )}
     </Box>

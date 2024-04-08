@@ -72,15 +72,25 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, sh
 
       <HStack spacing={1}>
         <IconButton aria-label="Play" icon={<Play width="12px" />} variant="play" background="az.red" minWidth="2em" width="30px" height="30px" onClick={handleEpisodeClick} />
-        <Box>
-          {showLike && <Likes episodeOrCommentId={id} initialLikes={likes} showCount={false} />}
-          {showComment && <CommentButton episodeId={episode.id} initialComments={0} showCount={false} />}
-          {showMore && (
-            <div onClick={handleMenuClick}>
-              <EpisodeMenu episode={episode} inPlaylist={isForPlaylist} playlistId={playlistId} />
-            </div>
+        <HStack spacing={0} ml={6}>
+          {showLike && (
+            <Box ml={-3}>
+              <Likes episodeOrCommentId={id} initialLikes={likes} showCount={false} />
+            </Box>
           )}
-        </Box>
+          {showComment && (
+            <Box ml={-3}>
+              <CommentButton episodeId={episode.id} initialComments={0} showCount={false} />
+            </Box>
+          )}
+          {showMore && (
+            <Box ml={-3}>
+              <div onClick={handleMenuClick}>
+                <EpisodeMenu episode={episode} inPlaylist={isForPlaylist} playlistId={playlistId} />
+              </div>
+            </Box>
+          )}
+        </HStack>
       </HStack>
     </HStack>
   )
