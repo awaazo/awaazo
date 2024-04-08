@@ -17,7 +17,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,P
+  ModalOverlay,
   Button,
   useDisclosure,
   FormControl,
@@ -33,14 +33,14 @@ import PlaylistHelper from '../../helpers/PlaylistHelper'
 import ImageAdder from '../assets/ImageAdder'
 import { Dots, Pen } from '../../public/icons'
 import { useRouter } from 'next/router'
-import ShareComponent from '../interactionHub/P'
+import ShareComponent from '../interactionHub/Share'
 import { IoShare } from 'react-icons/io5'
 import { TiLockClosed, TiLockOpen } from 'react-icons/ti'
 
 const PlaylistMenu = ({ playlist, onUpdate }) => {
   const { dispatch } = usePlayer()
   const toast = useToast()
-  const { onOpen, onClose, isOpen }P = useDisclosure()
+  const { onOpen, onClose, isOpen } = useDisclosure()
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [isDeleting, setDeleting] = useState(false)
   const [name, setName] = useState(playlist.name)
