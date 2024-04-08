@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Avatar, Text, Textarea, FormControl, Button, VStack, HStack, IconButton, Icon } from '@chakra-ui/react'
+import { Box, Flex, Text, Textarea, FormControl, Button, VStack, HStack, IconButton } from '@chakra-ui/react'
 import { FaCircle } from 'react-icons/fa6'
 import ReviewsHelper from '../../helpers/ReviewsHelper'
 import { PodcastRatingRequest, PodcastReviewRequest } from '../../types/Requests'
@@ -8,7 +8,7 @@ import AuthHelper from '../../helpers/AuthHelper'
 import { AwaazoA, Send } from '../../public/icons'
 import { IoClose } from 'react-icons/io5'
 import Rating from '../assets/RatingView'
-
+import CustomAvatar from '../assets/CustomAvatar'
 // Component for displaying and adding reviews
 const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
   const [isAddingReview, setIsAddingReview] = useState(false)
@@ -160,16 +160,17 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       )}
 
       {podcast.ratings && podcast.ratings.length > 0 ? (
-        podcast.ratings.map((rating) =>
-            rating && rating.user && (
+        podcast.ratings.map(
+          (rating) =>
+            rating &&
+            rating.user && (
               <Box key={rating.id} w="100%" p={4} bg={'az.darkestGrey'} borderRadius="15px">
                 <Flex justify="space-between" align="center">
                   <Flex align="center" position="relative">
-                    <Box position="absolute" zIndex={2} left="-5px" top="0px" color={"az.red"}>
-                      <AwaazoA fontSize={'15px'} />
-                    </Box>
-                    <Avatar size="md" name={rating.user.username} src={rating.user.avatarUrl} />
-                    <Text ml={2} fontWeight="bold" fontSize="md">{rating.user.username}</Text>
+                    <CustomAvatar imageUrl={rating.user.avatarUrl} username={rating.user.username} />
+                    <Text ml={2} fontWeight="bold" fontSize="md">
+                      {rating.user.username}
+                    </Text>
                   </Flex>
                   <Rating rating={rating.rating} />
                 </Flex>
@@ -181,7 +182,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
                 </Box>
               </Box>
             )
-          )
+        )
       ) : (
         <Flex justify="center" align="center" mt={8} width="100%">
           <Text>(No reviews have been posted yet)</Text>

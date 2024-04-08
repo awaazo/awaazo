@@ -124,7 +124,6 @@ export default function PodcastOverview({ podcast, User }) {
       <HStack>
         <Wrap spacing="10px">
           {' '}
-          {/* Ensures spacing between items */}
           {tags.map((tag, index) => (
             <WrapItem key={index}>
               <Box bg="az.darkGrey" px={3} py={1} borderRadius="10px">

@@ -4,7 +4,6 @@ import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTr
 import { FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa'
 import { SpeakerFull, SpeakerLow, SpeakerMute } from '../../public/icons'
 import waazoSleeping from '../../public/svgs/waazoSleeping.svg'
-
 import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'

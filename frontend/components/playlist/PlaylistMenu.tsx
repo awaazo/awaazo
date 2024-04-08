@@ -84,12 +84,6 @@ const PlaylistMenu = ({ playlist, onUpdate }) => {
     })
   }
 
-  const handlePlaylistClick = () => {
-    dispatch({
-      type: 'PLAY_PLAYLIST_NOW',
-      payload: playlist,
-    })
-  }
 
   const handleMenuItemClick = (action) => {
     if (action === 'playNext') {
