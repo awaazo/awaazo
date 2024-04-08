@@ -36,7 +36,7 @@ const ViewQueueModal = ({ isOpen, onClose }) => {
                   borderRadius={"50px"}
                   onClick={() => handleQueueSelect(index)}
                   _hover={{ cursor: "pointer" }}
-                  justifyContent="space-between" // Add this line
+                  justifyContent="space-between" 
                 >
                   <Box w="40px" h="40px" borderRadius="50%" overflow="hidden" marginRight="10px">
                     <Image as="img" src={episode.thumbnailUrl} alt={episode.episodeName} w="100%" h="100%" />

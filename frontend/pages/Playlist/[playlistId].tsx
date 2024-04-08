@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Container,
   Flex,
   Spacer,
   Text,
@@ -127,9 +126,7 @@ export default function Playlist() {
             </Flex>
           </Box>
           <Box>
-            <Text fontSize="xl" fontWeight="bold" mt={2}>
-              Episodes:
-            </Text>
+            
             {episodes && episodes.length > 0 ? (
               episodes.map((episode: any) => (
                 <EpisodeCard

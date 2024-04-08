@@ -61,17 +61,16 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Adding {episode?.episodeName} to a Playlist</ModalHeader>
+        <ModalHeader>Add <Text as="span" fontWeight="bold" color="az.red">{episode?.episodeName}</Text> to a Playlist</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <Button borderRadius={"50px"} onClick={onCreateModalOpen}>
+            <Button variant={'large'} bgColor={"az.blue"} color={"white"} onClick={onCreateModalOpen}>
               Create New Playlist
             </Button>
 
-            <Text>OR</Text>
+            <Text fontSize={"md"} fontWeight={"bold"}>OR</Text>
             {playlistError && <Text color="red.500">{playlistError}</Text>}
-            {/* Dropdown to select an existing playlist */}
             <Select placeholder="Select an Existing Playlist" onChange={(e) => setTargetPlaylistId(e.target.value)}>
               {userPlaylists.map((playlist) => (
                 <option key={playlist.id} value={playlist.id}>
@@ -79,17 +78,12 @@ const AddToPlaylistModal = ({ isOpen, onClose, episode }) => {
                 </option>
               ))}
             </Select>
+            <Button variant={'large'} mr={3} onClick={() => handleAddToExistingPlaylist()}>
+            Add to Playlist
+          </Button>
           </VStack>
         </ModalBody>
 
-        <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue" mr={3} onClick={() => handleAddToExistingPlaylist()}>
-            Add to Playlist
-          </Button>
-        </ModalFooter>
       </ModalContent>
       <CreatePlaylistModal onClose={onCreateModalClose} isOpen={isCreateModalOpen} handleReload={handleReload} />
     </Modal>
