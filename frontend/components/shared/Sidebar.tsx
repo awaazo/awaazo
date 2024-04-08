@@ -409,7 +409,7 @@ const Sidebar = () => {
               </Flex>
             </Link>
             {/* Settings */}
-            <Link href="/CreatorHub" passHref>
+            <Link href="/profile/EditProfile" passHref>
               <Flex
                 as={Flex}
                 align="center"
