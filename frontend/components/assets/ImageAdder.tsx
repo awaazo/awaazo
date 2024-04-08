@@ -2,8 +2,8 @@ import React, { useState, useCallback } from 'react'
 import Cropper from 'react-easy-crop'
 import { Box, Flex, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, HStack, IconButton, useDisclosure, VStack, Img } from '@chakra-ui/react'
 import { AddIcon, MinusIcon, CheckIcon } from '@chakra-ui/icons'
-import { AwaazoLogo, Add } from '../../public/icons/'
 import { useDropzone } from 'react-dropzone'
+import ImgAddedPic from "../../public/svgs/ImgAdded.svg"
 
 interface ImageAdderProps {
   onImageAdded: (croppedImage: string) => void
@@ -16,16 +16,6 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const handleFileChange = useCallback(
-    (acceptedFiles: File[]) => {
-      if (acceptedFiles && acceptedFiles.length > 0) {
-        const file = acceptedFiles[0]
-        setImageSrc(URL.createObjectURL(file))
-        onOpen()
-      }
-    },
-    [onOpen]
-  )
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
@@ -94,31 +84,25 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 1))
   }
 
-  const StackedLogos = () => {
-    return (
-      <Box position="relative"  display="flex" alignItems="center" justifyContent="center">
-        <Box position="absolute" zIndex="1" color="az.red">
-          <AwaazoLogo width="50px" height="50px" />
-        </Box>
-        <Box position="absolute" zIndex="2" left={'-15px'}>
-          <Add width="18p" height="18px"/>
-        </Box>
-      </Box>
-    )
-  }
+  
 
   return (
     <>
-      <Box {...getRootProps()} bg="az.darkerGrey" borderRadius="17px" textAlign="center" width="200px" height="200px" padding="1em" marginBottom="1em">
+      <Box {...getRootProps()} bg="az.darkerGrey" borderRadius="17px" textAlign="center" width="200px" height="200px"  overflow="hidden">
         <input {...getInputProps()} style={{ display: 'none' }} />
         {!imageSrc ? (
-          <VStack justifyContent="center" alignItems="center" height="100%" spacing={8}>
-            <StackedLogos />
+          <Box position="relative" _hover={{ 
+            opacity: 0.5,
+            transition: "all 0.3s ease-in-out",
 
-            <Text fontSize="sm" textAlign="center" color={"az.greyish"}>
-              Drop Or click to add an Img
-            </Text>
-          </VStack>
+          }}>
+            <Img
+              src={ImgAddedPic.src}
+              alt="Add Image"
+            />
+            <Text position="absolute" top="20%" left="50%" transform="translate(-50%, -50%)" color="white" fontSize="lg" fontWeight={"bold"}>Add A Pic</Text>
+          </Box>
+          
         ) : (
           <Img
             src={imageSrc}
@@ -128,6 +112,7 @@ const ImageAdder: React.FC<ImageAdderProps> = ({ onImageAdded }) => {
               height: '100%',
               objectFit: 'cover',
               borderRadius: 'inherit',
+              padding: "0.5em",
             }}
           />
         )}
