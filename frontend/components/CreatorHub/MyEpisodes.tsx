@@ -224,9 +224,9 @@ const Episode = ({ episode }) => {
   };
 
   return (
-    <Flex paddingTop={5} paddingBottom={5} mt={3} width="100%" borderRadius="15px" bg="az.darkGrey" backdropFilter="blur(4px)" boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
-      <Box position="relative" mr={5}>
-        <Image boxSize={isMobile ? "0px" : "75px"} src={episode.thumbnailUrl} borderRadius="10px" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
+    <Flex py={3}  mt={3} width="100%" borderRadius="15px" bg="az.darkGrey"  boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
+      <Box position="relative" mr={3}>
+        <Image boxSize={isMobile ? "0px" : "80px"} src={episode.thumbnailUrl} borderRadius="10px" marginLeft={isMobile ? "0px" : "3"}  />
       </Box>
       <VStack align={"right"} flex={1}>
         {/* Episode Name */}
@@ -268,9 +268,9 @@ const Episode = ({ episode }) => {
         
           <Tooltip label="Highlights" aria-label="Highlights Tooltip">
             <IconButton
-              variant="ghost"
+              variant="minimal"
               data-cy="highlights-button"
-              fontSize={isMobile ? "md" : "lg"}
+              fontSize="md"
               rounded={"full"}
               opacity={0.7}
               color="white"
@@ -281,9 +281,9 @@ const Episode = ({ episode }) => {
           </Tooltip>
           <Tooltip label="Annotations" aria-label="Annotations Tooltip">
             <IconButton
-              variant="ghost"
+              variant="minimal"
               data-cy="annotations-button"
-              fontSize={isMobile ? "md" : "lg"}
+              fontSize="md"
               
               rounded={"full"}
               opacity={0.7}
@@ -295,9 +295,9 @@ const Episode = ({ episode }) => {
           </Tooltip>
           <Tooltip label="Sections" aria-label="Sections Tooltip">
             <IconButton
-              variant="ghost"
+              variant="minimal"
               data-cy="sections-button"
-              fontSize={isMobile ? "md" : "lg"}
+              fontSize="md"
               
               rounded={"full"}
               opacity={0.7}
@@ -309,9 +309,9 @@ const Episode = ({ episode }) => {
           </Tooltip>
           <Tooltip label="Transcript" aria-label="Transcript Tooltip">
             <IconButton
-              variant="ghost"
+              variant="minimal"
               data-cy="transcript-button"
-              fontSize={isMobile ? "md" : "lg"}
+              fontSize="md"
              
               rounded={"full"}
               opacity={0.7}
@@ -322,10 +322,10 @@ const Episode = ({ episode }) => {
             />
           </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
-            <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
+            <IconButton variant="minimal" data-cy="edit-button" fontSize="md" rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
-            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7}  color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
+            <IconButton variant="minimal" data-cy="delete-button" fontSize="md" rounded={"full"} opacity={0.7}  color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
           </Tooltip>
        
       </HStack>

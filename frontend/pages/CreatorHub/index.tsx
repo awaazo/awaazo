@@ -62,13 +62,11 @@ const Creatorhub = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" px={["1em", "2em", "4em"]}>
-        <Flex align="center" justify="space-between" p={4}>
-          <Text fontSize="30px" fontWeight={"light"}>
-            The Creator Hub
-          </Text>
-        </Flex>
-      </Box>
+      <Flex direction="column" align="center" justify="center" px={["1em", "2em", "4em"]} py={4}>
+        <Text fontSize="xl" fontWeight="bold" textAlign="center">
+          The CreatorHub
+        </Text>
+      </Flex>
       <Box px={["1em", "2em", "4em"]} pt={6}>
         {isLoading ? (
           <Flex justifyContent="center" alignItems="center" height="100px">
@@ -86,16 +84,13 @@ const Creatorhub = () => {
                   <VStack key={podcast.id} spacing={2} onClick={() => togglePodcastDetail(podcast.id)} align="center">
                     <Box position="relative" boxSize="150px">
                       <Image
-                        borderRadius="2.5em"
+                        borderRadius="15px"
                         boxSize="150px"
                         objectFit="cover"
                         src={podcast.coverArtUrl}
                         alt={podcast.name}
-                        boxShadow={selectedPodcastId === podcast.id ? "0 0 10px rgba(0, 0, 0, 0.5)" : ""}
-                        style={{
-                          outline: selectedPodcastId === podcast.id ? "3px solid #9ecaed" : "1px solid rgba(255, 255, 255, 0.5)",
-                          cursor: "pointer",
-                        }}
+                        boxShadow={selectedPodcastId === podcast.id ? "0 0 10px 2px #FF6A5F" : "none"}
+                        cursor="pointer"
                         data-cy={`podcast-image-${podcast.name.replace(/\s+/g, "-").toLowerCase()}`}
                       />
                     </Box>
