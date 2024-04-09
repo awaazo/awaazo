@@ -31,20 +31,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
     }
   }, [episodeId]);
 
-  // //fetch bookmarks every time a bookmark has been added/deleted
-  // useEffect(() => {
-  //   if (episodeId) {
-  //     BookmarksHelper.getAllBookmarks(episodeId)
-  //       .then((res) => {
-  //         if (res.status === 200) {
-  //           setBookmarks(res.bookmarks);
-  //         } else {
-  //           console.error("Error fetching bookmarks data:", res.message);
-  //         }
-  //       })
-  //       .catch((error) => console.error("Error fetching bookmarks data:", error));
-  //   }
-  // }, [bookmarks]);
+
 
   // Function to handle the bookmark/delete bookmark action
   const handleDeleteBookmark = (bookmarkId) => {
@@ -61,7 +48,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
   };
 
   return (
-    <Box border="3px solid rgba(255, 255, 255, 0.05)" width="100%" height="100%" p={2} borderRadius="1.1em">
+    <Box bg={"az.darkestGrey"} width="100%" height="100%" p={2} borderRadius="1.1em">
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={CiBookmark} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>

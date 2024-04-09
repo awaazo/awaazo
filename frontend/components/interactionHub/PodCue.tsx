@@ -95,11 +95,10 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
   };
 
   return (
-    <Box border="3px solid rgba(255, 255, 255, 0.05)" maxH="300px" width="100%" height="100%" p={2} borderRadius="1.1em" overflowY="auto">
+    <Box bg={"az.darkestGrey"} maxH="300px" width="100%" height="100%" p={2} borderRadius="1.1em" overflowY="auto">
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
-        <Icon as={LuBookCopy} boxSize={5} />
-        <Text fontSize="md" fontWeight="bold" ml={2} color="white">
-          Annotations
+        <Text fontSize="xxl" fontWeight="bold" ml={2} color="white">
+          PodCue
         </Text>
       </Flex>
       <VStack spacing={3} align="start" mb={4}>
