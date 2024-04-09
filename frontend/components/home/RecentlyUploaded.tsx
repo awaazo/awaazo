@@ -38,8 +38,8 @@ const RecentlyUploaded: React.FC = () => {
       ) : error ? (
         <Text color="az.red">{error}</Text>
       ) : (
-        <HStack
-          spacing={4}
+        <VStack
+          spacing={"12px"}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -51,7 +51,7 @@ const RecentlyUploaded: React.FC = () => {
           ) : (
             <Text>No episodes available</Text>
           )}
-        </HStack>
+        </VStack>
       )}
     </VStack>
   )
