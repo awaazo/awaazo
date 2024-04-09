@@ -116,7 +116,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
   }, [visibleWords]) // Depend on visibleWords to trigger the scroll
 
   return (
-    <Box width="100%" height="100%" p={2} borderRadius="1.1em">
+    <Box bg={"az.darkestGrey"} width="100%" height="100%" p={2} borderRadius="1.1em">
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>

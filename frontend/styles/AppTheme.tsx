@@ -18,7 +18,7 @@ const overrides = {
       blue: '#94AFFF',
       green: '#89DBBD',
       red: '#FA6257',
-      lightRed:'#FA7F57',
+      lightRed: '#FA7F57',
       yellow: '#FFD569',
       offWhite: '#D1D9DE',
       blackish: '#18191B',
@@ -81,7 +81,7 @@ const overrides = {
             color: 'az.red',
           },
         },
-     
+
         large: {
           display: 'flex',
           height: '50px',
@@ -92,10 +92,10 @@ const overrides = {
           background: 'var(--Just-White, #FFF)',
           fontWeight: '700',
           fontSize: '15px',
-          color:'#1D1D1D',
+          color: '#1D1D1D',
           _hover: {
-            background: 'az.red', 
-            color: 'white', 
+            background: 'az.red',
+            color: 'white',
           },
         },
 
@@ -109,10 +109,10 @@ const overrides = {
           background: 'var(--Just-White, #FFF)',
           fontWeight: '700',
           fontSize: '15px',
-          color:'az.red',
+          color: 'az.red',
           _hover: {
-            background: 'az.lightRed', 
-            color: 'white', 
+            background: 'az.lightRed',
+            color: 'white',
           },
         },
         mini: {
@@ -125,13 +125,12 @@ const overrides = {
           background: 'az.darkGrey',
           fontWeight: '700',
           fontSize: '12px',
-          color:'white',
+          color: 'white',
           _hover: {
-            background: 'az.lightRed', 
-            color: 'white', 
+            background: 'az.lightRed',
+            color: 'white',
           },
         },
-        
       },
     },
 
@@ -163,7 +162,7 @@ const overrides = {
             bg: '#393939',
             borderColor: 'transparent',
             _hover: {
-              borderColor: '#FA6257', 
+              borderColor: '#FA6257',
             },
             _focus: {
               borderColor: '#89DBBD',
@@ -185,32 +184,31 @@ const overrides = {
     Textarea: {
       variants: {
         outline: {
-        bg: '#393939',
-        maxHeight: '200px',
-        borderRadius: '15px', 
-        padding: '16px', 
-        backgroundColor: '#393939', 
-        color: 'white',  
-        borderColor: 'transparent', 
-        _hover: {
-          borderColor: '#FA6257', 
-        },
-        _focus: {
-          borderColor: '#89DBBD',
-          color: '#ffffff',
-          boxShadow: '0 0 0 1px #89DBBD',
-        },
-        _placeholder: {
-          color: '#818990',
+          bg: '#393939',
+          maxHeight: '200px',
+          borderRadius: '15px',
+          padding: '16px',
+          backgroundColor: '#393939',
+          color: 'white',
+          borderColor: 'transparent',
+          _hover: {
+            borderColor: '#FA6257',
+          },
+          _focus: {
+            borderColor: '#89DBBD',
+            color: '#ffffff',
+            boxShadow: '0 0 0 1px #89DBBD',
+          },
+          _placeholder: {
+            color: '#818990',
+          },
         },
       },
-    },
       defaultProps: {
         size: 'md',
         variant: 'outline',
       },
     },
-
 
     Tabs: {
       variants: {
@@ -248,7 +246,7 @@ const overrides = {
         dialog: {
           borderRadius: '15px',
           backgroundColor: '#18191B',
-          boxShadow:'#18191',
+          boxShadow: '#18191',
           padding: '2em',
           mx: 'auto',
           my: 'auto',
@@ -259,7 +257,7 @@ const overrides = {
           fontSize: 'lg',
         },
 
-        closeButton:{
+        closeButton: {
           bg: 'transparent',
           _hover: {
             color: '#818990',
@@ -269,8 +267,6 @@ const overrides = {
       variants: {},
     },
 
-  
-
     Menu: {
       baseStyle: {
         list: {
@@ -279,7 +275,7 @@ const overrides = {
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         },
         item: {
-          fontSize:"14px",
+          fontSize: '14px',
           backgroundColor: 'transparent',
           _focus: {
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
