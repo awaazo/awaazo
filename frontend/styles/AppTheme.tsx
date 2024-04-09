@@ -50,7 +50,7 @@ const overrides = {
           padding: '20px',
           paddingLeft: '2rem',
           paddingRight: '2rem',
-          background: 'linear-gradient(45deg, #007BFF, #8077f9, #5E43BA, #7C26A5, #564AF7)',
+          background: 'linear-gradient(45deg, #FA6257, #FFD569)',
           backgroundSize: '300% 300%',
           animation: 'Gradient 10s infinite linear',
           minWidth: '200px',
@@ -71,9 +71,17 @@ const overrides = {
           bg: 'transparent',
           _hover: {
             bg: 'transparent',
-            color: '#D1D9DE',
+            color: '#818990',
           },
         },
+        minimalColor: {
+          bg: 'transparent',
+          _hover: {
+            bg: 'transparent',
+            color: 'az.red',
+          },
+        },
+     
         large: {
           display: 'flex',
           height: '50px',
@@ -90,6 +98,7 @@ const overrides = {
             color: 'white', 
           },
         },
+
         normal: {
           display: 'flex',
           height: '37px',
@@ -173,6 +182,36 @@ const overrides = {
       },
     },
 
+    Textarea: {
+      variants: {
+        outline: {
+        bg: '#393939',
+        maxHeight: '200px',
+        borderRadius: '15px', 
+        padding: '16px', 
+        backgroundColor: '#393939', 
+        color: 'white',  
+        borderColor: 'transparent', 
+        _hover: {
+          borderColor: '#FA6257', 
+        },
+        _focus: {
+          borderColor: '#89DBBD',
+          color: '#ffffff',
+          boxShadow: '0 0 0 1px #89DBBD',
+        },
+        _placeholder: {
+          color: '#818990',
+        },
+      },
+    },
+      defaultProps: {
+        size: 'md',
+        variant: 'outline',
+      },
+    },
+
+
     Tabs: {
       variants: {
         withIconOnSelected: (props) => ({
@@ -207,28 +246,30 @@ const overrides = {
     Modal: {
       baseStyle: (props) => ({
         dialog: {
-          borderRadius: '3xl',
-          backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          borderRadius: '15px',
+          backgroundColor: '#18191B',
+          boxShadow:'#18191',
           padding: '2em',
           mx: 'auto',
           my: 'auto',
           alignItems: 'center',
         },
         header: {
-          fontWeight: 'light',
-          fontSize: '1.5em',
+          fontWeight: 'medium',
+          fontSize: 'lg',
+        },
+
+        closeButton:{
+          bg: 'transparent',
+          _hover: {
+            color: '#818990',
+          },
         },
       }),
       variants: {},
     },
 
-    Textarea: {
-      baseStyle: {
-        maxHeight: '200px',
-      },
-    },
+  
 
     Menu: {
       baseStyle: {
@@ -334,6 +375,7 @@ const overrides = {
   },
 
   fontSizes: {
+    xxl: '36px',
     xl: '24px',
     lg: '20px',
     md: '16px',

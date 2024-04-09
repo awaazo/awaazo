@@ -1,8 +1,8 @@
-import { Box, Image, Text, Flex,  useBreakpointValue } from '@chakra-ui/react'
+import { Box, Image, Text, Flex, useBreakpointValue, Container } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
 import { Podcast } from '../../types/Interfaces'
-import Rating from '../assets/RatingView';
+import Rating from '../assets/RatingView'
 
 interface PodcastCardProps {
   podcast: Podcast
@@ -16,17 +16,7 @@ const CardSize = {
 
 const PodcastImage = ({ coverArtUrl, name }) => (
   <>
-    <Image
-      src={coverArtUrl}
-      alt={name}
-      objectFit="cover"
-      position="absolute"
-      top={0}
-      w="full"
-      h="full"
-      transition="opacity 0.2s ease-in-out"
-      _groupHover={{ opacity: 1, filter: 'blur(3px)'}}
-    />
+    <Image src={coverArtUrl} alt={name} objectFit="cover" position="absolute" top={0} w="full" h="full" transition="opacity 0.2s ease-in-out" _groupHover={{ opacity: 1, filter: 'blur(3px)' }} />
     <Box
       position="absolute"
       top={0}
@@ -40,7 +30,6 @@ const PodcastImage = ({ coverArtUrl, name }) => (
     />
   </>
 )
-
 
 const PodcastNameAndTags = ({ name, description }) => (
   <Flex position="absolute" top="5" left={1} right={1} px="4" justifyContent="space-between" alignItems="center" zIndex={2} opacity="0" _groupHover={{ opacity: 1 }}>
@@ -84,7 +73,9 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ podcast }) => {
           <PodcastImage coverArtUrl={podcast.coverArtUrl} name={podcast.name} />
           {/* Gradient Overlay */}
           <Box position="absolute" top={0} left={0} right={0} bottom={0} bgGradient="linear(to-t, rgba(0, 0, 0, 0.5), transparent)" zIndex="1" />
-          <Rating rating={podcast.averageRating} />
+          <Box position="absolute" left="2" bottom="4" zIndex="3">
+            <Rating rating={podcast.averageRating}  />
+          </Box>
           <PodcastNameAndTags name={podcast.name} description={podcast.description} />
           <PodcastType type={podcast.type} />
         </Flex>

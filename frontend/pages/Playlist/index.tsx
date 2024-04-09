@@ -1,15 +1,13 @@
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Container, Button, VStack, Flex, Tooltip, IconButton, useBreakpointValue, Text, Box, HStack, Spacer } from '@chakra-ui/react'
+import {  Flex, Tooltip, IconButton, useBreakpointValue, Text, Box, HStack, Spacer } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import PlaylistCard from '../../components/cards/PlaylistCard'
 import PlaylistHelper from '../../helpers/PlaylistHelper'
 import { Playlist } from '../../types/Interfaces'
 import withAuth from '../../utilities/authHOC'
-import PlaylistMenu from '../../components/playlist/PlaylistMenu'
 import LikedEpisodesImage from '../../styles/images/LikedEpisodes.png'
-import { Time, Plays, Lock, Unlock } from '../../public/icons'
-
+import { Time, Plays } from '../../public/icons'
+import { TiLockClosed, TiLockOpen } from 'react-icons/ti'
 import { convertTime } from '../../utilities/commonUtils'
 
 const MyPlaylist = () => {
@@ -127,7 +125,7 @@ const MyPlaylist = () => {
                       </Flex>
                       <Spacer />
                       <Text fontSize="16px" color="white" mr={'20px'}>
-                        {playlist.privacy === 'public' ? <Unlock /> : <Lock />}
+                        {playlist.privacy === 'public' ? <TiLockOpen /> : <TiLockClosed />}
                       </Text>
                     </HStack>
                   </Flex>

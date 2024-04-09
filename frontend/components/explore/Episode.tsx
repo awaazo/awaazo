@@ -11,7 +11,7 @@ import {
 import { FaPlay } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import LikeComponent from "../interactionHub/Likes";
-import CommentComponent from "../interactionHub/Comments";
+import CommentComponent from "../interactionHub/comments/CommentsPanel";
 import { BsExplicitFill } from "react-icons/bs";
 import { convertTime } from "../../utilities/commonUtils";
 

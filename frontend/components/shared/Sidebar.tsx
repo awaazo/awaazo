@@ -14,12 +14,11 @@ import AuthHelper from '../../helpers/AuthHelper'
 import LoginPrompt from '../auth/AuthPrompt'
 import { UserMenuInfo } from '../../types/Interfaces'
 import { GoogleSSORequest } from '../../types/Requests'
+import { RiMic2Fill } from "react-icons/ri";
 
 const Sidebar = () => {
   const router = useRouter()
-  const loginPage = '/auth/Login'
   const indexPage = '/'
-  const signupPage = '/auth/Signup'
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const { data: session, status } = useSession()
   const [playlists, setPlaylists] = useState<Playlist[]>([])
@@ -51,25 +50,26 @@ const Sidebar = () => {
   const handleReload = () => {
     setReload(!reload)
   }
-
   const handleLogOut = async () => {
-    try {
-      // Wait for the logout request to complete
-      await AuthHelper.authLogoutRequest()
-      console.log('Logout successful')
-      if (session) {
-        await signOut()
+    if (window.confirm('Are you sure you want to log out?')) {
+      try {
+        // Wait for the logout request to complete
+        await AuthHelper.authLogoutRequest()
+        console.log('Logout successful')
+        if (session) {
+          await signOut()
+        }
+
+        // Set Logged In Status to false
+        setIsUserLoggedIn(false)
+        setIsUserSet(false)
+
+        // Redirect to the index page
+        window.location.href = indexPage
+      } catch (error) {
+        // Handle any errors that occur during logout
+        console.error('Logout failed', error)
       }
-
-      // Set Logged In Status to false
-      setIsUserLoggedIn(false)
-      setIsUserSet(false)
-
-      // Redirect to the index page
-      window.location.href = indexPage
-    } catch (error) {
-      // Handle any errors that occur during logout
-      console.error('Logout failed', error)
     }
   }
 
@@ -172,16 +172,19 @@ const Sidebar = () => {
       <Box position="fixed" bottom="0" left="0" right="0" py={2} zIndex={1000} borderTop={'2px solid rgba(255, 255, 255, 0.03)'} bg="rgba(255, 255, 255, 0.04)" backdropFilter="blur(40px)">
         <HStack justify="space-around">
           <Link href="/" passHref>
-            <IconButton icon={<Home />} variant="ghost" aria-label="Home" borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Home />} variant="minimalColor" aria-label="Home" borderRadius="50%" fontSize="18px" />
           </Link>
           <Link href="/Explore/Search" passHref>
-            <IconButton icon={<Search />} variant="ghost" aria-label="Search" borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Search />} variant="minimalColor" aria-label="Search" borderRadius="50%" fontSize="18px" />
+          </Link>
+          <Link href="/CreatorHub" passHref>
+            <IconButton icon={<RiMic2Fill />} variant="minimalColor" aria-label="Search" borderRadius="50%" fontSize="18px" />
           </Link>
           <Link href="/Playlist/" passHref>
-            <IconButton icon={<Cards />} variant="ghost" aria-label="Playlist" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<Cards />} variant="minimalColor" aria-label="Playlist" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
           </Link>
           <Link href="/profile/MyProfile" passHref>
-            <IconButton icon={<User />} variant="ghost" aria-label="Users" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
+            <IconButton icon={<User />} variant="minimalColor" aria-label="Users" onClick={onCreateModalOpen} borderRadius="50%" fontSize="18px" />
           </Link>
         </HStack>
       </Box>
@@ -296,7 +299,27 @@ const Sidebar = () => {
                 )}
               </Flex>
             </Link>
+
+            <Link href="/CreatorHub" passHref>
+              <Flex
+                as={Flex}
+                align="center"
+                p="2"
+                mb="1"
+                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                transition="color 0.4s ease-in-out"
+                _hover={{ textDecoration: 'none', color: 'az.red' }}
+              >
+                <Icon as={RiMic2Fill} fontSize="18px" mr={3} />
+                {!collapsed && (
+                  <Box flex="1" fontWeight="medium">
+                    Create
+                  </Box>
+                )}
+              </Flex>
+            </Link>
           </Box>
+          
 
           {/* My Shelf */}
           <Box p={1} bg={'rgba(0, 0, 0, 0.1)'} rounded={'xl'} width={'100%'}>
@@ -312,7 +335,7 @@ const Sidebar = () => {
                   {' '}
                   <Tooltip label="View Queue" fontSize="xs" placement="top" openDelay={1000}>
                     <span>
-                      <IconButton icon={<PiQueueFill />} variant="minimal" color="az.greyish" aria-label="View Queue" fontSize={'15px'} onClick={onQueueModalOpen} data-cy={`queue-button`} />{' '}
+                      <IconButton icon={<PiQueueFill />} variant="minimal"  aria-label="View Queue" fontSize={'15px'} onClick={onQueueModalOpen} data-cy={`queue-button`} />{' '}
                     </span>
                   </Tooltip>
                   {/* Conditionally rendering the create playlist button only when login prompt is not visible */}
@@ -322,7 +345,7 @@ const Sidebar = () => {
                         <IconButton
                           icon={<Add />}
                           variant="minimal"
-                          color="az.greyish"
+                        
                           aria-label="Add Playlist"
                           fontSize={'sm'}
                           onClick={() => {
@@ -386,13 +409,13 @@ const Sidebar = () => {
               </Flex>
             </Link>
             {/* Settings */}
-            <Link href="/CreatorHub" passHref>
+            <Link href="/profile/EditProfile" passHref>
               <Flex
                 as={Flex}
                 align="center"
                 p="2"
                 mb="1"
-                color={router.pathname === '/CreatorHub' ? 'az.red' : 'grey.700'}
+                color={router.pathname === '/profile/EditProfile' ? 'az.red' : 'grey.700'}
                 transition="color 0.4s ease-in-out"
                 _hover={{ textDecoration: 'none', color: 'az.red' }}
               >
@@ -412,7 +435,7 @@ const Sidebar = () => {
               p="2"
               mb="1"
               borderRadius="md"
-              color={router.pathname === '/Explore/Search' ? 'az.red' : 'white'}
+              color={'az.greyish'}
               transition="color 0.4s ease-in-out"
               _hover={{ textDecoration: 'none', color: 'az.red' }}
               onClick={handleLogOut}

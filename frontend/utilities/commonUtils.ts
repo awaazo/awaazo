@@ -54,6 +54,12 @@ export const convertTime = (seconds: number): string => {
 
 
 
+  /**
+   * This function formats a number into a more readable format.
+   * If the number is less than 1000, it returns the number as a string.
+   * If the number is less than 1000000, it returns the number in thousands with 'k' suffix.
+   * If the number is greater than or equal to 1000000, it returns the number in millions with 'M' suffix.
+   */
   export const formatNumber = (num: number): string => {
     if (num < 1000) return num.toString();
     
@@ -69,5 +75,7 @@ export const convertTime = (seconds: number): string => {
 
 
 
-  
-  
+
+
+
+

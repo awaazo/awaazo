@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IconButton, Menu, MenuButton, MenuList, Tabs, TabList, TabPanels, Tab, TabPanel, List, ListItem, Avatar, HStack, VStack, Text, Box, Badge, Button, Divider } from "@chakra-ui/react";
-import { BellIcon } from "@chakra-ui/icons";
+import { Bell , ArrowR } from "../../public/icons";
 import { formatDistanceToNow } from "date-fns";
 import NotificationHelper from "../../helpers/NotificationsHelper";
 import AuthHelper from "../../helpers/AuthHelper";
@@ -14,7 +14,6 @@ const Notifications = ({ initialNotifcationCount }) => {
   const [notificationCount, setNotificationCount] = useState(initialNotifcationCount);
   const [userId, setUserId] = useState<string | null>(null);
 
-  const [page, setPage] = useState(0);
 
   useEffect(() => {
     setNotificationCount(initialNotifcationCount);
@@ -124,7 +123,7 @@ const Notifications = ({ initialNotifcationCount }) => {
           aria-label="Notifications"
           icon={
             <Box position="relative" display="inline-block">
-              <BellIcon fontSize={"22px"} />
+              <Bell fontSize={"md"} />
               {notificationCount > 0 && (
                 <Badge
                   borderRadius="full"
@@ -149,7 +148,7 @@ const Notifications = ({ initialNotifcationCount }) => {
             </Box>
           }
           data-cy={`notifications-button`}
-          variant="ghost"
+          variant="minimal"
           size="md"
           rounded={"full"}
           opacity={0.7}
@@ -158,9 +157,9 @@ const Notifications = ({ initialNotifcationCount }) => {
         <MenuList minWidth={"400px"}>
           <Tabs isFitted>
             <TabList mb="1em">
-              <Tab>All</Tab>
-              <Tab>User</Tab>
-              <Tab>Episode</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>All</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>User</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>Episode</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -175,7 +174,7 @@ const Notifications = ({ initialNotifcationCount }) => {
             </TabPanels>
             <Box textAlign={"center"}>
               <Link href="/Notifications/MyNotifications">
-                <Button variant={"ghost"}>See All</Button>
+                <Button variant={"minimal"} fontWeight={"medium"} fontSize={"sm"} rightIcon={<ArrowR />}>See All</Button>
               </Link>
             </Box>
           </Tabs>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Icon, HStack, FormControl, RadioGroup, Radio, Stack, Input, VStack, Text, Center, Box } from '@chakra-ui/react'
 import { PiCurrencyDollarSimpleFill } from 'react-icons/pi'
-import PaymentHelper from '../../helpers/PaymentHelper'
+import PaymentHelper from '../../../helpers/PaymentHelper'
 import { useRouter } from 'next/router'
 
 const Tipjar = ({ episodeId, totalPoint }) => {

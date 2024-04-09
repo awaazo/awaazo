@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Flex, Tooltip, Text, IconButton, Container, VStack, Button, Box } from '@chakra-ui/react'
+import { Flex, Tooltip, Text, IconButton, VStack, Box } from '@chakra-ui/react'
 import Link from 'next/link'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Playlist } from '../../../types/Interfaces'
 import PlaylistHelper from '../../../helpers/PlaylistHelper'
 import PlaylistCard from '../../cards/PlaylistCard'
@@ -49,7 +48,7 @@ export default function MyPlaylists() {
       ) : (
         <>
           {/* Render the list of selected episodes */}
-          <VStack spacing={'2px'} width={'100%'}>
+          <VStack spacing={'12px'} width={'100%'}>
             {playlists.map((playlist) => (
               <PlaylistCard playlist={playlist} />
             ))}

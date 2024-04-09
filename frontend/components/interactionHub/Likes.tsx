@@ -42,7 +42,7 @@ const Likes = ({ episodeOrCommentId, initialLikes, showCount }) => {
 
   return (
     <>
-      <IconButton aria-label="like-button" variant="minimal"  onClick={handleLike} data-cy="like-button-index" icon={<Icon as={Like} />} color={isLiked ? 'az.red' : 'az.greyish'} >
+      <IconButton aria-label="like-button" variant="minimal"  onClick={handleLike} data-cy="like-button-index" icon={<Icon as={Like} />} color={isLiked ? 'az.red' : 'az.greyish'} _hover={{ color: 'az.red' }}>
         {showCount && likes}
       </IconButton>
 

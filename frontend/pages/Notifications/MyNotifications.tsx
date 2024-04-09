@@ -74,7 +74,7 @@ const NotificationsPage = () => {
           style={{
             ...buttonStyle,
             backgroundColor:
-              filter === "All" ? "#007bff" : "rgba(255, 255, 255, 0.1)",
+              filter === "All" ? '#FA6257' : "rgba(255, 255, 255, 0.1)",
             backdropFilter: filter === "All" ? "blur(25px)" : "none",
             opacity: filter === "All" ? 1 : 0.7,
           }}
@@ -86,7 +86,7 @@ const NotificationsPage = () => {
           style={{
             ...buttonStyle,
             backgroundColor:
-              filter === "User" ? "#007bff" : "rgba(255, 255, 255, 0.1)",
+              filter === "User" ? "#FA6257" : "rgba(255, 255, 255, 0.1)",
             backdropFilter: filter === "User" ? "blur(25px)" : "none",
             opacity: filter === "User" ? 1 : 0.7,
           }}
@@ -99,7 +99,7 @@ const NotificationsPage = () => {
             ...buttonStyle,
             backgroundColor:
               filter === "PodcastAlert"
-                ? "#007bff"
+                ? "#FA6257"
                 : "rgba(255, 255, 255, 0.1)",
             backdropFilter: filter === "PodcastAlert" ? "blur(25px)" : "none",
             opacity: filter === "PodcastAlert" ? 1 : 0.7,

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack, Img } from '@chakra-ui/react'
+import { Box, Flex, IconButton, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, useBreakpointValue, HStack, Img, VStack } from '@chakra-ui/react'
 import { FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa'
 import { SpeakerFull, SpeakerLow, SpeakerMute } from '../../public/icons'
 import waazoSleeping from '../../public/svgs/waazoSleeping.svg'
-
 import { Play } from '../../public/icons'
 import { TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb'
 import Likes from '../interactionHub/Likes'
@@ -259,14 +258,14 @@ const PlayerBar = () => {
             <Img src={waazoSleeping.src} alt="Waazo Sleeping" style={{ width: '100%', height: '100%' }} />
           </Box>
           )}
-          <Box maxWidth={isMobile ? '75%' : '100%'}>
+          <VStack maxWidth={isMobile ? '75%' : '100%'} align={"start"} spacing={0}>
             <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>
               {isEpisodeLoaded ? episode.episodeName : 'Not Playing'}
             </Text>
-            <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" isTruncated>
+            <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" mt={"-1"}isTruncated>
               {isEpisodeLoaded ? episode.podcastName : ''}{' '}
             </Text>
-          </Box>
+          </VStack>
           <Box ml={2 }>
           <Likes episodeOrCommentId={isEpisodeLoaded ? episode.id : 'default-id'} initialLikes={isEpisodeLoaded ? episode.likes : 0} showCount={false} />
           </Box>

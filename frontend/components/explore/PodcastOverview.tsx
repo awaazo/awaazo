@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, useBreakpointValue, Text, Image, Wrap, WrapItem, Button, HStack, VStack } from '@chakra-ui/react'
+import { Box, useBreakpointValue, Text, Image, Wrap, WrapItem, Button, HStack, VStack, IconButton, Flex } from '@chakra-ui/react'
 import EpisodeCard from '../cards/EpisodeCard'
 import Reviews from '../explore/Reviews'
 import Subscription from '../explore/Subscription'
@@ -9,6 +9,7 @@ import { Settings } from '../../public/icons/'
 import CustomTabs from '../assets/CustomTabs'
 import Rating from '../assets/RatingView'
 import { Episode } from '../../types/Interfaces'
+import Link from 'next/link'
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast, User }) {
@@ -18,24 +19,6 @@ export default function PodcastOverview({ podcast, User }) {
   const [currentUserID, setCurrentUserID] = useState(null)
   const updatePodcastData = (newData) => {
     setPodcastData(newData)
-  }
-
-  const Description = () => {
-    const descriptionLines = podcast.description.split('\n')
-    const isLongDescription = descriptionLines.length > 3
-
-    return (
-      <Box>
-        {descriptionLines.slice(0, showMore ? descriptionLines.length : 3).map((line, index) => (
-          <Text key={index}>{line}</Text>
-        ))}
-        {isLongDescription && (
-          <Button size="sm" background={'rgba(255, 255, 255, 0.1)'} onClick={() => setShowMore(!showMore)} mt={1} borderRadius={'3em'} outline={'1px solid rgba(255, 255, 255, 0.2)'}>
-            {showMore ? 'Show Less' : 'Show More'}
-          </Button>
-        )}
-      </Box>
-    )
   }
 
   useEffect(() => {
@@ -73,12 +56,74 @@ export default function PodcastOverview({ podcast, User }) {
     )
   }
 
+  const tabItems = [
+    { label: 'Episodes', component: <EpisodesList episodes={podcast.episodes} /> },
+    { label: 'Review', component: <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} /> },
+  ]
+  const metrics = [
+    { value: 250, label: 'Episodes' },
+    { value: 1200000, label: 'Listeners' },
+    { value: 100000, label: 'Subscribers' },
+  ]
+
+  const PodcastHeader = () => (
+    <VStack width={'100%'} spacing={4} mb={'4'}>
+      <HStack spacing={'12px'} width={'100%'} align={'start'}>
+        <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" />
+        <VStack align="start" spacing={'8px'} width={'100%'} justify="space-between">
+          <HStack width={'full'} justify="space-between" pr={"12px"}>
+            <Text fontSize={'lg'} fontWeight={'bold'}>
+              {podcast.name}
+            </Text>
+            
+            <Rating rating={podcast.totalRatings} />
+          
+          </HStack>
+          <VStack align="start">
+            <Description />
+            <TagList tags={podcast.tags} />
+          </VStack>
+        </VStack>
+      </HStack>
+      <Metrics_Subscribe />
+    </VStack>
+  )
+
+  const Description = () => {
+    const maxCharCount = 150
+    const isLongDescription = podcast.description.length > maxCharCount
+    const truncatedDescription = podcast.description.slice(0, maxCharCount) + '...'
+
+    return (
+      <Box>
+        {isLongDescription && !showMore ? (
+          <Flex align="center" wrap="wrap">
+            <Text color={'az.greyish'} noOfLines={1}>
+              {truncatedDescription}
+            </Text>
+            <Button variant={'minimal'} fontSize="sm" onClick={() => setShowMore(!showMore)} p={0}>
+              Show More
+            </Button>
+          </Flex>
+        ) : (
+          <>
+            <Text color={'az.greyish'}>{podcast.description}</Text>
+            {isLongDescription && (
+              <Button variant={'minimal'} fontSize="sm" onClick={() => setShowMore(!showMore)} p={0}>
+                Show Less
+              </Button>
+            )}
+          </>
+        )}
+      </Box>
+    )
+  }
+
   const TagList = ({ tags }) => {
     return (
       <HStack>
         <Wrap spacing="10px">
           {' '}
-          {/* Ensures spacing between items */}
           {tags.map((tag, index) => (
             <WrapItem key={index}>
               <Box bg="az.darkGrey" px={3} py={1} borderRadius="10px">
@@ -91,43 +136,33 @@ export default function PodcastOverview({ podcast, User }) {
     )
   }
 
-  const PodcastHeader = () => (
-    <HStack spacing={"12px"}>
-      <Image boxSize={isMobile ? '125px' : '150px'} objectFit="cover" src={podcast.coverArtUrl} borderRadius="15px" marginLeft={isMobile ? '0px' : '20px'} mt={1} />
-      <VStack align="start" spacing={"8px"}>
-  <HStack>
-    <Text fontSize={'lg'} fontWeight={'bold'}>
-      {podcast.name}
-    </Text>
-    <HStack>
-      <Rating rating={podcast.totalRatings} />
-      <Text>{podcast.totalRatings}</Text>
-      <Settings />
-    </HStack>
-  </HStack>
-  <Description />
-  <TagList tags={podcast.tags} />
-</VStack>
+  const Metrics_Subscribe = () => (
+    <HStack bg={'az.darkestGrey'} width={'100%'} justify="space-between" px={4} py={2} borderRadius={'10'}>
+      <MetricDisplay metrics={metrics} />
+      <Subscription PodcastId={podcast.id} initialIsSubscribed={Boolean} podcasterId={podcast.podcasterId} currentUserID={currentUserID} />
 
+      {podcast.podcasterId === currentUserID && (
+        <Link href="/CreatorHub" passHref>
+          <IconButton aria-label="Settings" icon={<Settings />} variant="minimalColor" size="md" p={'0'} />
+        </Link>
+      )}
     </HStack>
   )
 
-  const tabItems = [
-    { label: 'Review', component: <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} /> },
-    { label: 'Episodes', component: <EpisodesList episodes={podcast.episodes} /> },
-  ]
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" width={'95%'}>
+    <Box display="flex" justifyContent="center" alignItems="center" width={'100%'}>
       {isMobile ? (
-        <VStack justify="center" align="center" ml={'15px'}>
+        <VStack justify="center" align="center" ml={'15px'} w={'full'}>
           <PodcastHeader />
-          <CustomTabs tabItems={tabItems} />
+          <Box width={'100%'}>
+            <CustomTabs tabItems={tabItems} />
+          </Box>
         </VStack>
       ) : (
-        <HStack align="start" spacing={'30px'} ml={'5%'}>
+        <HStack align="start" spacing={'30px'} ml={'5%'} w={'85%'}>
           <PodcastHeader />
 
-          <Box>
+          <Box w={'full'}>
             <CustomTabs tabItems={tabItems} />
           </Box>
         </HStack>

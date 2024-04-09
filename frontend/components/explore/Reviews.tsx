@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Avatar, useBreakpointValue, Text, Textarea, FormControl, Button, VStack, HStack } from '@chakra-ui/react'
-import { StarIcon } from '@chakra-ui/icons'
+import { Box, Flex, Text, Textarea, FormControl, Button, VStack, HStack, IconButton } from '@chakra-ui/react'
+import { FaCircle } from 'react-icons/fa6'
 import ReviewsHelper from '../../helpers/ReviewsHelper'
 import { PodcastRatingRequest, PodcastReviewRequest } from '../../types/Requests'
 import AuthPrompt from '../auth/AuthPrompt'
 import AuthHelper from '../../helpers/AuthHelper'
-
+import { AwaazoA, Send } from '../../public/icons'
+import { IoClose } from 'react-icons/io5'
+import Rating from '../assets/RatingView'
+import CustomAvatar from '../assets/CustomAvatar'
 // Component for displaying and adding reviews
 const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false })
   const [isAddingReview, setIsAddingReview] = useState(false)
   const [newRating, setNewRating] = useState(0)
   const [newReviewText, setNewReviewText] = useState('')
   const [reviewCharacterCount, setReviewCharacterCount] = useState<number>(0)
   const [reviewError, setReviewError] = useState('')
-  const [reviews, setReviews] = useState(podcast.ratings)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const ratingColors = ['white', 'az.blue', 'az.green', 'az.yellow', 'az.red']
+  const [hoverRating, setHoverRating] = useState(null)
 
   const fetchAndUpdateReviews = async () => {
     try {
@@ -30,7 +33,7 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
       console.error('Error fetching reviews:', error)
     }
   }
-  
+
   const handleAddReview = async (event) => {
     console.log('Yo')
     event.preventDefault()
@@ -76,19 +79,19 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
     fetchAndUpdateReviews()
   }, [])
 
-  //  handle changes in the review text
   const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newDesc = e.target.value.slice(0, 150)
-    setNewReviewText(newDesc)
-    setReviewCharacterCount(newDesc.length)
+    const newDesc = e.target.value
+    if (newDesc.length <= 150) {
+      setNewReviewText(newDesc)
+      setReviewCharacterCount(newDesc.length)
+    }
   }
 
   return (
-    <VStack align="start" spacing={4} marginTop={4}>
+    <VStack align="start" spacing={4}>
       <Flex justify="space-between" w="100%" alignItems="center">
         {!isAddingReview && podcast.podcasterId !== currentUserID && (
           <>
-            
             <Button
               onClick={() => {
                 AuthHelper.authMeRequest().then((response) => {
@@ -100,64 +103,76 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
                   }
                 })
               }}
-              variant={"mini"}
+              variant={'mini'}
             >
-              Add Review
+              {podcast.ratings.some((rating) => rating.user.id === currentUserID) ? 'Edit Review' : 'Add Review'}
             </Button>
           </>
         )}
       </Flex>
+
       {isAddingReview && (
-        <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
+        <Box w="100%" p={4} py={6} bg={'az.darkestGrey'} borderRadius="15px">
           <Flex direction="column" mt={0}>
-            <Flex justify="center">
-              {[1, 2, 3, 4, 5].map((index) => (
-                <StarIcon
-                  key={index}
-                  color={newRating >= index ? 'yellow.400' : 'gray.300'}
-                  cursor="pointer"
-                  onClick={() => setNewRating(index)}
-                  boxSize={5}
-                  margin={2}
-                  data-cy={`star-icon-${index}`}
-                />
-              ))}
-              {reviewError && <Text color="red.500">{reviewError}</Text>}
-            </Flex>
+            <HStack justifyContent={'space-between'} width={'full'}>
+              <IconButton onClick={() => setIsAddingReview(false)} icon={<IoClose />} aria-label="Close Review" variant={'minimal'} size="lg" style={{ position: 'relative', top: '-8px' }} />
+              <Flex justify="center" direction="row">
+                <AwaazoA width="18px" height="18px" style={{ position: 'relative', zIndex: 2, bottom: '7px', left: '1px' }} />
+                {[1, 2, 3, 4, 5].map((index) => {
+                  const userRating = podcast.ratings.find((rating) => rating.user.id === currentUserID) || {}
+                  const currentRating = hoverRating !== null ? hoverRating : newRating || userRating.rating || 0
+                  return (
+                    <Box
+                      key={index}
+                      as={FaCircle}
+                      onClick={() => setNewRating(index)}
+                      onMouseEnter={() => setHoverRating(index)}
+                      onMouseLeave={() => setHoverRating(null)}
+                      cursor="pointer"
+                      color={currentRating >= index ? ratingColors[index - 1] : 'az.darkGrey'}
+                      _hover={{ color: ratingColors[index - 1] }}
+                      data-cy={`star-icon-${index}`}
+                      size="10px"
+                      marginLeft="2px"
+                    />
+                  )
+                })}
+              </Flex>
+              <IconButton onClick={handleAddReview} icon={<Send />} aria-label="Submit Review" variant={'minimalColor'} size="lg" />
+            </HStack>
             <FormControl position="relative">
-              <Textarea placeholder="Write your review here..." value={newReviewText} onChange={handleReviewChange} mt={4} />
+              <Textarea
+                placeholder="Write your review here..."
+                value={newReviewText || (podcast.ratings.find((rating) => rating.user.id === currentUserID) || {}).review}
+                onChange={handleReviewChange}
+              />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {reviewCharacterCount}/150
               </Text>
             </FormControl>
-            <HStack justifyContent="space-between" mt={'5'}>
-              {/* Add a submit button */}
-              <Button onClick={handleAddReview} width="50%" borderRadius="7px" colorScheme="blue">
-                Submit Review
-              </Button>
-              <Button onClick={() => setIsAddingReview(false)} width="50%" borderRadius="7px" colorScheme="red">
-                Cancel
-              </Button>
-            </HStack>
+            {reviewError && (
+              <Text color="red.500" textAlign="center" fontSize="sm" fontWeight="medium" mt={4}>
+                {reviewError}
+              </Text>
+            )}
           </Flex>
         </Box>
       )}
+
       {podcast.ratings && podcast.ratings.length > 0 ? (
         podcast.ratings.map(
           (rating) =>
             rating &&
             rating.user && (
-              <Box key={rating.id} w="100%" p={4} borderWidth="1px" borderRadius="lg">
+              <Box key={rating.id} w="100%" p={4} bg={'az.darkestGrey'} borderRadius="15px">
                 <Flex justify="space-between" align="center">
-                  <Flex align="center">
-                    <Avatar size="md" name={rating.user.username} src={rating.user.avatarUrl} />
-                    <Text ml={2}>{rating.user.username}</Text>
+                  <Flex align="center" position="relative">
+                    <CustomAvatar imageUrl={rating.user.avatarUrl} username={rating.user.username} />
+                    <Text ml={2} fontWeight="bold" fontSize="md">
+                      {rating.user.username}
+                    </Text>
                   </Flex>
-                  <Box>
-                    {Array.from({ length: rating.rating }, (_, index) => (
-                      <StarIcon key={index} color="yellow.400" />
-                    ))}
-                  </Box>
+                  <Rating rating={rating.rating} />
                 </Flex>
                 <Flex justify="flex-start" align="center" mt={2}>
                   <Text color="gray.300">{rating.review}</Text>
@@ -172,7 +187,8 @@ const Reviews = ({ podcast, currentUserID, updatePodcastData }) => {
         <Flex justify="center" align="center" mt={8} width="100%">
           <Text>(No reviews have been posted yet)</Text>
         </Flex>
-      )}{' '}
+      )}
+
       {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="You must be logged in to write a Review. Please log in or create an account." />}
     </VStack>
   )

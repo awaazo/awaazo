@@ -1,11 +1,11 @@
 import { useState, useEffect, FormEvent } from 'react'
-import { Box, Button, Icon, FormControl, Textarea, VStack, HStack, Text, Input, FormHelperText, Flex, IconButton, useBreakpointValue, Spacer } from '@chakra-ui/react'
+import { Box, Button, Icon, FormControl, Textarea, VStack, HStack, Text, Input, FormHelperText, Flex, IconButton, useBreakpointValue, Spacer, InputGroup } from '@chakra-ui/react'
+import BookmarksHelper from '../../../helpers/BookmarksHelper'
+import { convertTime } from '../../../utilities/commonUtils'
+import { EpisodeBookmarkRequest } from '../../../types/Requests'
+import { Bookmark } from '../../../types/Interfaces'
+import { Trash } from '../../../public/icons'
 import { MdBookmark, MdBookmarkAdd } from 'react-icons/md'
-import BookmarksHelper from '../../helpers/BookmarksHelper'
-import { convertTime } from '../../utilities/commonUtils'
-import { EpisodeBookmarkRequest } from '../../types/Requests'
-import { Bookmark } from '../../types/Interfaces'
-import { FaTrash } from 'react-icons/fa'
 
 const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   const fontSize = useBreakpointValue({ base: 'md', md: 'lg' })
@@ -87,28 +87,29 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   return (
     <>
       <VStack spacing={5} align="center" p={5} maxHeight={'calc(88vh - 5em)'}>
-        <Box p={4} bg="rgba(255, 255, 255, 0.08)" rounded="xl" w="full" backdropFilter="blur(10px)">
+        <Box rounded="xl" w="full" backdropFilter="blur(10px)">
           {!showBookmarkForm ? (
             <HStack align="center" justify="space-between">
               <HStack>
                 <Icon as={MdBookmark} color="az.red" boxSize="24px" />
-                <Text fontSize="18px" fontWeight="bold">
-                  Bookmarks:
+                <Text fontSize="md" fontWeight="bold">
+                  Bookmarks
                 </Text>
               </HStack>
               <HStack>
                 <Spacer />
                 <Button
-                  bg="transparent"
+                  variant={'minimal'}
                   onClick={() => {
                     setShowBookmarkForm(true)
                     setbookmarkTimestamp(selectedTimestamp)
                   }}
+                  color="az.yellow"
                 >
-                  <Text fontSize="20px" color="az.yellow" fontWeight={'bold'}>
+                  <Text fontSize="md"  fontWeight={'bold'} mr={'8px'}>
                     {convertTime(selectedTimestamp)}
-                  </Text>{' '}
-                  <Icon as={MdBookmarkAdd} color="az.yellow" boxSize="24px" />
+                  </Text>
+                  <Icon as={MdBookmarkAdd}  boxSize="24px" />
                 </Button>
               </HStack>
             </HStack>
@@ -116,17 +117,14 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
             <HStack align="center" justify="space-between">
               <HStack>
                 <Icon as={MdBookmarkAdd} color="az.red" boxSize="24px" />
-                <Text fontSize="24px" color="az.red" fontWeight={'bold'}>
+                <Text fontSize="md" color="az.red" fontWeight={'bold'}>
                   {convertTime(bookmarkTimestamp)}
-                </Text>{' '}
+                </Text>
               </HStack>
               <HStack>
                 <Spacer />
-                <Button variant={'ghost'} onClick={() => setShowBookmarkForm(false)} bg="transparent">
-                  {' '}
-                  <Text fontSize="20px" color="az.yellow" fontWeight={'bold'}>
-                    Cancel
-                  </Text>{' '}
+                <Button variant={'minimal'} onClick={() => setShowBookmarkForm(false)} color="az.yellow" >
+                  <Icon as={MdBookmark} boxSize="24px" />
                 </Button>
               </HStack>
             </HStack>
@@ -142,46 +140,52 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
                 {characterCounts.title}/{MAX_CHARS.title}
               </FormHelperText>
             </FormControl>
+
             <FormControl isInvalid={characterCounts.note > MAX_CHARS.note} width="100%">
-              <Textarea maxHeight={'50px'} placeholder="Enter A Note" value={formData.note} onChange={handleChange('note')} maxLength={MAX_CHARS.note} h="10rem" />
+              <InputGroup>
+                <Textarea value={formData.note} onChange={handleChange('note')} placeholder="Enter Notes..." />
+                <Button variant={'minimalColor'} width="18px" height="18px" position="absolute" zIndex={'50'} right="10px" bottom="10px" onClick={handleBookmark} p="0">
+                  <MdBookmarkAdd color="az.yellow" fontSize={'20px'} />
+                </Button>
+              </InputGroup>
+
               <FormHelperText textAlign="right">
                 {characterCounts.note}/{MAX_CHARS.note}
               </FormHelperText>
             </FormControl>
-
-            <Button leftIcon={<Icon as={MdBookmarkAdd} />} onClick={handleBookmark} bg="az.red" borderRadius={'10px'}>
-              Add Bookmark
-            </Button>
           </VStack>
         ) : (
           <VStack spacing={3} align="start" width="100%" mb={4} ml={'15px'} mr={'15px'}>
             {bookmarks && bookmarks.length > 0 ? (
               <Box overflowY="scroll" maxHeight={'55vh'} width={'100%'}>
                 {bookmarks.map((bookmark, index) => (
-                  <Box mb={'15px'} key={index} bg="rgba(255, 255, 255, 0.02)" borderRadius="2xl" p={4} _hover={{ bg: 'rgba(255, 255, 255, 0.05)' }} w="100%">
-                    <Flex justify="space-between" align="center">
-                      <Text fontSize={'20px'} color="white" fontWeight={'bold'}>
+                  <VStack mb={'15px'} key={index} bg="az.darkGrey" borderRadius="15px" p={4} _hover={{ bg: 'az.darkerGrey' }} w="100%">
+                    
+                    <HStack justify="space-between" width={'100%'}>
+                      <VStack width={'100%'} spacing={0} align="right">
+                      <Text fontSize={'md'} color="white" fontWeight={'bold'}>
                         {bookmark.title}
                       </Text>
+                      <Text fontSize={'sm'} color="az.greyish" mt={'-2px'} fontWeight={"bold"}>
+                      {convertTime(bookmark.time)}
+                    </Text>
+                    </VStack>
                       <IconButton
-                        icon={<Icon as={FaTrash} />}
-                        variant={'ghost'}
+                        icon={<Icon as={Trash} />}
+                        variant={'minimal'}
                         color={'az.red'}
                         aria-label="Delete Bookmark"
                         data-cy={`delete-bookmark-id:`}
                         onClick={() => handleDeleteBookmark(bookmark.id)}
                         size="md"
                       />
-                    </Flex>
-
-                    <Text fontSize={'16px'} color="gray">
-                      {convertTime(bookmark.time)}
-                    </Text>
-
-                    <Text fontSize={'18px'} color="white">
+                    </HStack>
+                  
+                   
+                    <Text fontSize={'sm'} color="white" opacity={'0.8'}>
                       {bookmark.note}
                     </Text>
-                  </Box>
+                  </VStack>
                 ))}
               </Box>
             ) : (

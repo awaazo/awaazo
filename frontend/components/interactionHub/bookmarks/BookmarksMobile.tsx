@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Text, VStack, Flex, useBreakpointValue, Icon, IconButton } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { Bookmark } from "../../types/Interfaces";
-import { convertTime } from "../../utilities/commonUtils";
+import { Bookmark } from "../../../types/Interfaces";
+import { convertTime } from "../../../utilities/commonUtils";
 import { CiBookmark } from "react-icons/ci";
-import BookmarksHelper from "../../helpers/BookmarksHelper";
+import BookmarksHelper from "../../../helpers/BookmarksHelper";
 import { FaTrash } from "react-icons/fa";
 
 interface BookmarksProps {
