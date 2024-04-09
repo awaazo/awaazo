@@ -30,6 +30,7 @@ import { EpisodeAddRequest } from '../../types/Requests'
 import { AxiosProgressEvent } from 'axios'
 import ImageAdder from '../assets/ImageAdder'
 import { v4 as uuidv4 } from 'uuid'
+import { BsBox } from 'react-icons/bs'
 
 const AddEpisodeForm = ({ podcastId }) => {
   const router = useRouter()
@@ -289,14 +290,10 @@ const AddEpisodeForm = ({ podcastId }) => {
     setDescriptionCharacterCount(newDesc.length)
   }
 
-  // Function to navigate to create podcast page
-  const navigateToCreatePodcast = () => {
-    router.push('/CreatorHub/CreatePodcast')
-  }
 
   return (
     <>
-      <Center>
+      <Box>
         <VStack spacing={2} align="center" p={2}>
           <form onSubmit={isAIGenerated ? handleAddAIEpisode : handleAddEpisode}>
             {addError && <Text color="red.500">{addError}</Text>}
@@ -304,7 +301,7 @@ const AddEpisodeForm = ({ podcastId }) => {
               <ImageAdder onImageAdded={handleImageAdded} />
               <FormControl position="relative">
                 <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." rounded="lg" pr="50px" />
-                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
+                <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="az.greyish">
                   {episodeNameCharacterCount}/25
                 </Text>
               </FormControl>
@@ -317,14 +314,14 @@ const AddEpisodeForm = ({ podcastId }) => {
               {/* Tab Panel for Human and AI-generated */}
               <Tabs isFitted width={'100%'}>
                 <TabList>
-                  <Tab onClick={() => setIsAIGenerated(false)}>Human</Tab>
-                  <Tab onClick={() => setIsAIGenerated(true)}>AI-generated</Tab>
+                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(false)}>Human</Tab>
+                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(true)}>AI-generated</Tab>
                 </TabList>
-                <TabPanels>
+                <TabPanels width={'100%'}>
                   {/* Human Options */}
-                  <TabPanel>
+                  <TabPanel width={'100%'}>
                     <FormControl display="flex" alignItems="center" justifyContent="center">
-                      <Switch id="explicitToggle" colorScheme="purple" isChecked={isExplicit} onChange={() => setIsExplicit(!isExplicit)} opacity={0.9}>
+                      <Switch id="explicitToggle" colorScheme="red" isChecked={isExplicit} onChange={() => setIsExplicit(!isExplicit)} opacity={0.9}>
                         Explicit
                       </Switch>
                     </FormControl>
@@ -345,52 +342,56 @@ const AddEpisodeForm = ({ podcastId }) => {
                     </Box>
                   </TabPanel>
                   {/* AI-generated Options */}
-                  <TabPanel>
-                    <FormControl display="flex" alignItems="center" justifyContent="center">
-                      <Switch id="textWithAIToggle" colorScheme="purple" isChecked={isAIWithText} onChange={() => setIsAIWithText(!isAIWithText)} opacity={0.9}>
+                  
+                  <TabPanel width={'100%'}>
+                    
+                    <FormControl display="flex" alignItems="center" justifyContent="center" width={'100%'}>
+                      <Switch id="textWithAIToggle" colorScheme="red" isChecked={isAIWithText} onChange={() => setIsAIWithText(!isAIWithText)} opacity={0.9}>
                         User Created Text
                       </Switch>
                     </FormControl>
                     {/* If Text with AI is true, show the text input field */}
                     {isAIWithText && (
-                      <FormControl>
-                        <Textarea mt={'15px'} value={aiText} onChange={(e) => setAIText(e.target.value)} placeholder="Enter your text" />
+                      <FormControl width={'100%'}>
+                        <Textarea mt={'15px'} value={aiText} onChange={(e) => setAIText(e.target.value)} placeholder="Enter your text" width={'100%'}/>
                       </FormControl>
                     )}
                     {/* If Text with AI is false, show the prompt input field */}
                     {!isAIWithText && (
-                      <FormControl>
-                        <Textarea mt={'15px'} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Enter your prompt" />
+                      <FormControl width={'100%'}>
+                        <Textarea mt={'15px'} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Enter your prompt" width={'100%'}/>
                       </FormControl>
                     )}
                     {/* Voice gender switch */}
-                    <FormControl mt={'15px'} display="flex" alignItems="center" justifyContent="center">
-                      <Switch id="voiceGenderToggle" colorScheme="purple" isChecked={isFemaleVoice} onChange={() => setIsFemaleVoice(!isFemaleVoice)} opacity={0.9}>
+                    <FormControl mt={'15px'} display="flex" alignItems="center" justifyContent="center" width={'100%'}>
+                      <Switch id="voiceGenderToggle" colorScheme="red" isChecked={isFemaleVoice} onChange={() => setIsFemaleVoice(!isFemaleVoice)} opacity={0.9}>
                         Female Voice
                       </Switch>
                     </FormControl>
+                   
                   </TabPanel>
+               
                 </TabPanels>
               </Tabs>
 
-              <Button id="createBtn" type="submit" variant={'gradient'} disabled={loading} w={'12rem'}>
+              <Button id="createBtn" type="submit" variant={'large'} disabled={loading} w={'200px'}>
                 {loading ? <Spinner /> : 'Upload'}
               </Button>
             </VStack>
           </form>
         </VStack>
-      </Center>
+      </Box>
       <Modal isOpen={isUploadModalOpen} onClose={() => setUploadModalOpen(false)} isCentered>
         <ModalOverlay />
         <ModalContent borderRadius="xl" backdropFilter="blur(50px)" p={9} maxW="800px" width="95%">
           <Flex direction="column">
-            <Flex align="start">
-              {coverImage && <Image src={coverImage} alt="Uploaded Cover Photo" boxSize="120px" borderRadius="8px" objectFit="cover" boxShadow="lg" />}
-              <Box ml={4}>
-                <Text fontSize="25px" fontWeight={'bold'}>
+            <Flex align="center" justify="center">
+              {coverImage && <Image src={coverImage} alt="Uploaded Cover Photo" boxSize="80px" borderRadius="8px" objectFit="cover" boxShadow="lg" />}
+              <Box ml={4} >
+                <Text fontSize="lg" fontWeight={'bold'}>
                   Uploading: {episodeName}
                 </Text>
-                <Text fontSize="15px" mt={3} ml={1}>
+                <Text fontSize="md" ml={1}>
                   {description}
                 </Text>
               </Box>
@@ -404,32 +405,29 @@ const AddEpisodeForm = ({ podcastId }) => {
                 </Box>
               ) : (
                 <>
-                  <Box textAlign="center">
+                  <Box textAlign="center"  >
                     {uploadProgress !== 100 && (
                       <Text fontSize="xs" textAlign="center" color="white" mb={2}>
                         Please wait while the file gets uploaded
                       </Text>
                     )}
+                    
                   </Box>
-                  <Box w="100%" h="32px" borderRadius="full" mt={2} mb={2} position="relative" background="grey">
+                  <Box w="100%" h="24px" borderRadius="full" mt={2} mb={2} position="relative" background="az.darkerGrey">
                     <Box
                       h="100%"
-                      borderRadius="full"
+                      borderRadius="10px"
                       width={`${uploadProgress}%`}
-                      style={{
-                        background: 'linear-gradient(45deg, #007BFF, #3F60D9, #5E43BA, #7C26A5, #9A0A90)',
-                        backgroundSize: '300% 300%',
-                        animation: 'Gradient 3s infinite linear',
-                      }}
+                      background= 'az.red'
                       position="absolute"
                       zIndex="1"
                     />
-                    <Text position="absolute" width="100%" textAlign="center" color="white" fontWeight="bold" fontSize="xl" zIndex="2">
+                    <Text position="absolute" width="100%" textAlign="center" color="white" fontWeight="bold" fontSize="lg" zIndex="2" top="50%" left="50%" transform="translate(-50%, -50%)">
                       {uploadProgress}%
                     </Text>
                   </Box>
                   {uploadProgress === 100 && (
-                    <Button onClick={() => window.location.reload()} alignSelf="center" variant="gradient">
+                    <Button onClick={() => window.location.reload()} alignSelf="center" variant="large" mt={5}>
                       Finish
                     </Button>
                   )}

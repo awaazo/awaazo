@@ -70,8 +70,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode, showLike = false, sh
         </HStack>
       </VStack>
 
-      <HStack spacing={1}>
-        <IconButton aria-label="Play" icon={<Play width="12px" />} variant="play" background="az.red" minWidth="2em" width="30px" height="30px" onClick={handleEpisodeClick} />
+      <HStack spacing={0}>
+        <IconButton aria-label="Play" icon={<Play width="14px" />} variant="play" background="az.red" minWidth="35px" width="35px" height="35px" borderRadius="50%" onClick={handleEpisodeClick} />
         <HStack spacing={0} ml={6}>
           {showLike && (
             <Box ml={-3}>

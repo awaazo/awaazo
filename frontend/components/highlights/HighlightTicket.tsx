@@ -144,7 +144,7 @@ const HighlightTicket = ({ highlight, onOpenFullScreen, isFullScreenMode }) => {
         onClick={handlePlayPauseClick}
         size="lg"
         isRound
-        colorScheme="whiteAlpha"
+        colorScheme="white"
         position="absolute"
         top="50%"
         left="50%"

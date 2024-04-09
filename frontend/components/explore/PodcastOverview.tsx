@@ -49,8 +49,10 @@ export default function PodcastOverview({ podcast, User }) {
     }
     return (
       <>
-        {episodes.map((episode) => (
-          <EpisodeCard key={episode.id} episode={episode} showLike={false} showComment={false} showMore={false} />
+        {episodes.map((episode, index) => (
+          <Box key={episode.id} mb={index === episodes.length - 1 ? 0 : 3}>
+            <EpisodeCard episode={episode} showLike={false} showComment={false} showMore={false} />
+          </Box>
         ))}
       </>
     )
