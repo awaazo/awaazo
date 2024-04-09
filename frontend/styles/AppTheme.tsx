@@ -98,6 +98,7 @@ const overrides = {
             color: 'white', 
           },
         },
+
         normal: {
           display: 'flex',
           height: '37px',
