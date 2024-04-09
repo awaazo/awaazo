@@ -23,6 +23,7 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  HStack
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaFileLines, FaLinesLeaning } from "react-icons/fa6";
@@ -38,10 +39,8 @@ import AnnotationHelper from "../../helpers/AnnotationHelper";
 import HighlightForm from "../highlights/highlightForm";
 import HighlightList from "../highlights/HighlightList";
 import HighlightHelper from "../../helpers/HighlightHelper";
-
-
 import { BsExplicitFill } from "react-icons/bs";
-import { any } from "cypress/types/bluebird";
+import {Like , Plays , Time } from "../../public/icons"
 
 // Component to render an episode
 const Episode = ({ episode }) => {
@@ -225,37 +224,53 @@ const Episode = ({ episode }) => {
   };
 
   return (
-    <Flex paddingTop={5} paddingBottom={5} mt={3} width="100%" borderRadius="15px" bg="rgba(255, 255, 255, 0.1)" backdropFilter="blur(4px)" boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
+    <Flex paddingTop={5} paddingBottom={5} mt={3} width="100%" borderRadius="15px" bg="az.darkGrey" backdropFilter="blur(4px)" boxShadow="sm" style={{ cursor: "pointer" }} onClick={() => console.log(episode.id, episode.name)}>
       <Box position="relative" mr={5}>
-        <Image boxSize={isMobile ? "0px" : "125px"} src={episode.thumbnailUrl} borderRadius="10%" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
+        <Image boxSize={isMobile ? "0px" : "75px"} src={episode.thumbnailUrl} borderRadius="10px" marginLeft={isMobile ? "0px" : "20px"} mt={1} />
       </Box>
-      <Flex direction="column" flex={1}>
+      <VStack align={"right"} flex={1}>
         {/* Episode Name */}
-        <Text fontWeight="medium" fontSize={isMobile ? "sm" : "2xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
+        
+        <Flex direction="column">
+        <Text fontWeight="bold" fontSize={isMobile ? "md" : "xl"} data-cy={`episode-metric-${episode.episodeName}-likes:${episode.likes}`}>
           {episode.episodeName}
           {episode.isExplicit && <Icon as={BsExplicitFill} boxSize={isMobile ? "10px" : "16px"} ml={4} />}
-          <Text fontSize={isMobile ? "md" : "md"}>🎧 {episode.playCount}</Text>
-          <Text fontSize={isMobile ? "md" : "md"}>❤️ {episode.likes} </Text>
         </Text>
-        {/* Episode Details */}
-        <Flex direction="column" fontSize="sm" color="gray.500">
-          {isMobile ? null : <Text>{episode.description}</Text>}
-
-          <Text fontWeight="bold" fontSize={isMobile ? "12px" : "md"}>
-            Duration: {convertTime(episode.duration)}
-          </Text>
+          {isMobile ? null : <Text color="az.greyish" fontSize="md" mt={-2} >{episode.description}</Text>}
         </Flex>
-      </Flex>
+        <HStack mt={-1} >
+          <HStack spacing={1}>
+            <Icon as={Plays} color="az.greyish" boxSize={3} />
+            <Text color="az.greyish" fontSize="xs">
+            {episode.playCount}
+            </Text>
+          </HStack>
+          <HStack spacing={1}>
+            <Icon as={Like } color="az.greyish" boxSize={3} />
+            <Text color="az.greyish" fontSize="xs">
+            {episode.likes}
+            </Text>
+          </HStack>
+          <HStack spacing={1}>
+            <Icon as={Time } color="az.greyish" boxSize={3} />
+            <Text color="az.greyish" fontSize="xs">
+            {convertTime(episode.duration)}
+            </Text>
+          </HStack>
+        </HStack>
+
+        {/* Episode Details */}
+       
+      </VStack>
 
       {/* Edit and Delete Buttons */}
-      <Flex alignItems="flex-start">
-        <Box>
+      <HStack spacing={0} mr={3}>
+        
           <Tooltip label="Highlights" aria-label="Highlights Tooltip">
             <IconButton
               variant="ghost"
               data-cy="highlights-button"
               fontSize={isMobile ? "md" : "lg"}
-              mr={1}
               rounded={"full"}
               opacity={0.7}
               color="white"
@@ -269,7 +284,7 @@ const Episode = ({ episode }) => {
               variant="ghost"
               data-cy="annotations-button"
               fontSize={isMobile ? "md" : "lg"}
-              mr={1}
+              
               rounded={"full"}
               opacity={0.7}
               color="white"
@@ -283,7 +298,7 @@ const Episode = ({ episode }) => {
               variant="ghost"
               data-cy="sections-button"
               fontSize={isMobile ? "md" : "lg"}
-              mr={1}
+              
               rounded={"full"}
               opacity={0.7}
               color="white"
@@ -297,7 +312,7 @@ const Episode = ({ episode }) => {
               variant="ghost"
               data-cy="transcript-button"
               fontSize={isMobile ? "md" : "lg"}
-              mr={1}
+             
               rounded={"full"}
               opacity={0.7}
               color="white"
@@ -307,13 +322,13 @@ const Episode = ({ episode }) => {
             />
           </Tooltip>
           <Tooltip label="Edit" aria-label="Edit Tooltip">
-            <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} mr={1} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
+            <IconButton variant="ghost" data-cy="edit-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
           <Tooltip label="Delete" aria-label="Delete Tooltip">
-            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7} marginRight={5} color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
+            <IconButton variant="ghost" data-cy="delete-button" fontSize={isMobile ? "md" : "lg"} rounded={"full"} opacity={0.7}  color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
           </Tooltip>
-        </Box>
-      </Flex>
+       
+      </HStack>
 
       {/* Delete Episode Modal */}
       <Modal isOpen={isDeleteModalOpen} onClose={onCloseDeleteModal}>

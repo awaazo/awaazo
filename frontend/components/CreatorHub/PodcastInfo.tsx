@@ -17,6 +17,7 @@ import {
   ModalBody,
   ModalFooter,
   VStack,
+  HStack,
   useDisclosure,
   useBreakpointValue,
 } from '@chakra-ui/react'
@@ -27,7 +28,6 @@ import { useEffect, useState } from 'react'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import { Episode, Metrics } from '../../types/Interfaces'
 import { GiHeptagram } from 'react-icons/gi'
-import { IoAnalytics } from 'react-icons/io5'
 import AnalyticsHelper from '../../helpers/AnalyticsHelper'
 
 const PodcastInfo = ({ podcastId }) => {
@@ -153,29 +153,57 @@ const PodcastInfo = ({ podcastId }) => {
           >
             {description}
           </Text>
-          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
+          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em"  marginBottom="2em">
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em"  marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
-              {metricsError && <Text color="red.500">{metricsError}</Text>}
+              
 
               {metrics && (
                 <>
-                  <Text fontSize="20px" fontWeight="bold" color={'az.red'}>
-                    User Engagement Insights:
-                  </Text>
-                  <Box ml={2}>
-                    <Text fontSize="md">- Average Clicks: {metrics.averageClicks}</Text>
-                    <Text fontSize="md">- Average Watch Time: {metrics.averageWatchTime.slice(0, 8)}</Text>
-                    <Text fontSize="md">- Comments Percentage: {metrics.commentsPercentage}%</Text>
-                    <Text fontSize="md">- Likes Percentage: {metrics.likesPercentage}%</Text>
-                    <Text fontSize="md">- Total Clicks: {metrics.totalClicks}</Text>
-                    <Text fontSize="md">- Total Comments: {metrics.totalComments}</Text>
-                    <Text fontSize="md">- Total Likes: {metrics.totalLikes}</Text>
-                    <Text fontSize="md">- Total Listeners: {metrics.totalListeners}</Text>
-                    <Text fontSize="md">- Total Watch Time: {metrics.totalWatchTime.slice(0, 8)}</Text>
-                  </Box>
-                </>
+                  
+                <VStack align={'right'}>
+                <Text fontSize="md" fontWeight="bold" color={'az.red'}>
+                  User Engagement Insights:
+                </Text>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Average Clicks: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.averageClicks}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Average Watch Time: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.averageWatchTime.slice(0, 8)}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Comments Percentage: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.commentsPercentage}%</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Likes Percentage: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.likesPercentage}%</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Total Clicks: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.totalClicks}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Total Comments: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.totalComments}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Total Likes: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.totalLikes}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Total Listeners: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.totalListeners}</Text>
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Text fontSize="sm" fontWeight="bold"> Total Watch Time: </Text>
+                    <Text fontSize="sm" fontWeight="medium">{metrics.totalWatchTime.slice(0, 8)}</Text>
+                  </HStack>
+                </VStack>
+              </>
               )}
             </Box>
           </Box>
@@ -209,28 +237,56 @@ const PodcastInfo = ({ podcastId }) => {
             }}
           >
             {/* Description and statistics */}
-            <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="0.5em" marginTop="1em">
+            <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginBottom="0.5em" marginTop="1em">
               {description}
             </Text>
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" outline="2px solid rgba(255, 255, 255, 0.1)" marginBottom="2em">
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em"  marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}{' '}
               {metrics && (
                 <>
-                  <Text fontSize="20px" fontWeight="bold" color={'az.red'}>
+                  
+                  <VStack align={'right'}>
+                  <Text fontSize="lg" fontWeight="bold" color={'az.red'}>
                     User Engagement Insights:
                   </Text>
-                  <Box ml={2}>
-                    <Text fontSize="md">- Average Clicks: {metrics.averageClicks}</Text>
-                    <Text fontSize="md">- Average Watch Time: {metrics.averageWatchTime.slice(0, 8)}</Text>
-                    <Text fontSize="md">- Comments Percentage: {metrics.commentsPercentage}%</Text>
-                    <Text fontSize="md">- Likes Percentage: {metrics.likesPercentage}%</Text>
-                    <Text fontSize="md">- Total Clicks: {metrics.totalClicks}</Text>
-                    <Text fontSize="md">- Total Comments: {metrics.totalComments}</Text>
-                    <Text fontSize="md">- Total Likes: {metrics.totalLikes}</Text>
-                    <Text fontSize="md">- Total Listeners: {metrics.totalListeners}</Text>
-                    <Text fontSize="md">- Total Watch Time: {metrics.totalWatchTime.slice(0, 8)}</Text>
-                  </Box>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Average Clicks: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.averageClicks}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Average Watch Time: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.averageWatchTime.slice(0, 8)}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Comments Percentage: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.commentsPercentage}%</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Likes Percentage: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.likesPercentage}%</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Total Clicks: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.totalClicks}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Total Comments: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.totalComments}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Total Likes: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.totalLikes}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Total Listeners: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.totalListeners}</Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="md" fontWeight="bold"> Total Watch Time: </Text>
+                      <Text fontSize="md" fontWeight="medium">{metrics.totalWatchTime.slice(0, 8)}</Text>
+                    </HStack>
+                  </VStack>
                 </>
               )}
             </Box>
