@@ -159,14 +159,14 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
             {bookmarks && bookmarks.length > 0 ? (
               <Box overflowY="scroll" maxHeight={'55vh'} width={'100%'}>
                 {bookmarks.map((bookmark, index) => (
-                  <VStack mb={'15px'} key={index} bg="az.darkGrey" borderRadius="15px" p={4} _hover={{ bg: 'az.darkerGrey' }} w="100%">
+                  <VStack mb={'15px'} key={index} align="right" bg="az.darkGrey" borderRadius="15px" p={4} _hover={{ bg: 'az.darkerGrey' }} w="100%">
                     
                     <HStack justify="space-between" width={'100%'}>
                       <VStack width={'100%'} spacing={0} align="right">
                       <Text fontSize={'md'} color="white" fontWeight={'bold'}>
                         {bookmark.title}
                       </Text>
-                      <Text fontSize={'sm'} color="az.greyish" mt={'-2px'} fontWeight={"bold"}>
+                      <Text fontSize={'sm'} color="az.greyish" mt={'-4px'} fontWeight={"bold"}>
                       {convertTime(bookmark.time)}
                     </Text>
                     </VStack>
@@ -182,7 +182,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
                     </HStack>
                   
                    
-                    <Text fontSize={'sm'} color="white" opacity={'0.8'}>
+                    <Text fontSize={'sm'} color="white" opacity={'0.8'} > 
                       {bookmark.note}
                     </Text>
                   </VStack>
