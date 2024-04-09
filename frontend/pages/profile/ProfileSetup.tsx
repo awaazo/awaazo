@@ -6,10 +6,10 @@ import { UserProfileSetupRequest } from '../../types/Requests';
 import UserProfileHelper from '../../helpers/UserProfileHelper';
 import { UserMenuInfo } from '../../types/Interfaces';
 import withAuth from '../../utilities/authHOC';
-import DisplayNamePage from './SetupPages/DisplayNamePage';
-import BioPage from './SetupPages/BioPage';
-import InterestsPage from './SetupPages/InterestsPage';
-import AvatarPage from './SetupPages/AvatarPage';
+import DisplayNamePage from './Setup/DisplayNamePage';
+import BioPage from './Setup/BioPage';
+import InterestsPage from './Setup/InterestsPage';
+import AvatarPage from './Setup/AvatarPage';
 
 
 const ProfileSetup: React.FC = () => {
