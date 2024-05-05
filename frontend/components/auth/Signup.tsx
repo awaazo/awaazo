@@ -20,6 +20,7 @@ const SignUp: React.FC = () => {
   const [signUpError, setSignUpError] = useState<string | null>('')
   const { data: session } = useSession()
   const [googleSignUpClicked, setGoogleSignUpClicked] = useState(false)
+  const [isConfirming, setIsConfirming] = useState<boolean>(false);
 
   useEffect(() => {}, [session, googleSignUpClicked])
 
@@ -72,7 +73,7 @@ const SignUp: React.FC = () => {
       return
     }
     if (age > 100) {
-      setSignUpError('Centenarian? Impressive! But Awaazo is for the young at heart.')
+      setSignUpError("Are't you too old to be on the Internet ?")
       return
     }
 
@@ -140,7 +141,7 @@ const SignUp: React.FC = () => {
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
-            <Button id="loginBtn" type="submit" variant={"large"}>
+            <Button id="loginBtn" type="submit" variant={"large"} isLoading={isConfirming} loadingText="Submitting" disabled={isConfirming}>
               Sign Up
             </Button>
 

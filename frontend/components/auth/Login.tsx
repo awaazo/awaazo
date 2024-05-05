@@ -73,10 +73,6 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
               type="text"
               id="email"
               placeholder="Enter Email/Username"
-              borderRadius="2xl"
-              bg="whiteAlpha.200"
-              borderColor="whiteAlpha.400"
-              _placeholder={{ color: 'whiteAlpha.700' }}
               required
               onChange={(e) => setEmail(e.target.value)}
             />

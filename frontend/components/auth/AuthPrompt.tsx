@@ -26,7 +26,7 @@ const AuthPrompt: React.FC<LoginPromptProps> = ({ isOpen, onClose, infoMessage }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent bg={"transparent"} boxShadow={"none"}>
+      <ModalContent  boxShadow={"none"}>
         <Login infoMessage={infoMessage} />
         <ModalCloseButton position="absolute" right="40px" top="40px" />
       </ModalContent>

@@ -9,10 +9,11 @@ import logoGreeting from '../public/svgs/logoGreeting.svg'
 
 
 
-const Greeting = () => {
+const LandingPage = () => {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const router = useRouter()
   const MotionImage = motion(Img)
+  
 const GreenGradient = () => (
   <Box
     top={["300px", "400px", "600px"]} 
@@ -58,7 +59,7 @@ const RedGradient = () => (
 )
   return (
     <ClientOnly>
-      <Box bg={'az.blackish'} h="100vh" overflow="hidden" px={8} py={10}>
+       <Box bg={'az.blackish'} minHeight="100vh" px={4} py={2} position="relative">
         <Flex justify="center" align="center" h="100%">
           
           <VStack align="center" spacing={8}>
@@ -153,4 +154,4 @@ const RedGradient = () => (
   )
 }
 
-export default Greeting
+export default LandingPage

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { DefaultSession } from 'next-auth';
 import Home from '../components/home/Home';
-import Greeting from './Greeting';
+import Greeting from './LandingPage';
 import AuthHelper from '../helpers/AuthHelper';
 
 interface SessionExt extends DefaultSession {
