@@ -228,6 +228,10 @@ export interface UserEpisodeInteraction {
   dateListened?: Date
 }
 
+export interface History {
+  history: UserEpisodeInteraction[]
+}
+
 /**
  * User fields related to their profile.
  */
