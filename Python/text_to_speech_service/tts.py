@@ -110,7 +110,7 @@ def create_audio_tortoise(text,speaker,result_file_path,delimiter=''):
         volume_adjust = torchaudio.transforms.Vol(gain=output_volume, gain_type="amplitude") if output_volume != 1 else None
 
         settings = {
-            'tempeture': 0.2,
+            'temperature': 0.2,
             'top_p': 0.8,
             'diffusion_temperature': 1,
             'length penalty': 1,
