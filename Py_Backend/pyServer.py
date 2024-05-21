@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from tts_service.tts import TextToSpeech
+from .tts_service.tts import TextToSpeech
 
 
 # Tags used to group the endpoints in the Swagger UI
@@ -24,7 +24,7 @@ tags_metadata = [
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-
+        tts = TextToSpeech()
         yield
     except Exception as e:
         print(f"Exception: {e}")
