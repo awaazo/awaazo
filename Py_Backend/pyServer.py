@@ -25,6 +25,7 @@ app = FastAPI(
     openapi_tags=tags_metadata)
 
 
+# region Models
 
 class Item(BaseModel):
     name: str
@@ -32,6 +33,8 @@ class Item(BaseModel):
     price: float
     tax: float = None
 
+
+# endregion
 
 # region Text to Speech endpoints
 
