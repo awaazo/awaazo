@@ -1,7 +1,7 @@
 import torch
 from TTS.api import TTS
 from pathlib import Path
-from rvc import Config, load_hubert, get_vc, rvc_infer
+from .rvc import Config, load_hubert, get_vc, rvc_infer
 import gc , os, sys, argparse, requests
 
 class RVC_Data:
@@ -32,16 +32,15 @@ class Text_To_Speech():
 
 		self.tts = TTS(model_path="./tts_service/models/xtts", config_path="./tts_service/models/xtts/config.json").to(device)
 
-
-		self.tts.load_model(Path('./tts_service/models/xtts'))
-		self.tts.load_model(Path('./tts_service/models'), model_name='hubert_base')
 		self.rvc_data = RVC_Data()
 		self.hubert_model = load_hubert(device, self.rvc_data.config.is_half, "./tts_service/models/hubert_base.pt")
 
 		self.download_models()
 
-	def run_tts(self, rvc, voice, text, pitch_change, index_rate, language):
+	def run_tts(self, rvc, voice, text, pitch_change = 0, index_rate = 0.75, language = 'en'):
 		audio = self.tts.tts_to_file(text=text, speaker_wav=f"./tts_service/voices/{voice}", language=language, file_path="./tts_service/output.wav")
+		self.voice_change(rvc, pitch_change, index_rate)
+
 
 
 	def voice_change(self, rvc, pitch_change, index_rate):
@@ -72,7 +71,7 @@ class Text_To_Speech():
 		gc.collect()
 
 
-	def download_models():
+	def download_models(self):
 		rvc_files = ['hubert_base.pt', 'rmvpe.pt']
 
 		for file in rvc_files: 
