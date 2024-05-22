@@ -264,3 +264,10 @@ export interface confirmPayment {
 }
 
 //# end Region
+
+//#region User Watch History Request
+export interface UserWatchHistoryRequest {
+  page: number
+  pageSize: number
+}
+//#end Region

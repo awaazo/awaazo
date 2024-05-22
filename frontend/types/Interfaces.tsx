@@ -228,8 +228,9 @@ export interface UserEpisodeInteraction {
   dateListened?: Date
 }
 
-export interface History {
-  history: UserEpisodeInteraction[]
+export interface UserWatchHistory {
+  page: number
+  pageSize: number
 }
 
 /**
@@ -393,4 +394,14 @@ export interface Metrics {
   totalLikes: number
   likesPercentage: number
   totalListeners: number
+}
+
+export interface EpisodeWatchHistory {
+  episodeId: string
+  hasListened: boolean
+  hasLiked: boolean
+  clicks: number
+  totalListenTime: string
+  lastListenPosition: number
+  dateListened: Date
 }
