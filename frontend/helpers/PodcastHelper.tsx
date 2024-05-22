@@ -31,6 +31,7 @@ import {
   SearchEpisodeResponse,
   AllEpisodeResponse,
   EpisodeAddAudioResponse,
+  UserWatchHistoryResponse,
 } from '../types/Responses'
 
 export default class PodcastHelper {
@@ -1018,7 +1019,7 @@ export default class PodcastHelper {
     }
 
     try {
-      console.debug('Sending the following getTrasncript...')
+      console.debug('Sending the following getTranscript...')
       console.debug(options)
 
       // Send the request and wait for the response.
@@ -1165,4 +1166,117 @@ export default class PodcastHelper {
       }
     }
   }
+
+  /**
+ * Gets user watch history by page and pageSize from the server.
+ * @returns A BaseResponse object with the server's response.
+ */
+public static getUserWatchHistory = async (page: number, pageSize: number): Promise<UserWatchHistoryResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: '*/*',
+      'Content-Type': 'application/json',
+    },
+    url: EndpointHelper.getUserWatchHistoryEndpoint(page, pageSize),
+    withCredentials: true, // This will send the session cookie with the request
+    cache: false,
+  }
+
+  try {
+    console.debug('Sending the following getUserWatchHistory request...')
+    console.debug(options)
+
+    const requestResponse = await axios(options)
+
+    console.debug('Received the following getUserWatchHistory response...')
+    console.debug(requestResponse)
+
+    return {
+      status: requestResponse.status,
+      message: requestResponse.statusText,
+      history: requestResponse.data,
+    }
+  } catch (error) {
+    return {
+      status: error.response?.status,
+      message: error.response?.statusText,
+      history: null,
+    }
+  }
+}
+
+/**
+ * Deletes watch history for a specific episode by episodeId from the server.
+ * @returns A BaseResponse object with the server's response.
+ */
+public static deleteWatchHistory = async (episodeId: string): Promise<BaseResponse> => {
+  const options = {
+    method: 'DELETE',
+    headers: {
+      accept: '*/*',
+      'Content-Type': 'application/json',
+    },
+    url: EndpointHelper.deleteWatchHistoryEndpoint(episodeId),
+    withCredentials: true, // This will send the session cookie with the request
+    cache: false,
+  }
+
+  try {
+    console.debug('Sending the following deleteWatchHistory request...')
+    console.debug(options)
+
+    const requestResponse = await axios(options)
+
+    console.debug('Received the following deleteWatchHistory response...')
+    console.debug(requestResponse)
+
+    return {
+      status: requestResponse.status,
+      message: requestResponse.statusText,
+    }
+  } catch (error) {
+    return {
+      status: error.response?.status,
+      message: error.response?.statusText,
+    }
+  }
+}
+
+/**
+ * Deletes all watch history from the server.
+ * @returns A BaseResponse object with the server's response.
+ */
+public static deleteAllWatchHistory = async (): Promise<BaseResponse> => {
+  const options = {
+    method: 'DELETE',
+    headers: {
+      accept: '*/*',
+      'Content-Type': 'application/json',
+    },
+    url: EndpointHelper.deleteAllWatchHistoryEndpoint(),
+    withCredentials: true, // This will send the session cookie with the request
+    cache: false,
+  }
+
+  try {
+    console.debug('Sending the following deleteAllWatchHistory request...')
+    console.debug(options)
+
+    const requestResponse = await axios(options)
+
+    console.debug('Received the following deleteAllWatchHistory response...')
+    console.debug(requestResponse)
+
+    return {
+      status: requestResponse.status,
+      message: requestResponse.statusText,
+    }
+  } catch (error) {
+    return {
+      status: error.response?.status,
+      message: error.response?.statusText,
+    }
+  }
+}
 }

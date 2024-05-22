@@ -293,5 +293,5 @@ export interface Last5DaysBalanceResponse extends BaseResponse {
 }
 
 export interface UserWatchHistoryResponse extends BaseResponse {
-  data: EpisodeWatchHistory[]
+  history: EpisodeWatchHistory[]
 }
