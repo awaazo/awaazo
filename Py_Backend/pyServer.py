@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
 
 # Create an instance of FastAPI
 app = FastAPI(
-    swagger_ui_parameters={"syntaxHighlight.theme": "monokai"},
+    swagger_ui_parameters={"syntaxHighlight.theme": "monokai"}, 
     openapi_tags=tags_metadata,
     lifespan=lifespan)
 
