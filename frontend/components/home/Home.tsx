@@ -4,6 +4,7 @@ import CustomTabs from '../assets/CustomTabs';
 import RecentlyUploaded from './RecentlyUploaded';
 import ForYou from './ForYou';
 import HighLights from '../highlights/Highlights';
+import History from './History';
 
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
     { label: 'For You', component: <ForYou /> },
     { label: 'Recently Uploaded', component: <RecentlyUploaded /> },
     { label: 'Highlights', component: <HighLights />},
+    { label: 'History', component: <History />},
   ];
 
   return (
