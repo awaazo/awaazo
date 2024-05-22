@@ -13,10 +13,10 @@ const UserWatchHistory: React.FC = () => {
     const fetchUserWatchHistory = async () => {
       setIsLoading(true);
       try {
-        const res = await PodcastHelper.getUserWatchHistory(0, 12); // Assuming pagination starts at page 0 and fetches 12 items
+        const res = await PodcastHelper.getUserWatchHistory(0, 20);
         if (res.status === 200 && res.history) {
-          const episodeIds = res.history.map((ewh: EpisodeWatchHistory) => ewh.episodeId);
-          const episodesDetails = await Promise.all(
+            const episodeIds = res.history.map((ewh: EpisodeWatchHistory) => ewh.episodeId);
+            const episodesDetails = await Promise.all(
             episodeIds.map((id) => PodcastHelper.getEpisodeById(id))
           );
           setEpisodes(episodesDetails.map((response) => response.episode));
