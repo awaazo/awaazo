@@ -3,6 +3,10 @@ from TTS.api import TTS
 from pathlib import Path
 from .rvc import Config, load_hubert, get_vc, rvc_infer
 import gc , os, sys, argparse, requests
+from scipy.io import wavfile
+from scipy import stats
+import numpy as np
+from pydub import AudioSegment
 
 class RVC_Data:
 	def __init__(self):
@@ -12,7 +16,7 @@ class RVC_Data:
 		self.net_g = {} 
 		self.tgt_sr = {}
 		self.vc = {} 
-		self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+		self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
 		self.config = Config(self.device, self.device!='cpu')
 
 	def load_cpt(self, modelname, rvc_model_path):
@@ -38,14 +42,15 @@ class Text_To_Speech():
 		self.download_models()
 
 	def run_tts(self, rvc, voice, text, pitch_change = 0, index_rate = 0.75, language = 'en'):
-		audio = self.tts.tts_to_file(text=text, speaker_wav=f"./tts_service/voices/{voice}", language=language, file_path="./tts_service/output.wav")
+		audio = self.tts.tts_to_file(text=text, speaker_wav=f"./tts_service/voices/{voice}.wav", language=language, file_path="./tts_service/output.wav")
 		self.voice_change(rvc, pitch_change, index_rate)
+		self.generate_noise()
 
 
 
 	def voice_change(self, rvc, pitch_change, index_rate):
-		model_name -= os.path.splitext(rvc)[0]
-		rvc_model_path = f"./tts_service/rvcs/{model_name}"
+		model_name = os.path.splitext(rvc)[0]
+		rvc_model_path = f"./tts_service/rvcs/{model_name}.pth"
 		rvc_index_path = f"./tts_service/rvcs/{model_name}.index" if os.path.isfile("./tts_service/rvcs/{modelname}.index") and index_rate != 0 else ""
 
 		self.rvc_data.load_cpt(model_name, rvc_model_path)
@@ -69,6 +74,26 @@ class Text_To_Speech():
 			hubert_model=self.hubert_model
 		)
 		gc.collect()
+
+	def generate_noise(self):
+
+		audio = AudioSegment.from_file("./tts_service/outputrvc.wav")
+
+		sample_rate = 44100
+		length_in_seconds = int(len(audio) / 1000)
+		amplitude = 11
+		noise = stats.truncnorm(-1, 1, scale=min(2**16, 2**amplitude)).rvs(sample_rate * length_in_seconds)
+		wavfile.write('noise.wav', sample_rate, noise.astype(np.int16))
+
+		noise = AudioSegment.from_file('noise.wav')
+		quiet_noise = noise - 40
+
+		audio = audio.overlay(quiet_noise)
+		audio.export("./tts_service/outputrvcnoise.wav", format="wav")
+
+
+
+
 
 
 	def download_models(self):

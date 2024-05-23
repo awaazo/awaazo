@@ -313,3 +313,9 @@ Python/assistant_service/*.env
 Backend/Backend/Migrations
 
 /Py_Backend/tts_service/models
+/Py_Backend/tts_service/rvcs
+Py_Backend/tts_service/output.wav
+Py_Backend/tts_service/outputrvc.wav
+Py_Backend/tts_service/outputrvcnoise.wav
+Py_Backend/noise.wav
+/Py_Backend/tts_service/voices

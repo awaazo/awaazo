@@ -135,7 +135,7 @@ def rvc_infer(index_path, index_rate, input_path, output_path, pitch_change, f0_
     audio, sr = librosa.load(input_path, sr=16000, dtype=np.float32,)
     times = [0, 0, 0]
     if_f0 = cpt.get('f0', 1)
-
+    
     audio_opt = vc.pipeline(hubert_model, net_g, 0, audio, input_path, times, pitch_change, f0_method, index_path, index_rate, if_f0, filter_radius, tgt_sr, 0, rms_mix_rate, version, protect, crepe_hop_length)
     wavfile.write(output_path, tgt_sr, audio_opt)
 

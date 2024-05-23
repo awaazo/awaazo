@@ -20,11 +20,11 @@ tags_metadata = [
     }
 ]
 
+tts = Text_To_Speech()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        tts = Text_To_Speech()
         yield
     except Exception as e:
         print(f"Exception: {e}")
@@ -38,24 +38,49 @@ app = FastAPI(
 
 # region Models
 
-class Item(BaseModel):
+class GenerateAudioRequest(BaseModel):
+    text: str
+    speaker: str
+    pitch_change: int = 0
+    index_rate: float = 0.75
+    language: str = 'en'
+
+class Speaker(BaseModel):
     name: str
     description: str = None
-    price: float
-    tax: float = None
-
+    language: str
 
 # endregion
 
 # region Text to Speech endpoints
 
-@app.get("/tts", 
-        summary="Root endpoint for Text to Speech",
-        description="Root endpoint for Text to Speech",
-        response_model= Item,
+@app.get("/tts/speakers", 
+        summary="Get available speakers",
+        description="Get available speakers for Text to Speech. The speakers are the voices that can be used to generate the audio from the text.",
+        response_model=list[Speaker],
         tags=["Text to Speech"])
-async def read_root():
-    return {"message": "Hello World"}
+async def get_speakers():
+    return [{"name": "speaker1", "description": "Speaker 1", "language": "en"},
+            {"name": "speaker2", "description": "Speaker 2", "language": "en"}]
+
+
+
+
+@app.post("/tts/generate",
+            summary="Generate audio from text",
+            description="Generate audio from text using the specified speaker.",
+            tags=["Text to Speech"])
+async def generate_audio(generate_audio_request: GenerateAudioRequest):
+    #tts = Text_To_Speech()
+    tts.run_tts(
+        rvc=generate_audio_request.speaker, 
+        voice=generate_audio_request.speaker, 
+        text=generate_audio_request.text,
+        pitch_change=generate_audio_request.pitch_change,
+        index_rate=generate_audio_request.index_rate,
+        language=generate_audio_request.language)
+    return {"message": "Audio generated successfully"}
+
 
 
 
