@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from Py_Backend.tts_service.tts import Text_To_Speech
+from tts_service.tts import Text_To_Speech, generate_audio as tts_generate_audio
+import time
+import asyncio
 
 
 # Tags used to group the endpoints in the Swagger UI
@@ -20,7 +22,7 @@ tags_metadata = [
     }
 ]
 
-tts = Text_To_Speech()
+#tts = Text_To_Speech()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +41,7 @@ app = FastAPI(
 # region Models
 
 class GenerateAudioRequest(BaseModel):
+    audio_name: str
     text: str
     speaker: str
     pitch_change: int = 0
@@ -71,15 +74,16 @@ async def get_speakers():
             description="Generate audio from text using the specified speaker.",
             tags=["Text to Speech"])
 async def generate_audio(generate_audio_request: GenerateAudioRequest):
+    
     #tts = Text_To_Speech()
-    tts.run_tts(
-        rvc=generate_audio_request.speaker, 
-        voice=generate_audio_request.speaker, 
-        text=generate_audio_request.text,
-        pitch_change=generate_audio_request.pitch_change,
-        index_rate=generate_audio_request.index_rate,
-        language=generate_audio_request.language)
-    return {"message": "Audio generated successfully"}
+    # #tts.run_tts(
+    #     rvc=generate_audio_request.speaker, 
+    #     voice=generate_audio_request.speaker, 
+    #     text=generate_audio_request.text,
+    #     pitch_change=generate_audio_request.pitch_change,
+    #     index_rate=generate_audio_request.index_rate,
+    #     language=generate_audio_request.language)
+    return await tts_generate_audio(generate_audio_request)
 
 
 

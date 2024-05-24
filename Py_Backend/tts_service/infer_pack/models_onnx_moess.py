@@ -3,15 +3,15 @@ from time import time as ttime
 import torch
 from torch import nn
 from torch.nn import functional as F
-from Py_Backend.tts_service.infer_pack import modules
-from Py_Backend.tts_service.infer_pack import attentions
-from Py_Backend.tts_service.infer_pack import commons
-from Py_Backend.tts_service.infer_pack.commons import init_weights, get_padding
+from tts_service.infer_pack import modules
+from tts_service.infer_pack import attentions
+from tts_service.infer_pack import commons
+from tts_service.infer_pack.commons import init_weights, get_padding
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
-from Py_Backend.tts_service.infer_pack.commons import init_weights
+from tts_service.infer_pack.commons import init_weights
 import numpy as np
-from Py_Backend.tts_service.infer_pack import commons
+from tts_service.infer_pack import commons
 
 
 class TextEncoder256(nn.Module):
