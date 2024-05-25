@@ -52,12 +52,14 @@ class Text_To_Speech():
 		self.download_models()
 
 	def run_tts(self, rvc, voice, text, pitch_change = 0, index_rate = 0.75, language = 'en', audio_name = "output"):
+		
+		
+		
 		audio = self.tts.tts_to_file(
 			text=text, 
 			speaker_wav=f"./tts_service/voices/{voice}.wav", 
 			language=language, 
-			file_path=f"./tts_service/{audio_name}.wav",
-			speed=1.0)
+			file_path=f"./tts_service/{audio_name}.wav")
 		
 		self.voice_change(rvc, pitch_change, index_rate, audio_name)
 

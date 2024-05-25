@@ -317,7 +317,7 @@ class VC(object):
             )
         elif f0_method == "rmvpe":
             if hasattr(self, "model_rmvpe") == False:
-                from tts_service.rmvpe import RMVPE
+                from tts.rmvpe import RMVPE
 
                 self.model_rmvpe = RMVPE(
                     './tts_service/models/rmvpe.pt', is_half=self.is_half, device=self.device

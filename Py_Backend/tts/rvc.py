@@ -7,13 +7,13 @@ from fairseq import checkpoint_utils
 from scipy.io import wavfile
 import numpy as np
 
-from tts_service.infer_pack.models import (
+from tts.infer_pack.models import (
     SynthesizerTrnMs256NSFsid,
     SynthesizerTrnMs256NSFsid_nono,
     SynthesizerTrnMs768NSFsid,
     SynthesizerTrnMs768NSFsid_nono,
 )
-from tts_service.vc_infer_pipeline import VC
+from tts.vc_infer_pipeline import VC
 
 class Config:
     def __init__(self, device, is_half):

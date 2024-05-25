@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from tts_service.tts import Text_To_Speech, generate_audio as tts_generate_audio
+from tts.tts import Text_To_Speech, generate_audio as tts_generate_audio
 import time
 import asyncio
 

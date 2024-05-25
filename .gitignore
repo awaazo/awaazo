@@ -319,3 +319,7 @@ Py_Backend/tts_service/outputrvc.wav
 Py_Backend/tts_service/outputrvcnoise.wav
 Py_Backend/noise.wav
 /Py_Backend/tts_service/voices
+Py_Backend/tts/models/Drinker/dvae.path
+/Py_Backend/tts/models
+/Py_Backend/tts/rvcs
+/Py_Backend/tts/voices

@@ -1,0 +1,7 @@
+Dockerfile
+.dockerignore
+env
+venv
+.venv
+__pycache__
+ServerFiles
