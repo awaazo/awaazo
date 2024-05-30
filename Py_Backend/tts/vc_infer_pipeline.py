@@ -320,7 +320,7 @@ class VC(object):
                 from tts.rmvpe import RMVPE
 
                 self.model_rmvpe = RMVPE(
-                    './tts_service/models/rmvpe.pt', is_half=self.is_half, device=self.device
+                    './tts/models/rmvpe.pt', is_half=self.is_half, device=self.device
                 )
             f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)
 

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
+from typing import Annotated
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from tts.tts import Text_To_Speech, generate_audio as tts_generate_audio
 import time
 import asyncio
@@ -91,6 +92,18 @@ async def generate_audio(generate_audio_request: GenerateAudioRequest):
 @app.get("/tts/{text}", tags=["Text to Speech"])
 async def read_item(text: str):
     return {"text": text}
+
+
+# endregion
+
+
+# region Ingestion endpoints
+
+@app.post("/ingestion/ingest_documents", tags=["Ingestion"])
+async def ingest_documents(
+    documents: Annotated[list[UploadFile], File(description="The documents to ingest")]
+):
+    return {"message": "Ingesting documents"}
 
 
 # endregion

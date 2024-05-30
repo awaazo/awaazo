@@ -323,3 +323,4 @@ Py_Backend/tts/models/Drinker/dvae.path
 /Py_Backend/tts/models
 /Py_Backend/tts/rvcs
 /Py_Backend/tts/voices
+Py_Backend/.env

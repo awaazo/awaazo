@@ -41,13 +41,13 @@ class Text_To_Speech():
 		device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 		# Load the TTS model. If a fine-tuned model for the speaker is available, load it. Otherwise, load the default model.
-		if os.path.isdir(f"./tts_service/models/{speaker}"):
-			self.tts = TTS(model_path=f"./tts_service/models/{speaker}", config_path=f"./tts_service/models/{speaker}/config.json").to(device)
+		if os.path.isdir(f"./tts/models/{speaker}"):
+			self.tts = TTS(model_path=f"./tts/models/{speaker}", config_path=f"./tts/models/{speaker}/config.json").to(device)
 		else:
-			self.tts = TTS(model_path="./tts_service/models/xtts", config_path="./tts_service/models/xtts/config.json").to(device)
+			self.tts = TTS(model_path="./tts/models/xtts", config_path="./tts/models/xtts/config.json").to(device)
 
 		self.rvc_data = RVC_Data()
-		self.hubert_model = load_hubert(device, self.rvc_data.config.is_half, "./tts_service/models/hubert_base.pt")
+		self.hubert_model = load_hubert(device, self.rvc_data.config.is_half, "./tts/models/hubert_base.pt")
 
 		self.download_models()
 
@@ -55,12 +55,19 @@ class Text_To_Speech():
 		
 		
 		
-		audio = self.tts.tts_to_file(
-			text=text, 
-			speaker_wav=f"./tts_service/voices/{voice}.wav", 
-			language=language, 
-			file_path=f"./tts_service/{audio_name}.wav")
+		#audio = self.tts.tts_to_file(
+		#	text=text, 
+		#	speaker_wav=f"./tts/voices/{voice}.wav", 
+		#	language=language, 
+		#	file_path=f"./tts/{audio_name}.wav")
 		
+
+		audio = self.tts.tts(text=text, speaker_wav=f"./tts/voices/{voice}.wav", language=language)
+
+		# Save the audio to a file
+		self.tts.synthesizer.save_wav(audio, f"./tts/{audio_name}.wav")
+
+
 		self.voice_change(rvc, pitch_change, index_rate, audio_name)
 
 		#self.combine_audio(audio_name)
@@ -69,16 +76,16 @@ class Text_To_Speech():
 
 	def voice_change(self, rvc, pitch_change, index_rate, audio_name):
 		model_name = os.path.splitext(rvc)[0]
-		rvc_model_path = f"./tts_service/rvcs/{model_name}.pth"
-		rvc_index_path = f"./tts_service/rvcs/{model_name}.index" if os.path.isfile("./tts_service/rvcs/{modelname}.index") and index_rate != 0 else ""
+		rvc_model_path = f"./tts/rvcs/{model_name}.pth"
+		rvc_index_path = f"./tts/rvcs/{model_name}.index" if os.path.isfile("./tts/rvcs/{modelname}.index") and index_rate != 0 else ""
 
 		self.rvc_data.load_cpt(model_name, rvc_model_path)
 
 		rvc_infer(
 			index_path=rvc_index_path, 
 			index_rate=index_rate, 
-			input_path=f"./tts_service/{audio_name}.wav", 
-			output_path=f"./tts_service/{audio_name}.wav", 
+			input_path=f"./tts/{audio_name}.wav", 
+			output_path=f"./tts/{audio_name}.wav", 
 			pitch_change=pitch_change, 
 			f0_method="rmvpe", 
 			cpt=self.rvc_data.cpt, 
@@ -96,19 +103,19 @@ class Text_To_Speech():
 
 	def generate_noise(self, audio_name, chunk_number):
 
-		audio = AudioSegment.from_file(f"./tts_service/{audio_name}_{chunk_number}.wav")
+		audio = AudioSegment.from_file(f"./tts/{audio_name}_{chunk_number}.wav")
 
 		sample_rate = 44100
 		length_in_seconds = int(len(audio) / 1000)
 		amplitude = 11
 		noise = stats.truncnorm(-1, 1, scale=min(2**16, 2**amplitude)).rvs(sample_rate * length_in_seconds)
-		wavfile.write('./tts_service/noise.wav', sample_rate, noise.astype(np.int16))
+		wavfile.write('./tts/noise.wav', sample_rate, noise.astype(np.int16))
 
-		noise = AudioSegment.from_file('./tts_service/noise.wav')
+		noise = AudioSegment.from_file('./tts/noise.wav')
 		quiet_noise = noise - 40
 
 		audio = audio.overlay(quiet_noise)
-		audio.export(f"./tts_service/{audio_name}_{chunk_number}.wav", format="wav")
+		audio.export(f"./tts/{audio_name}_{chunk_number}.wav", format="wav")
 
 	def combine_audio(self, audio_name, chunk_number):
 		
@@ -116,18 +123,18 @@ class Text_To_Speech():
 		# Combine the audio files
 		combined_audio = AudioSegment.empty()
 		for i in range(chunk_number):
-			audio = AudioSegment.from_file(f"./tts_service/{audio_name}_{i}.wav")
+			audio = AudioSegment.from_file(f"./tts/{audio_name}_{i}.wav")
 			combined_audio += audio
 
 		# Export the combined audio
-		combined_audio.export(f"./tts_service/{audio_name}_{chunk_number}.wav", format="wav")
+		combined_audio.export(f"./tts/{audio_name}_{chunk_number}.wav", format="wav")
 
 
 
 
 	def touchup_audio(self, audio_name, chunk_number):
-		input_audio = f"./tts_service/{audio_name}_{chunk_number}.wav"
-		output_audio = f"./tts_service/{audio_name}.wav"
+		input_audio = f"./tts/{audio_name}_{chunk_number}.wav"
+		output_audio = f"./tts/{audio_name}.wav"
 
 		speed = 1.05
 
@@ -147,19 +154,19 @@ class Text_To_Speech():
 		rvc_files = ['hubert_base.pt', 'rmvpe.pt']
 
 		for file in rvc_files: 
-			if(not os.path.isfile(f'./tts_service/models/{file}')):
+			if(not os.path.isfile(f'./tts/models/{file}')):
 				print(f'Downloading{file}')
 				r = requests.get(f'https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/{file}')
-				with open(f'./tts_service/models/{file}', 'wb') as f:
+				with open(f'./tts/models/{file}', 'wb') as f:
 						f.write(r.content)
 
 		xtts_files = ['vocab.json', 'config.json', 'dvae.path', 'mel_stats.pth', 'model.pth']
 
 		for file in xtts_files:
-			if(not os.path.isfile(f'./tts_service/models/xtts/{file}')):
+			if(not os.path.isfile(f'./tts/models/xtts/{file}')):
 				print(f'Downloading {file}')
 				r = requests.get(f'https://huggingface.co/coqui/XTTS-v2/resolve/v2.0.2/{file}')
-				with open(f'./tts_service/models/xtts/{file}', 'wb') as f:
+				with open(f'./tts/models/xtts/{file}', 'wb') as f:
 					f.write(r.content)
 		
 		
