@@ -1,73 +1,73 @@
-import { useState, useEffect } from "react";
-import { Box, Flex, IconButton, Tooltip, useBreakpointValue, Text, VStack, Image, Wrap, Spinner } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import MyPodcast from "../../components/CreatorHub/MyPodcast";
-import { UserMenuInfo, Podcast } from "../../types/Interfaces";
-import AuthHelper from "../../helpers/AuthHelper";
-import PodcastHelper from "../../helpers/PodcastHelper";
-import Link from "next/link";
-import withAuth from "../../utilities/authHOC";
+import { useState, useEffect } from 'react'
+import { Box, Flex, IconButton, Tooltip, useBreakpointValue, Text, VStack, Image, Wrap, Spinner } from '@chakra-ui/react'
+import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import MyPodcast from '../../components/CreatorHub/MyPodcast'
+import { UserMenuInfo, Podcast } from '../../types/Interfaces'
+import AuthHelper from '../../helpers/AuthHelper'
+import PodcastHelper from '../../helpers/PodcastHelper'
+import Link from 'next/link'
+import withAuth from '../../utilities/authHOC'
 
 const Creatorhub = () => {
   // Page refs
-  const loginPage = "/auth/Login";
+  const loginPage = '/auth/Login'
 
-  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined);
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-  const [page, setPage] = useState(0);
-  const pageSize = 6;
-  const [createError, setCreateError] = useState("");
-  const [selectedPodcastId, setSelectedPodcastId] = useState(null);
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
+  const [podcasts, setPodcasts] = useState<Podcast[]>([])
+  const [page, setPage] = useState(0)
+  const pageSize = 6
+  const [createError, setCreateError] = useState('')
+  const [selectedPodcastId, setSelectedPodcastId] = useState(null)
+  const isMobile = useBreakpointValue({ base: true, md: false })
+  const [isLoading, setIsLoading] = useState(false)
 
   const togglePodcastDetail = (id) => {
     if (selectedPodcastId === id) {
-      setSelectedPodcastId(null);
+      setSelectedPodcastId(null)
     } else {
-      setSelectedPodcastId(id);
+      setSelectedPodcastId(id)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const authResponse = await AuthHelper.authMeRequest();
+        const authResponse = await AuthHelper.authMeRequest()
         if (authResponse.status === 200) {
-          setUser(authResponse.userMenuInfo);
-          const podcastsResponse = await PodcastHelper.podcastMyPodcastsGet(page, pageSize);
+          setUser(authResponse.userMenuInfo)
+          const podcastsResponse = await PodcastHelper.podcastMyPodcastsGet(page, pageSize)
           if (podcastsResponse.status === 200) {
-            setPodcasts((prevPodcasts) => [...prevPodcasts, ...podcastsResponse.myPodcasts]);
-            setSelectedPodcastId(podcastsResponse.myPodcasts.length > 0 ? podcastsResponse.myPodcasts[0].id : null);
+            setPodcasts((prevPodcasts) => [...prevPodcasts, ...podcastsResponse.myPodcasts])
+            setSelectedPodcastId(podcastsResponse.myPodcasts.length > 0 ? podcastsResponse.myPodcasts[0].id : null)
           } else {
-            setCreateError("Podcasts cannot be fetched");
+            setCreateError('Podcasts cannot be fetched')
           }
         }
       } catch (error) {
-        console.error("Error during data fetching", error);
-        setCreateError("An error occurred while fetching data");
+        console.error('Error during data fetching', error)
+        setCreateError('An error occurred while fetching data')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [page]);
+    fetchData()
+  }, [page])
 
   // Function to handle clicking the "Load More" button
   const handleLoadMoreClick = () => {
-    setPage((page) => page + 1);
-  };
+    setPage((page) => page + 1)
+  }
 
   return (
     <>
-      <Flex direction="column" align="center" justify="center" px={["1em", "2em", "4em"]} py={4}>
+      <Flex direction="column" align="center" justify="center" px={['1em', '2em', '4em']} py={4}>
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
           The CreatorHub
         </Text>
       </Flex>
-      <Box px={["1em", "2em", "4em"]} pt={6}>
+      <Box px={['1em', '2em', '4em']} pt={6}>
         {isLoading ? (
           <Flex justifyContent="center" alignItems="center" height="100px">
             <Spinner size="xl" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" />
@@ -89,9 +89,9 @@ const Creatorhub = () => {
                         objectFit="cover"
                         src={podcast.coverArtUrl}
                         alt={podcast.name}
-                        boxShadow={selectedPodcastId === podcast.id ? "0 0 10px 2px #FF6A5F" : "none"}
+                        boxShadow={selectedPodcastId === podcast.id ? '0 0 10px 2px #FF6A5F' : 'none'}
                         cursor="pointer"
-                        data-cy={`podcast-image-${podcast.name.replace(/\s+/g, "-").toLowerCase()}`}
+                        data-cy={`podcast-image-${podcast.name.replace(/\s+/g, '-').toLowerCase()}`}
                       />
                     </Box>
 
@@ -121,7 +121,7 @@ const Creatorhub = () => {
         )}
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default withAuth(Creatorhub);
+export default withAuth(Creatorhub)
