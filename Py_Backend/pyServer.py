@@ -101,8 +101,11 @@ async def read_item(text: str):
 
 @app.post("/ingestion/ingest_documents", tags=["Ingestion"])
 async def ingest_documents(
+
     documents: Annotated[list[UploadFile], File(description="The documents to ingest")]
 ):
+    
+    
     return {"message": "Ingesting documents"}
 
 
