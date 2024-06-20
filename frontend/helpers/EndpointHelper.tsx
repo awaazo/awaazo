@@ -895,4 +895,18 @@ export default class EndpointHelper {
   static getRecommendedHighlightsEndpoint = (quantity: number) => {
     return `${this.getBackendAddress()}/podcast/GetRecommendedHighlights?quantity=${quantity}`
   }
+
+  // --------------------------------
+  // UserWatchHistory Endpoints
+  // --------------------------------
+
+  static getUserWatchHistoryEndpoint = (page: number, pageSize: number) => {
+    return `${this.getBackendAddress()}/podcast/UserWatchHistory?page=${page}&pageSize=${pageSize}`;
+  }
+  static deleteWatchHistoryEndpoint = (episodeId: string) => {
+    return `${this.getBackendAddress()}/podcast/${episodeId}/deleteWatchHistory`;
+  }
+  static deleteAllWatchHistoryEndpoint = () => {
+    return `${this.getBackendAddress()}/podcast/deleteAllWatchHistory`;
+  }
 }

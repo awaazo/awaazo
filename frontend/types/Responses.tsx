@@ -20,6 +20,7 @@ import {
   Highlight,
   ChatbotMessage,
   Report,
+  EpisodeWatchHistory
 } from './Interfaces'
 
 export interface BaseResponse {
@@ -289,4 +290,8 @@ export interface TransactionResponse extends BaseResponse {
 
 export interface Last5DaysBalanceResponse extends BaseResponse {
   data: Balance[]
+}
+
+export interface UserWatchHistoryResponse extends BaseResponse {
+  history: EpisodeWatchHistory[]
 }
