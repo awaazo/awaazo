@@ -15,7 +15,7 @@
     "snippets": "Snippets",
     "noPodcastsAvailable": "No podcasts available.",
     "noHighlightsAvailable": "No highlights available.",
-    "sections":"Sections"
+    "sections": "Sections"
   },
   "playerBar": {
     "notPlaying": "Not Playing"
@@ -279,7 +279,8 @@
     "delete": "Delete",
     "editPodcast": "Edit Podcast: {{podcastName}}",
     "episodes": "Episodes",
-    "noEpisodes": "No episodes available"
+    "noEpisodes": "No episodes available",
+    "filter": "Filter Podcasts"
   },
 
   "creatorhub": {
@@ -290,5 +291,38 @@
     "topicsOnPodcast": "Which topics are on the Podcast?",
     "CreatePodcastSubmit": "Start Broadcasting"
   },
+
+  "search": {
+    "placeholder": "Search for Podcasts, Users, and Episodes",
+    "resultsFor": "Showing Results For: \"{{term}}\"",
+    "filter": "Filter",
+    "ratingGreaterThan": "Rating Greater Than: {{rating}}"
+  },
+  "explore": {
+    "genres": "Explore Genres"
+  },
+  "episodes": {
+    "filter": "Filter Episodes",
+    "minLength": "Minimum Episode Length: {{length}}"
+  },
+
+  "users": {
+    "noFound": "No Users Found"
+  },
+  "genre": {
+    "tech": "Tech",
+    "education": "Education",
+    "comedy": "Comedy",
+    "news": "News",
+    "business": "Business",
+    "sports": "Sports",
+    "wellness": "Wellness",
+    "other": "Other"
+  },
+  "nonExplicit": "Non-Explicit Only",
+  "tags": "Tags",
+  "reset": "Reset",
+  "applyFilters": "Apply Filters",
+  "noFound": "No Podcasts Found",
   "loadMore": "Load More"
 }

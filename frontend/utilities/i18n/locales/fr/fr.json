@@ -285,5 +285,37 @@
     "topicsOnPodcast": "Quels sujets sont abordés dans le Podcast ?",
     "CreatePodcastSubmit": "Commencer la Diffusion"
   },
+
+  "search": {
+    "placeholder": "Rechercher des Podcasts, Utilisateurs et Épisodes",
+    "resultsFor": "Résultats pour : \"{{term}}\"",
+    "filter": "Filtrer",
+    "ratingGreaterThan": "Note supérieure à : {{rating}}"
+  },
+  "explore": {
+    "genres": "Explorer les Genres"
+  },
+  "episodes": {
+    "filter": "Filtrer les Épisodes",
+    "minLength": "Durée Minimale de l'Épisode : {{length}}"
+  },
+  "users": {
+    "noFound": "Aucun Utilisateur Trouvé"
+  },
+  "genre": {
+    "tech": "Tech",
+    "education": "Éducation",
+    "comedy": "Comédie",
+    "news": "Actualités",
+    "business": "Affaires",
+    "sports": "Sports",
+    "wellness": "Bien-être",
+    "other": "Autre"
+  },
+  "nonExplicit": "Uniquement Non-Explicite",
+  "tags": "Tags",
+  "reset": "Réinitialiser",
+  "applyFilters": "Appliquer les Filtres",
+  "noFound": "Aucun Podcast Trouvé",
   "loadMore": "Voir Plus"
 }
