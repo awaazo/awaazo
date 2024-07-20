@@ -3,8 +3,11 @@ import { Box, Textarea, Button, FormControl, FormLabel, Input, Stack, Text, Icon
 import { PodcastEditRequest } from "../../types/Requests";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import GenreSelector from "../assets/GenreSelector";
+import { useTranslation } from 'react-i18next';
 
 export default function EditPodcastForm({ podcastId }) {
+  const { t } = useTranslation();
+
   useEffect(() => {
     console;
     PodcastHelper.getPodcastById(podcastId).then((res) => {
@@ -16,10 +19,10 @@ export default function EditPodcastForm({ podcastId }) {
         setDescriptionCharacterCount(res.podcast.description.length);
         setTags(res.podcast.tags);
       } else {
-        setEditError("Podcasts cannot be fetched");
+        setEditError(t('edit.errorFetchingPodcast'));
       }
     });
-  }, [podcastId]);
+  }, [podcastId, t]);
   // Page refs
   const myPodcastsPage = "/CreatorHub";
 
@@ -55,7 +58,7 @@ export default function EditPodcastForm({ podcastId }) {
     e.preventDefault();
     // Ensure all required fields are filled
     if (podcastName == "" || description == "") {
-      setEditError("Cover Image, Podcast Name and Description Required.");
+      setEditError(t('edit.allFieldsRequiredPodcast'));
       return;
     }
     // Create request object
@@ -110,7 +113,7 @@ export default function EditPodcastForm({ podcastId }) {
               <Img src={coverImage || "https://img.icons8.com/?size=512&id=492ILERveW8G&format=png"} alt="Cover Photo" width="150px" height="150px" padding="15px" position="relative" borderRadius="20%" />
               <label htmlFor="Cover Photo">
                 <IconButton
-                  aria-label="Upload Cover Photo"
+                  aria-label={t('edit.uploadCoverPhoto')}
                   icon={<img src="https://img.icons8.com/?size=512&id=hwKgsZN5Is2H&format=png" alt="Upload Icon" width="25px" height="25px" />}
                   size="sm"
                   variant="outline"
@@ -135,14 +138,14 @@ export default function EditPodcastForm({ podcastId }) {
             {editError && <Text color="red.500">{editError}</Text>}
 
             <FormControl position="relative">
-              <Input id="podcastName" placeholder="Podcast Name" value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: "center", borderRadius: "0.8em" }} pr="50px" />{" "}
+              <Input id="podcastName" placeholder={t('edit.podcastNamePlaceholder')} value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: "center", borderRadius: "0.8em" }} pr="50px" />{" "}
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {podcastNameCharacterCount}/25
               </Text>
             </FormControl>
 
             <FormControl position="relative">
-              <Textarea id="description" placeholder="What's the Podcast about?" value={description} onChange={handleDescriptionChange} width="100%" height="100px" padding="12px" fontSize="16px" borderRadius="18px" resize="vertical" />
+              <Textarea id="description" placeholder={t('edit.podcastDescriptionPlaceholder')} value={description} onChange={handleDescriptionChange} width="100%" height="100px" padding="12px" fontSize="16px" borderRadius="18px" resize="vertical" />
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {descriptionCharacterCount}/250
               </Text>
@@ -150,12 +153,12 @@ export default function EditPodcastForm({ podcastId }) {
 
             <FormControl>
               <FormLabel textAlign="center" padding="10px">
-                What kind of topics are on the Podcast?
+                {t('edit.topicsOnPodcast')}
               </FormLabel>
               <GenreSelector onGenresChange={handleInterestClick} />
             </FormControl>
             <Button id="createBtn" type="submit" variant="gradient">
-              Update
+              {t('edit.update')}
             </Button>
           </Stack>
         </form>

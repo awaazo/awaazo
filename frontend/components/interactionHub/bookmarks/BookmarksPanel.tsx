@@ -6,8 +6,10 @@ import { EpisodeBookmarkRequest } from '../../../types/Requests'
 import { Bookmark } from '../../../types/Interfaces'
 import { Trash } from '../../../public/icons'
 import { MdBookmark, MdBookmarkAdd } from 'react-icons/md'
+import { useTranslation } from 'react-i18next'
 
 const Bookmarks = ({ episodeId, selectedTimestamp }) => {
+  const { t } = useTranslation()
   const fontSize = useBreakpointValue({ base: 'md', md: 'lg' })
   const [formData, setFormData] = useState({ title: '', note: '' })
   const [characterCounts, setCharacterCounts] = useState({ title: 0, note: 0 })
@@ -59,7 +61,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
   const handleBookmark = async (e: FormEvent) => {
     e.preventDefault()
     if (!formData.title || !formData.note) {
-      setBookmarkError('Bookmark Title and Note are Both Required')
+      setBookmarkError(t('bookmarks.title_and_note_required'))
       return
     }
 
@@ -77,10 +79,10 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
         setShowBookmarkForm(false)
         setBookmarkError('')
       } else {
-        console.error('Error bookmarking episode:', response.message)
+        console.error(t('bookmarks.error_bookmarking_episode'), response.message)
       }
     } catch (error) {
-      console.error('Error bookmarking episode:', error)
+      console.error(t('bookmarks.error_bookmarking_episode'), error)
     }
   }
 
@@ -93,7 +95,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
               <HStack>
                 <Icon as={MdBookmark} color="az.red" boxSize="24px" />
                 <Text fontSize="md" fontWeight="bold">
-                  Bookmarks
+                  {t('bookmarks.title')}
                 </Text>
               </HStack>
               <HStack>
@@ -135,7 +137,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
           <VStack position="relative" width="100%" p={'20px'}>
             {bookmarkError && <Text color="red.500">{bookmarkError}</Text>}
             <FormControl isInvalid={characterCounts.title > MAX_CHARS.title} width="100%">
-              <Input placeholder="Enter A Title" rounded="xl" value={formData.title} onChange={handleChange('title')} maxLength={MAX_CHARS.title} />
+              <Input placeholder={t('bookmarks.enter_title')} rounded="xl" value={formData.title} onChange={handleChange('title')} maxLength={MAX_CHARS.title} />
               <FormHelperText textAlign="right">
                 {characterCounts.title}/{MAX_CHARS.title}
               </FormHelperText>
@@ -143,7 +145,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
 
             <FormControl isInvalid={characterCounts.note > MAX_CHARS.note} width="100%">
               <InputGroup>
-                <Textarea value={formData.note} onChange={handleChange('note')} placeholder="Enter Notes..." />
+                <Textarea value={formData.note} onChange={handleChange('note')} placeholder={t('bookmarks.enter_notes')} />
                 <Button variant={'minimalColor'} width="18px" height="18px" position="absolute" zIndex={'50'} right="10px" bottom="10px" onClick={handleBookmark} p="0">
                   <MdBookmarkAdd color="az.yellow" fontSize={'20px'} />
                 </Button>
@@ -174,7 +176,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
                         icon={<Icon as={Trash} />}
                         variant={'minimal'}
                         color={'az.red'}
-                        aria-label="Delete Bookmark"
+                        aria-label={t('bookmarks.delete_bookmark')}
                         data-cy={`delete-bookmark-id:`}
                         onClick={() => handleDeleteBookmark(bookmark.id)}
                         size="md"
@@ -190,7 +192,7 @@ const Bookmarks = ({ episodeId, selectedTimestamp }) => {
               </Box>
             ) : (
               <Text color="gray" mt={'50px'} textAlign={'center'} width={'100%'}>
-                You have no bookmarks for this episode.
+                {t('bookmarks.no_bookmarks')}
               </Text>
             )}
           </VStack>

@@ -8,8 +8,10 @@ import { useEffect } from 'react'
 import { RegisterRequest } from '../../types/Requests'
 import { FcGoogle } from 'react-icons/fc'
 import { isEmail } from 'validator'
+import { useTranslation } from 'react-i18next'
 
 const SignUp: React.FC = () => {
+  const { t } = useTranslation()
   const setupPage = '/profile/ProfileSetup'
   const [email, setEmail] = useState<string | null>('')
   const [username, setUsername] = useState<string | null>('')
@@ -51,28 +53,28 @@ const SignUp: React.FC = () => {
     setSignUpError(null)
 
     if (!email || !isEmail(email)) {
-      setSignUpError('Please enter a valid email address.')
+      setSignUpError(t('auth.invalidEmail'))
       return
     }
     if (!password || password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
-      setSignUpError('Password must be at least 8 characters long and include both letters and numbers.')
+      setSignUpError(t('auth.invalidPassword'))
       return
     }
     if (!username || !/^[A-Za-z0-9_]+$/.test(username)) {
-      setSignUpError('Username can only contain letters, numbers, and underscores.')
+      setSignUpError(t('auth.invalidUsername'))
       return
     }
     if (password !== confirmPassword) {
-      setSignUpError('Passwords do not match.')
+      setSignUpError(t('auth.passwordsDontMatch'))
       return
     }
 
     if (age < 8) {
-      setSignUpError("You're too young to be on Awaazo, come back in a couple of years!")
+      setSignUpError(t('auth.tooYoung'))
       return
     }
     if (age > 100) {
-      setSignUpError('Centenarian? Impressive! But Awaazo is for the young at heart.')
+      setSignUpError(t('auth.tooOld'))
       return
     }
 
@@ -95,7 +97,7 @@ const SignUp: React.FC = () => {
         setSignUpError(response.data)
       }
     } catch (error) {
-      setSignUpError('An error occurred during sign up.')
+      setSignUpError(t('auth.signUpError'))
     }
   }
 
@@ -118,30 +120,30 @@ const SignUp: React.FC = () => {
         <form onSubmit={handleSignUp}>
           <Stack spacing={3}>
             <FormControl>
-              <Input type="text" id="username" placeholder="Enter Username" value={username} onChange={handleUsernameChange} required borderRadius="2xl" pr="50px" />
+              <Input type="text" id="username" placeholder={t('auth.enterUsername')} value={username} onChange={handleUsernameChange} required borderRadius="2xl" pr="50px" />
               <Text position="absolute" right="9px" bottom="9px" fontSize="sm" color="grey">
                 {usernameCharacterCount}/25
               </Text>
             </FormControl>
             <FormControl>
-              <Input type="email" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} required borderRadius="2xl" />
+              <Input type="email" id="email" placeholder={t('auth.enterEmail')} value={email} onChange={(e) => setEmail(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl>
-              <Input type="password" id="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} required borderRadius="2xl" />
+              <Input type="password" id="password" placeholder={t('auth.enterPassword')} value={password} onChange={(e) => setPassword(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl>
-              <Input type="password" id="confirmPassword" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required borderRadius="2xl" />
+              <Input type="password" id="confirmPassword" placeholder={t('auth.confirmPassword')} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required borderRadius="2xl" />
             </FormControl>
             <FormControl mt={2} mb={2}>
               <FormLabel htmlFor="date" fontWeight="normal" fontSize="sm" ml={2}>
-                Date of Birth
+                {t('auth.dateOfBirth')}
               </FormLabel>
 
               <Input type="date" id="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required borderRadius="2xl" />
             </FormControl>
 
             <Button id="loginBtn" type="submit" variant={"large"}>
-              Sign Up
+              {t('auth.signUp')}
             </Button>
 
              <Button
@@ -160,16 +162,16 @@ const SignUp: React.FC = () => {
                 transition: 'all 0.5s ease-in-out',
               }}
             >
-              Continue with Google
+              {t('auth.continueWithGoogle')}
             </Button>
 
             <Text color="gray.400" fontSize="sm" align={'center'}>
-              Already have an account?{' '}
+              {t('auth.alreadyHaveAccount')}{' '}
               <Box as="a" href="/auth/Login" color="white" fontWeight="semibold"  _hover={{
                 color: 'az.red',
                 transition: 'color 0.5s ease-in-out',
               }}>
-                Log in
+                {t('auth.login')}
               </Box>
             </Text>
           </Stack>

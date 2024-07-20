@@ -31,8 +31,10 @@ import { AxiosProgressEvent } from 'axios'
 import ImageAdder from '../assets/ImageAdder'
 import { v4 as uuidv4 } from 'uuid'
 import { BsBox } from 'react-icons/bs'
+import { useTranslation } from 'react-i18next'
 
 const AddEpisodeForm = ({ podcastId }) => {
+  const { t } = useTranslation()
   const router = useRouter()
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
   const [addError, setAddError] = useState('')
@@ -100,11 +102,11 @@ const AddEpisodeForm = ({ podcastId }) => {
     e.preventDefault()
 
     if (isAIGenerated && !isAIWithText && (prompt === '' || coverImageFile == null || episodeName == '' || description == '')) {
-      setAddError('Prompt, Cover Image, Episode Name and Description Required.')
+      setAddError(t('addepisod.promptCoverImageEpisodeNameDescriptionRequired'))
       return
     }
     if (isAIGenerated && isAIWithText && (aiText === '' || coverImageFile == null || episodeName == '' || description == '')) {
-      setAddError('Text, Cover Image, Episode Name and Description Required.')
+      setAddError(t('addepisod.textCoverImageEpisodeNameDescriptionRequired'))
     }
     if (isAIGenerated && isAIWithText) {
       setLoading(true)
@@ -159,7 +161,7 @@ const AddEpisodeForm = ({ podcastId }) => {
     e.preventDefault()
 
     if (coverImageFile == null || episodeName == '' || description == '' || file == null) {
-      setAddError('Cover Image, Episode Name and Description Required.')
+      setAddError(t('addepisod.coverImageEpisodeNameDescriptionRequired'))
       return
     }
     setLoading(true)
@@ -300,13 +302,13 @@ const AddEpisodeForm = ({ podcastId }) => {
             <VStack spacing={5} align="center" p={5}>
               <ImageAdder onImageAdded={handleImageAdded} />
               <FormControl position="relative">
-                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." rounded="lg" pr="50px" />
+                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder={t('addepisod.enterEpisodeName')} rounded="lg" pr="50px" />
                 <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="az.greyish">
                   {episodeNameCharacterCount}/25
                 </Text>
               </FormControl>
               <FormControl position="relative">
-                <Textarea value={description} onChange={handleDescriptionChange} placeholder="Enter episode description..." />
+                <Textarea value={description} onChange={handleDescriptionChange} placeholder={t('addepisod.enterEpisodeDescription')} />
                 <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                   {descriptionCharacterCount}/250
                 </Text>
@@ -314,15 +316,15 @@ const AddEpisodeForm = ({ podcastId }) => {
               {/* Tab Panel for Human and AI-generated */}
               <Tabs isFitted width={'100%'}>
                 <TabList>
-                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(false)}>Human</Tab>
-                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(true)}>AI-generated</Tab>
+                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(false)}>{t('addepisod.human')}</Tab>
+                  <Tab _selected={{ color: 'az.red', fontSize:'md'}} onClick={() => setIsAIGenerated(true)}>{t('addepisod.aiGenerated')}</Tab>
                 </TabList>
                 <TabPanels width={'100%'}>
                   {/* Human Options */}
                   <TabPanel width={'100%'}>
                     <FormControl display="flex" alignItems="center" justifyContent="center">
                       <Switch id="explicitToggle" colorScheme="red" isChecked={isExplicit} onChange={() => setIsExplicit(!isExplicit)} opacity={0.9}>
-                        Explicit
+                        {t('addepisod.explicit')}
                       </Switch>
                     </FormControl>
                     {/* File upload */}
@@ -332,7 +334,7 @@ const AddEpisodeForm = ({ podcastId }) => {
                         <Text>{file.name}</Text>
                       ) : (
                         <Text>
-                          Drag & drop an audio file here, or click to select one
+                          {t('addepisod.dragDropAudioFile')}
                           <Text role="img" aria-label="audio emoji">
                             {' '}
                             🎙️
@@ -347,25 +349,25 @@ const AddEpisodeForm = ({ podcastId }) => {
                     
                     <FormControl display="flex" alignItems="center" justifyContent="center" width={'100%'}>
                       <Switch id="textWithAIToggle" colorScheme="red" isChecked={isAIWithText} onChange={() => setIsAIWithText(!isAIWithText)} opacity={0.9}>
-                        User Created Text
+                        {t('addepisod.userCreatedText')}
                       </Switch>
                     </FormControl>
                     {/* If Text with AI is true, show the text input field */}
                     {isAIWithText && (
                       <FormControl width={'100%'}>
-                        <Textarea mt={'15px'} value={aiText} onChange={(e) => setAIText(e.target.value)} placeholder="Enter your text" width={'100%'}/>
+                        <Textarea mt={'15px'} value={aiText} onChange={(e) => setAIText(e.target.value)} placeholder={t('addepisod.enterYourText')} width={'100%'}/>
                       </FormControl>
                     )}
                     {/* If Text with AI is false, show the prompt input field */}
                     {!isAIWithText && (
                       <FormControl width={'100%'}>
-                        <Textarea mt={'15px'} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Enter your prompt" width={'100%'}/>
+                        <Textarea mt={'15px'} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder={t('addepisod.enterYourPrompt')} width={'100%'}/>
                       </FormControl>
                     )}
                     {/* Voice gender switch */}
                     <FormControl mt={'15px'} display="flex" alignItems="center" justifyContent="center" width={'100%'}>
                       <Switch id="voiceGenderToggle" colorScheme="red" isChecked={isFemaleVoice} onChange={() => setIsFemaleVoice(!isFemaleVoice)} opacity={0.9}>
-                        Female Voice
+                        {t('addepisod.femaleVoice')}
                       </Switch>
                     </FormControl>
                    
@@ -375,7 +377,7 @@ const AddEpisodeForm = ({ podcastId }) => {
               </Tabs>
 
               <Button id="createBtn" type="submit" variant={'large'} disabled={loading} w={'200px'}>
-                {loading ? <Spinner /> : 'Upload'}
+                {loading ? <Spinner /> : t('addepisod.upload')}
               </Button>
             </VStack>
           </form>
@@ -389,7 +391,7 @@ const AddEpisodeForm = ({ podcastId }) => {
               {coverImage && <Image src={coverImage} alt="Uploaded Cover Photo" boxSize="80px" borderRadius="8px" objectFit="cover" boxShadow="lg" />}
               <Box ml={4} >
                 <Text fontSize="lg" fontWeight={'bold'}>
-                  Uploading: {episodeName}
+                  {t('addepisod.uploading')}: {episodeName}
                 </Text>
                 <Text fontSize="md" ml={1}>
                   {description}
@@ -408,7 +410,7 @@ const AddEpisodeForm = ({ podcastId }) => {
                   <Box textAlign="center"  >
                     {uploadProgress !== 100 && (
                       <Text fontSize="xs" textAlign="center" color="white" mb={2}>
-                        Please wait while the file gets uploaded
+                        {t('addepisod.pleaseWait')}
                       </Text>
                     )}
                     
@@ -428,7 +430,7 @@ const AddEpisodeForm = ({ podcastId }) => {
                   </Box>
                   {uploadProgress === 100 && (
                     <Button onClick={() => window.location.reload()} alignSelf="center" variant="large" mt={5}>
-                      Finish
+                      {t('addepisod.finish')}
                     </Button>
                   )}
                 </>

@@ -3,8 +3,10 @@ import { Episode, EpisodeWatchHistory } from '../../types/Interfaces';
 import { VStack, Text, Spinner, SimpleGrid } from '@chakra-ui/react';
 import PodcastHelper from '../../helpers/PodcastHelper';
 import EpisodeCard from '../cards/EpisodeCard';
+import { useTranslation } from 'react-i18next';
 
 const UserWatchHistory: React.FC = () => {
+  const { t } = useTranslation();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,17 +23,17 @@ const UserWatchHistory: React.FC = () => {
           );
           setEpisodes(episodesDetails.map((response) => response.episode));
         } else {
-          throw new Error('Failed to load watch history');
+          throw new Error(t('home.failedToLoadPodcasts'));
         }
       } catch (err) {
-        setError(err.message || 'An error occurred while fetching watch history');
+        setError(err.message || t('home.fetchError'));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUserWatchHistory();
-  }, []);
+  }, [t]);
 
   return (
     <VStack spacing={4} align="stretch">
@@ -53,7 +55,7 @@ const UserWatchHistory: React.FC = () => {
               <EpisodeCard key={episode.id} episode={episode} showLike={true} showComment={true} showMore={true} />
             ))
           ) : (
-            <Text>No episodes in watch history</Text>
+            <Text>{t('home.noEpisodesAvailable')}</Text>
           )}
         </VStack>
       )}

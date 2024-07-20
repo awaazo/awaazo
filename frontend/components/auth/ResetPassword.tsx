@@ -4,8 +4,10 @@ import { Button, FormControl, Input, Stack, Container, Flex, Img, Text, useToast
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import AuthHelper from '../../helpers/AuthHelper';
 import Logo from "../../public/logos/logo_white.svg";
+import { useTranslation } from 'react-i18next';
 
 const ResetPassword = () => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,8 +21,8 @@ const ResetPassword = () => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast({
-        title: 'Error',
-        description: "Passwords don't match.",
+        title: t('error'),
+        description: t("auth.passwordsDontMatch"),
         status: 'error',
         duration: 9000,
         isClosable: true,
@@ -30,8 +32,8 @@ const ResetPassword = () => {
 
     if (!token || !email) {
       toast({
-        title: 'Error',
-        description: "Missing token or email in the URL.",
+        title: t('error'),
+        description: t("auth.missingTokenOrEmail"),
         status: 'error',
         duration: 9000,
         isClosable: true,
@@ -49,8 +51,8 @@ const ResetPassword = () => {
 
       if (response.status === 200) {
         toast({
-          title: 'Success',
-          description: 'Your password has been reset successfully.',
+          title: t('success'),
+          description: t('auth.passwordResetSuccess'),
           status: 'success',
           duration: 9000,
           isClosable: true,
@@ -58,8 +60,8 @@ const ResetPassword = () => {
         window.location.href = 'auth/Login'; // Redirect to login page
       } else {
         toast({
-          title: 'Error',
-          description: response.message || 'Failed to reset password. Please try again.',
+          title: t('error'),
+          description: response.message || t('auth.passwordResetFailed'),
           status: 'error',
           duration: 9000,
           isClosable: true,
@@ -67,8 +69,8 @@ const ResetPassword = () => {
       }
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to reset password. Please try again.',
+        title: t('error'),
+        description: t('auth.passwordResetFailed'),
         status: 'error',
         duration: 9000,
         isClosable: true,
@@ -83,10 +85,10 @@ const ResetPassword = () => {
           <Img src={Logo.src} alt="logo" style={{ maxWidth: "45px" }} />
         </Flex>
         <Text fontSize="lg" fontWeight="bold" color="white" align={"center"} textColor={"brand.300"}>
-          Reset Your Password
+          {t('auth.resetYourPassword')}
         </Text>
         <Text fontSize="sm" color="gray.400" mb={6} align={"center"}>
-          Enter your new password below.
+          {t('auth.enterNewPassword')}
         </Text>
         <form onSubmit={handleSubmit}>
           <Stack spacing={4}>
@@ -94,7 +96,7 @@ const ResetPassword = () => {
               <InputGroup>
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="New Password"
+                  placeholder={t('auth.newPassword')}
                   borderRadius="2xl"
                   bg="whiteAlpha.200"
                   borderColor="whiteAlpha.400"
@@ -107,7 +109,7 @@ const ResetPassword = () => {
                   <IconButton
                     bg="transparent"
                     variant="ghost"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={handlePasswordVisibility}
                     borderRadius="3xl"
@@ -118,7 +120,7 @@ const ResetPassword = () => {
             <FormControl id="confirmPassword">
               <Input
                 type="password"
-                placeholder="Confirm New Password"
+                placeholder={t('auth.confirmNewPassword')}
                 borderRadius="2xl"
                 bg="whiteAlpha.200"
                 borderColor="whiteAlpha.400"
@@ -138,7 +140,7 @@ const ResetPassword = () => {
               py={3}
               boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)"
             >
-              Reset Password
+              {t('auth.resetPassword')}
             </Button>
           </Stack>
         </form>

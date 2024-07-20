@@ -12,6 +12,8 @@ import { PanelProvider } from '../utilities/PanelContext'
 import Panel from '../components/shared/Panel'
 import { DefaultSession } from 'next-auth';
 import AuthHelper from '../helpers/AuthHelper';
+import '../utilities/i18n';
+
 
 interface SessionExt extends DefaultSession {
   token: {
