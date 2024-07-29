@@ -319,6 +319,16 @@
     "wellness": "Wellness",
     "other": "Other"
   },
+
+  "podcastOverview": {
+    "noEpisodes": "No episodes available",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "episodes": "Episodes",
+    "review": "Review",
+    "listeners": "Listeners",
+    "subscribers": "Subscribers"
+  },
   "nonExplicit": "Non-Explicit Only",
   "tags": "Tags",
   "reset": "Reset",

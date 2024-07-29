@@ -312,6 +312,15 @@
     "wellness": "Bienestar",
     "other": "Otro"
   },
+  "podcastOverview": {
+    "noEpisodes": "No hay episodios disponibles",
+    "showMore": "Mostrar más",
+    "showLess": "Mostrar menos",
+    "episodes": "Episodios",
+    "review": "Reseña",
+    "listeners": "Oyentes",
+    "subscribers": "Suscriptores"
+  },
   "nonExplicit": "Solo No Explícito",
   "tags": "Etiquetas",
   "reset": "Restablecer",
