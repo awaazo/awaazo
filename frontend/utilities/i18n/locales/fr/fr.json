@@ -312,6 +312,15 @@
     "wellness": "Bien-être",
     "other": "Autre"
   },
+  "podcastOverview": {
+    "noEpisodes": "Aucun épisode disponible",
+    "showMore": "Voir plus",
+    "showLess": "Voir moins",
+    "episodes": "Épisodes",
+    "review": "Critique",
+    "listeners": "Auditeurs",
+    "subscribers": "Abonnés"
+  },
   "nonExplicit": "Uniquement Non-Explicite",
   "tags": "Tags",
   "reset": "Réinitialiser",
