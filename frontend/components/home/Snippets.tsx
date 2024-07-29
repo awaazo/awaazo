@@ -3,8 +3,10 @@ import { VStack, Text, Spinner, Wrap } from '@chakra-ui/react'
 import HighlightTicket from '../highlights/HighlightTicket'
 import { Highlight } from '../../types/Interfaces'
 import HighlightHelper from '../../helpers/HighlightHelper'
+import { useTranslation } from 'react-i18next'
 
 const Snippets: React.FC = () => {
+  const { t } = useTranslation()
   const [highlights, setHighlights] = useState<Highlight[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -17,17 +19,17 @@ const Snippets: React.FC = () => {
         if (highlightsData.length > 0) {
           setHighlights(highlightsData)
         } else {
-          throw new Error('No highlights returned')
+          throw new Error(t('home.noHighlightsAvailable'))
         }
       } catch (err) {
-        setError(err.message || 'An error occurred while fetching highlights')
+        setError(err.message || t('home.fetchError'))
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchHighlights()
-  }, [])
+  }, [t])
 
   return (
     <Wrap spacing={4} align="stretch">
@@ -38,7 +40,7 @@ const Snippets: React.FC = () => {
       ) : highlights.length > 0 ? (
         highlights.map((highlight) => <HighlightTicket key={highlight.id} highlight={highlight} onOpenFullScreen={() => {}} isFullScreenMode={false} />)
       ) : (
-        <Text>No highlights available</Text>
+        <Text>{t('home.noHighlightsAvailable')}</Text>
       )}
     </Wrap>
   )

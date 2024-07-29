@@ -6,8 +6,10 @@ import SectionHelper from "../../helpers/SectionHelper";
 import { Section } from "../../types/Interfaces";
 import { SectionAddRequest } from "../../types/Requests";
 import { convertTime } from "../../utilities/commonUtils";
+import { useTranslation } from 'react-i18next';
 
 const ManageSections = ({ episodeId, podcastId }) => {
+  const { t } = useTranslation();
   const [sections, setSections] = useState<Section[]>(null);
   const [sectionCount, setSectionsCount] = useState<number>(0);
   const [newSection, setNewSection] = useState({
@@ -34,17 +36,17 @@ const ManageSections = ({ episodeId, podcastId }) => {
             end: lastSectionEnd,
           }));
         } else {
-          setSectionError("Sections cannot be fetched");
+          setSectionError(t('edit.errorFetchingEpisode'));
         }
       });
     };
     getSections();
-  }, [episodeId, sectionCount]);
+  }, [episodeId, sectionCount, t]);
 
-  // Function that hand;es the addition of a section to an episode
+  // Function that handles the addition of a section to an episode
   const handleAddSection = async () => {
     if (newSection.title === "") {
-      setSectionError("You must add a title");
+      setSectionError(t('edit.allFieldsRequiredEpisode'));
     } else {
       setSectionError("");
 
@@ -78,11 +80,11 @@ const ManageSections = ({ episodeId, podcastId }) => {
             setSectionError(addRes.data);
           }
         } else {
-          setSectionError("Error fetching sections");
+          setSectionError(t('edit.errorFetchingEpisode'));
         }
       } catch (error) {
         console.error("Error:", error);
-        setSectionError("Error fetching sections");
+        setSectionError(t('edit.errorFetchingEpisode'));
       }
     }
   };
@@ -94,7 +96,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
       setSectionsCount((sectionCount) => sectionCount - 1);
     } else {
       setSectionError("");
-      console.log("Error deleting comment:", response.message);
+      console.log(t('edit.errorDeletingSection'), response.message);
     }
   };
 
@@ -111,7 +113,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
             end: newTime,
           }));
         } else {
-          setSectionError("End time must be after the end of the last section");
+          setSectionError(t('edit.endTimeMustBeAfterLastSection'));
         }
       } else {
         setSectionError("Error fetching sections");
@@ -133,11 +135,11 @@ const ManageSections = ({ episodeId, podcastId }) => {
             <Box width="100%" alignItems={"center"}>
               <Box w="100%" p={4} borderWidth="1px" borderRadius="1.2em">
                 <Text fontSize="xl" fontWeight="bold" mb={6} mt={1} textAlign={"center"}>
-                  Add a Section
+                  {t('edit.addSection')}
                 </Text>
                 <FormControl position="relative">
                   <Input
-                    placeholder="Section Title"
+                    placeholder={t('edit.episodeNamePlaceholder')}
                     mb={3}
                     value={newSection.title}
                     onChange={(e) => {
@@ -156,16 +158,16 @@ const ManageSections = ({ episodeId, podcastId }) => {
                 <Box textAlign="center">
                   <HStack spacing={4} justifyContent="center">
                     <Text fontSize="md" fontWeight={"bold"}>
-                      Start: {convertTime(newSection.start)}
+                      {t('edit.start')}: {convertTime(newSection.start)}
                     </Text>
                     <Text fontSize="md" fontWeight={"bold"}>
-                      End: {convertTime(newSection.end)}
+                      {t('edit.end')}: {convertTime(newSection.end)}
                     </Text>
                   </HStack>
                 </Box>
                 <HStack justifyContent="space-between" mt={"5"}>
                   <Button onClick={handleAddSection} width="50%" borderRadius="7px" bg="brand.100" data-cy={`add-section-button-form`}>
-                    Add Section
+                    {t('edit.addSection')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -177,20 +179,20 @@ const ManageSections = ({ episodeId, podcastId }) => {
                     bg="red"
                     data-cy={`cancel-button`}
                   >
-                    Cancel
+                    {t('edit.cancel')}
                   </Button>
                 </HStack>
               </Box>
               <Text fontSize="xl" fontWeight="bold" mb={1} mt={6}>
-                Sections
+                {t('edit.sections')}
               </Text>
             </Box>
           ) : (
             <Flex justify="space-between" w="100%" alignItems="center">
               <Text fontSize="xl" fontWeight="bold" mb={1} mt={1}>
-                Sections
+                {t('edit.sections')}
               </Text>
-              <Tooltip label="Add Section" placement="top">
+              <Tooltip label={t('edit.addSection')} placement="top">
                 <IconButton
                   variant="ghost"
                   borderRadius="50%"
@@ -218,7 +220,7 @@ const ManageSections = ({ episodeId, podcastId }) => {
             ))
           ) : (
             <Text textAlign="center" mt={4}>
-              This episode has no sections yet.
+              {t('edit.noSectionsYet')}
             </Text>
           )}
         </Box>

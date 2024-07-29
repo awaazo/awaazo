@@ -3,12 +3,15 @@ import { FormControl, Button, Textarea, Box, VStack, Input, IconButton, Switch, 
 import { useDropzone } from "react-dropzone";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import { EpisodeEditRequest } from "../../types/Requests";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Component for editing an episode
  * @param episode The episode to edit
  */
 export default function EditEpisodeForm({ episode }) {
+  const { t } = useTranslation();
+
   // Fetch episode data on component mount
   useEffect(() => {
     PodcastHelper.getEpisodeById(episode.id).then((res) => {
@@ -20,10 +23,10 @@ export default function EditEpisodeForm({ episode }) {
         setDescriptionCharacterCount(res.episode.description.length);
         setIsExplicit(res.episode.isExplicit);
       } else {
-        setEditError("Episodes cannot be fetched");
+        setEditError(t('edit.errorFetchingEpisode'));
       }
     });
-  }, [episode.id]);
+  }, [episode.id, t]);
 
   // Page refs
   const myPodcastsPage = "/CreatorHub";
@@ -67,7 +70,7 @@ export default function EditEpisodeForm({ episode }) {
     e.preventDefault();
     // Ensure all required fields are filled
     if (episodeName == "" || description == "") {
-      setEditError("Cover Image, Episode Name and Description Required.");
+      setEditError(t('edit.allFieldsRequiredEpisode'));
       return;
     }
     // Create request object
@@ -169,7 +172,7 @@ export default function EditEpisodeForm({ episode }) {
             <VStack spacing={5} align="center" p={5}>
               {/* Episode Name Input */}
               <FormControl position="relative">
-                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder="Enter episode name..." data-cy={`episode-name-input`} rounded="lg" pr="50px" />
+                <Input value={episodeName} onChange={handleEpisodeNameChange} placeholder={t('edit.episodeNamePlaceholder')} data-cy={`episode-name-input`} rounded="lg" pr="50px" />
                 <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                   {episodeNameCharacterCount}/25
                 </Text>
@@ -177,7 +180,7 @@ export default function EditEpisodeForm({ episode }) {
 
               {/* Description Textarea */}
               <FormControl position="relative">
-                <Textarea value={description} onChange={handleDescriptionChange} placeholder="Enter episode description..." />
+                <Textarea value={description} onChange={handleDescriptionChange} placeholder={t('edit.descriptionPlaceholder')} />
                 <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                   {descriptionCharacterCount}/250
                 </Text>
@@ -192,18 +195,18 @@ export default function EditEpisodeForm({ episode }) {
                   onChange={() => setIsExplicit(!isExplicit)}
                   opacity={0.9}
                 >
-                  Explicit
+                  {t('edit.explicit')}
                 </Switch>
               </FormControl>
 
               {/* File Upload */}
               <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" width="300px">
                 <input {...getInputProps()} />
-                {file ? <p>{file.name}</p> : <p>Drag & drop a podcast file here, or click to select one</p>}
+                {file ? <p>{file.name}</p> : <p>{t('editEpisode.dragDropFile')}</p>}
               </Box>
 
               <Button id="createBtn" type="submit" variant="gradient">
-                Update
+                {t('edit.update')}
               </Button>
             </VStack>
           </form>

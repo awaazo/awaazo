@@ -29,8 +29,11 @@ import PodcastHelper from '../../helpers/PodcastHelper'
 import { Episode, Metrics } from '../../types/Interfaces'
 import { GiHeptagram } from 'react-icons/gi'
 import AnalyticsHelper from '../../helpers/AnalyticsHelper'
+import { useTranslation } from 'react-i18next' // Importing i18n translation hook
 
 const PodcastInfo = ({ podcastId }) => {
+  const { t } = useTranslation(); // Initialize translation hook
+
   useEffect(() => {
     PodcastHelper.getPodcastById(podcastId).then((res) => {
       // If logged in, set user, otherwise redirect to login page
@@ -41,7 +44,7 @@ const PodcastInfo = ({ podcastId }) => {
         setTags(res.podcast.tags)
         setEpisodes(res.podcast.episodes)
       } else {
-        setCreateError('Podcasts cannot be fetched')
+        setCreateError(t('podcast.fetchError')); // Use translation for error message
       }
     })
   }, [podcastId])
@@ -68,7 +71,7 @@ const PodcastInfo = ({ podcastId }) => {
       if (res.status == 200) {
         setMetrics(res.metrics)
       } else {
-        setMetricsError('Metrics cannot be fetched')
+        setMetricsError(t('metrics.fetchError')); // Use translation for error message
       }
     })
   }, [podcastId])
@@ -82,7 +85,7 @@ const PodcastInfo = ({ podcastId }) => {
     if (response.status == 200) {
       window.location.reload()
     } else {
-      setCreateError('Podcasts cannot be deleted')
+      setCreateError(t('podcast.deleteError')); // Use translation for error message
     }
     onClose()
     setDeleting(false)
@@ -123,17 +126,17 @@ const PodcastInfo = ({ podcastId }) => {
         <Box display="flex" alignItems="center" gap="1rem">
           {isMobile ? (
             <Box>
-              <Tooltip label="Edit Podcast" aria-label="Edit Podcast Tooltip">
-                <IconButton variant="ghost" fontSize="lg" rounded="full" opacity={0.7} color="white" aria-label="Edit Podcast" icon={<Icon as={MdEdit} />} onClick={() => openEditPodcastModal()} />
+              <Tooltip label={t('podcast.editTooltip')} aria-label="Edit Podcast Tooltip"> {/* Use translation for tooltip */}
+                <IconButton variant="ghost" fontSize="lg" rounded="full" opacity={0.7} color="white" aria-label={t('podcast.editAriaLabel')} icon={<Icon as={MdEdit} />} onClick={() => openEditPodcastModal()} />
               </Tooltip>
             </Box>
           ) : (
             <Button onClick={() => openEditPodcastModal()} display="flex" borderRadius="1em" padding="1em" color="white" bg="az.red">
-              <Text fontSize="md"> Edit Podcast</Text>
+              <Text fontSize="md">{t('podcast.editButton')}</Text> {/* Use translation for button text */}
             </Button>
           )}
           {/* Edit button */}
-          <IconButton onClick={onOpen} disabled={isDeleting} variant="ghost" size={isMobile === true ? 'sm' : 'lg'} rounded={'full'} opacity={0.7} mr={3} color="red" aria-label="Delete">
+          <IconButton onClick={onOpen} disabled={isDeleting} variant="ghost" size={isMobile === true ? 'sm' : 'lg'} rounded={'full'} opacity={0.7} mr={3} color="red" aria-label={t('podcast.deleteAriaLabel')}>
             <DeleteIcon w={isMobile === true ? '5' : '6'} h={isMobile === false ? '5' : '6'} color="#FF6666" data-cy={`podcast-delete`} />
           </IconButton>
         </Box>
@@ -153,70 +156,104 @@ const PodcastInfo = ({ podcastId }) => {
           >
             {description}
           </Text>
-          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em"  marginBottom="2em">
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em"  marginBottom="2em">
+          <Box backdropFilter="blur(10px)" borderRadius="1em" padding="1em" marginTop="1em" marginBottom="2em">
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}
-              
 
               {metrics && (
                 <>
-                  
-                <VStack align={'right'}>
-                <Text fontSize="md" fontWeight="bold" color={'az.red'}>
-                  User Engagement Insights:
-                </Text>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Average Clicks: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.averageClicks}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Average Watch Time: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.averageWatchTime.slice(0, 8)}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Comments Percentage: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.commentsPercentage}%</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Likes Percentage: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.likesPercentage}%</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Total Clicks: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.totalClicks}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Total Comments: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.totalComments}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Total Likes: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.totalLikes}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Total Listeners: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.totalListeners}</Text>
-                  </HStack>
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" fontWeight="bold"> Total Watch Time: </Text>
-                    <Text fontSize="sm" fontWeight="medium">{metrics.totalWatchTime.slice(0, 8)}</Text>
-                  </HStack>
-                </VStack>
-              </>
+                  <VStack align={'right'}>
+                    <Text fontSize="md" fontWeight="bold" color={'az.red'}>
+                      {t('metrics.userEngagementInsights')} {/* Use translation for metrics title */}
+                    </Text>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.averageClicks')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.averageClicks}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.averageWatchTime')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.averageWatchTime.slice(0, 8)}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.commentsPercentage')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.commentsPercentage}%
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.likesPercentage')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.likesPercentage}%
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.totalClicks')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.totalClicks}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.totalComments')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.totalComments}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.totalLikes')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.totalLikes}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.totalListeners')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.totalListeners}
+                      </Text>
+                    </HStack>
+                    <HStack spacing={2}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {t('metrics.totalWatchTime')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium">
+                        {metrics.totalWatchTime.slice(0, 8)}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                </>
               )}
             </Box>
           </Box>
           <>
             <Box display="flex" alignItems="center">
               <Text fontSize="md" style={{ fontWeight: 'bold', paddingLeft: 15 }}>
-                Episodes:
+                {t('podcast.episodes')} {/* Use translation for episodes label */}
               </Text>{' '}
             </Box>
 
             {episodes.length === 0 ? (
               <Text align={'center'} fontSize="md" fontWeight="normal" marginTop="2em">
-                (This podcast has no episodes yet)
+                {t('podcast.noEpisodes')} {/* Use translation for no episodes message */}
               </Text>
             ) : (
               episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
@@ -240,51 +277,86 @@ const PodcastInfo = ({ podcastId }) => {
             <Text backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginBottom="0.5em" marginTop="1em">
               {description}
             </Text>
-            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em"  marginBottom="2em">
+            <Box backgroundColor="rgba(0, 0, 0, 0.1)" backdropFilter="blur(10px)" borderRadius="1em" padding="2em" marginTop="1em" marginBottom="2em">
               {/* Podcast metrics */}
               {metricsError && <Text color="red.500">{metricsError}</Text>}{' '}
               {metrics && (
                 <>
-                  
                   <VStack align={'right'}>
-                  <Text fontSize="lg" fontWeight="bold" color={'az.red'}>
-                    User Engagement Insights:
-                  </Text>
+                    <Text fontSize="lg" fontWeight="bold" color={'az.red'}>
+                      {t('metrics.userEngagementInsights')} {/* Use translation for metrics title */}
+                    </Text>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Average Clicks: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.averageClicks}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.averageClicks')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.averageClicks}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Average Watch Time: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.averageWatchTime.slice(0, 8)}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.averageWatchTime')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.averageWatchTime.slice(0, 8)}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Comments Percentage: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.commentsPercentage}%</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.commentsPercentage')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.commentsPercentage}%
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Likes Percentage: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.likesPercentage}%</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.likesPercentage')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.likesPercentage}%
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Total Clicks: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.totalClicks}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.totalClicks')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.totalClicks}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Total Comments: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.totalComments}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.totalComments')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.totalComments}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Total Likes: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.totalLikes}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.totalLikes')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.totalLikes}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Total Listeners: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.totalListeners}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.totalListeners')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.totalListeners}
+                      </Text>
                     </HStack>
                     <HStack spacing={2}>
-                      <Text fontSize="md" fontWeight="bold"> Total Watch Time: </Text>
-                      <Text fontSize="md" fontWeight="medium">{metrics.totalWatchTime.slice(0, 8)}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {t('metrics.totalWatchTime')} {/* Use translation for metrics label */}
+                      </Text>
+                      <Text fontSize="md" fontWeight="medium">
+                        {metrics.totalWatchTime.slice(0, 8)}
+                      </Text>
                     </HStack>
                   </VStack>
                 </>
@@ -296,7 +368,7 @@ const PodcastInfo = ({ podcastId }) => {
           <Box flex="1" paddingLeft="25px" marginTop="1.5em">
             {episodes.length === 0 ? (
               <Text align={'center'} fontSize="lg" fontWeight="normal" marginTop="5em">
-                (This podcast has no episodes yet)
+                {t('podcast.noEpisodes')} {/* Use translation for no episodes message */}
               </Text>
             ) : (
               episodes.map((episode, index) => <MyEpisodes episode={episode} key={index} />)
@@ -308,18 +380,17 @@ const PodcastInfo = ({ podcastId }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalHeader>{t('podcast.confirmDeletion')}</ModalHeader> {/* Use translation for modal header */}
           <ModalCloseButton />
           <ModalBody>
-            Are you sure you want to delete the podcast "{podcastName}". <br />
-            This action cannot be undone
+            {t('podcast.confirmDeletionMessage', { podcastName })} {/* Use translation for deletion message */}
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onClose}>
-              Cancel
+              {t('podcast.cancel')} {/* Use translation for cancel button */}
             </Button>
             <Button colorScheme="red" ml={3} onClick={handleDelete}>
-              Delete
+              {t('podcast.delete')} {/* Use translation for delete button */}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -333,7 +404,7 @@ const PodcastInfo = ({ podcastId }) => {
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack spacing={5} align="center" backgroundColor={'transparent'}>
-                <Text>Edit Podcast: {podcastName}</Text>
+                <Text>{t('podcast.editPodcast', { podcastName })}</Text> {/* Use translation for edit podcast title */}
                 <EditPodcastForm podcastId={podcastId} />
               </VStack>
             </Box>

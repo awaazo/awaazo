@@ -6,12 +6,14 @@ import { convertTime } from "../../../utilities/commonUtils";
 import { CiBookmark } from "react-icons/ci";
 import BookmarksHelper from "../../../helpers/BookmarksHelper";
 import { FaTrash } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
 
 interface BookmarksProps {
   episodeId: string;
 }
 
 const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
+  const { t } = useTranslation();
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(null);
   const [deletedBookmark, setDeletedBookmark] = useState();
@@ -52,7 +54,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={CiBookmark} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
-          Bookmarks
+          {t('bookmarks.title')}
         </Text>
       </Flex>
       <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">
@@ -76,6 +78,11 @@ const Bookmarks: React.FC<BookmarksProps> = ({ episodeId }) => {
             </Flex>
           </Box>
         ))}
+        {bookmarks && bookmarks.length === 0 && (
+          <Text color="gray" mt={'50px'} textAlign={'center'} width={'100%'}>
+            {t('bookmarks.no_bookmarks')}
+          </Text>
+        )}
       </VStack>
     </Box>
   );

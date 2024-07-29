@@ -3,6 +3,7 @@ import { Box, Text, VStack, Flex, useBreakpointValue, Icon } from '@chakra-ui/re
 import { LuBookCopy } from 'react-icons/lu'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import { usePlayer } from '../../utilities/PlayerContext'
+import { useTranslation } from 'react-i18next'
 import { Transcript } from '../../types/Interfaces'
 
 interface TranscriptProps {
@@ -10,6 +11,7 @@ interface TranscriptProps {
 }
 
 const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
+  const { t } = useTranslation()
   const fontSize = useBreakpointValue({ base: 'md', md: 'lg' })
   const [transcription, setTranscript] = useState<Transcript>()
   const [transcriptLines, setTranscriptLines] = useState([])
@@ -36,12 +38,12 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
               )
             )
           } else {
-            console.error('Error fetching transcripts data:', res.message)
+            console.error(t('transcript.error_fetching_data'), res.message)
           }
         })
-        .catch((error) => console.error('Error fetching transcripts data:', error))
+        .catch((error) => console.error(t('transcript.error_fetching_data'), error))
     }
-  }, [episodeId])
+  }, [episodeId, t])
 
   useEffect(() => {
     const updateVisibleWords = () => {
@@ -73,10 +75,10 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
                 // Set seeking to false after fetching the new transcript
                 seeking = false
               } else {
-                console.error('Error fetching transcripts data:', res.message)
+                console.error(t('transcript.error_fetching_data'), res.message)
               }
             })
-            .catch((error) => console.error('Error fetching transcripts data:', error))
+            .catch((error) => console.error(t('transcript.error_fetching_data'), error))
         }
 
         if (transcriptLines.length > 0) {
@@ -120,7 +122,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
-          Transcript
+          {t('transcript.title')}
         </Text>
       </Flex>
       <Box
@@ -148,7 +150,7 @@ const TranscriptComp: React.FC<TranscriptProps> = ({ episodeId }) => {
           </Text>
         ) : (
           <Text fontSize={fontSize} color="white">
-            Transcription not available at the moment.
+            {t('transcript.not_available')}
           </Text>
         )}
       </Box>
