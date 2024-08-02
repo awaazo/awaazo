@@ -5,8 +5,9 @@ import {
   Modal, ModalOverlay, ModalContent, ModalHeader, 
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure 
 } from '@chakra-ui/react';
-import PodcastHelper from '../../helpers/PodcastHelper';
 import EpisodeHistoryCard from '../cards/EpisodeHistoryCard';
+import PodcastHelper from '../../helpers/PodcastHelper';
+
 import { MdDelete } from 'react-icons/md';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
@@ -120,9 +121,9 @@ const UserWatchHistory: React.FC = () => {
             episodes.map((episode) => (
               <EpisodeHistoryCard 
                 key={episode.id} 
-                episode={episode} 
-                showLike={true} 
-                showComment={true} 
+                episode={episode}
+                showLike={true}
+                showComment={true}
                 showMore={true} 
                 onHistoryUpdate={handleHistoryUpdate}
               />
