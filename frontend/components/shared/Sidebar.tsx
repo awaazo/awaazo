@@ -15,10 +15,8 @@ import LoginPrompt from '../auth/AuthPrompt'
 import { UserMenuInfo } from '../../types/Interfaces'
 import { GoogleSSORequest } from '../../types/Requests'
 import { RiMic2Fill } from "react-icons/ri";
-import { useTranslation } from 'react-i18next';
 
 const Sidebar = () => {
-  const { t } = useTranslation();
   const router = useRouter()
   const indexPage = '/'
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -193,16 +191,6 @@ const Sidebar = () => {
     )
   }
 
-  const homeText = t("sidebar.home");
-  const exploreText = t("sidebar.explore");
-  const createText = t("sidebar.create");
-  const myShelfText = t("sidebar.myShelf");
-  const viewQueueText = t("sidebar.viewQueue");
-  const createPlaylistText = t("sidebar.createPlaylist");
-  const walletText = t("sidebar.wallet");
-  const settingsText = t("sidebar.settings");
-  const logoutText = t("sidebar.logout");
-
   if (isMobile) {
     return <MobileNavigation />
   } else {
@@ -285,7 +273,7 @@ const Sidebar = () => {
                 <Icon as={Home} fontSize="18px" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="medium">
-                    {homeText}
+                    Home
                   </Box>
                 )}
               </Flex>
@@ -306,7 +294,7 @@ const Sidebar = () => {
                 <Icon as={Search} fontSize="18px" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="medium" data-cy={`explore-icon`}>
-                    {exploreText}
+                    Explore
                   </Box>
                 )}
               </Flex>
@@ -325,7 +313,7 @@ const Sidebar = () => {
                 <Icon as={RiMic2Fill} fontSize="18px" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="medium">
-                    {createText}
+                    Create
                   </Box>
                 )}
               </Flex>
@@ -339,20 +327,20 @@ const Sidebar = () => {
               <Icon as={Cards} fontSize="18px" mr={3} data-cy={`playlist-icon`} />
               {!collapsed && (
                 <Box flex="1" fontWeight="medium">
-                  {myShelfText}
+                  My Shelf
                 </Box>
               )}
               {!collapsed && (
                 <Box onClick={handleModalClick}>
                   {' '}
-                  <Tooltip label={viewQueueText} fontSize="xs" placement="top" openDelay={1000}>
+                  <Tooltip label="View Queue" fontSize="xs" placement="top" openDelay={1000}>
                     <span>
                       <IconButton icon={<PiQueueFill />} variant="minimal"  aria-label="View Queue" fontSize={'15px'} onClick={onQueueModalOpen} data-cy={`queue-button`} />{' '}
                     </span>
                   </Tooltip>
                   {/* Conditionally rendering the create playlist button only when login prompt is not visible */}
                   {!showLoginPrompt && (
-                    <Tooltip label={createPlaylistText} fontSize="xs" placement="top" openDelay={1000}>
+                    <Tooltip label="Create Playlist" fontSize="xs" placement="top" openDelay={1000}>
                       <span>
                         <IconButton
                           icon={<Add />}
@@ -415,7 +403,7 @@ const Sidebar = () => {
                 <Icon as={Wallet} fontSize="18px" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="medium">
-                    {walletText}
+                    Wallet
                   </Box>
                 )}
               </Flex>
@@ -434,7 +422,7 @@ const Sidebar = () => {
                 <Icon as={Settings} fontSize="18px" mr={3} />
                 {!collapsed && (
                   <Box flex="1" fontWeight="medium">
-                    {settingsText}
+                    Settings
                   </Box>
                 )}
               </Flex>
@@ -455,7 +443,7 @@ const Sidebar = () => {
               <Icon as={Logout} fontSize="18px" mr={3} />
               {!collapsed && (
                 <Box flex="1" fontWeight="medium" data-cy={`explore-icon`}>
-                  {logoutText}
+                  Logout
                 </Box>
               )}
             </Flex>
@@ -465,7 +453,7 @@ const Sidebar = () => {
         <CreatePlaylistModal handleReload={handleReload} isOpen={isCreateModalOpen} onClose={onCreateModalClose} />
         {/* LoginPrompt */}
         {showLoginPrompt && (
-          <LoginPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage={t("loginPrompt.infoMessage")} />
+          <LoginPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="To access this feature, you must be logged in. Please log in or create an account." />
         )}
       </Box>
     )

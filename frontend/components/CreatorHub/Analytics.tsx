@@ -4,10 +4,8 @@ import AnalyticsHelper from '../../helpers/AnalyticsHelper'
 import { Episode } from '../../types/Interfaces'
 import EpisodeCard from '../cards/EpisodeCard'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, Line, LineChart } from 'recharts'
-import { useTranslation } from 'react-i18next'
 
 export default function Analytics({ podcastId }) {
-  const { t } = useTranslation()
   const [selectedOption, setSelectedOption] = useState('mostLiked')
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [ageData, setAgeData] = useState([])
@@ -202,20 +200,20 @@ export default function Analytics({ podcastId }) {
     <Box display="flex" flexDirection={{ base: 'column', md: 'row' }}>
       <Box flex="1" mb={{ base: '30px', md: 0 }}>
         <Text fontWeight="bold" fontSize="24px" mb="15px">
-          {t('analytics.interactionInsights')}
+          Interaction Insights:
         </Text>
         <Select fontSize="20px" fontWeight="bold" bg="az.red" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)} mb="15px">
           <option value="mostCommented" style={{ backgroundColor: '#333' }}>
-            {t('analytics.mostCommented')}
+            Most Commented
           </option>
           <option value="mostLiked" style={{ backgroundColor: '#333' }}>
-            {t('analytics.mostLiked')}
+            Most Liked
           </option>
           <option value="mostClicked" style={{ backgroundColor: '#333' }}>
-            {t('analytics.mostClicked')}
+            Most Clicked
           </option>
           <option value="mostListened" style={{ backgroundColor: '#333' }}>
-            {t('analytics.mostListened')}
+            Most Listen Time
           </option>
         </Select>
         <Box>
@@ -229,7 +227,7 @@ export default function Analytics({ podcastId }) {
             ))
           ) : (
             <Text textAlign={'center'} mt={'30px'} mb={'30px'} fontSize={'18px'}>
-              {t('analytics.noDataAvailable')}
+              No data available for Interaction Insights
             </Text>
           )}
         </Box>
@@ -237,16 +235,21 @@ export default function Analytics({ podcastId }) {
 
       <Box flex="1" marginLeft={{ md: '30px' }}>
         <Text fontWeight="bold" fontSize="24px" mb="15px" marginLeft="30px">
-          {t('analytics.audienceInsights')}
+          Audience Insights:
         </Text>
         {ageData.length > 0 ? (
           <React.Fragment>
             <Text fontSize="18px" mb="15px" marginLeft="30px" color={'grey'}>
-              {t('analytics.audienceAgeDistribution', { minAge, maxAge, averageAge, ageCount })}
+              Your audience is between{' '}
+              <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>
+                {minAge} and {maxAge} years old{' '}
+              </span>{' '}
+              on average, with the average age of listeners being around <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{averageAge} years old</span> based
+              on <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{ageCount} listeners.</span>
             </Text>
             <Box>
               <Text fontSize="18px" mb="5px" marginLeft="30px" color={'az.red'}>
-                {t('analytics.audienceAgeDistribution')}
+                Audience Age Distribution
               </Text>
               <Box height={300} width="100%" overflow="hidden">
                 <ResponsiveContainer>
@@ -263,20 +266,27 @@ export default function Analytics({ podcastId }) {
           </React.Fragment>
         ) : (
           <Text textAlign={'center'} mt={'30px'} mb={'30px'} fontSize={'18px'}>
-            {t('analytics.noDataAvailable')}
+            No data available for Audience Insights
           </Text>
         )}
         <Text fontWeight="bold" fontSize="24px" mb="15px" marginLeft="30px">
-          {t('analytics.watchTimeInsights')}
+          Watch Time Insights:
         </Text>
         {watchTimeData.length > 0 ? (
           <React.Fragment>
             <Box>
               <Text fontSize="18px" mb="15px" marginLeft="30px" color={'grey'}>
-                {t('analytics.watchTimeDistribution', { minWatchTime, maxWatchTime, averageWatchTime, totalWatchTime, totalClicks })}
+                On average, your audience watches between
+                <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>
+                  {' '}
+                  {minWatchTime} and {maxWatchTime},
+                </span>{' '}
+                with an average watch time of <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{averageWatchTime} per listener,</span> based on{' '}
+                <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{totalWatchTime} total watch time</span> from{' '}
+                <span style={{ color: 'white', fontWeight: 'bold', marginLeft: '2px', marginRight: '2px' }}>{totalClicks} clicks.</span>
               </Text>
               <Text fontSize="18px" mb="5px" marginLeft="30px" color={'az.red'}>
-                {t('analytics.watchTimeDistribution')}
+                Watch Time Distribution
               </Text>
               <Box height={300} width="100%" overflow="hidden">
                 <ResponsiveContainer>
@@ -293,7 +303,7 @@ export default function Analytics({ podcastId }) {
           </React.Fragment>
         ) : (
           <Text textAlign={'center'} mt={'30px'} mb={'30px'} fontSize={'18px'}>
-            {t('analytics.noDataAvailable')}
+            No data available for Watch Time Insights
           </Text>
         )}
       </Box>

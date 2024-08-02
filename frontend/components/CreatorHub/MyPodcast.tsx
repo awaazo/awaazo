@@ -4,15 +4,12 @@ import CustomTabs from '../assets/CustomTabs'
 import PodcastInfo from './PodcastInfo'
 import AddEpisode from './AddEpisode'
 import Analytics from './Analytics'
-import { useTranslation } from 'react-i18next'
 
 export default function MyPodcast({ podcastId }) {
-  const { t } = useTranslation()
-
   const tabItems = [
-    { label: t('myPodcast.podcastInfo'), component: <PodcastInfo podcastId={podcastId} /> },
-    { label: t('myPodcast.addEpisode'), component: <AddEpisode podcastId={podcastId} /> },
-    { label: t('myPodcast.analytics'), component: <Analytics podcastId={podcastId} /> },
+    { label: 'Podcast Info', component: <PodcastInfo podcastId={podcastId} /> },
+    { label: 'Add Episode', component: <AddEpisode podcastId={podcastId} /> },
+    { label: 'Analytics', component: <Analytics podcastId={podcastId} /> },
   ]
 
   return (

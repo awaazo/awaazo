@@ -41,11 +41,9 @@ import HighlightList from "../highlights/HighlightList";
 import HighlightHelper from "../../helpers/HighlightHelper";
 import { BsExplicitFill } from "react-icons/bs";
 import {Like , Plays , Time } from "../../public/icons"
-import { useTranslation } from 'react-i18next';
 
 // Component to render an episode
 const Episode = ({ episode }) => {
-  const { t } = useTranslation();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [annotations, setAnnotations] = useState([]);
@@ -219,7 +217,7 @@ const Episode = ({ episode }) => {
     if (response.status == 200) {
       window.location.reload();
     } else {
-      setEpisodeError(t('edit.errorDeletingEpisode'));
+      setEpisodeError("Episode cannot be deleted");
     }
     onCloseDeleteModal();
     setDeleting(false);
@@ -268,7 +266,7 @@ const Episode = ({ episode }) => {
       {/* Edit and Delete Buttons */}
       <HStack spacing={0} mr={3}>
         
-          <Tooltip label={t('edit.highlights')} aria-label="Highlights Tooltip">
+          <Tooltip label="Highlights" aria-label="Highlights Tooltip">
             <IconButton
               variant="minimal"
               data-cy="highlights-button"
@@ -281,7 +279,7 @@ const Episode = ({ episode }) => {
               onClick={() => openHighlightsModal(episode)}
             />
           </Tooltip>
-          <Tooltip label={t('edit.annotations')} aria-label="Annotations Tooltip">
+          <Tooltip label="Annotations" aria-label="Annotations Tooltip">
             <IconButton
               variant="minimal"
               data-cy="annotations-button"
@@ -295,7 +293,7 @@ const Episode = ({ episode }) => {
               onClick={() => handleOpenForm(episode)}
             />
           </Tooltip>
-          <Tooltip label={t('edit.sections')} aria-label="Sections Tooltip">
+          <Tooltip label="Sections" aria-label="Sections Tooltip">
             <IconButton
               variant="minimal"
               data-cy="sections-button"
@@ -309,7 +307,7 @@ const Episode = ({ episode }) => {
               onClick={() => openSectionsModal(episode)}
             />
           </Tooltip>
-          <Tooltip label={t('edit.transcript')} aria-label="Transcript Tooltip">
+          <Tooltip label="Transcript" aria-label="Transcript Tooltip">
             <IconButton
               variant="minimal"
               data-cy="transcript-button"
@@ -323,10 +321,10 @@ const Episode = ({ episode }) => {
               onClick={() => openTranscriptModal(episode)}
             />
           </Tooltip>
-          <Tooltip label={t('edit.edit')} aria-label="Edit Tooltip">
+          <Tooltip label="Edit" aria-label="Edit Tooltip">
             <IconButton variant="minimal" data-cy="edit-button" fontSize="md" rounded={"full"} opacity={0.7} color="white" aria-label="Edit Episode" icon={<Icon as={MdEdit} />} onClick={() => openEditEpisodeModal(episode)} />
           </Tooltip>
-          <Tooltip label={t('edit.delete')} aria-label="Delete Tooltip">
+          <Tooltip label="Delete" aria-label="Delete Tooltip">
             <IconButton variant="minimal" data-cy="delete-button" fontSize="md" rounded={"full"} opacity={0.7}  color="white" aria-label="Delete Episode" icon={<Icon as={MdDelete} />} onClick={onOpenDeleteModal} />
           </Tooltip>
        
@@ -336,16 +334,17 @@ const Episode = ({ episode }) => {
       <Modal isOpen={isDeleteModalOpen} onClose={onCloseDeleteModal}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t('edit.confirmDeletion')}</ModalHeader>
+          <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalBody>
-            {t('edit.areYouSureToDelete', { episodeName: episode.episodeName })}
+            Are you sure you want to delete the episode "{episode.episodeName}". <br />
+            This action cannot be undone
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onCloseDeleteModal}>
-              {t('edit.cancel')}
+              Cancel
             </Button>
             <Button colorScheme="red" ml={3} onClick={() => handleDelete(episode.episodeId)}>
-              {t('edit.delete')}
+              Delete
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -359,7 +358,7 @@ const Episode = ({ episode }) => {
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack spacing={5} align="center" backgroundColor={"transparent"}>
-                <Text>{t('edit.editEpisode', { episodeName: currentEpisode?.episodeName })}</Text>
+                <Text>Edit Episode: {currentEpisode?.episodeName}</Text>
 
                 <EditEpisodeForm episode={episode} />
               </VStack>
@@ -375,7 +374,7 @@ const Episode = ({ episode }) => {
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack align="center" backgroundColor={"transparent"}>
-                <Text>{t('edit.manageSections', { episodeName: currentEpisode?.episodeName })}</Text>
+                <Text>Manage Sections: {currentEpisode?.episodeName}</Text>
                 <ManageSections episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
             </Box>
@@ -391,7 +390,7 @@ const Episode = ({ episode }) => {
           <ModalBody>
             <Box display="flex" justifyContent="center" alignItems="center">
               <VStack align="center" backgroundColor={"transparent"}>
-                <Text>{t('edit.manageTranscript', { episodeName: currentEpisode?.episodeName })}</Text>
+                <Text>Manage Transcript: {currentEpisode?.episodeName}</Text>
                 {/* Assuming there's a component for managing transcripts similar to ManageSections */}
                 <ManageTranscript episodeId={episode.id} podcastId={episode.podcastId} />
               </VStack>
@@ -404,12 +403,12 @@ const Episode = ({ episode }) => {
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent minWidth={"50%"} padding={"2em"}>
           <ModalCloseButton />
-          <ModalHeader>{t('edit.highlights')}</ModalHeader>
+          <ModalHeader>Highlights</ModalHeader>
           <ModalBody>
             <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
               <TabList>
-                <Tab>{t('edit.addHighlight')}</Tab>
-                <Tab>{t('edit.highlights')}</Tab>
+                <Tab>Add Highlight</Tab>
+                <Tab>Highlights</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -427,13 +426,13 @@ const Episode = ({ episode }) => {
       <Modal isOpen={isAnnotationDrawerOpen} onClose={onCloseAnnotationDrawer}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t('edit.annotations')}</ModalHeader>
+          <ModalHeader>Annotations</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Tabs isFitted variant="enclosed" colorScheme="blue" defaultIndex={tabIndex} onChange={(index) => setTabIndex(index)}>
               <TabList>
-                <Tab>{t('edit.annotations')}</Tab>
-                <Tab>{t('edit.addAnnotation')}</Tab>
+                <Tab>Annotations</Tab>
+                <Tab>Add Annotation</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>

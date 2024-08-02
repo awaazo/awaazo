@@ -7,11 +7,8 @@ import AuthHelper from "../../helpers/AuthHelper";
 import PodcastHelper from "../../helpers/PodcastHelper";
 import Link from "next/link";
 import withAuth from "../../utilities/authHOC";
-import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const Creatorhub = () => {
-  const { t } = useTranslation(); // Initialize translation
-
   // Page refs
   const loginPage = "/auth/Login";
 
@@ -44,12 +41,12 @@ const Creatorhub = () => {
             setPodcasts((prevPodcasts) => [...prevPodcasts, ...podcastsResponse.myPodcasts]);
             setSelectedPodcastId(podcastsResponse.myPodcasts.length > 0 ? podcastsResponse.myPodcasts[0].id : null);
           } else {
-            setCreateError(t('home.fetchError')); // Using translation for error message
+            setCreateError("Podcasts cannot be fetched");
           }
         }
       } catch (error) {
         console.error("Error during data fetching", error);
-        setCreateError(t('home.fetchError')); // Using translation for error message
+        setCreateError("An error occurred while fetching data");
       } finally {
         setIsLoading(false);
       }
@@ -67,7 +64,7 @@ const Creatorhub = () => {
     <>
       <Flex direction="column" align="center" justify="center" px={["1em", "2em", "4em"]} py={4}>
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
-          {t('creatorhub.title')} {/* Using translation for the title */}
+          The CreatorHub
         </Text>
       </Flex>
       <Box px={["1em", "2em", "4em"]} pt={6}>
@@ -106,15 +103,15 @@ const Creatorhub = () => {
                     <Box boxSize="100px" borderRadius="2em" border="2px dashed gray" display="flex" alignItems="center" justifyContent="center">
                       <AddIcon w={10} h={10} />
                     </Box>
-                    <Text mt={2}>{t('creatorhub.addPodcast')}</Text> {/* Using translation for button text */}
+                    <Text mt={2}>Create a Podcast</Text>
                   </Flex>
                 </Link>
               </Wrap>
             </Flex>
             {podcasts[(page + 1) * pageSize - 1] != null && (
               <Flex justify="center" mt={4}>
-                <Tooltip label={t('loadMore')} placement="top"> {/* Using translation for tooltip */}
-                  <IconButton aria-label={t('loadMore')} icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
+                <Tooltip label="Load More" placement="top">
+                  <IconButton aria-label="Load More" icon={<ChevronDownIcon />} onClick={handleLoadMoreClick} size="lg" variant="outline" />
                 </Tooltip>
               </Flex>
             )}

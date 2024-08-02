@@ -3,7 +3,6 @@ import { Box, Link, Image, AspectRatio, Text, Flex, IconButton, VStack, Icon } f
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { usePlayer } from "../../utilities/PlayerContext";
 import { LuBookCopy } from "react-icons/lu";
-import { useTranslation } from 'react-i18next';
 
 interface Annotation {
   id: string;
@@ -25,7 +24,6 @@ interface PodCueProps {
 }
 
 const PodCue: React.FC<PodCueProps> = ({ cues }) => {
-  const { t } = useTranslation();
   const {
     state: { episode },
     audioRef,
@@ -53,7 +51,7 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
 
     switch (annotation.annotationType) {
       case "Media Link":
-        title = t('podcue.watchVideo');
+        title = "Watch Video";
         icon = <FaExternalLinkAlt />;
         annotationContent = (
           <AspectRatio ratio={16 / 9} width="full">
@@ -62,12 +60,12 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
         );
         break;
       case "Info":
-        title = t('podcue.learnMore');
+        title = "Learn More";
         icon = <FaExternalLinkAlt />;
         annotationContent = <Text>{annotation.content}</Text>;
         break;
       case "Sponsership":
-        title = t('podcue.sponsored');
+        title = "Sponsored";
         icon = <FaExternalLinkAlt />;
         annotationContent = <Image src={annotation.content} alt={annotation.sponsorship?.name} objectFit="contain" htmlWidth="100%" />;
         break;
@@ -100,7 +98,7 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
     <Box bg={"az.darkestGrey"} maxH="300px" width="100%" height="100%" p={2} borderRadius="1.1em" overflowY="auto">
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Text fontSize="xxl" fontWeight="bold" ml={2} color="white">
-          {t('podcue.title')}
+          PodCue
         </Text>
       </Flex>
       <VStack spacing={3} align="start" mb={4}>
@@ -108,7 +106,7 @@ const PodCue: React.FC<PodCueProps> = ({ cues }) => {
           currentAnnotations.map((annotation) => renderAnnotationContent(annotation))
         ) : (
           <Text color="white" p={4}>
-            {t('podcue.noAnnotations')}
+            No annotations at this time.
           </Text>
         )}
       </VStack>

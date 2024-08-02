@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Button, FormControl, Input, Stack, Text, useToast, Container, Img, VStack } from '@chakra-ui/react'
 import Logo from '../../public/logos/logo_white.svg'
-import { useTranslation } from 'react-i18next'
+
 import AuthHelper from '../../helpers/AuthHelper'
 
 const ForgotPassword: React.FC = () => {
-  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const toast = useToast()
 
@@ -16,25 +15,25 @@ const ForgotPassword: React.FC = () => {
       const response = await AuthHelper.forgotPassword(email)
 
       if (response && response.status === 200) {
-        const message = response.data || t("auth.resetLinkSent")
+        const message = response.data || "We've sent a password reset link to your email address."
         toast({
-          title: t("auth.resetLinkSentTitle"),
+          title: 'Reset Link Sent',
           description: message,
           status: 'success',
           duration: 9000,
           isClosable: true,
         })
       } else {
-        throw new Error(t("auth.failedToSendResetLink"))
+        throw new Error('Failed to send reset link.')
       }
     } catch (error) {
-      let errorMessage = t("auth.emailNotAssociated")
+      let errorMessage = 'The email is not associated to a user.'
       if (error.response) {
         errorMessage = error.response.data || errorMessage
       }
 
       toast({
-        title: t("auth.error"),
+        title: 'Error',
         description: errorMessage,
         status: 'error',
         duration: 9000,
@@ -50,10 +49,10 @@ const ForgotPassword: React.FC = () => {
         <VStack display="flex" flex-direction="column" align-items="center" spacing={1} >
           <VStack align="flex-start" gap="8px" width={'323px'} flexDirection="column" mb={"16px"}>
             <Text fontSize="xl" fontWeight="bold" color="white" textAlign="left">
-              {t("auth.forgotPassword")}
+              Forgot password?
             </Text>
             <Text fontSize="xs" color="az.greyish"  textAlign="left">
-              {t("auth.forgotPasswordDescription")}
+              Don’t worry! It happens. Please enter the email associated with your account.
             </Text>
           </VStack>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -63,12 +62,12 @@ const ForgotPassword: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("auth.enterEmail")}
+                  placeholder="Enter Your Email"
                   required
                 />
               </FormControl>
               <Button variant="large" type="submit"  >
-                {t("auth.sendResetLink")}
+                Send Reset Link
               </Button>
             </Stack>
           </form>

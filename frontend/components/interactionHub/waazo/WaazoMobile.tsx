@@ -1,7 +1,6 @@
 import { Box, Input, VStack, Text, InputGroup, InputRightElement, IconButton, Image, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { BsArrowUpCircle } from "react-icons/bs";
 import { useState } from "react";
-import { useTranslation } from 'react-i18next';
 
 // Define the paths for the images
 const awaazoBird = "/awaazo_bird_aihelper_logo.svg";
@@ -16,7 +15,6 @@ type MessageType = {
 
 // Define the Chatbot component
 const AwaazoBirdBot: React.FC = () => {
-  const { t } = useTranslation();
   const [messages, setMessages] = useState<MessageType[]>([]); // State for storing the messages
   const [inputValue, setInputValue] = useState<string>(""); // State for storing the input value
 
@@ -59,15 +57,15 @@ const AwaazoBirdBot: React.FC = () => {
       {/* Input Area */}
       <Box mt="auto">
         <Text fontSize="sm" color="gray.500" mb={2}>
-          {t('waazo.things_you_can_ask')}
+          Things you could ask me:
         </Text>
         <Text fontSize="sm" color="gray.500" mb={4} fontStyle="italic">
-          {t('waazo.give_me_a_summary')}
+          What is the timestamp they talked about?
         </Text>
 
         <InputGroup>
           <Input
-            placeholder={t('waazo.ask_me_anything')}
+            placeholder="Ask me about this podcast..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
@@ -76,7 +74,7 @@ const AwaazoBirdBot: React.FC = () => {
           />
           <InputRightElement>
             <IconButton
-              aria-label={t('waazo.ask_waazo')}
+              aria-label="Send"
               icon={<BsArrowUpCircle />}
               onClick={handleSendMessage}
               variant="ghost"

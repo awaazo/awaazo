@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react'
-import { useTranslation } from 'react-i18next';
 import CustomTabs from '../assets/CustomTabs';
 import RecentlyUploaded from './RecentlyUploaded';
 import ForYou from './ForYou';
@@ -9,13 +8,11 @@ import History from './History';
 
 
 const Home = () => {
-  const { t } = useTranslation();
-
   const tabItems = [
-    { label: t('home.forYou'), component: <ForYou /> },
-    { label: t('home.recentlyUploaded'), component: <RecentlyUploaded /> },
-    { label: t('home.highlights'), component: <HighLights />},
-    { label: t('home.history'), component: <History />},
+    { label: 'For You', component: <ForYou /> },
+    { label: 'Recently Uploaded', component: <RecentlyUploaded /> },
+    { label: 'Highlights', component: <HighLights />},
+    { label: 'History', component: <History />},
   ];
 
   return (

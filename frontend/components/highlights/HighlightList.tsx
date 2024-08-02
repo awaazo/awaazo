@@ -11,10 +11,8 @@ import {
     Td, 
     Input 
 } from '@chakra-ui/react';
-import { useTranslation } from 'react-i18next';
 
 const HighlightList = ({ episodeId }) => {
-    const { t } = useTranslation();
     const [highlights, setHighlights] = useState([]);
     const [editingHighlightId, setEditingHighlightId] = useState(null);
     const [editTitle, setEditTitle] = useState('');
@@ -89,9 +87,9 @@ const HighlightList = ({ episodeId }) => {
             <Table variant="simple" size="sm">
                 <Thead bgColor="gray.100">
                     <Tr>
-                        <Th>t('highlight.title')</Th>
-                        <Th>t('highlight.description')</Th>
-                        <Th>t('highlight.actions)</Th>
+                        <Th>Title</Th>
+                        <Th>Description</Th>
+                        <Th>Actions</Th>
                     </Tr>
                 </Thead>
                 <Tbody>

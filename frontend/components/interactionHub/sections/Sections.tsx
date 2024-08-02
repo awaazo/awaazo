@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import SectionHelper from "../../../helpers/SectionHelper";
 import { convertTime } from "../../../utilities/commonUtils";
 import { LuBookCopy } from "react-icons/lu";
-import { useTranslation } from 'react-i18next';
 
 interface SectionsProps {
   episodeId: string;
 }
 
 const Sections: React.FC<SectionsProps> = ({ episodeId }) => {
-  const { t } = useTranslation();
   const fontSize = useBreakpointValue({ base: "md", md: "lg" });
   const [sections, setSections] = useState(null);
 
@@ -34,7 +32,7 @@ const Sections: React.FC<SectionsProps> = ({ episodeId }) => {
       <Flex justifyContent="flex-start" alignItems="center" m={3}>
         <Icon as={LuBookCopy} boxSize={5} />
         <Text fontSize={fontSize} fontWeight="bold" ml={2}>
-          {t('home.sections')}
+          Sections
         </Text>
       </Flex>
       <VStack spacing={3} align="start" overflowY="auto" mb={4} maxH="100vh">

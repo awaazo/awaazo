@@ -10,11 +10,9 @@ import CustomTabs from '../assets/CustomTabs'
 import Rating from '../assets/RatingView'
 import { Episode } from '../../types/Interfaces'
 import Link from 'next/link'
-import { useTranslation } from 'react-i18next'
 
 // Component to render the podcast overview
 export default function PodcastOverview({ podcast, User }) {
-  const { t } = useTranslation();
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [showMore, setShowMore] = useState(false)
   const [podcastData, setPodcastData] = useState(podcast)
@@ -45,7 +43,7 @@ export default function PodcastOverview({ podcast, User }) {
             marginTop: '2em',
           }}
         >
-          ({t('podcastOverview.noEpisodes')})
+          (This podcast has no episodes yet)
         </Text>
       )
     }
@@ -61,13 +59,13 @@ export default function PodcastOverview({ podcast, User }) {
   }
 
   const tabItems = [
-    { label: t('podcastOverview.episodes'), component: <EpisodesList episodes={podcast.episodes} /> },
-    { label: t('podcastOverview.review'), component: <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} /> },
+    { label: 'Episodes', component: <EpisodesList episodes={podcast.episodes} /> },
+    { label: 'Review', component: <Reviews podcast={podcastData} updatePodcastData={updatePodcastData} currentUserID={currentUserID} /> },
   ]
   const metrics = [
-    { value: 250, label: t('podcastOverview.episodes') },
-    { value: 1200000, label: t('podcastOverview.listeners') },
-    { value: 100000, label: t('podcastOverview.subscribers') },
+    { value: 250, label: 'Episodes' },
+    { value: 1200000, label: 'Listeners' },
+    { value: 100000, label: 'Subscribers' },
   ]
 
   const PodcastHeader = () => (
@@ -106,7 +104,7 @@ export default function PodcastOverview({ podcast, User }) {
               {truncatedDescription}
             </Text>
             <Button variant={'minimal'} fontSize="sm" onClick={() => setShowMore(!showMore)} p={0}>
-              {t('podcastOverview.showMore')}
+              Show More
             </Button>
           </Flex>
         ) : (
@@ -114,7 +112,7 @@ export default function PodcastOverview({ podcast, User }) {
             <Text color={'az.greyish'}>{podcast.description}</Text>
             {isLongDescription && (
               <Button variant={'minimal'} fontSize="sm" onClick={() => setShowMore(!showMore)} p={0}>
-                {t('podcastOverview.showLess')}
+                Show Less
               </Button>
             )}
           </>

@@ -53,7 +53,7 @@ export default function MyPodcast() {
         <Box w={{ base: "70%", md: "30%" }} borderRadius="0.5em" p="8px">
           {!loading && (
             <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
-               {genreName} Podcasts :
+              Podcasts labeled "{genreName}"
             </Text>
           )}
         </Box>
