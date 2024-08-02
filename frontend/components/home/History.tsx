@@ -32,10 +32,14 @@ const UserWatchHistory: React.FC = () => {
         const newEpisodes = episodesDetails.map((response) => response.episode).filter(Boolean);
         setEpisodes(newEpisodes);
       } else {
-        throw new Error(t('home.failedToLoadPodcasts'));
+        //implementing translation
+        //throw new Error(t('home.failedToLoadPodcasts'));
+        throw new Error('Failed to load watch history')
       }
     } catch (err) {
-      setError(err.message || t('home.fetchError'));
+      //implementing translation
+      //setError(err.message || t('home.fetchError'));
+      setError(err.message || 'An error occurred while fetching watch history');
     } finally {
       setIsLoading(false);
     }
