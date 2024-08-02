@@ -8,8 +8,10 @@ import AuthHelper from '../../../helpers/AuthHelper'
 import { Send } from '../../../public/icons'
 import AuthPrompt from '../../auth/AuthPrompt'
 import CustomAvatar from '../../assets/CustomAvatar'
+import { useTranslation } from 'react-i18next'
 
 const ChatBot = ({ episodeId }) => {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const [episode, setEpisode] = useState<Episode>(null)
@@ -120,10 +122,10 @@ const ChatBot = ({ episodeId }) => {
         </Box>
         <VStack spacing={0} align="start">
           <Text fontSize="xl" fontWeight="bold">
-            Ask Waazo
+            {t('waazo.ask_waazo')}
           </Text>
           <Text fontSize="md" fontWeight="medium" mt={'-2'} color={'az.greyish'}>
-            {episode ? `let’s chat about “${episode.episodeName}”` : 'No episode selected'}
+            {episode ? t('waazo.lets_chat_about', { episodeName: episode.episodeName }) : t('waazo.no_episode_selected')}
           </Text>
         </VStack>
       </HStack>
@@ -143,11 +145,11 @@ const ChatBot = ({ episodeId }) => {
         <div ref={msgEnd} />
       </VStack>
 
-      <Box position="absolute" bottom="0" left="0" right="0" p="30px" borderColor="gray.700">
+      <Box position="absolute" bottom="0" left="0" right="0" p="30px" >
         {messages.length === 0 ? (
           <VStack spacing="2" align="left" pb="1em">
             <Text textAlign="left" fontSize={'14px'} pb="0.3em">
-              Things you can ask:
+              {t('waazo.things_you_can_ask')}
             </Text>
 
             <HStack spacing={'1em'} overflowY="auto" paddingY="1">
@@ -157,9 +159,9 @@ const ChatBot = ({ episodeId }) => {
                 fontSize={'12px'}
                 fontWeight={'light'}
                 border={'2px solid rgba(255, 255, 255, 0.05)'}
-                onClick={() => handlePredefinedQuestionClick('Give me a summary of this episode.')}
+                onClick={() => handlePredefinedQuestionClick(t('waazo.give_me_a_summary'))}
               >
-                Can you summarize the episode?
+                {t('waazo.can_you_summarize')}
               </Button>
               <Button
                 borderRadius={'15px'}
@@ -167,21 +169,21 @@ const ChatBot = ({ episodeId }) => {
                 fontSize={'12px'}
                 fontWeight={'light'}
                 border={'2px solid rgba(255, 255, 255, 0.05)'}
-                onClick={() => handlePredefinedQuestionClick('What did the podcaster think about ')}
+                onClick={() => handlePredefinedQuestionClick(t('waazo.what_did_the_podcaster_think'))}
               >
-                What did the podcaster think about ... ?
+                {t('waazo.what_did_the_podcaster_think')}
               </Button>
             </HStack>
           </VStack>
         ) : null}
         <InputGroup>
-          <Input value={newMessage} onChange={handleInputChange} placeholder="Ask me anything about this episode..." onKeyDown={handleEnterPress} m={1} />
+          <Input value={newMessage} onChange={handleInputChange} placeholder={t('waazo.ask_me_anything')} onKeyDown={handleEnterPress} m={1} />
           <Button variant={'minimalColor'} width="18px" height="18px" position="absolute" zIndex={'50'} right="5px" top="55%" transform="translateY(-50%)" onClick={sendMessage} p="0">
             <Send color="az.red" fontSize={'20px'} />
           </Button>
         </InputGroup>
       </Box>
-      {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="Login to Chat with this Episode." />}
+      {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage={t('waazo.login_to_chat')} />}
     </Box>
   )
 }

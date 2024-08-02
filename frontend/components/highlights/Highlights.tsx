@@ -4,8 +4,11 @@ import HighlightTicket from "./HighlightTicket";
 import HighlightHelper from "../../helpers/HighlightHelper";
 import FullScreenHighlight from "./FullScreenHighlight";
 import PodcastHelper from "../../helpers/PodcastHelper";
+import { useTranslation } from 'react-i18next';
+
 
 const Highlights = () => {
+  const { t } = useTranslation();
   const [highlights, setHighlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -99,7 +102,7 @@ const Highlights = () => {
               );
             })
           ) : (
-            <Text>No highlights available</Text>
+            <Text>t('highlight.not_available')</Text>
           )}
         </HStack>
       </Box>

@@ -7,8 +7,10 @@ import PodcastHelper from '../../helpers/PodcastHelper'
 import { UserMenuInfo } from '../../types/Interfaces'
 import ImageAdder from '../../components/assets/ImageAdder'
 import GenreSelector from '../../components/assets/GenreSelector'
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 export default function CreatePodcast() {
+  const { t } = useTranslation(); // Initialize translation
   const createPage = '/CreatorHub'
   const loginPage = '/auth/Login'
   const [user, setUser] = useState<UserMenuInfo | undefined>(undefined)
@@ -37,7 +39,7 @@ export default function CreatePodcast() {
     e.preventDefault()
     // Ensure all required fields are filled
     if (coverImageFile == null || podcastName == '' || description == '') {
-      setCreateError('Cover Image, Podcast Name and Description Required.')
+      setCreateError(t('edit.allFieldsRequiredEpisode')); // Using translation for error message
       return
     }
 
@@ -91,7 +93,7 @@ export default function CreatePodcast() {
     <>
       <Center paddingBottom={'1em'}>
         <VStack mt={'3em'}>
-          <Heading fontWeight={'bold'}>Create a New Podcast</Heading>
+          <Heading fontWeight={'bold'}>{t('creatorhub.addPodcast')}</Heading> {/* Using translation for heading */}
         </VStack>
       </Center>
       <Box p={6} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
@@ -100,7 +102,7 @@ export default function CreatePodcast() {
             <ImageAdder onImageAdded={handleImageAdded} />
             {createError && <Text color="red.500">{createError}</Text>}
             <FormControl position="relative">
-              <Input id="podcastName" placeholder="Podcast Name" value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: 'center', borderRadius: '0.8em' }} pr="50px" />{' '}
+              <Input id="podcastName" placeholder={t('creatorhub.podcastNamePlaceholder')} value={podcastName} onChange={handlePodcastNameChange} style={{ alignSelf: 'center', borderRadius: '0.8em' }} pr="50px" />{' '}
               <Text position="absolute" right="8px" bottom="8px" fontSize="sm" color="gray.500">
                 {podcastNameCharacterCount}/25
               </Text>
@@ -109,7 +111,7 @@ export default function CreatePodcast() {
             <FormControl position="relative">
               <Textarea
                 id="description"
-                placeholder="What's the Podcast about?"
+                placeholder={t('creatorhub.podcastDescriptionPlaceholder')} // Using translation for placeholder
                 value={description}
                 onChange={handleDescriptionChange}
                 style={{
@@ -133,12 +135,12 @@ export default function CreatePodcast() {
                   padding: '10px',
                 }}
               >
-                Which topics are on the Podcast?
+                {t('creatorhub.topicsOnPodcast')} {/* Using translation for label */}
               </FormLabel>
               <GenreSelector onGenresChange={handleGenresChange} />
             </FormControl>
             <Button variant="large" id="createBtn" type="submit" minWidth={'200px'} marginTop={'3'} w={'12rem'}>
-              Start Broadcasting
+              {t('creatorhub.CreatePodcastSubmit')} {/* Using translation for button text */}
             </Button>
           </Stack>
         </form>

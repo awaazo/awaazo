@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Episode, Podcast } from '../../types/Interfaces'
-import { VStack, Text, HStack, useBreakpointValue, Spinner, SimpleGrid, Image, Box, Flex } from '@chakra-ui/react'
+import { Podcast } from '../../types/Interfaces'
+import { Text, useBreakpointValue, Spinner, Image, Box, Flex } from '@chakra-ui/react'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import Link from 'next/link'
-import EpisodeCard from '../cards/EpisodeCard'
-import PodcastCard from '../cards/PodcastCard'
+
+import { useTranslation } from 'react-i18next'
 
 const TodaysRecommendation: React.FC = () => {
+  const { t } = useTranslation()
   const [podcast, setPodcast] = useState<Podcast[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -19,17 +20,17 @@ const TodaysRecommendation: React.FC = () => {
         if (res.status === 200) {
           setPodcast(res.podcasts)
         } else {
-          throw new Error('Failed to load podcasts')
+          throw new Error(t('home.failedToLoadPodcasts'))
         }
       } catch (err) {
-        setError(err.message || 'An error occurred while fetching podcasts')
+        setError(err.message || t('home.fetchError'))
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchPodcasts()
-  }, [])
+  }, [t])
 
   const isMobile = useBreakpointValue({ base: true, md: false })
 

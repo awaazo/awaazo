@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import SocialHelper from '../../../helpers/SocialHelper'
 import PodcastHelper from '../../../helpers/PodcastHelper'
-import { Button, VStack, Icon, Text, HStack, Box, Input, useBreakpointValue, IconButton, InputGroup, Image } from '@chakra-ui/react'
+import { Button, VStack, Icon, Text, HStack, Box, Input, useBreakpointValue, IconButton, InputGroup, InputRightElement, Image } from '@chakra-ui/react'
 import { FaReply } from 'react-icons/fa'
 import AuthHelper from '../../../helpers/AuthHelper'
 import LikeComponent from '../Likes'
 import AuthPrompt from '../../auth/AuthPrompt'
 import { Send, Trash, Chat } from '../../../public/icons'
 import CustomAvatar from '../../assets/CustomAvatar'
+import { useTranslation } from 'react-i18next'
 
 const Comments = ({ episodeIdOrCommentId, initialComments }) => {
+  const { t } = useTranslation()
   const [comments, setComments] = useState([])
   const [commentPage, setCommentPage] = useState(0)
   const [newComment, setNewComment] = useState('')
@@ -185,48 +187,49 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
     let interval = Math.floor(seconds / 31536000)
 
     if (interval > 1) {
-      return interval + ' yrs ago'
+      return interval + t('time.years_ago')
     }
     interval = Math.floor(seconds / 2592000)
     if (interval > 1) {
-      return interval + ' mths ago'
+      return interval + t('time.months_ago')
     }
     interval = Math.floor(seconds / 86400)
     if (interval > 1) {
-      return interval + ' days ago'
+      return interval + t('time.days_ago')
     }
     interval = Math.floor(seconds / 3600)
     if (interval > 1) {
-      return interval + ' hrs ago'
+      return interval + t('time.hours_ago')
     }
     interval = Math.floor(seconds / 60)
     if (interval > 1) {
-      return interval + ' mins ago'
+      return interval + t('time.minutes_ago')
     }
-    return Math.floor(seconds) + ' secs ago'
+    return Math.floor(seconds) + t('time.seconds_ago')
   }
 
   return (
-    <Box height={'100%'} justifyContent={'space-between'}>
-      <HStack>
+    <Box>
+      {/* Top Section */}
+      <HStack align="center" spacing={2}>
         {episode && <Image src={episode.thumbnailUrl} alt={episode.episodeName} boxSize="70px" borderRadius={'12px'} mt={1}/>}
 
-        <HStack width={'100%'}justifyContent={"space-between"}>
+        <HStack width={'100%'} justifyContent={"space-between"}>
           <VStack align="start" spacing={0}>
-          <Text fontSize="lg" fontWeight="bold" isTruncated>
-            {episode ? `${episode.episodeName}` : 'No episode selected'}
-          </Text>
-          <Text fontSize="md" fontWeight="medium" mt={"-1"} color={'az.greyish'}>
-            This episode has {comments.length} {comments.length === 1 ? 'comment' : 'comments'} 
-          </Text>
+            <Text fontSize="lg" fontWeight="bold" isTruncated>
+              {episode ? `${episode.episodeName}` : t('comments.no_episode_selected')}
+            </Text>
+            <Text fontSize="md" fontWeight="medium" mt={"-1"} color={'az.greyish'}>
+              {t('comments.this_episode_has')} {comments.length} {comments.length === 1 ? t('comments.comment') : t('comments.comments')}
+            </Text>
           </VStack>
           <Icon as={Chat} color="az.greyish" mr={"15px"} />
         </HStack>
-        
       </HStack>
 
-      <VStack justifyContent={'space-between'}>
-        <VStack spacing={5} onScroll={handleScroll} height={'69vh'} width="100%" overflowY="auto" mt={'50px'}>
+      {/* Middle Section */}
+      <VStack spacing={'1em'} overflowY="auto" height="50vh" paddingY="4" mt={'20px'}>
+        <VStack spacing={5} onScroll={handleScroll} width="100%" overflowY="auto">
           {comments && comments.length > 0 ? (
             comments.map((comment, index) => (
               <Box key={index} px={2} width="100%">
@@ -256,7 +259,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                             icon={<Icon as={Trash} />}
                             color={'az.greyish'}
                             variant={'minimalColor'}
-                            aria-label="Delete Comment"
+                            aria-label={t('comments.delete_comment')}
                             data-cy={`delete-comment-id:`}
                             onClick={() => handleDeleteComment(comment.id, true)}
                             size="md"
@@ -294,7 +297,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                                 icon={<Icon as={Trash} />}
                                 variant={'minimalColor'}
                                 color={'az.greyish'}
-                                aria-label="Delete Reply"
+                                aria-label={t('comments.delete_reply')}
                                 onClick={() => handleDeleteComment(reply.id, false)}
                                 size="sm"
                               />
@@ -306,7 +309,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                   <HStack>
                     {comment.noOfReplies > 0 && (!replies[comment.id] || comment.noOfReplies > replies[comment.id].length) && (
                       <Text onClick={() => fetchReplies(comment.id, index, false)} fontSize="14px" fontWeight={'bold'} color={'grey'} variant="ghost" style={{ cursor: 'pointer' }}>
-                        Load Replies
+                        {t('comments.load_replies')}
                       </Text>
                     )}
                     {replyInputIndex != index && (
@@ -318,7 +321,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                         style={{ cursor: 'pointer', transition: 'color 0.5s' }}
                         _hover={{ color: 'white' }}
                       >
-                        Reply
+                        {t('comments.reply')}
                       </Text>
                     )}
                   </HStack>
@@ -327,7 +330,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                       <HStack spacing={2}>
                         <Input
                           flex="1"
-                          placeholder="Reply to this comment..."
+                          placeholder={t('comments.reply_placeholder')}
                           value={replyTexts[index]}
                           onChange={(e) => {
                             const updatedReplyTexts = [...replyTexts]
@@ -335,7 +338,7 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
                             setReplyTexts(updatedReplyTexts)
                           }}
                         />
-                        <IconButton icon={<Icon as={FaReply} />} onClick={() => handleReply(index)} aria-label="Reply to Comment" size="sm" data-cy={`reply-button`} />
+                        <IconButton icon={<Icon as={FaReply} />} onClick={() => handleReply(index)} aria-label={t('comments.reply_to_comment')} size="sm" data-cy={`reply-button`} />
                       </HStack>
                     </Box>
                   )}
@@ -343,20 +346,23 @@ const Comments = ({ episodeIdOrCommentId, initialComments }) => {
               </Box>
             ))
           ) : (
-            <Text color="gray.500" alignSelf={'center'} fontSize={'18px'}>
-              No comments yet. Be the first!
+            <Text color="gray.500" alignSelf={'center'} fontSize={'18px'} pt={6}>
+              {t('comments.no_comments_yet')}
             </Text>
           )}
         </VStack>
+      </VStack>
 
-        <InputGroup>
-          <Input value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Add a comment..." m={1} />
+      {/* Bottom Section */}
+      <Box position="absolute" bottom="0" left="0" right="0" p="30px" >
+        <InputGroup width="98%">
+          <Input value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder={t('comments.add_comment_placeholder')} />
           <Button variant={'minimalColor'} width="18px" height="18px" position="absolute" zIndex={'50'} right="5px" top="55%" transform="translateY(-50%)" onClick={handleAddComment} p="0">
             <Send color="az.red" fontSize={'20px'} />
           </Button>
         </InputGroup>
-      </VStack>
-      {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage="Login To add a Reply or a Comment." />}
+      </Box>
+      {showLoginPrompt && <AuthPrompt isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} infoMessage={t('login_prompt.infoMessage')} />}
     </Box>
   )
 }

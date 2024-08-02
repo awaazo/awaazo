@@ -20,8 +20,10 @@ import { HighlightEditRequest } from '../../types/Requests';
 import {convertTime} from '../../utilities/commonUtils';
 import { FaPlay, FaPause, FaChevronCircleRight, FaChevronCircleLeft } from 'react-icons/fa';
 import EndpointHelper from "../../helpers/EndpointHelper";
+import { useTranslation } from 'react-i18next';
 
 const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength, podcastId }) => {
+  const { t } = useTranslation();
   const [currentTime, setCurrentTime] = useState(0);
   const [formData, setFormData] = useState({
     StartTime: currentTime,
@@ -114,8 +116,8 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
     }
     if (response.status === 200) {
       toast({
-        title: 'Success',
-        description: highlightId ? 'Highlight updated successfully.' : 'Highlight added successfully.',
+        title: t('success'),
+        description: highlightId ? t('highlight.edit_success') : t('highlight.add_success'),
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -123,7 +125,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
       fetchHighlights(); 
     } else {
       toast({
-        title: 'Error',
+        title: t('error'),
         description: response.message,
         status: 'error',
         duration: 5000,
@@ -137,8 +139,8 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
       const response = await HighlightHelper.highlightDeleteRequest(highlightId);
       if (response.status === 200) {
         toast({
-          title: 'Success',
-          description: 'Highlight deleted successfully.',
+          title: t('success'),
+          description: t('highlight.delete_success'),
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -146,7 +148,7 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
         fetchHighlights(); 
       } else {
         toast({
-          title: 'Error',
+          title: t('error'),
           description: response.message,
           status: 'error',
           duration: 5000,
@@ -166,8 +168,8 @@ const HighlightForm = ({ episodeId, highlightId, fetchHighlights, episodeLength,
       audioRef.current.play().catch((e) => {
         console.error("Error playing audio:", e);
         toast({
-          title: 'Error',
-          description: 'Failed to play the audio.',
+          title: t('error'),
+          description: t('highlight.play_error'),
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -213,12 +215,12 @@ const shiftRangeForward = () => {
   return (
     <VStack spacing={4} align="stretch">
       <FormControl>
-          <FormLabel>Highlight Time Range</FormLabel>
+          <FormLabel>{t('highlight.highlight_time_range')}</FormLabel>
           
           <HStack spacing={2}>
-           <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} size="md" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-play-pause`}/>
+           <IconButton icon={isPlaying ? <FaPause /> : <FaPlay />} onClick={togglePlayPause} aria-label={isPlaying ? t('highlight.pause') : t('highlight.play')} size="md" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-play-pause`}/>
             <RangeSlider
-              aria-label={['start-time', 'end-time']}
+              aria-label={[t('highlight.start_time'), t('highlight.end_time')]}
               id="highlight-time-range"
               min={0}
               max={episodeLength}
@@ -242,13 +244,13 @@ const shiftRangeForward = () => {
             
           </HStack>
             <Text mt={2}>
-              Start: {convertTime(Number(formData.StartTime))}, End: {convertTime(Number(formData.EndTime))}
+              {t('highlight.start')}: {convertTime(Number(formData.StartTime))}, {t('highlight.end')}: {convertTime(Number(formData.EndTime))}
             </Text>
-            <Text color="gray.500" fontSize="sm">   Max duration 15 seconds</Text>
+            <Text color="gray.500" fontSize="sm">{t('highlight.max_duration_15_seconds')}</Text>
             
             <HStack spacing={2}>
             <FormControl>
-              <FormLabel htmlFor="shift-amount">Shift Amount (seconds)</FormLabel>
+              <FormLabel htmlFor="shift-amount">{t('highlight.shift_amount_seconds')}</FormLabel>
               <Input
                 id="shift-amount"
                 type="number"
@@ -258,28 +260,28 @@ const shiftRangeForward = () => {
                 maxW="100px"
               />
             </FormControl>
-           <IconButton icon={<FaChevronCircleLeft />} onClick={shiftRangeBackward} aria-label="Shift Backward" size="lg" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-shift-backward`}/>
+           <IconButton icon={<FaChevronCircleLeft />} onClick={shiftRangeBackward} aria-label={t('highlight.shift_backward')} size="lg" variant="ghost" mr={2} borderRadius="full" data-cy={`sections-shift-backward`}/>
             
-          <IconButton icon={<FaChevronCircleRight />} onClick={shiftRangeForward} aria-label="Shift Forward" size="lg" variant="ghost" borderRadius="full" data-cy={`sections-shift-forward`}/>
+          <IconButton icon={<FaChevronCircleRight />} onClick={shiftRangeForward} aria-label={t('highlight.shift_forward')} size="lg" variant="ghost" borderRadius="full" data-cy={`sections-shift-forward`}/>
           </HStack>
         
         </FormControl>
 
 
       <FormControl>
-        <FormLabel>Title</FormLabel>
+        <FormLabel>{t('highlight.title')}</FormLabel>
         <Input name="Title" value={formData.Title} onChange={handleChange} />
       </FormControl>
       <FormControl>
-        <FormLabel>Description</FormLabel>
+        <FormLabel>{t('highlight.description')}</FormLabel>
         <Textarea name="Description" value={formData.Description} onChange={handleChange} />
       </FormControl>
       <Button colorScheme="blue" onClick={handleSubmit}>
-        {highlightId ? 'Edit Highlight' : 'Add Highlight'}
+        {highlightId ? t('highlight.edit_highlight') : t('highlight.add_highlight')}
       </Button>
       {highlightId && (
         <Button colorScheme="red" onClick={handleDelete}>
-          Delete Highlight
+          {t('highlight.delete_highlight')}
         </Button>
       )}
     </VStack>

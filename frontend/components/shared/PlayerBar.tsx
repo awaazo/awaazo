@@ -14,6 +14,7 @@ import { usePlayer } from '../../utilities/PlayerContext'
 import { SaveWatchHistoryRequest } from '../../types/Requests'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import PlayerMenu from '../playerbar/Menu'
+import { useTranslation } from 'react-i18next'
 
 const PlayerBar = () => {
   const { state, dispatch, audioRef } = usePlayer()
@@ -35,6 +36,7 @@ const PlayerBar = () => {
     return EndpointHelper.getPodcastEpisodePlayEndpoint(podcastId, episodeId)
   }
 
+  const { t } = useTranslation();
   // Effect Hooks
   // Fetch and load audio URL
   useEffect(() => {
@@ -260,7 +262,7 @@ const PlayerBar = () => {
           )}
           <VStack maxWidth={isMobile ? '75%' : '100%'} align={"start"} spacing={0}>
             <Text fontWeight="bold" fontSize={isMobile ? 'sm' : 'md'} isTruncated>
-              {isEpisodeLoaded ? episode.episodeName : 'Not Playing'}
+              {isEpisodeLoaded ? episode.episodeName : t('playerBar.notPlaying')}
             </Text>
             <Text fontSize={isMobile ? 'xs' : 'sm'} color="az.greyish" mt={"-1"}isTruncated>
               {isEpisodeLoaded ? episode.podcastName : ''}{' '}

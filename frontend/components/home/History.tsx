@@ -7,17 +7,19 @@ import {
 } from '@chakra-ui/react';
 import EpisodeHistoryCard from '../cards/EpisodeHistoryCard';
 import PodcastHelper from '../../helpers/PodcastHelper';
-
 import { MdDelete } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
 const UserWatchHistory: React.FC = () => {
+  const { t } = useTranslation();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
 
   const fetchUserWatchHistory = useCallback(async () => {
     try {
@@ -30,14 +32,14 @@ const UserWatchHistory: React.FC = () => {
         const newEpisodes = episodesDetails.map((response) => response.episode).filter(Boolean);
         setEpisodes(newEpisodes);
       } else {
-        throw new Error('Failed to load watch history');
+        throw new Error(t('home.failedToLoadPodcasts'));
       }
     } catch (err) {
-      setError(err.message || 'An error occurred while fetching watch history');
+      setError(err.message || t('home.fetchError'));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchUserWatchHistory();
@@ -129,7 +131,7 @@ const UserWatchHistory: React.FC = () => {
               />
             ))
           ) : (
-            <Text>No episodes in watch history</Text>
+            <Text>{t('home.noEpisodesAvailable')}</Text>
           )}
         </VStack>
       )}
