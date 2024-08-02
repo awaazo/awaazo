@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router';
 import { Box, ChakraProvider, Flex } from '@chakra-ui/react'
 import { SessionProvider } from 'next-auth/react'
 import { PlayerProvider } from '../utilities/PlayerContext'
@@ -7,13 +6,12 @@ import PlayerBar from '../components/shared/PlayerBar'
 import Sidebar from '../components/shared/Sidebar'
 import Navbar from '../components/shared/Navbar'
 import AppTheme from '../styles/AppTheme'
+import { useRouter } from 'next/router'
 import ColorModeFix from '../styles/ColorModeFix'
 import { PanelProvider } from '../utilities/PanelContext'
 import Panel from '../components/shared/Panel'
 import { DefaultSession } from 'next-auth';
 import AuthHelper from '../helpers/AuthHelper';
-import i18n from '../utilities/i18n';
-
 
 interface SessionExt extends DefaultSession {
   token: {
@@ -31,13 +29,6 @@ interface SessionExt extends DefaultSession {
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUserSet, setIsUserSet] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (router.locale !== i18n.language) {
-      i18n.changeLanguage(router.locale);
-    }
-  }, [router.locale]);
 
   useEffect(() => {
     // Custom User logged in
@@ -84,7 +75,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     }
   }, [session, isLoggedIn]);
   ColorModeFix()
- 
+  const router = useRouter()
   const [showPlayerBar, setShowPlayerBar] = useState(true)
   const [showNavbar, setShowNavbar] = useState(true)
   const [showSidebar, setShowSidebar] = useState(true)

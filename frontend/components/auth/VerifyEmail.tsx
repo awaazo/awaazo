@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button, FormControl, Input, Stack, Text, useToast, Container } from "@chakra-ui/react";
 import AuthHelper from "../../helpers/AuthHelper";
-import { useTranslation } from 'react-i18next';
 
 const VerifyEmail: React.FC = () => {
-  const { t } = useTranslation();
   const [token, setEmail] = useState("");
   const toast = useToast();
 
@@ -18,16 +16,16 @@ const VerifyEmail: React.FC = () => {
         
       
       } else {
-        throw new Error(t("auth.failedToReceiveEmailToken"));
+        throw new Error("Failed to receive email token");
       }
     } catch (error) {
-      let errorMessage = t("auth.tokenNotAssociated");
+      let errorMessage = "The token is not associated to a user.";
       if (error.response) {
         errorMessage = error.response.data || errorMessage;
       }
 
     toast({
-        title: t("auth.error"),
+        title: "Error",
         description: errorMessage,
         status: "error",
         duration: 9000,
@@ -40,7 +38,7 @@ const VerifyEmail: React.FC = () => {
     <>
       <Container variant={"authBox"}>
         <Text fontSize="xl" fontWeight="bold" color="white" mb={4}>
-          {t("auth.thankYouForVerifyingEmail")}
+          Thank you for verifying your email!
         </Text>
       </Container>
     </>

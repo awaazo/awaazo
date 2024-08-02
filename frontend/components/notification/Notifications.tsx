@@ -7,14 +7,13 @@ import AuthHelper from "../../helpers/AuthHelper";
 import { Notification } from "../../types/Interfaces";
 import Link from "next/link";
 import Pusher from "pusher-js";
-import { useTranslation } from 'react-i18next';
 
 const Notifications = ({ initialNotifcationCount }) => {
-  const { t } = useTranslation();
   console.log("Initial count" + initialNotifcationCount);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationCount, setNotificationCount] = useState(initialNotifcationCount);
   const [userId, setUserId] = useState<string | null>(null);
+
 
   useEffect(() => {
     setNotificationCount(initialNotifcationCount);
@@ -85,7 +84,7 @@ const Notifications = ({ initialNotifcationCount }) => {
     if (filteredNotifications.length === 0) {
       return (
         <Text textAlign={"center"} mt={"10px"}>
-          {t('notification.no_notifications')}
+          There are no Notifications right now
         </Text>
       );
     }
@@ -104,7 +103,7 @@ const Notifications = ({ initialNotifcationCount }) => {
                   <Text fontWeight="bold" fontSize="16px">
                     {notification.message}
                   </Text>
-                  <Text fontSize="14px" color="gray.400">{`${t('notification.created')}: ${formatDistanceToNow(new Date(notification.createdAt))} ${t('notification.ago')}`}</Text>
+                  <Text fontSize="14px" color="gray.400">{`Created: ${formatDistanceToNow(new Date(notification.createdAt))} ago`}</Text>
                 </VStack>
               </HStack>
               <Divider mt={"5px"} />
@@ -121,7 +120,7 @@ const Notifications = ({ initialNotifcationCount }) => {
         <MenuButton
           onClick={handleClick}
           as={IconButton}
-          aria-label={t('notification.notifications')}
+          aria-label="Notifications"
           icon={
             <Box position="relative" display="inline-block">
               <Bell fontSize={"md"} />
@@ -158,9 +157,9 @@ const Notifications = ({ initialNotifcationCount }) => {
         <MenuList minWidth={"400px"}>
           <Tabs isFitted>
             <TabList mb="1em">
-              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>{t('notification.all')}</Tab>
-              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>{t('notification.user')}</Tab>
-              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>{t('notification.episode')}</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>All</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>User</Tab>
+              <Tab _selected={{ color: 'az.red', fontWeight:'bold', fontSize:'md'}}>Episode</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -175,7 +174,7 @@ const Notifications = ({ initialNotifcationCount }) => {
             </TabPanels>
             <Box textAlign={"center"}>
               <Link href="/Notifications/MyNotifications">
-                <Button variant={"minimal"} fontWeight={"medium"} fontSize={"sm"} rightIcon={<ArrowR />}>{t('notification.see_all')}</Button>
+                <Button variant={"minimal"} fontWeight={"medium"} fontSize={"sm"} rightIcon={<ArrowR />}>See All</Button>
               </Link>
             </Box>
           </Tabs>

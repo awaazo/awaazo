@@ -42,10 +42,8 @@ import ForYou from '../../components/home/ForYou'
 import ExploreGenres from '../../components/explore/ExploreGenres'
 import { formatSecToDurationString } from '../../utilities/commonUtils'
 import { FaXmark } from 'react-icons/fa6'
-import { useTranslation } from 'react-i18next'
 
 export default function MyPodcast() {
-  const { t } = useTranslation();
   const { isOpen: isPodcastModalOpen, onOpen: onPodcastModalOpen, onClose: onPodcastModalClose } = useDisclosure()
   const { isOpen: isEpisodeModalOpen, onOpen: onEpisodeModalOpen, onClose: onEpisodeModalClose } = useDisclosure()
   const router = useRouter()
@@ -219,25 +217,27 @@ export default function MyPodcast() {
         >
           <InputGroup>
             <InputLeftElement pointerEvents="none" children={<Search color="az.Greyish" />} />
-            <Input borderRadius={'25px'} width="400px" placeholder={t('search.placeholder')} value={searchInput} onChange={(e) => setSearchInput(e.target.value)} pl="40px" />
+            <Input borderRadius={'25px'} width="400px" placeholder="Search for Podcasts, Users, and Episodes" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} pl="40px" />
           </InputGroup>
         </Flex>
         {searchTerm == '' || searchTerm == null ? (
           <>
+            {' '}
             <Box mb={4}>
               <Text fontSize={['xl', '2xl']} fontWeight="bold" mb={3}>
-                {t('explore.genres')}
+                Explore Genres
               </Text>
               <ExploreGenres />
-            </Box>
+            </Box>{' '}
             <Box mb={4}>
               <ForYou />
             </Box>
           </>
         ) : (
           <>
+            {' '}
             <Text fontSize="2xl" fontWeight="bold" mb={'25px'}>
-              {t('search.resultsFor', { term: searchTerm })}
+              Showing Results For: "{searchTerm}"
             </Text>
             <VStack spacing={4}>
               {/* Podcasts Section */}
@@ -245,7 +245,7 @@ export default function MyPodcast() {
               <Flex align="center" justify="space-between" w="full">
                 <HStack align="start">
                   <Text fontSize="2xl" fontWeight="bold" ml={'15px'}>
-                  Podcasts
+                    Podcasts
                   </Text>
                   {!isMobile && (
                     <>
@@ -278,7 +278,7 @@ export default function MyPodcast() {
                           >
                             <FaXmark />
                           </Button>
-                          <Text>{t('nonExplicit')}</Text>
+                          <Text>Non-Explicit Only</Text>
                         </Flex>
                       )}
 
@@ -294,7 +294,7 @@ export default function MyPodcast() {
                           >
                             <FaXmark />
                           </Button>
-                          <Text>{t('search.ratingGreaterThan', { rating: podcastFilter.ratingGreaterThan })}</Text>
+                          <Text>Rating Greater Than: {podcastFilter.ratingGreaterThan}</Text>
                         </Flex>
                       )}
                     </>
@@ -302,7 +302,7 @@ export default function MyPodcast() {
                 </HStack>
 
                 <Button onClick={onPodcastModalOpen} variant="ghost" mr={'15px'}>
-                  {t('search.filter')}
+                  Filter Podcasts
                   <span style={{ marginRight: '10px' }}></span>
                   <IoFilterSharp />
                 </Button>
@@ -317,7 +317,7 @@ export default function MyPodcast() {
                 </HStack>
               ) : (
                 <Text fontWeight={'bold'} fontSize={'18px'} mt={'20px'} mb={'30px'}>
-                  {t('noFound')}
+                  No Podcasts Found
                 </Text>
               )}
               {/* Episodes Section */}
@@ -325,12 +325,13 @@ export default function MyPodcast() {
               <Flex align="center" justify="space-between" w="full">
                 <HStack align="start">
                   <Text fontSize="2xl" fontWeight="bold" ml={'15px'}>
-                    {t('search.episodes')}
+                    Episodes
                   </Text>
                   {!isMobile && (
                     <>
                       {episodeFilter.isExplicit === false && (
                         <Flex fontSize="md" color="gray.700" bg={'#8b8b8b'} padding={'5px'} fontWeight={'bold'} borderRadius={'8px'} alignItems="center">
+                          {' '}
                           <Button
                             size="xs"
                             variant={'ghost'}
@@ -341,7 +342,7 @@ export default function MyPodcast() {
                           >
                             <FaXmark />
                           </Button>
-                          <Text>{t('nonExplicit')}</Text>
+                          <Text>Non-Explicit Only</Text>
                         </Flex>
                       )}
 
@@ -357,14 +358,14 @@ export default function MyPodcast() {
                           >
                             <FaXmark />
                           </Button>
-                          <Text>{t('episodes.minLength', { length: formatSecToDurationString(episodeFilter.minEpisodeLength) })}</Text>
+                          <Text>Min Length: {formatSecToDurationString(episodeFilter.minEpisodeLength)}</Text>
                         </Flex>
                       )}
                     </>
                   )}
                 </HStack>
                 <Button onClick={onEpisodeModalOpen} variant="ghost" mr={'15px'}>
-                  {t('episodes.filter')}
+                  Filter Episodes
                   <span style={{ marginRight: '10px' }}></span>
                   <IoFilterSharp />
                 </Button>
@@ -379,14 +380,14 @@ export default function MyPodcast() {
                 </SimpleGrid>
               ) : (
                 <Text fontWeight={'bold'} fontSize={'18px'} mt={'20px'} mb={'30px'}>
-                  {t('noFound')}
+                  No Episodes Found
                 </Text>
               )}
               {/* Users Section */}
               {!isMobile && <Divider />}
               <Flex align="center" justify="space-between" w="full">
                 <Text fontSize="2xl" fontWeight="bold" ml={'15px'}>
-                  {t('users')}
+                  Users
                 </Text>
               </Flex>
               {loadingUsers ? (
@@ -399,7 +400,7 @@ export default function MyPodcast() {
                 </SimpleGrid>
               ) : (
                 <Text fontWeight={'bold'} fontSize={'18px'} mt={'20px'} mb={'30px'}>
-                  {t('users.noFound')}
+                  No Users Found
                 </Text>
               )}
             </VStack>
@@ -410,17 +411,17 @@ export default function MyPodcast() {
       <Modal isOpen={isPodcastModalOpen} onClose={onPodcastModalClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t('podcast.filter')}</ModalHeader>
+          <ModalHeader>Filter Podcasts</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl textAlign={'center'} mt={'15px'}>
               <FormLabel textAlign={'center'}>
-                {t('nonExplicit')}
+                Non-Explicit Only
                 <Switch ml={'5px'} colorScheme="purple" isChecked={podcastFilter.isExplicit === false} onChange={(e) => handlePodcastFilterChange('isExplicit', e.target.checked ? false : null)} />
               </FormLabel>
             </FormControl>
             <FormControl mt={'20px'}>
-              <FormLabel>{t('search.ratingGreaterThan', { rating: podcastFilter.ratingGreaterThan ?? '' })}</FormLabel>
+              <FormLabel>Rating Greater Than: {podcastFilter.ratingGreaterThan ?? ''}</FormLabel>
               <Slider min={0} max={5} step={0.1} value={podcastFilter.ratingGreaterThan ?? 0} onChange={(val) => handlePodcastFilterChange('ratingGreaterThan', val)}>
                 <SliderTrack>
                   <SliderFilledTrack />
@@ -429,7 +430,7 @@ export default function MyPodcast() {
               </Slider>
             </FormControl>
             <FormControl mt={'20px'}>
-              <FormLabel>{t('tags')}</FormLabel>
+              <FormLabel>Tags</FormLabel>
               <GenreSelector onGenresChange={(genres) => handlePodcastFilterChange('tags', genres)} />
             </FormControl>
           </ModalBody>
@@ -446,30 +447,30 @@ export default function MyPodcast() {
                 })
               }}
             >
-              {t('reset')}
+              Reset
             </Button>
             <Button colorScheme="blue" onClick={applyPodcastFilter}>
-              {t('applyFilters')}
+              Apply Filters
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal>{' '}
       {/* Episode Filter Modal */}
       <Modal isOpen={isEpisodeModalOpen} onClose={onEpisodeModalClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t('episodes.filter')}</ModalHeader>
+          <ModalHeader>Filter Episodes</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl textAlign={'center'}>
               <FormLabel textAlign={'center'}>
-                {t('nonExplicit')}
+                Non-Explicit Only
                 <Switch ml={'5px'} colorScheme="purple" isChecked={episodeFilter.isExplicit === false} onChange={(e) => handleEpisodeFilterChange('isExplicit', e.target.checked ? false : null)} />
               </FormLabel>
             </FormControl>
 
             <FormControl mt={'15px'}>
-              <FormLabel>{t('episodes.minLength', { length: episodeFilter.minEpisodeLength ? formatSecToDurationString(episodeFilter.minEpisodeLength) : '' })}</FormLabel>
+              <FormLabel>Minimum Episode Length: {episodeFilter.minEpisodeLength ? `${formatSecToDurationString(episodeFilter.minEpisodeLength)}` : ''}</FormLabel>
               <Slider min={0} max={3600} value={episodeFilter.minEpisodeLength ?? 0} onChange={(val) => handleEpisodeFilterChange('minEpisodeLength', val)}>
                 <SliderTrack>
                   <SliderFilledTrack />
@@ -489,10 +490,10 @@ export default function MyPodcast() {
                 })
               }}
             >
-              {t('reset')}
+              Reset
             </Button>
             <Button colorScheme="blue" onClick={applyEpisodeFilter}>
-              {t('applyFilters')}
+              Apply Filters
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -6,14 +6,13 @@ import { FcGoogle } from 'react-icons/fc'
 import { signIn } from 'next-auth/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import Logo from '../../public/logos/logo_white.svg'
-import { useTranslation } from 'react-i18next'
+import { az } from 'date-fns/locale'
 
 interface LoginProps {
   infoMessage?: string
 }
 
 const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of podcasting.' }) => {
-  const { t } = useTranslation()
   const mainPage = '/'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -73,7 +72,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
             <Input
               type="text"
               id="email"
-              placeholder={t('auth.enterEmailUsername')}
+              placeholder="Enter Email/Username"
               borderRadius="2xl"
               bg="whiteAlpha.200"
               borderColor="whiteAlpha.400"
@@ -86,7 +85,8 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder={t('auth.enterPassword')}
+                  placeholder="Enter Password"
+          
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -95,16 +95,17 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                   <IconButton
                     bg="transparent"
                     variant="minimal"
-                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={handlePasswordVisibility}
+               
                   />
                 </InputRightElement>
               </InputGroup>
             </FormControl>
 
             <Button id="loginBtn" type="submit" variant={'large'}>
-              {t('auth.login')}
+              Log in
             </Button>
 
             <Button
@@ -123,12 +124,13 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                 transition: 'all 0.5s ease-in-out',
               }}
             >
-              {t('auth.continueWithGoogle')}
+              Continue with Google
             </Button>
           </Stack>
 
           <Text color="az.greyish" fontSize="sm" align={'center'} mb={1}>
-            {t('auth.noAccount')} {""}
+             Don't have an account?  {""}
+           
             <Box
               as="a"
               href="/auth/Signup"
@@ -139,7 +141,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                 transition: 'color 0.5s ease-in-out',
               }}
             >
-              {t('auth.signUp')}
+              Sign up
             </Box>
           </Text>
           <Text color="az.blue" fontSize="sm" mb={1} align={'center'}>
@@ -153,7 +155,7 @@ const Login: React.FC<LoginProps> = ({ infoMessage = 'Get into the new age of po
                 transition: 'color 0.5s ease-in-out',
               }}
             >
-              {t('auth.forgotPassword')}
+              Forgot password ?
             </Box>
           </Text>
         </form>

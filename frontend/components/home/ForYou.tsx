@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Text, Spinner, Flex, VStack, HStack, Grid, useBreakpointValue } from '@chakra-ui/react'
-import { useTranslation } from 'react-i18next'
 import { Podcast } from '../../types/Interfaces'
 import PodcastHelper from '../../helpers/PodcastHelper'
 import PodcastCard from '../cards/PodcastCard'
@@ -9,7 +8,6 @@ import Snippets from './Snippets'
 import TodaysRecommendation from './TodaysRecommendation'
 
 const ForYou: React.FC = () => {
-  const { t } = useTranslation()
   const [podcasts, setPodcasts] = useState<Podcast[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -22,17 +20,17 @@ const ForYou: React.FC = () => {
         if (res.status === 200) {
           setPodcasts(res.podcasts)
         } else {
-          throw new Error(t('home.failedToLoadPodcasts'))
+          throw new Error('Failed to load podcasts')
         }
       } catch (err) {
-        setError(err.message || t('home.fetchError'))
+        setError(err.message || 'An error occurred while fetching podcasts')
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchPodcasts()
-  }, [t])
+  }, [])
 
   const isMobile = useBreakpointValue({ base: true, md: false })
   const episodeColumnWidth = isMobile ? '100%' : '40%'
@@ -47,7 +45,7 @@ const ForYou: React.FC = () => {
       ) : podcasts && podcasts.length > 0 ? (
         <>
           <Text fontSize="lg" fontWeight="bold" mt={4}>
-            {t('home.podcasts')}
+            Podcasts
           </Text>
           {isMobile ? (
             <>
@@ -61,7 +59,7 @@ const ForYou: React.FC = () => {
 
               <VStack align="left" width={'100%'} mt={'15px'}>
                 <Text fontSize="lg" fontWeight="bold">
-                  {t('home.todaysRecommendation')}
+                  Today's Recommendation
                 </Text>
                 <TodaysRecommendation />{' '}
               </VStack>
@@ -76,7 +74,7 @@ const ForYou: React.FC = () => {
           <Flex width="100%" alignItems="flex-start" direction={isMobile ? 'column' : 'row'}>
             <VStack width={episodeColumnWidth} align="left">
               <Text fontSize="lg" fontWeight="bold" mt={4}>
-                {t('home.episodesForYou')}
+                Episodes For You
               </Text>
               <EpisodesForYou />
             </VStack>
@@ -84,14 +82,14 @@ const ForYou: React.FC = () => {
             <VStack width={snippetColumnWidth} alignItems="flex-start" pl={4}>
               <VStack align="left">
                 <Text fontSize="lg" fontWeight="bold" mt={4}>
-                  {t('home.snippets')}
+                  Snippets
                 </Text>
                 <Snippets />
               </VStack>
               {!isMobile && (
                 <VStack align="left">
                   <Text fontSize="lg" fontWeight="bold" mt={4}>
-                    {t('home.todaysRecommendation')}
+                    Today's Recommendation
                   </Text>
                   <TodaysRecommendation />
                 </VStack>
@@ -100,7 +98,7 @@ const ForYou: React.FC = () => {
           </Flex>
         </>
       ) : (
-        <Text>{t('home.noPodcastsAvailable')}</Text>
+        <Text>No podcasts available</Text>
       )}
     </Box>
   )
