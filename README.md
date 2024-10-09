@@ -109,18 +109,18 @@ The installation process pulls the latest Docker images from Awaazo's main branc
 
 ## Team Members
 
-| Name              | GitHub Profile                 | Email                         | Student ID |
-|-------------------|--------------------------------|-------------------------------|------------|
-| Jonathan Haddad   | [jonathan-githubofficial](https://github.com/jonathan-githubofficial) | jonathan200023@gmail.com | 40111053   |
-| Usama Saleem      | [usamasaleem1](https://github.com/usamasaleem1)              | usama.saleem [at] hotmail dot com | 40110036   |
-| Steven Franchetto | [sfranchetto](https://github.com/sfranchetto)                | steven.franchetto@gmail.com | 40112243   |
-| Jonathan Pauze    | [BigSaladMan](https://github.com/BigSaladMan)                | jonathanpauze25@gmail.com  | 40177730   |
-| Ahed Memas        | [Ahed752](https://github.com/Ahed752)                        | ahed.mimas@gmail.com      | 40112710   |
-| Shadi Jiha        | [shadijiha](https://github.com/shadijiha)                    | shadijiha@gmail.com       | 40131284   |
-| Sonia Rahal       | [soni2261](https://github.com/soni2261)                      | soniarahal20@gmail.com    | 40211893   |
-| Mathieu Trudeau   | [mathieutrudeau](https://github.com/mathieutrudeau)          | mathieutrudeau11@gmail.com| 40177075   |
-| Muhammad Mubashir | [mubashir494](https://github.com/mubashir494)                | mubashirqbl@gmail.com     | 40152977   |
-| Radwan Baba       | [Radwanbaba13](https://github.com/Radwanbaba13)              | radwangbaba@gmail.com     | 40167316   |
+| Name              | GitHub Profile                 | Email                         |
+|-------------------|--------------------------------|-------------------------------|
+| Jonathan Haddad   | [jonathan-githubofficial](https://github.com/jonathan-githubofficial) | jonathan200023@gmail.com |
+| Usama Saleem      | [usamasaleem1](https://github.com/usamasaleem1)              | usama.saleem [at] hotmail dot com |
+| Steven Franchetto | [sfranchetto](https://github.com/sfranchetto)                | steven.franchetto@gmail.com |
+| Jonathan Pauze    | [BigSaladMan](https://github.com/BigSaladMan)                | jonathanpauze25@gmail.com  |
+| Ahed Memas        | [Ahed752](https://github.com/Ahed752)                        | ahed.mimas@gmail.com      |
+| Shadi Jiha        | [shadijiha](https://github.com/shadijiha)                    | shadijiha@gmail.com       |
+| Sonia Rahal       | [soni2261](https://github.com/soni2261)                      | soniarahal20@gmail.com    |
+| Mathieu Trudeau   | [mathieutrudeau](https://github.com/mathieutrudeau)          | mathieutrudeau11@gmail.com|
+| Muhammad Mubashir | [mubashir494](https://github.com/mubashir494)                | mubashirqbl@gmail.com     |
+| Radwan Baba       | [Radwanbaba13](https://github.com/Radwanbaba13)              | radwangbaba@gmail.com     |
 
 
 <br>
